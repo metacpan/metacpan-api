@@ -5,3 +5,6 @@ The API itself is in its very early stages.  Everything will change, but here ar
 
 ## Search for a Module by id:
 [[http://api.metacpan.org:9200/cpan-modules/module/1]]
+
+## Search for an Author by PAUSEID
+[[http://api.metacpan.org:9200/cpan/author/DROLSKY]]
