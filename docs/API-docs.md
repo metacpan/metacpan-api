@@ -1,10 +1,12 @@
 The API itself is in its very early stages.  Everything will change, but here are some sample URLs to play with.  Keep in mind that these URLs all return JSON.
 
-## Search for a Module by Distribution Name:
-[[http://api.metacpan.org:9200/cpan-modules/module/_search?q=dist:moose]]
+## Search for a Module
 
-## Search for a Module by id:
-[[http://api.metacpan.org:9200/cpan-modules/module/1]]
+### By Distribution Name:
+[[http://api.metacpan.org/module/_search?q=dist:moose]]
+
+### By Module Name:
+[[http://api.metacpan.org/module/Moose::Meta::Attribute::Native::MethodProvider::Counter]]
 
 ## Search for an Author
 
@@ -18,5 +20,5 @@ The API itself is in its very early stages.  Everything will change, but here ar
 [[http://api.metacpan.org/author/_search?q=name:Dave]]
 
 ### By Full Name
-[[http://api.metacpan.org/author/_search?q=name:"dave%20rolsky"]]
+[[http://api.metacpan.org/author/_search?q=name:%22dave%20rolsky%22]]
 
