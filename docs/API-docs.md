@@ -22,3 +22,10 @@ The API itself is in its very early stages.  Everything will change, but here ar
 ### By Full Name
 [[http://api.metacpan.org/author/_search?q=name:%22dave%20rolsky%22]]
 
+## Search for CPANRatings ([[http://cpanratings.perl.org/]])
+
+### By Distribution Name (exact Match)
+[[http://api.metacpan.org/cpanratings/Moose]]
+
+### By Distribution Name (find all rated Moose distros)
+[[http://api.metacpan.org/cpanratings/_search?q=dist:Moose]]
