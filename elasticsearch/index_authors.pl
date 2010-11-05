@@ -48,6 +48,7 @@ while ( my $line = $z->getline() ) {
             type  => 'author',
             id    => $pauseid,
             data  => {
+                author => $pauseid,
                 name => $name,
                 email => $email,
                 gravatar_url => gravatar_url(email => $email),
