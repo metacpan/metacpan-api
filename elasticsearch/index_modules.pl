@@ -21,11 +21,13 @@ if ( !-d $cpan ) {
     die "Usage: perl index_modules.pl /path/to/(mini)cpan";
 }
 
+my $every    = 1000;
 my $metacpan = MetaCPAN->new( cpan => $cpan );
-my $es = $metacpan->es;
+my $es       = $metacpan->es;
 
 my $pkgs      = $metacpan->pkg_index;
 my @to_insert = ();
+#put_mapping();
 
 foreach my $module_name ( sort keys %{$pkgs} ) {
     my $module = $pkgs->{$module_name};
@@ -33,11 +35,7 @@ foreach my $module_name ( sort keys %{$pkgs} ) {
     $module->{download_url}
         = 'http://cpan.metacpan.org/authors/id/' . $module->{archive};
 
-    # get datestamp
-    my $dist_file = '/home/cpan/CPAN/authors/id/' . $module->{archive};
-    my $date      = ( stat( $dist_file ) )[9];
-    my $dt        = DateTime::Format::Epoch::Unix->parse_datetime( $date );
-    $module->{release_date} = $dt->ymd . ' ' . $dt->hms;
+    $module->{release_date} = datestamp( $module );
 
     my %es_insert = (
         index => {
@@ -50,15 +48,48 @@ foreach my $module_name ( sort keys %{$pkgs} ) {
 
     push @to_insert, \%es_insert;
 
-    if ( every( 500 ) ) {
+    if ( every( $every ) ) {
         my $result = $es->bulk( \@to_insert );
+#        say dump( $result );
+#        exit;
         @to_insert = ();
     }
-
-    # the slow way
-    #$es->index( %es_insert );
 
     say $module_name;
 
 }
 
+sub datestamp {
+
+    my $module    = shift;
+    my $dist_file = '/home/cpan/CPAN/authors/id/' . $module->{archive};
+    my $date      = ( stat( $dist_file ) )[9];
+    return DateTime::Format::Epoch::Unix->parse_datetime( $date )->iso8601;
+
+}
+
+sub put_mapping {
+
+    $es->delete_mapping(
+        index => ['cpan'],
+        type  => 'module',
+    );
+
+    my $result = $es->put_mapping(
+        index => ['cpan'],
+        type  => 'module',
+
+        #_source => { compress => 1 },
+        properties => {
+            archive      => { type => "string" },
+            author       => { type => "string" },
+            dist         => { type => "string" },
+            distvname    => { type => "string" },
+            download_url => { type => "string" },
+            name         => { type => "string" },
+            release_date => { type => "date" },
+            version      => { type => "string" },
+        }
+    );
+
+}
