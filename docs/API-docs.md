@@ -29,3 +29,8 @@ The API itself is in its very early stages.  Everything will change, but here ar
 
 ### By Distribution Name (find all rated Moose distros)
 [[http://api.metacpan.org/cpanratings/_search?q=dist:Moose]]
+
+## Search for POD
+
+### By Module Name (exact Match)
+[[http://api.metacpan.org/pod/AAA::Demo]]
