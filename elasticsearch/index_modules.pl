@@ -13,24 +13,29 @@ use Modern::Perl;
 use Data::Dump qw( dump );
 use DateTime::Format::Epoch::Unix;
 use Every;
-use Find::Lib '../lib';
+use Find::Lib '../lib', '../../iCPAN/perl/lib';
+use iCPAN;
 use MetaCPAN;
 
 my $cpan = shift @ARGV || "$ENV{'HOME'}/minicpan";
+
 if ( !-d $cpan ) {
     die "Usage: perl index_modules.pl /path/to/(mini)cpan";
 }
 
-my $every    = 1000;
+my $icpan = iCPAN->new;
+$icpan->db_file( Find::Lib::base() . '/../../iCPAN/iCPAN.sqlite' );
+my $every    = 500;
 my $metacpan = MetaCPAN->new( cpan => $cpan );
 my $es       = $metacpan->es;
 
 my $pkgs      = $metacpan->pkg_index;
 my @to_insert = ();
-#put_mapping();
+put_mapping();
 
 foreach my $module_name ( sort keys %{$pkgs} ) {
     my $module = $pkgs->{$module_name};
+
     $module->{name} = $module_name;
     $module->{download_url}
         = 'http://cpan.metacpan.org/authors/id/' . $module->{archive};
@@ -50,8 +55,10 @@ foreach my $module_name ( sort keys %{$pkgs} ) {
 
     if ( every( $every ) ) {
         my $result = $es->bulk( \@to_insert );
-#        say dump( $result );
-#        exit;
+
+        #        say dump( $result );
+        #        exit;
+        index_pod( \@to_insert );
         @to_insert = ();
     }
 
@@ -91,5 +98,46 @@ sub put_mapping {
             version      => { type => "string" },
         }
     );
+
+}
+
+sub index_pod {
+
+    my $to_insert = shift;
+
+    my %dists   = ();
+    my @modules = ();
+    foreach my $row ( @{$to_insert} ) {
+        say dump $row;
+        my $data = $row->{index}->{data};
+        push @modules, $data->{name};
+        $dists{ $data->{dist} } = 1;
+    }
+    
+    my $dist_list = join " ", sort keys %dists;
+    my $load = `perl ~/iCPAN/perl/script/load_dists.pl $dist_list`;
+    say $load;
+
+    my @inserts = ();
+    my $module_rs
+        = $icpan->schema->resultset( 'iCPAN::Schema::Result::Zmodule' )
+        ->search( { zname => \@modules, zpod => { '!=' => undef } }, {} );
+        
+    while ( my $module = $module_rs->next ) {
+        my %es_insert = (
+            index => {
+                index => 'cpan',
+                type  => 'pod',
+                id    => $module->zname,
+                data  => { pod => $module->zpod },
+            }
+        );
+
+        push @inserts, \%es_insert;
+    }
+
+    my $result = $es->bulk( \@inserts );
+
+    #say dump $result;
 
 }
