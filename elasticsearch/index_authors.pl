@@ -49,6 +49,7 @@ while ( my $line = $z->getline() ) {
             id    => $pauseid,
             data  => {
                 author => $pauseid,
+                author_dir => sprintf("id/%s/%s/%s/", substr($pauseid, 0, 1), substr($pauseid, 0,2), $pauseid),
                 name => $name,
                 email => $email,
                 gravatar_url => gravatar_url(email => $email),
