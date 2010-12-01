@@ -3,7 +3,7 @@ use Plack::Builder;
 
 # plackup -I../lib
 
-my $app = Plack::App::Directory->new(root => "/home/cpan/CPAN")->to_app;
+my $app = Plack::App::Directory->new(root => "/home/olaf/cpan-source")->to_app;
 
 builder {
     enable "Plack::Middleware::CPANSource";
