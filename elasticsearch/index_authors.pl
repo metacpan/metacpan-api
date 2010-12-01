@@ -46,7 +46,7 @@ while ( my $line = $z->getline() ) {
         say $pauseid;
         
         my $author = {
-            author => $pauseid,
+            pauseid => $pauseid,
             author_dir => sprintf("id/%s/%s/%s/", substr($pauseid, 0, 1), substr($pauseid, 0,2), $pauseid),
             name => $name,
             email => $email,
