@@ -14,13 +14,15 @@ use Data::Dump qw( dump );
 use Every;
 use Find::Lib '../lib';
 use Gravatar::URL;
+use Hash::Merge qw( merge );
+use JSON::DWIW;
 use IO::File;
 use IO::Uncompress::AnyInflate qw(anyinflate $AnyInflateError);
 use MetaCPAN;
-
-
 my $es = MetaCPAN->new->es;
 
+my $json = JSON::DWIW->new;
+my ($authors, $error_msg) = $json->from_json_file( Find::Lib::base . '/../conf/author.json', {});
 
 my $cpan = shift @ARGV || "$ENV{'HOME'}/minicpan";
 if ( !-d $cpan ) {
@@ -42,18 +44,24 @@ while ( my $line = $z->getline() ) {
         my $name = $2;
         my $email = $3;
         say $pauseid;
+        
+        my $author = {
+            author => $pauseid,
+            author_dir => sprintf("id/%s/%s/%s/", substr($pauseid, 0, 1), substr($pauseid, 0,2), $pauseid),
+            name => $name,
+            email => $email,
+            gravatar_url => gravatar_url(email => $email),            
+        };
+        
+        if ( $authors->{$pauseid} ) {
+            $author = merge( $author, $authors->{$pauseid} );
+        }
 
         $es->index(
             index => 'cpan',
             type  => 'author',
             id    => $pauseid,
-            data  => {
-                author => $pauseid,
-                author_dir => sprintf("id/%s/%s/%s/", substr($pauseid, 0, 1), substr($pauseid, 0,2), $pauseid),
-                name => $name,
-                email => $email,
-                gravatar_url => gravatar_url(email => $email),
-            }
+            data  => $author,
         );
 
     }
