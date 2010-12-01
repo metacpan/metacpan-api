@@ -35,11 +35,24 @@ sub call {
                 $env->{REQUEST_URI}              = $self->rewrite_to;
                 $env->{PATH_INFO}                = $self->rewrite_to;
                 $env->{'psgix.rewrite_modified'} = 1;
+                
+               # my $headers = $res->[1];
+               # Plack::Util::header_set( $headers, 'Content-Type', 'text/html' );
             }
         }
     }
 
     my $res = $self->app->( $env );
+    
+    $self->response_cb(
+        $res,
+        sub {
+            my $res     = shift;
+            my $headers = $res->[1];
+            Plack::Util::header_set( $headers, 'Content-Type', 'text/plain' );
+        }
+    );
+    
     return $res;
 }
 
