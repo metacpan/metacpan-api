@@ -7,6 +7,8 @@ my $app = Plack::App::Directory->new(root => "/home/olaf/cpan-source")->to_app;
 
 builder {
     enable "Plack::Middleware::CPANSource";
+    enable 'Header',
+      set => ['Content-Type' => 'text/plain'];
     $app;
 };
 
