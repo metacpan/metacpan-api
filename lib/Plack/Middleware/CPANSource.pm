@@ -14,15 +14,14 @@ sub call {
     my ( $self, $env ) = @_;
 
     if ( $env->{REQUEST_URI} =~ m{\A/source/(\w*)/([^\/\?]*)/(.*)} ) {
-        
+
         my ( $pauseid, $distvname, $file ) = ( $1, $2, $3 );
-        
+
         my $archive = $self->get_archive_name( $pauseid, $distvname );
         return $self->app->( $env ) if !$archive;
 
         my $new_path
-            = $self->file_path( $pauseid, $distvname, $archive, $file );
-say $new_path;
+            = $self->file_path( $distvname, $archive, $file );
         $env->{PATH_INFO} = $new_path if $new_path;
     }
 
@@ -48,26 +47,27 @@ sub get_archive_name {
 
 sub file_path {
 
-    my ( $self, $pauseid, $distvname, $archive, $file ) = @_;
+    my ( $self, $distvname, $archive, $file ) = @_;
 
     my $base_folder   = '/home/olaf/cpan-source/';
-    my $author_folder = $self->pauseid2folder( $pauseid );
-    my $rewrite_path  = "$author_folder/$distvname/$file";
-    my $dest_file     = $base_folder . $rewrite_path;
+    my $author_folder = $archive;
+    $author_folder =~ s{\.tar\.gz\z}{};
+
+    my $rewrite_path = "$author_folder/$file";
+    my $dest_file    = $base_folder . $rewrite_path;
 
     return $rewrite_path if ( -e $dest_file );
 
-    my $path = "/home/cpan/CPAN/authors/id/$archive";
-    return if ( !-e $path );
+    my $cpan_path = "/home/cpan/CPAN/authors/id/$archive";
+    return if ( !-e $cpan_path );
 
-    my $arch = Archive::Tar::Wrapper->new();
-    $arch->read( $path );
-    $arch->list_reset();
+    my $arch       = Archive::Tar::Wrapper->new();
+    my $logic_path = "$distvname/$file";
+    
+    $arch->read( $cpan_path, $logic_path );    # read only one file
+    my $phys_path = $arch->locate( $logic_path );
 
-    while ( my ( $tar_path, $phys_path ) = @{ $arch->list_next } ) {
-
-        next if ( $tar_path !~ m{$file\z} );
-        
+    if ( $phys_path ) {
         make_path( file( $dest_file )->dir, {} );
         copy( $phys_path, $dest_file );
         return $rewrite_path;
@@ -77,23 +77,13 @@ sub file_path {
 
 }
 
-sub pauseid2folder {
-
-    my $self = shift;
-    my $id   = shift;
-    return sprintf( "id/%s/%s/%s/",
-        substr( $id, 0, 1 ),
-        substr( $id, 0, 2 ), $id );
-
-}
-
 1;
 
 =pod
 
-=head2 file_path( $pauseid, $distvname, $archive, $file )
+=head2 file_path( $distvname, $archive, $file )
 
-    print $self->file_path( 'IONCACHE', 'Plack-Middleware-HTMLify-0.1.1', 'I/IO/IONCACHE/Plack-Middleware-HTMLify-0.1.1.tar.gz', 'lib/Plack/Middleware/HTMLify.pm' );
+    print $self->file_path( 'Plack-Middleware-HTMLify-0.1.1', 'I/IO/IONCACHE/Plack-Middleware-HTMLify-0.1.1.tar.gz', 'lib/Plack/Middleware/HTMLify.pm' );
     # id/I/IO/IONCACHE/Plack-Middleware-HTMLify-0.1.1/lib/Plack/Middleware/HTMLify.pm
     
 =head2 get_archive_name( $pauseid, $distvname )
@@ -102,10 +92,5 @@ Returns the name of the distribution archive file.  For example:
 
     my $pkg = $self->get_archive_name( 'IONCACHE', 'Plack-Middleware-HTMLify-0.1.1' );
     print $pkg; # I/IO/IONCACHE/Plack-Middleware-HTMLify-0.1.1.tar.gz
-
-=head2 pauseid2folder
-
-    print $self->pausid2folder( 'IONCACHE' );
-    # id/I/IO/IONCACHE/
 
 =cut

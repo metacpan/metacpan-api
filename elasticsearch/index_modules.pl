@@ -25,13 +25,13 @@ if ( !-d $cpan ) {
 
 my $icpan = iCPAN->new;
 $icpan->db_file( Find::Lib::base() . '/../../iCPAN/iCPAN.sqlite' );
-my $every    = 500;
+my $every    = 100;
 my $metacpan = MetaCPAN->new( cpan => $cpan );
 my $es       = $metacpan->es;
 
 my $pkgs      = $metacpan->pkg_index;
 my @to_insert = ();
-put_mapping();
+#put_mapping();
 
 foreach my $module_name ( sort keys %{$pkgs} ) {
     my $module = $pkgs->{$module_name};
@@ -55,9 +55,6 @@ foreach my $module_name ( sort keys %{$pkgs} ) {
 
     if ( every( $every ) ) {
         my $result = $es->bulk( \@to_insert );
-
-        #        say dump( $result );
-        #        exit;
         index_pod( \@to_insert );
         @to_insert = ();
     }
@@ -89,7 +86,7 @@ sub put_mapping {
         #_source => { compress => 1 },
         properties => {
             archive      => { type => "string" },
-            author       => { type => "string" },
+            pauseid      => { type => "string" },
             dist         => { type => "string" },
             distvname    => { type => "string" },
             download_url => { type => "string" },
@@ -138,6 +135,6 @@ sub index_pod {
 
     my $result = $es->bulk( \@inserts );
 
-    #say dump $result;
+    say dump $result;
 
 }
