@@ -12,11 +12,7 @@ sub call {
     my ( $self, $env ) = @_;
 
     if ( $env->{REQUEST_URI} =~ m{\A/source/(\w*)/([^\/\?]*)/(.*)} ) {
-
-        my ( $pauseid, $distvname, $file ) = ( $1, $2, $3 );
-
-        my $new_path
-            = $self->file_path( $pauseid, $distvname, $file );
+        my $new_path = $self->file_path( $1, $2, $3 );
         $env->{PATH_INFO} = $new_path if $new_path;
     }
 
@@ -26,25 +22,25 @@ sub call {
 sub file_path {
 
     my ( $self, $pauseid, $distvname, $file ) = @_;
-    
-    my $archive = sprintf("%s/%s/%s/%s.tar.gz", substr($pauseid, 0, 1), substr($pauseid, 0,2), $pauseid, $distvname);
 
-    my $base_folder   = '/home/olaf/cpan-source/';
-    my $author_folder = $archive;
-    $author_folder =~ s{\.tar\.gz\z}{};
+    my $author_folder = sprintf( "%s/%s/%s/%s",
+        substr( $pauseid, 0, 1 ),
+        substr( $pauseid, 0, 2 ),
+        $pauseid, $distvname );
+    my $base_folder = '/home/olaf/cpan-source/';
 
     my $rewrite_path = "$author_folder/$file";
     my $dest_file    = $base_folder . $rewrite_path;
 
     return $rewrite_path if ( -e $dest_file );
 
-    my $cpan_path = "/home/cpan/CPAN/authors/id/$archive";
+    my $cpan_path = "/home/cpan/CPAN/authors/id/$author_folder.tar.gz";
     return if ( !-e $cpan_path );
 
-    my $arch       = Archive::Tar::Wrapper->new();
-    my $logic_path = "$distvname/$file"; # path within unzipped archive
-    
-    $arch->read( $cpan_path, $logic_path );    # read only one file
+    my $arch = Archive::Tar::Wrapper->new();
+    my $logic_path = "$distvname/$file";    # path within unzipped archive
+
+    $arch->read( $cpan_path, $logic_path ); # read only one file
     my $phys_path = $arch->locate( $logic_path );
 
     if ( $phys_path ) {
