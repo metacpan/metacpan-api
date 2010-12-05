@@ -112,7 +112,7 @@ sub index_pod {
     }
     
     my $dist_list = join " ", sort keys %dists;
-    my $load = `perl ~/iCPAN/perl/script/load_dists.pl $dist_list`;
+    my $load = `perl /home/olaf/iCPAN/perl/script/load_dists.pl $dist_list`;
     say $load;
 
     my @inserts = ();
