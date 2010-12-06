@@ -4,10 +4,10 @@ use Data::Dump qw( dump );
 use Modern::Perl;
 use Test::More qw( no_plan );
 
-require_ok( 'MetaCPAN::Extract' );
-require_ok( 'MetaCPAN::Extract::Dist' );
+require_ok( 'MetaCPAN' );
+require_ok( 'MetaCPAN::Dist' );
 
-my $extract = MetaCPAN::Extract->new;
+my $extract = MetaCPAN->new;
 ok( $extract, "got an extract object" );
 
 my $file = $extract->open_pkg_index;

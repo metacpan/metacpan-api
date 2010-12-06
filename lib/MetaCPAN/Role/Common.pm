@@ -1,4 +1,4 @@
-package MetaCPAN::Extract::Role::Common;
+package MetaCPAN::Role::Common;
 
 use Moose::Role;
 

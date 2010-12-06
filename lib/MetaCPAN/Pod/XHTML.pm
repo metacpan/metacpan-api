@@ -1,4 +1,4 @@
-package MetaCPAN::Extract::Pod::XHTML;
+package MetaCPAN::Pod::XHTML;
 
 =head2 SYNOPSIS
 

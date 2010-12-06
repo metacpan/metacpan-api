@@ -1,4 +1,4 @@
-package MetaCPAN::Extract::Role::DB;
+package MetaCPAN::Role::DB;
 
 use Modern::Perl;
 use Moose::Role;
@@ -24,20 +24,8 @@ has 'schema' => (
 
 has 'schema_class' => (
     is      => 'rw',
-    default => 'MetaCPAN::Extract::Meta::Schema',
+    default => 'MetaCPAN::Schema',
 );
-
-has 'meta_index' => (
-    is         => 'rw',
-    lazy_build => 1,
-);
-
-sub _build_meta_index {
-
-    my $self = shift;
-    return MetaCPAN::Extract::MetaIndex->new();
-    
-}
 
 sub _build_dsn {
 

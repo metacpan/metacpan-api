@@ -2,16 +2,42 @@ package MetaCPAN;
 
 use Modern::Perl;
 use Moose;
+
+with 'MetaCPAN::Role::Common';
+with 'MetaCPAN::Role::DB';
+
 use Archive::Tar;
 use CPAN::DistnameInfo;
+use Data::Dump qw( dump );
+use DateTime::Format::Epoch::Unix;
 use ElasticSearch;
+use Every;
 use IO::Uncompress::AnyInflate qw(anyinflate $AnyInflateError);
+
+use MetaCPAN::Dist;
+use MetaCPAN::Schema;
+
+has 'cpan' => (
+    is  => 'rw',
+    isa => 'Str',
+    lazy_build => 1,
+);
+
+has 'db_path' => (
+    is      => 'rw',
+    isa     => 'Str',
+    default => '../CPAN-meta.sqlite',
+);
 
 has 'es' => ( is => 'rw', lazy_build => 1 );
 
-has 'cpan' => (
-    is         => 'rw',
-    isa        => 'Str',
+has 'module_rs' => (
+    is      => 'rw',
+    default => sub {
+        my $self = shift;
+        return my $rs
+            = $self->schema->resultset( 'MetaCPAN::Schema::Result::Module' );
+    },
 );
 
 has 'pkg_index' => (
@@ -19,16 +45,6 @@ has 'pkg_index' => (
     isa        => 'HashRef',
     lazy_build => 1,
 );
-
-sub _build_es {
-
-    my $e = ElasticSearch->new(
-        servers     => 'localhost:9200',
-        transport   => 'httplite',             # default 'http'
-        trace_calls => 'log_file',
-    );
-
-}
 
 sub open_pkg_index {
 
@@ -66,13 +82,95 @@ LINE:
         $index{$module} = {
             archive   => $d->pathname,
             version   => $d->version,
-            author    => $d->cpanid,
+            pauseid   => $d->cpanid,
             dist      => $d->dist,
             distvname => $d->distvname,
         };
     }
 
     return \%index;
+
+}
+
+sub dist {
+
+    my $self = shift;
+    my $name = shift;
+    $name =~ s{::}{-}g;
+
+    return MetaCPAN::Dist->new( name => $name,
+        module_rs => $self->module_rs );
+
+}
+
+sub populate {
+
+    my $self = shift;
+
+    my $index = $self->pkg_index;
+    my $count = 0;
+    my $every = 999;
+    $self->module_rs->delete;
+
+    my $inserts = 0;
+    my @rows    = ();
+    foreach my $name ( sort keys %{$index} ) {
+
+        my $module = $index->{$name};
+        my %create = (
+            name         => $name,
+            download_url => 'http://cpan.metacpan.org/authors/id/'
+                . $module->{archive},
+            release_date => $self->pkg_datestamp( $module->{archive} ),
+        );
+
+        my @cols = ( 'archive', 'pauseid', 'version', 'dist', 'distvname' );
+        foreach my $col ( @cols ) {
+            $create{$col} = $module->{$col};
+        }
+
+        push @rows, \%create;
+        if ( every( $every ) ) {
+            $self->module_rs->populate( \@rows );
+            $inserts += $every;
+            @rows = ();
+            say "$inserts rows inserted";
+        }
+    }
+
+    if ( scalar @rows ) {
+        $self->module_rs->populate( \@rows );
+        $inserts += scalar @rows;
+    }
+
+    return $inserts;
+
+}
+
+sub pkg_datestamp {
+
+    my $self      = shift;
+    my $archive   = shift;
+    my $dist_file = "/home/cpan/CPAN/authors/id/$archive";
+    my $date      = ( stat( $dist_file ) )[9];
+    return DateTime::Format::Epoch::Unix->parse_datetime( $date )->iso8601;
+
+}
+
+sub _build_cpan {
+
+    my $self = shift;
+    return $ENV{'MINICPAN'} || "$ENV{'HOME'}/minicpan";
+
+}
+
+sub _build_es {
+
+    my $e = ElasticSearch->new(
+        servers   => 'localhost:9200',
+        transport => 'httplite',         # default 'http'
+                                         #trace_calls => 'log_file',
+    );
 
 }
 

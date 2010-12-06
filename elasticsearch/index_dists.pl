@@ -36,9 +36,14 @@ else {
         { columns => ['dist'], distinct => 1, order_by => 'dist ASC' } );
 
     $total_dists = $search->count;
+    my @dists = ( );
 
     while ( my $row = $search->next ) {
-        process_dist( $row->dist );
+        push @dists, $row->dist;
+    }
+    
+    foreach my $dist ( @dists ) {
+        process_dist( $dist );
     }
 
 }

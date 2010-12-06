@@ -1,4 +1,4 @@
-package MetaCPAN::Extract::Dist;
+package MetaCPAN::Dist;
 
 use Archive::Tar;
 use Moose;
@@ -8,12 +8,11 @@ use Devel::SimpleTrace;
 use POSIX qw(ceil);
 use Try::Tiny;
 
-use MetaCPAN::Extract::MetaIndex;
-use MetaCPAN::Extract::Pod::XHTML;
+use MetaCPAN::Pod::XHTML;
 
-with 'MetaCPAN::Extract::Role::Author';
-with 'MetaCPAN::Extract::Role::Common';
-with 'MetaCPAN::Extract::Role::DB';
+with 'MetaCPAN::Role::Author';
+with 'MetaCPAN::Role::Common';
+with 'MetaCPAN::Role::DB';
 
 has 'archive_parent' => ( is => 'rw', );
 
@@ -26,11 +25,11 @@ has 'file' => ( is => 'rw', );
 
 has 'metadata' => (
     is         => 'rw',
-    isa        => 'MetaCPAN::Extract::Meta::Schema::Result::Module',
+    isa        => 'MetaCPAN::Schema::Result::Module',
     lazy_build => 1
 );
 
-has 'module' => ( is => 'rw', isa => 'MetaCPAN::Extract::Module' );
+has 'module' => ( is => 'rw', isa => 'MetaCPAN::Module' );
 
 has 'module_rs' => ( is => 'rw' );
 
@@ -244,7 +243,7 @@ sub parse_pod {
 
     return if !$content;
 
-    my $parser = MetaCPAN::Extract::Pod::XHTML->new();
+    my $parser = MetaCPAN::Pod::XHTML->new();
 
     $parser->index( 1 );
     $parser->html_header('');
@@ -317,7 +316,7 @@ sub _build_metadata {
     my $self = shift;
     my $metadata
         = $self->meta_index->schema->resultset(
-        'MetaCPAN::Extract::Meta::Schema::Result::Module' )
+        'MetaCPAN::Schema::Result::Module' )
         ->search( { dist => $self->name } )->first;
 
     return $metadata;

@@ -1,4 +1,4 @@
-package MetaCPAN::Extract::Schema;
+package MetaCPAN::Schema;
 use base qw/DBIx::Class::Schema::Loader/;
 
 __PACKAGE__->loader_options(
