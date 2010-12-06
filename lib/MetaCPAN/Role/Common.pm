@@ -7,6 +7,8 @@ has 'debug' => (
     lazy_build => 1,
 );
 
+has 'es' => ( is => 'rw', lazy_build => 1 );
+
 has 'minicpan' => (
     is         => 'rw',
     isa        => 'Str',
@@ -36,6 +38,23 @@ sub _build_minicpan {
 
     my $self = shift;
     return $ENV{'MINICPAN'} || "$ENV{'HOME'}/minicpan";
+
+}
+
+sub _build_cpan {
+
+    my $self = shift;
+    return $self->_build_minicpan( shift );
+
+}
+
+sub _build_es {
+
+    my $e = ElasticSearch->new(
+        servers   => 'localhost:9200',
+        transport => 'httplite',         # default 'http'
+                                         #trace_calls => 'log_file',
+    );
 
 }
 

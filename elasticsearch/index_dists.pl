@@ -4,14 +4,14 @@ use Modern::Perl;
 use Data::Dump qw( dump );
 use Every;
 use Find::Lib '../lib';
-use MetaCPAN::Extract;
+use MetaCPAN;
 use Time::HiRes qw( gettimeofday tv_interval );
 
 my $t_begin = [gettimeofday];
 
 my $attempts = 0;
 my $every    = 20;
-my $cpan     = MetaCPAN::Extract->new;
+my $cpan     = MetaCPAN->new;
 $cpan->debug( $ENV{'DEBUG'} );
 
 my @dists = @ARGV;

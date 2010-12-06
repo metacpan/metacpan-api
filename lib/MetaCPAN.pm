@@ -29,8 +29,6 @@ has 'db_path' => (
     default => '../CPAN-meta.sqlite',
 );
 
-has 'es' => ( is => 'rw', lazy_build => 1 );
-
 has 'module_rs' => (
     is      => 'rw',
     default => sub {
@@ -154,23 +152,6 @@ sub pkg_datestamp {
     my $dist_file = "/home/cpan/CPAN/authors/id/$archive";
     my $date      = ( stat( $dist_file ) )[9];
     return DateTime::Format::Epoch::Unix->parse_datetime( $date )->iso8601;
-
-}
-
-sub _build_cpan {
-
-    my $self = shift;
-    return $ENV{'MINICPAN'} || "$ENV{'HOME'}/minicpan";
-
-}
-
-sub _build_es {
-
-    my $e = ElasticSearch->new(
-        servers   => 'localhost:9200',
-        transport => 'httplite',         # default 'http'
-                                         #trace_calls => 'log_file',
-    );
 
 }
 

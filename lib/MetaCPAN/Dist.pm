@@ -21,7 +21,19 @@ has 'name' => (
     lazy_build => 1,
 );
 
+has 'es_inserts' => (
+    is      => 'rw',
+    isa     => 'ArrayRef',
+    default => sub { return [] },
+);
+
 has 'file' => ( is => 'rw', );
+
+has 'files' => (
+    is         => 'ro',
+    isa        => "HashRef",
+    lazy_build => 1,
+);
 
 has 'metadata' => (
     is         => 'rw',
@@ -36,18 +48,6 @@ has 'module_rs' => ( is => 'rw' );
 has 'pm_name' => (
     is         => 'rw',
     lazy_build => 1,
-);
-
-has 'files' => (
-    is         => 'ro',
-    isa        => "HashRef",
-    lazy_build => 1,
-);
-
-has 'inserts' => (
-    is      => 'rw',
-    isa     => 'ArrayRef',
-    default => sub { return [] },
 );
 
 has 'tar' => (
@@ -132,7 +132,13 @@ MODULE:
 
     $self->process_cookbooks;
 
-    if ( !$self->inserts && $self->debug ) {
+    $self->index_dist;
+
+    if ( $self->es_inserts ) {
+        my $result = $self->es->bulk( $self->es_inserts );
+    }
+
+    elsif ( $self->debug ) {
         warn $self->name . " no success" . "!" x 20;
         return;
     }
@@ -246,17 +252,59 @@ sub parse_pod {
     my $parser = MetaCPAN::Pod::XHTML->new();
 
     $parser->index( 1 );
-    $parser->html_header('');
-    $parser->html_footer('');
+    $parser->html_header( '' );
+    $parser->html_footer( '' );
     $parser->perldoc_url_prefix( '' );
-    
+
     my $xhtml = "";
     $parser->output_string( \$xhtml );
     $parser->parse_string_document( $content );
 
     $self->metadata->xhtml_pod( $xhtml );
     $self->metadata->update;
+
+    my %es_insert = (
+        index => {
+            index => 'cpan',
+            type  => 'pod',
+            id    => $module_name,
+            data  => { pod => $xhtml },
+        }
+    );
+
+    push @{ $self->es_inserts }, \%es_insert;
+
     return 1;
+
+}
+
+sub index_dist {
+
+    my $self      = shift;
+    my $module    = $self->metadata;
+    my $dist_name = $module->distvname;
+    $dist_name =~ s{\-\d.*}{}g;
+
+    my $data = { name => $dist_name };
+    my @cols = (
+        'download_url', 'archive', 'release_date', 'version',
+        'pauseid',      'distvname'
+    );
+
+    foreach my $col ( @cols ) {
+        $data->{$col} = $module->$col;
+    }
+
+    my %es_insert = (
+        index => {
+            index => 'cpan',
+            type  => 'dist',
+            id    => $dist_name,
+            data  => $data,
+        }
+    );
+
+    push @{ $self->es_inserts }, \%es_insert;
 
 }
 
@@ -314,12 +362,7 @@ sub _build_files {
 sub _build_metadata {
 
     my $self = shift;
-    my $metadata
-        = $self->meta_index->schema->resultset(
-        'MetaCPAN::Schema::Result::Module' )
-        ->search( { dist => $self->name } )->first;
-
-    return $metadata;
+    return $self->module_rs->search( { dist => $self->name } )->first;
 
 }
 
