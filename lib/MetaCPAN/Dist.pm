@@ -255,7 +255,8 @@ sub get_content {
     }
 
     say "got pod ok: $filename ";
-    delete $self->files->{$filename};
+    # if this line is uncommented some pod, like Dancer docs gets skipped
+    #delete $self->files->{$filename};
 
     return $content;
 
