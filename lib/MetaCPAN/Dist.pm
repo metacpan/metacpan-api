@@ -347,13 +347,12 @@ sub index_module {
     my $module    = $self->module;
     my $dist_name = $module->distvname;
     $dist_name =~ s{\-\d.*}{}g;
-    my $module_name = $self->file2mod( $file );
 
     my $src_url = sprintf( 'http://api.metacpan.org:5000/source/%s/%s/%s',
         $module->pauseid, $module->distvname, $module->file );
 
     my $data = {
-        name       => $module_name,
+        name       => $module->name,
         source_url => $src_url,
         distname   => $dist_name,
         author     => $module->pauseid,
@@ -370,7 +369,7 @@ sub index_module {
         index => {
             index => 'cpan',
             type  => 'module',
-            id    => $module_name,
+            id    => $module->name,
             data  => $data,
         }
     );
