@@ -19,33 +19,16 @@ my @dists = @ARGV;
 
 my $total_dists = 1;
 
-# need to reset @ARGV in order to avoid this nasty error in Perl::Tidy
-# "You may not specify any filenames when a source array is given"
-
-if ( scalar @dists ) {
-    foreach my $dist_name ( @dists ) {
-        process_dist( $dist_name );
-    }
+if ( scalar @dists == 1 && $dists[0] =~ m{%} ) {
+    @dists = search_dists( { name => { like => $dists[0] } } );
 }
 
-else {
-    my $constraints = { name => { like => 'a%' } };
-    $constraints = {};
+elsif ( scalar @dists == 0 ) {
+    @dists = search_dists();
+}
 
-    my $search = $cpan->module_rs->search( $constraints,
-        { columns => ['dist'], distinct => 1, order_by => 'dist ASC' } );
-
-    $total_dists = $search->count;
-    my @dists = ( );
-
-    while ( my $row = $search->next ) {
-        push @dists, $row->dist;
-    }
-    
-    foreach my $dist ( @dists ) {
-        process_dist( $dist );
-    }
-
+foreach my $dist ( @dists ) {
+    process_dist( $dist );
 }
 
 my $t_elapsed = tv_interval( $t_begin, [gettimeofday] );
@@ -62,13 +45,18 @@ sub process_dist {
     $dist->module_rs( $cpan->module_rs );
     $dist->process;
 
-    my $iter_time = tv_interval( $t0,      [gettimeofday] );
-    my $elapsed   = tv_interval( $t_begin, [gettimeofday] );
-
+    $dist->tar->clear if $dist->tar;
+    $dist = undef;
+    
     ++$attempts;
+    
+    # diagnostics
     if ( every( $every ) ) {
 
+        my $iter_time = tv_interval( $t0,      [gettimeofday] );
+        my $elapsed   = tv_interval( $t_begin, [gettimeofday] );
         say '#' x 78;
+    
         say "$dist_name";    # if $icpan->debug;
         say "$iter_time to process dist";
         say "$elapsed so far... ($attempts dists out of $total_dists)";
@@ -83,8 +71,30 @@ sub process_dist {
 
     }
 
-    $dist->tar->clear if $dist->tar;
-    $dist = undef;
+
     return;
 
+}
+
+sub search_dists {
+    
+    my $constraints = shift || {};
+
+    my $search = $cpan->module_rs->search( $constraints,
+        { columns => ['dist'], distinct => 1, order_by => 'dist ASC' } );
+
+    say dump( $constraints );
+    exit;
+    
+    $total_dists = $search->count;
+    my @dists = ( );
+
+    while ( my $row = $search->next ) {
+        push @dists, $row->dist;
+    }
+    
+    say "found $total_dists distros";
+
+    return @dists;
+    
 }

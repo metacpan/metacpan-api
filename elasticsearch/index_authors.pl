@@ -18,17 +18,14 @@ use Hash::Merge qw( merge );
 use JSON::DWIW;
 use IO::File;
 use IO::Uncompress::AnyInflate qw(anyinflate $AnyInflateError);
+
 use MetaCPAN;
-my $es = MetaCPAN->new->es;
+my $metacpan = MetaCPAN->new;
 
 my $json = JSON::DWIW->new;
 my ($authors, $error_msg) = $json->from_json_file( Find::Lib::base . '/../conf/author.json', {});
 
-my $cpan = shift @ARGV || "$ENV{'HOME'}/minicpan";
-if ( !-d $cpan ) {
-    die "Usage: perl author.pl /path/to/(mini)cpan";
-}
-
+my $cpan = $metacpan->cpan;
 my $file = "$cpan/authors/01mailrc.txt.gz";
 
 my $z = new IO::Uncompress::AnyInflate $file
@@ -57,13 +54,19 @@ while ( my $line = $z->getline() ) {
             $author = merge( $author, $authors->{$pauseid} );
         }
 
-        $es->index(
-            index => 'cpan',
-            type  => 'author',
-            id    => $pauseid,
-            data  => $author,
+        my %es_insert = (
+            index => {
+                index => 'cpan',
+                type  => 'author',
+                id    => $pauseid,
+                data  => $author,
+            }
         );
+    
+        push @authors, \%es_insert;
 
     }
 }
+
+my $result = $metacpan->es->bulk( \@authors );
 

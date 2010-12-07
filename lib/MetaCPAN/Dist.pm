@@ -1,11 +1,12 @@
 package MetaCPAN::Dist;
 
 use Archive::Tar;
+use Archive::Tar::Wrapper;
+use File::Slurp;
 use Moose;
+use MooseX::Getopt;
 use Modern::Perl;
 use Data::Dump qw( dump );
-use Devel::SimpleTrace;
-use POSIX qw(ceil);
 use Try::Tiny;
 
 use MetaCPAN::Pod::XHTML;
@@ -15,11 +16,6 @@ with 'MetaCPAN::Role::Common';
 with 'MetaCPAN::Role::DB';
 
 has 'archive_parent' => ( is => 'rw', );
-
-has 'name' => (
-    is         => 'rw',
-    lazy_build => 1,
-);
 
 has 'es_inserts' => (
     is      => 'rw',
@@ -35,15 +31,14 @@ has 'files' => (
     lazy_build => 1,
 );
 
-has 'metadata' => (
-    is         => 'rw',
-    isa        => 'MetaCPAN::Schema::Result::Module',
-    lazy_build => 1
-);
-
-has 'module' => ( is => 'rw', isa => 'MetaCPAN::Module' );
+has 'module' => ( is => 'rw', isa => 'MetaCPAN::Schema::Result::Module' );
 
 has 'module_rs' => ( is => 'rw' );
+
+has 'name' => (
+    is         => 'rw',
+    lazy_build => 1,
+);
 
 has 'pm_name' => (
     is         => 'rw',
@@ -51,6 +46,16 @@ has 'pm_name' => (
 );
 
 has 'tar' => (
+    is         => 'rw',
+    lazy_build => 1,
+);
+
+has 'tar_class' => (
+    is      => 'rw',
+    default => 'Archive::Tar',
+);
+
+has 'tar_wrapper' => (
     is         => 'rw',
     lazy_build => 1,
 );
@@ -69,7 +74,7 @@ Full file path to module archive.
 sub archive_path {
 
     my $self = shift;
-    return $self->minicpan . "/authors/id/" . $self->metadata->archive;
+    return $self->cpan . "/authors/id/" . $self->module->archive;
 
 }
 
@@ -85,9 +90,9 @@ sub process {
     my $self    = shift;
     my $success = 0;
 
-    return 0 if !$self->tar;
+    #return 0 if !$self->tar;
 
-    my $module_rs = $self->modules;
+    my $module_rs = $self->module_rs->search({ dist => $self->name });
 
     my @modules = ();
     while ( my $found = $module_rs->next ) {
@@ -99,6 +104,7 @@ MODULE:
     #while ( my $found = $module_rs->next ) {
     foreach my $found ( @modules ) {
 
+        $self->module( $found );
         say "checking dist " . $found->name if $self->debug;
 
         # take an educated guess at the correct file before we go through the
@@ -216,11 +222,27 @@ sub get_content {
     my $filename    = shift;
     my $pm_name     = $self->pm_name;
 
-    return 0 if !exists $self->files->{$filename};
+    return if !exists $self->files->{$filename};
 
     # not every module contains POD
-    my $content
-        = $self->tar->get_content( $self->archive_parent . $filename );
+    my $file    = $self->archive_parent . $filename;
+    my $content = undef;
+
+    if ( $self->tar_class eq 'Archive::Tar' ) {
+        $content
+            = $self->tar->get_content( $self->archive_parent . $filename );
+    }
+    else {
+        my $location = $self->tar_wrapper->locate( $file );
+
+        if ( !$location ) {
+            say "skipping: $file does not found in archive" if $self->debug;
+            return;
+        }
+
+        $content = read_file( $location );
+    }
+
     if ( !$content || $content !~ m{=head} ) {
         say "skipping -- no POD    -- $filename" if $self->debug;
         delete $self->files->{$filename};
@@ -244,10 +266,15 @@ sub parse_pod {
     my $self        = shift;
     my $module_name = shift;
     my $file        = shift;
+    my $module      = $self->module;
 
     my $content = $self->get_content( $module_name, $file );
+    say $file;
 
-    return if !$content;
+    if ( !$content ) {
+        say "No content found for $file" if $self->debug;
+        return;
+    }
 
     my $parser = MetaCPAN::Pod::XHTML->new();
 
@@ -260,10 +287,11 @@ sub parse_pod {
     $parser->output_string( \$xhtml );
     $parser->parse_string_document( $content );
 
-    $self->metadata->xhtml_pod( $xhtml );
-    $self->metadata->update;
+    $module->xhtml_pod( $xhtml );
+    $module->file( $file );
+    $module->update;
 
-    my %es_insert = (
+    my %pod_insert = (
         index => {
             index => 'cpan',
             type  => 'pod',
@@ -272,7 +300,12 @@ sub parse_pod {
         }
     );
 
-    push @{ $self->es_inserts }, \%es_insert;
+    #my %cols = $module->get_columns;
+    #say dump( \%cols );
+
+    $self->index_module( $file );
+
+    push @{ $self->es_inserts }, \%pod_insert;
 
     return 1;
 
@@ -281,15 +314,13 @@ sub parse_pod {
 sub index_dist {
 
     my $self      = shift;
-    my $module    = $self->metadata;
+    my $module    = $self->module;
     my $dist_name = $module->distvname;
     $dist_name =~ s{\-\d.*}{}g;
 
-    my $data = { name => $dist_name };
-    my @cols = (
-        'download_url', 'archive', 'release_date', 'version',
-        'pauseid',      'distvname'
-    );
+    my $data = { name => $dist_name, author => $module->pauseid };
+    my @cols = ( 'download_url', 'archive', 'release_date', 'version',
+        'distvname' );
 
     foreach my $col ( @cols ) {
         $data->{$col} = $module->$col;
@@ -308,23 +339,75 @@ sub index_dist {
 
 }
 
-sub _build_files {
+sub index_module {
 
-    my $self = shift;
-    my $tar  = $self->tar;
+    my $self      = shift;
+    my $file      = shift;
+    my $module    = $self->module;
+    my $dist_name = $module->distvname;
+    $dist_name =~ s{\-\d.*}{}g;
+    my $module_name = $self->file2mod( $file );
 
-    eval { $tar->read( $self->archive_path ) };
-    if ( $@ ) {
-        warn $@;
-        return [];
+    my $src_url = sprintf( 'http://api.metacpan.org:5000/source/%s/%s/%s',
+        $module->pauseid, $module->distvname, $module->file );
+
+    my $data = {
+        name       => $module_name,
+        source_url => $src_url,
+        distname   => $dist_name,
+        author     => $module->pauseid,
+    };
+    my @cols
+        = ( 'download_url', 'archive', 'release_date', 'version', 'distvname',
+        );
+
+    foreach my $col ( @cols ) {
+        $data->{$col} = $module->$col;
     }
 
-    my @files = $tar->list_files;
+    my %es_insert = (
+        index => {
+            index => 'cpan',
+            type  => 'module',
+            id    => $module_name,
+            data  => $data,
+        }
+    );
+
+    #say dump( \%es_insert );
+
+    push @{ $self->es_inserts }, \%es_insert;
+
+}
+
+sub _build_files {
+
+    my $self  = shift;
+    my @files = ();
+
+    if ( $self->tar_class eq 'Archive::Tar' ) {
+        my $tar = $self->tar;
+        eval { $tar->read( $self->archive_path ) };
+        if ( $@ ) {
+            warn $@;
+            return {};
+        }
+
+        @files = $tar->list_files;
+    }
+
+    else {
+        for my $entry ( @{ $self->tar_wrapper->list_all() } ) {
+            my ( $tar_path, $real_path ) = @$entry;
+            push @files, $tar_path;
+        }
+    }
+
     my %files = ();
-    $self->archive_parent( $self->metadata->distvname . '/' );
+    $self->archive_parent( $self->module->distvname . '/' );
 
     if ( $self->debug ) {
-        my %cols = $self->metadata->get_columns;
+        my %cols = $self->module->get_columns;
         say dump( \%cols ) if $self->debug;
     }
 
@@ -387,6 +470,18 @@ sub _build_tar {
 
 }
 
+sub _build_tar_wrapper {
+
+    my $self = shift;
+    my $arch = Archive::Tar::Wrapper->new();
+
+    $arch->read( $self->archive_path );
+
+    $arch->list_reset();
+    return $arch;
+
+}
+
 sub _build_pm_name {
     my $self = shift;
     return $self->_module_root . '.pm';
@@ -399,7 +494,7 @@ sub _build_pod_name {
 
 sub _module_root {
     my $self = shift;
-    my @module_parts = split( "::", $self->metadata->name );
+    my @module_parts = split( "::", $self->module->name );
     return pop( @module_parts );
 }
 

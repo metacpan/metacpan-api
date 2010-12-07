@@ -2,18 +2,18 @@ package MetaCPAN::Role::Common;
 
 use Moose::Role;
 
+has 'cpan' => (
+    is         => 'rw',
+    isa        => 'Str',
+    lazy_build => 1,
+);
+
 has 'debug' => (
     is         => 'rw',
     lazy_build => 1,
 );
 
 has 'es' => ( is => 'rw', lazy_build => 1 );
-
-has 'minicpan' => (
-    is         => 'rw',
-    isa        => 'Str',
-    lazy_build => 1,
-);
 
 sub file2mod {
 
@@ -34,17 +34,10 @@ sub _build_debug {
 
 }
 
-sub _build_minicpan {
-
-    my $self = shift;
-    return $ENV{'MINICPAN'} || "$ENV{'HOME'}/minicpan";
-
-}
-
 sub _build_cpan {
 
     my $self = shift;
-    return $self->_build_minicpan( shift );
+    return $ENV{'MINICPAN'} || "$ENV{'HOME'}/minicpan";
 
 }
 
@@ -52,7 +45,7 @@ sub _build_es {
 
     my $e = ElasticSearch->new(
         servers   => 'localhost:9200',
-        transport => 'httplite',         # default 'http'
+        transport => 'http',         # default 'http'
                                          #trace_calls => 'log_file',
     );
 
