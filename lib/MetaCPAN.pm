@@ -2,6 +2,7 @@ package MetaCPAN;
 
 use Modern::Perl;
 use Moose;
+with 'MooseX::Getopt';
 
 with 'MetaCPAN::Role::Common';
 with 'MetaCPAN::Role::DB';
@@ -18,8 +19,8 @@ use MetaCPAN::Dist;
 use MetaCPAN::Schema;
 
 has 'cpan' => (
-    is  => 'rw',
-    isa => 'Str',
+    is         => 'rw',
+    isa        => 'Str',
     lazy_build => 1,
 );
 
@@ -27,6 +28,11 @@ has 'db_path' => (
     is      => 'rw',
     isa     => 'Str',
     default => '../CPAN-meta.sqlite',
+);
+
+has 'dist_name' => (
+    is => 'rw',
+    isa => 'Str',
 );
 
 has 'module_rs' => (
@@ -42,6 +48,12 @@ has 'pkg_index' => (
     is         => 'rw',
     isa        => 'HashRef',
     lazy_build => 1,
+);
+
+has 'refresh_db' => (
+    is      => 'rw',
+    isa     => 'Bool',
+    default => 0,
 );
 
 sub open_pkg_index {
@@ -96,15 +108,16 @@ sub dist {
     my $name = shift;
     $name =~ s{::}{-}g;
 
-    return MetaCPAN::Dist->new( name => $name,
-        module_rs => $self->module_rs );
+    return MetaCPAN::Dist->new(
+        name      => $name,
+        module_rs => $self->module_rs
+    );
 
 }
 
 sub populate {
 
-    my $self = shift;
-
+    my $self  = shift;
     my $index = $self->pkg_index;
     my $count = 0;
     my $every = 999;
@@ -152,6 +165,21 @@ sub pkg_datestamp {
     my $dist_file = "/home/cpan/CPAN/authors/id/$archive";
     my $date      = ( stat( $dist_file ) )[9];
     return DateTime::Format::Epoch::Unix->parse_datetime( $date )->iso8601;
+
+}
+
+sub check_db {
+
+    my $self = shift;
+    return if !$self->refresh_db;
+
+    say "resetting db" if $self->debug;
+    
+    my $dbh = $self->schema->storage->dbh;
+    $dbh->do( "DELETE FROM module" );
+    $dbh->do( "VACUUM" );
+
+    return $self->populate
 
 }
 

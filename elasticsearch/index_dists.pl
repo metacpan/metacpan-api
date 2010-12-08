@@ -11,16 +11,22 @@ my $t_begin = [gettimeofday];
 
 my $attempts = 0;
 my $every    = 20;
-my $cpan     = MetaCPAN->new;
+my $cpan     = MetaCPAN->new_with_options;
+$cpan->check_db;
+
 $cpan->debug( $ENV{'DEBUG'} );
 
-my @dists = @ARGV;
-@ARGV = ();
+my @dists = ();
 
 my $total_dists = 1;
+say $cpan->dist_name;
 
-if ( scalar @dists == 1 && $dists[0] =~ m{%} ) {
-    @dists = search_dists( { name => { like => $dists[0] } } );
+if ( $cpan->dist_name && $cpan->dist_name =~ m{\%} ) {
+    @dists = search_dists( { name => { like => $cpan->dist_name } } );
+}
+
+elsif ( $cpan->dist_name ) {
+    @dists = ( $cpan->dist_name );
 }
 
 elsif ( scalar @dists == 0 ) {
@@ -82,9 +88,6 @@ sub search_dists {
 
     my $search = $cpan->module_rs->search( $constraints,
         { columns => ['dist'], distinct => 1, order_by => 'dist ASC' } );
-
-    say dump( $constraints );
-    exit;
     
     $total_dists = $search->count;
     my @dists = ( );
