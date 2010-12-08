@@ -380,9 +380,9 @@ sub index_module {
 
 }
 
-sub _build_files {
-
-    my $self  = shift;
+sub get_files {
+    
+    my $self = shift;
     my @files = ();
 
     if ( $self->tar_class eq 'Archive::Tar' ) {
@@ -402,25 +402,24 @@ sub _build_files {
             push @files, $tar_path;
         }
     }
+    
+    return \@files;
+    
+}
 
+sub _build_files {
+
+    my $self  = shift;
+    my $files = $self->get_files;
+    my @files = @{$files};
     my %files = ();
-    $self->archive_parent( $self->module->distvname . '/' );
+    
+    $self->set_archive_parent( $files );
 
     if ( $self->debug ) {
         my %cols = $self->module->get_columns;
         say dump( \%cols ) if $self->debug;
     }
-
-    if ( @files ) {
-
-        # some dists expand to: ./AFS-2.6.2/src/Utils/Utils.pm
-        if ( $files[0] =~ m{\A\.\/} ) {
-            my $parent = $self->archive_parent;
-            $self->archive_parent( './' . $parent );
-        }
-    }
-
-    say "parent " . ":" x 20 . $self->archive_parent if $self->debug;
 
     foreach my $file ( @files ) {
         if ( $file =~ m{\.(pod|pm)\z}i ) {
@@ -496,6 +495,34 @@ sub _module_root {
     my $self = shift;
     my @module_parts = split( "::", $self->module->name );
     return pop( @module_parts );
+}
+
+sub set_archive_parent {
+    
+    my $self = shift;
+    my $files = shift;
+    
+    # is there one parent folder for all files?
+    my %parent = ( );
+    foreach my $file ( @{$files} ) {
+        my @parts = split "/", $files->[0];
+        my $top = shift @parts;
+
+        # some dists expand to: ./AFS-2.6.2/src/Utils/Utils.pm
+        $top .= '/' . shift @parts if ( $top eq '.' );
+        $parent{$top} = 1;
+    }
+
+    my @folders = keys %parent;
+    
+    if ( scalar @folders == 1 ) {
+        $self->archive_parent( $folders[0] . '/' ); 
+    }
+
+    say "parent " . ":" x 20 . $self->archive_parent if $self->debug;
+
+    return;
+    
 }
 
 1;
