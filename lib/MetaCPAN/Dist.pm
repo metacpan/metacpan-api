@@ -348,7 +348,7 @@ sub index_module {
     my $dist_name = $module->distvname;
     $dist_name =~ s{\-\d.*}{}g;
 
-    my $src_url = sprintf( 'http://api.metacpan.org:5000/source/%s/%s/%s',
+    my $src_url = sprintf( 'http://search.metacpan.org/source/%s/%s/%s',
         $module->pauseid, $module->distvname, $module->file );
 
     my $data = {
@@ -390,7 +390,7 @@ sub get_files {
         eval { $tar->read( $self->archive_path ) };
         if ( $@ ) {
             warn $@;
-            return {};
+            return [];
         }
 
         @files = $tar->list_files;
@@ -412,6 +412,8 @@ sub _build_files {
     my $self  = shift;
     my $files = $self->get_files;
     my @files = @{$files};
+    return {} if scalar @files == 0;
+    
     my %files = ();
     
     $self->set_archive_parent( $files );
