@@ -11,7 +11,7 @@ use Path::Class qw(file);
 sub call {
     my ( $self, $env ) = @_;
 
-    if ( $env->{REQUEST_URI} =~ m{\A/source/(\w*)/([^\/\?]*)/(.*)} ) {
+    if ( $env->{REQUEST_URI} =~ m{\A/source/(\w*)/([^\/\?]*)/([^\?]*)} ) {
         my $new_path = $self->file_path( $1, $2, $3 );
         $env->{PATH_INFO} = $new_path if $new_path;
     }
