@@ -21,15 +21,18 @@ my @dists = ();
 my $total_dists = 1;
 say $cpan->dist_name;
 
-if ( $cpan->dist_name && $cpan->dist_name =~ m{\%} ) {
-    @dists = search_dists( { name => { like => $cpan->dist_name } } );
+if ( $cpan->dist_like ) {
+    say "searching for dists like: " . $cpan->dist_like;
+    @dists = search_dists( { dist => { like => $cpan->dist_like, '!=' => undef, } } );
 }
 
 elsif ( $cpan->dist_name ) {
+    say "searching for dist: " . $cpan->dist_name;
     @dists = ( $cpan->dist_name );
 }
 
-elsif ( scalar @dists == 0 ) {
+else {
+    say "search all dists";
     @dists = search_dists();
 }
 
