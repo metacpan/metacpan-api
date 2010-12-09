@@ -35,6 +35,11 @@ has 'dist_name' => (
     isa => 'Str',
 );
 
+has 'dist_like' => (
+    is => 'rw',
+    isa => 'Str',    
+);
+
 has 'module_rs' => (
     is      => 'rw',
     default => sub {
