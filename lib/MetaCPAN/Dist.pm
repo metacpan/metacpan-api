@@ -206,7 +206,18 @@ sub process_cookbooks {
         next if ( $file !~ m{\Alib(.*)\.pod\z} );
 
         my $module_name = $self->file2mod( $file );
-
+        
+        # update ->module for each cookbook file.  otherwise it gets indexed
+        # under the wrong module name
+        my %cols = $self->module->get_columns;
+        delete $cols{xhtml_pod};
+        delete $cols{id};
+        $cols{name} = $module_name;
+        $cols{file} = $file;
+ 
+        $self->module( $self->module_rs->find_or_create(\%cols) );
+        my %new_cols = $self->module->get_columns;
+        
         my $success = $self->parse_pod( $module_name, $file );
         say '=' x 20 . "cookbook ok: " . $file if $self->debug;
     }

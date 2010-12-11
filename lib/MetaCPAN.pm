@@ -40,15 +40,6 @@ has 'dist_like' => (
     isa => 'Str',    
 );
 
-has 'module_rs' => (
-    is      => 'rw',
-    default => sub {
-        my $self = shift;
-        return my $rs
-            = $self->schema->resultset( 'MetaCPAN::Schema::Result::Module' );
-    },
-);
-
 has 'pkg_index' => (
     is         => 'rw',
     isa        => 'HashRef',
