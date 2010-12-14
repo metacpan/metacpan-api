@@ -16,7 +16,6 @@ use Data::Dump qw( dump );
 use HTML::Entities;
 use IO::File;
 use Path::Class::File;
-use Perl::Tidy;
 
 sub start_L {
     my ( $self, $flags ) = @_;
