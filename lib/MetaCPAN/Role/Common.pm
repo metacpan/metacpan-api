@@ -37,7 +37,11 @@ sub _build_debug {
 sub _build_cpan {
 
     my $self = shift;
-    return $ENV{'MINICPAN'} || "$ENV{'HOME'}/minicpan";
+    my @dirs = ( "$ENV{'HOME'}/CPAN", "$ENV{'HOME'}/minicpan", $ENV{'MINICPAN'} );
+    foreach my $dir ( @dirs ) {
+        return $dir if -d $dir;
+    }
+    return;
 
 }
 
