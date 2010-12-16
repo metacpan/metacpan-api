@@ -17,7 +17,8 @@ must first be inserted into the SQLite db.
 
 
 # start with a clean db
-my $cpan = MetaCPAN->new();
+my $refresh = 0;
+my $cpan = MetaCPAN->new( refresh_db => $refresh);
 $cpan->check_db;
 
 $| = 1;

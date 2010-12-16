@@ -1,12 +1,5 @@
 package MetaCPAN::Pod::XHTML;
 
-=head2 SYNOPSIS
-
-We need to mess with the POD links a bit so that everything will work with
-relative rather than absolute URLs.
-
-=cut
-
 use Moose;
 
 extends 'Pod::Simple::XHTML';
@@ -46,3 +39,21 @@ sub end_Verbatim {
 }
 
 1;
+
+=pod
+
+=head2 start_L
+
+Add the "moduleLink" class to any hrefs which link directly to module docs.
+
+=head2 start_Verbatim
+
+Override default behaviour by doing nothing.
+
+=head2 end_Verbatim
+
+Wrap code snippets in <pre> tags for easier syntax highlighting.
+
+=cut
+
+

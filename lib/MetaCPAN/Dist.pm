@@ -72,25 +72,12 @@ sub _build_path {
     return $self->meta->archive;
 }
 
-=head2 archive_path
-
-Full file path to module archive.
-
-=cut
-
 sub archive_path {
 
     my $self = shift;
     return $self->cpan . "/authors/id/" . $self->module->archive;
 
 }
-
-=head2 process
-
-Do the heavy lifting here.  First take an educated guess at where the module
-should be.  After that, look at every available file to find a match.
-
-=cut
 
 sub process {
 
@@ -166,20 +153,6 @@ MODULE:
 
 }
 
-=head2 modules
-
-We only care about modules which are in the very latest version of the distro.
-For example, the minicpan (and CPAN) indices, show something like this:
-
-Moose::Meta::Attribute::Native     1.17  D/DR/DROLSKY/Moose-1.17.tar.gz
-Moose::Meta::Attribute::Native::MethodProvider::Array 1.14  D/DR/DROLSKY/Moose-1.14.tar.gz
-
-We don't care about modules which are no longer included in the latest
-distribution, so we'll only import POD from the highest version number of any
-distro we're searching on.
-
-=cut
-
 sub modules {
 
     my $self = shift;
@@ -194,19 +167,6 @@ sub modules {
     return $self->module_rs->search( { distvname => $latest->distvname } );
 
 }
-
-=head2 process_cookbooks
-
-Because manuals and cookbook pages don't appear in the minicpan index, they
-were passed over previous to 1.0.2
-
-This should be run on any files left over in the distribution.
-
-Distributions which have .pod files outside of lib folders will be skipped,
-since there's often no clear way of discerning which modules (if any) those
-docs explicitly pertain to.
-
-=cut
 
 sub process_cookbooks {
 
@@ -399,7 +359,6 @@ sub index_module {
     );
 
     #say dump( \%es_insert );
-
     push @{ $self->es_inserts }, \%es_insert;
 
 }
@@ -552,3 +511,43 @@ sub set_archive_parent {
 }
 
 1;
+
+=pod
+
+=head2 archive_path
+
+Full file path to module archive.
+
+=head2 modules
+
+We only care about modules which are in the very latest version of the distro.
+For example, the minicpan (and CPAN) indices, show something like this:
+
+Moose::Meta::Attribute::Native     1.17  D/DR/DROLSKY/Moose-1.17.tar.gz
+Moose::Meta::Attribute::Native::MethodProvider::Array 1.14  D/DR/DROLSKY/Moose-1.14.tar.gz
+
+We don't care about modules which are no longer included in the latest
+distribution, so we'll only import POD from the highest version number of any
+distro we're searching on.
+
+=cut
+
+=head2 process
+
+Do the heavy lifting here.  First take an educated guess at where the module
+should be.  After that, look at every available file to find a match.
+
+=head2 process_cookbooks
+
+Because manuals and cookbook pages don't appear in the minicpan index, they
+were passed over previous to 1.0.2
+
+This should be run on any files left over in the distribution.
+
+Distributions which have .pod files outside of lib folders will be skipped,
+since there's often no clear way of discerning which modules (if any) those
+docs explicitly pertain to.
+
+=cut
+
+

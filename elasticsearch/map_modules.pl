@@ -25,20 +25,23 @@ sub put_mapping {
         type  => 'module',
     );
 
+#exit(0);
     my $result = $es->put_mapping(
         index => ['cpan'],
         type  => 'module',
 
         #_source => { compress => 1 },
         properties => {
-            archive      => { type => "string" },
-            pauseid      => { type => "string" },
-            dist         => { type => "string" },
-            distvname    => { type => "string" },
-            download_url => { type => "string" },
-            name         => { type => "string" },
-            release_date => { type => "date" },
-            version      => { type => "string" },
+            archive        => { type => "string" },
+            author         => { type => "string" },
+            distname       => { type => "string" },
+            distsearchname => { type => "string", index => "not_analyzed" },
+            distvname      => { type => "string" },
+            download_url   => { type => "string" },
+            name           => { type => "string" },
+            release_date   => { type => "date" },
+            source_url     => { type => "string" },
+            version        => { type => "string" },
         }
     );
 
