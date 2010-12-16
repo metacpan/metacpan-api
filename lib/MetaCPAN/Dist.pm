@@ -2,6 +2,7 @@ package MetaCPAN::Dist;
 
 use Archive::Tar;
 use Archive::Tar::Wrapper;
+use Devel::SimpleTrace;
 use File::Slurp;
 use Moose;
 use MooseX::Getopt;
@@ -43,6 +44,12 @@ has 'name' => (
 has 'pm_name' => (
     is         => 'rw',
     lazy_build => 1,
+);
+
+has 'processed' => (
+    is => 'rw',
+    isa => 'ArrayRef',
+    default => sub{ [] },
 );
 
 has 'tar' => (
@@ -109,30 +116,34 @@ MODULE:
 
         # take an educated guess at the correct file before we go through the
         # entire list
+        # some dists (like BioPerl, have no lib folder)
 
-        my $base_guess = 'lib/' . $found->name;
-        $base_guess =~ s{::}{/}g;
-
-        foreach my $extension ( '.pm', '.pod' ) {
-            my $guess = $base_guess . $extension;
-            say "*" x 10 . " about to guess: $guess" if $self->debug;
-            if ( $self->parse_pod( $found->name, $guess ) ) {
-                say "*" x 10 . " found guess: $guess" if $self->debug;
-                ++$success;
-                next MODULE;
-            }
-
+        foreach my $source_folder ( 'lib/', '' ) {
+            my $base_guess = $source_folder . $found->name;
+            $base_guess =~ s{::}{/}g;
+    
+            foreach my $extension ( '.pm', '.pod' ) {
+                my $guess = $base_guess . $extension;
+                say "*" x 10 . " about to guess: $guess" if $self->debug;
+                if ( $self->parse_pod( $found->name, $guess ) ) {
+                    say "*" x 10 . " found guess: $guess" if $self->debug;
+                    ++$success;
+                    next MODULE;
+                }
+    
+            }            
         }
 
-    FILE:
-        foreach my $file ( sort keys %{ $self->files } ) {
-            say "checking files: $file " if $self->debug;
-            next FILE if !$self->parse_pod( $found->name, $file );
 
-            say "found: $file ";
-            ++$success;
-            next MODULE;
-        }
+    #FILE:
+    #    foreach my $file ( sort keys %{ $self->files } ) {
+    #        say "checking files: $file " if $self->debug;
+    #        next FILE if !$self->parse_pod( $found->name, $file );
+    #
+    #        say "found: $file ";
+    #        ++$success;
+    #        next MODULE;
+    #    }
 
     }
 
@@ -266,9 +277,6 @@ sub get_content {
     }
 
     say "got pod ok: $filename ";
-    # if this line is uncommented some pod, like Dancer docs gets skipped
-    #delete $self->files->{$filename};
-
     return $content;
 
 }
@@ -318,6 +326,11 @@ sub parse_pod {
     $self->index_module( $file );
 
     push @{ $self->es_inserts }, \%pod_insert;
+    
+    # if this line is uncommented some pod, like Dancer docs gets skipped
+    delete $self->files->{$file};
+    push @{$self->processed}, $file;
+    #say '9'x70 . $self->files->{$filename};
 
     return 1;
 

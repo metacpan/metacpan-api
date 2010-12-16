@@ -46,6 +46,7 @@ say "Entire process took $t_elapsed";
 sub process_dist {
 
     my $dist_name = shift;
+#    next if $dist_name eq 'Bio-Perl'; # this dist is messed
     my $t0        = [gettimeofday];
 
     say '+' x 20 . " DIST: $dist_name" if $cpan->debug;
@@ -54,6 +55,7 @@ sub process_dist {
     $dist->module_rs( $cpan->module_rs );
     $dist->process;
 
+    say "Found " . scalar @{ $dist->processed } . " modules in dist";
     $dist->tar->clear if $dist->tar;
     $dist = undef;
     
