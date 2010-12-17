@@ -18,6 +18,11 @@ with 'MetaCPAN::Role::DB';
 
 has 'archive_parent' => ( is => 'rw', );
 
+has 'distvname' => (
+    is         => 'rw',
+    required   => 1,
+);
+
 has 'es_inserts' => (
     is      => 'rw',
     isa     => 'ArrayRef',
@@ -84,9 +89,7 @@ sub process {
     my $self    = shift;
     my $success = 0;
 
-    #return 0 if !$self->tar;
-
-    my $module_rs = $self->module_rs->search({ dist => $self->name });
+    my $module_rs = $self->module_rs->search({ distvname => $self->distvname });
 
     my @modules = ();
     while ( my $found = $module_rs->next ) {
@@ -121,22 +124,10 @@ MODULE:
             }            
         }
 
-
-    #FILE:
-    #    foreach my $file ( sort keys %{ $self->files } ) {
-    #        say "checking files: $file " if $self->debug;
-    #        next FILE if !$self->parse_pod( $found->name, $file );
-    #
-    #        say "found: $file ";
-    #        ++$success;
-    #        next MODULE;
-    #    }
-
     }
 
-    $self->process_cookbooks;
-
     $self->index_dist;
+    $self->process_cookbooks;
 
     if ( $self->es_inserts ) {
         my $result = $self->es->bulk( $self->es_inserts );
@@ -150,21 +141,6 @@ MODULE:
     $self->tar->clear if $self->tar;
 
     return;
-
-}
-
-sub modules {
-
-    my $self = shift;
-    my $name = $self->name;
-    $name =~ s{::}{-}g;
-    $self->name( $name );
-
-    # I'm sure there is a better way of doing this (GROUP BY?)
-    my $latest = $self->module_rs->search( { dist => $self->name },
-        { order_by => 'distvname DESC' } )->first;
-
-    return $self->module_rs->search( { distvname => $latest->distvname } );
 
 }
 
@@ -267,7 +243,7 @@ sub parse_pod {
     $parser->output_string( \$xhtml );
     $parser->parse_string_document( $content );
 
-    $module->xhtml_pod( $xhtml );
+    #$module->xhtml_pod( $xhtml );
     $module->file( $file );
     $module->update;
 
@@ -429,7 +405,7 @@ sub _build_files {
 sub _build_metadata {
 
     my $self = shift;
-    return $self->module_rs->search( { dist => $self->name } )->first;
+    return $self->module_rs->search( { distvname => $self->distvname } )->first;
 
 }
 
@@ -514,11 +490,7 @@ sub set_archive_parent {
 
 =pod
 
-=head2 archive_path
-
-Full file path to module archive.
-
-=head2 modules
+=head1 SYNOPSIS
 
 We only care about modules which are in the very latest version of the distro.
 For example, the minicpan (and CPAN) indices, show something like this:
@@ -529,6 +501,10 @@ Moose::Meta::Attribute::Native::MethodProvider::Array 1.14  D/DR/DROLSKY/Moose-1
 We don't care about modules which are no longer included in the latest
 distribution, so we'll only import POD from the highest version number of any
 distro we're searching on.
+
+=head2 archive_path
+
+Full file path to module archive.
 
 =cut
 

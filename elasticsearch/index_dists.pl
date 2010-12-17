@@ -5,6 +5,7 @@ use Data::Dump qw( dump );
 use Every;
 use Find::Lib '../lib';
 use MetaCPAN;
+use MetaCPAN::Dist;
 use Time::HiRes qw( gettimeofday tv_interval );
 
 my $t_begin = [gettimeofday];
@@ -28,14 +29,14 @@ if ( $cpan->dist_like ) {
 
 elsif ( $cpan->dist_name ) {
     say "searching for dist: " . $cpan->dist_name;
-    @dists = ( $cpan->dist_name );
+    @dists = search_dists( { dist => $cpan->dist_name } );
 }
 
 else {
     say "search all dists";
     @dists = search_dists();
 }
-
+say dump( \@dists);
 foreach my $dist ( @dists ) {
     process_dist( $dist );
 }
@@ -45,14 +46,12 @@ say "Entire process took $t_elapsed";
 
 sub process_dist {
 
-    my $dist_name = shift;
-#    next if $dist_name eq 'Bio-Perl'; # this dist is messed
+    my $distvname = shift;
     my $t0        = [gettimeofday];
 
-    say '+' x 20 . " DIST: $dist_name" if $cpan->debug;
+    say '+' x 20 . " DIST: $distvname" if $cpan->debug;
 
-    my $dist = $cpan->dist( $dist_name );
-    $dist->module_rs( $cpan->module_rs );
+    my $dist = MetaCPAN::Dist->new( distvname => $distvname, module_rs => $cpan->module_rs );
     $dist->process;
 
     say "Found " . scalar @{ $dist->processed } . " modules in dist";
@@ -68,7 +67,7 @@ sub process_dist {
         my $elapsed   = tv_interval( $t_begin, [gettimeofday] );
         say '#' x 78;
     
-        say "$dist_name";    # if $icpan->debug;
+        say "$distvname";    # if $icpan->debug;
         say "$iter_time to process dist";
         say "$elapsed so far... ($attempts dists out of $total_dists)";
 
@@ -88,21 +87,27 @@ sub process_dist {
 }
 
 sub search_dists {
-    
+
     my $constraints = shift || {};
 
-    my $search = $cpan->module_rs->search( $constraints,
-        { columns => ['dist'], distinct => 1, order_by => 'dist ASC' } );
-    
-    $total_dists = $search->count;
-    my @dists = ( );
+    my $search = $cpan->module_rs->search(
+        $constraints,
+        {   +select  => 'distvname',
+            columns  => ['dist'],
+            distinct => 1,
+            order_by => 'distvname DESC',
+            rows     => 1
+        }
+    );
 
+    my @dists = ();
     while ( my $row = $search->next ) {
-        push @dists, $row->dist;
+        push @dists, $row->distvname;
     }
-    
+
     say "found $total_dists distros";
 
     return @dists;
-    
+
 }
+

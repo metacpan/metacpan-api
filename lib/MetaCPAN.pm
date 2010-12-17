@@ -30,6 +30,11 @@ has 'db_path' => (
     default => '../CPAN-meta.sqlite',
 );
 
+has 'distvname' => (
+    is => 'rw',
+    isa => 'Str',
+);
+
 has 'dist_name' => (
     is => 'rw',
     isa => 'Str',
@@ -101,12 +106,9 @@ LINE:
 sub dist {
 
     my $self = shift;
-    my $name = shift;
-    $name =~ s{::}{-}g;
 
     return MetaCPAN::Dist->new(
-        name      => $name,
-        module_rs => $self->module_rs
+        distvname => $self->distvname,
     );
 
 }

@@ -21,8 +21,7 @@ has 'module_rs' => (
     is      => 'rw',
     default => sub {
         my $self = shift;
-        return my $rs
-            = $self->schema->resultset( 'MetaCPAN::Schema::Result::Module' );
+        return my $rs = $self->schema->resultset( 'Module' );
     },
 );
 
