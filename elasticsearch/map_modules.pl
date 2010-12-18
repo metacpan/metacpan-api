@@ -9,14 +9,13 @@ Rework module mappings.
 use Modern::Perl;
 
 use Data::Dump qw( dump );
-use Find::Lib '../lib', '../../iCPAN/perl/lib';
+use Find::Lib '../lib';
 use MetaCPAN;
 
 my $metacpan = MetaCPAN->new();
 my $es       = $metacpan->es;
 
 put_mapping();
-
 
 sub put_mapping {
 
@@ -25,7 +24,6 @@ sub put_mapping {
         type  => 'module',
     );
 
-#exit(0);
     my $result = $es->put_mapping(
         index => ['cpan'],
         type  => 'module',
@@ -35,7 +33,6 @@ sub put_mapping {
             archive        => { type => "string" },
             author         => { type => "string" },
             distname       => { type => "string" },
-            distsearchname => { type => "string", index => "not_analyzed" },
             distvname      => { type => "string" },
             download_url   => { type => "string" },
             name           => { type => "string" },
@@ -44,8 +41,6 @@ sub put_mapping {
             version        => { type => "string" },
         }
     );
-
-    say dump $result;
 
 }
 

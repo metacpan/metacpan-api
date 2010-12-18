@@ -88,7 +88,6 @@ sub process {
 
     my $self    = shift;
     my $success = 0;
-
     my $module_rs = $self->module_rs->search({ distvname => $self->distvname });
 
     my @modules = ();
@@ -131,6 +130,7 @@ MODULE:
 
     if ( $self->es_inserts ) {
         my $result = $self->es->bulk( $self->es_inserts );
+        #say dump( $self->es_inserts );
     }
 
     elsif ( $self->debug ) {
@@ -266,7 +266,6 @@ sub parse_pod {
     # if this line is uncommented some pod, like Dancer docs gets skipped
     delete $self->files->{$file};
     push @{$self->processed}, $file;
-    #say '9'x70 . $self->files->{$filename};
 
     return 1;
 

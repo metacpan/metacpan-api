@@ -17,27 +17,27 @@ $cpan->check_db;
 
 $cpan->debug( $ENV{'DEBUG'} );
 
-my @dists = ();
+my $dists = [];
 
 my $total_dists = 1;
 say $cpan->dist_name;
 
 if ( $cpan->dist_like ) {
     say "searching for dists like: " . $cpan->dist_like;
-    @dists = search_dists( { dist => { like => $cpan->dist_like, '!=' => undef, } } );
+    $dists = search_dists( { dist => { like => $cpan->dist_like, '!=' => undef, } } );
 }
 
 elsif ( $cpan->dist_name ) {
     say "searching for dist: " . $cpan->dist_name;
-    @dists = search_dists( { dist => $cpan->dist_name } );
+    $dists = search_dists( { dist => $cpan->dist_name } );
 }
 
 else {
     say "search all dists";
-    @dists = search_dists();
+    $dists = search_dists();
 }
-say dump( \@dists);
-foreach my $dist ( @dists ) {
+
+foreach my $dist ( @{$dists} ) {
     process_dist( $dist );
 }
 
@@ -92,22 +92,23 @@ sub search_dists {
 
     my $search = $cpan->module_rs->search(
         $constraints,
-        {   +select  => 'distvname',
-            columns  => ['dist'],
+        {   +select  => ['distvname', 'dist',],
             distinct => 1,
-            order_by => 'distvname DESC',
-            rows     => 1
+            order_by => 'distvname ASC',
         }
     );
-
-    my @dists = ();
+      
+    my %dist = ( );
     while ( my $row = $search->next ) {
-        push @dists, $row->distvname;
+        $dist{ $row->dist } = $row->distvname;
     }
 
+    my @dists = sort values %dist;
+
+    $total_dists = scalar @dists;
     say "found $total_dists distros";
 
-    return @dists;
+    return \@dists;
 
 }
 
