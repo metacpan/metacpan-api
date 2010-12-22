@@ -29,14 +29,15 @@
     "blog_feed": "http://blogs.perl.org/users/olaf_alders/atom.xml"
   },
   "SARTAK": {
-    "blog_feed": "http://blog.sartak.org/feeds/posts/default"
+    "blog_feed": "http://blog.sartak.org/feeds/posts/default",
     "blog_url": "http://blog.sartak.org",
     "github_username": "sartak",
     "irc_nick": "sartak",
     "linkedin_public_profile": "http://www.linkedin.com/in/sartak",
+    "openid": "http://sartak.org",
     "perlmonks_username": "sartak",
     "stackoverflow_public_profile": "http://stackoverflow.com/users/290913/sartak",
     "twitter_username": "sartak",
-    "website": "http://sartak.org",
+    "website": "http://sartak.org"
   }
 }
