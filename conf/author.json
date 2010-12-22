@@ -27,9 +27,9 @@
     "twitter_username": "wundercounter",
     "blog_url": "http://blogs.perl.org/users/olaf_alders/",
     "blog_feed": "http://blogs.perl.org/users/olaf_alders/atom.xml"
-  }
+  },
 	"BDFOY": {
-	"accepts_donations": 1,
+	"accepts_donations": "1",
 	"paypal_address": "brian.d.foy@gmail.com",
 	"country": "US",
 	"region": "IL",
@@ -57,7 +57,7 @@
 		"0596009968",
 		"0596520107",
 		"0596101058"
-		]
+		],
 	"blog_url": [
 		"http://blogs.perl.org/users/brian_d_foy/",
 		"http://www.effectiveperlprogramming.com/",
