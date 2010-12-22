@@ -27,5 +27,11 @@
     "twitter_username": "wundercounter",
     "blog_url": "http://blogs.perl.org/users/olaf_alders/",
     "blog_feed": "http://blogs.perl.org/users/olaf_alders/atom.xml"
+  },
+  "XSAWYERX": {
+    "irc_nick": "xsawyerx",
+    "github_username": "xsawyerx",
+    "blog_url": "http://blogs.perl.org/users/sawyer_x/",
+    "blog_feed": "http://blogs.perl.org/users/sawyer_x/atom.xml"
   }
 }
