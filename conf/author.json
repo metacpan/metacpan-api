@@ -27,5 +27,16 @@
     "twitter_username": "wundercounter",
     "blog_url": "http://blogs.perl.org/users/olaf_alders/",
     "blog_feed": "http://blogs.perl.org/users/olaf_alders/atom.xml"
+  },
+  "HMA": {
+    "github_username": "hma",
+    "perlmonks_username": "hma",
+    "openid": "https://hma.myopenid.com/",
+    "delicious_username": "manske",
+    "facebook_public_profile": "http://www.facebook.com/people/Henning-Manske/606746249",
+    "slideshare_username": "manske",
+    "country": "DE",
+    "region": "DE-SH",
+    "city": "Kiel"
   }
 }
