@@ -12,6 +12,11 @@ a new field to your own author.json file, please also add it to
 conf/author.json so it's easier for everyone to find. Use ARRAYs where you
 feel it's appropriate.
 
-Once you've completed your file, please check your syntax. :)
+For a current list of all fields used by other authors, have a look at
+conf/USEDFIELDS.txt  You can also update this file:
+
+perl bin/get_fields.pl > conf/USEDFIELDS.txt
+
+Once you've completed your own author file, please check your syntax. :)
 
 perl bin/check_json.pl conf/authors/B/BD/BDFOY/author.json
