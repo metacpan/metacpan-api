@@ -28,6 +28,7 @@
     "blog_url": "http://blogs.perl.org/users/olaf_alders/",
     "blog_feed": "http://blogs.perl.org/users/olaf_alders/atom.xml"
   },
+<<<<<<< HEAD
   "DMAKI": {
     "website": "http://mt.endeworks.jp/d-6/",
     "irc_nick": "lestrrat",
@@ -74,5 +75,16 @@
     "stackoverflow_public_profile": "http://stackoverflow.com/users/290913/sartak",
     "twitter_username": "sartak",
     "website": "http://sartak.org"
+   },
+  "HMA": {
+    "github_username": "hma",
+    "perlmonks_username": "hma",
+    "openid": "https://hma.myopenid.com/",
+    "delicious_username": "manske",
+    "facebook_public_profile": "http://www.facebook.com/people/Henning-Manske/606746249",
+    "slideshare_username": "manske",
+    "country": "DE",
+    "region": "DE-SH",
+    "city": "Kiel"
   }
 }
