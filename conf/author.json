@@ -42,7 +42,7 @@
     "facebook_public_profile": "http://www.facebook.com/rbo.openserv.org",
     "irc_nick": "rbo",
     "github_username": "rbo"
-  }
+  },
   "RENEEB": {
     "blog_feed": "http://reneeb-perlblog.blogspot.com/feeds/posts/default",
     "blog_url": "http://reneeb-perlblog.blogspot.com",
@@ -56,5 +56,11 @@
     "irc_nick" : "reneeb",
     "perlmonks_username" : "reneeb",
     "country": "Germany"
+  },
+  "XSAWYERX": {
+    "irc_nick": "xsawyerx",
+    "github_username": "xsawyerx",
+    "blog_url": "http://blogs.perl.org/users/sawyer_x/",
+    "blog_feed": "http://blogs.perl.org/users/sawyer_x/atom.xml"
   }
 }
