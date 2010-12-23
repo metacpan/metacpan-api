@@ -1,90 +1,51 @@
 {
-  "IONCACHE": {
-    "github_username": "ioncache",
-    "linkedin_public_profile": "http://ca.linkedin.com/in/mjubenville",
-    "perlmonks_username": "ioncache",
-    "stackoverflow_public_profile": "http://stackoverflow.com/users/525975/ioncache",
-    "irc_nick": "ioncache",
-    "twitter_username": "ioncache"
-  },
-  "FREW": {
-    "blog_feed": "http://feeds.feedburner.com/AFoolishManifesto",
-    "blog_url": "http://blog.afoolishmanifesto.com",
-    "github_username": "frioux",
-    "irc_nick": "frew",
-    "perlmonks_username": "frew",
-    "stackoverflow_public_profile": "http://stackoverflow.com/users/12448/frew",
-    "twitter_username": "frioux",
-    "website": "http://afoolishmanifesto.com"
-  },
-  "OALDERS": {
-    "website": "http://www.wundersolutions.com",
-    "irc_nick": "oalders",
-    "github_username": "oalders",
-    "linkedin_public_profile": "http://ca.linkedin.com/in/olafalders",
-    "stackoverflow_public_profile": "http://stackoverflow.com/users/406224/oalders",
-    "perlmonks_username": "oalders",
-    "twitter_username": "wundercounter",
-    "blog_url": "http://blogs.perl.org/users/olaf_alders/",
-    "blog_feed": "http://blogs.perl.org/users/olaf_alders/atom.xml"
-  },
-<<<<<<< HEAD
-  "DMAKI": {
-    "website": "http://mt.endeworks.jp/d-6/",
-    "irc_nick": "lestrrat",
-    "github_username": "lestrrat",
-    "twitter_username": "lestrrat",
-    "blog_url": "http://mt.endeworks.jp/d-6/",
-    "blog_feed": "http://mt.endeworks.jp/d-6/atom.xml"
-  },
-  "RBO": {
-    "blog_url": "http://openserv.org/blog/",
-    "blog_feed": "http://openserv.org/blog/atom.xml",
+"BDFOY": {
+	"accepts_donations": "1",
+	"paypal_address": "brian.d.foy@gmail.com",
+	"country": "US",
+	"region": "IL",
+	"city": "Chicago",
+	"website": [ 
+		"http://www.pair.com/comdog",
+		"http://about.me/brian_d_foy"    
+		],
+	"email": [
+		"brian.d.foy@gmail.com",
+		"bdfoy@cpan.org"
+		],
+    "delicious_username": "manske",
     "facebook_public_profile": "http://www.facebook.com/rbo.openserv.org",
-    "irc_nick": "rbo",
-    "github_username": "rbo"
-  },
-  "RENEEB": {
-    "blog_feed": "http://reneeb-perlblog.blogspot.com/feeds/posts/default",
-    "blog_url": "http://reneeb-perlblog.blogspot.com",
-    "github_username": "reneeb",
-    "website": "http://perl-magazin.de",
-    "linkedin_public_profile": "http://de.linkedin.com/in/reneebaecker",
+	"github_username": "briandfoy",
+	"linkedin_public_profile": "http://www.linkedin.com/in/briandfoy",
+    "openid": "http://sartak.org",
+	"stackoverflow_public_profile": "http://stackoverflow.com/users/8817/brian-d-foy",
     "perlmongers" : "Frankfurt.pm",
     "perlmongers_url" : "http://frankfurt.perlmongers.de",
-    "twitter_username" : "reneeb_perl",
+	"perlmonks_username": "brian_d_foy",
+	"twitter_username": "briandfoy_perl",
+	"slideshare_url": "http://www.slideshare.net/brian_d_foy/",
     "slideshare_username" : "reneebperl",
-    "irc_nick" : "reneeb",
-    "perlmonks_username" : "reneeb",
-    "country": "Germany"
-  },
-  "XSAWYERX": {
-    "irc_nick": "xsawyerx",
-    "github_username": "xsawyerx",
-    "blog_url": "http://blogs.perl.org/users/sawyer_x/",
-    "blog_feed": "http://blogs.perl.org/users/sawyer_x/atom.xml"
-  },
-   "SARTAK": {
-    "blog_feed": "http://blog.sartak.org/feeds/posts/default",
-    "blog_url": "http://blog.sartak.org",
-    "github_username": "sartak",
-    "irc_nick": "sartak",
-    "linkedin_public_profile": "http://www.linkedin.com/in/sartak",
-    "openid": "http://sartak.org",
-    "perlmonks_username": "sartak",
-    "stackoverflow_public_profile": "http://stackoverflow.com/users/290913/sartak",
-    "twitter_username": "sartak",
-    "website": "http://sartak.org"
-   },
-  "HMA": {
-    "github_username": "hma",
-    "perlmonks_username": "hma",
-    "openid": "https://hma.myopenid.com/",
-    "delicious_username": "manske",
-    "facebook_public_profile": "http://www.facebook.com/people/Henning-Manske/606746249",
-    "slideshare_username": "manske",
-    "country": "DE",
-    "region": "DE-SH",
-    "city": "Kiel"
-  }
+	"amazon_author_profile": "http://www.amazon.com/brian-d-foy/e/B002MRC39U",
+	"oreilly_author_profile": "http://www.oreillynet.com/pub/au/1071",
+	"books": [
+		"0596527241",
+		"0321496949",
+		"0596102062",
+		"0596009968",
+		"0596520107",
+		"0596101058"
+		],
+	"blog_url": [
+		"http://blogs.perl.org/users/brian_d_foy/",
+		"http://www.effectiveperlprogramming.com/",
+		"http://use.perl.org/~brian_d_foy/journal/"
+		],
+	"blog_feed": [
+		"http://blogs.perl.org/users/brian_d_foy/atom.xml",
+		"http://www.effectiveperlprogramming.com/feed",
+		"http://use.perl.org/~brian_d_foy/journal/rss"
+		],
+	"cats": [ "Buster", "Mimi" ]
+	}
 }
+
