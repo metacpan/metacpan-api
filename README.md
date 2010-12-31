@@ -20,6 +20,12 @@ You are encouraged to add your own custom fields. Have a look at [this short
 article](http://blogs.perl.org/users/olaf_alders/2010/12/expanding-your-author-info-in-the-metacpan.html)
 on how to expand your author info:
 
+Contributing:
+-------------
+
+This project currently has very few committers. If you'd like to get involved,
+please join our mailing list (see below) and let us know what you'd like to
+start working on.
 
 http://search.metacpan.org
 --------------------------
