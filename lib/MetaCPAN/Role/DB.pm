@@ -19,10 +19,7 @@ has 'dsn' => (
 
 has 'module_rs' => (
     is      => 'rw',
-    default => sub {
-        my $self = shift;
-        return my $rs = $self->schema->resultset( 'Module' );
-    },
+    lazy_build => 1,
 );
 
 has 'schema' => (
@@ -55,6 +52,13 @@ sub _build_db_file {
 
     return $db_file;
 
+}
+
+sub _build_module_rs {
+    
+    my $self = shift;
+    return my $rs = $self->schema->resultset( 'Module' );
+    
 }
 
 sub _build_schema {

@@ -9,10 +9,11 @@ Loads author info into db.
 =cut
 
 use Modern::Perl;
+use Data::Dump qw( dump );
 use Find::Lib '../lib';
 use MetaCPAN::Author;
 
-use MetaCPAN;
 my $author = MetaCPAN::Author->new;
 
-$author->index_authors;
+my $result = $author->index_authors;
+#say dump( $result );
