@@ -34,6 +34,8 @@ has 'files' => (
     lazy_build => 1,
 );
 
+has 'module' => ( is => 'rw', isa => 'MetaCPAN::Schema::Result::Module' );
+
 has 'module_rs' => ( is => 'rw' );
 
 has 'pm_name' => (
