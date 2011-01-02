@@ -56,3 +56,11 @@ sub _build_es {
 }
 
 1;
+
+=pod
+
+=head1 SYNOPSIS
+
+Roles which should be available to all modules
+
+=cut

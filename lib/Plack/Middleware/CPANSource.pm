@@ -57,6 +57,10 @@ sub file_path {
 
 =pod
 
+=head2 call
+
+Plack::Middleware callback
+
 =head2 file_path( $pauseid, $distvname, $file )
 
     print $self->file_path( 'Plack-Middleware-HTMLify-0.1.1', 'I/IO/IONCACHE/Plack-Middleware-HTMLify-0.1.1.tar.gz', 'lib/Plack/Middleware/HTMLify.pm' );

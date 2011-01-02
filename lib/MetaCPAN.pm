@@ -182,3 +182,25 @@ sub check_db {
 }
 
 1;
+
+=pod
+
+=head2 check_db
+
+=head2 dist
+
+Returns a MetaCPAN::Dist object.  Requires distvname() to have been set.
+
+=head2 pkg_datestamp
+
+Returns the file creation date for a distribution.
+
+=head2 open_pkg_index
+
+Returns an IO::Uncompress::AnyInflate object
+
+=head2 populate
+
+Populates the SQLite database
+
+=cut

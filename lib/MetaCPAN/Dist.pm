@@ -12,7 +12,6 @@ use Try::Tiny;
 
 use MetaCPAN::Pod::XHTML;
 
-with 'MetaCPAN::Role::Author';
 with 'MetaCPAN::Role::Common';
 with 'MetaCPAN::Role::DB';
 
@@ -29,22 +28,13 @@ has 'es_inserts' => (
     default => sub { return [] },
 );
 
-has 'file' => ( is => 'rw', );
-
 has 'files' => (
     is         => 'ro',
     isa        => "HashRef",
     lazy_build => 1,
 );
 
-has 'module' => ( is => 'rw', isa => 'MetaCPAN::Schema::Result::Module' );
-
 has 'module_rs' => ( is => 'rw' );
-
-has 'name' => (
-    is         => 'rw',
-    lazy_build => 1,
-);
 
 has 'pm_name' => (
     is         => 'rw',
@@ -72,10 +62,6 @@ has 'tar_wrapper' => (
     lazy_build => 1,
 );
 
-sub _build_path {
-    my $self = shift;
-    return $self->meta->archive;
-}
 
 sub archive_path {
 
@@ -114,7 +100,7 @@ MODULE:
             foreach my $extension ( '.pm', '.pod' ) {
                 my $guess = $base_guess . $extension;
                 say "*" x 10 . " about to guess: $guess" if $self->debug;
-                if ( $self->parse_pod( $found->name, $guess ) ) {
+                if ( $self->index_pod( $found->name, $guess ) ) {
                     say "*" x 10 . " found guess: $guess" if $self->debug;
                     ++$success;
                     next MODULE;
@@ -134,7 +120,7 @@ MODULE:
     }
 
     elsif ( $self->debug ) {
-        warn $self->name . " no success" . "!" x 20;
+        warn " no success" . "!" x 20;
         return;
     }
 
@@ -165,7 +151,7 @@ sub process_cookbooks {
         $self->module( $self->module_rs->find_or_create(\%cols) );
         my %new_cols = $self->module->get_columns;
         
-        my $success = $self->parse_pod( $module_name, $file );
+        my $success = $self->index_pod( $module_name, $file );
         say '=' x 20 . "cookbook ok: " . $file if $self->debug;
     }
 
@@ -217,7 +203,7 @@ sub get_content {
 
 }
 
-sub parse_pod {
+sub index_pod {
 
     my $self        = shift;
     my $module_name = shift;
@@ -408,6 +394,21 @@ sub _build_metadata {
 
 }
 
+sub _build_path {
+    my $self = shift;
+    return $self->meta->archive;
+}
+
+sub _build_pod_name {
+    my $self = shift;
+    return $self->_module_root . '.pod';
+}
+
+sub _build_pm_name {
+    my $self = shift;
+    return $self->_module_root . '.pm';
+}
+
 sub _build_tar {
 
     my $self = shift;
@@ -439,16 +440,6 @@ sub _build_tar_wrapper {
     $arch->list_reset();
     return $arch;
 
-}
-
-sub _build_pm_name {
-    my $self = shift;
-    return $self->_module_root . '.pm';
-}
-
-sub _build_pod_name {
-    my $self = shift;
-    return $self->_module_root . '.pod';
 }
 
 sub _module_root {
@@ -505,7 +496,46 @@ distro we're searching on.
 
 Full file path to module archive.
 
-=cut
+=head2 distvname
+
+The distvname of the dist which you'd like to index.  eg: Moose-1.21
+
+=head2 es_inserts
+
+An ARRAYREF of data to insert/update in the ElasticSearch index.  Since bulk
+inserts are significantly faster, it's to our advantage to push all insert
+data onto this array and then handle all of the changes at once.
+
+=head2 files
+
+A HASHREF of files which may contain modules or POD.  This list ignores files
+which obviously aren't helpful to us.
+
+=head2 get_content
+
+Returns the contents of a file in the dist
+
+=head2 get_files
+
+Returns an ARRAYREF of all files in the dist
+
+=head2 index_dist
+
+Sets up the ES insert for this dist
+
+=head2 index_module
+
+Sets up the ES insert for a module.  Will be called once for each module or
+POD file contained in the dist.
+
+=head2 index_pod
+
+Sets up the ES insert for the POD. Will be called once for each module or
+POD file contained in the dist.
+
+=head2 module_rs
+
+A shortcut for getting a resultset of modules listed in the SQLite db
 
 =head2 process
 
@@ -522,6 +552,25 @@ This should be run on any files left over in the distribution.
 Distributions which have .pod files outside of lib folders will be skipped,
 since there's often no clear way of discerning which modules (if any) those
 docs explicitly pertain to.
+
+=head2 set_archive_parent
+
+The folder name of the top level of the archive is not always predictable.
+This method tries to find the correct name.
+
+=head2 tar
+
+Returns an Archive::Tar object
+
+=head2 tar_class( 'Archive::Tar|Archive::Tar::Wrapper' )
+
+Choose the module you'd like to use for unarchiving. Archive::Tar unzips into
+memory while Archive::Tar::Wrapper unzips to disk. Defaults to Archive::Tar,
+which is much faster.
+
+=head2 tar_wrapper
+
+Returns an Archive::Tar::Wrapper object
 
 =cut
 

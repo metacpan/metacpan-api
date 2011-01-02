@@ -10,3 +10,11 @@ __PACKAGE__->naming('current');
 __PACKAGE__->use_namespaces(1);
 
 1;
+
+=pod
+
+=head1 SYNOPSIS
+
+Autoload schema for SQLite db
+
+=cut

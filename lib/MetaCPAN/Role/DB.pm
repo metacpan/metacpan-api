@@ -72,3 +72,11 @@ sub _build_schema {
 }
 
 1;
+
+=pod
+
+=head1 SYNOPSIS
+
+Roles useful for accessing SQLite db
+
+=cut

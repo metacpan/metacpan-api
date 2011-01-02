@@ -11,5 +11,3 @@ my $cpan = MetaCPAN->new;
 
 my $dist = $cpan->dist( 'Moose' );
 isa_ok( $dist, 'MetaCPAN::Dist' );
-
-ok ( $dist->module_rs->count, "got some modules" );
