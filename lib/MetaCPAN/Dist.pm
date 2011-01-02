@@ -224,6 +224,7 @@ sub index_pod {
     $parser->html_header( '' );
     $parser->html_footer( '' );
     $parser->perldoc_url_prefix( '' );
+    $parser->no_errata_section( 1 );
 
     my $xhtml = "";
     $parser->output_string( \$xhtml );
