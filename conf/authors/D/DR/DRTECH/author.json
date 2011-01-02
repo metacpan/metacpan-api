@@ -1,0 +1,14 @@
+{
+  "DRTECH": {
+    "blog_feed": "http://blogs.perl.org/users/clinton_gormley/atom.xml",
+    "blog_url": "http://blogs.perl.org/users/clinton_gormley",
+    "github_username": "clintongormley",
+    "irc_nick": "clinton",
+    "perlmonks_username": "clintong",
+    "twitter_username": "clintongormley",
+    "city": "Barcelona",
+    "country": "ES",
+    "email": "drtech@cpan.org"
+  }
+}
+
