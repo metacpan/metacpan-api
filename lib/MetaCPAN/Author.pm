@@ -31,6 +31,7 @@ sub index_authors {
     my $self      = shift;
     my @authors   = ();
     my $author_fh = $self->author_fh;
+    my @results   = ();
 
     while ( my $line = $author_fh->getline() ) {
 
@@ -55,26 +56,25 @@ sub index_authors {
                 $author = merge( $author, $conf );
             }
 
-            my %es_insert = (
-                index => {
-                    index => 'cpan',
-                    type  => 'author',
-                    id    => $pauseid,
-                    data  => $author,
-                }
+            my %update = ( 
+                index => 'cpan',
+                type  => 'author',
+                id    => $pauseid,
+                data  => $author,
             );
 
-            push @authors, \%es_insert;
-            #if ( $pauseid eq 'OALDERS' ) {
-            #    say dump( $conf );
-            #    #exit;
-            #    last;
-            #}
+            push @results, $metacpan->es->index( %update );
+            #say dump( $result );
+            #say dump( \%update );
+            #my %es_insert = (
+            #    index => $insert 
+            #);
 
         }
     }
 
-    return $metacpan->es->bulk( \@authors );
+    #return $metacpan->es->bulk( \@authors );
+    return \@results;
 
 }
 
@@ -89,6 +89,12 @@ sub author_config {
 
     my $json = JSON::DWIW->new;
     my ( $authors, $error_msg ) = $json->from_json_file( $file, {} );
+
+    if ( $error_msg ) {
+        warn "problem with $file: $error_msg";
+        return {};
+    }
+
     my $conf = $authors->{$pauseid};
 
     # uncomment this when search.metacpan can deal with lists in values

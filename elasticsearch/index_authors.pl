@@ -14,6 +14,7 @@ use Find::Lib '../lib';
 use MetaCPAN::Author;
 
 my $author = MetaCPAN::Author->new;
-
 my $result = $author->index_authors;
 #say dump( $result );
+
+$author->es->refresh_index( index => 'cpan' );
