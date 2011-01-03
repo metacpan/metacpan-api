@@ -98,12 +98,12 @@ sub author_config {
     my $conf = $authors->{$pauseid};
 
     # uncomment this when search.metacpan can deal with lists in values
-    #my @lists = qw( website email books blog_url blog_feed cats dogs );
-    #foreach my $key ( @lists ) {
-    #    if ( exists $conf->{$key} && reftype( $conf->{$key} ) ne 'ARRAY' ) {
-    #        $conf->{$key} = [ $conf->{$key} ];
-    #    }
-    #}
+    my @lists = qw( website email books blog_url blog_feed cats dogs );
+    foreach my $key ( @lists ) {
+        if ( exists $conf->{$key} && reftype( $conf->{$key} ) ne 'ARRAY' ) {
+            $conf->{$key} = [ $conf->{$key} ];
+        }
+    }
 
     return $conf;
 
