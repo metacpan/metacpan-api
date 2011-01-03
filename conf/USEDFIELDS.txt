@@ -7,6 +7,7 @@ cats
 city
 country
 delicious_username
+dogs
 email
 facebook_public_profile
 github_username
@@ -24,3 +25,4 @@ slideshare_username
 stackoverflow_public_profile
 twitter_username
 website
+youtube_channel_url

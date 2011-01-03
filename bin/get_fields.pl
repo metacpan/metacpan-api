@@ -13,7 +13,7 @@ my @files       = File::Find::Rule->file->name( '*.json' )->in( $author_dir );
 my %fields;
 
 foreach my $file ( @files ) {
-    print "Processing $file";
+    warn "Processing $file";
     my $hash;
 	
     eval { 
