@@ -2,13 +2,15 @@ package MetaCPAN::Dist;
 
 use Archive::Tar;
 use Archive::Tar::Wrapper;
+use Data::Dump qw( dump );
 use Devel::SimpleTrace;
 use File::Slurp;
 use Moose;
 use MooseX::Getopt;
 use Modern::Perl;
-use Data::Dump qw( dump );
 use Try::Tiny;
+use WWW::Mechanize::Cached;
+use YAML;
 
 use MetaCPAN::Pod::XHTML;
 
@@ -34,6 +36,7 @@ has 'files' => (
     lazy_build => 1,
 );
 
+has 'mech' => ( is => 'rw', lazy_build => 1 );
 has 'module' => ( is => 'rw', isa => 'MetaCPAN::Schema::Result::Module' );
 
 has 'module_rs' => ( is => 'rw' );
@@ -266,8 +269,17 @@ sub index_dist {
     my $module    = $self->module;
     my $dist_name = $module->distvname;
     $dist_name =~ s{\-\d.*}{}g;
-
+    
     my $data = { name => $dist_name, author => $module->pauseid };
+
+    my $res = $self->mech->get( $self->source_url('META.yml') );
+    
+    if ( $res->code == 200 ) {
+        # wrap this in some flavour of eval?
+        my $meta_yml = Load( $res->content );
+        $data->{meta_yml} = $meta_yml;
+    }
+    
     my @cols = ( 'download_url', 'archive', 'release_date', 'version',
         'distvname' );
 
@@ -296,8 +308,7 @@ sub index_module {
     my $dist_name = $module->distvname;
     $dist_name =~ s{\-\d.*}{}g;
 
-    my $src_url = sprintf( 'http://search.metacpan.org/source/%s/%s/%s',
-        $module->pauseid, $module->distvname, $module->file );
+    my $src_url = $self->source_url( $module->file );
 
     my $data = {
         name       => $module->name,
@@ -390,6 +401,13 @@ sub _build_files {
 
 }
 
+sub _build_mech {
+    
+    my $self = shift;
+    return WWW::Mechanize::Cached->new( autocheck => 0 );
+    
+}
+
 sub _build_metadata {
 
     my $self = shift;
@@ -476,6 +494,15 @@ sub set_archive_parent {
     say "parent " . ":" x 20 . $self->archive_parent if $self->debug;
 
     return;
+    
+}
+
+sub source_url {
+    
+    my $self = shift;
+    my $file = shift;
+    return sprintf( 'http://search.metacpan.org/source/%s/%s/%s',
+        $self->module->pauseid, $self->module->distvname, $file );
     
 }
 
