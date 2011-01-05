@@ -8,6 +8,7 @@ use File::Slurp;
 use Moose;
 use MooseX::Getopt;
 use Modern::Perl;
+use Pod::POM;
 use Try::Tiny;
 use WWW::Mechanize::Cached;
 use YAML;
@@ -164,6 +165,24 @@ sub process_cookbooks {
 
 }
 
+sub get_abstract {
+    
+    my $self = shift;
+    my $parser = Pod::POM->new;    
+    my $pom = $parser->parse_text( shift ) || return;
+    
+    foreach my $s ( @{ $pom->head1 } ) {
+        if ( $s->title eq 'NAME' ) {
+            my $content = $s->content;
+            $content =~ s{\A.*\-\s}{};
+            $content =~ s{\s*\z}{};
+            return $content;
+        }
+    }
+    
+    return;    
+}
+
 sub get_content {
 
     my $self        = shift;
@@ -251,7 +270,8 @@ sub index_pod {
     #my %cols = $module->get_columns;
     #say dump( \%cols );
 
-    $self->index_module( $file );
+    my $abstract = $self->get_abstract( $content );
+    $self->index_module( $file, $abstract );
 
     push @{ $self->es_inserts }, \%pod_insert;
     
@@ -304,6 +324,7 @@ sub index_module {
 
     my $self      = shift;
     my $file      = shift;
+    my $abstract  = shift;
     my $module    = $self->module;
     my $dist_name = $module->distvname;
     $dist_name =~ s{\-\d.*}{}g;
@@ -323,6 +344,8 @@ sub index_module {
     foreach my $col ( @cols ) {
         $data->{$col} = $module->$col;
     }
+    
+    $data->{abstract} = $abstract if $abstract;
 
     my %es_insert = (
         index => {
@@ -333,7 +356,7 @@ sub index_module {
         }
     );
 
-    #say dump( \%es_insert );
+    say dump( \%es_insert );
     push @{ $self->es_inserts }, \%es_insert;
 
 }
