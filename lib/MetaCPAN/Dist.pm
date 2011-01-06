@@ -20,6 +20,8 @@ with 'MetaCPAN::Role::DB';
 
 has 'archive_parent' => ( is => 'rw', );
 
+has 'dist_name' => ( is => 'rw',  );
+
 has 'distvname' => (
     is         => 'rw',
     required   => 1,
@@ -37,6 +39,7 @@ has 'files' => (
     lazy_build => 1,
 );
 
+has 'max_bulk' => ( is => 'rw', default => 10 );
 has 'mech' => ( is => 'rw', lazy_build => 1 );
 has 'module' => ( is => 'rw', isa => 'MetaCPAN::Schema::Result::Module' );
 
@@ -68,6 +71,7 @@ has 'tar_wrapper' => (
     lazy_build => 1,
 );
 
+has 'update_only' => ( is => 'rw', default => 1 );
 
 sub archive_path {
 
@@ -80,6 +84,13 @@ sub process {
 
     my $self    = shift;
     my $success = 0;
+    
+    # skip dists already in the index
+    if ( $self->update_only && $self->is_indexed ) {
+        say '-'x200 . 'skipped: ' . $self->distvname;
+        return;
+    }
+        
     my $module_rs = $self->module_rs->search({ distvname => $self->distvname });
 
     my @modules = ();
@@ -117,12 +128,13 @@ MODULE:
 
     }
 
-    $self->index_dist;
     $self->process_cookbooks;
+    $self->index_dist;
 
     if ( $self->es_inserts ) {
+       #$self->es->transport->JSON->convert_blessed(1); 
         my $result = $self->es->bulk( $self->es_inserts );
-        #say dump( $self->es_inserts );
+        #say dump( $result );
     }
 
     elsif ( $self->debug ) {
@@ -163,6 +175,22 @@ sub process_cookbooks {
 
     return;
 
+}
+
+sub push_inserts {
+    
+    my $self = shift;
+    my $inserts = shift;
+    
+    push @{$self->es_inserts}, @{$inserts};
+    if ( scalar @{$self->es_inserts } > $self->max_bulk ) {
+        my $result = $self->es->bulk( $self->es_inserts );
+        say dump( $result );
+        $self->es_inserts([]);
+    }
+    
+    return;
+    
 }
 
 sub get_abstract {
@@ -273,7 +301,7 @@ sub index_pod {
     my $abstract = $self->get_abstract( $content );
     $self->index_module( $file, $abstract );
 
-    push @{ $self->es_inserts }, \%pod_insert;
+    $self->push_inserts([ \%pod_insert ]);
     
     # if this line is uncommented some pod, like Dancer docs gets skipped
     delete $self->files->{$file};
@@ -287,19 +315,29 @@ sub index_dist {
 
     my $self      = shift;
     my $module    = $self->module;
-    my $dist_name = $module->distvname;
-    $dist_name =~ s{\-\d.*}{}g;
-    
-    my $data = { name => $dist_name, author => $module->pauseid };
 
-    my $res = $self->mech->get( $self->source_url('META.yml') );
-    
+    my $data = { name => $self->dist_name, author => $module->pauseid };
+    my $res = $self->mech->get( $self->source_url( 'META.yml' ) );
+
     if ( $res->code == 200 ) {
-        # wrap this in some flavour of eval?
-        my $meta_yml = Load( $res->content );
-        $data->{meta_yml} = $meta_yml;
+
+        # some meta files are missing a trailing newline
+        my $meta_yml = try { Load( $res->content . "\n" ) } catch {undef};
+
+        if ( exists $meta_yml->{provides} ) {
+            foreach my $key ( keys %{ $meta_yml->{provides} } ) {
+                if ( exists $meta_yml->{provides}->{$key}->{version} ) {
+                    $meta_yml->{provides}->{$key}->{version} .= '';
+                }
+            }
+        }
+        if ( exists $meta_yml->{version} ) {
+            $meta_yml->{version} .= '';
+        }
+        $data->{meta_yml} = $meta_yml if $meta_yml;
+
     }
-    
+
     my @cols = ( 'download_url', 'archive', 'release_date', 'version',
         'distvname' );
 
@@ -307,18 +345,23 @@ sub index_dist {
         $data->{$col} = $module->$col;
     }
 
+    #say dump( $data );
+
     my %es_insert = (
         index => {
             index => 'cpan',
             type  => 'dist',
-            id    => $dist_name,
+            id    => $self->dist_name,
             data  => $data,
         }
     );
 
-    push @{ $self->es_inserts }, \%es_insert;
+    $self->push_inserts( [ \%es_insert ] );
+
+    return;
 
 }
+
 
 sub index_module {
 
@@ -357,7 +400,7 @@ sub index_module {
     );
 
     say dump( \%es_insert );
-    push @{ $self->es_inserts }, \%es_insert;
+    $self->push_inserts([ \%es_insert ]);
 
 }
 
@@ -385,6 +428,28 @@ sub get_files {
     }
     
     return \@files;
+    
+}
+
+sub is_indexed {
+    
+    my $self = shift;
+    my $success = 0;
+    say "looking for " . $self->dist_name;
+    my $get = try {
+        $self->es->get(
+            index => 'cpan',
+            type => 'dist',
+            id   => $self->dist_name,
+        );   
+    };
+    
+    if ( $get->{_source}->{distvname} eq $self->distvname ) {
+        return 1;
+    }
+    #say dump( $get );
+
+    return $success;
     
 }
 
