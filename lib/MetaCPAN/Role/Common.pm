@@ -49,7 +49,8 @@ sub _build_es {
 
     my $e = ElasticSearch->new(
         servers   => 'localhost:9200',
-        transport => 'http',         # default 'http'
+        transport => 'httplite',         # default 'http'
+        timeout   => 300,
                                          #trace_calls => 'log_file',
     );
 
