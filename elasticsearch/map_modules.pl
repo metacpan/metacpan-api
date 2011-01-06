@@ -30,6 +30,7 @@ sub put_mapping {
 
         #_source => { compress => 1 },
         properties => {
+            abstract       => { type => "string" },
             archive        => { type => "string" },
             author         => { type => "string" },
             distname       => { type => "string" },

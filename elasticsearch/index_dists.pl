@@ -24,7 +24,8 @@ say $cpan->dist_name;
 
 if ( $cpan->dist_like ) {
     say "searching for dists like: " . $cpan->dist_like;
-    $dists = search_dists( { dist => { like => $cpan->dist_like, '!=' => undef, } } );
+    $dists = search_dists(
+        { dist => { like => $cpan->dist_like, '!=' => undef, } } );
 }
 
 elsif ( $cpan->dist_name ) {
@@ -37,7 +38,9 @@ else {
     $dists = search_dists();
 }
 
-foreach my $dist ( @{$dists} ) {
+my %reverse = reverse %{$dists};
+
+foreach my $dist ( sort values %{$dists} ) {
     process_dist( $dist );
 }
 
@@ -51,22 +54,28 @@ sub process_dist {
 
     say '+' x 20 . " DIST: $distvname" if $cpan->debug;
 
-    my $dist = MetaCPAN::Dist->new( distvname => $distvname, module_rs => $cpan->module_rs );
+    my $dist = MetaCPAN::Dist->new(
+        distvname => $distvname,
+        dist_name => $reverse{$distvname},
+        module_rs => $cpan->module_rs
+    );
+
     $dist->process;
 
     say "Found " . scalar @{ $dist->processed } . " modules in dist";
-    $dist->tar->clear if $dist->tar;
+
+    #$dist->tar->clear if $dist->tar;
     $dist = undef;
-    
+
     ++$attempts;
-    
+
     # diagnostics
     if ( every( $every ) ) {
 
         my $iter_time = tv_interval( $t0,      [gettimeofday] );
         my $elapsed   = tv_interval( $t_begin, [gettimeofday] );
         say '#' x 78;
-    
+
         say "$distvname";    # if $icpan->debug;
         say "$iter_time to process dist";
         say "$elapsed so far... ($attempts dists out of $total_dists)";
@@ -81,7 +90,6 @@ sub process_dist {
 
     }
 
-
     return;
 
 }
@@ -92,23 +100,19 @@ sub search_dists {
 
     my $search = $cpan->module_rs->search(
         $constraints,
-        {   +select  => ['distvname', 'dist',],
+        {   +select  => [ 'distvname', 'dist', ],
             distinct => 1,
             order_by => 'distvname ASC',
         }
     );
-      
-    my %dist = ( );
+
+    my %dist = ();
     while ( my $row = $search->next ) {
         $dist{ $row->dist } = $row->distvname;
     }
+    say "found " . scalar (keys %dist) . " dists";
 
-    my @dists = sort values %dist;
-
-    $total_dists = scalar @dists;
-    say "found $total_dists distros";
-
-    return \@dists;
+    return \%dist;
 
 }
 
