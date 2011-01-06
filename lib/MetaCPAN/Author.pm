@@ -48,7 +48,7 @@ sub index_authors {
                 author_dir   => "id/$dir",
                 name         => $name,
                 email        => $email,
-                gravatar_url => gravatar_url( email => $email ),
+                gravatar_url => gravatar_url( email => lc($pauseid) . '@cpan.org' ),
             };
 
             my $conf = $self->author_config( $pauseid, $dir );
