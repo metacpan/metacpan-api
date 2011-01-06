@@ -100,7 +100,11 @@ sub author_config {
     # uncomment this when search.metacpan can deal with lists in values
     my @lists = qw( website email books blog_url blog_feed cats dogs );
     foreach my $key ( @lists ) {
-        if ( exists $conf->{$key} && reftype( $conf->{$key} ) ne 'ARRAY' ) {
+        if (exists $conf->{$key}
+            && (  !reftype( $conf->{$key} )
+                || reftype( $conf->{$key} ) ne 'ARRAY' )
+            )
+        {
             $conf->{$key} = [ $conf->{$key} ];
         }
     }
@@ -108,6 +112,8 @@ sub author_config {
     return $conf;
 
 }
+
+
 
 sub _build_author_fh {
 
