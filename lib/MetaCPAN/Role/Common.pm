@@ -50,8 +50,8 @@ sub _build_es {
     my $e = ElasticSearch->new(
         servers   => 'localhost:9200',
         transport => 'httplite',         # default 'http'
-        timeout   => 300,
-                                         #trace_calls => 'log_file',
+        timeout   => 30,
+        #trace_calls => 'log_file',
     );
 
 }

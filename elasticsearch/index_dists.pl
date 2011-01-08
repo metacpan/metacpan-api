@@ -1,5 +1,20 @@
 #!/usr/bin/env perl
 
+=head1 SYNOPSIS
+
+    # overwrite existing dists
+    perl index_dists --reindex
+
+    # index only new dists
+    perl index_dists --noreindex
+        or
+    perl index_dists
+    
+    # re-index one dist
+    perl index_dists --reindex Moose
+    
+=cut
+
 use Modern::Perl;
 use Data::Dump qw( dump );
 use Every;
@@ -17,9 +32,8 @@ $cpan->check_db;
 
 $cpan->debug( $ENV{'DEBUG'} );
 
-my $dists = [];
+my $dists = {};
 
-my $total_dists = 1;
 say $cpan->dist_name;
 
 if ( $cpan->dist_like ) {
@@ -39,6 +53,7 @@ else {
 }
 
 my %reverse = reverse %{$dists};
+my $total_dists = scalar keys %reverse;
 
 foreach my $dist ( sort values %{$dists} ) {
     process_dist( $dist );
@@ -57,9 +72,9 @@ sub process_dist {
     my $dist = MetaCPAN::Dist->new(
         distvname => $distvname,
         dist_name => $reverse{$distvname},
-        module_rs => $cpan->module_rs
+        module_rs => $cpan->module_rs,
+        reindex => $cpan->reindex,
     );
-
     $dist->process;
 
     say "Found " . scalar @{ $dist->processed } . " modules in dist";

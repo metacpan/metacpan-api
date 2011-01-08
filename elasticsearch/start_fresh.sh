@@ -2,7 +2,7 @@
 
 perl delete_index.pl cpan
 perl create_index.pl cpan
-perl map_modules.pl
+perl put_mappings.pl
 perl index_authors.pl
 perl index_cpanratings.pl
 perl index_dists.pl --refresh_db

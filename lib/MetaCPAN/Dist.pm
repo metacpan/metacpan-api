@@ -8,10 +8,14 @@ use File::Slurp;
 use Moose;
 use MooseX::Getopt;
 use Modern::Perl;
+
+#use Parse::CPAN::Meta qw( load_yaml_string );
 use Pod::POM;
 use Try::Tiny;
 use WWW::Mechanize::Cached;
 use YAML;
+
+with 'MooseX::Getopt';
 
 use MetaCPAN::Pod::XHTML;
 
@@ -20,11 +24,11 @@ with 'MetaCPAN::Role::DB';
 
 has 'archive_parent' => ( is => 'rw', );
 
-has 'dist_name' => ( is => 'rw',  );
+has 'dist_name' => ( is => 'rw', required => 1, );
 
 has 'distvname' => (
-    is         => 'rw',
-    required   => 1,
+    is       => 'rw',
+    required => 1,
 );
 
 has 'es_inserts' => (
@@ -39,8 +43,8 @@ has 'files' => (
     lazy_build => 1,
 );
 
-has 'max_bulk' => ( is => 'rw', default => 10 );
-has 'mech' => ( is => 'rw', lazy_build => 1 );
+has 'max_bulk' => ( is => 'rw', default    => 50 );
+has 'mech'     => ( is => 'rw', lazy_build => 1 );
 has 'module' => ( is => 'rw', isa => 'MetaCPAN::Schema::Result::Module' );
 
 has 'module_rs' => ( is => 'rw' );
@@ -51,9 +55,15 @@ has 'pm_name' => (
 );
 
 has 'processed' => (
-    is => 'rw',
-    isa => 'ArrayRef',
-    default => sub{ [] },
+    is      => 'rw',
+    isa     => 'ArrayRef',
+    default => sub { [] },
+);
+
+has 'reindex' => (
+    is      => 'rw',
+    isa     => 'Bool',
+    default => 1,
 );
 
 has 'tar' => (
@@ -71,8 +81,6 @@ has 'tar_wrapper' => (
     lazy_build => 1,
 );
 
-has 'update_only' => ( is => 'rw', default => 1 );
-
 sub archive_path {
 
     my $self = shift;
@@ -84,14 +92,17 @@ sub process {
 
     my $self    = shift;
     my $success = 0;
-    
+
+    say "reindex? " . $self->reindex;
+
     # skip dists already in the index
-    if ( $self->update_only && $self->is_indexed ) {
-        say '-'x200 . 'skipped: ' . $self->distvname;
+    if ( !$self->reindex && $self->is_indexed ) {
+        say '-' x 200 . 'skipped: ' . $self->distvname;
         return;
     }
-        
-    my $module_rs = $self->module_rs->search({ distvname => $self->distvname });
+
+    my $module_rs
+        = $self->module_rs->search( { distvname => $self->distvname } );
 
     my @modules = ();
     while ( my $found = $module_rs->next ) {
@@ -113,7 +124,7 @@ MODULE:
         foreach my $source_folder ( 'lib/', '' ) {
             my $base_guess = $source_folder . $found->name;
             $base_guess =~ s{::}{/}g;
-    
+
             foreach my $extension ( '.pm', '.pod' ) {
                 my $guess = $base_guess . $extension;
                 say "*" x 10 . " about to guess: $guess" if $self->debug;
@@ -122,8 +133,8 @@ MODULE:
                     ++$success;
                     next MODULE;
                 }
-    
-            }            
+
+            }
         }
 
     }
@@ -132,9 +143,7 @@ MODULE:
     $self->index_dist;
 
     if ( $self->es_inserts ) {
-       #$self->es->transport->JSON->convert_blessed(1); 
-        my $result = $self->es->bulk( $self->es_inserts );
-        #say dump( $result );
+        my $result = $self->insert_bulk;
     }
 
     elsif ( $self->debug ) {
@@ -157,7 +166,7 @@ sub process_cookbooks {
         next if ( $file !~ m{\Alib(.*)\.pod\z} );
 
         my $module_name = $self->file2mod( $file );
-        
+
         # update ->module for each cookbook file.  otherwise it gets indexed
         # under the wrong module name
         my %cols = $self->module->get_columns;
@@ -165,10 +174,10 @@ sub process_cookbooks {
         delete $cols{id};
         $cols{name} = $module_name;
         $cols{file} = $file;
- 
-        $self->module( $self->module_rs->find_or_create(\%cols) );
+
+        $self->module( $self->module_rs->find_or_create( \%cols ) );
         my %new_cols = $self->module->get_columns;
-        
+
         my $success = $self->index_pod( $module_name, $file );
         say '=' x 20 . "cookbook ok: " . $file if $self->debug;
     }
@@ -178,27 +187,64 @@ sub process_cookbooks {
 }
 
 sub push_inserts {
-    
-    my $self = shift;
+
+    my $self    = shift;
     my $inserts = shift;
-    
-    push @{$self->es_inserts}, @{$inserts};
-    if ( scalar @{$self->es_inserts } > $self->max_bulk ) {
-        my $result = $self->es->bulk( $self->es_inserts );
-        say dump( $result );
-        $self->es_inserts([]);
+
+    push @{ $self->es_inserts }, @{$inserts};
+    if ( scalar @{ $self->es_inserts } > $self->max_bulk ) {
+        $self->insert_bulk();
     }
-    
+
     return;
-    
+
+}
+
+sub insert_bulk {
+
+    my $self = shift;
+
+    #$self->es->transport->JSON->convert_blessed(1);
+
+    say '#' x 40;
+    say 'inserting bulk: ' . scalar @{ $self->es_inserts };
+    say '#' x 40;
+
+    my $result = try {
+        $self->es->bulk( $self->es_inserts );
+    }
+    catch {
+        say '+' x 40;
+        say "caught error: $_";
+        say "TIMEOUT! Individual inserts beginning";
+        say '+' x 40;
+        foreach my $insert ( @{ $self->es_inserts } ) {
+            my $result = try { $self->es->bulk( $insert ); }
+            catch {
+                say '+' x 40;
+                say "caught error: $_";
+                say "FAILED: \n" . dump( $insert );
+                say '+' x 40;
+            };
+            if ( $result ) {
+                say '=' x 40;
+                say "SUCCESS with individual insert";
+                say '=' x 40;
+            }
+        }
+    };
+
+    say dump( $result ) if $self->debug;
+    $self->es_inserts( [] );
+
 }
 
 sub get_abstract {
-    
-    my $self = shift;
-    my $parser = Pod::POM->new;    
-    my $pom = $parser->parse_text( shift ) || return;
-    
+
+    my $self   = shift;
+    my $parser = Pod::POM->new;
+    my $pom    = $parser->parse_text( shift ) || return;
+
     foreach my $s ( @{ $pom->head1 } ) {
         if ( $s->title eq 'NAME' ) {
             my $content = $s->content;
@@ -207,8 +253,8 @@ sub get_abstract {
             return $content;
         }
     }
-    
-    return;    
+
+    return;
 }
 
 sub get_content {
@@ -250,7 +296,7 @@ sub get_content {
         return;
     }
 
-    say "got pod ok: $filename ";
+    say "got pod ok: $filename " if $self->debug;
     return $content;
 
 }
@@ -263,26 +309,13 @@ sub index_pod {
     my $module      = $self->module;
 
     my $content = $self->get_content( $module_name, $file );
-    say $file;
+    say $file if $self->debug;
 
     if ( !$content ) {
         say "No content found for $file" if $self->debug;
         return;
     }
 
-    my $parser = MetaCPAN::Pod::XHTML->new();
-
-    $parser->index( 1 );
-    $parser->html_header( '' );
-    $parser->html_footer( '' );
-    $parser->perldoc_url_prefix( '' );
-    $parser->no_errata_section( 1 );
-
-    my $xhtml = "";
-    $parser->output_string( \$xhtml );
-    $parser->parse_string_document( $content );
-
-    #$module->xhtml_pod( $xhtml );
     $module->file( $file );
     $module->update;
 
@@ -291,21 +324,18 @@ sub index_pod {
             index => 'cpan',
             type  => 'pod',
             id    => $module_name,
-            data  => { pod => $xhtml },
+            data  => { html => $xhtml },
         }
     );
-
-    #my %cols = $module->get_columns;
-    #say dump( \%cols );
 
     my $abstract = $self->get_abstract( $content );
     $self->index_module( $file, $abstract );
 
-    $self->push_inserts([ \%pod_insert ]);
-    
-    # if this line is uncommented some pod, like Dancer docs gets skipped
+    $self->push_inserts( [ \%pod_insert ] );
+
+    # if this line is uncommented, some pod (like Dancer docs) gets skipped
     delete $self->files->{$file};
-    push @{$self->processed}, $file;
+    push @{ $self->processed }, $file;
 
     return 1;
 
@@ -313,16 +343,31 @@ sub index_pod {
 
 sub index_dist {
 
-    my $self      = shift;
-    my $module    = $self->module;
+    my $self       = shift;
+    my $module     = $self->module;
+    my $source_url = $self->source_url( '' );
+    chop $source_url;
 
-    my $data = { name => $self->dist_name, author => $module->pauseid };
+    my $data = {
+        name       => $self->dist_name,
+        author     => $module->pauseid,
+        source_url => $source_url
+    };
+    
     my $res = $self->mech->get( $self->source_url( 'META.yml' ) );
 
     if ( $res->code == 200 ) {
 
         # some meta files are missing a trailing newline
-        my $meta_yml = try { Load( $res->content . "\n" ) } catch {undef};
+        my $meta_yml = try {
+
+            #Parse::CPAN::Meta->load_yaml_string( $res->content . "\n" );
+            Load( $res->content . "\n" );
+        }
+        catch {
+            warn "caught error: $_";
+            undef;
+        };
 
         if ( exists $meta_yml->{provides} ) {
             foreach my $key ( keys %{ $meta_yml->{provides} } ) {
@@ -334,7 +379,9 @@ sub index_dist {
         if ( exists $meta_yml->{version} ) {
             $meta_yml->{version} .= '';
         }
-        $data->{meta_yml} = $meta_yml if $meta_yml;
+        #$data->{meta} = $meta_yml;
+
+        $data->{abstract} = $meta_yml->{abstract};
 
     }
 
@@ -344,8 +391,6 @@ sub index_dist {
     foreach my $col ( @cols ) {
         $data->{$col} = $module->$col;
     }
-
-    #say dump( $data );
 
     my %es_insert = (
         index => {
@@ -361,7 +406,6 @@ sub index_dist {
     return;
 
 }
-
 
 sub index_module {
 
@@ -387,7 +431,7 @@ sub index_module {
     foreach my $col ( @cols ) {
         $data->{$col} = $module->$col;
     }
-    
+
     $data->{abstract} = $abstract if $abstract;
 
     my %es_insert = (
@@ -399,14 +443,14 @@ sub index_module {
         }
     );
 
-    say dump( \%es_insert );
-    $self->push_inserts([ \%es_insert ]);
+    say dump( \%es_insert ) if $self->debug;
+    $self->push_inserts( [ \%es_insert ] );
 
 }
 
 sub get_files {
-    
-    my $self = shift;
+
+    my $self  = shift;
     my @files = ();
 
     if ( $self->tar_class eq 'Archive::Tar' ) {
@@ -426,31 +470,34 @@ sub get_files {
             push @files, $tar_path;
         }
     }
-    
+
     return \@files;
-    
+
 }
 
 sub is_indexed {
-    
-    my $self = shift;
+
+    my $self    = shift;
     my $success = 0;
-    say "looking for " . $self->dist_name;
+    say "looking for " . $self->dist_name if $self->debug;
     my $get = try {
         $self->es->get(
             index => 'cpan',
-            type => 'dist',
-            id   => $self->dist_name,
-        );   
+            type  => 'dist',
+            id    => $self->dist_name,
+        );
     };
-    
-    if ( $get->{_source}->{distvname} eq $self->distvname ) {
+
+    if ( exists $get->{_source}->{distvname}
+        && $get->{_source}->{distvname} eq $self->distvname )
+    {
         return 1;
     }
+
     #say dump( $get );
 
     return $success;
-    
+
 }
 
 sub _build_files {
@@ -459,9 +506,9 @@ sub _build_files {
     my $files = $self->get_files;
     my @files = @{$files};
     return {} if scalar @files == 0;
-    
+
     my %files = ();
-    
+
     $self->set_archive_parent( $files );
 
     if ( $self->debug ) {
@@ -490,16 +537,17 @@ sub _build_files {
 }
 
 sub _build_mech {
-    
+
     my $self = shift;
     return WWW::Mechanize::Cached->new( autocheck => 0 );
-    
+
 }
 
 sub _build_metadata {
 
     my $self = shift;
-    return $self->module_rs->search( { distvname => $self->distvname } )->first;
+    return $self->module_rs->search( { distvname => $self->distvname } )
+        ->first;
 
 }
 
@@ -558,12 +606,12 @@ sub _module_root {
 }
 
 sub set_archive_parent {
-    
-    my $self = shift;
+
+    my $self  = shift;
     my $files = shift;
-    
+
     # is there one parent folder for all files?
-    my %parent = ( );
+    my %parent = ();
     foreach my $file ( @{$files} ) {
         my @parts = split "/", $files->[0];
         my $top = shift @parts;
@@ -574,24 +622,24 @@ sub set_archive_parent {
     }
 
     my @folders = keys %parent;
-    
+
     if ( scalar @folders == 1 ) {
-        $self->archive_parent( $folders[0] . '/' ); 
+        $self->archive_parent( $folders[0] . '/' );
     }
 
     say "parent " . ":" x 20 . $self->archive_parent if $self->debug;
 
     return;
-    
+
 }
 
 sub source_url {
-    
+
     my $self = shift;
     my $file = shift;
     return sprintf( 'http://search.metacpan.org/source/%s/%s/%s',
         $self->module->pauseid, $self->module->distvname, $file );
-    
+
 }
 
 1;
@@ -691,5 +739,4 @@ which is much faster.
 Returns an Archive::Tar::Wrapper object
 
 =cut
-
 
