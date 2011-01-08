@@ -21,9 +21,6 @@ use JSON::DWIW;
 use MooseX::Getopt;
 use Scalar::Util qw( reftype );
 
-use MetaCPAN;
-my $metacpan = MetaCPAN->new;
-
 has 'author_fh' => ( is => 'rw', lazy_build => 1, );
 
 sub index_authors {
@@ -63,12 +60,7 @@ sub index_authors {
                 data  => $author,
             );
 
-            push @results, $metacpan->es->index( %update );
-            #say dump( $result );
-            #say dump( \%update );
-            #my %es_insert = (
-            #    index => $insert 
-            #);
+            push @results, $self->es->index( %update );
 
         }
     }
