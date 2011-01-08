@@ -31,18 +31,18 @@ has 'db_path' => (
 );
 
 has 'distvname' => (
-    is => 'rw',
+    is  => 'rw',
     isa => 'Str',
 );
 
 has 'dist_name' => (
-    is => 'rw',
+    is  => 'rw',
     isa => 'Str',
 );
 
 has 'dist_like' => (
-    is => 'rw',
-    isa => 'Str',    
+    is  => 'rw',
+    isa => 'Str',
 );
 
 has 'pkg_index' => (
@@ -55,6 +55,12 @@ has 'refresh_db' => (
     is      => 'rw',
     isa     => 'Bool',
     default => 0,
+);
+
+has 'reindex' => (
+    is      => 'rw',
+    isa     => 'Bool',
+    default => 1,
 );
 
 sub open_pkg_index {
@@ -107,9 +113,7 @@ sub dist {
 
     my $self = shift;
 
-    return MetaCPAN::Dist->new(
-        distvname => $self->distvname,
-    );
+    return MetaCPAN::Dist->new( distvname => $self->distvname, );
 
 }
 
@@ -172,13 +176,164 @@ sub check_db {
     return if !$self->refresh_db;
 
     say "resetting db" if $self->debug;
-    
+
     my $dbh = $self->schema->storage->dbh;
     $dbh->do( "DELETE FROM module" );
     $dbh->do( "VACUUM" );
 
     return $self->populate
 
+}
+
+sub map_author {
+
+    my $self = shift;
+    return $self->es->put_mapping(
+        index => ['cpan'],
+        type  => 'author',
+
+        #_source => { compress => 1 },
+        properties => {
+            accepts_donations            => { type => "string" },
+            amazon_author_profile        => { type => "string" },
+            author                       => { type => "string" },
+            author_dir                   => { type => "string" },
+            blog_feed                    => { type => "string" },
+            blog_url                     => { type => "string" },
+            books                        => { type => "string" },
+            cats                         => { type => "string" },
+            city                         => { type => "string" },
+            country                      => { type => "string" },
+            delicious_username           => { type => "string" },
+            dogs                         => { type => "string" },
+            email                        => { type => "string" },
+            facebook_public_profile      => { type => "string" },
+            github_username              => { type => "string" },
+            gravatar_url                 => { type => "string" },
+            irc_nick                     => { type => "string" },
+            linkedin_public_profile      => { type => "string" },
+            name                         => { type => "string" },
+            openid                       => { type => "string" },
+            oreilly_author_profile       => { type => "string" },
+            pauseid                      => { type => "string" },
+            paypal_address               => { type => "string" },
+            perlmongers                  => { type => "string" },
+            perlmongers_url              => { type => "string" },
+            perlmonks_username           => { type => "string" },
+            region                       => { type => "string" },
+            slideshare_url               => { type => "string" },
+            slideshare_username          => { type => "string" },
+            stackoverflow_public_profile => { type => "string" },
+            twitter_username             => { type => "string" },
+            website                      => { type => "string" },
+            youtube_channel_url          => { type => "string" },
+        },
+
+    );
+
+}
+
+sub map_dist {
+
+    my $self = shift;
+
+    return $self->es->put_mapping(
+        index => ['cpan'],
+        type  => 'dist',
+
+        properties => {
+            abstract     => { type => "string" },
+            archive      => { type => "string" },
+            author       => { type => "string" },
+            distvname    => { type => "string" },
+            download_url => { type => "string" },
+            name         => { type => "string" },
+
+            #meta         => { type => "object" },
+            name         => { type => "string" },
+            release_date => { type => "date" },
+            source_url   => { type => "string" },
+            version      => { type => "string" },
+        }
+    );
+
+}
+
+sub map_module {
+
+    my $self = shift;
+    return $self->es->put_mapping(
+        index => ['cpan'],
+        type  => 'module',
+
+        #_source => { compress => 1 },
+        properties => {
+            abstract     => { type => "string" },
+            archive      => { type => "string" },
+            author       => { type => "string" },
+            distname     => { type => "string" },
+            distvname    => { type => "string" },
+            download_url => { type => "string" },
+            name         => { type => "string" },
+            release_date => { type => "date" },
+            source_url   => { type => "string" },
+            version      => { type => "string" },
+        }
+    );
+
+}
+
+sub map_pod {
+
+    my $self = shift;
+    return $self->es->put_mapping(
+        index      => ['cpan'],
+        type       => 'pod',
+        properties => {
+            html => { type => "string" },
+            raw  => { type => "string" },
+            text => { type => "string" },
+        },
+    );
+
+}
+
+sub map_cpanratings {
+
+    my $self = shift;
+    return $self->es->put_mapping(
+        index      => ['cpan'],
+        type       => 'cpanratings',
+        properties => {
+            dist         => { type => "string" },
+            rating       => { type => "string" },
+            review_count => { type => "string" },
+        },
+
+    );
+
+}
+
+sub put_mappings {
+    
+    my $self = shift;
+    my @types = qw( author cpanratings dist module pod );
+    
+    foreach my $type ( @types ) {
+        $self->es->delete_mapping(
+            index => ['cpan'],
+            type  => $type,
+        );        
+    }
+    
+    $self->map_author;
+    $self->map_cpanratings;
+    $self->map_dist;
+    $self->map_module;
+    $self->map_pod;
+    
+    return;
+    
 }
 
 1;
