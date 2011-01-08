@@ -11,6 +11,7 @@ use Modern::Perl;
 
 #use Parse::CPAN::Meta qw( load_yaml_string );
 use Pod::POM;
+use Pod::Text;
 use Try::Tiny;
 use WWW::Mechanize::Cached;
 use YAML;
@@ -324,7 +325,10 @@ sub index_pod {
             index => 'cpan',
             type  => 'pod',
             id    => $module_name,
-            data  => { html => $xhtml },
+            data  => {
+                html => $self->pod2html( $content ),
+                text => $self->pod2text( $content )
+            },
         }
     );
 
@@ -353,7 +357,7 @@ sub index_dist {
         author     => $module->pauseid,
         source_url => $source_url
     };
-    
+
     my $res = $self->mech->get( $self->source_url( 'META.yml' ) );
 
     if ( $res->code == 200 ) {
@@ -379,6 +383,7 @@ sub index_dist {
         if ( exists $meta_yml->{version} ) {
             $meta_yml->{version} .= '';
         }
+
         #$data->{meta} = $meta_yml;
 
         $data->{abstract} = $meta_yml->{abstract};
@@ -497,6 +502,50 @@ sub is_indexed {
     #say dump( $get );
 
     return $success;
+
+}
+
+sub pod2html {
+
+    my $self    = shift;
+    my $content = shift;
+    my $parser  = MetaCPAN::Pod::XHTML->new();
+
+    $parser->index( 1 );
+    $parser->html_header( '' );
+    $parser->html_footer( '' );
+    $parser->perldoc_url_prefix( '' );
+    $parser->no_errata_section( 1 );
+
+    my $html = "";
+    $parser->output_string( \$html );
+    $parser->parse_string_document( $content );
+
+    return $html;
+
+}
+
+sub pod2text {
+
+    my $self    = shift;
+    my $content = shift;
+
+    my $parser = Pod::Text->new( sentence => 0, width => 78 );
+
+    my $text = "";
+    $parser->output_string( \$text );
+    $parser->parse_string_document( $content );
+
+    return $text;
+
+}
+
+sub pod2pod {
+
+    my $self    = shift;
+    my $content = shift;
+
+    # will return pure pod, with all executable code stripped away
 
 }
 
