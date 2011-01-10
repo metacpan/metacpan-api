@@ -1,45 +1,53 @@
 {
-"SZABGAB": {
-	"accepts_donations": "1",
-	"paypal_address": "szabgab@gmail.com",
-	"country": "IL",
-	"city": "Modiin",
-	"website": [ 
-		"http://szabgab.com/",
-		"http://pti.co.il/"    
-		],
-	"email": [
-		"szabgab@gmail.com",
-		],
-	"github_username": "szabgab",
-	"linkedin_public_profile": "http://www.linkedin.com/in/szabgab",
-	"stackoverflow_public_profile": "http://stackoverflow.com/users/11827/szabgab",
-	"perlmonks_username": "szabgab",
-	"twitter_username": "szabgab",
-        "youtube_channel_url": "http://www.youtube.com/user/gabor529",
-        "xing_public_profile": "https://www.xing.com/profile/Gabor_Szabo7",
-        "irc_nickname": "szabgab",
-        "ACT_id": "263",
-        "perlmongers": [
-                { "Israel.pm": "http://perl.org.il/" },
-                { "TelAviv.pm": "http://telaviv.pm.org/" },
-                { "Rehovot.pm": "http://rehovot.pm.org/" },
-                { "Budapest.pm": "http://www.perlfoundation.org/perl5/index.cgi?hungarian" } 
-        ],
-	"blog_url": [
-		"http://www.szabgab.com/",
-		"http://blogs.perl.org/users/gabor_szabo/",
-		"http://use.perl.org/~gabor/journal/"
-		],
-	"blog_feed": [
-		"http://blogs.perl.org/users/gabor_szabo/atom.xml",
-		"http://use.perl.org/~gabor/journal/rss"
-		],
-        "offers": [
-                "perl training",
-                "contract perl development",
-                "test automation",
-                "web application development",
-        ],
-	}
+  "SZABGAB": {
+    "accepts_donations": "1",
+    "paypal_address": "szabgab@gmail.com",
+    "country": "IL",
+    "city": "Modiin",
+    "website": [
+      "http://szabgab.com/",
+      "http://pti.co.il/"
+    ],
+    "email": [
+      "szabgab@gmail.com"
+    ],
+    "github_username": "szabgab",
+    "linkedin_public_profile": "http://www.linkedin.com/in/szabgab",
+    "stackoverflow_public_profile": "http://stackoverflow.com/users/11827/szabgab",
+    "perlmonks_username": "szabgab",
+    "twitter_username": "szabgab",
+    "youtube_channel_url": "http://www.youtube.com/user/gabor529",
+    "xing_public_profile": "https://www.xing.com/profile/Gabor_Szabo7",
+    "irc_nickname": "szabgab",
+    "ACT_id": "263",
+    "perlmongers": [
+      {
+        "Israel.pm": "http://perl.org.il/"
+      },
+      {
+        "TelAviv.pm": "http://telaviv.pm.org/"
+      },
+      {
+        "Rehovot.pm": "http://rehovot.pm.org/"
+      },
+      {
+        "Budapest.pm": "http://www.perlfoundation.org/perl5/index.cgi?hungarian"
+      }
+    ],
+    "blog_url": [
+      "http://www.szabgab.com/",
+      "http://blogs.perl.org/users/gabor_szabo/",
+      "http://use.perl.org/~gabor/journal/"
+    ],
+    "blog_feed": [
+      "http://blogs.perl.org/users/gabor_szabo/atom.xml",
+      "http://use.perl.org/~gabor/journal/rss"
+    ],
+    "offers": [
+      "perl training",
+      "contract perl development",
+      "test automation",
+      "web application development"
+    ]
+  }
 }
