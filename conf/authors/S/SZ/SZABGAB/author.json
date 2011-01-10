@@ -35,5 +35,11 @@
 		"http://blogs.perl.org/users/gabor_szabo/atom.xml",
 		"http://use.perl.org/~gabor/journal/rss"
 		],
+        "offers": [
+                "perl training",
+                "contract perl development",
+                "test automation",
+                "web application development",
+        ],
 	}
 }
