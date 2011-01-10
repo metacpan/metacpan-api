@@ -1,6 +1,7 @@
 package MetaCPAN::Role::Common;
 
 use Moose::Role;
+use ElasticSearch;
 
 has 'cpan' => (
     is         => 'rw',
