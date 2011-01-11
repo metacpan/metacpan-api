@@ -1,0 +1,20 @@
+{
+  "GWADEJ": {
+    "country": "US",
+    "region": "TX",
+    "city": "Houston",
+    "website": "http://anomaly.org/wade/",
+    "email": [
+      "wade@anomaly.org",
+      "gwadej@cpan.org"
+    ],
+    "github_username": "gwadej",
+    "linkedin_public_profile": "http://www.linkedin.com/in/gwadejohnson",
+    "openid": "http://anomaly.org/wade/",
+    "perlmongers": "Houston.pm",
+    "perlmongers_url": "http://houston.pm.org",
+    "perlmonks_username": "gwadej",
+    "blog_url": "http://anomaly.org/wade/blog/",
+    "blog_feed": "http://anomaly.org/wade/blog/atom.xml"
+  }
+}
