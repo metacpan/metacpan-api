@@ -327,7 +327,7 @@ sub index_pod {
             id    => $module_name,
             data  => {
                 html => $self->pod2html( $content ),
-                text => $self->pod2text( $content )
+                text => $self->pod2txt( $content )
             },
         }
     );
@@ -525,7 +525,7 @@ sub pod2html {
 
 }
 
-sub pod2text {
+sub pod2txt {
 
     my $self    = shift;
     my $content = shift;
