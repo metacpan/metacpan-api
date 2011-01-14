@@ -1,3 +1,4 @@
+ACT_id
 accepts_donations
 amazon_author_profile
 blog_feed
@@ -12,7 +13,9 @@ email
 facebook_public_profile
 github_username
 irc_nick
+irc_nickname
 linkedin_public_profile
+offers
 openid
 oreilly_author_profile
 paypal_address
@@ -25,4 +28,5 @@ slideshare_username
 stackoverflow_public_profile
 twitter_username
 website
+xing_public_profile
 youtube_channel_url
