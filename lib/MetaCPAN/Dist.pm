@@ -119,23 +119,32 @@ MODULE:
         say "checking dist " . $found->name if $self->debug;
 
         # take an educated guess at the correct file before we go through the
-        # entire list
-        # some dists (like BioPerl, have no lib folder)
+        # entire list some dists (like BioPerl, have no lib folder) Some
+        # modules, like Text::CSV_XS have no lib folder, but have the module
+        # in the top directory. In this case, CSV_XS.pm
 
         foreach my $source_folder ( 'lib/', '' ) {
+
             my $base_guess = $source_folder . $found->name;
             $base_guess =~ s{::}{/}g;
 
-            foreach my $extension ( '.pm', '.pod' ) {
-                my $guess = $base_guess . $extension;
-                say "*" x 10 . " about to guess: $guess" if $self->debug;
-                if ( $self->index_pod( $found->name, $guess ) ) {
-                    say "*" x 10 . " found guess: $guess" if $self->debug;
-                    ++$success;
-                    next MODULE;
-                }
+            my @parts = split( "::", $found->name );
+            my $last_chance = pop @parts;
 
+            foreach my $attempt ( $base_guess, $last_chance ) {
+
+                foreach my $extension ( '.pm', '.pod' ) {
+                    my $guess = $attempt . $extension;
+                    say "*" x 10 . " about to guess: $guess" if $self->debug;
+                    if ( $self->index_pod( $found->name, $guess ) ) {
+                        say "*" x 10 . " found guess: $guess" if $self->debug;
+                        ++$success;
+                        next MODULE;
+                    }
+
+                }
             }
+
         }
 
     }
