@@ -1,0 +1,23 @@
+{
+  "WOLDRICH": {
+    "accepts_donations": "1",
+    "paypal_address": "magnus@trapd00r.se",
+    "country": "SE",
+    "city": "Norrkoping",
+    "website": [
+      "http://japh.se",
+      "http://github.com/trapd00r"
+    ],
+    "email": [
+      "magnus@trapd00r.se",
+      "woldrich@cpan.org"
+    ],
+    "github_username": "trapd00r",
+    "blog_url": [
+      "http://japh.se",
+    ],
+    "cats": [
+      "Zibri",
+    ]
+  }
+}
