@@ -1,0 +1,49 @@
+{
+  "DWHEELER": {
+    "accepts_donations": "1",
+    "paypal_address": "david@justatheory.com",
+    "country": "US",
+    "region": "OR",
+    "city": "Portland",
+    "website": [
+      "http://www.justatheory.com/",
+    ],
+    "email": [
+      "david@justatheory.com",
+      "david@kineticode.com",
+      "david@lunar-theory.com",
+      "david.wheeler@pgexperts.com"
+    ],
+    "delicious_username": "Theory",
+    "facebook_public_profile": "http://fb.me/david.e.wheeler",
+    "github_username": "theory",
+    "linkedin_public_profile": "http://www.linkedin.com/in/theory",
+    "openid": "http://justatheory.com/",
+    "stackoverflow_public_profile": "http://stackoverflow.com/users/79202/theory",
+    "perlmongers": "PDX.pm",
+    "perlmongers_url": "http://pdx.pm.org/",
+    "perlmonks_username": "Theory",
+    "twitter_username": "theory",
+    "slideshare_url": "http://www.slideshare.net/justatheory/",
+    "slideshare_username": "justatheory",
+    "youtube_channel_url": "http://www.youtube.com/justtheory",
+    "amazon_author_profile": "",
+    "oreilly_author_profile": "http://www.oreillynet.com/pub/au/1059",
+    "books": [
+    ],
+    "blog_url": [
+      "http://www.justatheory.com/",
+      "http://blog.pgxn.org/",
+      "http://use.perl.org/~theory/journal/"
+    ],
+    "blog_feed": [
+      "http://feeds2.feedburner.com/justatheory/atomfull",
+      "http://blog.pgxn.org/rss",
+      "http://use.perl.org/~Theory/journal/rss"
+    ],
+    "cats": [
+      "Little Bit",
+      "Biscuit"
+    ]
+  }
+}
