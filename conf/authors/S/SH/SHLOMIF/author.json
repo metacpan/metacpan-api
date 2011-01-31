@@ -1,0 +1,37 @@
+{
+  "SHLOMIF": {
+    "accepts_donations": "1",
+    "paypal_address": "shlomif@iglu.org.il",
+    "country": "IL",
+    "city": "Tel Aviv",
+    "website": [
+      "http://www.shlomifish.org/"
+    ],
+    "email": [
+      "shlomif@cpan.org",
+      "shlomif@gmail.com"
+    ],
+    "delicious_username": "ShlomiFish",
+    "facebook_public_profile": "http://www.facebook.com/shlomi.fish",
+    "github_username": "shlomif",
+    "linkedin_public_profile": "http://il.linkedin.com/in/shlomifish",
+    "openid": "http://www.shlomifish.org/",
+    "stackoverflow_public_profile": "http://stackoverflow.com/users/8817/brian-d-foy",
+    "perlmongers": "Israel.pm",
+    "perlmongers_url": "http://perl.org.il/",
+    "perlmonks_username": "shlomif",
+    "twitter_username": "shlomif",
+    "slideshare_url": "http://www.slideshare.net/shlomif",
+    "slideshare_username": "shlomif",
+    "youtube_channel_url": "http://www.youtube.com/user/ShlomiFish",
+    "oreilly_author_profile": "http://events.oreilly.com/pub/au/1719",
+    "blog_url": [
+      "http://shlomif.livejournal.com/",
+      "http://community.livejournal.com/shlomif_tech/",
+      "http://community.livejournal.com/shlomif_hsite/"
+    ],
+    "blog_feed": [
+      "shttp://blogs.perl.org/users/brian_d_foy/atom.xml"
+    ]
+  }
+}
