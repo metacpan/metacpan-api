@@ -1,5 +1,6 @@
 ACT_id
 accepts_donations
+aim
 amazon_author_profile
 blog_feed
 blog_url
@@ -12,9 +13,12 @@ dogs
 email
 facebook_public_profile
 github_username
+icq
 irc_nick
 irc_nickname
+jabber
 linkedin_public_profile
+msn_messenger
 offers
 openid
 oreilly_author_profile
@@ -26,6 +30,7 @@ region
 slideshare_url
 slideshare_username
 stackoverflow_public_profile
+stumbleupon_profile
 twitter_username
 website
 xing_public_profile
