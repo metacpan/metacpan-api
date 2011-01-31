@@ -4,7 +4,7 @@
     "country": "FR",
     "city": "Lyon",
     "website": [
-      "http://merlin.mongueurs.net",
+      "http://merlin.mongueurs.net"
     ],
     "email": [
       "jquelin@gmail.com",
@@ -15,13 +15,13 @@
     "perlmongers": "Lyon.pm",
     "amazon_author_profile": "http://www.amazon.fr/s?_encoding=UTF8&search-alias=books-fr&field-author=J%C3%A9r%C3%B4me%20Quelin",
     "books": [
-      "2744024198",
+      "2744024198"
     ],
     "blog_url": [
-      "http://jquelin.blogspot.com",
+      "http://jquelin.blogspot.com"
     ],
     "blog_feed": [
-      "http://jquelin.blogspot.com/feeds/posts/default",
-    ],
+      "http://jquelin.blogspot.com/feeds/posts/default"
+    ]
   }
 }
