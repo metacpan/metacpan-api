@@ -1,0 +1,24 @@
+{
+  "FAYLAND": {
+    "country": "CN",
+    "city": "RuiAn",
+    "website": [
+        "http://fayland.org/"
+    ],
+    "email": [
+      "fayland@gmail.com",
+      "fayland@cpan.org"
+    ],
+    "github_username": "fayland",
+    "irc_nick": "fayland",
+    "perlmonks_username": "fayland",
+    "twitter_username": "fayland",
+    "stackoverflow_public_profile": "http://stackoverflow.com/users/55276/fayland-lam",
+    "blog_url": [
+        "http://blog.fayland.org/"
+    ],
+    "blog_feed": [
+        "http://feeds.feedburner.com/fayland"
+    ]
+  }
+}
