@@ -1,0 +1,22 @@
+{
+  "JTRAMMELL": {
+    "accepts_donations": "0",
+    "country": "US",
+    "region": "MN",
+    "city": "Minneapolis",
+    "email": "johntrammell@gmail.com",
+    "website": "http://johntrammell.com/",
+    "openid": "http://johntrammell.myopenid.com",
+    "delicious_username": "jtrammell",
+    "github_username": "trammell",
+    "linkedin_public_profile": "http://www.linkedin.com/pub/john-trammell/3/323/189",
+    "perlmongers": "Minneapolis.pm",
+    "perlmongers_url": "http://minneapolis.pm.org/",
+    "perlmonks_username": "trammell",
+    "slashdot_username": "johnjtrammell",
+    "stackoverflow_public_profile": "http://stackoverflow.com/users/267797/jotr",
+    "twitter_username": "jotr",
+    "preferred_editor": "Vim",
+    "blog_url": "http://johntrammell.com/wp/"
+  }
+}
