@@ -6,7 +6,7 @@
     "region": "MN",
     "city": "Minneapolis",
     "website": [
-      "http://brianphillips.emurse.com",
+      "http://brianphillips.emurse.com"
     ],
     "email": [
       "bphillips@cpan.org"
@@ -20,10 +20,10 @@
     "perlmongers_url": "http://minneapolis.pm.org/",
     "perlmonks_username": "bpphillips",
     "blog_url": [
-      "http://blogs.perl.org/users/brian_phillips/",
+      "http://blogs.perl.org/users/brian_phillips/"
     ],
     "blog_feed": [
-      "http://blogs.perl.org/users/brian_phillips/atom.xml",
-    ],
+      "http://blogs.perl.org/users/brian_phillips/atom.xml"
+    ]
   }
 }
