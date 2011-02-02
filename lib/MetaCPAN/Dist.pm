@@ -260,6 +260,13 @@ sub get_abstract {
             my $content = $s->content;
             $content =~ s{\A.*\-\s}{};
             $content =~ s{\s*\z}{};
+            
+            # MOBY::Config has more than one POD section in the abstract after
+            # parsing Should have a closer look and file bug with Pod::POM
+            # It also contains newlines in the actual source
+            $content =~ s{=head.*}{}xms;
+            $content =~ s{\n}{}gxms;
+
             return $content;
         }
     }
