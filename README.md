@@ -33,6 +33,11 @@ http://search.metacpan.org
 [http://search.metacpan.org](http://search.metacpan.org) is a pure JavaScript
 CPAN search engine, which is built on top of MetaCPAN. 
 
+IRC
+---
+
+You can find us at #metacpan on irc.freenode.net
+
 Mailing List
 ------------
 
