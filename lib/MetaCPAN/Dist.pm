@@ -453,7 +453,7 @@ sub index_module {
         $data->{$col} = $module->$col;
     }
 
-    $data->{abstract} = $abstract if $abstract;
+    $data->{abstract} = $abstract;
 
     my %es_insert = (
         index => {
