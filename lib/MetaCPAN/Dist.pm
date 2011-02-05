@@ -11,6 +11,7 @@ use Modern::Perl;
 
 #use Parse::CPAN::Meta qw( load_yaml_string );
 use Pod::POM;
+use Pod::POM::View::Pod;
 use Pod::Text;
 use Try::Tiny;
 use WWW::Mechanize::Cached;
@@ -260,18 +261,18 @@ sub get_abstract {
             my $content = $s->content;
             $content =~ s{\A.*\-\s}{};
             $content =~ s{\s*\z}{};
-            
+
             # MOBY::Config has more than one POD section in the abstract after
             # parsing Should have a closer look and file bug with Pod::POM
             # It also contains newlines in the actual source
             $content =~ s{=head.*}{}xms;
             $content =~ s{\n}{}gxms;
 
-            return $content;
+            return ( $pom, $content );
         }
     }
 
-    return;
+    return ( $pom );
 }
 
 sub get_content {
@@ -336,24 +337,26 @@ sub index_pod {
     $module->file( $file );
     $module->update;
 
+    my ( $pom, $abstract ) = $self->get_abstract( $content );
+
     my %pod_insert = (
         index => {
             index => 'cpan',
             type  => 'pod',
             id    => $module_name,
             data  => {
-                html => $self->pod2html( $content ),
-                text => $self->pod2txt( $content )
+                html     => $self->pod2html( $content ),
+                text     => $self->pod2txt( $content ),
+                pure_pod => Pod::POM::View::Pod->print( $pom ),
             },
         }
     );
 
-    my $abstract = $self->get_abstract( $content );
     $self->index_module( $file, $abstract );
 
     $self->push_inserts( [ \%pod_insert ] );
 
-    # if this line is uncommented, some pod (like Dancer docs) gets skipped
+    # if this line is commented, some pod (like Dancer docs) gets skipped
     delete $self->files->{$file};
     push @{ $self->processed }, $file;
 
