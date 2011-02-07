@@ -518,8 +518,6 @@ sub is_indexed {
         return 1;
     }
 
-    #say dump( $get );
-
     return $success;
 
 }
@@ -556,15 +554,6 @@ sub pod2txt {
     $parser->parse_string_document( $content );
 
     return $text;
-
-}
-
-sub pod2pod {
-
-    my $self    = shift;
-    my $content = shift;
-
-    # will return pure pod, with all executable code stripped away
 
 }
 
@@ -745,6 +734,10 @@ data onto this array and then handle all of the changes at once.
 A HASHREF of files which may contain modules or POD.  This list ignores files
 which obviously aren't helpful to us.
 
+=head2 get_abstract( $string )
+
+Parses out the module abtract from the head1 "NAME" section.
+
 =head2 get_content
 
 Returns the contents of a file in the dist
@@ -767,9 +760,30 @@ POD file contained in the dist.
 Sets up the ES insert for the POD. Will be called once for each module or
 POD file contained in the dist.
 
+=head2 insert_bulk
+
+Handles bulk inserts. If the bulk insert fails, we attempt to reindex each
+document individually.
+
+=head2 is_indexed
+
+Checks to see if the distvname in question already exists in the index. This
+is useful for nightly updates, which only need to deal with dists which
+haven't already been inserted.
+
 =head2 module_rs
 
 A shortcut for getting a resultset of modules listed in the SQLite db
+
+=head2 pod2html( $string )
+
+Returns XHTML formatted doccumentation. These are used as the basis for
+search.metacpan.org
+
+=head2 pod2txt( $string )
+
+Returns plain text documentation. The plain text will be used for full-text
+searches.
 
 =head2 process
 
@@ -787,10 +801,19 @@ Distributions which have .pod files outside of lib folders will be skipped,
 since there's often no clear way of discerning which modules (if any) those
 docs explicitly pertain to.
 
+=head2 push_inserts( [ $insert1, $insert2 ] )
+
+Manages document insertion. If the max bulk insert number has been reached, an
+insert is performed. If not, we'll push push these items onto the list.
+
 =head2 set_archive_parent
 
 The folder name of the top level of the archive is not always predictable.
 This method tries to find the correct name.
+
+=head2 source_url
+
+Returns a full URL to a file from the dist, in an uncompressed form.
 
 =head2 tar
 

@@ -94,6 +94,11 @@ sub get_pm_groups {
 
 Parse out PerlMonger Group info and add it to /cpan/perlmongers
 
+=head2 get_pm_groups
+
+Fetches the authoritative XML file on PerlMongers groups, parses the XML and
+returns an ARRAYREF of groups.
+
 =head2 index_perlmongers
 
 Adds/updates all PerlMongers groups to ElasticSearch.

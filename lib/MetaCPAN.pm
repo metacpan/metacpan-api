@@ -290,9 +290,9 @@ sub map_pod {
         index      => ['cpan'],
         type       => 'pod',
         properties => {
-            html => { type => "string" },
-            raw  => { type => "string" },
-            text => { type => "string" },
+            html     => { type => "string" },
+            pure_pod => { type => "string" },
+            text     => { type => "string" },
         },
     );
 
@@ -403,9 +403,39 @@ sub put_mappings {
 
 =head2 check_db
 
+Wipes out SQLite db if that option has been passed.
+
 =head2 dist
 
 Returns a MetaCPAN::Dist object.  Requires distvname() to have been set.
+
+=head2 map_author
+
+Define ElasticSearch /cpan/author mapping.
+
+=head2 map_cpanratings
+
+Define ElasticSearch /cpan/cpanratings mapping.
+
+=head2 map_dist
+
+Define ElasticSearch /cpan/dist mapping.
+
+=head2 map_module
+
+Define ElasticSearch /cpan/module mapping.
+
+=head2 map_perlmongers
+
+Define ElasticSearch /cpan/perlmongers mapping.
+
+=head2 map_pod
+
+Define ElasticSearch /cpan/pod mapping.
+
+=head2 put_mappings
+
+Process all of the applicable mappings.
 
 =head2 pkg_datestamp
 
