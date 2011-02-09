@@ -8,10 +8,15 @@ The API itself is in its very early stages.  Everything will change, but here ar
 
 ## Full text searching
 
-###### First 100 modules with the word "RJBS" in the Pod
-[[http://api.metacpan.org/pod/_search?&fields=&q=rjbs&size=100]]
+###### First 10 modules with the word "RJBS" in the plain text Pod
+[[http://api.metacpan.org/pod/_search?&fields=&q=text:rjbs&size=10]]
 
-Note that this query returns no Pod fields because of the empty "fields" param
+Note that this query returns no Pod fields because of the empty "fields" param.
+
+###### First 10 modules with match on word fragment "RJB" in the plain text Pod
+[[http://api.metacpan.org/pod/_search?&fields=&q=text:*rjb*&size=10]]
+
+Note that this query returns no Pod fields because of the empty "fields" param.
 
 ###### Text Pod for First 10 modules with the word "RJBS" in the Pod
 [[http://api.metacpan.org/pod/_search?&fields=_source.text&q=rjbs&size=10]]
@@ -36,13 +41,22 @@ Note that for this type of search, the author id must be in lower case.
 Alternate syntax:
 
 <pre><code>
-curl -XGET 'api.metacpan.org/module/_search?pretty=true' -d '{
+curl -XPOST 'api.metacpan.org/module/_search?pretty=true' -d '{
     "query" : {
         "term" : { "author" : "oalders" }
     }
 }
 '
 </code></pre>
+
+Using the "field" key, the search term becomes case-insensitive:
+
+<pre><code>curl -XPOST 'api.metacpan.org/module/_search?pretty=true' -d '{
+    "query" : {
+        "field" : { "author" : "Oalders"  }
+    }
+}
+'</code></pre>
 
 ###### List all modules:
 [[http://api.metacpan.org/module/_search?q=*&size=100000]]
