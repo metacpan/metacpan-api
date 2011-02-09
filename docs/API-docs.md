@@ -1,14 +1,42 @@
-The API itself is in its very early stages.  Everything will change, but here are some sample URLs to play with.  Keep in mind that these URLs all return JSON.
+The API itself is in its very early stages.  Everything will change, but here are some sample URLs to play with.  Keep in mind that these URLs all return JSON.  Here are few things to keep in mind.
+
+* All URLs return JSON
+* For pretty JSON, pass the pretty parameter.  eg pretty=true
+* To limit your results, pass the size parameter. eg size=100000
+* To limit the fields returned, pass a comma-separated list in the fields param. eg fields=_source.distvname,_source.name
 
 ## Search for a Module
 
-### By Distribution Name:
-[[http://api.metacpan.org/module/_search?q=dist:moose]]
-
-### By Module Name:
+### By module name:
 [[http://api.metacpan.org/module/Moose::Meta::Attribute::Native::MethodProvider::Counter]]
 
-## Search for an Author
+### By distribution name:
+[[http://api.metacpan.org/module/_search?q=dist:moose]]
+
+### By author name:
+
+Note that for this type of search, the author id must be in lower case. 
+
+[[http://api.metacpan.org/module/_search?q=author:oalders]]
+
+Alternate syntax:
+
+<pre><code>
+curl -XGET 'api.metacpan.org/module/_search?pretty=true' -d '{
+    "query" : {
+        "term" : { "author" : "oalders" }
+    }
+}
+'
+</code></pre>
+
+### List all modules:
+[[http://api.metacpan.org/module/_search?q=*&size=100000]]
+
+Same list, but return only "name" and "distvname" fields:
+[[http://api.metacpan.org/module/_search?&fields=_source.distvname,_source.name&q=*&size=100000]]
+
+## Search for an author
 
 ### By PAUSEID (exact match)
 [[http://api.metacpan.org/author/DROLSKY]]
@@ -16,21 +44,24 @@ The API itself is in its very early stages.  Everything will change, but here ar
 ### By PAUSEID (wildcard match)
 [[http://api.metacpan.org/author/_search?q=author:D*]]
 
-### By Name (find all Daves)
+### By name (find all Daves)
 [[http://api.metacpan.org/author/_search?q=name:Dave]]
 
-### By Full Name
+### By full name
 [[http://api.metacpan.org/author/_search?q=name:%22dave%20rolsky%22]]
+
+#### List all authors
+[[http://api.metacpan.org/author/_search?pretty=true&q=*&size=100000]]
 
 ## Search for CPANRatings ([[http://cpanratings.perl.org/]])
 
-### By Distribution Name (exact Match)
+### By distribution name (exact match)
 [[http://api.metacpan.org/cpanratings/Moose]]
 
-### By Distribution Name (find all rated Moose distros)
+### By distribution name (find all rated Moose distros)
 [[http://api.metacpan.org/cpanratings/_search?q=dist:Moose]]
 
-## Search for POD
+## Search for Pod
 
-### By Module Name (exact Match)
+### By module name (exact Match)
 [[http://api.metacpan.org/pod/AAA::Demo]]
