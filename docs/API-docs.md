@@ -27,10 +27,10 @@ Note that this query returns no Pod fields because of the empty "fields" param.
 ## Search for a Module
 
 ###### By name:
-[[http://api.metacpan.org/module/Moose::Meta::Attribute::Native::MethodProvider::Counter]]
+[[http://api.metacpan.org/module/Dancer::Cookbook]]
 
 ###### By distribution name:
-[[http://api.metacpan.org/module/_search?q=dist:moose]]
+[[http://api.metacpan.org/module/_search?q=distname:moose]]
 
 ###### By author name:
 
