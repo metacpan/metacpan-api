@@ -1,5 +1,5 @@
-#!/usr/bin/perl -l
-
+#!/usr/bin/env perl
+# PODNAME: get_fields.pl
 use Data::Dumper;
 use JSON::XS;
 use File::Find::Rule;
