@@ -39,10 +39,10 @@ sub _build_cpan {
 
     my $self = shift;
     my @dirs = ( "$ENV{'HOME'}/CPAN", "$ENV{'HOME'}/minicpan", $ENV{'MINICPAN'} );
-    foreach my $dir ( @dirs ) {
+    foreach my $dir ( grep { defined } @dirs ) {
         return $dir if -d $dir;
     }
-    return;
+    die "Couldn't find a local cpan mirror. Please specify --cpan or set MINICPAN";
 
 }
 
