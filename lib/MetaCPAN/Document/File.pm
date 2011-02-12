@@ -1,0 +1,206 @@
+package MetaCPAN::Document::File;
+use Moose;
+use ElasticSearch::Document;
+
+use File::stat  ();
+use URI::Escape ();
+use PPI;
+use Pod::POM;
+use Pod::POM::View::TOC;
+use MetaCPAN::Pod::XHTML;
+use Pod::Text;
+use Plack::MIME;
+use List::MoreUtils qw(uniq);
+
+Plack::MIME->add_type( ".t"  => "text/x-script.perl" );
+Plack::MIME->add_type( ".xs" => "text/x-c" );
+
+has id => ( id => [qw(author release path)] );
+
+has path   => ( index      => 'not_analyzed' );
+has author => ( index      => 'not_analyzed' );
+has name   => ( required   => 1, index => 'not_analyzed' );
+has binary => ( isa        => 'Bool', default => 0 );
+has url    => ( lazy_build => 1, index => 'no' );
+has stat => ( isa => 'File::stat', handles => [qw(size)], type => 'object' );
+has release   => ( required => 1,           index      => 'not_analyzed' );
+has sloc      => ( isa      => 'Int',       lazy_build => 1 );
+has pod_lines => ( isa      => 'ArrayRef',  lazy_build => 1, index => 'no' );
+has pod_txt   => ( isa      => 'ScalarRef', lazy_build => 1 );
+has pod_html  => ( isa      => 'ScalarRef', lazy_build => 1, index => 'no' );
+has toc       => ( isa      => 'ArrayRef',  lazy_build => 1, index => 'no' );
+has mime => ( lazy_build => 1 );
+
+has pod      => ( isa => 'ScalarRef',     lazy_build => 1, property => 0 );
+has content  => ( isa => 'ScalarRef',     property   => 0, required => 0 );
+has ppi      => ( isa => 'PPI::Document', lazy_build => 1, property => 0 );
+has abstract => ( isa => 'Str',           lazy_build => 1, property => 0 );
+has pom => ( lazy_build => 1, property => 0, required => 0 );
+
+sub is_perl_file {
+    !$_[0]->binary && $_[0]->name =~ /\.(pl|pm|pod|t)$/i;
+}
+
+sub _build_mime {
+    Plack::MIME->mime_type( shift->name ) || 'text/plain';
+}
+
+sub _build_pom {
+    my $self = shift;
+    Pod::POM->new( warn => 0 )->parse_text( ${ $self->content } );
+}
+
+sub _build_abstract {
+    my $self = shift;
+    return '' unless ( $self->is_perl_file );
+    my $pom = $self->pom;
+    foreach my $s ( @{ $pom->head1 } ) {
+        if ( $s->title eq 'NAME' ) {
+            my $content = $s->content;
+            $content =~ s{\A.*\-\s}{};
+            $content =~ s{\s*\z}{};
+
+            # MOBY::Config has more than one POD section in the abstract after
+            # parsing Should have a closer look and file bug with Pod::POM
+            # It also contains newlines in the actual source
+            $content =~ s{=head.*}{}xms;
+            $content =~ s{\n}{}gxms;
+
+            return $content || '';
+        }
+    }
+    return '';
+}
+
+sub _build_path {
+    my $self = shift;
+    return join( '/', $self->release->name, $self->name );
+}
+
+sub _build_path_uri {
+    URI::Escape::uri_escape( URI::Escape::uri_escape( shift->path ) );
+}
+
+sub _build_url {
+    'http://search.metacpan.org/source/' . shift->path;
+}
+
+sub _build_pod_lines {
+    my $self = shift;
+    return [] unless ( $self->is_perl_file );
+    $self->ppi->index_locations(1);
+    my $found = $self->ppi->find('PPI::Token::Pod');
+    my @return;
+    foreach my $pod ( @{ $found || [] } ) {
+        my @lines = split( /\n/, $pod->content );
+        push( @return, [ $pod->line_number, int( $#lines + 1 ) ] );
+    }
+    return \@return;
+
+}
+
+# Copied from Perl::Metrics2::Plugin::Core
+sub _build_sloc {
+    my $self = shift;
+    return 0 unless ( $self->is_perl_file );
+    my $document = $self->ppi->clone;
+    $document->prune(
+        sub {
+
+            # Cull out the normal content
+            !$_[1]->significant
+              and
+
+              # Cull out the high-volume whitespace tokens
+              !$_[1]->isa('PPI::Token::Whitespace')
+              and (    $_[1]->isa('PPI::Token::Comment')
+                    or $_[1]->isa('PPI::Token::Pod')
+                    or $_[1]->isa('PPI::Token::End')
+                    or $_[1]->isa('PPI::Token::Data') );
+        } );
+
+    # Split the serialized for and find the number of non-blank lines
+    return scalar grep { /\S/ } split /\n/, $document->serialize;
+}
+
+sub _build_ppi {
+    my $self = shift;
+    return PPI::Document->new( $self->content );
+}
+
+sub _build_pod {
+    my $found = shift->ppi->find('PPI::Token::Pod');
+    if ($found) {
+        return \( join( "\n\n", @$found ) );
+    } else {
+        return \"";
+    }
+}
+
+sub _build_pod_txt {
+    my $self = shift;
+    return \'' unless ( $self->is_perl_file );
+    my $parser = Pod::Text->new( sentence => 0, width => 78 );
+
+    my $text = "";
+    $parser->output_string( \$text );
+    $parser->parse_string_document( ${ $self->content } );
+
+    return \$text;
+}
+
+sub _build_pod_html {
+    my $self = shift;
+    return \'' unless ( $self->is_perl_file );
+    my $parser = MetaCPAN::Pod::XHTML->new();
+
+    $parser->index(1);
+    $parser->html_header('');
+    $parser->html_footer('');
+    $parser->perldoc_url_prefix('');
+    $parser->no_errata_section(1);
+
+    my $html = "";
+    $parser->output_string( \$html );
+    $parser->parse_string_document( ${ $self->content } );
+    return \$html;
+}
+
+sub _build_toc {
+    my $self = shift;
+    return [] unless ( $self->is_perl_file );
+    my $view = Pod::POM::View::TOC->new;
+    my $toc  = $view->print( $self->pom );
+    return [] unless ($toc);
+    return _toc_to_json( [], split( /\n/, $toc ) );
+}
+
+sub _toc_to_json {
+    my $tree     = shift;
+    my @sections = @_;
+    my @uniq     = uniq( map { ( split(/\t/) )[0] } @sections );
+    foreach my $root (@uniq) {
+        next unless ($root);
+        push( @{$tree}, { text => $root } );
+        my ( @children, $start );
+        for (@sections) {
+            if ( $_ =~ /^\Q$root\E$/ ) {
+                $start = 1;
+            } elsif ( $start && $_ =~ /^\t(.*)$/ ) {
+                push( @children, $1 );
+            } elsif ( $start && $_ =~ /^[^\t]+/ ) {
+                last;
+            }
+        }
+        unless (@children) {
+            $tree->[-1]->{leaf} = \1;
+            next;
+        }
+        $tree->[-1]->{children} = [];
+        $tree->[-1]->{children} =
+          _toc_to_json( $tree->[-1]->{children}, @children );
+    }
+    return $tree;
+}
+
+__PACKAGE__->meta->make_immutable;
