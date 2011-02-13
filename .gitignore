@@ -2,3 +2,4 @@
 *.kpf
 *.komodoproject
 *.sqlite*
+var/
