@@ -79,15 +79,9 @@ sub rewrite_request {
 
 sub call {
     my ( $self, $env ) = @_;
-    if ( $env->{REQUEST_METHOD} ne 'POST' ) {
+    if ( $env->{REQUEST_METHOD} ne 'GET' && $env->{REQUEST_METHOD} ne 'POST' ) {
         return [ 403, [], ['Not allowed'] ];
     } elsif ( $env->{PATH_INFO} =~ /^\/_search/ ) {
-        warn $env->{'psgi.input'};
-        my $query = "";
-        $query = $env->{'psgi.input'}->getline;
-        warn $query;
-        $env->{'psgi.input'} = IO::String->new($query);
-        $env->{CONTENT_LENGTH} = length($query);
         return Plack::App::Proxy->new(
                         remote => "http://127.0.0.1:9200/cpan/" . $self->index )
           ->to_app->($env);

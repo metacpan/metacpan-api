@@ -35,13 +35,18 @@ sub index_authors {
     my @authors   = ();
     my $author_fh = $self->author_fh;
     my @results   = ();
-
+    my $lines = 0;
+    print "Counting authors ... ";
+    $lines++ while($author_fh->getline());
+    say "done";
+    $author_fh = $self->_build_author_fh;
+    print "Indexing $lines authors ... ";
+    my $i = 0;
     while ( my $line = $author_fh->getline() ) {
-
+        print $i unless($i++ % 11);
         if ( $line =~ m{alias\s([\w\-]*)\s{1,}"(.*)<(.*)>"}gxms ) {
 
             my ( $pauseid, $name, $email ) = ( $1, $2, $3 );
-            warn $pauseid;
             my $author =
               MetaCPAN::Document::Author->new( pauseid => $pauseid,
                                                name    => $name,
@@ -52,12 +57,11 @@ sub index_authors {
                                                email   => $email, %$conf );
 
             push @results, $author->index( $self->es );
-            #die if($pauseid eq 'BDFOY');
-
         }
+        print "\010 \010" x length( $i - 10 ) unless($i % 11 && $i != $lines);
     }
+    say "done";
     return \@results;
-
 }
 
 sub author_config {
