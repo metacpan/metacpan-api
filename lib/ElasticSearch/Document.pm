@@ -28,7 +28,6 @@ use MooseX::Attribute::Deflator;
 deflate 'Bool',       via { \$_ };
 deflate 'File::stat', via { return { List::MoreUtils::mesh(@stat, @$_) } };
 deflate 'ScalarRef',  via { $$_ };
-deflate 'ArrayRef',   via { encode_json($_) };
 deflate 'DateTime',   via { $_->iso8601 };
 no MooseX::Attribute::Deflator;
 

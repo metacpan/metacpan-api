@@ -6,6 +6,7 @@ use MetaCPAN::Document::Module;
 use File::stat;
 use Digest::SHA1;
 use DateTime;
+use MetaCPAN::Util;
 
 my $module =
   MetaCPAN::Document::Module->new( file         => '',
@@ -17,8 +18,7 @@ my $module =
                                    date         => DateTime->now,
                                    abstract     => '' );
 
-my $digest = Digest::SHA1::sha1_base64("PERLER\0CPAN-API-0.1\0Api.pm");
-$digest =~ tr/[+\/]/-_/;
-is( $module->id, $digest );
+my $id = MetaCPAN::Util::digest(qw(PERLER CPAN-API-0.1 Api.pm));
+is( $module->id, $id );
 
 done_testing;
