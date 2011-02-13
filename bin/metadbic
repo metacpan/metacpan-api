@@ -1,0 +1,15 @@
+#!/usr/bin/env perl
+# PODNAME: metadbic
+use Class::MOP;
+use lib qw(lib);
+$|++;
+
+my ($class, @actions) = @ARGV;
+
+die "Usage: bin/metadbic [command] [args]" unless($class);
+
+$class = 'MetaCPAN::Script::' . ucfirst( $class );
+
+Class::MOP::load_class($class);
+my $obj = $class->new_with_options;
+$obj->run;
