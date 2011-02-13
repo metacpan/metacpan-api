@@ -5,7 +5,7 @@ use Modern::Perl;
 use Test::More qw( no_plan );
 
 require_ok( 'MetaCPAN' );
-require_ok( 'MetaCPAN::Dist' );
+require_ok( 'MetaCPAN::Script::Dist' );
 
 my $cpan = MetaCPAN->new;
 
