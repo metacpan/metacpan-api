@@ -3,11 +3,24 @@ package MetaCPAN::Util;
 use strict;
 use warnings;
 use Digest::SHA1;
+use version;
+use Try::Tiny;
 
 sub digest {
     my $digest = Digest::SHA1::sha1_base64(join("\0", grep { defined } @_));
     $digest =~ tr/[+\/]/-_/;
     return $digest;
+}
+
+sub numify_version {
+    my $version = shift;
+    try {
+        $version = version->parse( $version )->numify;
+    } catch {
+        $version =~ s/[^0-9\.]//g;
+        $version = version->parse( $version )->numify;
+    };
+    return $version;
 }
 
 1;

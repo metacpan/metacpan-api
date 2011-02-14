@@ -3,7 +3,7 @@ use Moose;
 use ElasticSearch::Document;
 use MetaCPAN::Document::Author;
 
-use version;
+use MetaCPAN::Util;
 
 has [qw(license version abstract status archive)] => ();
 has date             => ( isa        => 'DateTime' );
@@ -15,9 +15,7 @@ has author       => ();
 has distribution => ();
 
 sub _build_version_numified {
-    my $version = shift->version;
-    $version =~ s/[A-Za-z-]//g;    # ask AARDO/Combine-3.12-0.tar.gz or ABURLISON/Solaris-0.05a.tar.gz
-    return eval version->parse($version)->numify;
+    return MetaCPAN::Util::numify_version( shift->version )
 }
 
 sub _build_download_url {

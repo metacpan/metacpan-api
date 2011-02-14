@@ -2,7 +2,7 @@ package MetaCPAN::Document::Module;
 use Moose;
 use ElasticSearch::Document;
 
-use version;
+use MetaCPAN::Util;
 use URI::Escape ();
 
 has id => ( id => [qw(author release name)] );
@@ -13,7 +13,7 @@ has date     => ( isa   => 'DateTime' );
 has abstract => ( index => 'analyzed' );
 
 sub _build_version_numified {
-    return eval version->parse( shift->version )->numify;
+    return MetaCPAN::Util::numify_version( shift->version )
 }
 
 __PACKAGE__->meta->make_immutable;
