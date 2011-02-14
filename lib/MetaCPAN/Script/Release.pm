@@ -22,8 +22,15 @@ use MetaCPAN::Document::Module;
 use DateTime::Format::Epoch::Unix;
 use File::Find::Rule;
 use Try::Tiny;
+use LWP::UserAgent;
 
 has reindex => ( is => 'ro', isa => 'Bool', default => 0 );
+
+sub main {
+    my $tarball = shift;
+    unshift( @ARGV, "release" );
+    __PACKAGE__->new_with_options->run;
+}
 
 sub run {
     my $self = shift;
@@ -37,8 +44,25 @@ sub run {
             say "done";
         } elsif ( -f $_ ) {
             push( @files, $_ );
+        } elsif ( $_ =~ /^https?:\/\/.*\/authors\/id\/[A-Z]\/[A-Z][A-Z]\/([A-Z]+)\/(.*\/)*([^\/]+)$/ ) {
+            my $dir =
+              Path::Class::Dir->new( File::Temp::tempdir( CLEANUP => 1 ), $1 );
+            my $ua = LWP::UserAgent->new( parse_head => 0,
+                                          env_proxy  => 1,
+                                          agent      => "metacpan",
+                                          timeout    => 30, );
+            $dir->mkpath;
+            my $file = $dir->file($3);
+            print "Downloading $_ to temporary location ... ";
+            $ua->mirror( $_, $file );
+            if ( -e $file ) {
+                say "done";
+                push( @files, $file );
+            } else {
+                say "failed";
+            }
         } else {
-            warn "Dunno what $_ is";
+            say "Dunno what $_ is";
         }
     }
     for (@files) {
@@ -63,15 +87,13 @@ sub import_tarball {
     my ($basedir) = $dir->children;
     my @children = $basedir->children;
     my @files;
-    
 
-        my $d = CPAN::DistnameInfo->new($tarball);
-        my $meta = CPAN::Meta->new(
-                                 { version => $d->version,
-                                   license => 'unknown',
-                                   name    => $d->dist,
-                                 } );
-    
+    my $d = CPAN::DistnameInfo->new($tarball);
+    my $meta = CPAN::Meta->new(
+                                { version => $d->version,
+                                  license => 'unknown',
+                                  name    => $d->dist,
+                                } );
 
     my $meta_file;
     print "Gathering files ... ";
@@ -80,14 +102,14 @@ sub import_tarball {
             my $relative = $child->relative($basedir);
             $meta_file = $child if ( $relative =~ /^META\./ );
             push( @files,
-                  {  name    => $relative->basename,
-                     binary  => -B $child ? 1 : 0,
-                     release => $name,
+                  {  name         => $relative->basename,
+                     binary       => -B $child ? 1 : 0,
+                     release      => $name,
                      distribution => $meta->name,
-                     author  => $author,
-                     path    => $relative->as_foreign('Unix')->stringify,
-                     stat    => File::stat::stat($child),
-                     content => \( scalar $child->slurp ) } );
+                     author       => $author,
+                     path         => $relative->as_foreign('Unix')->stringify,
+                     stat         => File::stat::stat($child),
+                     content      => \( scalar $child->slurp ) } );
         } elsif ( $child->is_dir ) {
             push( @children, $child->children );
         }
@@ -96,6 +118,7 @@ sub import_tarball {
 
     # get better meta info from meta file
     try {
+        die unless($meta_file);
         my $foo = CPAN::Meta->load_file($meta_file);
         $meta = $foo;
     };
@@ -197,7 +220,7 @@ sub import_tarball {
     foreach my $module (@modules) {
         $module = { %$module,
                     file         => $module->{file}->path,
-                    file_id => $module->{file}->id,
+                    file_id      => $module->{file}->id,
                     abstract     => $module->{file}->abstract,
                     release      => $release->name,
                     date         => $release->date,
