@@ -18,6 +18,7 @@ use MetaCPAN::Plack::Pod;
 use MetaCPAN::Plack::Author;
 use MetaCPAN::Plack::File;
 use MetaCPAN::Plack::Source;
+use MetaCPAN::Plack::Release;
 
 has port => ( is => 'ro', default => '5000' );
 
@@ -27,6 +28,7 @@ sub build_app {
         mount "/module"       => MetaCPAN::Plack::Module->new;
         mount "/distribution" => MetaCPAN::Plack::Distribution->new;
         mount "/author"       => MetaCPAN::Plack::Author->new;
+        mount "/release"      => MetaCPAN::Plack::Release->new;
         mount "/file"         => MetaCPAN::Plack::File->new;
         mount "/pod"          => MetaCPAN::Plack::Pod->new;
         mount "/source"       => MetaCPAN::Plack::Source->new( cpan => $self->cpan );

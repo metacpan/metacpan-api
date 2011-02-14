@@ -1,9 +1,9 @@
-package MetaCPAN::Plack::Distribution;
+package MetaCPAN::Plack::Release;
 use base 'MetaCPAN::Plack::Base';
 use strict;
 use warnings;
 
-sub index { 'distribution' }
+sub index { 'release' }
 
 sub handle {
     my ($self, $env) = @_;
