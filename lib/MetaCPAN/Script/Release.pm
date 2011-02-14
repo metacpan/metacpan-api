@@ -201,11 +201,11 @@ sub import_tarball {
         @files = grep { $_->{name} =~ /\.pm$/ } @files;
 
         foreach my $no_dir ( @{ $no_index->{directory} || [] } ) {
-            @files = grep { $_->{name} !~ /^\Q$no_dir\E/ } @files;
+            @files = grep { $_->path !~ /^\Q$no_dir\E/ } @files;
         }
 
         foreach my $no_file ( @{ $no_index->{file} || [] } ) {
-            @files = grep { $_->{name} !~ /^\Q$no_file\E/ } @files;
+            @files = grep { $_->path !~ /^\Q$no_file\E/ } @files;
         }
         foreach my $file (@files) {
             my $info =
