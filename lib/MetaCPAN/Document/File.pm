@@ -134,7 +134,7 @@ sub _build_sloc {
 
 sub _build_ppi {
     my $self = shift;
-    return PPI::Document->new( $self->content );
+    return PPI::Document->new( $self->content ) || PPI::Document->new;
 }
 
 sub _build_pod {
