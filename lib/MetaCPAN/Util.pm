@@ -5,7 +5,7 @@ use warnings;
 use Digest::SHA1;
 
 sub digest {
-    my $digest = Digest::SHA1::sha1_base64(join("\0", @_));
+    my $digest = Digest::SHA1::sha1_base64(join("\0", grep { defined } @_));
     $digest =~ tr/[+\/]/-_/;
     return $digest;
 }
