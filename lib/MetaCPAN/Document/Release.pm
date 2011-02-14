@@ -16,7 +16,7 @@ has distribution => ();
 
 sub _build_version_numified {
     my $version = shift->version;
-    $version =~ s/-//g;    # ask AARDO/Combine-3.12-0.tar.gz
+    $version =~ s/[A-Za-z-]//g;    # ask AARDO/Combine-3.12-0.tar.gz or ABURLISON/Solaris-0.05a.tar.gz
     return eval version->parse($version)->numify;
 }
 
