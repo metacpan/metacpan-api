@@ -44,7 +44,9 @@ sub run {
             say "done";
         } elsif ( -f $_ ) {
             push( @files, $_ );
-        } elsif ( $_ =~ /^https?:\/\/.*\/authors\/id\/[A-Z]\/[A-Z][A-Z]\/([A-Z]+)\/(.*\/)*([^\/]+)$/ ) {
+        } elsif ( $_ =~
+/^https?:\/\/.*\/authors\/id\/[A-Z]\/[A-Z][A-Z]\/([A-Z]+)\/(.*\/)*([^\/]+)$/ )
+        {
             my $dir =
               Path::Class::Dir->new( File::Temp::tempdir( CLEANUP => 1 ), $1 );
             my $ua = LWP::UserAgent->new( parse_head => 0,
@@ -118,7 +120,7 @@ sub import_tarball {
 
     # get better meta info from meta file
     try {
-        die unless($meta_file);
+        die unless ($meta_file);
         my $foo = CPAN::Meta->load_file($meta_file);
         $meta = $foo;
     };
@@ -208,13 +210,20 @@ sub import_tarball {
             @files = grep { $_->path !~ /^\Q$no_file\E/ } @files;
         }
         foreach my $file (@files) {
-            my $info =
-              Module::Metadata->new_from_file( $basedir->file( $file->path ) );
-            push( @modules,
-                  {  file => $file,
-                     name => $_,
-                     $info->version ? ( version => $info->version->numify ) : ()
-                  } ) for ( $info->packages_inside );
+            eval {
+                local $SIG{'ALRM'} =
+                  sub { print "Call to Module::Metadata timed out "; die };
+                alarm(5);
+                my $info = Module::Metadata->new_from_file(
+                                                $basedir->file( $file->path ) );
+                push( @modules,
+                      {  file => $file,
+                         name => $_,
+                         $info->version
+                         ? ( version => $info->version->numify )
+                         : () } ) for ( $info->packages_inside );
+                alarm(0);
+            };
         }
     }
     foreach my $module (@modules) {
