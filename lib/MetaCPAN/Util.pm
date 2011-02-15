@@ -18,7 +18,7 @@ sub numify_version {
         $version = eval version->parse( $version )->numify;
     } catch {
         $version =~ s/[^0-9\.]//g;
-        $version = eval version->parse( $version )->numify;
+        $version = eval version->parse( $version || 0 )->numify;
     };
     return $version;
 }

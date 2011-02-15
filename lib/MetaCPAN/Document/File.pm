@@ -29,12 +29,18 @@ has toc      => ( isa => 'ArrayRef', type => 'object', lazy_build => 1, index =>
 has [qw(mime module abstract)] => ( lazy_build => 1 );
 
 has pod     => ( isa => 'ScalarRef',     lazy_build => 1, property => 0 );
-has content => ( isa => 'ScalarRef',     property   => 0, required => 0 );
+has content => ( isa => 'ScalarRef', lazy_build => 1, property   => 0, required => 0 );
 has ppi     => ( isa => 'PPI::Document', lazy_build => 1, property => 0 );
 has pom => ( lazy_build => 1, property => 0, required => 0 );
+has content_cb => ( property => 0 );
 
 sub is_perl_file {
     !$_[0]->binary && $_[0]->name =~ /\.(pl|pm|pod|t)$/i;
+}
+
+sub _build_content {
+    my $self = shift;
+    return $self->content_cb->();
 }
 
 sub _build_mime {

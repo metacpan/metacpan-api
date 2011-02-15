@@ -3,6 +3,7 @@ use Moose;
 use ElasticSearch::Document;
 use MetaCPAN::Util;
 
+has id => ( id => [qw(release module)] ); # maybe phase and more?
 has [qw(phase relationship module version release)];
 has version_numified => ( isa => 'Num', lazy_build => 1 );
 

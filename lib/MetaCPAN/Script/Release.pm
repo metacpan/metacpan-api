@@ -79,7 +79,7 @@ sub import_tarball {
     $tarball = Path::Class::File->new($tarball);
     ( my $name = $tarball->basename ) =~ s/(\.tar)?\.gz$//;
 
-    print "Opening tarball directory ... ";
+    print "Opening tarball in memory ... ";
     my $at = Archive::Tar->new($tarball);
     say "done";
     my $tmpdir = dir(File::Temp::tempdir);
@@ -94,7 +94,7 @@ sub import_tarball {
     my $meta_file;
     print "Gathering files ... ";
     my @list = $at->get_files;
-    foreach my $child (@list) {
+    while(my $child = shift @list) {
         if ( ref $child ne 'HASH' ) {
             $meta_file = $child if ( $child->full_path =~ /^[^\/]+\/META\./ );
             my $stat = { map { $_ => $child->$_ } qw(mode uid gid size mtime) };
@@ -105,8 +105,7 @@ sub import_tarball {
                      distribution => $meta->name,
                      author       => $author,
                      path         => $child->full_path,
-                     stat         => $stat,
-                     content      => \( $at->get_content( $child->full_path ) )
+                     stat         => $stat
                   } );
         }
     }
@@ -133,12 +132,15 @@ sub import_tarball {
 
     $create->{distribution} = $meta->name;
 
-    print "Indexing $#files files ... ";
+    print "Indexing ", scalar @files, " files ... ";
     my $i = 1;
     foreach my $file (@files) {
         print $i++;
-        $file = MetaCPAN::Document::File->new($file);
-        $file->index( $self->es );
+        my $obj = MetaCPAN::Document::File->new({%$file, 
+         content_cb      => sub { \( $at->get_content( $file->{path} ) ) } });
+         $obj->index( $self->es );
+         $file->{abstract} = $obj->abstract;
+         $file->{id} = $obj->id;
         print "\010 \010" x length( $i - 1 );
     }
     say "done";
@@ -171,7 +173,7 @@ sub import_tarball {
     }
     say "done";
 
-    print "Indexing $#dependencies dependencies ... ";
+    print "Indexing ", scalar @dependencies, " dependencies ... ";
     $i = 1;
     foreach my $dependencies (@dependencies) {
         print $i++;
@@ -188,7 +190,7 @@ sub import_tarball {
     if ( keys %{ $meta->provides } && ( my $provides = $meta->provides ) ) {
         while ( my ( $module, $data ) = each %$provides ) {
             my $path = $data->{file};
-            my $file = List::Util::first { $_->path =~ /[^\/]+\/$path$/ } @files;
+            my $file = List::Util::first { $_->{path} =~ /[^\/]+\/$path$/ } @files;
             push( @modules,
                   {  %$data,
                      name => $module,
@@ -197,23 +199,23 @@ sub import_tarball {
         }
 
     } elsif ( my $no_index = $meta->no_index ) {
-        @files = grep { $_->name =~ /\.pm$/ } @files;
+        @files = grep { $_->{name} =~ /\.pm$/ } @files;
 
         foreach my $no_dir ( @{ $no_index->{directory} || [] } ) {
-            @files = grep { $_->path !~ /^\Q$no_dir\E/ } @files;
+            @files = grep { $_->{path} !~ /^\Q$no_dir\E/ } @files;
         }
 
         foreach my $no_file ( @{ $no_index->{file} || [] } ) {
-            @files = grep { $_->path !~ /^\Q$no_file\E/ } @files;
+            @files = grep { $_->{path} !~ /^\Q$no_file\E/ } @files;
         }
         foreach my $file (@files) {
             eval {
                 local $SIG{'ALRM'} =
                   sub { print "Call to Module::Metadata timed out "; die };
                 alarm(5);
-                $at->extract_file( $file->path, $tmpdir->file( $file->path ) );
+                $at->extract_file( $file->{path}, $tmpdir->file( $file->{path} ) );
                 my $info = Module::Metadata->new_from_file(
-                                                 $tmpdir->file( $file->path ) );
+                                                 $tmpdir->file( $file->{path} ) );
                 push( @modules,
                       {  file => $file,
                          name => $_,
@@ -227,9 +229,9 @@ sub import_tarball {
 
     foreach my $module (@modules) {
         $module = { %$module,
-                    file         => $module->{file}->path,
-                    file_id      => $module->{file}->id,
-                    abstract     => $module->{file}->abstract,
+                    file         => $module->{file}->{path},
+                    file_id      => $module->{file}->{id},
+                    abstract     => $module->{file}->{abstract},
                     release      => $release->name,
                     date         => $release->date,
                     distribution => $release->distribution,
@@ -237,12 +239,12 @@ sub import_tarball {
     }
 
     say "done";
-    print "Indexing $#modules modules ... ";
+    print "Indexing ", scalar @modules, " modules ... ";
     $i = 1;
     foreach my $module (@modules) {
         print $i++;
-        $module = MetaCPAN::Document::Module->new($module);
-        $module->index( $self->es );
+        my $obj = MetaCPAN::Document::Module->new($module);
+        $obj->index( $self->es );
         print "\010 \010" x length( $i - 1 );
     }
     say "done";

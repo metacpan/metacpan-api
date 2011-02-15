@@ -18,8 +18,8 @@ sub start_L {
         = $type eq 'url' ? $to
         : $type eq 'pod' ? $self->resolve_pod_page_link( $to, $section )
         : $type eq 'man' ? $self->resolve_man_page_link( $to, $section )
-        :                  '';
-
+        :                  undef;
+    $url ||= '';
     my $pound = '#';
     my $class
         = ( $type eq 'pod' && ($url !~ m{$pound}) ) ? ' class="moduleLink"' : '';
