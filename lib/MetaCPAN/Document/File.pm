@@ -2,7 +2,6 @@ package MetaCPAN::Document::File;
 use Moose;
 use ElasticSearch::Document;
 
-use File::stat  ();
 use URI::Escape ();
 use PPI;
 use Pod::POM;
@@ -21,7 +20,7 @@ has id => ( id => [qw(author release path)] );
 has [qw(path author name release distribution)] => ();
 has binary => ( isa        => 'Bool', default => 0 );
 has url    => ( lazy_build => 1,      index   => 'no' );
-has stat => ( isa => 'File::stat', handles    => [qw(size)], type => 'object' );
+has stat => ( isa => 'HashRef' );
 has sloc => ( isa => 'Int',        lazy_build => 1 );
 has pod_lines => ( isa => 'ArrayRef', type => 'integer', lazy_build => 1, index => 'no' );
 has pod_txt  => ( isa => 'ScalarRef', lazy_build => 1 );

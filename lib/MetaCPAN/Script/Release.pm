@@ -3,8 +3,8 @@ use Moose;
 with 'MooseX::Getopt';
 with 'MetaCPAN::Role::Common';
 
-use Path::Class::File  ();
-use Archive::Extract   ();
+use Path::Class qw(file dir);
+use Archive::Tar       ();
 use File::Temp         ();
 use CPAN::Meta         ();
 use DateTime           ();
@@ -47,8 +47,7 @@ sub run {
         } elsif ( $_ =~
 /^https?:\/\/.*\/authors\/id\/[A-Z]\/[A-Z][A-Z]\/([A-Z]+)\/(.*\/)*([^\/]+)$/ )
         {
-            my $dir =
-              Path::Class::Dir->new( File::Temp::tempdir, $1 );
+            my $dir = Path::Class::Dir->new( File::Temp::tempdir, $1 );
             my $ua = LWP::UserAgent->new( parse_head => 0,
                                           env_proxy  => 1,
                                           agent      => "metacpan",
@@ -80,40 +79,35 @@ sub import_tarball {
     $tarball = Path::Class::File->new($tarball);
     ( my $name = $tarball->basename ) =~ s/(\.tar)?\.gz$//;
 
-    print "Extracting tarball to temporary directory ... ";
-    my $ae = Archive::Extract->new( archive => $tarball );
-    my $dir = Path::Class::Dir->new( File::Temp::tempdir );
-    $ae->extract( to => $dir );
+    print "Opening tarball directory ... ";
+    my $at = Archive::Tar->new($tarball);
     say "done";
-
-    my ($basedir) = $dir->children;
-    my @children = $basedir->children;
-    my @files;
-
-    my $d = CPAN::DistnameInfo->new($tarball);
+    my $tmpdir = dir(File::Temp::tempdir);
+    my $d      = CPAN::DistnameInfo->new($tarball);
     my $meta = CPAN::Meta->new(
                                 { version => $d->version,
                                   license => 'unknown',
                                   name    => $d->dist,
                                 } );
 
+    my @files;
     my $meta_file;
     print "Gathering files ... ";
-    foreach my $child (@children) {
-        if ( !$child->is_dir ) {
-            my $relative = $child->relative($basedir);
-            $meta_file = $child if ( $relative =~ /^META\./ );
+    my @list = $at->get_files;
+    foreach my $child (@list) {
+        if ( ref $child ne 'HASH' ) {
+            $meta_file = $child if ( $child->full_path =~ /^[^\/]+\/META\./ );
+            my $stat = { map { $_ => $child->$_ } qw(mode uid gid size mtime) };
             push( @files,
-                  {  name         => $relative->basename,
+                  {  name         => $child->name,
                      binary       => -B $child ? 1 : 0,
                      release      => $name,
                      distribution => $meta->name,
                      author       => $author,
-                     path         => $relative->as_foreign('Unix')->stringify,
-                     stat         => File::stat::stat($child),
-                     content      => \( scalar $child->slurp ) } );
-        } elsif ( $child->is_dir ) {
-            push( @children, $child->children );
+                     path         => $child->full_path,
+                     stat         => $stat,
+                     content      => \( $at->get_content( $child->full_path ) )
+                  } );
         }
     }
     say "done";
@@ -121,7 +115,9 @@ sub import_tarball {
     # get better meta info from meta file
     try {
         die unless ($meta_file);
-        my $foo = CPAN::Meta->load_file($meta_file);
+        $at->extract_file( $meta_file, $tmpdir->file( $meta_file->full_path ) );
+        my $foo =
+          CPAN::Meta->load_file( $tmpdir->file( $meta_file->full_path ) );
         $meta = $foo;
     };
 
@@ -200,7 +196,7 @@ sub import_tarball {
         }
 
     } elsif ( my $no_index = $meta->no_index ) {
-        @files = grep { $_->{name} =~ /\.pm$/ } @files;
+        @files = grep { $_->name =~ /\.pm$/ } @files;
 
         foreach my $no_dir ( @{ $no_index->{directory} || [] } ) {
             @files = grep { $_->path !~ /^\Q$no_dir\E/ } @files;
@@ -214,8 +210,9 @@ sub import_tarball {
                 local $SIG{'ALRM'} =
                   sub { print "Call to Module::Metadata timed out "; die };
                 alarm(5);
+                $at->extract_file( $file->path, $tmpdir->file( $file->path ) );
                 my $info = Module::Metadata->new_from_file(
-                                                $basedir->file( $file->path ) );
+                                                 $tmpdir->file( $file->path ) );
                 push( @modules,
                       {  file => $file,
                          name => $_,
@@ -247,7 +244,6 @@ sub import_tarball {
         print "\010 \010" x length( $i - 1 );
     }
     say "done";
-    $dir->rmtree;
 }
 
 sub pkg_datestamp {
