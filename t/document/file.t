@@ -3,13 +3,32 @@ use strict;
 use warnings;
 
 use MetaCPAN::Document::File;
-use File::stat;
+
+use MetaCPAN::Pod::Lines;
 
 {
     my $content = <<'END';
+package Foo;
+use strict;
+
 =head1 NAME
 
 MyModule - mymodule1 abstract
+
+=pod
+
+bla
+
+=cut
+
+more perl code
+
+=head1 SYNOPSIS
+
+more pod
+more
+
+even more
 
 END
 
@@ -19,12 +38,14 @@ END
                                      release      => 'release',
                                      distribution => 'foo',
                                      name         => 'module.pm',
-                                     stat         => File::stat->new,
+                                     stat         => {},
                                      content      => \$content );
 
-    is( $file->abstract, 'mymodule1 abstract' );
+    is( $file->abstract, 'mymodule1 abstract bla' );
     is( $file->module,   'MyModule' );
-    is_deeply( $file->toc, [ { text => 'NAME', leaf => \1 } ] );
+    is_deeply( $file->toc, [ { text => 'NAME', leaf => \1 }, { text => 'SYNOPSIS', leaf => \1 } ] );
+    is_deeply( $file->pod_lines, [[3, 9], [15, 6]]);
+    is( $file->sloc, 3);
 }
 {
     my $content = <<'END';
@@ -40,7 +61,7 @@ END
                                      release      => 'release',
                                      distribution => 'foo',
                                      name         => 'module.pm',
-                                     stat         => File::stat->new,
+                                     stat         => {},
                                      content      => \$content );
 
     is( $file->abstract, '' );
@@ -68,7 +89,7 @@ END
                                      release      => 'release',
                                      distribution => 'foo',
                                      name         => 'module.pm',
-                                     stat         => File::stat->new,
+                                     stat         => {},
                                      content      => \$content );
 
     is( $file->abstract,

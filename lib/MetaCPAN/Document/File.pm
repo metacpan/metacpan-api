@@ -3,13 +3,13 @@ use Moose;
 use ElasticSearch::Document;
 
 use URI::Escape ();
-use PPI;
 use Pod::POM;
 use Pod::POM::View::TOC;
 use MetaCPAN::Pod::XHTML;
 use Pod::Text;
 use Plack::MIME;
 use List::MoreUtils qw(uniq);
+use MetaCPAN::Pod::Lines;
 
 Plack::MIME->add_type( ".t"   => "text/x-script.perl" );
 Plack::MIME->add_type( ".pod" => "text/x-script.perl" );
@@ -28,11 +28,10 @@ has pod_html => ( isa => 'ScalarRef', lazy_build => 1, index => 'no' );
 has toc      => ( isa => 'ArrayRef', type => 'object', lazy_build => 1, index => 'no' );
 has [qw(mime module abstract)] => ( lazy_build => 1 );
 
-has pod     => ( isa => 'ScalarRef',     lazy_build => 1, property => 0 );
 has content => ( isa => 'ScalarRef', lazy_build => 1, property   => 0, required => 0 );
 has ppi     => ( isa => 'PPI::Document', lazy_build => 1, property => 0 );
 has pom => ( lazy_build => 1, property => 0, required => 0 );
-has content_cb => ( property => 0 );
+has content_cb => ( property => 0, required => 0 );
 
 sub is_perl_file {
     !$_[0]->binary && $_[0]->name =~ /\.(pl|pm|pod|t)$/i;
@@ -79,7 +78,9 @@ sub _build_abstract {
             # parsing Should have a closer look and file bug with Pod::POM
             # It also contains newlines in the actual source
             $content =~ s{=head.*}{}xms;
-            $content =~ s{\n}{}gxms;
+            $content =~ s{\n}{ }gxms;
+            $content =~ s{\s+$}{}gxms;
+            $content =~ s{(\s)+}{$1}gxms;
             return $content || '';
         }
     }
@@ -102,53 +103,17 @@ sub _build_url {
 sub _build_pod_lines {
     my $self = shift;
     return [] unless ( $self->is_perl_file );
-    $self->ppi->index_locations(1);
-    my $found = $self->ppi->find('PPI::Token::Pod');
-    my @return;
-    foreach my $pod ( @{ $found || [] } ) {
-        my @lines = split( /\n/, $pod->content );
-        push( @return, [ $pod->line_number, int( $#lines + 1 ) ] );
-    }
-    return \@return;
-
+    return MetaCPAN::Pod::Lines::parse(${$self->content});
 }
 
 # Copied from Perl::Metrics2::Plugin::Core
 sub _build_sloc {
     my $self = shift;
     return 0 unless ( $self->is_perl_file );
-    my $document = $self->ppi->clone;
-    $document->prune(
-        sub {
-
-            # Cull out the normal content
-            !$_[1]->significant
-              and
-
-              # Cull out the high-volume whitespace tokens
-              !$_[1]->isa('PPI::Token::Whitespace')
-              and (    $_[1]->isa('PPI::Token::Comment')
-                    or $_[1]->isa('PPI::Token::Pod')
-                    or $_[1]->isa('PPI::Token::End')
-                    or $_[1]->isa('PPI::Token::Data') );
-        } );
-
-    # Split the serialized for and find the number of non-blank lines
-    return scalar grep { /\S/ } split /\n/, $document->serialize;
-}
-
-sub _build_ppi {
-    my $self = shift;
-    return PPI::Document->new( $self->content ) || PPI::Document->new;
-}
-
-sub _build_pod {
-    my $found = shift->ppi->find('PPI::Token::Pod');
-    if ($found) {
-        return \( join( "\n\n", @$found ) );
-    } else {
-        return \"";
-    }
+    my @content = split("\n", ${$self->content});
+    my $pods = 0;
+    map { splice(@content, $_->[0], $_->[1], map { '' } 1 .. $_->[1]) } @{$self->pod_lines};
+    return scalar grep { $_ !~ /^\s*#/ } grep { /\S/ } @content;
 }
 
 sub _build_pod_txt {

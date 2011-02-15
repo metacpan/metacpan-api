@@ -67,8 +67,8 @@ sub run {
         }
     }
     say scalar @files, " files found" if(@files > 1);
-    for (@files) {
-        try { $self->import_tarball($_) } catch { say "ERROR: $_" };
+    while (my $file = shift @files) {
+        try { $self->import_tarball($file) } catch { say "ERROR: $_" };
     }
 }
 
@@ -86,7 +86,7 @@ sub import_tarball {
     my $tmpdir = dir(File::Temp::tempdir);
     my $d      = CPAN::DistnameInfo->new($tarball);
     my $meta = CPAN::Meta->new(
-                                { version => $d->version,
+                                { version => $d->version || 0,
                                   license => 'unknown',
                                   name    => $d->dist,
                                 } );
@@ -136,7 +136,7 @@ sub import_tarball {
     print "Indexing ", scalar @files, " files ... ";
     my $i = 1;
     foreach my $file (@files) {
-        print $i++ unless($i % 11);
+        print $i unless($i++ % 11);
         my $obj = MetaCPAN::Document::File->new({%$file, 
          content_cb      => sub { \( $at->get_content( $file->{path} ) ) } });
          $obj->index( $self->es );
@@ -144,6 +144,7 @@ sub import_tarball {
          $file->{id} = $obj->id;
         print "\010 \010" x length( $i - 10 ) unless($i % 11);
     }
+    print "\010 \010" x length( $i - 10 ) if($i % 11);
     say "done";
 
     my $release = MetaCPAN::Document::Release->new($create);
