@@ -36,6 +36,7 @@ sub run {
     my $self = shift;
     my ( undef, @args ) = @{ $self->extra_argv };
     my @files;
+    warn @args;
     for (@args) {
         if ( -d $_ ) {
             print "Looking for files in $_ ... ";
@@ -48,7 +49,7 @@ sub run {
 /^https?:\/\/.*\/authors\/id\/[A-Z]\/[A-Z][A-Z]\/([A-Z]+)\/(.*\/)*([^\/]+)$/ )
         {
             my $dir =
-              Path::Class::Dir->new( File::Temp::tempdir( CLEANUP => 1 ), $1 );
+              Path::Class::Dir->new( File::Temp::tempdir, $1 );
             my $ua = LWP::UserAgent->new( parse_head => 0,
                                           env_proxy  => 1,
                                           agent      => "metacpan",
@@ -82,7 +83,7 @@ sub import_tarball {
 
     print "Extracting tarball to temporary directory ... ";
     my $ae = Archive::Extract->new( archive => $tarball );
-    my $dir = Path::Class::Dir->new( File::Temp::tempdir( CLEANUP => 1 ) );
+    my $dir = Path::Class::Dir->new( File::Temp::tempdir );
     $ae->extract( to => $dir );
     say "done";
 
@@ -248,7 +249,6 @@ sub import_tarball {
     }
     say "done";
     $dir->rmtree;
-    return $release;
 }
 
 sub pkg_datestamp {
