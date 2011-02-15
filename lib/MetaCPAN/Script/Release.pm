@@ -66,6 +66,7 @@ sub run {
             say "Dunno what $_ is";
         }
     }
+    say scalar @files, " files found" if(@files > 1);
     for (@files) {
         try { $self->import_tarball($_) } catch { say "ERROR: $_" };
     }
@@ -135,13 +136,13 @@ sub import_tarball {
     print "Indexing ", scalar @files, " files ... ";
     my $i = 1;
     foreach my $file (@files) {
-        print $i++;
+        print $i++ unless($i % 11);
         my $obj = MetaCPAN::Document::File->new({%$file, 
          content_cb      => sub { \( $at->get_content( $file->{path} ) ) } });
          $obj->index( $self->es );
          $file->{abstract} = $obj->abstract;
          $file->{id} = $obj->id;
-        print "\010 \010" x length( $i - 1 );
+        print "\010 \010" x length( $i - 10 ) unless($i % 11);
     }
     say "done";
 
@@ -200,13 +201,14 @@ sub import_tarball {
 
     } elsif ( my $no_index = $meta->no_index ) {
         @files = grep { $_->{name} =~ /\.pm$/ } @files;
-
+        @files = grep { $_->{path} !~ /^[^\/]+\/t\// } @files;
+        
         foreach my $no_dir ( @{ $no_index->{directory} || [] } ) {
-            @files = grep { $_->{path} !~ /^\Q$no_dir\E/ } @files;
+            @files = grep { $_->{path} !~ /^[^\/]+\/\Q$no_dir\E\// } @files;
         }
 
         foreach my $no_file ( @{ $no_index->{file} || [] } ) {
-            @files = grep { $_->{path} !~ /^\Q$no_file\E/ } @files;
+            @files = grep { $_->{path} !~ /^[^\/]+\/\Q$no_file\E/ } @files;
         }
         foreach my $file (@files) {
             eval {
