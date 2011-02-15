@@ -36,7 +36,6 @@ sub run {
     my $self = shift;
     my ( undef, @args ) = @{ $self->extra_argv };
     my @files;
-    warn @args;
     for (@args) {
         if ( -d $_ ) {
             print "Looking for files in $_ ... ";

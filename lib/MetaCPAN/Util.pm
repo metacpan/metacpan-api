@@ -15,10 +15,10 @@ sub digest {
 sub numify_version {
     my $version = shift;
     try {
-        $version = version->parse( $version )->numify;
+        $version = eval version->parse( $version )->numify;
     } catch {
         $version =~ s/[^0-9\.]//g;
-        $version = version->parse( $version )->numify;
+        $version = eval version->parse( $version )->numify;
     };
     return $version;
 }
