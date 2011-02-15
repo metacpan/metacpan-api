@@ -187,7 +187,8 @@ sub import_tarball {
     my @modules;
     if ( keys %{ $meta->provides } && ( my $provides = $meta->provides ) ) {
         while ( my ( $module, $data ) = each %$provides ) {
-            my $file = List::Util::first { $_->path eq $data->{file} } @files;
+            my $path = $data->{file};
+            my $file = List::Util::first { $_->path =~ /[^\/]+\/$path$/ } @files;
             push( @modules,
                   {  %$data,
                      name => $module,
@@ -223,6 +224,7 @@ sub import_tarball {
             };
         }
     }
+
     foreach my $module (@modules) {
         $module = { %$module,
                     file         => $module->{file}->path,
