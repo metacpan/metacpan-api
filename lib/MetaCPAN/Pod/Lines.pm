@@ -4,6 +4,7 @@ use warnings;
 
 sub parse {
     my $content = shift;
+    return [] unless($content);
     my @lines = split( "\n", $content );
     my @return;
     my $count  = 1;
@@ -17,6 +18,8 @@ sub parse {
             $start = $length = 0;
         } elsif ( $line =~ /\A=[a-zA-Z]/ && !$length ) {
             $start = $count;
+        } elsif( $line =~ /\A\s*__DATA__/) {
+            last;
         }
         $length++ if ($start);
         $count++;

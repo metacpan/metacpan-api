@@ -39,7 +39,14 @@ sub is_perl_file {
 
 sub _build_content {
     my $self = shift;
-    return $self->content_cb->();
+    my @content = split("\n", ${$self->content_cb->()});
+    my $content = "";
+    while(@content) {
+        my $line = shift @content;
+        last if($line =~ /^\s*__DATA__$/);
+        $content .= $line . "\n";
+    }
+    return \$content;
 }
 
 sub _build_mime {
@@ -113,7 +120,13 @@ sub _build_sloc {
     my @content = split("\n", ${$self->content});
     my $pods = 0;
     map { splice(@content, $_->[0], $_->[1], map { '' } 1 .. $_->[1]) } @{$self->pod_lines};
-    return scalar grep { $_ !~ /^\s*#/ } grep { /\S/ } @content;
+    my $sloc = 0;
+    while(@content) {
+        my $line = shift @content;
+        last if($line =~ /^\s*__DATA__/s || $line =~ /^\s*__END__/s);
+        $sloc++ if( $line !~ /^\s*#/ && $line =~ /\S/ );
+    }
+    return $sloc;
 }
 
 sub _build_pod_txt {
