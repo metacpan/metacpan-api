@@ -5,18 +5,15 @@ use Moose;
 with 'MooseX::Getopt';
 
 with 'MetaCPAN::Role::Common';
-with 'MetaCPAN::Role::DB';
 
 use Archive::Tar;
 use CPAN::DistnameInfo;
 use Data::Dump qw( dump );
 use DateTime::Format::Epoch::Unix;
 use ElasticSearch;
-use Every;
 use IO::Uncompress::AnyInflate qw(anyinflate $AnyInflateError);
 
 use MetaCPAN::Script::Dist;
-use MetaCPAN::Schema;
 
 has 'cpan' => (
     is         => 'rw',

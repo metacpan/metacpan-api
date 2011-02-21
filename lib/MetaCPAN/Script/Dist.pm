@@ -22,7 +22,6 @@ with 'MooseX::Getopt';
 use MetaCPAN::Pod::XHTML;
 
 with 'MetaCPAN::Role::Common';
-with 'MetaCPAN::Role::DB';
 
 has 'archive_parent' => ( is => 'rw', );
 
