@@ -1,7 +1,7 @@
 package MetaCPAN::Script::Author;
 
 use Moose;
-use Modern::Perl;
+use feature 'say';
 with 'MooseX::Getopt';
 
 with 'MetaCPAN::Role::Common';

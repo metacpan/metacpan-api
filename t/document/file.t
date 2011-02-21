@@ -190,6 +190,7 @@ END
                                      content_cb   => sub { \$content } );
 
     is( $file->sloc, 8 );
+    is( $file->slop, 30 );
     is_deeply( $file->pod_lines, [ [ 17, 31 ], [ 51, 20 ] ] );
 }
 

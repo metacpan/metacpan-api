@@ -15,7 +15,7 @@
     
 =cut
 
-use Modern::Perl;
+use feature 'say';
 use Data::Dump qw( dump );
 use Every;
 use Find::Lib '../lib';

@@ -12,7 +12,7 @@ http://cpanratings.perl.org/csv/all_ratings.csv
 use Data::Dump qw( dump );
 use Find::Lib '../lib';
 use MetaCPAN;
-use Modern::Perl;
+use feature 'say';
 use Parse::CSV;
 use Path::Class::File;
 use WWW::Mechanize::Cached;

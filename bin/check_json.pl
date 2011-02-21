@@ -16,4 +16,3 @@ foreach my $file ( @ARGV ) {
 
     if ( $@ ) { say "\terror in $file: $@" }
 }
-

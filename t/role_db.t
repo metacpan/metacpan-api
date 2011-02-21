@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 use Data::Dump qw( dump );
-use Modern::Perl;
+use feature 'say';
 use Test::More tests => 3;
 
 require_ok( 'MetaCPAN' );

@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 
-use Modern::Perl;
+use feature 'say';
 use Find::Lib '../lib';
 use MetaCPAN;
 

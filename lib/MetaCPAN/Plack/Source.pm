@@ -5,7 +5,7 @@ use base 'Plack::Component';
 use Archive::Tar::Wrapper;
 use File::Copy;
 use File::Path qw(make_path);
-use Modern::Perl;
+use feature 'say';
 use Path::Class qw(file);
 
 __PACKAGE__->mk_accessors(qw(cpan));

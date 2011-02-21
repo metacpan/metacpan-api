@@ -1,6 +1,6 @@
 package MetaCPAN;
 # ABSTRACT: MetaCPAN
-use Modern::Perl;
+use feature 'say';
 use Moose;
 with 'MooseX::Getopt';
 

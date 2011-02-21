@@ -8,8 +8,11 @@ use IO::String;
 use Plack::App::Proxy;
 use mro 'c3';
 
+# TODO: rewrite to keep streaming.
+# just strip json unti we hit "hits":
+# count open and closed {} and truncate
+# when "hits" is done
 sub process_chunks {
-
     my ( $self, $res, $cb ) = @_;
     Plack::Util::response_cb(
         $res,

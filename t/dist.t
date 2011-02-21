@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 use Data::Dump qw( dump );
-use Modern::Perl;
+use feature 'say';
 use Test::More qw( no_plan );
 
 require_ok( 'MetaCPAN' );

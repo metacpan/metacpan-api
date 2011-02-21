@@ -1,7 +1,7 @@
 package MetaCPAN::Script::PerlMongers;
 
 use Moose;
-use Modern::Perl;
+use feature 'say';
 
 use Data::Dump qw( dump );
 use XML::Simple;

@@ -10,9 +10,11 @@ sub parse {
     my $count  = 1;
     my $length = 0;
     my $start  = 0;
+    my $slop = 0;
     foreach my $line (@lines) {
         if ( $line =~ /\A=cut/ ) {
             $length++;
+            $slop++;
             push( @return, [ $start-1, $length ] )
               if ( $start && $length );
             $start = $length = 0;
@@ -21,12 +23,15 @@ sub parse {
         } elsif( $line =~ /\A\s*__DATA__/) {
             last;
         }
-        $length++ if ($start);
+        if ($start) {
+            $length++;
+            $slop++ if( $line =~ /\S/ );
+        }
         $count++;
     }
     push( @return, [ $start-1, $length ] )
       if ( $start && $length );
-    return \@return;
+    return \@return, $slop;
 }
 
 1;

@@ -7,7 +7,7 @@ use Devel::SimpleTrace;
 use File::Slurp;
 use Moose;
 use MooseX::Getopt;
-use Modern::Perl;
+use feature 'say';
 
 #use Parse::CPAN::Meta qw( load_yaml_string );
 use Pod::POM;

@@ -22,11 +22,13 @@ has binary => ( isa        => 'Bool', default => 0 );
 has url    => ( lazy_build => 1,      index   => 'no' );
 has stat => ( isa => 'HashRef' );
 has sloc => ( isa => 'Int',        lazy_build => 1 );
+has slop => ( isa => 'Int', is => 'rw', default => 0 );
 has pod_lines => ( isa => 'ArrayRef', type => 'integer', lazy_build => 1, index => 'no' );
 has pod_txt  => ( isa => 'ScalarRef', lazy_build => 1 );
 has pod_html => ( isa => 'ScalarRef', lazy_build => 1, index => 'no' );
 has toc      => ( isa => 'ArrayRef', type => 'object', lazy_build => 1, index => 'no' );
 has [qw(mime module abstract)] => ( lazy_build => 1 );
+
 
 has content => ( isa => 'ScalarRef', lazy_build => 1, property   => 0, required => 0 );
 has ppi     => ( isa => 'PPI::Document', lazy_build => 1, property => 0 );
@@ -39,7 +41,7 @@ sub is_perl_file {
 
 sub _build_content {
     my $self = shift;
-    my @content = split("\n", ${$self->content_cb->()});
+    my @content = split("\n", ${$self->content_cb->()} || '');
     my $content = "";
     while(@content) {
         my $line = shift @content;
@@ -110,7 +112,10 @@ sub _build_url {
 sub _build_pod_lines {
     my $self = shift;
     return [] unless ( $self->is_perl_file );
-    return MetaCPAN::Pod::Lines::parse(${$self->content});
+    my ($lines, $slop) = MetaCPAN::Pod::Lines::parse(${$self->content});
+    $self->slop($slop);
+    return $lines;
+    
 }
 
 # Copied from Perl::Metrics2::Plugin::Core
@@ -123,7 +128,7 @@ sub _build_sloc {
     my $sloc = 0;
     while(@content) {
         my $line = shift @content;
-        last if($line =~ /^\s*__DATA__/s || $line =~ /^\s*__END__/s);
+        last if($line =~ /^\s*__END__/s);
         $sloc++ if( $line !~ /^\s*#/ && $line =~ /\S/ );
     }
     return $sloc;

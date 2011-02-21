@@ -1,6 +1,6 @@
 package MetaCPAN::Role::DB;
 
-use Modern::Perl;
+use feature 'say';
 use Moose::Role;
 use DBI;
 use Find::Lib;

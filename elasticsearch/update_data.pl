@@ -18,7 +18,7 @@ use File::stat;
 use Find::Lib '../lib';
 use Getopt::Long::Descriptive;
 use MetaCPAN;
-use Modern::Perl;
+use feature 'say';
 
 my ( $opt, $usage ) = describe_options(
     'update_data.pl %o',

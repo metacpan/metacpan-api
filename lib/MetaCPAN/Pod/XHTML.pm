@@ -4,7 +4,7 @@ use Moose;
 
 extends 'Pod::Simple::XHTML';
 
-use Modern::Perl;
+use feature 'say';
 use Data::Dump qw( dump );
 use HTML::Entities;
 use IO::File;

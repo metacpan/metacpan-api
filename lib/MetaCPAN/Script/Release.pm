@@ -13,7 +13,7 @@ use Module::Metadata   ();
 use File::stat         ();
 use CPAN::DistnameInfo ();
 
-use Modern::Perl;
+use feature 'say';
 use MetaCPAN::Document::Release;
 use MetaCPAN::Document::Distribution;
 use MetaCPAN::Document::File;
@@ -44,8 +44,7 @@ sub run {
             say "done";
         } elsif ( -f $_ ) {
             push( @files, $_ );
-        } elsif ( $_ =~
-/^https?:\/\/.*\/authors\/id\/[A-Z]\/[A-Z][A-Z]\/([A-Z]+)\/(.*\/)*([^\/]+)$/ )
+        } elsif ( $_ =~ /^https?:\/\// && CPAN::DistnameInfo->new($_)->cpanid )
         {
             my $dir = Path::Class::Dir->new( File::Temp::tempdir, $1 );
             my $ua = LWP::UserAgent->new( parse_head => 0,
@@ -75,16 +74,14 @@ sub run {
 sub import_tarball {
     my ( $self, $tarball ) = @_;
     say "Processing $tarball ...";
-    ( my $author  = $tarball ) =~ s/^.*\/(.*?)\/[^\/]*$/$1/;
-    ( my $archive = $tarball ) =~ s/^.*\/(.*?)$/$1/;
     $tarball = Path::Class::File->new($tarball);
-    ( my $name = $tarball->basename ) =~ s/(\.tar)?\.gz$//;
 
     print "Opening tarball in memory ... ";
     my $at = Archive::Tar->new($tarball);
     say "done";
     my $tmpdir = dir(File::Temp::tempdir);
     my $d      = CPAN::DistnameInfo->new($tarball);
+    my ($author, $archive, $name) = ($d->cpanid, $d->filename, $d->distvname);
     my $meta = CPAN::Meta->new(
                                 { version => $d->version || 0,
                                   license => 'unknown',
