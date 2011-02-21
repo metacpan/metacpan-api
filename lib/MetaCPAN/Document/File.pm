@@ -24,10 +24,12 @@ has stat => ( isa => 'HashRef' );
 has sloc => ( isa => 'Int',        lazy_build => 1 );
 has slop => ( isa => 'Int', is => 'rw', default => 0 );
 has pod_lines => ( isa => 'ArrayRef', type => 'integer', lazy_build => 1, index => 'no' );
-has pod_txt  => ( isa => 'ScalarRef', lazy_build => 1 );
+has pod_txt  => ( isa => 'ScalarRef', lazy_build => 1, index => 'analyzed' );
 has pod_html => ( isa => 'ScalarRef', lazy_build => 1, index => 'no' );
 has toc      => ( isa => 'ArrayRef', type => 'object', lazy_build => 1, index => 'no' );
-has [qw(mime module abstract)] => ( lazy_build => 1 );
+has [qw(mime module)] => ( lazy_build => 1 );
+has abstract => ( lazy_build => 1, index => 'analyzed' );
+has status => ( default => 'cpan' );
 
 
 has content => ( isa => 'ScalarRef', lazy_build => 1, property   => 0, required => 0 );
@@ -113,7 +115,7 @@ sub _build_pod_lines {
     my $self = shift;
     return [] unless ( $self->is_perl_file );
     my ($lines, $slop) = MetaCPAN::Pod::Lines::parse(${$self->content});
-    $self->slop($slop);
+    $self->slop($slop || 0);
     return $lines;
     
 }

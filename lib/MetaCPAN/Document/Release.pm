@@ -13,6 +13,7 @@ has version_numified => ( isa        => 'Num', lazy_build => 1 );
 has resources        => ( isa        => 'HashRef', required => 0 );
 has author       => ();
 has distribution => ();
+has status => ( default => 'cpan' );
 
 sub _build_version_numified {
     return MetaCPAN::Util::numify_version( shift->version )
@@ -20,7 +21,7 @@ sub _build_version_numified {
 
 sub _build_download_url {
     my $self = shift;
-    'http://cpan.metacpan.org/authors/'
+    'http://cpan.cpantesters.org/authors/'
       . MetaCPAN::Document::Author::_build_dir( $self->author ) . '/'
       . $self->archive;
 }

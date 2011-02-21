@@ -11,6 +11,7 @@ has [qw(author name distribution release file file_id)] => ();
 has [qw(version)] => ( required => 0 );
 has date     => ( isa   => 'DateTime' );
 has abstract => ( index => 'analyzed' );
+has status => ( default => 'cpan' );
 
 sub _build_version_numified {
     return MetaCPAN::Util::numify_version( shift->version )

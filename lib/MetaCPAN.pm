@@ -13,8 +13,6 @@ use DateTime::Format::Epoch::Unix;
 use ElasticSearch;
 use IO::Uncompress::AnyInflate qw(anyinflate $AnyInflateError);
 
-use MetaCPAN::Script::Dist;
-
 has 'cpan' => (
     is         => 'rw',
     isa        => 'Str',

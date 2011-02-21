@@ -24,7 +24,7 @@ use File::Find::Rule;
 use Try::Tiny;
 use LWP::UserAgent;
 
-has reindex => ( is => 'ro', isa => 'Bool', default => 0 );
+has latest => ( is => 'ro', isa => 'Bool', default => 0 );
 
 sub main {
     my $tarball = shift;
@@ -81,7 +81,8 @@ sub import_tarball {
     say "done";
     my $tmpdir = dir(File::Temp::tempdir);
     my $d      = CPAN::DistnameInfo->new($tarball);
-    my ($author, $archive, $name) = ($d->cpanid, $d->filename, $d->distvname);
+    my ( $author, $archive, $name ) =
+      ( $d->cpanid, $d->filename, $d->distvname );
     my $meta = CPAN::Meta->new(
                                 { version => $d->version || 0,
                                   license => 'unknown',
@@ -96,14 +97,17 @@ sub import_tarball {
         if ( ref $child ne 'HASH' ) {
             $meta_file = $child if ( $child->full_path =~ /^[^\/]+\/META\./ );
             my $stat = { map { $_ => $child->$_ } qw(mode uid gid size mtime) };
+            (my $fname = $child->full_path) =~ s/.*\///;
+            next unless($fname); # we have a directory
             push( @files,
-                  {  name         => $child->name,
+                  {  name         => $fname,
                      binary       => -B $child ? 1 : 0,
                      release      => $name,
                      distribution => $meta->name,
                      author       => $author,
                      path         => $child->full_path,
-                     stat         => $stat
+                     stat         => $stat,
+                     status       => $self->latest ? 'latest' : 'cpan',
                   } );
         }
     }
@@ -126,7 +130,8 @@ sub import_tarball {
                 author       => $author,
                 distribution => $meta->name,
                 archive      => $archive,
-                date         => $self->pkg_datestamp($tarball) };
+                date         => $self->pkg_datestamp($tarball),
+                status       => $self->latest ? 'latest' : 'cpan', };
 
     $create->{distribution} = $meta->name;
 
@@ -238,14 +243,16 @@ sub import_tarball {
         print $i++;
         my $obj =
           MetaCPAN::Document::Module->new(
-                                        %$module,
-                                        file     => $module->{file}->{path},
-                                        file_id  => $module->{file}->{id},
-                                        abstract => $module->{file}->{abstract},
-                                        release  => $release->name,
-                                        date     => $release->date,
-                                        distribution => $release->distribution,
-                                        author       => $release->author );
+                                    %$module,
+                                    file         => $module->{file}->{path},
+                                    file_id      => $module->{file}->{id},
+                                    abstract     => $module->{file}->{abstract},
+                                    release      => $release->name,
+                                    date         => $release->date,
+                                    distribution => $release->distribution,
+                                    author       => $release->author,
+                                    status => $self->latest ? 'latest' : 'cpan',
+          );
         $obj->index( $self->es );
         print "\010 \010" x length( $i - 1 );
     }
