@@ -13,6 +13,7 @@
     "blog_feed": "http://blog.twoshortplanks.com/feed/"
     "perlmongers": "London.pm",
     "perlmongers_url": "http://london.pm.org/",
+    "website": "http://www.twoshortplanks.com/",
     "cats": ["Mufasa", "Josie" ]
     }
 }
