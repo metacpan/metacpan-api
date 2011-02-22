@@ -1,0 +1,18 @@
+{
+"MARKF": {
+    "accepts_donations": "0",
+    "country": "GB",
+    "region": "Wiltshire",
+    "city": "Chippenham",
+    "email": "mark@twoshortplanks.com",
+    "irc_nick": "Trelane",
+    "github_username": "2shortplanks",
+    "stackoverflow_public_profile": "http://stackoverflow.com/users/60581/mark-fowler",
+    "twitter_username": "2shortplanks",
+    "blog_url": "http://blog.twoshortplanks.com/",
+    "perlmongers": "London.pm",
+    "perlmongers_url": "http://london.pm.org/",
+    "cats": ["Mufasa", "Josie" ]
+    }
+}
+
