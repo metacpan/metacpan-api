@@ -64,6 +64,46 @@ Using the "field" key, the search term becomes case-insensitive:
 Same list, but return only "name" and "distvname" fields:
 [[http://api.metacpan.org/module/_search?&fields=_source.distvname,_source.name&q=*&size=100000]]
 
+## Search for a Distribution
+
+###### By name:
+[[http://api.metacpan.org/dist/Dancer]]
+
+###### By distribution name:
+[[http://api.metacpan.org/dist/_search?q=name:dancer]]
+
+###### By author name:
+
+Note that for this type of search, the author id must be in lower case. 
+
+[[http://api.metacpan.org/dist/_search?q=author:oalders]]
+
+Alternate syntax:
+
+<pre><code>
+curl -XPOST 'api.metacpan.org/dist/_search?pretty=true' -d '{
+    "query" : {
+        "term" : { "author" : "oalders" }
+    }
+}
+'
+</code></pre>
+
+Using the "field" key, the search term becomes case-insensitive:
+
+<pre><code>curl -XPOST 'api.metacpan.org/dist/_search?pretty=true' -d '{
+    "query" : {
+        "field" : { "author" : "Oalders"  }
+    }
+}
+'</code></pre>
+
+###### List all distributions:
+[[http://api.metacpan.org/dist/_search?q=*&size=100000]]
+
+Same list, but return only "name" and "distvname" fields:
+[[http://api.metacpan.org/dist/_search?&fields=_source.distvname,_source.name&q=*&size=100000]]
+
 ## Search for an author
 
 ###### By PAUSEID (exact match)
