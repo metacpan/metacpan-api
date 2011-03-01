@@ -3,7 +3,7 @@ package MetaCPAN::Script::Author;
 use Moose;
 use feature 'say';
 with 'MooseX::Getopt';
-
+use Log::Contextual qw( :log );
 with 'MetaCPAN::Role::Common';
 
 use MetaCPAN::Document::Author;
@@ -36,17 +36,15 @@ sub index_authors {
     my $author_fh = $self->author_fh;
     my @results   = ();
     my $lines = 0;
-    print "Counting authors ... ";
+    log_debug { "Counting author" };
     $lines++ while($author_fh->getline());
-    say "done";
     $author_fh = $self->_build_author_fh;
-    print "Indexing $lines authors ... ";
-    my $i = 0;
+    log_info { "Indexing $lines authors" };
+    
     while ( my $line = $author_fh->getline() ) {
-        print $i unless($i++ % 11);
         if ( $line =~ m{alias\s([\w\-]*)\s{1,}"(.*)<(.*)>"}gxms ) {
-
             my ( $pauseid, $name, $email ) = ( $1, $2, $3 );
+            log_debug { "Indexing $pauseid: $name <$email>" };
             my $author =
               MetaCPAN::Document::Author->new( pauseid => $pauseid,
                                                name    => $name,
@@ -58,10 +56,8 @@ sub index_authors {
 
             push @results, $author->index( $self->es );
         }
-        print "\010 \010" x length( $i - 10 ) unless($i % 11 && $i != $lines);
     }
-    say "done";
-    return \@results;
+    log_info { "done" };
 }
 
 sub author_config {

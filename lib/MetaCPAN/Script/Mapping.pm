@@ -2,8 +2,10 @@ package MetaCPAN::Script::Mapping;
 
 use Moose;
 with 'MooseX::Getopt';
-use MetaCPAN;
+use Log::Contextual qw( :log );
+with 'MetaCPAN::Role::Common';
 
+use MetaCPAN;
 use MetaCPAN::Document::Author;
 use MetaCPAN::Document::Release;
 use MetaCPAN::Document::Distribution;
@@ -18,46 +20,14 @@ sub run {
 sub put_mappings {
     my ($self, $es) = @_;
     # do not delete mappings, this will delete the data as well
-    # ElasticSearch merges new mappings
-    MetaCPAN::Document::Author->meta->put_mapping( $es );
-    MetaCPAN::Document::Release->meta->put_mapping( $es );
-    MetaCPAN::Document::Distribution->meta->put_mapping( $es );
-    MetaCPAN::Document::File->meta->put_mapping( $es );
-    MetaCPAN::Document::Module->meta->put_mapping( $es );
-    MetaCPAN::Document::Dependency->meta->put_mapping( $es );
-    $self->map_cpanratings( $es );
-    $self->map_pod( $es );
+    # ElasticSearch merges new mappings if possible
+    for(qw(Author Release Distribution File Module Dependency)) {
+        log_info { "Putting mapping for $_" };
+        my $class = "MetaCPAN::Document::$_";
+        $class->meta->put_mapping( $es );
+    }
 
     return;
-
-}
-
-sub map_pod {
-    my ($self, $es) = @_;
-    return $es->put_mapping(
-        index      => ['cpan'],
-        type       => 'pod',
-        properties => {
-            html     => { type => "string" },
-            pure_pod => { type => "string" },
-            text     => { type => "string" },
-        },
-    );
-
-}
-
-sub map_cpanratings {
-    my ($self, $es) = @_;
-    return $es->put_mapping(
-        index      => ['cpan'],
-        type       => 'cpanratings',
-        properties => {
-            dist         => { type => "string" },
-            rating       => { type => "string" },
-            review_count => { type => "string" },
-        },
-
-    );
 
 }
 

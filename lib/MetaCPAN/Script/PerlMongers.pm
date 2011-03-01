@@ -103,4 +103,6 @@ returns an ARRAYREF of groups.
 
 Adds/updates all PerlMongers groups to ElasticSearch.
 
-=cut
+=head1 SOURCE
+
+L<http://www.pm.org/groups/perl_mongers.xml>

@@ -2,9 +2,12 @@ package MetaCPAN::Script::Index;
 
 use Moose;
 with 'MooseX::Getopt';
+use Log::Contextual qw( :log );
+with 'MetaCPAN::Role::Common';
 use MetaCPAN;
+use MetaCPAN::Script::Mapping;
 
-has [qw(create delete recreate)] => ( isa => 'Bool', is => 'rw' );
+has [qw(create delete recreate mapping)] => ( isa => 'Bool', is => 'rw' );
 
 sub run {
     my $self = shift;
@@ -12,12 +15,18 @@ sub run {
     $index ||= 'cpan';
     my $es = MetaCPAN->new->es;
     if ( $self->create ) {
-        $es->create_index(index => $index);
+        log_info { "Creating index $index" };
+        $es->create_index( index => $index );
     } elsif ( $self->delete ) {
-        $es->create_index(index => $index);
+        log_info { "Deleting index $index" };
+        $es->delete_index( index => $index );
     } elsif ( $self->recreate ) {
-        $es->delete_index(index => $index);
-        $es->create_index(index => $index);
+        log_info { "Recreating index $index" };
+        $es->delete_index( index => $index );
+        $es->create_index( index => $index );
+    }
+    if ( $self->mapping ) {
+        MetaCPAN::Script::Mapping->new->run;
     }
 }
 

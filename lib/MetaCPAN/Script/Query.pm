@@ -44,6 +44,7 @@ __END__
  # You guys should seriously clean up your directory:
  # bin/metacpan query /cpan/release/_search \
     -d '{"query":{"match_all":{}},"facets":{"stat1":{"terms":{"script_field":"_source.author + \"/\" + _source.distribution"}}}}}' //terms
+
 =head1 DESCRIPTION
 
 Issues a query to the ElasticSearch server, parses the response

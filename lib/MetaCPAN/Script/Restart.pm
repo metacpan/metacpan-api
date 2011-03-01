@@ -13,3 +13,9 @@ sub run {
 }
 
 __PACKAGE__->meta->make_immutable;
+
+__END__
+
+=head1 SYNOPSIS
+
+ # bin/metacpan restart

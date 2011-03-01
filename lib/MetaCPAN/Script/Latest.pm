@@ -4,25 +4,34 @@ use feature qw(say);
 use Moose;
 use MooseX::Aliases;
 with 'MooseX::Getopt';
+use Log::Contextual qw( :log );
+with 'MetaCPAN::Role::Common';
 use MetaCPAN;
 
-has 'dry_run' => ( is => 'ro', isa => 'Bool', default => 0 );
+has dry_run => ( is => 'ro', isa => 'Bool', default => 0 );
 has verbose => ( is => 'ro', isa => 'Bool', default => 0 );
 has es => ( is => 'ro', default => sub { MetaCPAN->new->es } );
+has distribution => ( is => 'ro' );
 
 sub run {
     my $self = shift;
     my $es   = $self->es;
-    say "Dry run: updates will not be written to ES"
+    log_info { "Dry run: updates will not be written to ES" }
       if ( $self->dry_run );
-    my $search = { index  => 'cpan',
-                   type   => 'release',
-                   query  => { match_all => {} },
-                   scroll => '1h',
-                   size   => 100,
-                   from => 0,
-                   sort   => [ 'distribution', { date => { reverse => \1 } } ],
-    };
+    $es->refresh_index();
+    my $query =
+      $self->distribution
+      ? { term => { distribution => $self->distribution } }
+      : { match_all => {} };
+    my $search = { index => 'cpan',
+                   type  => 'release',
+                   query => $query,
+                   size  => 100,
+                   from  => 0,
+                   sort  => ['distribution',
+                             { maturity => { reverse => \1 } },
+                             { date     => { reverse => \1 } }
+                   ], };
 
     my $dist = '';
     my $rs   = $es->search(%$search);
@@ -30,22 +39,24 @@ sub run {
         if ( $dist ne $row->{_source}->{distribution} ) {
             $dist = $row->{_source}->{distribution};
             next if ( $row->{_source}->{status} eq 'latest' );
-            say "Upgrading $row->{_source}->{name} to latest";
-            say "Upgrading files ..." if($self->verbose);
-            $self->reindex( 'file', $row->{_id}, 'latest' );
-            say "Upgrading modules ..." if($self->verbose);
-            $self->reindex( 'module', $row->{_id}, 'latest' );
+            log_info { "Upgrading $row->{_source}->{name} to latest" };
+
+            for (qw(file module dependency)) {
+                log_debug { "Upgrading $_" };
+                $self->reindex( $_, $row->{_id}, 'latest' );
+            }
             next if ( $self->dry_run );
             $es->index( index => 'cpan',
                         type  => 'release',
                         id    => $row->{_id},
                         data  => { %{ $row->{_source} }, status => 'latest' } );
         } elsif ( $row->{_source}->{status} eq 'latest' ) {
-            say "Downgrading $row->{_source}->{name} to cpan";
-            say "Downgrading files ..." if($self->verbose);
-            $self->reindex( 'file', $row->{_id}, 'cpan' );
-            say "Downgrading modules ..." if($self->verbose);
-            $self->reindex( 'module', $row->{_id}, 'cpan' );
+            log_info { "Downgrading $row->{_source}->{name} to cpan" };
+
+            for (qw(file module dependency)) {
+                log_debug { "Downgrading $_" };
+                $self->reindex( $_, $row->{_id}, 'cpan' );
+            }
             next if ( $self->dry_run );
             $es->index( index => 'cpan',
                         type  => 'release',
@@ -66,12 +77,12 @@ sub reindex {
                    type  => $type,
                    query => { term => { release => $release } },
                    sort  => ['_id'],
-                   size  => 10,
+                   size  => 30,
                    from  => 0, };
     my $rs = $es->search(%$search);
     while ( my $row = shift @{ $rs->{hits}->{hits} } ) {
-        say $status eq 'latest' ? "Upgrading " : "Downgrading ",
-          $type, " ", $row->{_source}->{name} if($self->verbose);
+        log_debug { $status eq 'latest' ? "Upgrading " : "Downgrading ",
+          $type, " ", $row->{_source}->{name} };
         $es->index( index => 'cpan',
                     type  => $type,
                     id    => $row->{_id},
@@ -97,6 +108,6 @@ __END__
  
 =head1 DESCRIPTION
 
-After running an import from cpan, this script will set the status
-to latest on the most recent release, its files and modules.
+After importing releases from cpan, this script will set the status
+to latest on the most recent release, its files, modules and dependencies.
 It also makes sure that there is only one latest release per distribution.

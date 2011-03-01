@@ -2,6 +2,7 @@ package MetaCPAN::Script::Release;
 use Moose;
 with 'MooseX::Getopt';
 with 'MetaCPAN::Role::Common';
+use Log::Contextual qw( :log );
 
 use Path::Class qw(file dir);
 use Archive::Tar       ();
@@ -19,12 +20,15 @@ use MetaCPAN::Document::Distribution;
 use MetaCPAN::Document::File;
 use MetaCPAN::Document::Dependency;
 use MetaCPAN::Document::Module;
+use MetaCPAN::Script::Latest;
 use DateTime::Format::Epoch::Unix;
 use File::Find::Rule;
 use Try::Tiny;
 use LWP::UserAgent;
 
 has latest => ( is => 'ro', isa => 'Bool', default => 0 );
+has age => ( is => 'ro', isa => 'Int' );
+has verbose => ( is => 'ro', isa => 'Bool', default => 0 );
 
 sub main {
     my $tarball = shift;
@@ -38,118 +42,124 @@ sub run {
     my @files;
     for (@args) {
         if ( -d $_ ) {
-            print "Looking for files in $_ ... ";
-            push( @files,
-                  sort File::Find::Rule->new->file->name('*.tar.gz')->in($_) );
-            say "done";
+            log_info { "Looking for tarballs in $_" };
+            my $find = File::Find::Rule->new->file->name('*.tar.gz');
+            $find = $find->ctime( ">" . (time - $self->age * 3600) )
+              if ( $self->age );
+            push( @files, sort $find->in($_) );
         } elsif ( -f $_ ) {
             push( @files, $_ );
         } elsif ( $_ =~ /^https?:\/\// && CPAN::DistnameInfo->new($_)->cpanid )
         {
-            my $dir = Path::Class::Dir->new( File::Temp::tempdir, $1 );
+            my $d = CPAN::DistnameInfo->new($_);
+            my $file =
+              Path::Class::File->new( qw(var tmp http),
+                                     'authors',
+                                     MetaCPAN::Document::Author::_build_dir(
+                                                                      $d->cpanid
+                                     ), $d->filename );
             my $ua = LWP::UserAgent->new( parse_head => 0,
                                           env_proxy  => 1,
                                           agent      => "metacpan",
                                           timeout    => 30, );
-            $dir->mkpath;
-            my $file = $dir->file($3);
-            print "Downloading $_ to temporary location ... ";
+            $file->dir->mkpath;
+            log_info { "Downloading $_" };
             $ua->mirror( $_, $file );
             if ( -e $file ) {
-                say "done";
                 push( @files, $file );
             } else {
-                say "failed";
+                log_error { "Downloading $_ failed" };
             }
         } else {
-            say "Dunno what $_ is";
+            log_error { "Dunno what $_ is" };
         }
     }
-    say scalar @files, " files found" if ( @files > 1 );
+    log_info { scalar @files, " tarballs found" } if ( @files > 1 );
     while ( my $file = shift @files ) {
-        try { $self->import_tarball($file) } catch { say "ERROR: $_" };
+        try { $self->import_tarball($file) } catch { log_fatal { $_ } };
     }
 }
 
 sub import_tarball {
     my ( $self, $tarball ) = @_;
-    say "Processing $tarball ...";
+    log_info { "Processing $tarball" };
     $tarball = Path::Class::File->new($tarball);
 
-    print "Opening tarball in memory ... ";
+    log_debug { "Opening tarball in memory" };
     my $at = Archive::Tar->new($tarball);
-    say "done";
     my $tmpdir = dir(File::Temp::tempdir);
     my $d      = CPAN::DistnameInfo->new($tarball);
     my ( $author, $archive, $name ) =
       ( $d->cpanid, $d->filename, $d->distvname );
+    my $version = MetaCPAN::Util::fix_version( $d->version );
     my $meta = CPAN::Meta->new(
-                                { version => $d->version || 0,
+                                { version => $version || 0,
                                   license => 'unknown',
                                   name    => $d->dist,
+                                  no_index => {
+                                      directory => [qw(t xt inc)]
+                                  }
                                 } );
 
     my @files;
     my $meta_file;
-    print "Gathering files ... ";
+    log_debug { "Gathering files" };
     my @list = $at->get_files;
     while ( my $child = shift @list ) {
         if ( ref $child ne 'HASH' ) {
             $meta_file = $child if ( $child->full_path =~ /^[^\/]+\/META\./ );
             my $stat = { map { $_ => $child->$_ } qw(mode uid gid size mtime) };
-            (my $fname = $child->full_path) =~ s/.*\///;
-            next unless($fname); # we have a directory
+            my $fname = $child->full_path;
+            $child->is_dir ? $fname =~ s/(.*\/)?(.*?)\//$2/ : $fname =~ s/.*\///;
+            ( my $fpath = $child->full_path ) =~ s/.*?\///;
+            my @level = split(/\//, $fpath);
+            my $level = @level - 1;
             push( @files,
                   {  name         => $fname,
-                     binary       => -B $child ? 1 : 0,
+                     directory    => $child->is_dir ? 1 : 0,
+                     level        => $level,
                      release      => $name,
                      distribution => $meta->name,
                      author       => $author,
-                     path         => $child->full_path,
+                     full_path    => $child->full_path,
+                     path         => $fpath,
                      stat         => $stat,
-                     status       => $self->latest ? 'latest' : 'cpan',
+                     maturity     => $d->maturity,
                   } );
         }
     }
-    say "done";
 
     # get better meta info from meta file
     try {
-        die unless ($meta_file);
         $at->extract_file( $meta_file, $tmpdir->file( $meta_file->full_path ) );
         my $foo =
           CPAN::Meta->load_file( $tmpdir->file( $meta_file->full_path ) );
         $meta = $foo;
-    };
+    } catch {
+        log_error { "META file could not be loaded: $_" };
+    } if ($meta_file);
 
     my $create =
       { map { $_ => $meta->$_ } qw(version name license abstract resources) };
     $create = { %$create,
-                status       => $meta->release_status,
                 name         => $name,
                 author       => $author,
                 distribution => $meta->name,
                 archive      => $archive,
-                date         => $self->pkg_datestamp($tarball),
-                status       => $self->latest ? 'latest' : 'cpan', };
+                maturity     => $d->maturity,
+                date         => $self->pkg_datestamp($tarball), };
 
-    $create->{distribution} = $meta->name;
-
-    print "Indexing ", scalar @files, " files ... ";
+    log_debug { "Indexing ", scalar @files, " files" };
     my $i = 1;
     foreach my $file (@files) {
-        print $i unless ( $i++ % 11 );
         my $obj = MetaCPAN::Document::File->new(
             {  %$file,
-               content_cb => sub { \( $at->get_content( $file->{path} ) ) }
+               content_cb => sub { \( $at->get_content( $file->{full_path} ) ) }
             } );
         $obj->index( $self->es );
         $file->{abstract} = $obj->abstract;
         $file->{id}       = $obj->id;
-        print "\010 \010" x length( $i - 10 ) unless ( $i % 11 );
     }
-    print "\010 \010" x length( $i - 10 ) if ( $i % 11 );
-    say "done";
 
     my $release = MetaCPAN::Document::Release->new($create);
     $release->index( $self->es );
@@ -158,7 +168,7 @@ sub import_tarball {
       MetaCPAN::Document::Distribution->new( { name => $meta->name } );
     $distribution->index( $self->es );
 
-    print "Gathering dependencies ... ";
+    log_debug { "Gathering dependencies" };
 
     # find dependencies
     my @dependencies;
@@ -177,27 +187,22 @@ sub import_tarball {
             }
         }
     }
-    say "done";
 
-    print "Indexing ", scalar @dependencies, " dependencies ... ";
+    log_debug { "Indexing ", scalar @dependencies, " dependencies" };
     $i = 1;
     foreach my $dependencies (@dependencies) {
-        print $i++;
         $dependencies = MetaCPAN::Document::Dependency->new($dependencies);
         $dependencies->index( $self->es );
-        print "\010 \010" x length( $i - 1 );
     }
-    say "done";
-
-    print "Gathering modules ... ";
-
+    
+    log_debug {  "Gathering modules" };
     # find modules
     my @modules;
     if ( keys %{ $meta->provides } && ( my $provides = $meta->provides ) ) {
         while ( my ( $module, $data ) = each %$provides ) {
             my $path = $data->{file};
             my $file =
-              List::Util::first { $_->{path} =~ /[^\/]+\/$path$/ } @files;
+              List::Util::first { $_->{path} =~ /\Q$path\E$/ } @files;
             push( @modules,
                   {  %$data,
                      name => $module,
@@ -207,24 +212,27 @@ sub import_tarball {
 
     } elsif ( my $no_index = $meta->no_index ) {
         @files = grep { $_->{name} =~ /\.pm$/ } @files;
-        @files = grep { $_->{path} !~ /^[^\/]+\/t\// } @files;
-
         foreach my $no_dir ( @{ $no_index->{directory} || [] } ) {
-            @files = grep { $_->{path} !~ /^[^\/]+\/\Q$no_dir\E\// } @files;
+            @files =
+              grep { $_->{path} !~ /^\Q$no_dir\E\// } @files;
         }
 
         foreach my $no_file ( @{ $no_index->{file} || [] } ) {
-            @files = grep { $_->{path} !~ /^[^\/]+\/\Q$no_file\E/ } @files;
+            @files = grep { $_->{path} !~ /^\Q$no_file\E/ } @files;
         }
         foreach my $file (@files) {
             eval {
                 local $SIG{'ALRM'} =
-                  sub { print "Call to Module::Metadata timed out "; die };
+                  sub { log_error { "Call to Module::Metadata timed out " }; die };
                 alarm(5);
-                $at->extract_file( $file->{path},
-                                   $tmpdir->file( $file->{path} ) );
-                my $info = Module::Metadata->new_from_file(
-                                               $tmpdir->file( $file->{path} ) );
+                $at->extract_file( $file->{full_path},
+                                   $tmpdir->file( $file->{full_path} ) );
+                my $info;
+                {
+                    local $SIG{__WARN__} = sub { };
+                    $info = Module::Metadata->new_from_file(
+                                          $tmpdir->file( $file->{full_path} ) );
+                }
                 push( @modules,
                       {  file => $file,
                          name => $_,
@@ -236,27 +244,27 @@ sub import_tarball {
         }
     }
 
-    say "done";
-    print "Indexing ", scalar @modules, " modules ... ";
+    log_debug { "Indexing ", scalar @modules, " modules" };
     $i = 1;
     foreach my $module (@modules) {
-        print $i++;
         my $obj =
           MetaCPAN::Document::Module->new(
-                                    %$module,
-                                    file         => $module->{file}->{path},
-                                    file_id      => $module->{file}->{id},
-                                    abstract     => $module->{file}->{abstract},
-                                    release      => $release->name,
-                                    date         => $release->date,
-                                    distribution => $release->distribution,
-                                    author       => $release->author,
-                                    status => $self->latest ? 'latest' : 'cpan',
-          );
+                                        %$module,
+                                        file     => $module->{file}->{path},
+                                        file_id  => $module->{file}->{id},
+                                        abstract => $module->{file}->{abstract},
+                                        release  => $release->name,
+                                        date     => $release->date,
+                                        distribution => $release->distribution,
+                                        author       => $release->author,
+                                        maturity     => $d->maturity, );
         $obj->index( $self->es );
-        print "\010 \010" x length( $i - 1 );
     }
-    say "done";
+    
+    if ( $self->latest ) {
+        MetaCPAN::Script::Latest->new( distribution => $release->distribution )
+          ->run;
+    }
 }
 
 sub pkg_datestamp {
@@ -268,3 +276,28 @@ sub pkg_datestamp {
 }
 
 1;
+
+__END__
+
+=head1 SYNOPSIS
+
+ # bin/metacpan ~/cpan/authors/id/A
+ # bin/metacpan ~/cpan/authors/id/A/AB/ABRAXXA/DBIx-Class-0.08127.tar.gz
+ # bin/metacpan http://cpan.cpantesters.org/authors/id/D/DA/DAGOLDEN/CPAN-Meta-2.110580.tar.gz
+
+ # bin/metacpan ~/cpan --age 24 --latest
+
+=head1 DESCRIPTION
+
+This is the workhorse of MetaCPAN. It accepts a list of folders, files or urls
+and indexes the releases. Adding C<--latest> will set the status to C<latest>
+for the indexed releases If you are indexing more than one release, running
+L<MetaCPAN::Script::Latest> afterwards is probably faster.
+
+C<--age> sets the maximum age of the file in hours. Will be ignored when processing
+individual files or an url.
+
+If an url is specified the file is downloaded to C<var/tmp/http/>. This folder is not
+cleaned up since L<MetaCPAN::Plack::Source> depends on it to extract the source of
+a file. If the tarball cannot be find in the cpan mirror, it tries the temporary
+folder. After a rsync this folder can be purged.
