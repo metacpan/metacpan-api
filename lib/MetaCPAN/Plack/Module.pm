@@ -7,7 +7,8 @@ sub index { 'module' }
 
 sub query {
     shift;
-    return { query  => { term => { name    => shift } },
+    return { query  => { match_all => {} },
+        filter => { term => { "name.raw"    => shift } },
          size   => 1,
          sort   => { date      => { reverse => \1 } } 
          };

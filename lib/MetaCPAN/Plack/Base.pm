@@ -9,7 +9,7 @@ use Plack::App::Proxy;
 use mro 'c3';
 
 # TODO: rewrite to keep streaming.
-# just strip json unti we hit "hits":
+# just strip json until we hit "hits":
 # count open and closed {} and truncate
 # when "hits" is done
 sub process_chunks {

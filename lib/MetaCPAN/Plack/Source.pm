@@ -1,55 +1,55 @@
 package MetaCPAN::Plack::Source;
 
 use base 'Plack::Component';
-
+use strict;
+use warnings;
 use Archive::Tar::Wrapper;
 use File::Copy;
-use File::Path qw(make_path);
 use feature 'say';
-use Path::Class qw(file);
+use Path::Class qw(file dir);
+use File::Find::Rule;
+use MetaCPAN::Util;
+use Plack::App::Directory;
+use File::Temp ();
 
 __PACKAGE__->mk_accessors(qw(cpan));
 
 sub call {
     my ( $self, $env ) = @_;
-    if ( $env->{REQUEST_URI} =~ m{\A/source/([A-Z]+)/([^\/\?]+)/([^\?]+)} ) {
+    if ( $env->{REQUEST_URI} =~ m{\A/source/([A-Z0-9]+)/([^\/\?]+)/([^\?]+)} ) {
         my $new_path = $self->file_path( $1, $2, $3 );
         $env->{PATH_INFO} = $new_path if $new_path;
-    } elsif ($env->{REQUEST_URI} =~ m{\A/source/authors/id/[A-Z]/[A-Z][A-Z]/([A-Z]+)/([^\/\?]+)/([^\?]+)} ) {
+    } elsif ($env->{REQUEST_URI} =~ m{\A/source/authors/id/[A-Z]/[A-Z0-9][A-Z0-9]/([A-Z0-9]+)/([^\/\?]+)/([^\?]+)} ) {
             my $new_path = $self->file_path( $1, $2, $3 );
             $env->{PATH_INFO} = $new_path if $new_path;
     }
-    
-    Plack::App::Directory->new( root => "var/tmp/" )->to_app->($env);
+
+    Plack::App::Directory->new( root => "." )->to_app->($env);
 }
 
 sub file_path {
     my ( $self, $pauseid, $distvname, $file ) = @_;
-
-    my $author_folder = sprintf( "%s/%s/%s/%s",
-        substr( $pauseid, 0, 1 ),
-        substr( $pauseid, 0, 2 ),
-        $pauseid, $distvname );
-    my $base_folder = 'var/tmp/';
-
-    my $rewrite_path = "$author_folder/$file";
-    my $dest_file    = $base_folder . $rewrite_path;
-
-    return $rewrite_path if ( -e $dest_file );
-
-    my $cpan_path = $self->cpan . "/authors/id/$author_folder.tar.gz";
-    return if ( !-e $cpan_path );
-
+    my $base = dir(qw(var tmp source));
+    my $source = file($base,
+        $pauseid, $distvname, $file );
+    return $source if ( -e $source );    
+    my $darkpan = dir(qw(var darkpan source))->file($source->relative($base));
+    return $darkpan if ( -e $darkpan );
+    my $author = MetaCPAN::Util::author_dir($pauseid);
+    my $http = dir(qw(var tmp http authors), $author);
+    $author = $self->cpan . "/authors/$author";
+    my ($tarball) = File::Find::Rule->new->file->name("$distvname.tar.gz")->in($author, $http);
+    return unless ( $tarball && -e $tarball );
     my $arch = Archive::Tar::Wrapper->new();
+    $distvname =~ s/-TRIAL$//;
     my $logic_path = "$distvname/$file";    # path within unzipped archive
-
-    $arch->read( $cpan_path, $logic_path ); # read only one file
+    $arch->read( $tarball, $logic_path ); # read only one file
     my $phys_path = $arch->locate( $logic_path );
 
     if ( $phys_path ) {
-        make_path( file( $dest_file )->dir, {} );
-        copy( $phys_path, $dest_file );
-        return $rewrite_path;
+        $source->dir->mkpath;
+        copy( $phys_path, $source );
+        return $source;
     }
 
     return;
