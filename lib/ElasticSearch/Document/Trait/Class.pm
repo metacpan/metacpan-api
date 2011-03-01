@@ -13,8 +13,7 @@ sub build_map {
         grep { $_->is_property }
         map  { $self->get_attribute($_) } $self->get_attribute_list };
     return { index            => ['cpan'],
-             ignore_conflicts => 1,
-             # _source          => { enabled => \0 },
+             _source          => { compress => \1 },
              type             => lc( $self->short_name ),
              properties       => $props };
 }

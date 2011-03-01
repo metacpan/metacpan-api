@@ -4,12 +4,11 @@ use Moose::Role;
 has property => ( is => 'ro', isa => 'Bool', default => 1 );
 
 has id => ( is => 'ro', isa => 'Bool|ArrayRef', default => 0 );
-has index => ( is => 'ro', lazy_build => 1 );
-has boost => ( is => 'ro', isa        => 'Num', default => 1.0 );
-has store => ( is => 'ro', isa        => 'Str', default => 'yes' );
-has type  => ( is => 'ro', isa        => 'Str', lazy_build => 1 );
-
-
+has index  => ( is => 'ro', lazy_build => 1 );
+has boost  => ( is => 'ro', isa        => 'Num', default => 1.0 );
+has store  => ( is => 'ro', isa        => 'Str', default => 'yes' );
+has type   => ( is => 'ro', isa        => 'Str', lazy_build => 1 );
+has parent => ( is => 'ro', isa        => 'Bool', default => 0 );
 
 sub _build_type {
     my $self = shift;
@@ -34,13 +33,29 @@ sub is_property { shift->property }
 
 sub es_properties {
     my $self = shift;
-    my $props = { store => $self->store,
-                  $self->index ? ( index => $self->index ) : (),
-                  boost => $self->boost,
-                  type  => $self->type };
-    if ( $self->has_type_constraint ) {
-        $props->{dynamic} = \0
-          if ( $self->type_constraint->name =~ /Ref/ );
+    my $props;
+    if ( $self->type eq 'string' && $self->index eq 'analyzed' ) {
+        $props = { type   => 'multi_field',
+                   fields => {
+                               $self->name => { store => $self->store,
+                                                index => 'analyzed',
+                                                boost => $self->boost,
+                                                type  => $self->type
+                               },
+                               raw => { store => $self->store,
+                                        index => 'not_analyzed',
+                                        boost => $self->boost,
+                                        type  => $self->type
+                               },
+                   } };
+    } else {
+        $props = { store => $self->store,
+                   $self->index ? ( index => $self->index ) : (),
+                   boost => $self->boost,
+                   type  => $self->type };
+    }
+    if ( $self->has_type_constraint && $self->type_constraint->name =~ /Ref/ ) {
+        $props->{dynamic} = \0;
     }
     return $props;
 }
