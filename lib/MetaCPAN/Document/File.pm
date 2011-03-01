@@ -17,19 +17,20 @@ Plack::MIME->add_type( ".xs"  => "text/x-c" );
 
 has id => ( id => [qw(author release path)] );
 
-has [qw(path author name release distribution)] => ();
-has binary => ( isa        => 'Bool', default => 0 );
+has [qw(path author name distribution)] => ();
+has release => ( parent => 1 );
 has url    => ( lazy_build => 1,      index   => 'no' );
 has stat => ( isa => 'HashRef' );
 has sloc => ( isa => 'Int',        lazy_build => 1 );
 has slop => ( isa => 'Int', is => 'rw', default => 0 );
 has pod_lines => ( isa => 'ArrayRef', type => 'integer', lazy_build => 1, index => 'no' );
-has pod_txt  => ( isa => 'ScalarRef', lazy_build => 1, index => 'analyzed' );
-has pod_html => ( isa => 'ScalarRef', lazy_build => 1, index => 'no' );
-has toc      => ( isa => 'ArrayRef', type => 'object', lazy_build => 1, index => 'no' );
+has pod  => ( isa => 'ScalarRef', lazy_build => 1, index => 'analyzed' );
 has [qw(mime module)] => ( lazy_build => 1 );
 has abstract => ( lazy_build => 1, index => 'analyzed' );
 has status => ( default => 'cpan' );
+has maturity => ( default => 'released' );
+has directory => ( isa => 'Bool', default => 0 );
+has level => ( isa => 'Int', default => 0 );
 
 
 has content => ( isa => 'ScalarRef', lazy_build => 1, property   => 0, required => 0 );
@@ -38,7 +39,7 @@ has pom => ( lazy_build => 1, property => 0, required => 0 );
 has content_cb => ( property => 0, required => 0 );
 
 sub is_perl_file {
-    !$_[0]->binary && $_[0]->name =~ /\.(pl|pm|pod|t)$/i;
+    $_[0]->name =~ /\.(pl|pm|pod|t)$/i;
 }
 
 sub _build_content {
@@ -136,7 +137,7 @@ sub _build_sloc {
     return $sloc;
 }
 
-sub _build_pod_txt {
+sub _build_pod {
     my $self = shift;
     return \'' unless ( $self->is_perl_file );
     my $parser = Pod::Text->new( sentence => 0, width => 78 );
@@ -146,60 +147,6 @@ sub _build_pod_txt {
     $parser->parse_string_document( ${ $self->content } );
 
     return \$text;
-}
-
-sub _build_pod_html {
-    my $self = shift;
-    return \'' unless ( $self->is_perl_file );
-    my $parser = MetaCPAN::Pod::XHTML->new();
-
-    $parser->index(1);
-    $parser->html_header('');
-    $parser->html_footer('');
-    $parser->perldoc_url_prefix('');
-    $parser->no_errata_section(1);
-
-    my $html = "";
-    $parser->output_string( \$html );
-    $parser->parse_string_document( ${ $self->content } );
-    return \$html;
-}
-
-sub _build_toc {
-    my $self = shift;
-    return [] unless ( $self->is_perl_file );
-    my $view = Pod::POM::View::TOC->new;
-    my $toc  = $view->print( $self->pom );
-    return [] unless ($toc);
-    return _toc_to_json( [], split( /\n/, $toc ) );
-}
-
-sub _toc_to_json {
-    my $tree     = shift;
-    my @sections = @_;
-    my @uniq     = uniq( map { ( split(/\t/) )[0] } @sections );
-    foreach my $root (@uniq) {
-        next unless ($root);
-        push( @{$tree}, { text => $root } );
-        my ( @children, $start );
-        for (@sections) {
-            if ( $_ =~ /^\Q$root\E$/ ) {
-                $start = 1;
-            } elsif ( $start && $_ =~ /^\t(.*)$/ ) {
-                push( @children, $1 );
-            } elsif ( $start && $_ =~ /^[^\t]+/ ) {
-                last;
-            }
-        }
-        unless (@children) {
-            $tree->[-1]->{leaf} = \1;
-            next;
-        }
-        $tree->[-1]->{children} = [];
-        $tree->[-1]->{children} =
-          _toc_to_json( $tree->[-1]->{children}, @children );
-    }
-    return $tree;
 }
 
 __PACKAGE__->meta->make_immutable;
