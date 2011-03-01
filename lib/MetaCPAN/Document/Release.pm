@@ -5,15 +5,16 @@ use MetaCPAN::Document::Author;
 
 use MetaCPAN::Util;
 
-has [qw(license version abstract status archive)] => ();
+has [qw(license version author archive)] => ();
 has date             => ( isa        => 'DateTime' );
 has download_url     => ( lazy_build => 1 );
-has name             => ( id         => 1 );
+has name             => ( id         => 1, index => 'analyzed' );
 has version_numified => ( isa        => 'Num', lazy_build => 1 );
 has resources        => ( isa        => 'HashRef', required => 0 );
-has author       => ();
-has distribution => ();
+has abstract => ( index => 'analyzed' );
+has distribution => ( parent => 1, analyzer => { tokenizer => 'lowercase' } );
 has status => ( default => 'cpan' );
+has maturity => ( default => 'released' );
 
 sub _build_version_numified {
     return MetaCPAN::Util::numify_version( shift->version )
