@@ -14,13 +14,31 @@ sub digest {
 
 sub numify_version {
     my $version = shift;
+    no warnings;
     try {
         $version = eval version->parse( $version )->numify;
     } catch {
-        $version =~ s/[^0-9\.]//g;
+        $version = fix_version($version);
         $version = eval version->parse( $version || 0 )->numify;
     };
     return $version;
+}
+
+sub fix_version {
+    my $version = shift;
+    return undef unless(defined $version);
+    $version =~ s/[^\d\._]//g;
+    $version =~ s/\._/./g;
+    return $version;
+}
+
+sub author_dir {
+    my $pauseid = shift;
+    my $dir = 'id/'
+      . sprintf( "%s/%s/%s",
+                 substr( $pauseid, 0, 1 ),
+                 substr( $pauseid, 0, 2 ), $pauseid );
+    return $dir;
 }
 
 1;
