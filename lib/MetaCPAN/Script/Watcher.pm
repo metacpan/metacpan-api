@@ -22,6 +22,7 @@ sub run {
         request    => "/feed/cpan",
         on_entry   => sub {
             my $entry = shift;
+            $fails = 0; # on_connect actually
             $entry->{body} =~ /href="(.*?)"/;
             my $file = $1;
             return unless( $file );

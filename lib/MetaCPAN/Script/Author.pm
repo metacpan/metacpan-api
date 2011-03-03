@@ -42,7 +42,7 @@ sub index_authors {
     log_info { "Indexing $lines authors" };
     
     while ( my $line = $author_fh->getline() ) {
-        if ( $line =~ m{alias\s([\w\-]*)\s{1,}"(.*)<(.*)>"}gxms ) {
+        if ( $line =~ m{alias\s([\w\-]*)\s*"(.+?)\s*<(.*)>"}gxms ) {
             my ( $pauseid, $name, $email ) = ( $1, $2, $3 );
             log_debug { "Indexing $pauseid: $name <$email>" };
             my $author =

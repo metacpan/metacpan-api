@@ -2,7 +2,7 @@ package MetaCPAN::Script::Release;
 use Moose;
 with 'MooseX::Getopt';
 with 'MetaCPAN::Role::Common';
-use Log::Contextual qw( :log );
+use Log::Contextual qw( :log :dlog );
 
 use Path::Class qw(file dir);
 use Archive::Tar       ();
@@ -109,12 +109,13 @@ sub import_tarball {
         if ( ref $child ne 'HASH' ) {
             $meta_file = $child if ( $child->full_path =~ /^[^\/]+\/META\./ );
             my $stat = { map { $_ => $child->$_ } qw(mode uid gid size mtime) };
-            my $fname = $child->full_path;
-            $child->is_dir ? $fname =~ s/(.*\/)?(.*?)\//$2/ : $fname =~ s/.*\///;
+            next unless($child->full_path =~ /\//);
             ( my $fpath = $child->full_path ) =~ s/.*?\///;
+            my $fname = $fpath;
+            $child->is_dir ? $fname =~ s/^(.*\/)?(.+?)\/?$/$2/ : $fname =~ s/.*\///;
             my @level = split(/\//, $fpath);
             my $level = @level - 1;
-            push( @files,
+            push( @files, Dlog_trace { "adding file $_" }
                   {  name         => $fname,
                      directory    => $child->is_dir ? 1 : 0,
                      level        => $level,
@@ -125,6 +126,7 @@ sub import_tarball {
                      path         => $fpath,
                      stat         => $stat,
                      maturity     => $d->maturity,
+                     indexed => 1,
                   } );
         }
     }
@@ -139,15 +141,14 @@ sub import_tarball {
         log_error { "META file could not be loaded: $_" };
     } if ($meta_file);
 
-    my $create =
-      { map { $_ => $meta->$_ } qw(version name license abstract resources) };
-    $create = { %$create,
-                name         => $name,
-                author       => $author,
-                distribution => $meta->name,
-                archive      => $archive,
-                maturity     => $d->maturity,
-                date         => $self->pkg_datestamp($tarball), };
+    my $no_index = $meta->no_index;
+    foreach my $no_dir ( @{ $no_index->{directory} || [] } ) {
+        map { $_->{indexed} = 0 } grep { $_->{path} =~ /^\Q$no_dir\E\// } @files;
+    }
+
+    foreach my $no_file ( @{ $no_index->{file} || [] } ) {
+        map { $_->{indexed} = 0 } grep { $_->{path} =~ /^\Q$no_file\E/ } @files;
+    }
 
     log_debug { "Indexing ", scalar @files, " files" };
     my $i = 1;
@@ -160,6 +161,16 @@ sub import_tarball {
         $file->{abstract} = $obj->abstract;
         $file->{id}       = $obj->id;
     }
+
+    my $create =
+      { map { $_ => $meta->$_ } qw(version name license abstract resources) };
+    $create = DlogS_trace { "adding release $_" } +{ %$create,
+                name         => $name,
+                author       => $author,
+                distribution => $meta->name,
+                archive      => $archive,
+                maturity     => $d->maturity,
+                date         => $self->pkg_datestamp($tarball), };
 
     my $release = MetaCPAN::Document::Release->new($create);
     $release->index( $self->es );
@@ -176,11 +187,12 @@ sub import_tarball {
         while ( my ( $phase, $data ) = each %$prereqs ) {
             while ( my ( $relationship, $v ) = each %$data ) {
                 while ( my ( $module, $version ) = each %$v ) {
-                    push( @dependencies,
+                    push( @dependencies, Dlog_trace { "adding dependency $_" }
                           {  phase        => $phase,
                              relationship => $relationship,
                              module       => $module,
                              version      => $version,
+                             author       => $author,
                              release      => $release->name,
                           } );
                 }
@@ -210,16 +222,9 @@ sub import_tarball {
                   } );
         }
 
-    } elsif ( my $no_index = $meta->no_index ) {
-        @files = grep { $_->{name} =~ /\.pm$/ } @files;
-        foreach my $no_dir ( @{ $no_index->{directory} || [] } ) {
-            @files =
-              grep { $_->{path} !~ /^\Q$no_dir\E\// } @files;
-        }
-
-        foreach my $no_file ( @{ $no_index->{file} || [] } ) {
-            @files = grep { $_->{path} !~ /^\Q$no_file\E/ } @files;
-        }
+    } 
+        @files = grep { $_->{name} =~ /\.pm$/ } grep { $_->{indexed} } @files;
+        
         foreach my $file (@files) {
             eval {
                 local $SIG{'ALRM'} =
@@ -242,22 +247,22 @@ sub import_tarball {
                 alarm(0);
             };
         }
-    }
+    
 
     log_debug { "Indexing ", scalar @modules, " modules" };
     $i = 1;
     foreach my $module (@modules) {
         my $obj =
-          MetaCPAN::Document::Module->new(
+          MetaCPAN::Document::Module->new( DlogS_trace { "adding module $_" } +{
                                         %$module,
-                                        file     => $module->{file}->{path},
+                                        path     => $module->{file}->{path},
                                         file_id  => $module->{file}->{id},
                                         abstract => $module->{file}->{abstract},
                                         release  => $release->name,
                                         date     => $release->date,
                                         distribution => $release->distribution,
                                         author       => $release->author,
-                                        maturity     => $d->maturity, );
+                                        maturity     => $d->maturity, } );
         $obj->index( $self->es );
     }
     

@@ -14,16 +14,25 @@ sub run {
     my ( undef, $index ) = @{ $self->extra_argv };
     $index ||= 'cpan';
     my $es = MetaCPAN->new->es;
+    my $arg = { index => $index,
+                defn  => {
+                          analysis => {
+                                        analyzer => {
+                                                     lowercase => {
+                                                         type      => 'custom',
+                                                         tokenizer => 'keyword',
+                                                         filter => 'lowercase'
+                                                     } } } } };
     if ( $self->create ) {
         log_info { "Creating index $index" };
-        $es->create_index( index => $index );
+        $es->create_index($arg);
     } elsif ( $self->delete ) {
         log_info { "Deleting index $index" };
         $es->delete_index( index => $index );
     } elsif ( $self->recreate ) {
         log_info { "Recreating index $index" };
         $es->delete_index( index => $index );
-        $es->create_index( index => $index );
+        $es->create_index($arg);
     }
     if ( $self->mapping ) {
         MetaCPAN::Script::Mapping->new->run;
