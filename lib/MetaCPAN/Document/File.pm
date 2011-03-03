@@ -29,7 +29,7 @@ has [qw(mime module)] => ( lazy_build => 1 );
 has abstract => ( lazy_build => 1, index => 'analyzed' );
 has status => ( default => 'cpan' );
 has maturity => ( default => 'released' );
-has directory => ( isa => 'Bool', default => 0 );
+has [qw(indexed directory)] => ( isa => 'Bool', default => 0 );
 has level => ( isa => 'Int', default => 0 );
 
 
