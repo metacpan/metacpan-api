@@ -3,9 +3,9 @@ use Moose;
 use ElasticSearch::Document;
 use MetaCPAN::Util;
 
-has id => ( id => [qw(release module phase)] );
+has id => ( id => [qw(author release module phase)] );
 
-has [qw(phase relationship module version release)];
+has [qw(phase relationship module author version release)];
 has version_numified => ( isa => 'Num', lazy_build => 1 );
 has status => ( default => 'cpan' );
 

@@ -7,7 +7,7 @@ use URI::Escape ();
 
 has id => ( id => [qw(author release name)] );
 has version_numified => ( isa => 'Num', lazy_build => 1 );
-has [qw(author distribution file file_id)] => ();
+has [qw(author distribution path file_id)] => ();
 has release => ( parent => 1 );
 has name => ( index => 'analyzed' );
 has [qw(version)] => ( required => 0 );

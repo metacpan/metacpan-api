@@ -12,7 +12,7 @@ has name             => ( id         => 1, index => 'analyzed' );
 has version_numified => ( isa        => 'Num', lazy_build => 1 );
 has resources        => ( isa        => 'HashRef', required => 0 );
 has abstract => ( index => 'analyzed' );
-has distribution => ( parent => 1, analyzer => { tokenizer => 'lowercase' } );
+has distribution => ( analyzer => 'lowercase' );
 has status => ( default => 'cpan' );
 has maturity => ( default => 'released' );
 
