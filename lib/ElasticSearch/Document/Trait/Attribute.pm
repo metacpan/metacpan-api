@@ -9,6 +9,7 @@ has boost  => ( is => 'ro', isa        => 'Num', default => 1.0 );
 has store  => ( is => 'ro', isa        => 'Str', default => 'yes' );
 has type   => ( is => 'ro', isa        => 'Str', lazy_build => 1 );
 has parent => ( is => 'ro', isa        => 'Bool', default => 0 );
+has analyzer => ( is => 'ro', isa => 'Str' );
 
 sub _build_type {
     my $self = shift;
@@ -26,7 +27,7 @@ sub _build_type {
 
 sub _build_index {
     my $self = shift;
-    return $self->type eq 'string' ? 'not_analyzed' : undef;
+    return $self->type eq 'string' ? $self->analyzer ? 'analyzed' : 'not_analyzed' : undef;
 }
 
 sub is_property { shift->property }
@@ -40,7 +41,8 @@ sub es_properties {
                                $self->name => { store => $self->store,
                                                 index => 'analyzed',
                                                 boost => $self->boost,
-                                                type  => $self->type
+                                                type  => $self->type,
+                                                analyzer => $self->analyzer || 'standard',
                                },
                                raw => { store => $self->store,
                                         index => 'not_analyzed',
@@ -52,7 +54,8 @@ sub es_properties {
         $props = { store => $self->store,
                    $self->index ? ( index => $self->index ) : (),
                    boost => $self->boost,
-                   type  => $self->type };
+                   type  => $self->type,
+                   $self->analyzer ? ( analyzer => $self->analyzer ) : (), };
     }
     if ( $self->has_type_constraint && $self->type_constraint->name =~ /Ref/ ) {
         $props->{dynamic} = \0;

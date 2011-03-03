@@ -12,10 +12,10 @@ sub build_map {
         sort { $a->name cmp $b->name }
         grep { $_->is_property }
         map  { $self->get_attribute($_) } $self->get_attribute_list };
-    return { index            => ['cpan'],
+    return { index            => 'cpan',
              _source          => { compress => \1 },
              type             => lc( $self->short_name ),
-             properties       => $props };
+             properties       => $props, };
 }
 
 sub short_name {
