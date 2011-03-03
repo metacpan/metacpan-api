@@ -10,15 +10,7 @@ __PACKAGE__->mk_accessors(qw(cpan));
 
 sub handle {
     my ( $self, $env ) = @_;
-    if ( $env->{REQUEST_URI} =~ m{\A/pod/([A-Z0-9]+)/([^\/\?]+)/([^\?]+)} ) {
-        my $new_path = $self->file_path( $1, $2, $3 );
-        $env->{PATH_INFO} = $new_path if $new_path;
-    } elsif ( $env->{REQUEST_URI} =~
-m{\A/pod/authors/id/[A-Z0-9]/[A-Z0-9][A-Z0-9]/([A-Z0-9]+)/([^\/\?]+)/([^\?]+)} )
-    {
-        my $new_path = $self->file_path( $1, $2, $3 );
-        $env->{PATH_INFO} = $new_path if $new_path;
-    } elsif ( $env->{REQUEST_URI} =~ m{\A/pod/([^\/]*?)\/?$} ) {
+    if ( $env->{REQUEST_URI} =~ m{\A/pod/([^\/]*?)\/?$} ) {
         $self->rewrite_request($env);
         my $res =
           Plack::App::Proxy->new( remote => "http://127.0.0.1:9200/cpan" )
@@ -70,6 +62,25 @@ m{\A/pod/authors/id/[A-Z0-9]/[A-Z0-9][A-Z0-9]/([A-Z0-9]+)/([^\/\?]+)/([^\?]+)} )
                         } );
                 } );
         };
+    } else {
+        $env->{REQUEST_URI} =~ s/^\/pod\//\/source\//;
+        $env->{PATH_INFO} = $env->{REQUEST_URI};
+
+        my $res =
+          MetaCPAN::Plack::Source->new( { cpan => $self->cpan } )
+          ->to_app->($env);
+        if ( ref $res->[2] eq 'ARRAY' ) {
+            die;
+            return $res;
+        }
+
+        my $source = "";
+        my $body   = $res->[2];
+        while ( my $line = $body->getline ) {
+            $source .= $line;
+        }
+        warn $source;
+        return [200, ['Content-type', 'text/html'], [$self->build_pod_html($source)]];
     }
 }
 
