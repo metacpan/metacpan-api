@@ -7,6 +7,7 @@ use Moose 1.15 ();
 use Moose::Exporter;
 use ElasticSearch::Document::Trait::Class;
 use ElasticSearch::Document::Trait::Attribute;
+use ElasticSearch::Document::Types qw();
 use JSON::XS;
 use Digest::SHA1;
 use List::MoreUtils ();
@@ -22,14 +23,6 @@ Moose::Exporter->setup_import_methods(
                         ]
                     }, );
 
-
-my @stat = qw(dev ino mode nlink uid gid rdev size atime mtime ctime blksize blocks);
-use MooseX::Attribute::Deflator;
-deflate 'Bool',       via { \$_ };
-deflate 'File::stat', via { return { List::MoreUtils::mesh(@stat, @$_) } };
-deflate 'ScalarRef',  via { $$_ };
-deflate 'DateTime',   via { $_->iso8601 };
-no MooseX::Attribute::Deflator;
 
 sub index {
     my ( $self, $es ) = @_;

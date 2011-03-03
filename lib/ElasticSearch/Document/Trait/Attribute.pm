@@ -21,7 +21,8 @@ sub _build_type {
                 Bool     => 'boolean',
                 Undef    => 'null',
                 HashRef  => 'object',
-                ArrayRef => 'string' );
+                ArrayRef => 'string',
+                'ElasticSearch::Document::Types::Location' => 'geo_point' );
     return $map{$tc} || 'string';
 }
 
