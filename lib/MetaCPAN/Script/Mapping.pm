@@ -12,6 +12,7 @@ use MetaCPAN::Document::Distribution;
 use MetaCPAN::Document::File;
 use MetaCPAN::Document::Module;
 use MetaCPAN::Document::Dependency;
+use MetaCPAN::Document::Mirror;
 
 sub run {
     shift->put_mappings(MetaCPAN->new->es);
@@ -21,7 +22,7 @@ sub put_mappings {
     my ($self, $es) = @_;
     # do not delete mappings, this will delete the data as well
     # ElasticSearch merges new mappings if possible
-    for(qw(Author Release Distribution File Module Dependency)) {
+    for(qw(Author Release Distribution File Module Dependency Mirror)) {
         log_info { "Putting mapping for $_" };
         my $class = "MetaCPAN::Document::$_";
         $class->meta->put_mapping( $es );
