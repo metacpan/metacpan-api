@@ -42,10 +42,6 @@ END
                                      content      => \$content );
 
     is( $file->abstract, 'mymodule1 abstract bla' );
-    is( $file->module,   'MyModule' );
-    is_deeply( $file->toc,
-               [  { text => 'NAME',     leaf => \1 },
-                  { text => 'SYNOPSIS', leaf => \1 } ] );
     is_deeply( $file->pod_lines, [ [ 3, 9 ], [ 15, 6 ] ] );
     is( $file->sloc, 3 );
 }
@@ -67,8 +63,6 @@ END
                                      content      => \$content );
 
     is( $file->abstract, '' );
-    is( $file->module,   'MyModule' );
-    is_deeply( $file->toc, [ { text => 'NAME', leaf => \1 } ] );
 }
 {
     my $content = <<'END';
@@ -83,30 +77,33 @@ mobycentral.config file
 
 
 =head2 USAGE
+
+=cut
+
+package MOBY::Config;
+
 END
 
     my $file =
       MetaCPAN::Document::File->new( author       => 'Foo',
-                                     path         => 'bar',
+                                     path         => 't/bar/bat.t',
                                      release      => 'release',
                                      distribution => 'foo',
                                      name         => 'module.pm',
                                      stat         => {},
-                                     content      => \$content );
+                                     content_cb   => sub { \$content } );
 
     is( $file->abstract,
 'An object containing information about how to get access to teh Moby databases, resources, etc. from the mobycentral.config file'
     );
-    is( $file->module, 'MOBY::Config.pm' );
-    is_deeply( $file->toc,
-               [
-                  {  text     => 'NAME',
-                     children => [ { text => 'USAGE', leaf => \1 } ] } ] );
+    is( $file->indexed, 1, 'indexed' );
+    is( $file->level, 2);
 }
 
 {
     my $content = <<'END';
-package Number::Phone::NANP::AS;
+package
+  Number::Phone::NANP::AS;
 
 # numbering plan at http://www.itu.int/itudoc/itu-t/number/a/sam/86412.html
 
@@ -127,55 +124,6 @@ my $cache = {};
 
 Number::Phone::NANP::AS - AS-specific methods for Number::Phone
 
-=head1 DESCRIPTION
-
-This class implements AS-specific methods for Number::Phone.  It is
-a subclass of Number::Phone::NANP, which is in turn a subclass of
-Number::Phone.  Number::Phone::NANP sits in the middle because all
-NANP countries can share some significant chunks of code.  You should
-never need to C<use> this module directly, as C<Number::Phone::NANP>
-will load it automatically when needed.
-
-=head1 SYNOPSIS
-
-    use Number::Phone::NANP;
-    
-    my $phone_number = Number::Phone->new('+1 684 633 0001');
-    # returns a Number::Phone::NANP::AS object
-    
-=head1 METHODS
-
-The following methods from Number::Phone are overridden:
-
-=over 4
-
-=item regulator
-
-Returns information about the national telecomms regulator.
-
-=cut
-
-sub regulator { return 'ASTCA, http://www.samoatelco.com/ ???'; }
-
-=back
-
-=head1 BUGS/FEEDBACK
-
-Please report bugs by email, including, if possible, a test case.             
-
-I welcome feedback from users.
-
-=head1 LICENCE
-
-You may use, modify and distribute this software under the same terms as
-perl itself.
-
-=head1 AUTHOR
-
-David Cantrell E<lt>david@cantrell.org.ukE<gt>
-
-Copyright 2005
-
 =cut
 
 1;
@@ -186,12 +134,14 @@ END
                                      release      => 'release',
                                      distribution => 'foo',
                                      name         => 'module.pm',
+                                     module => 'Number::Phone::NANP::AS',
                                      stat         => {},
                                      content_cb   => sub { \$content } );
 
     is( $file->sloc, 8 );
-    is( $file->slop, 30 );
-    is_deeply( $file->pod_lines, [ [ 17, 31 ], [ 51, 20 ] ] );
+    is( $file->slop, 3 );
+    is( $file->indexed, 0, 'not indexed' );
+    is_deeply( $file->pod_lines, [ [ 18, 5 ] ] );
 }
 
 done_testing;

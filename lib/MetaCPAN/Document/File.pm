@@ -18,6 +18,7 @@ Plack::MIME->add_type( ".xs"  => "text/x-c" );
 has id => ( id => [qw(author release path)] );
 
 has [qw(path author name distribution)] => ();
+has module => ( required => 0, is => 'rw' );
 has release => ( parent => 1 );
 has url    => ( lazy_build => 1,      index   => 'no' );
 has stat => ( isa => 'HashRef' );
@@ -25,12 +26,13 @@ has sloc => ( isa => 'Int',        lazy_build => 1 );
 has slop => ( isa => 'Int', is => 'rw', default => 0 );
 has pod_lines => ( isa => 'ArrayRef', type => 'integer', lazy_build => 1, index => 'no' );
 has pod  => ( isa => 'ScalarRef', lazy_build => 1, index => 'analyzed' );
-has [qw(mime module)] => ( lazy_build => 1 );
+has [qw(mime)] => ( lazy_build => 1 );
 has abstract => ( lazy_build => 1, index => 'analyzed' );
 has status => ( default => 'cpan' );
 has maturity => ( default => 'released' );
-has [qw(indexed directory)] => ( isa => 'Bool', default => 0 );
-has level => ( isa => 'Int', default => 0 );
+has directory => ( isa => 'Bool', default => 0 );
+has indexed => ( isa => 'Bool', lazy_build => 1 );
+has level => ( isa => 'Int', lazy_build => 1 );
 
 
 has content => ( isa => 'ScalarRef', lazy_build => 1, property   => 0, required => 0 );
@@ -40,6 +42,28 @@ has content_cb => ( property => 0, required => 0 );
 
 sub is_perl_file {
     $_[0]->name =~ /\.(pl|pm|pod|t)$/i;
+}
+
+sub _build_indexed {
+    my $self = shift;
+    return 1 unless(my $pkg = $self->module);
+    my $content = ${$self->content};
+    return $content =~ /    # match a package declaration
+      ^[\s\{;]*             # intro chars on a line
+      package               # the word 'package'
+      \h+                   # whitespace
+      ($pkg)                # a package name
+      \h*                   # optional whitespace
+      (.+)?                 # optional version number
+      \h*                   # optional whitesapce
+      ;                     # semicolon line terminator
+    /x ? 1 : 0;
+}
+
+sub _build_level {
+    my $self = shift;
+    my @level = split(/\//, $self->path);
+    return @level - 1;
 }
 
 sub _build_content {
@@ -61,20 +85,6 @@ sub _build_mime {
 sub _build_pom {
     my $self = shift;
     Pod::POM->new( warn => 0 )->parse_text( ${ $self->content } );
-}
-
-sub _build_module {
-    my $self = shift;
-    return '' unless ( $self->is_perl_file );
-    my $pom = $self->pom;
-    foreach my $s ( @{ $pom->head1 } ) {
-        if ( $s->title eq 'NAME' ) {
-            my $content = $s->content;
-            $content =~ s/^(.*?)\s*(-.*)?$/$1/s;
-            return $content || '';
-        }
-    }
-    return '';
 }
 
 sub _build_abstract {
