@@ -8,6 +8,8 @@ use IO::String;
 use Plack::App::Proxy;
 use mro 'c3';
 
+__PACKAGE__->mk_accessors(qw(cpan remote));
+
 # TODO: rewrite to keep streaming.
 # just strip json until we hit "hits":
 # count open and closed {} and truncate

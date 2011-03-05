@@ -6,8 +6,6 @@ use strict;
 use warnings;
 use MetaCPAN::Pod::XHTML;
 
-__PACKAGE__->mk_accessors(qw(cpan));
-
 sub handle {
     my ( $self, $env ) = @_;
     if ( $env->{REQUEST_URI} =~ m{\A/pod/([^\/]*?)\/?$} ) {

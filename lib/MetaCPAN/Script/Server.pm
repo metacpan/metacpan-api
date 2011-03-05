@@ -28,7 +28,7 @@ sub build_app {
               . lc($_) =>
               $class->new( cpan => $self->cpan, remote => $self->remote );
         }
-
+        mount "/abc" => [200,[],[]];
     };
 }
 
