@@ -13,7 +13,6 @@ sub run {
     die "Usage: metadbic [command] [args]" unless ($class);
 
     $class = 'MetaCPAN::Script::' . ucfirst($class);
-
     Class::MOP::load_class($class);
 
     my $config =
@@ -27,9 +26,11 @@ sub run {
         )->get;
         $config = merge $config, $iconf;
     }
-    use Devel::Dwarn; DwarnN($config);
     my $obj = $class->new_with_options($config);
     $obj->run;
 }
+
+# AnyEvent::Run calls the main method
+*main = \&run;
 
 1;

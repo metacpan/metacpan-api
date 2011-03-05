@@ -30,12 +30,6 @@ has latest  => ( is => 'ro', isa => 'Bool', default => 0 );
 has age     => ( is => 'ro', isa => 'Int' );
 has verbose => ( is => 'ro', isa => 'Bool', default => 0 );
 
-sub main {
-    my $tarball = shift;
-    unshift( @ARGV, "release" );
-    __PACKAGE__->new_with_options->run;
-}
-
 sub run {
     my $self = shift;
     my ( undef, @args ) = @{ $self->extra_argv };
