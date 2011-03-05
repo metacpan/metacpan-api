@@ -63,6 +63,10 @@ sub _build_cpan {
 
 }
 
+sub remote {
+    shift->es->transport->servers->[0];
+}
+
 sub run { }
 before run => sub {
     my $self = shift;
@@ -70,7 +74,7 @@ before run => sub {
         $MetaCPAN::Role::Common::log = $self->logger;
         set_logger $self->logger;
     }
-    Dlog_debug { "Connected to $_" } $self->es->transport->servers;
+    Dlog_debug { "Connected to $_" } $self->remote;
 };
 
 1;

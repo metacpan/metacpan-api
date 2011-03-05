@@ -17,20 +17,17 @@ use MetaCPAN::Plack::Source;
 use MetaCPAN::Plack::Release;
 use MetaCPAN::Plack::Mirror;
 
-has port => ( is => 'ro', default => '5000' );
-
 sub build_app {
     my $self = shift;
     return builder {
-        mount "/author"       => MetaCPAN::Plack::Author->new;
-        mount "/dependency"   => MetaCPAN::Plack::Dependency->new;
-        mount "/distribution" => MetaCPAN::Plack::Distribution->new;
-        mount "/file"         => MetaCPAN::Plack::File->new;
-        mount "/mirror"       => MetaCPAN::Plack::Mirror->new;
-        mount "/module"       => MetaCPAN::Plack::Module->new;
-        mount "/pod"          => MetaCPAN::Plack::Pod->new( cpan => $self->cpan );
-        mount "/release"      => MetaCPAN::Plack::Release->new;
-        mount "/source"       => MetaCPAN::Plack::Source->new( cpan => $self->cpan );
+        for ( qw(Author Dependency Distribution File Mirror Module
+              Pod Release Source) )
+        {
+            my $class = "MetaCPAN::Plack::" . $_;
+            mount "/"
+              . lc($_) =>
+              $class->new( cpan => $self->cpan, remote => $self->remote );
+        }
 
     };
 }

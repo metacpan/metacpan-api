@@ -13,7 +13,7 @@ sub handle {
     if ( $env->{REQUEST_URI} =~ m{\A/pod/([^\/]*?)\/?$} ) {
         $self->rewrite_request($env);
         my $res =
-          Plack::App::Proxy->new( remote => "http://127.0.0.1:9200/cpan" )
+          Plack::App::Proxy->new( remote => "http://" . $self->remote . "/cpan" )
           ->to_app->($env);
         return sub {
             my $respond = shift;

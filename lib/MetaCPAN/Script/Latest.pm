@@ -9,8 +9,7 @@ with 'MetaCPAN::Role::Common';
 use MetaCPAN;
 
 has dry_run => ( is => 'ro', isa => 'Bool', default => 0 );
-has verbose => ( is => 'ro', isa => 'Bool', default => 0 );
-has distribution => ( is => 'ro' );
+has distribution => ( is => 'ro', isa => 'Str' );
 
 sub run {
     my $self = shift;
@@ -20,7 +19,7 @@ sub run {
     $es->refresh_index();
     my $query =
       $self->distribution
-      ? { term => { distribution => $self->distribution } }
+      ? { term => { distribution => lc($self->distribution) } }
       : { match_all => {} };
     my $search = { index => 'cpan',
                    type  => 'release',
@@ -81,7 +80,7 @@ sub reindex {
     my $rs = $es->search(%$search);
     while ( my $row = shift @{ $rs->{hits}->{hits} } ) {
         log_debug { $status eq 'latest' ? "Upgrading " : "Downgrading ",
-          $type, " ", $row->{_source}->{name} };
+          $type, " ", $row->{_source}->{name} || $row->{_source}->{module} };
         $es->index( index => 'cpan',
                     type  => $type,
                     id    => $row->{_id},

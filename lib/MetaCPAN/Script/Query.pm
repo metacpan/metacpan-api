@@ -18,7 +18,7 @@ sub run {
     my (undef, $cmd, $path) = @{ $self->extra_argv };
     $path ||= '/';
     my $es = $self->es;
-    my $json = $es->transport->send_request('127.0.0.1:9200', {
+    my $json = $es->transport->send_request($self->remote, {
         method => $self->X,
         cmd => $cmd,
         $self->d ? ( data => $self->d) : ()

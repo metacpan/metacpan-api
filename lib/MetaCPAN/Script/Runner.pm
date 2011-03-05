@@ -9,9 +9,7 @@ use Hash::Merge::Simple qw/ merge /;
 
 sub run {
     my ( $class, @actions ) = @ARGV;
-
     die "Usage: metadbic [command] [args]" unless ($class);
-
     $class = 'MetaCPAN::Script::' . ucfirst($class);
     Class::MOP::load_class($class);
 

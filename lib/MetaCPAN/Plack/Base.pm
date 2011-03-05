@@ -48,7 +48,7 @@ sub get_source {
     my ( $self, $env ) = @_;
     my $res =
       Plack::App::Proxy->new(
-                        remote => "http://127.0.0.1:9200/cpan/" . $self->index )
+                        remote => "http://" . $self->remote . "/cpan/" . $self->index )
       ->to_app->($env);
     $self->process_chunks( $res,
                            sub { JSON::XS::encode_json( $_[0]->{_source} ) } );
@@ -59,7 +59,7 @@ sub get_first_result {
     my ( $self, $env ) = @_;
     $self->rewrite_request($env);
     my $res =
-      Plack::App::Proxy->new( remote => "http://127.0.0.1:9200/cpan" )
+      Plack::App::Proxy->new( remote => "http://" . $self->remote . "/cpan" )
       ->to_app->($env);
     $self->process_chunks(
         $res,
@@ -86,7 +86,7 @@ sub call {
         return [ 403, [], ['Not allowed'] ];
     } elsif ( $env->{PATH_INFO} =~ /^\/_search/ ) {
         return Plack::App::Proxy->new(
-                        remote => "http://127.0.0.1:9200/cpan/" . $self->index )
+                        remote => "http://" . $self->remote . "/cpan/" . $self->index )
           ->to_app->($env);
     } else {
         return $self->handle($env);

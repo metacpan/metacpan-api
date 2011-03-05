@@ -35,7 +35,8 @@ sub run {
         $es->create_index($arg);
     }
     if ( $self->mapping ) {
-        MetaCPAN::Script::Mapping->new->run;
+        local @ARGV = qw(mapping);
+        MetaCPAN::Script::Runner->run;
     }
 }
 
