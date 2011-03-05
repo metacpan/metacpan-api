@@ -117,18 +117,22 @@ sub import_tarball {
             $child->is_dir
               ? $fname =~ s/^(.*\/)?(.+?)\/?$/$2/
               : $fname =~ s/.*\///;
-            push( @files,
-                  Dlog_trace { "adding file $_" }{
-                                            name      => $fname,
-                                            directory => $child->is_dir ? 1 : 0,
-                                            release   => $name,
-                                            distribution => $meta->name,
-                                            author       => $author,
-                                            full_path    => $child->full_path,
-                                            path         => $fpath,
-                                            stat         => $stat,
-                                            maturity     => $d->maturity,
-                  } );
+            push(
+                @files,
+                Dlog_trace { "adding file $_" } +{
+                    name         => $fname,
+                    directory    => $child->is_dir ? 1 : 0,
+                    release      => $name,
+                    distribution => $meta->name,
+                    author       => $author,
+                    full_path    => $child->full_path,
+                    path         => $fpath,
+                    stat         => $stat,
+                    maturity     => $d->maturity,
+                    indexed => 1,
+                    content_cb =>
+                      sub { \( $at->get_content( $child->full_path ) ) }
+                } );
         }
     }
 
@@ -157,10 +161,7 @@ sub import_tarball {
     log_debug { "Indexing ", scalar @files, " files" };
     my $i = 1;
     foreach my $file (@files) {
-        my $obj = MetaCPAN::Document::File->new(
-            {  %$file,
-               content_cb => sub { \( $at->get_content( $file->{full_path} ) ) }
-            } );
+        my $obj = MetaCPAN::Document::File->new($file);
         $obj->index( $self->es );
         $file->{abstract} = $obj->abstract;
         $file->{id}       = $obj->id;
@@ -194,13 +195,13 @@ sub import_tarball {
             while ( my ( $relationship, $v ) = each %$data ) {
                 while ( my ( $module, $version ) = each %$v ) {
                     push( @dependencies,
-                          Dlog_trace { "adding dependency $_" }{
-                                                  phase        => $phase,
-                                                  relationship => $relationship,
-                                                  module       => $module,
-                                                  version      => $version,
-                                                  author       => $author,
-                                                  release => $release->name,
+                          Dlog_trace { "adding dependency $_" }
+                          +{  phase        => $phase,
+                              relationship => $relationship,
+                              module       => $module,
+                              version      => $version,
+                              author       => $author,
+                              release      => $release->name,
                           } );
                 }
             }
@@ -230,7 +231,7 @@ sub import_tarball {
         }
 
     }
-    @files = grep { $_->{name} =~ /\.pm$/ } grep { $_->{indexed} } @files;
+    @files = grep { $_->{name} =~ /\.pod$/i || $_->{name} =~ /\.pm$/ } grep { $_->{indexed} } @files;
 
     foreach my $file (@files) {
         eval {
@@ -260,28 +261,23 @@ sub import_tarball {
     log_debug { "Indexing ", scalar @modules, " modules" };
     $i = 1;
     foreach my $module (@modules) {
-        my $file = MetaCPAN::Document::File->new(
-            {  %{ $module->{file} },
-               module     => $module->{name},
-               content_cb =>
-                 sub { \( $at->get_content( $module->{file}->{full_path} ) ) }
-            } );
+        my $file = MetaCPAN::Document::File->new( $module->{file} );
+        $file->clear_indexed;
         my $obj =
-          MetaCPAN::Document::Module->new(
-                                    DlogS_trace { "adding module $_" }
-                                    +{ %$module,
-                                       file => $file,
-                                       date     => $release->date,
-                                       release  => $release->name,
-                                       distribution => $release->distribution,
-                                       author       => $release->author,
-                                       maturity     => $d->maturity,
-                                    } );
-        
+          MetaCPAN::Document::Module->new( { %$module,
+                                        file         => $file,
+                                        date         => $release->date,
+                                        release      => $release->name,
+                                        distribution => $release->distribution,
+                                        author       => $release->author,
+                                        maturity     => $d->maturity,
+                                     } );
+        Dlog_trace { "adding module ", $obj->name };
         $obj->index( $self->es );
-        log_trace { "Reindexing file $module->{file}->{path}" };
+        Dlog_trace { $_ } $obj->meta->get_data($obj);
+        log_trace { "reindexing file $module->{file}->{path}" };
         $file->index( $self->es );
-
+        Dlog_trace { $_ } $file->meta->get_data($file);
     }
 
     if ( $self->latest ) {

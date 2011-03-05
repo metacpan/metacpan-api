@@ -3,3 +3,4 @@
 *.komodoproject
 *.sqlite*
 /var/
+/etc/metacpan_local.pl

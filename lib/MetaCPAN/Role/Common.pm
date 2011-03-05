@@ -2,32 +2,39 @@ package MetaCPAN::Role::Common;
 
 use Moose::Role;
 use ElasticSearch;
-use Log::Contextual qw( set_logger );
+use Log::Contextual qw( set_logger :dlog );
 use Log::Log4perl ':easy';
+use MetaCPAN::Types qw(:all);
 
 has 'cpan' => ( is         => 'rw',
                 isa        => 'Str',
                 lazy_build => 1, );
 
-has 'level' => ( is         => 'ro', isa => 'Str', default => 'info' );
+has level => ( is => 'ro', isa => 'Str', required => 1, trigger => \&set_level );
 
-has 'es' => ( is => 'rw', lazy_build => 1 );
+has es => ( isa => ES, is => 'ro', required => 1, coerce => 1 );
 
-has logger => ( is => 'ro', lazy_build => 1, predicate => 'has_logger' );
+has port => ( isa => 'Int', is => 'ro', required => 1 );
 
-my $log;
-sub _build_logger {
+has logger => ( is => 'ro', required => 1, isa => Logger, coerce => 1, predicate => 'has_logger' );
+
+sub set_level {
     my $self = shift;
-    return $MetaCPAN::Role::Common::log if($MetaCPAN::Role::Common::log);
-    my $app = Log::Log4perl::Appender->new(
-                    "Log::Log4perl::Appender::ScreenColoredLevels",
-                    stderr => 0);
-                    my $layout = Log::Log4perl::Layout::PatternLayout->new("%d %p{1} %m{chomp}%n");
-    my $log = Log::Log4perl->get_logger;
-    $log->level(Log::Log4perl::Level::to_priority( uc($self->level) ));
-    $log->add_appender($app);
-    $app->layout($layout);
-    $MetaCPAN::Role::Common::log = $log;
+    $self->logger->level( Log::Log4perl::Level::to_priority( uc( $self->level ) ) );
+}
+
+# NOT A MOOSE BUILDER
+sub _build_logger {
+    my ( $config ) = @_;
+    my $log = Log::Log4perl->get_logger($ARGV[0]);
+    foreach my $c (@$config) {
+        my $layout =
+          Log::Log4perl::Layout::PatternLayout->new( delete $c->{layout}
+                                                    || "%d %p{1} %c: %m{chomp}%n" );
+        my $app = Log::Log4perl::Appender->new( delete $c->{class}, %$c );
+        $app->layout($layout);
+        $log->add_appender($app);
+    }
     return $log;
 }
 
@@ -43,13 +50,6 @@ sub file2mod {
     return $name;
 }
 
-sub _build_debug {
-
-    my $self = shift;
-    return $ENV{'DEBUG'} || 0;
-
-}
-
 sub _build_cpan {
 
     my $self = shift;
@@ -63,22 +63,14 @@ sub _build_cpan {
 
 }
 
-sub _build_es {
-
-    my $e = ElasticSearch->new(
-        servers   => 'localhost:9200',
-        transport => 'http',             # default 'http'
-        timeout   => 30,
-
-        #trace_calls => 'log_file',
-    );
-
-}
-
-sub run {}
+sub run { }
 before run => sub {
     my $self = shift;
-    set_logger $self->logger unless($MetaCPAN::Role::Common::log);
+    unless($MetaCPAN::Role::Common::log) {
+        $MetaCPAN::Role::Common::log = $self->logger;
+        set_logger $self->logger;
+    }
+    Dlog_debug { "Connected to $_" } $self->es->transport->servers;
 };
 
 1;

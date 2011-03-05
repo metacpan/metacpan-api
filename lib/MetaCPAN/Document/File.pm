@@ -49,7 +49,7 @@ sub _build_indexed {
     return 1 unless(my $pkg = $self->module);
     my $content = ${$self->content};
     return $content =~ /    # match a package declaration
-      ^[\s\{;]*             # intro chars on a line
+      ^[\h\{;]*             # intro chars on a line
       package               # the word 'package'
       \h+                   # whitespace
       ($pkg)                # a package name
@@ -57,7 +57,7 @@ sub _build_indexed {
       (.+)?                 # optional version number
       \h*                   # optional whitesapce
       ;                     # semicolon line terminator
-    /x ? 1 : 0;
+    /mx ? 1 : 0;
 }
 
 sub _build_level {

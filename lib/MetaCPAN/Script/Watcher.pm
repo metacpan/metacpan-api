@@ -27,8 +27,8 @@ sub run {
             my $file = $1;
             return unless( $file );
             $handles{$file} = AnyEvent::Run->new(
-                class => 'MetaCPAN::Script::Release',
-                args => [$file, '--latest', '--level', $self->level],
+                class => 'MetaCPAN::Script::Runner',
+                args => ['release', $file, '--latest', '--level', $self->level],
                 on_read => sub { },
                 on_eof => sub { },
                 on_error  => sub {
