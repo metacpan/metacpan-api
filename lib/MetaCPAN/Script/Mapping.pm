@@ -15,7 +15,7 @@ use MetaCPAN::Document::Dependency;
 use MetaCPAN::Document::Mirror;
 
 sub run {
-    shift->put_mappings(MetaCPAN->new->es);
+    shift->put_mappings($self->es);
 }
 
 sub put_mappings {

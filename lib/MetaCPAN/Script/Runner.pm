@@ -27,6 +27,7 @@ sub run {
         )->get;
         $config = merge $config, $iconf;
     }
+    use Devel::Dwarn; DwarnN($config);
     my $obj = $class->new_with_options($config);
     $obj->run;
 }

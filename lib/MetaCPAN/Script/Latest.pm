@@ -10,7 +10,6 @@ use MetaCPAN;
 
 has dry_run => ( is => 'ro', isa => 'Bool', default => 0 );
 has verbose => ( is => 'ro', isa => 'Bool', default => 0 );
-has es => ( is => 'ro', default => sub { MetaCPAN->new->es } );
 has distribution => ( is => 'ro' );
 
 sub run {

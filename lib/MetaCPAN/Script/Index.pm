@@ -13,7 +13,7 @@ sub run {
     my $self = shift;
     my ( undef, $index ) = @{ $self->extra_argv };
     $index ||= 'cpan';
-    my $es = MetaCPAN->new->es;
+    my $es = $self->es;
     my $arg = { index => $index,
                 defn  => {
                           analysis => {

@@ -3,7 +3,7 @@ package MetaCPAN::Script::Query;
 use Moose;
 use MooseX::Aliases;
 with 'MooseX::Getopt';
-use MetaCPAN;
+with 'MetaCPAN::Role::Common';
 use Data::DPath qw(dpath);
 use YAML::Syck qw(Dump);
 use JSON::XS;
@@ -17,7 +17,7 @@ sub run {
     my $self = shift;
     my (undef, $cmd, $path) = @{ $self->extra_argv };
     $path ||= '/';
-    my $es = MetaCPAN->new->es;
+    my $es = $self->es;
     my $json = $es->transport->send_request('127.0.0.1:9200', {
         method => $self->X,
         cmd => $cmd,
