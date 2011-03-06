@@ -6,7 +6,7 @@ with 'MetaCPAN::Role::Common';
 use MetaCPAN;
 use Plack::Runner;
 
-use Plack::Builder;
+use Plack::App::URLMap;
 use MetaCPAN::Plack::Module;
 use MetaCPAN::Plack::Dependency;
 use MetaCPAN::Plack::Distribution;
@@ -19,17 +19,15 @@ use MetaCPAN::Plack::Mirror;
 
 sub build_app {
     my $self = shift;
-    return builder {
-        for ( qw(Author Dependency Distribution File Mirror Module
-              Pod Release Source) )
-        {
-            my $class = "MetaCPAN::Plack::" . $_;
-            mount "/"
-              . lc($_) =>
-              $class->new( cpan => $self->cpan, remote => $self->remote );
-        }
-        mount "/abc" => [200,[],[]];
-    };
+    my $app  = Plack::App::URLMap->new;
+    for ( qw(Author Dependency Distribution File Mirror Module
+          Pod Release Source) )
+    {
+        my $class = "MetaCPAN::Plack::" . $_;
+        $app->map( "/" . lc($_),
+                  $class->new( cpan => $self->cpan, remote => $self->remote ) );
+    }
+    return $app;
 }
 
 sub run {

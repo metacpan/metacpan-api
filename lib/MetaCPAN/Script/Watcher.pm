@@ -18,22 +18,7 @@ sub run {
 
     binmode STDOUT, ":utf8";
     my %handles;
-    
-    
-    
-    my $foo = AnyEvent::Run->new(
-        cmd => $FindBin::RealBin . "/metacpan",
-        args => ['release', 'http://cpan.cpantesters.org/authors/id/M/MI/MIYAGAWA/App-cpanminus-1.30_06.tar.gz', '--latest'],
-        on_read => sub { },
-        on_eof => sub { },
-        on_error  => sub {
-            my ($handle, $fatal, $msg) = @_;
-            my $arg = $handle->{args}->[1];
-            log_info { "New upload: $arg" };
-            say $handle->rbuf;
-        }
-    );
-    
+
     my $client = AnyEvent::FriendFeed::Realtime->new(
         request    => "/feed/cpan",
         on_entry   => sub {

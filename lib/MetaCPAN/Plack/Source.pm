@@ -12,6 +12,8 @@ use MetaCPAN::Util;
 use Plack::App::Directory;
 use File::Temp ();
 
+__PACKAGE__->mk_accessors(qw(cpan remote));
+
 sub call {
     my ( $self, $env ) = @_;
     if ( $env->{REQUEST_URI} =~ m{\A/source/([A-Z0-9]+)/([^\/\?]+)/([^\?]+)} ) {

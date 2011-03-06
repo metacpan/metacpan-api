@@ -33,7 +33,7 @@ sub handle {
                                 $writer->close;
                                 return;
                             }
-                            my $file    = $hit->{_source}->{file};
+                            my $file    = $hit->{_source}->{path};
                             my $release = $hit->{_source}->{release};
                             my $author  = $hit->{_source}->{author};
                             $env->{REQUEST_URI} = $env->{PATH_INFO} =

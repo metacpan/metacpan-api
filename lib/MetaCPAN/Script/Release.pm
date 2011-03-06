@@ -276,7 +276,6 @@ sub import_tarball {
 
     if ( $self->latest ) {
         local @ARGV = ( qw(latest --distribution), $release->distribution );
-        warn @ARGV;
         MetaCPAN::Script::Runner->run;
     }
 }
