@@ -6,6 +6,7 @@ use JSON::XS;
 use Try::Tiny;
 use IO::String;
 use Plack::App::Proxy;
+use Plack::Middleware::BufferedStreaming;
 use mro 'c3';
 
 __PACKAGE__->mk_accessors(qw(cpan remote));
@@ -16,45 +17,54 @@ __PACKAGE__->mk_accessors(qw(cpan remote));
 # when "hits" is done
 sub process_chunks {
     my ( $self, $res, $cb ) = @_;
-    Plack::Util::response_cb(
-        $res,
+    my $ret;
+    $res->(
         sub {
-            my $res = shift;
+            my $write = shift;
+
             my $json;
-            return sub {
-                my $chunk = shift;
-                unless ( defined $chunk ) {
-                    try {
-                        $json = JSON::XS::decode_json($json);
-                    }
-                    catch {
-                        $res = $json;
-                    };
-                    my $res;
-                    try {
-                        $res = $cb->($json);
-                    }
-                    catch {
-                        $res = JSON::XS::encode_json($json);
-                    };
-                    return $res;
-                }
-                $json .= $chunk;
-                return '';
-              }
+            if ( @$write == 2 ) {
+                my @body;
+
+                $ret = [ @$write, \@body ];
+                return
+                  Plack::Util::inline_object(write => sub { push @body, $_[0] },
+                                             close => sub { }, );
+            } else {
+                $ret = $write;
+                return;
+            }
 
         } );
+    try {
+        my $json = JSON::XS::decode_json( join( "", @{ $ret->[2] } ) );
+        my $res = $cb->($json);
+        $ret = ref $res eq 'ARRAY' ? $res : [ 200, $ret->[1], [$res] ];
+        Plack::Util::header_remove($ret->[1], 'Content-length')
+    };
+    return $ret;
 }
 
 sub get_source {
     my ( $self, $env ) = @_;
     my $res =
       Plack::App::Proxy->new(
-                        remote => "http://" . $self->remote . "/cpan/" . $self->index )
+                 remote => "http://" . $self->remote . "/cpan/" . $self->index )
       ->to_app->($env);
-    $self->process_chunks( $res,
-                           sub { JSON::XS::encode_json( $_[0]->{_source} ) } );
+    $self->process_chunks(
+        $res,
+        sub {
+            if ( !$_[0]->{_source} ) {
+                return $self->error404;
+            } else {
+                JSON::XS::encode_json( $_[0]->{_source} );
+            }
+        } );
 
+}
+
+sub error404 {
+    [ 404, [], ['Not found'] ];
 }
 
 sub get_first_result {
@@ -66,7 +76,11 @@ sub get_first_result {
     $self->process_chunks(
         $res,
         sub {
-            JSON::XS::encode_json( $_[0]->{hits}->{hits}->[0]->{_source} );
+            if ( $_[0]->{hits}->{total} == 0 ) {
+                return $self->error404;
+            } else {
+                JSON::XS::encode_json( $_[0]->{hits}->{hits}->[0]->{_source} );
+            }
         } );
 }
 
@@ -88,7 +102,7 @@ sub call {
         return [ 403, [], ['Not allowed'] ];
     } elsif ( $env->{PATH_INFO} =~ /^\/_search/ ) {
         return Plack::App::Proxy->new(
-                        remote => "http://" . $self->remote . "/cpan/" . $self->index )
+                 remote => "http://" . $self->remote . "/cpan/" . $self->index )
           ->to_app->($env);
     } else {
         return $self->handle($env);
