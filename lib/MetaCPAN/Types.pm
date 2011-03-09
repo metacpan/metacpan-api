@@ -5,9 +5,33 @@ use MooseX::Types -declare => [
     qw(
       ES
       Logger
+      Resources
+      Stat
       ) ];
 
-use MooseX::Types::Moose qw/Int Str ArrayRef HashRef/;
+use MooseX::Types::Structured qw(Dict Tuple Optional);
+use MooseX::Types::Moose qw/Int Str ArrayRef HashRef Undef/;
+
+subtype Stat, as Dict [ mode => Int, uid => Int, gid => Int, size => Int, mtime => Int ];
+
+subtype Resources,
+  as Dict [
+        license => Optional [ ArrayRef [Str] ],
+        homepage => Optional [Str],
+        bugtracker =>
+          Optional [ Dict [ web => Optional [Str], mailto => Optional [Str] ] ],
+        repository => Optional [
+                                 Dict [ url  => Optional [Str],
+                                        web  => Optional [Str],
+                                        type => Optional [Str] ] ] ];
+
+coerce Resources, from HashRef, via {
+    my $r = $_;
+    return {
+          map { $_ => $r->{$_} }
+          grep { defined $r->{$_} } qw(license homepage bugtracker repository)
+    };
+};
 
 class_type Logger, { class => 'Log::Log4perl::Logger' };
 coerce Logger, from ArrayRef, via {
