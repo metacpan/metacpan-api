@@ -27,15 +27,15 @@ sub run {
             $entry->{body} =~ /href="(.*?)"/;
             my $file = $1;
             return unless( $file );
+            log_info { "New upload: $file" };
             $handles{$file} = AnyEvent::Run->new(
-                class => 'MetaCPAN::Script::Runner',
+                cmd => $FindBin::RealBin . "/metacpan",
                 args => ['release', $file, '--latest', '--level', $self->level],
                 on_read => sub { },
                 on_eof => sub { },
                 on_error  => sub {
                     my ($handle, $fatal, $msg) = @_;
                     my $arg = $handle->{args}->[1];
-                    log_info { "New upload: $arg" };
                     say $handle->rbuf;
                 }
             );
