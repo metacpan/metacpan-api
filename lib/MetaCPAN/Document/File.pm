@@ -10,6 +10,7 @@ use Pod::Text;
 use Plack::MIME;
 use List::MoreUtils qw(uniq);
 use MetaCPAN::Pod::Lines;
+use MetaCPAN::Types qw(:all);
 
 Plack::MIME->add_type( ".t"   => "text/x-script.perl" );
 Plack::MIME->add_type( ".pod" => "text/x-script.perl" );
@@ -19,9 +20,10 @@ has id => ( id => [qw(author release path)] );
 
 has [qw(path author name distribution)] => ();
 has module => ( required => 0, is => 'rw' );
+has documentation => ( required => 0, is => 'rw' );
 has release => ( parent => 1 );
 has url    => ( lazy_build => 1,      index   => 'no' );
-has stat => ( isa => 'HashRef' );
+has stat => ( isa => Stat, required => 0 );
 has sloc => ( isa => 'Int',        lazy_build => 1 );
 has slop => ( isa => 'Int', is => 'rw', default => 0 );
 has pod_lines => ( isa => 'ArrayRef', type => 'integer', lazy_build => 1, index => 'no' );

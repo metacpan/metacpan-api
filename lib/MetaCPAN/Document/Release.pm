@@ -2,7 +2,7 @@ package MetaCPAN::Document::Release;
 use Moose;
 use ElasticSearch::Document;
 use MetaCPAN::Document::Author;
-
+use MetaCPAN::Types qw(:all);
 use MetaCPAN::Util;
 
 has [qw(license version author archive)] => ();
@@ -10,7 +10,7 @@ has date             => ( isa        => 'DateTime' );
 has download_url     => ( lazy_build => 1 );
 has name             => ( id         => 1, index => 'analyzed' );
 has version_numified => ( isa        => 'Num', lazy_build => 1 );
-has resources        => ( isa        => 'HashRef', required => 0 );
+has resources        => ( isa        => Resources, required => 0, coerce => 1 );
 has abstract => ( index => 'analyzed' );
 has distribution => ( analyzer => 'lowercase' );
 has status => ( default => 'cpan' );
