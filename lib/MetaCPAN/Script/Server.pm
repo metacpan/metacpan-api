@@ -3,7 +3,6 @@ package MetaCPAN::Script::Server;
 use Moose;
 with 'MooseX::Getopt';
 with 'MetaCPAN::Role::Common';
-use MetaCPAN;
 use Plack::Runner;
 
 use Plack::App::URLMap;
@@ -27,16 +26,16 @@ sub build_app {
         $app->map( "/" . lc($_),
                   $class->new( cpan => $self->cpan, remote => $self->remote ) );
     }
-    return $app;
+    return $app->to_app;
 }
 
 sub run {
     my ($self) = @_;
     my $runner = Plack::Runner->new;
     shift @ARGV;
-    $runner->parse_options;
+    $runner->parse_options(qw(-s Starman));
     $runner->set_options( port => $self->port );
-    $runner->run( $self->build_app->to_app );
+    $runner->run( $self->build_app );
 }
 
 __PACKAGE__->meta->make_immutable;
