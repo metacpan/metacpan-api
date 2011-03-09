@@ -3,7 +3,6 @@ package MetaCPAN::Script::Restart;
 use Moose;
 with 'MooseX::Getopt';
 with 'MetaCPAN::Role::Common';
-use MetaCPAN;
 
 sub run {
     shift->es->restart(

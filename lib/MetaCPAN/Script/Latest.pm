@@ -6,7 +6,6 @@ use MooseX::Aliases;
 with 'MooseX::Getopt';
 use Log::Contextual qw( :log );
 with 'MetaCPAN::Role::Common';
-use MetaCPAN;
 
 has dry_run => ( is => 'ro', isa => 'Bool', default => 0 );
 has distribution => ( is => 'ro', isa => 'Str' );

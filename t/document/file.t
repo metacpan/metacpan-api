@@ -38,7 +38,6 @@ END
                                      release      => 'release',
                                      distribution => 'foo',
                                      name         => 'module.pm',
-                                     stat         => {},
                                      content      => \$content );
 
     is( $file->abstract, 'mymodule1 abstract bla' );
@@ -59,7 +58,6 @@ END
                                      release      => 'release',
                                      distribution => 'foo',
                                      name         => 'module.pm',
-                                     stat         => {},
                                      content      => \$content );
 
     is( $file->abstract, '' );
@@ -90,7 +88,6 @@ END
                                      release      => 'release',
                                      distribution => 'foo',
                                      name         => 'module.pm',
-                                     stat         => {},
                                      content_cb   => sub { \$content } );
 
     is( $file->abstract,
@@ -135,7 +132,6 @@ END
                                      distribution => 'foo',
                                      name         => 'module.pm',
                                      module => 'Number::Phone::NANP::AS',
-                                     stat         => {},
                                      content_cb   => sub { \$content } );
 
     is( $file->sloc, 8 );

@@ -6,7 +6,6 @@ use JSON::XS;
 use Try::Tiny;
 use IO::String;
 use Plack::App::Proxy;
-use Plack::Middleware::BufferedStreaming;
 use mro 'c3';
 
 __PACKAGE__->mk_accessors(qw(cpan remote));

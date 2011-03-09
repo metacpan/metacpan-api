@@ -4,7 +4,6 @@ use Moose;
 with 'MooseX::Getopt';
 use Log::Contextual qw( :log );
 with 'MetaCPAN::Role::Common';
-use MetaCPAN;
 use MetaCPAN::Script::Mapping;
 
 has [qw(create delete recreate mapping)] => ( isa => 'Bool', is => 'rw' );

@@ -5,7 +5,6 @@ with 'MooseX::Getopt';
 use Log::Contextual qw( :log );
 with 'MetaCPAN::Role::Common';
 
-use MetaCPAN;
 use MetaCPAN::Document::Author;
 use MetaCPAN::Document::Release;
 use MetaCPAN::Document::Distribution;
@@ -28,9 +27,6 @@ sub put_mappings {
         my $class = "MetaCPAN::Document::$_";
         $class->meta->put_mapping( $es );
     }
-
-    return;
-
 }
 
 sub map_perlmongers {
