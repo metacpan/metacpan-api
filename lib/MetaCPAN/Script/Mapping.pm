@@ -15,18 +15,7 @@ use MetaCPAN::Document::Mirror;
 
 sub run {
     my $self = shift;
-    $self->put_mappings($self->es);
-}
-
-sub put_mappings {
-    my ($self, $es) = @_;
-    # do not delete mappings, this will delete the data as well
-    # ElasticSearch merges new mappings if possible
-    for(qw(Author Release Distribution File Module Dependency Mirror)) {
-        log_info { "Putting mapping for $_" };
-        my $class = "MetaCPAN::Document::$_";
-        $class->meta->put_mapping( $es );
-    }
+    $self->model->deploy;
 }
 
 sub map_perlmongers {

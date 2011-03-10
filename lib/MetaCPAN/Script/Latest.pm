@@ -101,7 +101,7 @@ __END__
 
  # bin/metacpan latest
 
- # bin/metacpan latest --dry-run
+ # bin/metacpan latest --dry_run
  
 =head1 DESCRIPTION
 
