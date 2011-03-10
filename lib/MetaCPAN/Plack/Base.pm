@@ -7,6 +7,7 @@ use Try::Tiny;
 use IO::String;
 use Plack::App::Proxy;
 use mro 'c3';
+use Plack::Middleware::CrossOrigin;
 
 __PACKAGE__->mk_accessors(qw(cpan remote));
 
@@ -47,7 +48,7 @@ sub process_chunks {
 sub get_source {
     my ( $self, $env ) = @_;
     my $res =
-      Plack::App::Proxy->new(
+      Plack::App::Proxy->new( backend => 'LWP',
                  remote => "http://" . $self->remote . "/cpan/" . $self->index )
       ->to_app->($env);
     $self->process_chunks(
@@ -70,7 +71,7 @@ sub get_first_result {
     my ( $self, $env ) = @_;
     $self->rewrite_request($env);
     my $res =
-      Plack::App::Proxy->new( remote => "http://" . $self->remote . "/cpan" )
+      Plack::App::Proxy->new( backend => 'LWP', remote => "http://" . $self->remote . "/cpan" )
       ->to_app->($env);
     $self->process_chunks(
         $res,
@@ -97,15 +98,21 @@ sub rewrite_request {
 
 sub call {
     my ( $self, $env ) = @_;
-    if ( $env->{REQUEST_METHOD} ne 'GET' && $env->{REQUEST_METHOD} ne 'POST' ) {
-        return [ 403, [], ['Not allowed'] ];
+    if($env->{REQUEST_METHOD} eq "OPTIONS" ) {
+        return [200,[$self->_access_control_headers],[]];
+    } elsif ( !grep { $env->{REQUEST_METHOD} eq $_ } qw(GET POST)  ) {
+        return [ 403, ['Content-type', 'text/plain'], ['Not allowed'] ];
     } elsif ( $env->{PATH_INFO} =~ /^\/_search/ ) {
-        return Plack::App::Proxy->new(
+        return Plack::App::Proxy->new( backend => 'LWP',
                  remote => "http://" . $self->remote . "/cpan/" . $self->index )
           ->to_app->($env);
     } else {
         return $self->handle($env);
     }
+}
+
+sub _access_control_headers {
+    return ('Access-Control-Allow-Origin', '*', 'Access-Control-Allow-Headers','X-Requested-With, Content-Type', 'Access-Control-Max-Age', '1728000');
 }
 
 1;

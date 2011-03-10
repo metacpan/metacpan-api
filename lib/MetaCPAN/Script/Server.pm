@@ -15,6 +15,7 @@ use MetaCPAN::Plack::File;
 use MetaCPAN::Plack::Source;
 use MetaCPAN::Plack::Release;
 use MetaCPAN::Plack::Mirror;
+use Plack::Middleware::CrossOrigin;
 
 sub build_app {
     my $self = shift;
@@ -26,7 +27,9 @@ sub build_app {
         $app->map( "/" . lc($_),
                   $class->new( cpan => $self->cpan, remote => $self->remote ) );
     }
-    return $app->to_app;
+    #return Plack::Middleware::CrossOrigin->wrap(
+        $app->to_app
+    #, origins => '*', methods => [qw(GET POST)], headers => '*', credentials => 1);
 }
 
 sub run {

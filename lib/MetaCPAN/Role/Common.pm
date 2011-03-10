@@ -5,6 +5,7 @@ use ElasticSearch;
 use Log::Contextual qw( set_logger :dlog );
 use Log::Log4perl ':easy';
 use MetaCPAN::Types qw(:all);
+use MetaCPAN::Model;
 
 has 'cpan' => ( is         => 'rw',
                 isa        => 'Str',
@@ -14,6 +15,8 @@ has level => ( is => 'ro', isa => 'Str', required => 1, trigger => \&set_level )
 
 has es => ( isa => ES, is => 'ro', required => 1, coerce => 1 );
 
+has model => ( lazy_build => 1, is => 'ro' );
+
 has port => ( isa => 'Int', is => 'ro', required => 1 );
 
 has logger => ( is => 'ro', required => 1, isa => Logger, coerce => 1, predicate => 'has_logger' );
@@ -21,6 +24,11 @@ has logger => ( is => 'ro', required => 1, isa => Logger, coerce => 1, predicate
 sub set_level {
     my $self = shift;
     $self->logger->level( Log::Log4perl::Level::to_priority( uc( $self->level ) ) );
+}
+
+sub _build_model {
+    my $self = shift;
+    return MetaCPAN::Model->new( es => $self->es );
 }
 
 # NOT A MOOSE BUILDER

@@ -30,8 +30,8 @@ sub run {
 }
 
 sub index_authors {
-
     my $self      = shift;
+    my $type = $self->model->index('cpan')->type('author');
     my @authors   = ();
     my $author_fh = $self->author_fh;
     my @results   = ();
@@ -50,11 +50,11 @@ sub index_authors {
                                                name    => $name,
                                                email   => $email );
             my $conf = $self->author_config( $pauseid, $author->dir );
-            $author = MetaCPAN::Document::Author->new( pauseid => $pauseid,
+            $author = $type->put( { pauseid => $pauseid,
                                                name    => $name,
-                                               email   => $email, %$conf );
+                                               email   => $email, %$conf } );
 
-            push @results, $author->index( $self->es );
+            push @results, $author;
         }
     }
     log_info { "done" };

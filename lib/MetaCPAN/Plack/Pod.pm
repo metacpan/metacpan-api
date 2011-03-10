@@ -11,7 +11,7 @@ sub handle {
     if ( $env->{REQUEST_URI} =~ m{\A/pod/([^\/]*?)\/?$} ) {
         $self->rewrite_request($env);
         my $res =
-          Plack::App::Proxy->new( remote => "http://" . $self->remote . "/cpan" )
+          Plack::App::Proxy->new( backend => 'LWP', remote => "http://" . $self->remote . "/cpan" )
           ->to_app->($env);
         return sub {
             my $respond = shift;
@@ -77,7 +77,7 @@ sub handle {
         while ( my $line = $body->getline ) {
             $source .= $line;
         }
-        return [200, ['Content-type', 'text/html'], [$self->build_pod_html($source)]];
+        return [200, ['Content-type', 'text/html', $self->_access_control_headers], [$self->build_pod_html($source)]];
     }
 }
 

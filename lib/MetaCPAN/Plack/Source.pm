@@ -1,6 +1,6 @@
 package MetaCPAN::Plack::Source;
 
-use base 'Plack::Component';
+use base 'MetaCPAN::Plack::Base';
 use strict;
 use warnings;
 use Archive::Tar::Wrapper;
@@ -24,7 +24,11 @@ sub call {
             $env->{PATH_INFO} = $new_path if $new_path;
     }
 
-    Plack::App::Directory->new( root => "." )->to_app->($env);
+    Plack::Util::response_cb(Plack::App::Directory->new( root => "." )->to_app->($env), sub {
+        my $res = shift;
+        push(@{$res->[1]}, $self->_access_control_headers);
+        return $res;
+    });
 }
 
 sub file_path {

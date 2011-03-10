@@ -15,16 +15,12 @@ use File::stat         ();
 use CPAN::DistnameInfo ();
 
 use feature 'say';
-use MetaCPAN::Document::Release;
-use MetaCPAN::Document::Distribution;
-use MetaCPAN::Document::File;
-use MetaCPAN::Document::Dependency;
-use MetaCPAN::Document::Module;
 use MetaCPAN::Script::Latest;
 use DateTime::Format::Epoch::Unix;
 use File::Find::Rule;
 use Try::Tiny;
 use LWP::UserAgent;
+use MetaCPAN::Document::Author;
 
 has latest  => ( is => 'ro', isa => 'Bool', default => 0 );
 has age     => ( is => 'ro', isa => 'Int' );
@@ -80,6 +76,8 @@ sub run {
 
 sub import_tarball {
     my ( $self, $tarball ) = @_;
+    my $cpan = $self->model->index('cpan');
+
     log_info { "Processing $tarball" };
     $tarball = Path::Class::File->new($tarball);
 
@@ -154,9 +152,9 @@ sub import_tarball {
 
     log_debug { "Indexing ", scalar @files, " files" };
     my $i = 1;
+    my $file_set = $cpan->type('file');
     foreach my $file (@files) {
-        my $obj = MetaCPAN::Document::File->new($file);
-        $obj->index( $self->es );
+        my $obj = $file_set->put($file);
         $file->{abstract} = $obj->abstract;
         $file->{id}       = $obj->id;
         $file->{module}   = $obj->module;
@@ -173,13 +171,11 @@ sub import_tarball {
         maturity     => $d->maturity,
         date         => $self->pkg_datestamp($tarball), };
 
-    my $release = MetaCPAN::Document::Release->new($create);
-    $release->index( $self->es );
-
+    my $release = $cpan->type('release')->put($create);
+    
     my $distribution =
-      MetaCPAN::Document::Distribution->new( { name => $meta->name } );
-    $distribution->index( $self->es );
-
+      $cpan->type('distribution')->put( { name => $meta->name } );
+    
     log_debug { "Gathering dependencies" };
 
     # find dependencies
@@ -204,9 +200,9 @@ sub import_tarball {
 
     log_debug { "Indexing ", scalar @dependencies, " dependencies" };
     $i = 1;
+    my $dep_set = $cpan->type('dependency');
     foreach my $dependencies (@dependencies) {
-        $dependencies = MetaCPAN::Document::Dependency->new($dependencies);
-        $dependencies->index( $self->es );
+        $dependencies = $dep_set->put($dependencies);
     }
 
     log_debug { "Gathering modules" };
@@ -254,11 +250,11 @@ sub import_tarball {
 
     log_debug { "Indexing ", scalar @modules, " modules" };
     $i = 1;
+    my $mod_set = $cpan->type('module');
     foreach my $module (@modules) {
-        my $file = MetaCPAN::Document::File->new( $module->{file} );
+        my $file = MetaCPAN::Document::File->new( %{$module->{file}}, index => $cpan );
         $file->clear_indexed;
-        my $obj =
-          MetaCPAN::Document::Module->new( { %$module,
+        my $obj = $mod_set->put( { %$module,
                                         file         => $file,
                                         date         => $release->date,
                                         release      => $release->name,
@@ -267,10 +263,9 @@ sub import_tarball {
                                         maturity     => $d->maturity,
                                      } );
         Dlog_trace { "adding module ", $obj->name };
-        $obj->index( $self->es );
         Dlog_trace { $_ } $obj->meta->get_data($obj);
         log_trace { "reindexing file $module->{file}->{path}" };
-        $file->index( $self->es );
+        $file->put;
         Dlog_trace { $_ } $file->meta->get_data($file);
     }
 

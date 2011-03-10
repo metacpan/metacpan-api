@@ -29,7 +29,7 @@ sub index_mirrors {
         $mirror->{location} = { lon => $mirror->{longitude}, lat => $mirror->{latitude} };
         Dlog_trace { "Indexing $_" } $mirror;
         my $m = MetaCPAN::Document::Mirror->new(map { $_ => $mirror->{$_} } grep { defined $mirror->{$_} } keys %$mirror);
-        $m->index($self->es);
+        $m->put;
     }
     log_info { "done" };
 }
