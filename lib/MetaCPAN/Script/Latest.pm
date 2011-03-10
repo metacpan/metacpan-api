@@ -79,7 +79,7 @@ sub reindex {
     my $rs = $es->search(%$search);
     while ( my $row = shift @{ $rs->{hits}->{hits} } ) {
         log_debug { $status eq 'latest' ? "Upgrading " : "Downgrading ",
-          $type, " ", $row->{_source}->{name} || $row->{_source}->{module} };
+          $type, " ", $row->{_source}->{name} || $row->{_source}->{module} || '' };
         $es->index( index => 'cpan',
                     type  => $type,
                     id    => $row->{_id},
