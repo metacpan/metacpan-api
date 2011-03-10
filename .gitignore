@@ -2,5 +2,6 @@
 *.kpf
 *.komodoproject
 *.sqlite*
-/var/
+/var/tmp/
+/var/log/metacpan.*
 /etc/metacpan_local.pl
