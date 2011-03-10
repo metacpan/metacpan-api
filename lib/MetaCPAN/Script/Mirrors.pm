@@ -24,12 +24,12 @@ sub index_mirrors {
         log_fatal { "Could not get mirrors file" };
         exit;
     }
+    my $type = $self->model->index('cpan')->type('mirror');
     my $mirrors = JSON::XS::decode_json($res->content);
     foreach my $mirror(@$mirrors) {
         $mirror->{location} = { lon => $mirror->{longitude}, lat => $mirror->{latitude} };
         Dlog_trace { "Indexing $_" } $mirror;
-        my $m = MetaCPAN::Document::Mirror->new(map { $_ => $mirror->{$_} } grep { defined $mirror->{$_} } keys %$mirror);
-        $m->put;
+        $type->put({ map { $_ => $mirror->{$_} } grep { defined $mirror->{$_} } keys %$mirror });
     }
     log_info { "done" };
 }
