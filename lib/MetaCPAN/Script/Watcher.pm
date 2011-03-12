@@ -5,7 +5,6 @@ with 'MooseX::Getopt';
 with 'MetaCPAN::Role::Common';
 use Log::Contextual qw( :log );
 
-use feature qw(say);
 use AnyEvent::FriendFeed::Realtime;
 use AnyEvent::Run;
 
