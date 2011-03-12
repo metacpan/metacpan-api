@@ -25,7 +25,7 @@ sub run {
                    query => $query,
                    size  => 100,
                    from  => 0,
-                   sort  => ['distribution',
+                   sort  => ['distribution.raw',
                              { maturity => { reverse => \1 } },
                              { date     => { reverse => \1 } }
                    ], };

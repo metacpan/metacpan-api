@@ -27,7 +27,7 @@ has stat => ( isa => Stat, required => 0 );
 has sloc => ( isa => 'Int',        lazy_build => 1 );
 has slop => ( isa => 'Int', is => 'rw', default => 0 );
 has pod_lines => ( isa => 'ArrayRef', type => 'integer', lazy_build => 1, index => 'no' );
-has pod  => ( isa => 'ScalarRef', lazy_build => 1, index => 'analyzed' );
+has pod  => ( isa => 'ScalarRef', lazy_build => 1, index => 'analyzed', store => 'no' );
 has [qw(mime)] => ( lazy_build => 1 );
 has abstract => ( lazy_build => 1, index => 'analyzed' );
 has status => ( default => 'cpan' );

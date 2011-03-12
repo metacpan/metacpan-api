@@ -1,6 +1,6 @@
 use FindBin;
 {
-    level => 'debug',
+    level => 'info',
     logger => [{
         class => 'Log::Log4perl::Appender::ScreenColoredLevels',
         stdout => 0,
