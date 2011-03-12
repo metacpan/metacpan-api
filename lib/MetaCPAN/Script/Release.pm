@@ -13,8 +13,6 @@ use List::Util         ();
 use Module::Metadata   ();
 use File::stat         ();
 use CPAN::DistnameInfo ();
-use Proc::Fork;
-use IO::Pipe;
 
 use feature 'say';
 use MetaCPAN::Script::Latest;
@@ -26,6 +24,7 @@ use MetaCPAN::Document::Author;
 
 has latest  => ( is => 'ro', isa => 'Bool', default => 0 );
 has age     => ( is => 'ro', isa => 'Int' );
+has childs  => ( is => 'ro', isa => 'Int', default => 2 );
 
 sub run {
     my $self = shift;
@@ -69,26 +68,18 @@ sub run {
     log_info { scalar @files, " tarballs found" } if ( @files > 1 );
     my @pid;
     while ( my $file = shift @files ) {
-        my $pipe = IO::Pipe->new;
-        waitpid( shift @pid, 0) if(@pid > 1);
-        # Child simply echoes data it receives, until EOF
-        run_fork {
-            child {
-                $pipe->reader;
-                my $data = <$pipe>;
-                
-                log_debug { "Child received job $data " };
+        if(@pid >= $self->childs) {
+            my $pid = waitpid( -1, 0);
+            @pid = grep { $_ != $pid } @pid;
+        }
+        if(my $pid = fork()) {
+            push(@pid, $pid);
+        } else {
                 try { $self->import_tarball($file) }
                 catch {
                     log_fatal { $_ };
                 };
                 exit;
-
-            } parent {
-                push(@pid, shift);
-                my $child = $pipe->writer;
-                print $child $file;
-            }
         };
     }
 }
