@@ -13,6 +13,8 @@ use List::Util         ();
 use Module::Metadata   ();
 use File::stat         ();
 use CPAN::DistnameInfo ();
+use Proc::Fork;
+use IO::Pipe;
 
 use feature 'say';
 use MetaCPAN::Script::Latest;
@@ -24,7 +26,6 @@ use MetaCPAN::Document::Author;
 
 has latest  => ( is => 'ro', isa => 'Bool', default => 0 );
 has age     => ( is => 'ro', isa => 'Int' );
-has verbose => ( is => 'ro', isa => 'Bool', default => 0 );
 
 sub run {
     my $self = shift;
@@ -34,7 +35,7 @@ sub run {
         if ( -d $_ ) {
             log_info { "Looking for tarballs in $_" };
             my $find = File::Find::Rule->new->file->name('*.tar.gz');
-            $find = $find->ctime( ">" . ( time - $self->age * 3600 ) )
+            $find = $find->mtime( ">" . ( time - $self->age * 3600 ) )
               if ( $self->age );
             push( @files, sort $find->in($_) );
         } elsif ( -f $_ ) {
@@ -66,10 +67,28 @@ sub run {
         }
     }
     log_info { scalar @files, " tarballs found" } if ( @files > 1 );
+    my @pid;
     while ( my $file = shift @files ) {
-        try { $self->import_tarball($file) }
-        catch {
-            log_fatal { $_ };
+        my $pipe = IO::Pipe->new;
+        waitpid( shift @pid, 0) if(@pid > 1);
+        # Child simply echoes data it receives, until EOF
+        run_fork {
+            child {
+                $pipe->reader;
+                my $data = <$pipe>;
+                
+                log_debug { "Child received job $data " };
+                try { $self->import_tarball($file) }
+                catch {
+                    log_fatal { $_ };
+                };
+                exit;
+
+            } parent {
+                push(@pid, shift);
+                my $child = $pipe->writer;
+                print $child $file;
+            }
         };
     }
 }
@@ -268,6 +287,8 @@ sub import_tarball {
         $file->put;
         Dlog_trace { $_ } $file->meta->get_data($file);
     }
+    
+    $tmpdir->rmtree;
 
     if ( $self->latest ) {
         local @ARGV = ( qw(latest --distribution), $release->distribution );
