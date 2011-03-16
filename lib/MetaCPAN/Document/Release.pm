@@ -1,6 +1,6 @@
 package MetaCPAN::Document::Release;
 use Moose;
-use ElasticSearch::Document;
+use ElasticSearchX::Model::Document;
 use MetaCPAN::Document::Author;
 use MetaCPAN::Types qw(:all);
 use MetaCPAN::Util;

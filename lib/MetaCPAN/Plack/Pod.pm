@@ -68,7 +68,6 @@ sub handle {
           MetaCPAN::Plack::Source->new( { cpan => $self->cpan } )
           ->to_app->($env);
         if ( ref $res->[2] eq 'ARRAY' ) {
-            die;
             return $res;
         }
 

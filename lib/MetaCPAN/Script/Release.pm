@@ -82,6 +82,7 @@ sub run {
                 exit;
         };
     }
+    waitpid( -1, 0);
 }
 
 sub import_tarball {

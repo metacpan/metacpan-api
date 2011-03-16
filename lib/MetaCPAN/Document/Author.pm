@@ -1,6 +1,6 @@
 package MetaCPAN::Document::Author;
 use Moose;
-use ElasticSearch::Document;
+use ElasticSearchX::Model::Document;
 use Gravatar::URL ();
 use MetaCPAN::Util;
 

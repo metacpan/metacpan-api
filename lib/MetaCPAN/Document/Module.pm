@@ -1,6 +1,6 @@
 package MetaCPAN::Document::Module;
 use Moose;
-use ElasticSearch::Document;
+use ElasticSearchX::Model::Document;
 
 use MetaCPAN::Util;
 use URI::Escape ();

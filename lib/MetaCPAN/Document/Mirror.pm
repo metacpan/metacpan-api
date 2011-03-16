@@ -1,7 +1,7 @@
 package MetaCPAN::Document::Mirror;
 use Moose;
-use ElasticSearch::Document;
-use ElasticSearch::Document::Types qw(:all);
+use ElasticSearchX::Model::Document;
+use ElasticSearchX::Model::Document::Types qw(:all);
 
 use MetaCPAN::Util;
 

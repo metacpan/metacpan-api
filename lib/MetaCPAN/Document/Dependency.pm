@@ -1,6 +1,6 @@
 package MetaCPAN::Document::Dependency;
 use Moose;
-use ElasticSearch::Document;
+use ElasticSearchX::Model::Document;
 use MetaCPAN::Util;
 
 has id => ( id => [qw(author release module phase)] );

@@ -1,6 +1,6 @@
 package MetaCPAN::Model;
 use Moose;
-use ElasticSearch::Model;
+use ElasticSearchX::Model;
 
 analyzer lowercase => ( tokenizer => 'keyword', filter => 'lowercase' );
 analyzer fulltext => ( type => 'snowball', language => 'English' );

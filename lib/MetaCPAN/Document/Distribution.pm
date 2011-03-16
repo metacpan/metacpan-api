@@ -1,6 +1,6 @@
 package MetaCPAN::Document::Distribution;
 use Moose;
-use ElasticSearch::Document;
+use ElasticSearchX::Model::Document;
 
 has name    => ( id       => 1, index => 'analyzed' );
 has ratings => ( isa      => 'Int', default => 0 );
