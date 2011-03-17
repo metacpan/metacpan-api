@@ -9,7 +9,7 @@ use MetaCPAN::Pod::XHTML;
 sub handle {
     my ( $self, $env ) = @_;
     if ( $env->{REQUEST_URI} =~ m{\A/pod/([^\/]*?)\/?$} ) {
-        $self->rewrite_request($env);
+        use Devel::Dwarn; DwarnN($env);
         my $res =
           Plack::App::Proxy->new( backend => 'LWP', remote => "http://" . $self->remote . "/cpan" )
           ->to_app->($env);

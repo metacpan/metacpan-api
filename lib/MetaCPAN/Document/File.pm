@@ -11,6 +11,7 @@ use Plack::MIME;
 use List::MoreUtils qw(uniq);
 use MetaCPAN::Pod::Lines;
 use MetaCPAN::Types qw(:all);
+use MooseX::Types::Moose qw(ArrayRef);
 
 Plack::MIME->add_type( ".t"   => "text/x-script.perl" );
 Plack::MIME->add_type( ".pod" => "text/x-script.perl" );
@@ -19,10 +20,10 @@ Plack::MIME->add_type( ".xs"  => "text/x-c" );
 has id => ( id => [qw(author release path)] );
 
 has [qw(path author name distribution)] => ();
-has module => ( required => 0, is => 'rw' );
+has module => ( required => 0, is => 'ro', isa => Module, coerce => 1 );
 has documentation => ( required => 0, is => 'rw' );
 has release => ( parent => 1 );
-has url    => ( lazy_build => 1,      index   => 'no' );
+has date => ( isa => 'DateTime' );
 has stat => ( isa => Stat, required => 0 );
 has sloc => ( isa => 'Int',        lazy_build => 1 );
 has slop => ( isa => 'Int', is => 'rw', default => 0 );
@@ -49,6 +50,7 @@ sub is_perl_file {
 sub _build_indexed {
     my $self = shift;
     return 1 unless(my $pkg = $self->module);
+    $pkg = $pkg->[0]->{name} || return 0;;
     my $content = ${$self->content};
     return $content =~ /    # match a package declaration
       ^[\h\{;]*             # intro chars on a line
@@ -114,14 +116,6 @@ sub _build_abstract {
 sub _build_path {
     my $self = shift;
     return join( '/', $self->release->name, $self->name );
-}
-
-sub _build_path_uri {
-    URI::Escape::uri_escape( URI::Escape::uri_escape( shift->path ) );
-}
-
-sub _build_url {
-    'http://search.metacpan.org/source/' . shift->path;
 }
 
 sub _build_pod_lines {

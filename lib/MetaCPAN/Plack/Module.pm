@@ -3,12 +3,12 @@ use base 'MetaCPAN::Plack::Base';
 use strict;
 use warnings;
 
-sub index { 'module' }
+sub index { 'file' }
 
 sub query {
     shift;
     return { query  => { match_all => {} },
-        filter => { term => { "name.raw"    => shift } },
+        filter => { term => { "file.module.name.raw"    => shift } },
          size   => 1,
          sort   => { date      => { reverse => \1 } } 
          };

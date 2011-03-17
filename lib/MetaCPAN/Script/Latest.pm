@@ -38,7 +38,7 @@ sub run {
             next if ( $row->{_source}->{status} eq 'latest' );
             log_info { "Upgrading $row->{_source}->{name} to latest" };
 
-            for (qw(file module dependency)) {
+            for (qw(file dependency)) {
                 log_debug { "Upgrading $_" };
                 $self->reindex( $_, $row->{_id}, 'latest' );
             }
@@ -50,7 +50,7 @@ sub run {
         } elsif ( $row->{_source}->{status} eq 'latest' ) {
             log_info { "Downgrading $row->{_source}->{name} to cpan" };
 
-            for (qw(file module dependency)) {
+            for (qw(file dependency)) {
                 log_debug { "Downgrading $_" };
                 $self->reindex( $_, $row->{_id}, 'cpan' );
             }
@@ -79,7 +79,7 @@ sub reindex {
     my $rs = $es->search(%$search);
     while ( my $row = shift @{ $rs->{hits}->{hits} } ) {
         log_debug { $status eq 'latest' ? "Upgrading " : "Downgrading ",
-          $type, " ", $row->{_source}->{name} || $row->{_source}->{module} || '' };
+          $type, " ", $row->{_source}->{name} || '' };
         $es->index( index => 'cpan',
                     type  => $type,
                     id    => $row->{_id},
@@ -106,5 +106,5 @@ __END__
 =head1 DESCRIPTION
 
 After importing releases from cpan, this script will set the status
-to latest on the most recent release, its files, modules and dependencies.
+to latest on the most recent release, its files and dependencies.
 It also makes sure that there is only one latest release per distribution.

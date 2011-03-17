@@ -5,6 +5,7 @@ use ElasticSearch;
 use Log::Contextual qw( set_logger :dlog );
 use Log::Log4perl ':easy';
 use MetaCPAN::Types qw(:all);
+use ElasticSearchX::Model::Document::Types qw(:all);
 use MetaCPAN::Model;
 
 has 'cpan' => ( is         => 'rw',
@@ -72,7 +73,7 @@ sub _build_cpan {
 }
 
 sub remote {
-    shift->es->transport->servers->[0];
+    shift->es->transport->default_servers->[0];
 }
 
 sub run { }

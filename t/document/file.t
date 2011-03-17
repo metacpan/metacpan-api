@@ -131,13 +131,14 @@ END
                                      release      => 'release',
                                      distribution => 'foo',
                                      name         => 'module.pm',
-                                     module => 'Number::Phone::NANP::AS',
+                                     module => [{ name => 'Number::Phone::NANP::AS', version => 1.1 }],
                                      content_cb   => sub { \$content } );
 
-    is( $file->sloc, 8 );
-    is( $file->slop, 3 );
+    is( $file->sloc, 8, '8 lines of code' );
+    is( $file->slop, 3, '3 lines of pod' );
     is( $file->indexed, 0, 'not indexed' );
-    is_deeply( $file->pod_lines, [ [ 18, 5 ] ] );
+    is_deeply( $file->pod_lines, [ [ 18, 5 ] ], 'correct pod_lines' );
+    is( $file->module->[0]->version_numified, 1.1, 'numified version has been calculated');
 }
 
 done_testing;

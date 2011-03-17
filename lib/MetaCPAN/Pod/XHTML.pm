@@ -1,14 +1,7 @@
 package MetaCPAN::Pod::XHTML;
 
 use Moose;
-
 extends 'Pod::Simple::XHTML';
-
-use feature 'say';
-use Data::Dump qw( dump );
-use HTML::Entities;
-use IO::File;
-use Path::Class::File;
 
 sub start_L {
     my ( $self, $flags ) = @_;

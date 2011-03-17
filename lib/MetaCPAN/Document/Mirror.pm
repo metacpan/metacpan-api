@@ -11,6 +11,6 @@ has [qw(tz src http rsync ftp freq note dnsrr ccode aka_name A_or_CNAME)]
     => ( required => 0 );
 has location => ( isa => Location, coerce => 1, required => 0 );
 has contact => ( isa => 'ArrayRef' );
-has [qw(inceptdate reitredate)] => ( isa => ESDateTime, required => 0, coerce => 1 );
+has [qw(inceptdate reitredate)] => ( isa => 'DateTime', required => 0, coerce => 1 );
 
 __PACKAGE__->meta->make_immutable;

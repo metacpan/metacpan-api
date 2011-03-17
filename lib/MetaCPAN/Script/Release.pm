@@ -96,6 +96,7 @@ sub import_tarball {
     my $at     = Archive::Tar->new($tarball);
     my $tmpdir = dir(File::Temp::tempdir);
     my $d      = CPAN::DistnameInfo->new($tarball);
+    my $date = $self->pkg_datestamp($tarball);
     my ( $author, $archive, $name ) =
       ( $d->cpanid, $d->filename, $d->distvname );
     my $version = MetaCPAN::Util::fix_version( $d->version );
@@ -126,6 +127,7 @@ sub import_tarball {
                     name         => $fname,
                     directory    => $child->is_dir ? 1 : 0,
                     release      => $name,
+                    date => $date,
                     distribution => $meta->name,
                     author       => $author,
                     full_path    => $child->full_path,
@@ -168,7 +170,7 @@ sub import_tarball {
         my $obj = $file_set->put($file);
         $file->{abstract} = $obj->abstract;
         $file->{id}       = $obj->id;
-        $file->{module}   = $obj->module;
+        $file->{module}   = {};
     }
 
     my $create =
@@ -180,7 +182,7 @@ sub import_tarball {
         distribution => $meta->name,
         archive      => $archive,
         maturity     => $d->maturity,
-        date         => $self->pkg_datestamp($tarball), };
+        date         => $date, };
 
     my $release = $cpan->type('release')->put($create);
     
@@ -224,11 +226,8 @@ sub import_tarball {
         while ( my ( $module, $data ) = each %$provides ) {
             my $path = $data->{file};
             my $file = List::Util::first { $_->{path} =~ /\Q$path\E$/ } @files;
-            push( @modules,
-                  {  %$data,
-                     name => $module,
-                     file => $file,
-                  } );
+            $file->{module}->{$module} = $data;
+            push(@modules, $file);
         }
 
     }
@@ -249,12 +248,11 @@ sub import_tarball {
                 $info = Module::Metadata->new_from_file(
                                           $tmpdir->file( $file->{full_path} ) );
             }
-            push( @modules,
-                  {  file => $file,
-                     name => $_,
-                     $info->version
+            $file->{module}->{$_} ||= 
+                  {  $info->version
                      ? ( version => $info->version->numify )
-                     : () } ) for ( $info->packages_inside );
+                     : () } for ( $info->packages_inside );
+            push(@modules, $file);
             alarm(0);
         };
     }
@@ -262,22 +260,15 @@ sub import_tarball {
     log_debug { "Indexing ", scalar @modules, " modules" };
     $i = 1;
     my $mod_set = $cpan->type('module');
-    foreach my $module (@modules) {
-        my $file = MetaCPAN::Document::File->new( %{$module->{file}}, index => $cpan );
+    foreach my $file (@modules) {
+        my @modules = map { { name => $_, %{$file->{module}->{$_}} } } keys %{$file->{module}};
+        my %module = @modules ? (module => \@modules) : ();
+        delete $file->{module};
+        $file = MetaCPAN::Document::File->new( %$file, %module, index => $cpan );
         $file->clear_indexed;
-        my $obj = $mod_set->put( { %$module,
-                                        file         => $file,
-                                        date         => $release->date,
-                                        release      => $release->name,
-                                        distribution => $release->distribution,
-                                        author       => $release->author,
-                                        maturity     => $d->maturity,
-                                     } );
-        Dlog_trace { "adding module ", $obj->name };
-        Dlog_trace { $_ } $obj->meta->get_data($obj);
-        log_trace { "reindexing file $module->{file}->{path}" };
-        $file->put;
+        log_trace { "reindexing file $file->{path}" };
         Dlog_trace { $_ } $file->meta->get_data($file);
+        $file->put;
     }
     
     $tmpdir->rmtree;

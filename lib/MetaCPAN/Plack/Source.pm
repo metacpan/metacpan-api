@@ -45,7 +45,7 @@ sub file_path {
     my ($tarball) = File::Find::Rule->new->file->name("$distvname.tar.gz")->in($author, $http);
     return unless ( $tarball && -e $tarball );
     my $arch = Archive::Tar::Wrapper->new();
-    $distvname =~ s/-TRIAL$//;
+    $distvname =~ s/-TRIAL$//; # FIXME: while(my $entry = $arch->list_next()) {
     my $logic_path = "$distvname/$file";    # path within unzipped archive
     $arch->read( $tarball, $logic_path ); # read only one file
     my $phys_path = $arch->locate( $logic_path );
