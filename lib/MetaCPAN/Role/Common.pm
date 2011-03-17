@@ -8,23 +8,52 @@ use MetaCPAN::Types qw(:all);
 use ElasticSearchX::Model::Document::Types qw(:all);
 use MetaCPAN::Model;
 
-has 'cpan' => ( is         => 'rw',
-                isa        => 'Str',
-                lazy_build => 1, );
+has 'cpan' => ( is            => 'rw',
+                isa           => 'Str',
+                lazy_build    => 1,
+                documentation => 'Location of a local CPAN mirror, looks for $ENV{MINICPAN} and ~/CPAN' );
 
-has level => ( is => 'ro', isa => 'Str', required => 1, trigger => \&set_level );
+has level => ( is            => 'ro',
+               isa           => 'Str',
+               required      => 1,
+               trigger       => \&set_level,
+               documentation => 'Log level' );
 
-has es => ( isa => ES, is => 'ro', required => 1, coerce => 1 );
+has es => ( isa           => ES,
+            is            => 'ro',
+            required      => 1,
+            coerce        => 1,
+            documentation => 'ElasticSearch http connection string' );
 
-has model => ( lazy_build => 1, is => 'ro' );
+has model => ( lazy_build => 1, is => 'ro', traits => ['NoGetopt'] );
 
-has port => ( isa => 'Int', is => 'ro', required => 1 );
+has index => ( reader        => '_index',
+               is            => 'ro',
+               isa           => 'Str',
+               default       => 'cpan',
+               documentation => 'Index to use, defaults to "cpan"' );
 
-has logger => ( is => 'ro', required => 1, isa => Logger, coerce => 1, predicate => 'has_logger' );
+has port => ( isa           => 'Int',
+              is            => 'ro',
+              required      => 1,
+              documentation => 'Port for the proxy, defaults to 5000' );
+
+has logger => ( is        => 'ro',
+                required  => 1,
+                isa       => Logger,
+                coerce    => 1,
+                predicate => 'has_logger',
+                traits    => ['NoGetopt'] );
+
+sub index {
+    my $self = shift;
+    return $self->model->index( $self->_index );
+}
 
 sub set_level {
     my $self = shift;
-    $self->logger->level( Log::Log4perl::Level::to_priority( uc( $self->level ) ) );
+    $self->logger->level(
+                      Log::Log4perl::Level::to_priority( uc( $self->level ) ) );
 }
 
 sub _build_model {
@@ -34,12 +63,12 @@ sub _build_model {
 
 # NOT A MOOSE BUILDER
 sub _build_logger {
-    my ( $config ) = @_;
-    my $log = Log::Log4perl->get_logger($ARGV[0]);
+    my ($config) = @_;
+    my $log = Log::Log4perl->get_logger( $ARGV[0] );
     foreach my $c (@$config) {
         my $layout =
           Log::Log4perl::Layout::PatternLayout->new( delete $c->{layout}
-                                                    || "%d %p{1} %c: %m{chomp}%n" );
+                                                || "%d %p{1} %c: %m{chomp}%n" );
         my $app = Log::Log4perl::Appender->new( delete $c->{class}, %$c );
         $app->layout($layout);
         $log->add_appender($app);
@@ -79,7 +108,7 @@ sub remote {
 sub run { }
 before run => sub {
     my $self = shift;
-    unless($MetaCPAN::Role::Common::log) {
+    unless ($MetaCPAN::Role::Common::log) {
         $MetaCPAN::Role::Common::log = $self->logger;
         set_logger $self->logger;
     }

@@ -21,7 +21,7 @@ use JSON::DWIW;
 use MooseX::Getopt;
 use Scalar::Util qw( reftype );
 
-has 'author_fh' => ( is => 'rw', lazy_build => 1, );
+has 'author_fh' => ( is => 'rw', lazy_build => 1, traits  => [ 'NoGetopt' ]);
 
 sub run {
     my $self = shift;
@@ -31,7 +31,7 @@ sub run {
 
 sub index_authors {
     my $self      = shift;
-    my $type = $self->model->index('cpan')->type('author');
+    my $type = $self->index->type('author');
     my @authors   = ();
     my $author_fh = $self->author_fh;
     my @results   = ();
