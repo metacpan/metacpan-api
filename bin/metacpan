@@ -1,0 +1,10 @@
+#!/usr/bin/env perl
+# PODNAME: metadbic
+
+use strict;
+use warnings;
+use FindBin;
+use lib "$FindBin::RealBin/../lib";
+use MetaCPAN::Script::Runner;
+
+MetaCPAN::Script::Runner->run;

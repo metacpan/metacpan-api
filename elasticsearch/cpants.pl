@@ -2,7 +2,7 @@
 
 use Data::Dump qw( dump );
 use JSON::Any;
-use Modern::Perl;
+use feature 'say';
 use WWW::Mechanize::Cached;
 
 my $j = JSON::Any->new;

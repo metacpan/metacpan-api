@@ -1,14 +1,7 @@
 package MetaCPAN::Pod::XHTML;
 
 use Moose;
-
 extends 'Pod::Simple::XHTML';
-
-use Modern::Perl;
-use Data::Dump qw( dump );
-use HTML::Entities;
-use IO::File;
-use Path::Class::File;
 
 sub start_L {
     my ( $self, $flags ) = @_;
@@ -19,7 +12,7 @@ sub start_L {
         : $type eq 'pod' ? $self->resolve_pod_page_link( $to, $section )
         : $type eq 'man' ? $self->resolve_man_page_link( $to, $section )
         :                  undef;
-
+    $url ||= '';
     my $pound = '#';
     my $class
         = ( $type eq 'pod' && ($url !~ m{$pound}) ) ? ' class="moduleLink"' : '';

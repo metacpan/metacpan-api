@@ -1,3 +1,7 @@
+.DS_Store
 *.kpf
 *.komodoproject
 *.sqlite*
+/var/tmp/
+/var/log/metacpan.*
+/etc/metacpan_local.pl

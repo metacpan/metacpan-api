@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-
+# PODNAME: check_json.pl
 use 5.010;
 
 use Data::Dumper;
@@ -16,4 +16,3 @@ foreach my $file ( @ARGV ) {
 
     if ( $@ ) { say "\terror in $file: $@" }
 }
-
