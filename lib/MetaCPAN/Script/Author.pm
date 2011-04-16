@@ -5,6 +5,7 @@ use feature 'say';
 with 'MooseX::Getopt';
 use Log::Contextual qw( :log );
 with 'MetaCPAN::Role::Common';
+use Email::Valid;
 
 use MetaCPAN::Document::Author;
 
@@ -44,6 +45,7 @@ sub index_authors {
     while ( my $line = $author_fh->getline() ) {
         if ( $line =~ m{alias\s([\w\-]*)\s*"(.+?)\s*<(.*)>"}gxms ) {
             my ( $pauseid, $name, $email ) = ( $1, $2, $3 );
+            $email = lc($pauseid) . '@cpan.org' unless(Email::Valid->address($email));
             log_debug { "Indexing $pauseid: $name <$email>" };
             my $author =
               MetaCPAN::Document::Author->new( pauseid => $pauseid,
