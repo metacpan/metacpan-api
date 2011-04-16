@@ -21,7 +21,7 @@ has id => ( id => [qw(author release path)] );
 
 has [qw(path author name distribution)] => ();
 has module => ( required => 0, is => 'ro', isa => Module, coerce => 1 );
-has documentation => ( required => 0, is => 'rw' );
+has documentation => ( required => 1, is => 'rw', lazy_build => 1, index => 'analyzed' );
 has release => ( parent => 1 );
 has date => ( isa => 'DateTime' );
 has stat => ( isa => Stat, required => 0 );
@@ -45,6 +45,19 @@ has content_cb => ( property => 0, required => 0 );
 
 sub is_perl_file {
     $_[0]->name =~ /\.(pl|pm|pod|t)$/i;
+}
+
+sub _build_documentation {
+    my $self = shift;
+    return unless($self->name =~ /\.(pm|pod)$/i);
+    my $pom = $self->pom;
+    foreach my $s ( @{ $pom->head1 } ) {
+        if ( $s->title eq 'NAME' ) {
+            return '' unless ( $s->content =~ /^\s*(.*?)(\s*-\s*(.*))?$/s );
+            return $1;
+        }
+    }
+    return undef;
 }
 
 sub _build_indexed {
@@ -97,13 +110,15 @@ sub _build_abstract {
     my $pom = $self->pom;
     foreach my $s ( @{ $pom->head1 } ) {
         if ( $s->title eq 'NAME' ) {
-            return '' unless ( $s->content =~ /^.*?\s*-\s*(.*)$/s );
-            my $content = $1;
+            return '' unless ( $s->content =~ /^\s*(.*?)\s*-\s*(.*)$/s );
+            my $content = $2;
+            $self->documentation($1);
 
             # MOBY::Config has more than one POD section in the abstract after
             # parsing Should have a closer look and file bug with Pod::POM
             # It also contains newlines in the actual source
             $content =~ s{=head.*}{}xms;
+            $content =~ s{\n\n.*$}{}xms;
             $content =~ s{\n}{ }gxms;
             $content =~ s{\s+$}{}gxms;
             $content =~ s{(\s)+}{$1}gxms;
