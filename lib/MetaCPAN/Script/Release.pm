@@ -113,7 +113,7 @@ sub import_tarball {
     my @list = $at->get_files;
     while ( my $child = shift @list ) {
         if ( ref $child ne 'HASH' ) {
-            $meta_file = $child if ( $child->full_path =~ /^[^\/]+\/META\./ );
+            $meta_file = $child if ( !$meta_file && $child->full_path =~ /^[^\/]+\/META\./ || $child->full_path =~ /^[^\/]+\/META\.json/ );
             my $stat = { map { $_ => $child->$_ } qw(mode uid gid size mtime) };
             next unless ( $child->full_path =~ /\// );
             ( my $fpath = $child->full_path ) =~ s/.*?\///;
@@ -141,17 +141,23 @@ sub import_tarball {
         }
     }
 
-    # try to get better meta info from meta file
-    try {
-        $at->extract_file( $meta_file, $tmpdir->file( $meta_file->full_path ) );
-        my $foo =
-          CPAN::Meta->load_file( $tmpdir->file( $meta_file->full_path ) );
-        $meta = $foo;
+    #  YAML YAML::Tiny YAML::XS don't offer better results
+    my @backends = qw(CPAN::Meta::YAML YAML::Syck)
+        if ($meta_file);
+    while(my $mod = shift @backends) {
+        $ENV{PERL_YAML_BACKEND} = $mod;
+        my $last;
+        try {
+            $at->extract_file( $meta_file, $tmpdir->file( $meta_file->full_path ) );
+            my $foo = $last =
+              CPAN::Meta->load_file( $tmpdir->file( $meta_file->full_path ) );
+            $meta = $foo;
+        }
+        catch {
+            log_warn { "META file could not be loaded using $mod: $_" };
+        };
+        last if($last);
     }
-    catch {
-        log_error { "META file could not be loaded: $_" };
-    }
-    if ($meta_file);
 
     my $no_index = $meta->no_index;
     foreach my $no_dir ( @{ $no_index->{directory} || [] }, qw(t xt inc) ) {
