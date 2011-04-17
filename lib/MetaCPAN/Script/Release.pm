@@ -11,7 +11,7 @@ use CPAN::Meta         ();
 use DateTime           ();
 use List::Util         ();
 use Module::Metadata   ();
-use File::stat         ();
+use File::stat         ('stat');
 use CPAN::DistnameInfo ();
 
 use feature 'say';
@@ -178,7 +178,8 @@ sub import_tarball {
         $file->{id}       = $obj->id;
         $file->{module}   = {};
     }
-
+    my $st = stat($tarball);
+    my $stat = { map { $_ => $st->$_ } qw(mode uid gid size mtime) };
     my $create =
       { map { $_ => $meta->$_ } qw(version name license abstract resources) };
     $create = DlogS_trace { "adding release $_" }
@@ -188,6 +189,7 @@ sub import_tarball {
         distribution => $meta->name,
         archive      => $archive,
         maturity     => $d->maturity,
+        stat         => $stat,
         date         => $date, };
 
     my $release = $cpan->type('release')->put($create);
