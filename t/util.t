@@ -16,6 +16,9 @@ lives_ok { is(version("V0.01"), 0.01) };
 lives_ok { is(version('0.99_1'), '0.99_1') };
 lives_ok { is(version('0.99.01'), '0.99.01') };
 
+is(MetaCPAN::Util::strip_pod('hello L<link|http://www.google.com> foo'), 'hello link foo');
+is(MetaCPAN::Util::strip_pod('hello L<Module/section> foo'), 'hello section in Module foo');
+
 sub version {
     CPAN::Meta->new(
                      { name    => 'foo',

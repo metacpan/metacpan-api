@@ -15,6 +15,8 @@ use strict;
 
 MyModule - mymodule1 abstract
 
+  not this
+
 =pod
 
 bla
@@ -40,8 +42,8 @@ END
                                      name         => 'module.pm',
                                      content      => \$content );
 
-    is( $file->abstract, 'mymodule1 abstract bla' );
-    is_deeply( $file->pod_lines, [ [ 3, 9 ], [ 15, 6 ] ] );
+    is( $file->abstract, 'mymodule1 abstract' );
+    is_deeply( $file->pod_lines, [ [ 3, 11 ], [ 17, 6 ] ] );
     is( $file->sloc, 3 );
 }
 {
@@ -68,7 +70,7 @@ END
 
 =head1 NAME
 
-MOBY::Config.pm - An object containing information about how to get access to teh Moby databases, resources, etc. from the 
+MOBY::Config.pm - An object B<containing> information about how to get access to teh Moby databases, resources, etc. from the 
 mobycentral.config file
 
 =cut
@@ -138,6 +140,7 @@ END
     is( $file->slop, 3, '3 lines of pod' );
     is( $file->indexed, 0, 'not indexed' );
     is_deeply( $file->pod_lines, [ [ 18, 5 ] ], 'correct pod_lines' );
+    use Devel::Dwarn; DwarnN($file->module);
     is( $file->module->[0]->version_numified, 1.1, 'numified version has been calculated');
 }
 

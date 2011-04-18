@@ -41,6 +41,8 @@ sub author_dir {
     return $dir;
 }
 
+
+# TODO: E<escape>
 sub strip_pod {
     my $pod = shift;
     $pod =~ s/L<([^\/]*?)\/([^\/]*?)>/$2 in $1/g;
