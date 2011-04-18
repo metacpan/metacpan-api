@@ -6,11 +6,13 @@ use Log::Contextual qw( set_logger :dlog );
 use Log::Log4perl ':easy';
 use MetaCPAN::Types qw(:all);
 use ElasticSearchX::Model::Document::Types qw(:all);
+use MooseX::Types::Path::Class qw(:all);
 use MetaCPAN::Model;
 
 has 'cpan' => ( is            => 'rw',
-                isa           => 'Str',
+                isa           => Dir,
                 lazy_build    => 1,
+                coerce => 1,
                 documentation => 'Location of a local CPAN mirror, looks for $ENV{MINICPAN} and ~/CPAN' );
 
 has level => ( is            => 'ro',
