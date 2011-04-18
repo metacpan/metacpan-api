@@ -35,7 +35,7 @@ sub run {
     while ( my $row = shift @{ $rs->{hits}->{hits} } ) {
         if ( $dist ne $row->{_source}->{distribution} ) {
             $dist = $row->{_source}->{distribution};
-            next if ( $row->{_source}->{status} eq 'latest' );
+            goto SCROLL if ( $row->{_source}->{status} eq 'latest' );
             log_info { "Upgrading $row->{_source}->{name} to latest" };
 
             for (qw(file dependency)) {
@@ -60,6 +60,7 @@ sub run {
                         id    => $row->{_id},
                         data  => { %{ $row->{_source} }, status => 'cpan' } );
         }
+        SCROLL:
         unless ( @{ $rs->{hits}->{hits} } ) {
             $search = { %$search, from => $search->{from} + $search->{size} };
             $rs = $es->search($search);
