@@ -5,9 +5,8 @@ use feature 'say';
 with 'MooseX::Getopt';
 use Log::Contextual qw( :log :dlog );
 with 'MetaCPAN::Role::Common';
-use LWP::UserAgent;
 use MetaCPAN::Document::Mirror;
-use JSON::XS ();
+use JSON ();
 
 sub run {
     my $self = shift;
@@ -18,14 +17,12 @@ sub run {
 sub index_mirrors {
     my $self      = shift;
     my $ua = LWP::UserAgent->new;
-    log_info { "Downloading mirrors file" };
-    my $res = $ua->get("http://www.cpan.org/indices/mirrors.json");
-    unless($res->is_success) {
-        log_fatal { "Could not get mirrors file" };
-        exit;
-    }
+    log_info { "Getting mirrors.json file from " . $self->cpan };
+    my $json;
+    { local $/ = undef; local *FILE; open FILE, "<", $self->cpan->file('indices', 'mirrors.json'); $json = <FILE>; close FILE }
+    
     my $type = $self->model->index('cpan')->type('mirror');
-    my $mirrors = JSON::XS::decode_json($res->content);
+    my $mirrors = JSON::XS::decode_json($json);
     foreach my $mirror(@$mirrors) {
         $mirror->{location} = { lon => $mirror->{longitude}, lat => $mirror->{latitude} };
         Dlog_trace { "Indexing $_" } $mirror;
