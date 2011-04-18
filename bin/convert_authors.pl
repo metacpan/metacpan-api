@@ -13,6 +13,7 @@ find(
 foreach my $file (@files) {
     next unless ( -f $file );
     next if($file =~ /1/);
+    next unless($file =~ /\.json$/);
     my $json;
     {
         local $/ = undef;
@@ -21,6 +22,7 @@ foreach my $file (@files) {
         $json = <FILE>;
         close FILE
     }
+    warn $file;
     my $data = decode_json($json);
     my ($author) = keys %$data;
     ($data) = values %$data;

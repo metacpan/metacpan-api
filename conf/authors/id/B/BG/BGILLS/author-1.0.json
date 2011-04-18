@@ -1,0 +1,28 @@
+{
+    "country": "US",
+    "region": "IA",
+    "city": "Waverly",
+    "website": ["http://b2gills.github.com", "http://careers.stackoverflow.com/brad-gilbert"],
+    "email": ["b2gills@gmail.com", "bgills@cpan.org"],
+    "blog": [{
+        "url": "http://blogs.perl.org/users/b2gills/",
+        "feed": "http://blogs.perl.org/users/b2gills/atom.xml"
+    }],
+
+    "profile": [{
+        "name": "stackoverflow",
+        "id": "brad-gilbert"
+    },
+    {
+        "name": "irc",
+        "id": "b2gills"
+    },
+    {
+        "name": "github",
+        "id": "b2gills"
+    },
+    {
+        "name": "facebook",
+        "id": "b2gills"
+    }]
+}
