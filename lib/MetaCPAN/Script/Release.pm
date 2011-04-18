@@ -182,6 +182,9 @@ sub import_tarball {
     my $stat = { map { $_ => $st->$_ } qw(mode uid gid size mtime) };
     my $create =
       { map { $_ => $meta->$_ } qw(version name license abstract resources) };
+
+    $create->{abstract} = MetaCPAN::Util::strip_pod($create->{abstract});
+
     $create = DlogS_trace { "adding release $_" }
     +{  %$create,
         name         => $name,
@@ -290,7 +293,7 @@ sub import_tarball {
 sub pkg_datestamp {
     my $self    = shift;
     my $archive = shift;
-    my $date    = ( stat($archive) )[9];
+    my $date    = stat($archive)->mtime;
     return DateTime::Format::Epoch::Unix->parse_datetime($date);
 
 }

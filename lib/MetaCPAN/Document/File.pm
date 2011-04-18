@@ -122,7 +122,7 @@ sub _build_abstract {
             $content =~ s{\n}{ }gxms;
             $content =~ s{\s+$}{}gxms;
             $content =~ s{(\s)+}{$1}gxms;
-            $content =~ s{\w<(.*?)>}{$1}gxms;
+            $content = MetaCPAN::Util::strip_pod($content);
             return $content || '';
         }
     }
