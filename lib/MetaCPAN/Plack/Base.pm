@@ -9,57 +9,19 @@ use Plack::App::Proxy;
 use mro 'c3';
 use Plack::Middleware::CrossOrigin;
 
-__PACKAGE__->mk_accessors(qw(cpan remote));
-
-# TODO: rewrite to keep streaming.
-# just strip json until we hit "hits":
-# count open and closed {} and truncate
-# when "hits" is done
-sub process_chunks {
-    my ( $self, $res, $cb ) = @_;
-    my $ret;
-    $res->(
-        sub {
-            my $write = shift;
-
-            my $json;
-            if ( @$write == 2 ) {
-                my @body;
-
-                $ret = [ @$write, \@body ];
-                return
-                  Plack::Util::inline_object(write => sub { push @body, $_[0] },
-                                             close => sub { }, );
-            } else {
-                $ret = $write;
-                return;
-            }
-
-        } );
-    try {
-        my $json = JSON::XS::decode_json( join( "", @{ $ret->[2] } ) );
-        my $res = $cb->($json);
-        $ret = ref $res eq 'ARRAY' ? $res : [ 200, $ret->[1], [$res] ];
-        Plack::Util::header_remove($ret->[1], 'Content-length')
-    };
-    return $ret;
-}
+__PACKAGE__->mk_accessors(qw(cpan remote model));
 
 sub get_source {
     my ( $self, $env ) = @_;
+    my ( undef, @args ) = split( "/", $env->{PATH_INFO} );
+    use Devel::Dwarn; DwarnN(\@args);
     my $res =
-      Plack::App::Proxy->new( backend => 'LWP',
-                 remote => "http://" . $self->remote . "/cpan/" . $self->index )
-      ->to_app->($env);
-    $self->process_chunks(
-        $res,
-        sub {
-            if ( !$_[0]->{_source} ) {
-                return $self->error404;
-            } else {
-                JSON::XS::encode_json( $_[0]->{_source} );
-            }
-        } );
+      $self->model->index('cpan')->type( $self->index )->inflate(0)->get($args[0]);
+      if ($res) {
+          return [200, [$self->_headers], [encode_json($res->{_source})]];
+      } else {
+          return $self->error404;
+      }
 
 }
 
@@ -69,50 +31,51 @@ sub error404 {
 
 sub get_first_result {
     my ( $self, $env ) = @_;
-    $self->rewrite_request($env);
-    my $res =
-      Plack::App::Proxy->new( backend => 'LWP', remote => "http://" . $self->remote . "/cpan" )
-      ->to_app->($env);
-    $self->process_chunks(
-        $res,
-        sub {
-            if ( $_[0]->{hits}->{total} == 0 ) {
-                return $self->error404;
-            } else {
-                JSON::XS::encode_json( $_[0]->{hits}->{hits}->[0]->{_source} );
-            }
-        } );
-}
-
-sub rewrite_request {
-    my ( $self, $env ) = @_;
     my ( undef, @args ) = split( "/", $env->{PATH_INFO} );
-    my $path = '/' . $self->index . '/_search';
-    $env->{REQUEST_METHOD} = 'GET';
-    $env->{REQUEST_URI}    = $path;
-    $env->{PATH_INFO}      = $path;
-    my $query = encode_json( $self->query(@args) );
-    $env->{'psgi.input'} = IO::String->new($query);
-    $env->{CONTENT_LENGTH} = length($query);
+    my $query = $self->query(@args);
+    my ($res) =
+      $self->model->index('cpan')->type( $self->index )->query($query)->inflate(0)->all;
+    if ($res->{hits}->{total}) {
+        return [200, [$self->_headers], [encode_json($res->{hits}->{hits}->[0]->{_source})]];
+    } else {
+        return $self->error404;
+    }
 }
 
 sub call {
     my ( $self, $env ) = @_;
-    if($env->{REQUEST_METHOD} eq "OPTIONS" ) {
-        return [200,[$self->_access_control_headers],[]];
-    } elsif ( !grep { $env->{REQUEST_METHOD} eq $_ } qw(GET POST)  ) {
-        return [ 403, ['Content-type', 'text/plain'], ['Not allowed'] ];
+    if ( $env->{REQUEST_METHOD} eq "OPTIONS" ) {
+        return [ 200, [ $self->_headers ], [] ];
+    } elsif (
+        !grep {
+            $env->{REQUEST_METHOD} eq $_
+        } qw(GET POST) )
+    {
+        return [ 403, [ 'Content-type', 'text/plain' ], ['Not allowed'] ];
     } elsif ( $env->{PATH_INFO} =~ /^\/_search/ ) {
-        return Plack::App::Proxy->new( backend => 'LWP',
-                 remote => "http://" . $self->remote . "/cpan/" . $self->index )
-          ->to_app->($env);
+        my $input = $env->{'psgi.input'};
+        my @body = $input->getlines;
+        use Devel::Dwarn; DwarnN(\@body);
+        my $set = $self->model->index('cpan')->type( $self->index )->inflate(0);
+        $set->query(decode_json(join('', @body))) if(@body);
+        my $res = $set->all;
+        return [200, [$self->_headers], [encode_json($res)]];
     } else {
         return $self->handle($env);
     }
 }
 
-sub _access_control_headers {
-    return ('Access-Control-Allow-Origin', '*', 'Access-Control-Allow-Headers','X-Requested-With, Content-Type', 'Access-Control-Max-Age', '1728000');
+sub _headers {
+    return ( 'Access-Control-Allow-Origin',
+             'http://localhost:3030',
+             'Access-Control-Allow-Headers',
+             'X-Requested-With, Content-Type',
+             'Access-Control-Allow-Methods',
+             'POST',
+             'Access-Control-Max-Age',
+             '17000000',
+             'Access-Control-Allow-Credentials',
+             'true', 'Content-type', 'application/json' );
 }
 
 1;
