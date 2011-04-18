@@ -41,6 +41,13 @@ sub author_dir {
     return $dir;
 }
 
+sub strip_pod {
+    my $pod = shift;
+    $pod =~ s/L<([^\/]*?)\/([^\/]*?)>/$2 in $1/g;
+    $pod =~ s/\w<(.*?)(\|.*?)>/$1/g;
+    return $pod;
+}
+
 1;
 
 __END__
