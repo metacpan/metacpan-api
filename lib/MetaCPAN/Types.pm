@@ -1,6 +1,7 @@
 package MetaCPAN::Types;
 use ElasticSearch;
 use MetaCPAN::Document::Module;
+use JSON;
 
 use MooseX::Types -declare => [
     qw(
@@ -8,6 +9,7 @@ use MooseX::Types -declare => [
       Resources
       Stat
       Module
+      Extra
       ) ];
 
 use MooseX::Types::Structured qw(Dict Tuple Optional);
@@ -17,8 +19,12 @@ use ElasticSearchX::Model::Document::Types qw(:all);
 subtype Stat, as Dict [ mode => Int, uid => Int, gid => Int, size => Int, mtime => Int ];
 
 subtype Module, as ArrayRef [ Type [ 'MetaCPAN::Document::Module' ] ];
-coerce Module, from ArrayRef, via { [ map { ref $_ eq 'HASH' ? MetaCPAN::Document::Module->new($_) : $_ } @$_ ] };
+coerce Module, from ArrayRef, via { [ map { ref $_ eq 'HASH' ? MetaCPAN::Document::Module->new($_) : $_ } @$_ ]; };
 coerce Module, from HashRef, via { [ MetaCPAN::Document::Module->new($_) ] };
+
+subtype Extra, as HashRef;
+
+coerce ArrayRef, from Str, via {[$_]};
 
 subtype Resources,
   as Dict [
@@ -43,5 +49,10 @@ class_type Logger, { class => 'Log::Log4perl::Logger' };
 coerce Logger, from ArrayRef, via {
     return MetaCPAN::Role::Common::_build_logger($_);
 };
+
+use MooseX::Attribute::Deflator;
+inflate Extra, via { decode_json($_) };
+deflate Extra, via { encode_json($_) };
+no MooseX::Attribute::Deflator;
 
 1;
