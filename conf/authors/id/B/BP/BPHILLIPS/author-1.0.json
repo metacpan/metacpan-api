@@ -1,0 +1,54 @@
+{
+   "openid" : "http://brianphillips.myopenid.com/",
+   "country" : "US",
+   "profile" : [
+      {
+         "id" : "brian-phillips",
+         "name" : "stackoverflow"
+      },
+      {
+         "id" : "brianphillips",
+         "name" : "github"
+      },
+      {
+         "id" : "bpphillips",
+         "name" : "linkedin"
+      },
+      {
+         "id" : "bpphillips",
+         "name" : "perlmonks"
+      },
+      {
+         "id" : "brian.p.phillips",
+         "name" : "facebook"
+      }
+   ],
+   "website" : [
+      "http://brianphillips.emurse.com"
+   ],
+   "donation" : [
+      {
+         "name" : "paypal",
+         "id" : "bphillips@cpan.org"
+      }
+   ],
+   "region" : "MN",
+   "blog" : [
+      {
+         "feed" : 
+            "http://blogs.perl.org/users/brian_phillips/atom.xml"
+         ,
+         "url" : 
+            "http://blogs.perl.org/users/brian_phillips/"
+         
+      }
+   ],
+   "email" : [
+      "bphillips@cpan.org"
+   ],
+   "city" : "Minneapolis",
+   "perlmongers" : {
+      "name" : "Minneapolis.pm",
+      "url" : "http://minneapolis.pm.org/"
+   }
+}

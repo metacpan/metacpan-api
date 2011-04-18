@@ -1,0 +1,25 @@
+{
+   "openid" : null,
+   "country" : null,
+   "profile" : [
+      {
+         "id" : "xsawyerx",
+         "name" : "irc"
+      },
+      {
+         "id" : "xsawyerx",
+         "name" : "github"
+      }
+   ],
+   "website" : null,
+   "donation" : [],
+   "region" : null,
+   "blog" : [
+      {
+         "feed" : "http://blogs.perl.org/users/sawyer_x/atom.xml",
+         "url" : "http://blogs.perl.org/users/sawyer_x/"
+      }
+   ],
+   "email" : null,
+   "city" : null
+}

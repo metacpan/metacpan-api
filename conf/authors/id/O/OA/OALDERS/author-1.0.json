@@ -1,0 +1,41 @@
+{
+   "openid" : null,
+   "country" : null,
+   "profile" : [
+      {
+         "id" : "oalders",
+         "name" : "stackoverflow"
+      },
+      {
+         "id" : "oalders",
+         "name" : "irc"
+      },
+      {
+         "id" : "oalders",
+         "name" : "github"
+      },
+      {
+         "id" : "olafalders",
+         "name" : "linkedin"
+      },
+      {
+         "id" : "oalders",
+         "name" : "perlmonks"
+      },
+      {
+         "id" : "wundercounter",
+         "name" : "twitter"
+      }
+   ],
+   "website" : "http://www.wundersolutions.com",
+   "donation" : [],
+   "region" : null,
+   "blog" : [
+      {
+         "feed" : "http://blogs.perl.org/users/olaf_alders/atom.xml",
+         "url" : "http://blogs.perl.org/users/olaf_alders/"
+      }
+   ],
+   "email" : null,
+   "city" : null
+}

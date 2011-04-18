@@ -1,0 +1,41 @@
+{
+   "openid" : "http://sartak.org",
+   "country" : null,
+   "profile" : [
+      {
+         "id" : "sartak",
+         "name" : "stackoverflow"
+      },
+      {
+         "id" : "sartak",
+         "name" : "irc"
+      },
+      {
+         "id" : "sartak",
+         "name" : "github"
+      },
+      {
+         "id" : "sartak",
+         "name" : "linkedin"
+      },
+      {
+         "id" : "sartak",
+         "name" : "perlmonks"
+      },
+      {
+         "id" : "sartak",
+         "name" : "twitter"
+      }
+   ],
+   "website" : "http://sartak.org",
+   "donation" : [],
+   "region" : null,
+   "blog" : [
+      {
+         "feed" : "http://blog.sartak.org/feeds/posts/default",
+         "url" : "http://blog.sartak.org"
+      }
+   ],
+   "email" : null,
+   "city" : null
+}

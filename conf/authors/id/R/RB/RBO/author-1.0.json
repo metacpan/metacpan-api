@@ -1,0 +1,29 @@
+{
+   "openid" : null,
+   "country" : null,
+   "profile" : [
+      {
+         "id" : "rbo",
+         "name" : "irc"
+      },
+      {
+         "id" : "rbo",
+         "name" : "github"
+      },
+      {
+         "id" : "rbo.openserv.org",
+         "name" : "facebook"
+      }
+   ],
+   "website" : null,
+   "donation" : [],
+   "region" : null,
+   "blog" : [
+      {
+         "feed" : "http://openserv.org/blog/atom.xml",
+         "url" : "http://openserv.org/blog/"
+      }
+   ],
+   "email" : null,
+   "city" : null
+}

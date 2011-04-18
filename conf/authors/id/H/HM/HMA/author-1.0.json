@@ -1,0 +1,31 @@
+{
+   "openid" : "https://hma.myopenid.com/",
+   "country" : "DE",
+   "profile" : [
+      {
+         "id" : "manske",
+         "name" : "delicious"
+      },
+      {
+         "id" : "hma",
+         "name" : "github"
+      },
+      {
+         "id" : "hma",
+         "name" : "perlmonks"
+      },
+      {
+         "id" : "606746249",
+         "name" : "facebook"
+      },
+      {
+         "id" : "manske",
+         "name" : "slideshare"
+      }
+   ],
+   "website" : null,
+   "donation" : [],
+   "region" : "DE-SH",
+   "email" : null,
+   "city" : "Kiel"
+}

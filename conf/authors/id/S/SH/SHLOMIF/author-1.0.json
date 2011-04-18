@@ -1,0 +1,108 @@
+{
+   "openid" : "http://www.shlomifish.org/",
+   "country" : "IL",
+   "profile" : [
+      {
+         "id" : "207733823",
+         "name" : "icq"
+      },
+      {
+         "id" : "brian-d-foy",
+         "name" : "stackoverflow"
+      },
+      {
+         "id" : "ShlomiFish",
+         "name" : "delicious"
+      },
+      {
+         "id" : "1719",
+         "name" : "oreilly"
+      },
+      {
+         "id" : "",
+         "name" : "stumbleupon"
+      },
+      {
+         "id" : "shlomif",
+         "name" : "slideshare"
+      },
+      {
+         "id" : "rindolf",
+         "name" : "irc"
+      },
+      {
+         "id" : "ShlomiFish",
+         "name" : "aim"
+      },
+      {
+         "id" : "shlomif",
+         "name" : "github"
+      },
+      {
+         "id" : "shlomifish",
+         "name" : "linkedin"
+      },
+      {
+         "id" : "ShlomiFish",
+         "name" : "youtube"
+      },
+      {
+         "id" : "shlomif",
+         "name" : "perlmonks"
+      },
+      {
+         "id" : "shlomi.fish",
+         "name" : "facebook"
+      },
+      {
+         "url" : [
+            "ShlomiFish@jabber.org",
+            "shlomif@gmail.com"
+         ],
+         "name" : "jabber"
+      },
+      {
+         "id" : "shlomif@iglu.org.il",
+         "name" : "msn_messenger"
+      },
+      {
+         "id" : "shlomif",
+         "name" : "twitter"
+      },
+      {
+         "id" : "shlomif",
+         "name" : "slideshare"
+      }
+   ],
+   "website" : [
+      "http://www.shlomifish.org/"
+   ],
+   "donation" : [
+      {
+         "name" : "paypal",
+         "id" : "shlomif@iglu.org.il"
+      }
+   ],
+   "region" : null,
+   "blog" : [
+      {
+         "feed" : [
+            "http://www.shlomifish.org/me/blogs/#aggregated_feeds"
+         ],
+         "url" : [
+            "http://shlomif.livejournal.com/",
+            "http://community.livejournal.com/shlomif_tech/",
+            "http://community.livejournal.com/shlomif_hsite/"
+         ]
+      }
+   ],
+   "email" : [
+      "shlomif@shlomifish.org",
+      "shlomif@gmail.com"
+   ],
+   "city" : "Tel Aviv",
+   "perlmongers" : {
+      "name" : "Israel.pm",
+      "url" : "http://perl.org.il/"
+   }
+}

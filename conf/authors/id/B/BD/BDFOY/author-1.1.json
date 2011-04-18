@@ -1,0 +1,63 @@
+{
+   "openid" : null,
+   "country" : "US",
+   "profile" : [
+      {
+         "id" : "B002MRC39U",
+         "name" : "amazon"
+      },
+      {
+         "id" : "brian-d-foy",
+         "name" : "stackoverflow"
+      },
+      {
+         "id" : "1071",
+         "name" : "oreilly"
+      },
+      {
+         "id" : "briandfoy",
+         "name" : "github"
+      },
+      {
+         "id" : "briandfoy",
+         "name" : "linkedin"
+      },
+      {
+         "id" : "brian_d_foy",
+         "name" : "perlmonks"
+      },
+      {
+         "id" : "briandfoy_perl",
+         "name" : "twitter"
+      }
+   ],
+   "website" : [
+      "http://www.pair.com/comdog",
+      "http://about.me/brian_d_foy"
+   ],
+   "donation" : [
+      {
+         "name" : "paypal",
+         "id" : "brian.d.foy@gmail.com"
+      }
+   ],
+   "region" : "IL",
+   "blog" : [
+      {
+         "feed" : 
+            "http://blogs.perl.org/users/brian_d_foy/atom.xml",
+         
+         "url" : 
+            "http://blogs.perl.org/users/brian_d_foy/"
+         
+      }
+   ],
+   "email" : [
+      "brian.d.foy@gmail.com",
+      "bdfoy@cpan.org"
+   ],
+   "city" : "Chicago",
+   "extra": {
+       "some":"Stuff"
+   }
+}

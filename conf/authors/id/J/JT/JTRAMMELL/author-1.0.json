@@ -1,0 +1,49 @@
+{
+   "openid" : "http://johntrammell.myopenid.com",
+   "country" : "US",
+   "profile" : [
+      {
+         "id" : "johnjtrammell",
+         "name" : "slashdot"
+      },
+      {
+         "id" : "jotr",
+         "name" : "stackoverflow"
+      },
+      {
+         "id" : "jtrammell",
+         "name" : "delicious"
+      },
+      {
+         "id" : "rammell",
+         "name" : "github"
+      },
+      {
+         "id" : "189",
+         "name" : "linkedin"
+      },
+      {
+         "id" : "rammell",
+         "name" : "perlmonks"
+      },
+      {
+         "id" : "jotr",
+         "name" : "twitter"
+      }
+   ],
+   "website" : "http://johntrammell.com/",
+   "donation" : [],
+   "region" : "MN",
+   "blog" : [
+      {
+         "feed" : null,
+         "url" : "http://johntrammell.com/wp/"
+      }
+   ],
+   "email" : "johntrammell@gmail.com",
+   "city" : "Minneapolis",
+   "perlmongers" : {
+      "name" : "Minneapolis.pm",
+      "url" : "http://minneapolis.pm.org/"
+   }
+}

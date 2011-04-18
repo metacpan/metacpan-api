@@ -1,0 +1,40 @@
+{
+   "openid" : null,
+   "country" : "US",
+   "profile" : [
+      {
+         "id" : "randy-stauner",
+         "name" : "stackoverflow"
+      },
+      {
+         "id" : "magnificent-tears",
+         "name" : "github"
+      },
+      {
+         "id" : "randallstauner",
+         "name" : "linkedin"
+      },
+      {
+         "id" : "rwstauner",
+         "name" : "perlmonks"
+      },
+      {
+         "id" : "magnificentears",
+         "name" : "twitter"
+      }
+   ],
+   "website" : [
+      "http://www.magnificent-tears.com"
+   ],
+   "donation" : [
+      {
+         "name" : "paypal",
+         "id" : "randy@magnificent-tears.com"
+      }
+   ],
+   "region" : "AZ",
+   "email" : [
+      "rwstauner@cpan.org"
+   ],
+   "city" : "Mesa"
+}

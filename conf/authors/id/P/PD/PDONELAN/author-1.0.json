@@ -1,0 +1,37 @@
+{
+   "openid" : null,
+   "country" : "US",
+   "profile" : [
+      {
+         "id" : "donelan",
+         "name" : "github"
+      },
+      {
+         "id" : "atspam",
+         "name" : "twitter"
+      }
+   ],
+   "website" : [
+      "http://patspam.com"
+   ],
+   "donation" : [],
+   "region" : "NY",
+   "blog" : [
+      {
+         "feed" : [
+            "http://blog.patspam.com/feed/atom"
+         ],
+         "url" : [
+            "http://blog.patspam.com"
+         ]
+      }
+   ],
+   "email" : [
+      "pdonelan@cpan.org"
+   ],
+   "city" : "New York",
+   "perlmongers" : {
+      "name" : "NY.pm",
+      "url" : null
+   }
+}

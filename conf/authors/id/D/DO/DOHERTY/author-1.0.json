@@ -1,0 +1,38 @@
+{
+   "openid" : "https://launchpad.net/~doherty",
+   "country" : "CA",
+   "profile" : [
+      {
+         "id" : "mike-doherty",
+         "name" : "stackoverflow"
+      },
+      {
+         "id" : "^Mike\b",
+         "name" : "irc"
+      },
+      {
+         "id" : "doherty",
+         "name" : "github"
+      },
+      {
+         "id" : "dohertym",
+         "name" : "linkedin"
+      },
+      {
+         "id" : "doherty",
+         "name" : "perlmonks"
+      },
+      {
+         "id" : "_doherty",
+         "name" : "twitter"
+      }
+   ],
+   "website" : "http://hashbang.ca",
+   "donation" : [],
+   "region" : "NS",
+   "email" : [
+      "doherty@cpan.org",
+      "doherty@cs.dal.ca"
+   ],
+   "city" : "Halifax"
+}
