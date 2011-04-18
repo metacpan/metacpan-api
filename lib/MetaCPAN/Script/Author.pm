@@ -6,6 +6,8 @@ with 'MooseX::Getopt';
 use Log::Contextual qw( :log );
 with 'MetaCPAN::Role::Common';
 use Email::Valid;
+use File::Find;
+use JSON;
 
 use MetaCPAN::Document::Author;
 
@@ -18,7 +20,6 @@ Loads author info into db. Requires the presence of a local CPAN/minicpan.
 use Data::Dump qw( dump );
 use IO::File;
 use IO::Uncompress::AnyInflate qw(anyinflate $AnyInflateError);
-use JSON::DWIW;
 use MooseX::Getopt;
 use Scalar::Util qw( reftype );
 
@@ -54,7 +55,7 @@ sub index_authors {
             my $conf = $self->author_config( $pauseid, $author->dir );
             $author = $type->put( { pauseid => $pauseid,
                                                name    => $name,
-                                               email   => $email, %$conf } );
+                                               email   => $email, map { $_ => $conf->{$_} } grep { defined $conf->{$_} } keys %$conf } );
 
             push @results, $author;
         }
@@ -63,36 +64,20 @@ sub index_authors {
 }
 
 sub author_config {
-
-    my $self    = shift;
+my $self    = shift;
     my $pauseid = shift;
     my $dir     = shift;
-    $dir =~ s/^id\///;
-    my $file    = "conf/authors/$dir/author.json";
+    $dir = $self->cpan . "/authors/$dir/";
+    my @files;
+    opendir(my $dh, $dir) || return {};
+    my ($file) = sort { (stat($dir.$b))[9] <=> (stat($dir.$a))[9] } grep { m/author-.*?\.json/ } readdir($dh);
+    $file = $dir.$file;
     return {} if !-e $file;
-    
-    my $json = JSON::DWIW->new;
-    my ( $authors, $error_msg ) = $json->from_json_file( $file, {} );
-
-    if ($error_msg) {
-        warn "problem with $file: $error_msg";
-        return {};
-    }
-
-    my $conf = $authors->{$pauseid};
-
-    # uncomment this when search.metacpan can deal with lists in values
-    my @lists = qw( website email books blog_url blog_feed cats dogs );
-    foreach my $key (@lists) {
-        if ( exists $conf->{$key}
-             && (   !reftype( $conf->{$key} )
-                  || reftype( $conf->{$key} ) ne 'ARRAY' ) )
-        {
-            $conf->{$key} = [ $conf->{$key} ];
-        }
-    }
-
-    return $conf;
+    my $json;
+    { local $/ = undef; local *FILE; open FILE, "<", $file; $json = <FILE>; close FILE }
+    my $author = eval { decode_json($json) };
+    log_warn { "$file is broken: $@" } if($@);
+    return $@ ? {} : $author;
 
 }
 
