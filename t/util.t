@@ -19,6 +19,7 @@ lives_ok { is(version('0.99.01'), '0.99.01') };
 is(MetaCPAN::Util::strip_pod('hello L<link|http://www.google.com> foo'), 'hello link foo');
 is(MetaCPAN::Util::strip_pod('hello L<Module/section> foo'), 'hello section in Module foo');
 is(MetaCPAN::Util::strip_pod('for L<Dist::Zilla>'), 'for Dist::Zilla');
+is(MetaCPAN::Util::strip_pod('without a leading C<$>.'), 'without a leading $.');
 
 sub version {
     CPAN::Meta->new(
