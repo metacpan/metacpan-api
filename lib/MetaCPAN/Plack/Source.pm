@@ -26,7 +26,7 @@ sub call {
 
     Plack::Util::response_cb(Plack::App::Directory->new( root => "." )->to_app->($env), sub {
         my $res = shift;
-        push(@{$res->[1]}, $self->_access_control_headers);
+        push(@{$res->[1]}, $self->_headers);
         return $res;
     });
 }

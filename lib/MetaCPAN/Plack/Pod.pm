@@ -76,7 +76,7 @@ sub handle {
         while ( my $line = $body->getline ) {
             $source .= $line;
         }
-        return [200, ['Content-type', 'text/html', $self->_access_control_headers], [$self->build_pod_html($source)]];
+        return [200, ['Content-type', 'text/html', $self->_headers], [$self->build_pod_html($source)]];
     }
 }
 
