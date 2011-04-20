@@ -176,7 +176,7 @@ sub import_tarball {
         my $obj = $file_set->put($file);
         $file->{abstract} = $obj->abstract;
         $file->{id}       = $obj->id;
-        $file->{module}   = {};
+        $file->{module}   = [];
     }
     my $st = stat($tarball);
     my $stat = { map { $_ => $st->$_ } qw(mode uid gid size mtime) };
@@ -234,15 +234,18 @@ sub import_tarball {
     # find modules
     my @modules;
     if ( keys %{ $meta->provides } && ( my $provides = $meta->provides ) ) {
+        use Devel::Dwarn; DwarnN($provides);
         while ( my ( $module, $data ) = each %$provides ) {
             my $path = $data->{file};
             my $file = List::Util::first { $_->{path} =~ /\Q$path\E$/ } @files;
-            $file->{module}->{$module} = $data;
+            push(@{$file->{module}}, { name => $module, version => $data->{version} });
             push(@modules, $file);
         }
 
     }
     @files = grep { $_->{name} =~ /\.pod$/i || $_->{name} =~ /\.pm$/ } grep { $_->{indexed} } @files;
+
+    use Devel::Dwarn; DwarnN(\@modules);
 
     foreach my $file (@files) {
         eval {
@@ -272,10 +275,10 @@ sub import_tarball {
     $i = 1;
     my $mod_set = $cpan->type('module');
     foreach my $file (@modules) {
-        my @modules = map { { name => $_, %{$file->{module}->{$_}} } } keys %{$file->{module}};
-        my %module = @modules ? (module => \@modules) : ();
-        delete $file->{module};
-        $file = MetaCPAN::Document::File->new( %$file, %module, index => $cpan );
+        #my @modules = map { { name => $_, %{$file->{module}->{$_}} } } keys %{$file->{module}};
+        #my %module = @modules ? (module => \@modules) : ();
+        # delete $file->{module};
+        $file = MetaCPAN::Document::File->new( %$file, index => $cpan );
         $file->clear_indexed;
         log_trace { "reindexing file $file->{path}" };
         Dlog_trace { $_ } $file->meta->get_data($file);
