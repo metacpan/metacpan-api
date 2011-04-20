@@ -5,7 +5,7 @@ use MetaCPAN::Util;
 
 has name => ( index => 'analyzed' );
 has version => ( required => 0 );
-has version_numified => ( isa => 'Num', lazy_build => 1 );
+has version_numified => ( isa => 'Num', lazy_build => 1, required => 1 );
 
 sub _build_version_numified {
     my $self = shift;
