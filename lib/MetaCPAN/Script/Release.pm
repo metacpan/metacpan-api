@@ -254,10 +254,10 @@ sub import_tarball {
                 $info = Module::Metadata->new_from_file(
                                           $tmpdir->file( $file->{full_path} ) );
             }
-            $file->{module}->{$_} ||= 
-                  {  $info->version
+            push(@{$file->{module}}, { name => $_, 
+                  $info->version
                      ? ( version => $info->version->numify )
-                     : () } for ( $info->packages_inside );
+                     : () }) for ( $info->packages_inside );
             push(@modules, $file);
             alarm(0);
         };
