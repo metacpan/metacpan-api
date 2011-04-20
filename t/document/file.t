@@ -121,7 +121,9 @@ my $cache = {};
 
 =head1 NAME
 
-Number::Phone::NANP::AS - AS-specific methods for Number::Phone
+Number::Phone::NANP::AS
+
+AS specific methods for Number::Phone
 
 =cut
 
@@ -137,10 +139,11 @@ END
                                      content_cb   => sub { \$content } );
 
     is( $file->sloc, 8, '8 lines of code' );
-    is( $file->slop, 3, '3 lines of pod' );
+    is( $file->slop, 4, '4 lines of pod' );
     is( $file->indexed, 0, 'not indexed' );
-    is_deeply( $file->pod_lines, [ [ 18, 5 ] ], 'correct pod_lines' );
-    use Devel::Dwarn; DwarnN($file->module);
+    is( $file->abstract, 'AS specific methods for Number::Phone' );
+    is( $file->documentation, 'Number::Phone::NANP::AS' );
+    is_deeply( $file->pod_lines, [ [ 18, 7 ] ], 'correct pod_lines' );
     is( $file->module->[0]->version_numified, 1.1, 'numified version has been calculated');
 }
 

@@ -110,7 +110,7 @@ sub _build_abstract {
     my $pom = $self->pom;
     foreach my $s ( @{ $pom->head1 } ) {
         if ( $s->title eq 'NAME' ) {
-            return '' unless ( $s->content =~ /^\s*(.*?)\s*-\s*(.*)$/s );
+            return '' unless ( $s->content =~ /^\h*(.*?)\h*-\h*(.*)$/s || $s->content =~ /^\h*(.*?)\h*\n+\h*(.*)$/s );
             my $content = $2;
             $self->documentation($1);
 
