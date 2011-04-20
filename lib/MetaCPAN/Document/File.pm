@@ -20,7 +20,7 @@ Plack::MIME->add_type( ".xs"  => "text/x-c" );
 has id => ( id => [qw(author release path)] );
 
 has [qw(path author name distribution)] => ();
-has module => ( required => 0, is => 'ro', isa => Module, coerce => 1 );
+has module => ( required => 0, is => 'rw', isa => Module, coerce => 1 );
 has documentation => ( required => 1, is => 'rw', lazy_build => 1, index => 'analyzed' );
 has release => ( parent => 1 );
 has date => ( isa => 'DateTime' );

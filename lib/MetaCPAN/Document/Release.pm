@@ -13,6 +13,7 @@ has version_numified => ( isa        => 'Num', lazy_build => 1 );
 has resources        => ( isa        => Resources, required => 0, coerce => 1 );
 has abstract => ( index => 'analyzed' );
 has distribution => ( analyzer => 'lowercase' );
+has dependency => ( required => 0, is => 'rw', isa => Dependency, coerce => 1 );
 has status => ( default => 'cpan' );
 has maturity => ( default => 'released' );
 has stat => ( isa => Stat, required => 0 );

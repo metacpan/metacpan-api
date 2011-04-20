@@ -137,7 +137,6 @@ END
                                      name         => 'module.pm',
                                      module => [{ name => 'Number::Phone::NANP::AS', version => 1.1 }],
                                      content_cb   => sub { \$content } );
-
     is( $file->sloc, 8, '8 lines of code' );
     is( $file->slop, 4, '4 lines of pod' );
     is( $file->indexed, 0, 'not indexed' );

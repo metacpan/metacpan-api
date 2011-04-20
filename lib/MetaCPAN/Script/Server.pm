@@ -15,7 +15,7 @@ use Class::MOP;
 sub build_app {
     my $self = shift;
     my $app  = Plack::App::URLMap->new;
-    for ( qw(Author Dependency Distribution File Mirror Module
+    for ( qw(Author Distribution File Mirror Module
           Pod Release Source Login User) )
     {
         my $class = "MetaCPAN::Plack::" . $_;

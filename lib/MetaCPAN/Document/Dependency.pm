@@ -3,11 +3,8 @@ use Moose;
 use ElasticSearchX::Model::Document;
 use MetaCPAN::Util;
 
-has id => ( id => [qw(author release module phase)] );
-
-has [qw(phase relationship module author version release)];
+has [qw(phase relationship module version)];
 has version_numified => ( isa => 'Num', lazy_build => 1 );
-has status => ( default => 'cpan' );
 
 sub _build_version_numified {
     return MetaCPAN::Util::numify_version( shift->version )

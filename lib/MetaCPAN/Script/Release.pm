@@ -178,6 +178,29 @@ sub import_tarball {
         $file->{id}       = $obj->id;
         $file->{module}   = [];
     }
+
+    log_debug { "Gathering dependencies" };
+
+    # find dependencies
+    my @dependencies;
+    if ( my $prereqs = $meta->prereqs ) {
+        while ( my ( $phase, $data ) = each %$prereqs ) {
+            while ( my ( $relationship, $v ) = each %$data ) {
+                while ( my ( $module, $version ) = each %$v ) {
+                    push( @dependencies,
+                          Dlog_trace { "adding dependency $_" }
+                          +{  phase        => $phase,
+                              relationship => $relationship,
+                              module       => $module,
+                              version      => $version,
+                          } );
+                }
+            }
+        }
+    }
+
+    log_debug { "Found ", scalar @dependencies, " dependencies" };
+    
     my $st = stat($tarball);
     my $stat = { map { $_ => $st->$_ } qw(mode uid gid size mtime) };
     my $create =
@@ -193,48 +216,19 @@ sub import_tarball {
         archive      => $archive,
         maturity     => $d->maturity,
         stat         => $stat,
-        date         => $date, };
+        date         => $date,
+        dependency => \@dependencies };
 
     my $release = $cpan->type('release')->put($create);
     
     my $distribution =
       $cpan->type('distribution')->put( { name => $meta->name } );
-    
-    log_debug { "Gathering dependencies" };
-
-    # find dependencies
-    my @dependencies;
-    if ( my $prereqs = $meta->prereqs ) {
-        while ( my ( $phase, $data ) = each %$prereqs ) {
-            while ( my ( $relationship, $v ) = each %$data ) {
-                while ( my ( $module, $version ) = each %$v ) {
-                    push( @dependencies,
-                          Dlog_trace { "adding dependency $_" }
-                          +{  phase        => $phase,
-                              relationship => $relationship,
-                              module       => $module,
-                              version      => $version,
-                              author       => $author,
-                              release      => $release->name,
-                          } );
-                }
-            }
-        }
-    }
-
-    log_debug { "Indexing ", scalar @dependencies, " dependencies" };
-    $i = 1;
-    my $dep_set = $cpan->type('dependency');
-    foreach my $dependencies (@dependencies) {
-        $dependencies = $dep_set->put($dependencies);
-    }
 
     log_debug { "Gathering modules" };
 
     # find modules
     my @modules;
     if ( keys %{ $meta->provides } && ( my $provides = $meta->provides ) ) {
-        use Devel::Dwarn; DwarnN($provides);
         while ( my ( $module, $data ) = each %$provides ) {
             my $path = $data->{file};
             my $file = List::Util::first { $_->{path} =~ /\Q$path\E$/ } @files;
@@ -244,8 +238,6 @@ sub import_tarball {
 
     }
     @files = grep { $_->{name} =~ /\.pod$/i || $_->{name} =~ /\.pm$/ } grep { $_->{indexed} } @files;
-
-    use Devel::Dwarn; DwarnN(\@modules);
 
     foreach my $file (@files) {
         eval {
