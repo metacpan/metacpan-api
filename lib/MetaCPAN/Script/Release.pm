@@ -207,6 +207,7 @@ sub import_tarball {
       { map { $_ => $meta->$_ } qw(version name license abstract resources) };
 
     $create->{abstract} = MetaCPAN::Util::strip_pod($create->{abstract});
+    delete $create->{abstract} if($create->{abstract} eq 'unknown');
 
     $create = DlogS_trace { "adding release $_" }
     +{  %$create,
