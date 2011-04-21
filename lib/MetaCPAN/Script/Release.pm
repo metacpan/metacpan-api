@@ -24,7 +24,8 @@ use MetaCPAN::Document::Author;
 
 has latest  => ( is => 'ro', isa => 'Bool', default => 0 );
 has age     => ( is => 'ro', isa => 'Int' );
-has childs  => ( is => 'ro', isa => 'Int', default => 2 );
+has children  => ( is => 'ro', isa => 'Int', default => 2 );
+has skip    => ( is => 'ro', isa => 'Bool', default => 0 );
 
 sub run {
     my $self = shift;
@@ -67,8 +68,29 @@ sub run {
     }
     log_info { scalar @files, " tarballs found" } if ( @files > 1 );
     my @pid;
+    my $cpan = $self->model->index('cpan') if($self->skip);
     while ( my $file = shift @files ) {
-        if(@pid >= $self->childs) {
+        
+        if($self->skip) {
+            my $d    = CPAN::DistnameInfo->new($file);
+            my ( $author, $archive, $name ) =
+              ( $d->cpanid, $d->filename, $d->distvname );
+
+            my $count = $cpan->type('release')->query(
+                                     { query  => { match_all => {} },
+                                       filter => {
+                                            and => [
+                                                { term => { archive => $archive } },
+                                                { term => { author  => $author } } ]
+                                       } } )->inflate(0)->count;
+
+            if($count) {
+                log_info { "Skipping $file" };
+                next;
+            }
+        }
+        
+        if(@pid >= $self->children) {
             my $pid = waitpid( -1, 0);
             @pid = grep { $_ != $pid } @pid;
         }
@@ -89,16 +111,17 @@ sub import_tarball {
     my ( $self, $tarball ) = @_;
     my $cpan = $self->model->index('cpan');
 
-    log_info { "Processing $tarball" };
     $tarball = Path::Class::File->new($tarball);
+    my $d    = CPAN::DistnameInfo->new($tarball);
+    my ( $author, $archive, $name ) =
+      ( $d->cpanid, $d->filename, $d->distvname );
 
+    log_info { "Processing $tarball" };
+    
     log_debug { "Opening tarball in memory" };
     my $at     = Archive::Tar->new($tarball);
     my $tmpdir = dir(File::Temp::tempdir);
-    my $d      = CPAN::DistnameInfo->new($tarball);
     my $date = $self->pkg_datestamp($tarball);
-    my ( $author, $archive, $name ) =
-      ( $d->cpanid, $d->filename, $d->distvname );
     my $version = MetaCPAN::Util::fix_version( $d->version );
     my $meta = CPAN::Meta->new(
                                 { version => $version || 0,
