@@ -1,6 +1,7 @@
 {
    "openid" : null,
    "country" : "US",
+   "name": "Ævar Arnfjörð Bjarmason",
    "profile" : [
       {
          "id" : "B002MRC39U",
