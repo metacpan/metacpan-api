@@ -23,7 +23,7 @@ use IO::Uncompress::AnyInflate qw(anyinflate $AnyInflateError);
 use MooseX::Getopt;
 use Scalar::Util qw( reftype );
 
-has 'author_fh' => ( is => 'rw', lazy_build => 1, traits  => [ 'NoGetopt' ]);
+has 'author_fh' => ( is => 'rw', lazy_build => 1, traits => ['NoGetopt'] );
 
 sub run {
     my $self = shift;
@@ -33,29 +33,34 @@ sub run {
 
 sub index_authors {
     my $self      = shift;
-    my $type = $self->index->type('author');
+    my $type      = $self->index->type('author');
     my @authors   = ();
     my $author_fh = $self->author_fh;
     my @results   = ();
-    my $lines = 0;
+    my $lines     = 0;
     log_debug { "Counting author" };
-    $lines++ while($author_fh->getline());
+    $lines++ while ( $author_fh->getline() );
     $author_fh = $self->_build_author_fh;
     log_info { "Indexing $lines authors" };
-    
+
     while ( my $line = $author_fh->getline() ) {
         if ( $line =~ m{alias\s([\w\-]*)\s*"(.+?)\s*<(.*)>"}gxms ) {
             my ( $pauseid, $name, $email ) = ( $1, $2, $3 );
-            $email = lc($pauseid) . '@cpan.org' unless(Email::Valid->address($email));
+            $email = lc($pauseid) . '@cpan.org'
+              unless ( Email::Valid->address($email) );
             log_debug { "Indexing $pauseid: $name <$email>" };
             my $author =
               MetaCPAN::Document::Author->new( pauseid => $pauseid,
                                                name    => $name,
                                                email   => $email );
             my $conf = $self->author_config( $pauseid, $author->dir );
-            $author = $type->put( { pauseid => $pauseid,
-                                               name    => $name,
-                                               email   => $email, map { $_ => $conf->{$_} } grep { defined $conf->{$_} } keys %$conf } );
+            $author = $type->put(
+                                  { pauseid => $pauseid,
+                                    name    => $name,
+                                    email   => $email,
+                                    map { $_ => $conf->{$_} }
+                                      grep { defined $conf->{$_} } keys %$conf
+                                  } );
 
             push @results, $author;
         }
@@ -64,21 +69,36 @@ sub index_authors {
 }
 
 sub author_config {
-my $self    = shift;
+    my $self    = shift;
     my $pauseid = shift;
     my $dir     = shift;
     $dir = $self->cpan . "/authors/$dir/";
     my @files;
-    opendir(my $dh, $dir) || return {};
-    my ($file) = sort { (stat($dir.$b))[9] <=> (stat($dir.$a))[9] } grep { m/author-.*?\.json/ } readdir($dh);
-    $file = $dir.$file;
+    opendir( my $dh, $dir ) || return {};
+    my ($file) =
+      sort { ( stat( $dir . $b ) )[9] <=> ( stat( $dir . $a ) )[9] }
+      grep { m/author-.*?\.json/ } readdir($dh);
+    $file = $dir . $file;
     return {} if !-e $file;
     my $json;
-    { local $/ = undef; local *FILE; open FILE, "<", $file; $json = <FILE>; close FILE }
+    {
+        local $/ = undef;
+        local *FILE;
+        open FILE, "<", $file;
+        $json = <FILE>;
+        close FILE
+    }
     my $author = eval { decode_json($json) };
-    log_warn { "$file is broken: $@" } if($@);
-    return $@ ? {} : $author;
-
+    if (@$) {
+        log_warn { "$file is broken: $@" };
+        return {};
+    } else {
+        $author =
+          { map { $_ => $author->{$_} }
+            qw(name profile blog perlmongers donation email website city region country location extra)
+          };
+        return $author;
+    }
 }
 
 sub _build_author_fh {
