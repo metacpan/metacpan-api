@@ -5,17 +5,11 @@ with 'MooseX::Getopt';
 use Log::Contextual qw( :log );
 with 'MetaCPAN::Role::Common';
 
-use MetaCPAN::Document::Author;
-use MetaCPAN::Document::Release;
-use MetaCPAN::Document::Distribution;
-use MetaCPAN::Document::File;
-use MetaCPAN::Document::Module;
-use MetaCPAN::Document::Dependency;
-use MetaCPAN::Document::Mirror;
+has delete => ( is => 'ro', isa => 'Bool', default => 0, documentation => 'delete index if it exists already' );
 
 sub run {
     my $self = shift;
-    $self->model->deploy;
+    $self->model->deploy( delete => $self->delete );
 }
 
 sub map_perlmongers {
