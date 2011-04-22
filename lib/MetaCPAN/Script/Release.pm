@@ -10,6 +10,7 @@ use File::Temp         ();
 use CPAN::Meta         ();
 use DateTime           ();
 use List::Util         ();
+use List::MoreUtils    ();
 use Module::Metadata   ();
 use File::stat         ('stat');
 use CPAN::DistnameInfo ();
@@ -108,6 +109,7 @@ sub run {
         };
     }
     waitpid( -1, 0);
+    $self->model->es->refresh_index( index => 'cpan' );
 }
 
 sub import_tarball {
@@ -152,7 +154,6 @@ sub import_tarball {
             next unless ( $child =~ /\// );
             ( my $fpath = $child ) =~ s/.*?\///;
             my $fname = $fpath;
-            warn -d $tmpdir->file($child);
             -d $tmpdir->file($child)
               ? $fname =~ s/^(.*\/)?(.+?)\/?$/$2/
               : $fname =~ s/.*\///;
@@ -162,7 +163,7 @@ sub import_tarball {
                     name         => $fname,
                     directory    => -d $tmpdir->file($child) ? 1 : 0,
                     release      => $name,
-                    date => $date,
+                    date         => $date,
                     distribution => $meta->name,
                     author       => $author,
                     full_path    => $child,
@@ -218,7 +219,7 @@ sub import_tarball {
     }
 
     log_debug { "Found ", scalar @dependencies, " dependencies" };
-    
+
     my $st = stat($tarball);
     my $stat = { map { $_ => $st->$_ } qw(mode uid gid size mtime) };
     my $create =
@@ -239,7 +240,7 @@ sub import_tarball {
         dependency => \@dependencies };
 
     my $release = $cpan->type('release')->put($create);
-    
+
     my $distribution =
       $cpan->type('distribution')->put( { name => $meta->name } );
 
@@ -255,29 +256,30 @@ sub import_tarball {
             push(@modules, $file);
         }
 
-    }
-    @files = grep { $_->{name} =~ /\.pod$/i || $_->{name} =~ /\.pm$/ } grep { $_->{indexed} } @files;
+    } else {
+        @files = grep { $_->{name} =~ /\.pod$/i || $_->{name} =~ /\.pm$/ } grep { $_->{indexed} } @files;
 
-    foreach my $file (@files) {
-        eval {
-            local $SIG{'ALRM'} = sub {
-                log_error { "Call to Module::Metadata timed out " };
-                die;
+        foreach my $file (@files) {
+            eval {
+                local $SIG{'ALRM'} = sub {
+                    log_error { "Call to Module::Metadata timed out " };
+                    die;
+                };
+                alarm(5);
+                my $info;
+                {
+                    local $SIG{__WARN__} = sub { };
+                    $info = Module::Metadata->new_from_file(
+                                              $tmpdir->file( $file->{full_path} ) );
+                }
+                push(@{$file->{module}}, { name => $_, 
+                      $info->version
+                         ? ( version => $info->version->numify )
+                         : () }) for ( $info->packages_inside );
+                push(@modules, $file);
+                alarm(0);
             };
-            alarm(5);
-            my $info;
-            {
-                local $SIG{__WARN__} = sub { };
-                $info = Module::Metadata->new_from_file(
-                                          $tmpdir->file( $file->{full_path} ) );
-            }
-            push(@{$file->{module}}, { name => $_, 
-                  $info->version
-                     ? ( version => $info->version->numify )
-                     : () }) for ( $info->packages_inside );
-            push(@modules, $file);
-            alarm(0);
-        };
+        }
     }
 
     log_debug { "Indexing ", scalar @modules, " modules" };
@@ -288,7 +290,15 @@ sub import_tarball {
         #my %module = @modules ? (module => \@modules) : ();
         # delete $file->{module};
         $file = MetaCPAN::Document::File->new( %$file, index => $cpan );
-        $file->clear_indexed;
+        foreach my $mod (@{$file->{module}}) {
+            if((grep { $_ eq $mod->name } @{$no_index->{package} || []}) ||
+                (grep { $mod->name =~ /^\Q$_\E/ } @{$no_index->{namespace} || []})) {
+                    $mod->indexed(0);
+                    next;
+                }
+            
+            $mod->indexed($mod->hide_from_pause(${$file->content}) ? 0 : 1);
+        }
         log_trace { "reindexing file $file->{path}" };
         Dlog_trace { $_ } $file->meta->get_data($file);
         $file->put;
