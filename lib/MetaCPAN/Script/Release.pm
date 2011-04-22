@@ -5,7 +5,7 @@ with 'MetaCPAN::Role::Common';
 use Log::Contextual qw( :log :dlog );
 
 use Path::Class qw(file dir);
-use Archive::Tar       ();
+use Archive::Any       ();
 use File::Temp         ();
 use CPAN::Meta         ();
 use DateTime           ();
@@ -13,6 +13,7 @@ use List::Util         ();
 use Module::Metadata   ();
 use File::stat         ('stat');
 use CPAN::DistnameInfo ();
+use File::Spec::Functions ('tmpdir', 'catdir');
 
 use feature 'say';
 use MetaCPAN::Script::Latest;
@@ -34,7 +35,9 @@ sub run {
     for (@args) {
         if ( -d $_ ) {
             log_info { "Looking for tarballs in $_" };
-            my $find = File::Find::Rule->new->file->name('*.tar.gz');
+            my $find = File::Find::Rule->new->file->name(
+                qr/\.(tgz|tbz|tar[\._-]gz|tar\.bz2|tar\.Z|zip|7z)$/
+            );
             $find = $find->mtime( ">" . ( time - $self->age * 3600 ) )
               if ( $self->age );
             push( @files, sort $find->in($_) );
@@ -118,9 +121,14 @@ sub import_tarball {
 
     log_info { "Processing $tarball" };
     
-    log_debug { "Opening tarball in memory" };
-    my $at     = Archive::Tar->new($tarball);
-    my $tmpdir = dir(File::Temp::tempdir);
+    my $at = Archive::Any->new($tarball);
+    my $tmpdir = dir(File::Temp::tempdir(CLEANUP => 1));
+    log_error { "$tarball is being naughty" }
+     if $at->is_naughty || $at->is_impolite;
+
+    log_debug { "Extracting archive to filesystem" };
+    $at->extract($tmpdir);
+
     my $date = $self->pkg_datestamp($tarball);
     my $version = MetaCPAN::Util::fix_version( $d->version );
     my $meta = CPAN::Meta->new(
@@ -133,55 +141,41 @@ sub import_tarball {
     my @files;
     my $meta_file;
     log_debug { "Gathering files" };
-    my @list = $at->get_files;
+    my @list = $at->files;
     while ( my $child = shift @list ) {
         if ( ref $child ne 'HASH' ) {
-            $meta_file = $child if ( !$meta_file && $child->full_path =~ /^[^\/]+\/META\./ || $child->full_path =~ /^[^\/]+\/META\.json/ );
-            my $stat = { map { $_ => $child->$_ } qw(mode uid gid size mtime) };
-            next unless ( $child->full_path =~ /\// );
-            ( my $fpath = $child->full_path ) =~ s/.*?\///;
+            $meta_file = $child if ( !$meta_file && $child =~ /^[^\/]+\/META\./ || $child =~ /^[^\/]+\/META\.json/ );
+            my $stat = do {
+                my $s = stat $tmpdir->file($child);
+                +{ map { $_ => $s->$_ } qw(mode uid gid size mtime) };
+            };
+            next unless ( $child =~ /\// );
+            ( my $fpath = $child ) =~ s/.*?\///;
             my $fname = $fpath;
-            $child->is_dir
+            $tmpdir->file($child)->is_dir
               ? $fname =~ s/^(.*\/)?(.+?)\/?$/$2/
               : $fname =~ s/.*\///;
             push(
                 @files,
                 Dlog_trace { "adding file $_" } +{
                     name         => $fname,
-                    directory    => $child->is_dir ? 1 : 0,
+                    directory    => $tmpdir->file($child)->is_dir ? 1 : 0,
                     release      => $name,
                     date => $date,
                     distribution => $meta->name,
                     author       => $author,
-                    full_path    => $child->full_path,
+                    full_path    => $child,
                     path         => $fpath,
                     stat         => $stat,
                     maturity     => $d->maturity,
-                    indexed => 1,
-                    content_cb =>
-                      sub { \( $at->get_content( $child->full_path ) ) }
+                    indexed      => 1,
+                    content_cb   => sub { \( scalar $tmpdir->file($child)->slurp ) },
                 } );
         }
     }
-
-    #  YAML YAML::Tiny YAML::XS don't offer better results
-    my @backends = qw(CPAN::Meta::YAML YAML::Syck)
-        if ($meta_file);
-    while(my $mod = shift @backends) {
-        $ENV{PERL_YAML_BACKEND} = $mod;
-        my $last;
-        try {
-            $at->extract_file( $meta_file, $tmpdir->file( $meta_file->full_path ) );
-            my $foo = $last =
-              CPAN::Meta->load_file( $tmpdir->file( $meta_file->full_path ) );
-            $meta = $foo;
-        }
-        catch {
-            log_warn { "META file could not be loaded using $mod: $_" };
-        };
-        last if($last);
-    }
-
+    $meta = $self->load_meta_file($meta, $tmpdir->file($meta_file))
+        if($meta_file);
+        use Devel::Dwarn; DwarnN($meta);
     my $no_index = $meta->no_index;
     foreach my $no_dir ( @{ $no_index->{directory} || [] }, qw(t xt inc) ) {
         map { $_->{indexed} = 0 }
@@ -270,8 +264,6 @@ sub import_tarball {
                 die;
             };
             alarm(5);
-            $at->extract_file( $file->{full_path},
-                               $tmpdir->file( $file->{full_path} ) );
             my $info;
             {
                 local $SIG{__WARN__} = sub { };
@@ -315,6 +307,25 @@ sub pkg_datestamp {
     my $date    = stat($archive)->mtime;
     return DateTime::Format::Epoch::Unix->parse_datetime($date);
 
+}
+
+sub load_meta_file {
+    my ($self, $meta, $meta_file) = @_;
+    #  YAML YAML::Tiny YAML::XS don't offer better results
+    my @backends = qw(CPAN::Meta::YAML YAML::Syck);
+
+    while(my $mod = shift @backends) {
+        $ENV{PERL_YAML_BACKEND} = $mod;
+        my $last;
+        try {
+            $last =
+              CPAN::Meta->load_file( $meta_file );
+        };
+        return $last if($last);
+    }
+
+    log_warn { "META file could not be loaded using @backends: $_" };
+    return $meta;
 }
 
 1;
