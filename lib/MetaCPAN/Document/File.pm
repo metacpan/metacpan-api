@@ -3,8 +3,7 @@ use Moose;
 use ElasticSearchX::Model::Document;
 
 use URI::Escape ();
-use Pod::POM;
-use Pod::POM::View::TOC;
+use Pod::Tree;
 use MetaCPAN::Pod::XHTML;
 use Pod::Text;
 use Plack::MIME;
@@ -34,7 +33,6 @@ has abstract => ( lazy_build => 1, index => 'analyzed' );
 has status => ( default => 'cpan' );
 has maturity => ( default => 'released' );
 has directory => ( isa => 'Bool', default => 0 );
-has indexed => ( isa => 'Bool', lazy_build => 1 );
 has level => ( isa => 'Int', lazy_build => 1 );
 
 
@@ -44,37 +42,20 @@ has pom => ( lazy_build => 1, property => 0, required => 0 );
 has content_cb => ( property => 0, required => 0 );
 
 sub is_perl_file {
-    $_[0]->name =~ /\.(pl|pm|pod|t)$/i;
+    my $self = shift;
+    return 1 if($self->name =~ /\.(pl|pm|pod|t)$/i);
+    if($self->name !~ /\./) {
+        my $content = ${$self->content};
+        return 1 if($content =~ /^#!.*?perl/);
+    }
+    return 0;
 }
 
 sub _build_documentation {
     my $self = shift;
-    return unless($self->name =~ /\.(pm|pod)$/i);
-    my $pom = $self->pom;
-    foreach my $s ( @{ $pom->head1 } ) {
-        if ( $s->title eq 'NAME' ) {
-            return '' unless ( $s->content =~ /^\s*(.*?)(\s*-\s*(.*))?$/s );
-            return $1;
-        }
-    }
-    return undef;
-}
-
-sub _build_indexed {
-    my $self = shift;
-    return 1 unless(my $pkg = $self->module);
-    $pkg = $pkg->[0]->{name} || return 0;;
-    my $content = ${$self->content};
-    return $content =~ /    # match a package declaration
-      ^[\h\{;]*             # intro chars on a line
-      package               # the word 'package'
-      \h+                   # whitespace
-      ($pkg)                # a package name
-      \h*                   # optional whitespace
-      (.+)?                 # optional version number
-      \h*                   # optional whitesapce
-      ;                     # semicolon line terminator
-    /mx ? 1 : 0;
+    $self->_build_abstract;
+    return $self->documentation if($self->has_documentation);
+    return $self->module ? $self->module->[0]->{name} : undef;
 }
 
 sub _build_level {
@@ -101,32 +82,53 @@ sub _build_mime {
 
 sub _build_pom {
     my $self = shift;
-    Pod::POM->new( warn => 0 )->parse_text( ${ $self->content } );
+    my $pod = Pod::Tree->new;
+    $pod->load_string( ${ $self->content } );
+    return $pod;
 }
 
 sub _build_abstract {
     my $self = shift;
-    return '' unless ( $self->is_perl_file );
-    my $pom = $self->pom;
-    foreach my $s ( @{ $pom->head1 } ) {
-        if ( $s->title eq 'NAME' ) {
-            return '' unless ( $s->content =~ /^\h*(.*?)\h*-\h*(.*)$/s || $s->content =~ /^\h*(.*?)\h*\n+\h*(.*)$/s );
-            my $content = $2;
-            $self->documentation($1);
+    return undef unless ( $self->is_perl_file );
+    my $root    = $self->pom->get_root;
+    my $in_name = 0;
+    my ( $abstract, $documentation );
+    foreach my $node ( @{ $root->get_children } ) {
+        if ($in_name) {
+            last
+              if (    $node->get_type eq 'command'
+                   && $node->get_command eq 'head1' );
 
-            # MOBY::Config has more than one POD section in the abstract after
-            # parsing Should have a closer look and file bug with Pod::POM
-            # It also contains newlines in the actual source
-            $content =~ s{=head.*}{}xms;
-            $content =~ s{\n\n.*$}{}xms;
-            $content =~ s{\n}{ }gxms;
-            $content =~ s{\s+$}{}gxms;
-            $content =~ s{(\s)+}{$1}gxms;
-            $content = MetaCPAN::Util::strip_pod($content);
-            return $content || '';
+            my $text = $node->get_text;
+            if ( $in_name == 1 && $text =~ /^\h*(.*?)(\h+-\h+(.*))?$/s ) {
+                $abstract      = $3;
+                chomp($documentation = $1);
+            } elsif( $in_name == 2) {
+                chomp($abstract = $text);
+            }
+
+            if ($abstract) {
+                $abstract =~ s{=head.*}{}xms;
+                $abstract =~ s{\n\n.*$}{}xms;
+                $abstract =~ s{\n}{ }gxms;
+                $abstract =~ s{\s+$}{}gxms;
+                $abstract =~ s{(\s)+}{$1}gxms;
+                $abstract = MetaCPAN::Util::strip_pod($abstract);
+            }
+            $in_name++;
         }
+
+        last if ( $abstract && $documentation );
+
+        $in_name++
+          if (    $node->get_type eq 'command'
+               && $node->get_command eq 'head1'
+               && $node->get_text =~ /^NAME\s*$/ );
+
     }
-    return '';
+    $self->documentation($documentation) if ($documentation);
+    return $abstract;
+
 }
 
 sub _build_path {
