@@ -62,7 +62,32 @@ END
                                      name         => 'module.pm',
                                      content      => \$content );
 
-    is( $file->abstract, '' );
+    is( $file->abstract, undef );
+}
+{
+    my $content = <<'END';
+#!/bin/perl
+
+=head1 NAME
+ 
+Script - a command line tool
+ 
+=head1 VERSION
+ 
+Version 0.5.0
+
+END
+
+    my $file =
+      MetaCPAN::Document::File->new( author       => 'Foo',
+                                     path         => 'bar',
+                                     release      => 'release',
+                                     distribution => 'foo',
+                                     name         => 'script',
+                                     content      => \$content );
+
+    is( $file->abstract, 'a command line tool' );
+    is( $file->documentation, 'Script' );
 }
 {
     my $content = <<'END';
@@ -102,7 +127,7 @@ END
 {
     my $content = <<'END';
 package
-  Number::Phone::NANP::AS;
+  Number::Phone::NANP::ASS;
 
 # numbering plan at http://www.itu.int/itudoc/itu-t/number/a/sam/86412.html
 
@@ -135,7 +160,7 @@ END
                                      release      => 'release',
                                      distribution => 'foo',
                                      name         => 'module.pm',
-                                     module => [{ name => 'Number::Phone::NANP::AS', version => 1.1 }],
+                                     module => [{ name => 'Number::Phone::NANP::ASS', version => 1.1 }],
                                      content_cb   => sub { \$content } );
     is( $file->sloc, 8, '8 lines of code' );
     is( $file->slop, 4, '4 lines of pod' );
@@ -144,6 +169,28 @@ END
     is( $file->documentation, 'Number::Phone::NANP::AS' );
     is_deeply( $file->pod_lines, [ [ 18, 7 ] ], 'correct pod_lines' );
     is( $file->module->[0]->version_numified, 1.1, 'numified version has been calculated');
+}
+
+{
+    my $content = <<'END';
+package # hide the package from PAUSE
+    Perl6Attribute;
+
+=head1 NAME
+
+Perl6Attribute - An example attribute metaclass for Perl 6 style attributes
+
+END
+    my $file =
+      MetaCPAN::Document::File->new( author       => 'Foo',
+                                     path         => 'bar',
+                                     release      => 'release',
+                                     distribution => 'foo',
+                                     name         => 'Perl6Attribute.pod',
+                                     module => [{ name => 'main', version => 1.1 }],
+                                     content_cb   => sub { \$content } );
+    is($file->documentation, 'Perl6Attribute');
+    is($file->abstract, 'An example attribute metaclass for Perl 6 style attributes');
 }
 
 done_testing;
