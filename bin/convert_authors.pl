@@ -1,3 +1,5 @@
+# PODNAME: foo
+
 use strict;
 use warnings;
 use JSON;

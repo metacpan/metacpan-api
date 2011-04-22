@@ -152,14 +152,15 @@ sub import_tarball {
             next unless ( $child =~ /\// );
             ( my $fpath = $child ) =~ s/.*?\///;
             my $fname = $fpath;
-            $tmpdir->file($child)->is_dir
+            warn -d $tmpdir->file($child);
+            -d $tmpdir->file($child)
               ? $fname =~ s/^(.*\/)?(.+?)\/?$/$2/
               : $fname =~ s/.*\///;
             push(
                 @files,
                 Dlog_trace { "adding file $_" } +{
                     name         => $fname,
-                    directory    => $tmpdir->file($child)->is_dir ? 1 : 0,
+                    directory    => -d $tmpdir->file($child) ? 1 : 0,
                     release      => $name,
                     date => $date,
                     distribution => $meta->name,
@@ -175,7 +176,7 @@ sub import_tarball {
     }
     $meta = $self->load_meta_file($meta, $tmpdir->file($meta_file))
         if($meta_file);
-        use Devel::Dwarn; DwarnN($meta);
+
     my $no_index = $meta->no_index;
     foreach my $no_dir ( @{ $no_index->{directory} || [] }, qw(t xt inc) ) {
         map { $_->{indexed} = 0 }
