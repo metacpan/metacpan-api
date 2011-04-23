@@ -29,14 +29,10 @@ sub run {
             log_info { "New upload: $file" };
             $handles{$file} = AnyEvent::Run->new(
                 cmd => $FindBin::RealBin . "/metacpan",
-                args => ['release', $file, '--latest', '--level', $self->level],
+                args => ['release', $file, '--latest', '--level', $self->level, '--index', $self->index->name],
                 on_read => sub { },
                 on_eof => sub { },
-                on_error  => sub {
-                    my ($handle, $fatal, $msg) = @_;
-                    my $arg = $handle->{args}->[1];
-                    say $handle->rbuf;
-                }
+                on_error  => sub { }
             );
         },
         on_error   => sub {

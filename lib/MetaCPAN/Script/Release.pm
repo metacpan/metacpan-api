@@ -72,7 +72,7 @@ sub run {
     }
     log_info { scalar @files, " tarballs found" } if ( @files > 1 );
     my @pid;
-    my $cpan = $self->model->index('cpan') if($self->skip);
+    my $cpan = $self->index if($self->skip);
     while ( my $file = shift @files ) {
         
         if($self->skip) {
@@ -114,7 +114,7 @@ sub run {
 
 sub import_tarball {
     my ( $self, $tarball ) = @_;
-    my $cpan = $self->model->index('cpan');
+    my $cpan = $self->index;
 
     $tarball = Path::Class::File->new($tarball);
     my $d    = CPAN::DistnameInfo->new($tarball);
@@ -275,7 +275,7 @@ sub import_tarball {
                 push(@{$file->{module}}, { name => $_, 
                       $info->version
                          ? ( version => $info->version->numify )
-                         : () }) for ( $info->packages_inside );
+                         : () }) for ( grep { $_ ne 'main' } $info->packages_inside );
                 push(@modules, $file);
                 alarm(0);
             };

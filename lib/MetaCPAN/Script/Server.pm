@@ -15,6 +15,7 @@ use Class::MOP;
 sub build_app {
     my $self = shift;
     my $app  = Plack::App::URLMap->new;
+    my $index = $self->index;
     for ( qw(Author Distribution File Mirror Module
           Pod Release Source Login User) )
     {
@@ -23,7 +24,8 @@ sub build_app {
         $app->map( "/" . lc($_),
                    $class->new( model  => $self->model,
                                 cpan   => $self->cpan,
-                                remote => $self->remote
+                                remote => $self->remote,
+                                index  => $index,
                    ) );
     }
     Plack::Middleware::Session->wrap(

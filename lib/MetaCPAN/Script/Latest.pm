@@ -20,12 +20,12 @@ sub run {
       $self->distribution
       ? { term => { distribution => lc($self->distribution) } }
       : { match_all => {} };
-    my $search = { index => 'cpan',
+    my $search = { index => $self->index->name,
                    type  => 'release',
                    query => $query,
                    size  => 100,
                    from  => 0,
-                   sort  => ['distribution.raw',
+                   sort  => ['distribution',
                              { maturity => { reverse => \1 } },
                              { date     => { reverse => \1 } }
                    ], };
@@ -43,7 +43,7 @@ sub run {
                 $self->reindex( $_, $row->{_id}, 'latest' );
             }
             next if ( $self->dry_run );
-            $es->index( index => 'cpan',
+            $es->index( index => $self->index->name,
                         type  => 'release',
                         id    => $row->{_id},
                         data  => { %{ $row->{_source} }, status => 'latest' } );
@@ -55,11 +55,11 @@ sub run {
                 $self->reindex( $_, $row->{_id}, 'cpan' );
             }
             next if ( $self->dry_run );
-            $es->index( index => 'cpan',
+            $es->index( index => $self->index->name,
                         type  => 'release',
                         id    => $row->{_id},
                         data  => { %{ $row->{_source} }, status => 'cpan' } );
-        }
+        # }
         SCROLL:
         unless ( @{ $rs->{hits}->{hits} } ) {
             $search = { %$search, from => $search->{from} + $search->{size} };
@@ -71,17 +71,17 @@ sub run {
 sub reindex {
     my ( $self, $type, $release, $status ) = @_;
     my $es = $self->es;
-    my $search = { index => 'cpan',
+    my $search = { index => $self->index->name,
                    type  => $type,
                    query => { term => { release => $release } },
-                   sort  => ['_id'],
+                   # sort  => ['_id'],
                    size  => 30,
                    from  => 0, };
     my $rs = $es->search(%$search);
     while ( my $row = shift @{ $rs->{hits}->{hits} } ) {
         log_debug { $status eq 'latest' ? "Upgrading " : "Downgrading ",
           $type, " ", $row->{_source}->{name} || '' };
-        $es->index( index => 'cpan',
+        $es->index( index => $self->index->name,
                     type  => $type,
                     id    => $row->{_id},
                     data  => { %{ $row->{_source} }, status => $status }
