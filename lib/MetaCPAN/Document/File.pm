@@ -8,7 +8,7 @@ use MetaCPAN::Pod::XHTML;
 use Pod::Text;
 use Plack::MIME;
 use List::MoreUtils qw(uniq);
-use MetaCPAN::Pod::Lines;
+use MetaCPAN::Util;
 use MetaCPAN::Types qw(:all);
 use MooseX::Types::Moose qw(ArrayRef);
 
@@ -139,7 +139,7 @@ sub _build_path {
 sub _build_pod_lines {
     my $self = shift;
     return [] unless ( $self->is_perl_file );
-    my ($lines, $slop) = MetaCPAN::Pod::Lines::parse(${$self->content});
+    my ($lines, $slop) = MetaCPAN::Util::pod_lines(${$self->content});
     $self->slop($slop || 0);
     return $lines;
     

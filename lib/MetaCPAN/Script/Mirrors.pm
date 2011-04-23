@@ -11,7 +11,7 @@ use JSON ();
 sub run {
     my $self = shift;
     $self->index_mirrors;
-    $self->es->refresh_index( index => 'cpan' );
+    $self->es->refresh_index( index => $self->index );
 }
 
 sub index_mirrors {
