@@ -30,8 +30,6 @@ coerce Dependency, from HashRef, via { [ MetaCPAN::Document::Dependency->new($_)
 
 subtype Extra, as HashRef;
 
-coerce ArrayRef, from Str, via {[$_]};
-
 subtype Resources,
   as Dict [
         license => Optional [ ArrayRef [Str] ],
