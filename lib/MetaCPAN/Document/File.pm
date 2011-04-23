@@ -100,11 +100,15 @@ sub _build_abstract {
               if (    $node->get_type eq 'command'
                    && $node->get_command eq 'head1' );
 
-            my $text = $node->get_text;
-            if ( $in_name == 1 && $text =~ /^\h*(.*?)(\h+-\h+(.*))?$/s ) {
-                $abstract      = $3;
+            my $text = MetaCPAN::Util::strip_pod($node->get_text);
+            # warn $text;
+            if ( $in_name == 1 && $text =~ /^\h*(\S+?)(\h+-+\h+(.*))?$/s ) {
+                chomp($abstract = $3);
+                my $name = $1;
+                $documentation = $name if($name =~ /^[\w:']+$/);
+            } elsif ( $in_name == 1 && $text =~ /^\h*([\w\:']+?)\n/s ) {
                 chomp($documentation = $1);
-            } elsif( $in_name == 2) {
+            } elsif( $in_name == 2 && !$abstract && $text) {
                 chomp($abstract = $text);
             }
 
@@ -114,7 +118,6 @@ sub _build_abstract {
                 $abstract =~ s{\n}{ }gxms;
                 $abstract =~ s{\s+$}{}gxms;
                 $abstract =~ s{(\s)+}{$1}gxms;
-                $abstract = MetaCPAN::Util::strip_pod($abstract);
             }
             $in_name++;
         }

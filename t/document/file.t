@@ -4,8 +4,6 @@ use warnings;
 
 use MetaCPAN::Document::File;
 
-use MetaCPAN::Pod::Lines;
-
 {
     my $content = <<'END';
 package Foo;
@@ -95,7 +93,7 @@ END
 
 =head1 NAME
 
-MOBY::Config.pm - An object B<containing> information about how to get access to teh Moby databases, resources, etc. from the 
+ MOBY::Config.pm - An object B<containing> information about how to get access to teh Moby databases, resources, etc. from the 
 mobycentral.config file
 
 =cut
@@ -115,12 +113,14 @@ END
                                      release      => 'release',
                                      distribution => 'foo',
                                      name         => 'module.pm',
+                                     module       => { name => 'MOBY::Config' },
                                      content_cb   => sub { \$content } );
 
     is( $file->abstract,
 'An object containing information about how to get access to teh Moby databases, resources, etc. from the mobycentral.config file'
     );
-    is( $file->indexed, 1, 'indexed' );
+    is( $file->module->[0]->hide_from_pause(${$file->content}), 0, 'indexed' );
+    is( $file->documentation, 'MOBY::Config' );
     is( $file->level, 2);
 }
 
@@ -148,7 +148,7 @@ my $cache = {};
 
 Number::Phone::NANP::AS
 
-AS specific methods for Number::Phone
+AS-specific methods for Number::Phone
 
 =cut
 
@@ -164,8 +164,8 @@ END
                                      content_cb   => sub { \$content } );
     is( $file->sloc, 8, '8 lines of code' );
     is( $file->slop, 4, '4 lines of pod' );
-    is( $file->indexed, 0, 'not indexed' );
-    is( $file->abstract, 'AS specific methods for Number::Phone' );
+    is( $file->module->[0]->hide_from_pause($content), 1, 'not indexed' );
+    is( $file->abstract, 'AS-specific methods for Number::Phone' );
     is( $file->documentation, 'Number::Phone::NANP::AS' );
     is_deeply( $file->pod_lines, [ [ 18, 7 ] ], 'correct pod_lines' );
     is( $file->module->[0]->version_numified, 1.1, 'numified version has been calculated');
@@ -178,7 +178,7 @@ package # hide the package from PAUSE
 
 =head1 NAME
 
-Perl6Attribute - An example attribute metaclass for Perl 6 style attributes
+C<Perl6Attribute> -- An example attribute metaclass for Perl 6 style attributes
 
 END
     my $file =
