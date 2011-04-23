@@ -3,7 +3,7 @@ use base 'MetaCPAN::Plack::Base';
 use strict;
 use warnings;
 
-sub index { 'distribution' }
+sub type { 'distribution' }
 
 sub handle {
     my ($self, $env) = @_;

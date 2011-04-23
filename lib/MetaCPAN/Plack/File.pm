@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use MetaCPAN::Util;
 
-sub index { 'file' }
+sub type { 'file' }
 
 sub get_source {
     my ( $self, $env ) = @_;

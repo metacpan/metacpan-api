@@ -3,7 +3,7 @@ use base 'MetaCPAN::Plack::Base';
 use strict;
 use warnings;
 
-sub index { 'mirror' }
+sub type { 'mirror' }
 
 sub handle {
     my ( $self, $env ) = @_;

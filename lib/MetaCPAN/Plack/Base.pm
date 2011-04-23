@@ -9,14 +9,14 @@ use Plack::App::Proxy;
 use mro 'c3';
 use Plack::Middleware::CrossOrigin;
 
-__PACKAGE__->mk_accessors(qw(cpan remote model));
+__PACKAGE__->mk_accessors(qw(cpan remote model index));
 
 sub get_source {
     my ( $self, $env ) = @_;
     my ( undef, @args ) = split( "/", $env->{PATH_INFO} );
     use Devel::Dwarn; DwarnN(\@args);
     my $res =
-      $self->model->index('cpan')->type( $self->index )->inflate(0)->get($args[0]);
+      $self->index->type( $self->type )->inflate(0)->get($args[0]);
       if ($res) {
           return [200, [$self->_headers], [encode_json($res->{_source})]];
       } else {
@@ -34,7 +34,7 @@ sub get_first_result {
     my ( undef, @args ) = split( "/", $env->{PATH_INFO} );
     my $query = $self->query(@args);
     my ($res) =
-      $self->model->index('cpan')->type( $self->index )->query($query)->inflate(0)->all;
+      $self->index->type( $self->type )->query($query)->inflate(0)->all;
     if ($res->{hits}->{total}) {
         return [200, [$self->_headers], [encode_json($res->{hits}->{hits}->[0]->{_source})]];
     } else {
@@ -56,7 +56,7 @@ sub call {
         my $input = $env->{'psgi.input'};
         my @body = $input->getlines;
         use Devel::Dwarn; DwarnN(\@body);
-        my $set = $self->model->index('cpan')->type( $self->index )->inflate(0);
+        my $set = $self->index->type( $self->type )->inflate(0);
         $set->query(decode_json(join('', @body))) if(@body);
         my $res = $set->all;
         return [200, [$self->_headers], [encode_json($res)]];
