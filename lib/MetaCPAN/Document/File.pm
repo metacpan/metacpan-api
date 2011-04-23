@@ -20,7 +20,7 @@ has id => ( id => [qw(author release path)] );
 
 has [qw(path author name distribution)] => ();
 has module => ( required => 0, is => 'rw', isa => Module, coerce => 1 );
-has documentation => ( required => 1, is => 'rw', lazy_build => 1, index => 'analyzed' );
+has documentation => ( required => 1, is => 'rw', lazy_build => 1, index => 'analyzed', analyzer => 'camelcase' );
 has release => ( parent => 1 );
 has date => ( isa => 'DateTime' );
 has stat => ( isa => Stat, required => 0 );
@@ -55,6 +55,7 @@ sub _build_documentation {
     my $self = shift;
     $self->_build_abstract;
     return $self->documentation if($self->has_documentation);
+    return undef unless(${$self->pod});
     return $self->module ? $self->module->[0]->{name} : undef;
 }
 
