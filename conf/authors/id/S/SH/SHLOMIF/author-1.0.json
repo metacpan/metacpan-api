@@ -55,7 +55,7 @@
          "name" : "facebook"
       },
       {
-         "url" : [
+         "id" : [
             "ShlomiFish@jabber.org",
             "shlomif@gmail.com"
          ],
@@ -86,14 +86,12 @@
    "region" : null,
    "blog" : [
       {
-         "feed" : [
+         "feed" :
             "http://www.shlomifish.org/me/blogs/#aggregated_feeds"
-         ],
-         "url" : [
+         ,
+         "url" :
             "http://shlomif.livejournal.com/",
-            "http://community.livejournal.com/shlomif_tech/",
-            "http://community.livejournal.com/shlomif_hsite/"
-         ]
+         
       }
    ],
    "email" : [
