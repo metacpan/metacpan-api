@@ -11,17 +11,15 @@ use JSON ();
 sub run {
     my $self = shift;
     $self->index_mirrors;
-    $self->es->refresh_index( index => $self->index );
+    $self->es->refresh_index( index => $self->index->name );
 }
 
 sub index_mirrors {
     my $self      = shift;
     my $ua = LWP::UserAgent->new;
     log_info { "Getting mirrors.json file from " . $self->cpan };
-    my $json;
-    { local $/ = undef; local *FILE; open FILE, "<", $self->cpan->file('indices', 'mirrors.json'); $json = <FILE>; close FILE }
-    
-    my $type = $self->model->index('cpan')->type('mirror');
+    my $json = $self->cpan->file( 'indices', 'mirrors.json' )->slurp;
+    my $type = $self->index->type('mirror');
     my $mirrors = JSON::XS::decode_json($json);
     foreach my $mirror(@$mirrors) {
         $mirror->{location} = { lon => $mirror->{longitude}, lat => $mirror->{latitude} };
