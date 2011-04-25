@@ -1,6 +1,8 @@
 {
+   "name": "Allows utf8 in names",
    "openid" : 'someurl',
    "country" : "US",
+   "location": "42.234,23.234", // lat,lon
    "profile" : [
       {
          "id" : "B002MRC39U",
@@ -28,14 +30,15 @@
    "region" : "IL",
    "blog" : [
       {
-         "feed" : 
-            "http://blogs.perl.org/users/brian_d_foy/atom.xml",
-         
-         "url" : 
-            "http://blogs.perl.org/users/brian_d_foy/"
+         "feed":  "http://blogs.perl.org/users/brian_d_foy/atom.xml",
+         "url": "http://blogs.perl.org/users/brian_d_foy/"
          
       }
    ],
+   "perlmongers": {
+     "name": "Frankfurt.pm",
+     "url": "http://frankfurt.pm"
+   },
    "email" : [
       "brian.d.foy@gmail.com",
       "bdfoy@cpan.org"
