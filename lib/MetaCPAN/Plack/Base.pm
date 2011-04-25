@@ -7,23 +7,23 @@ use Try::Tiny;
 use IO::String;
 use Plack::App::Proxy;
 use mro 'c3';
-use Plack::Middleware::CrossOrigin;
+use Try::Tiny;
 
 __PACKAGE__->mk_accessors(qw(cpan remote model index));
 
 sub get_source {
     my ( $self, $env ) = @_;
     my ( undef, @args ) = split( "/", $env->{PATH_INFO} );
-    use Devel::Dwarn; DwarnN(\@args);
-    my $res =
-      $self->index->type( $self->type )->inflate(0)->get($args[0]);
-      if ($res) {
-          return [200, [$self->_headers], [encode_json($res->{_source})]];
-      } else {
-          return $self->error404;
-      }
-
+    try {
+        my $res =
+          $self->index->type( $self->type )->inflate(0)->get( $args[0] );
+        return [ 200, [ $self->_headers ], [ encode_json( $res->{_source} ) ] ];
+    }
+    catch {
+        return $self->error404;
+    };
 }
+
 
 sub error404 {
     [ 404, [], ['Not found'] ];
@@ -33,14 +33,22 @@ sub get_first_result {
     my ( $self, $env ) = @_;
     my ( undef, @args ) = split( "/", $env->{PATH_INFO} );
     my $query = $self->query(@args);
-    my ($res) =
-      $self->index->type( $self->type )->query($query)->inflate(0)->all;
-    if ($res->{hits}->{total}) {
-        return [200, [$self->_headers], [encode_json($res->{hits}->{hits}->[0]->{_source})]];
-    } else {
-        return $self->error404;
+    try {
+        my ($res) =
+          $self->index->type( $self->type )->query($query)->inflate(0)->all;
+        if ( $res->{hits}->{total} ) {
+            return [ 200,
+                     [ $self->_headers ],
+                     [ encode_json( $res->{hits}->{hits}->[0]->{_source} ) ] ];
+        } else {
+            return $self->error404;
+        }
     }
+    catch {
+        return $self->error404;
+    };
 }
+
 
 sub call {
     my ( $self, $env ) = @_;
@@ -58,8 +66,12 @@ sub call {
         use Devel::Dwarn; DwarnN(\@body);
         my $set = $self->index->type( $self->type )->inflate(0);
         $set->query(decode_json(join('', @body))) if(@body);
-        my $res = $set->all;
-        return [200, [$self->_headers], [encode_json($res)]];
+        try {
+            my $res = $set->all;
+            return [200, [$self->_headers], [encode_json($res)]];
+        } catch {
+            return $self->error404;
+        };
     } else {
         return $self->handle($env);
     }
