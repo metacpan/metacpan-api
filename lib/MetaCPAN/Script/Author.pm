@@ -78,6 +78,7 @@ sub author_config {
     my ($file) =
       sort { ( stat( $dir . $b ) )[9] <=> ( stat( $dir . $a ) )[9] }
       grep { m/author-.*?\.json/ } readdir($dh);
+    return {} unless($file);
     $file = $dir . $file;
     return {} if !-e $file;
     my $json;
@@ -88,7 +89,7 @@ sub author_config {
         $json = <FILE>;
         close FILE
     }
-    my $author = eval { decode_json($json) };
+    my $author = eval { JSON::XS->new->relaxed->decode($json) };
     if (@$) {
         log_warn { "$file is broken: $@" };
         return {};
