@@ -19,8 +19,8 @@ Plack::MIME->add_type( ".xs"  => "text/x-c" );
 has id => ( id => [qw(author release path)] );
 
 has [qw(path author name distribution)] => ();
-has module => ( required => 0, is => 'rw', isa => Module, coerce => 1 );
-has documentation => ( required => 1, is => 'rw', lazy_build => 1, index => 'analyzed', analyzer => 'camelcase' );
+has module => ( required => 0, is => 'rw', isa => Module, coerce => 1, clearer => 'clear_module' );
+has documentation => ( required => 1, is => 'rw', lazy_build => 1, index => 'analyzed', analyzer => [qw(standard camelcase)] );
 has release => ( parent => 1 );
 has date => ( isa => 'DateTime' );
 has stat => ( isa => Stat, required => 0 );
@@ -51,12 +51,23 @@ sub is_perl_file {
     return 0;
 }
 
+sub is_pod_file {
+    shift->name =~ /\.pod$/i;
+}
+
 sub _build_documentation {
     my $self = shift;
     $self->_build_abstract;
-    return $self->documentation if($self->has_documentation);
+    my $documentation = $self->documentation if($self->has_documentation);
     return undef unless(${$self->pod});
-    return $self->module ? $self->module->[0]->{name} : undef;
+    my @indexed = grep { $_->indexed } @{$self->module || []};
+    if($documentation && grep {$_->name eq $documentation} @indexed) {
+        return $documentation;
+    } elsif(@indexed) {
+        return $indexed[0]->name;
+    } else {
+        return undef;
+    }
 }
 
 sub _build_level {

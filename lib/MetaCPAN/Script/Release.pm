@@ -301,6 +301,7 @@ sub import_tarball {
         }
         log_trace { "reindexing file $file->{path}" };
         Dlog_trace { $_ } $file->meta->get_data($file);
+        $file->clear_module if($file->is_pod_file);
         $file->put;
     }
     
