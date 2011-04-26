@@ -5,7 +5,6 @@ with 'MetaCPAN::Role::Common';
 use Log::Contextual qw( :log :dlog );
 
 use Path::Class qw(file dir);
-use Archive::Any       ();
 use File::Temp         ();
 use CPAN::Meta         ();
 use DateTime           ();
@@ -123,6 +122,7 @@ sub import_tarball {
 
     log_info { "Processing $tarball" };
     
+    require Archive::Any;
     my $at = Archive::Any->new($tarball);
     my $tmpdir = dir(File::Temp::tempdir(CLEANUP => 1));
     log_error { "$tarball is being naughty" }
