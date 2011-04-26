@@ -41,7 +41,9 @@ CPAN search engine, which is built on top of MetaCPAN.
 IRC
 ---
 
-You can find us at #metacpan on irc.freenode.net
+You can find us at #metacpan on irc.perl.org
+
+IRC logs can be found here: [http://irclog.perlgeek.de/metacpan/today](http://irclog.perlgeek.de/metacpan/today) (Thanks to [Moritz Lenz](http://moritz.faui2k3.org/) for making this service available)
 
 Mailing List
 ------------
