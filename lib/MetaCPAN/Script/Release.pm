@@ -108,7 +108,7 @@ sub run {
                 exit;
         };
     }
-    waitpid( -1, 0);
+    waitpid( -1, 0) for(@pid);
     $self->model->es->refresh_index( index => 'cpan' );
 }
 
