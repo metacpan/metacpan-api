@@ -23,25 +23,25 @@ sub run {
     my $scroll = $es->scrolled_search({ index => $self->index->name,
                    type   => 'release',
                    query  => $query,
-                   scroll => '5m',
+                   scroll => '1h',
+                   size => 1000,
                    sort   => ['distribution',
                              { maturity => { reverse => \1 } },
                              { date     => { reverse => \1 } }
                    ], });
 
     my $dist = '';
-    my @rs   = $scroll->next(1000);
-    while ( my $row = shift @rs ) {
+    while ( my $row = $scroll->next(1) ) {
         if ( $dist ne $row->{_source}->{distribution} ) {
             $dist = $row->{_source}->{distribution};
-            goto SCROLL if ( $row->{_source}->{status} eq 'latest' );
+            next if ( $row->{_source}->{status} eq 'latest' );
             log_info { "Upgrading $row->{_source}->{name} to latest" };
 
             for (qw(file dependency)) {
                 log_debug { "Upgrading $_" };
                 $self->reindex( $_, $row->{_id}, 'latest' );
             }
-            goto SCROLL if ( $self->dry_run );
+            next if ( $self->dry_run );
             $es->index( index => $self->index->name,
                         type  => 'release',
                         id    => $row->{_id},
@@ -53,16 +53,12 @@ sub run {
                 log_debug { "Downgrading $_" };
                 $self->reindex( $_, $row->{_id}, 'cpan' );
             }
-            goto SCROLL if ( $self->dry_run );
+            next if ( $self->dry_run );
             $es->index( index => $self->index->name,
                         type  => 'release',
                         id    => $row->{_id},
                         data  => { %{ $row->{_source} }, status => 'cpan' } );
 
-        }
-        SCROLL:
-        unless ( @rs ) {
-              @rs   = $scroll->next(1000);
         }
     }
 }
@@ -73,11 +69,11 @@ sub reindex {
     my $scroll = $es->scrolled_search({ 
         index => $self->index->name,
         type  => $type,
-        scroll => '5m',
+        scroll => '1h',
+        size => 1000,
         search_type => 'scan',
         query => { term => { release => $release } } });
-    my @rs = $scroll->next(1000);
-    while ( my $row = shift @rs ) {
+    while ( my $row = $scroll->next(1) ) {
         log_debug {
             $status eq 'latest' ? "Upgrading " : "Downgrading ",
               $type, " ", $row->{_source}->{name} || '';
@@ -87,9 +83,6 @@ sub reindex {
                     id    => $row->{_id},
                     data  => { %{ $row->{_source} }, status => $status }
         ) unless ( $self->dry_run );
-        unless ( @rs ) {
-            @rs = $scroll->next(1000);
-        }
     }
 
 }
