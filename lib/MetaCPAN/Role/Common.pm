@@ -69,9 +69,9 @@ sub _build_logger {
     my $log = Log::Log4perl->get_logger( $ARGV[0] );
     foreach my $c (@$config) {
         my $layout =
-          Log::Log4perl::Layout::PatternLayout->new( delete $c->{layout}
+          Log::Log4perl::Layout::PatternLayout->new( $c->{layout}
                                                 || "%d %p{1} %c: %m{chomp}%n" );
-        my $app = Log::Log4perl::Appender->new( delete $c->{class}, %$c );
+        my $app = Log::Log4perl::Appender->new( $c->{class}, %$c );
         $app->layout($layout);
         $log->add_appender($app);
     }
