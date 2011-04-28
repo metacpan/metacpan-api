@@ -13,19 +13,29 @@ sub run {
     $class = 'MetaCPAN::Script::' . ucfirst($class);
     Class::MOP::load_class($class);
 
-    my $config =
-      Config::JFDI->new( name => "metacpan",
+    my $config = build_config();
+    my $obj = $class->new_with_options($config);
+    $obj->run;
+}
+
+sub build_config {
+     my $config = Config::JFDI->new( name => "metacpan",
                          path => "$FindBin::RealBin/../etc"
       )->get;
-    if ( is_interactive() ) {
+    if($ENV{HARNESS_ACTIVE}) {
+        my $tconf = Config::JFDI->new(
+                      name => "metacpan",
+                      file => "$FindBin::RealBin/../etc/metacpan_testing.pl"
+        )->get;
+        $config = merge $config, $tconf;
+    } elsif ( is_interactive() ) {
         my $iconf = Config::JFDI->new(
                       name => "metacpan",
                       file => "$FindBin::RealBin/../etc/metacpan_interactive.pl"
         )->get;
         $config = merge $config, $iconf;
     }
-    my $obj = $class->new_with_options($config);
-    $obj->run;
+    return $config;
 }
 
 # AnyEvent::Run calls the main method
