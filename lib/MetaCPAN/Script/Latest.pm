@@ -32,56 +32,62 @@ sub run {
 
     my $dist = '';
     while ( my $row = $scroll->next(1) ) {
-        if ( $dist ne $row->{_source}->{distribution} ) {
-            $dist = $row->{_source}->{distribution};
-            next if ( $row->{_source}->{status} eq 'latest' );
-            log_info { "Upgrading $row->{_source}->{name} to latest" };
+        my $source = $row->{_source};
+        if ( $dist ne $source->{distribution} ) {
+            $dist = $source->{distribution};
+            next if ( $source->{status} eq 'latest' );
+            log_info { "Upgrading $source->{name} to latest" };
 
-            for (qw(file dependency)) {
-                log_debug { "Upgrading $_" };
-                $self->reindex( $_, $row->{_id}, 'latest' );
-            }
+            log_debug { "Upgrading files" };
+            $self->reindex( $source, 'latest' );
+
             next if ( $self->dry_run );
             $es->index( index => $self->index->name,
                         type  => 'release',
                         id    => $row->{_id},
-                        data  => { %{ $row->{_source} }, status => 'latest' } );
-        } elsif ( $row->{_source}->{status} eq 'latest' ) {
-            log_info { "Downgrading $row->{_source}->{name} to cpan" };
+                        data  => { %$source, status => 'latest' } );
+        } elsif ( $source->{status} eq 'latest' ) {
+            log_info { "Downgrading $source->{name} to cpan" };
 
-            for (qw(file dependency)) {
-                log_debug { "Downgrading $_" };
-                $self->reindex( $_, $row->{_id}, 'cpan' );
-            }
+            log_debug { "Downgrading files" };
+            $self->reindex( $source, 'cpan' );
+
             next if ( $self->dry_run );
             $es->index( index => $self->index->name,
                         type  => 'release',
                         id    => $row->{_id},
-                        data  => { %{ $row->{_source} }, status => 'cpan' } );
+                        data  => { %$source , status => 'cpan' } );
 
         }
     }
 }
 
 sub reindex {
-    my ( $self, $type, $release, $status ) = @_;
+    my ( $self, $source, $status ) = @_;
     my $es = $self->es;
-    my $scroll = $es->scrolled_search({ 
-        index => $self->index->name,
-        type  => $type,
-        scroll => '1h',
-        size => 1000,
-        search_type => 'scan',
-        query => { term => { release => $release } } });
+    my $scroll = $es->scrolled_search(
+        {  index       => $self->index->name,
+           type        => 'file',
+           scroll      => '1h',
+           size        => 1000,
+           search_type => 'scan',
+           query       => { match_all => {} },
+           filter      => {
+                       and => [
+                           { term => { 'file.release' => $source->{name} } },
+                           { term => { 'file.author'  => $source->{author} } } ]
+           } } );
+
     while ( my $row = $scroll->next(1) ) {
+        my $source = $row->{_source};
         log_debug {
             $status eq 'latest' ? "Upgrading " : "Downgrading ",
-              $type, " ", $row->{_source}->{name} || '';
+              "file ", $source->{name} || '';
         };
         $es->index( index => $self->index->name,
-                    type  => $type,
+                    type  => 'file',
                     id    => $row->{_id},
-                    data  => { %{ $row->{_source} }, status => $status }
+                    data  => { %$source, status => $status }
         ) unless ( $self->dry_run );
     }
 

@@ -5,10 +5,11 @@ use MetaCPAN::Document::Author;
 use MetaCPAN::Types qw(:all);
 use MetaCPAN::Util;
 
+has id => ( id => [qw(author name)] );
 has [qw(license version author archive)] => ();
 has date             => ( isa        => 'DateTime' );
 has download_url     => ( lazy_build => 1 );
-has name             => ( id         => 1, index => 'analyzed' );
+has name             => ( index => 'analyzed' );
 has version_numified => ( isa        => 'Num', lazy_build => 1 );
 has resources        => ( isa        => Resources, required => 0, coerce => 1 );
 has abstract => ( index => 'analyzed', required => 0 );

@@ -26,13 +26,14 @@ sub get_source {
 
 
 sub error404 {
-    [ 404, [], ['Not found'] ];
+    [ 404, [shift->_headers], ['{"message":"Not found"}'] ];
 }
 
 sub get_first_result {
     my ( $self, $env ) = @_;
     my ( undef, @args ) = split( "/", $env->{PATH_INFO} );
     my $query = $self->query(@args);
+    $query->{size} = 1;
     try {
         my ($res) =
           $self->index->type( $self->type )->query($query)->inflate(0)->all;
