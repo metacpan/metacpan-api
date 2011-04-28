@@ -9,6 +9,7 @@ has delete => ( is => 'ro', isa => 'Bool', default => 0, documentation => 'delet
 
 sub run {
     my $self = shift;
+    log_info { "Putting mapping to ElasticSearch server" };
     $self->model->deploy( delete => $self->delete );
 }
 
