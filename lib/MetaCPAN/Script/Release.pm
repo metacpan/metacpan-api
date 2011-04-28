@@ -97,14 +97,14 @@ sub run {
             my $pid = waitpid( -1, 0);
             @pid = grep { $_ != $pid } @pid;
         }
-        if(my $pid = fork()) {
+        if($self->children && (my $pid = fork())) {
             push(@pid, $pid);
         } else {
                 try { $self->import_tarball($file) }
                 catch {
                     log_fatal { $_ };
                 };
-                exit;
+                exit if($self->children);
         };
     }
     waitpid( -1, 0) for(@pid);
@@ -122,9 +122,12 @@ sub import_tarball {
 
     log_info { "Processing $tarball" };
     
+    # load Archive::Any in the child due to bugs in MMagic and MIME::Types
     require Archive::Any;
     my $at = Archive::Any->new($tarball);
     my $tmpdir = dir(File::Temp::tempdir(CLEANUP => 1));
+
+    # TODO: add release to the index with status => 'broken' and move along
     log_error { "$tarball is being naughty" }
      if $at->is_naughty || $at->is_impolite;
 
@@ -281,7 +284,6 @@ sub import_tarball {
             };
         }
     }
-
     log_debug { "Indexing ", scalar @modules, " modules" };
     $i = 1;
     my $mod_set = $cpan->type('module');
