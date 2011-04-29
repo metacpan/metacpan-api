@@ -61,7 +61,9 @@ sub _build_documentation {
     my $documentation = $self->documentation if($self->has_documentation);
     return undef unless(${$self->pod});
     my @indexed = grep { $_->indexed } @{$self->module || []};
-    if($documentation && grep {$_->name eq $documentation} @indexed) {
+    if($documentation && $self->is_pod_file) {
+        return $documentation;
+    } elsif($documentation && grep {$_->name eq $documentation} @indexed) {
         return $documentation;
     } elsif(@indexed) {
         return $indexed[0]->name;
