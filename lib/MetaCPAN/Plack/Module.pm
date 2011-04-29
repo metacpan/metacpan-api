@@ -8,11 +8,14 @@ sub type { 'file' }
 sub query {
     shift;
     return { query  => { match_all => {} },
-        filter => { term => { "file.module.name"    => shift } },
-         size   => 1,
-         sort   => { date      => { reverse => \1 } } 
-         };
+             filter => {
+                         and => [ { term => { documentation => shift } },
+                                  { term => { status        => 'latest' } } ]
+             },
+             size => 1,
+             sort => { date => { reverse => \1 } } };
 }
+
 
 sub handle {
     my ($self, $env) = @_;
