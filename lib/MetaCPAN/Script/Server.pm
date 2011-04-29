@@ -39,8 +39,7 @@ sub run {
     my $runner = Plack::Runner->new;
     shift @ARGV;
 
-    #$runner->parse_options(qw(-r -R .));
-    $runner->set_options( port => $self->port );
+    $runner->parse_options(@{$self->extra_argv});
     $runner->run( $self->build_app );
 }
 

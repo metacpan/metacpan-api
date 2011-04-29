@@ -47,9 +47,14 @@ sub handle {
                                              join( "/", @args ) );
         $env->{PATH_INFO} = join("/", $index, $digest );
         return $self->get_source($env);
-    }elsif(@args == 2) {
-        return $self->get_first_result($env);
     }
+    # disabled for now because /MOO/abc/abc.t can either be the file
+    # abc.t in release abc of author MOO or the file abc/abc.t
+    # in the latest MOO release
+    #
+    # elsif(@args == 2) {
+    #     return $self->get_first_result($env);
+    # }
 }
 
 1;
