@@ -37,7 +37,6 @@ has level => ( isa => 'Int', lazy_build => 1 );
 
 
 has content => ( isa => 'ScalarRef', lazy_build => 1, property   => 0, required => 0 );
-has ppi     => ( isa => 'PPI::Document', lazy_build => 1, property => 0 );
 has pom => ( lazy_build => 1, property => 0, required => 0 );
 has content_cb => ( property => 0, required => 0 );
 
