@@ -27,16 +27,16 @@ has stat => ( isa => Stat, required => 0 );
 has sloc => ( isa => 'Int',        lazy_build => 1 );
 has slop => ( isa => 'Int', is => 'rw', default => 0 );
 has pod_lines => ( isa => 'ArrayRef', type => 'integer', lazy_build => 1, index => 'no' );
-has pod  => ( isa => 'ScalarRef', lazy_build => 1, index => 'analyzed', store => 'no', term_vector => 'with_positions_offsets' );
+has pod  => ( isa => 'ScalarRef', lazy_build => 1, index => 'analyzed', not_analyzed => 0, store => 'no', term_vector => 'with_positions_offsets' );
 has [qw(mime)] => ( lazy_build => 1 );
-has abstract => ( lazy_build => 1, index => 'analyzed' );
+has abstract => ( lazy_build => 1, not_analyzed => 0, index => 'analyzed' );
 has status => ( default => 'cpan' );
 has maturity => ( default => 'released' );
 has directory => ( isa => 'Bool', default => 0 );
 has level => ( isa => 'Int', lazy_build => 1 );
 
 
-has content => ( isa => 'ScalarRef', lazy_build => 1, property   => 0, required => 0 );
+has content => ( isa => 'ScalarRef', lazy_build => 1, property => 0, required => 0 );
 has pom => ( lazy_build => 1, property => 0, required => 0 );
 has content_cb => ( property => 0, required => 0 );
 
@@ -95,6 +95,7 @@ sub _build_mime {
 
 sub _build_pom {
     my $self = shift;
+    return undef unless($self->is_perl_file);
     my $pod = Pod::Tree->new;
     $pod->load_string( ${ $self->content } );
     return $pod;

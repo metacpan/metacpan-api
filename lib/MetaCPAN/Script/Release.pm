@@ -337,7 +337,8 @@ sub load_meta_file {
         return $last if($last);
     }
 
-    log_warn { "META file could not be loaded using @backends: $_" };
+    log_warn { "META file could not be loaded: $_" }
+        unless(@backends);
     return $meta;
 }
 
