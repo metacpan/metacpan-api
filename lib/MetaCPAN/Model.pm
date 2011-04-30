@@ -4,7 +4,7 @@ use ElasticSearchX::Model;
 
 analyzer lowercase => ( tokenizer => 'keyword', filter => 'lowercase' );
 analyzer fulltext => ( type => 'snowball', language => 'English' );
-analyzer camelcase => ( type => 'pattern', pattern => "(\\W+)|(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z])" );
+analyzer camelcase => ( type => 'pattern', pattern => "(\\W+)|(?<=[^\\p{Lu}])(?=\\p{Lu})|(?<=\\p{Lu})(?=\\p{Lu}[^\\p{Lu}])" );
 
 index cpan => ( namespace => 'MetaCPAN::Document', alias_for => 'cpan_v3' );
 
