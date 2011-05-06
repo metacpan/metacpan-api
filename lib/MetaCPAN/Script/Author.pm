@@ -8,6 +8,9 @@ with 'MetaCPAN::Role::Common';
 use Email::Valid;
 use File::Find;
 use JSON;
+use XML::Simple qw(XMLin);
+use URI;
+use Encode;
 
 use MetaCPAN::Document::Author;
 
@@ -23,7 +26,11 @@ use IO::Uncompress::AnyInflate qw(anyinflate $AnyInflateError);
 use MooseX::Getopt;
 use Scalar::Util qw( reftype );
 
-has 'author_fh' => ( is => 'rw', lazy_build => 1, traits => ['NoGetopt'] );
+has 'author_fh' => (
+    is => 'rw',
+    traits => ['NoGetopt'],
+    default => sub { shift->cpan . "/authors/00whois.xml" }
+);
 
 sub run {
     my $self = shift;
@@ -32,41 +39,38 @@ sub run {
 }
 
 sub index_authors {
-    my $self      = shift;
-    my $type      = $self->index->type('author');
-    my @authors   = ();
-    my $author_fh = $self->author_fh;
-    my @results   = ();
-    my $lines     = 0;
+    my $self    = shift;
+    my $type    = $self->index->type('author');
+    my $authors = XMLin( $self->author_fh )->{cpanid};
+    my $count   = keys %$authors;
     log_debug { "Counting author" };
-    $lines++ while ( $author_fh->getline() );
-    $author_fh = $self->_build_author_fh;
-    log_info { "Indexing $lines authors" };
+    log_info { "Indexing $count authors" };
 
-    while ( my $line = $author_fh->getline() ) {
-        if ( $line =~ m{alias\s([\w\-]*)\s*"(.+?)\s*<(.*)>"}gxms ) {
-            my ( $pauseid, $name, $email ) = ( $1, $2, $3 );
-            $email = lc($pauseid) . '@cpan.org'
-              unless ( Email::Valid->address($email) );
-            log_debug { "Indexing $pauseid: $name <$email>" };
-            my $author =
-              MetaCPAN::Document::Author->new( pauseid => $pauseid,
-                                               name    => $name,
-                                               email   => $email );
-            my $conf = $self->author_config( $pauseid, $author->dir );
-            $author = $type->put(
-                                  { pauseid => $pauseid,
-                                    name    => $name,
-                                    email   => $email,
-                                    map { $_ => $conf->{$_} }
-                                      grep { defined $conf->{$_} } keys %$conf
-                                  } );
-
-            push @results, $author;
-        }
+    while ( my ( $pauseid, $data ) = each %$authors ) {
+        my ( $name, $email, $homepage ) =
+          ( @$data{qw(fullname email homepage)} );
+        $email = lc($pauseid) . '@cpan.org'
+          unless ( $email && Email::Valid->address($email) );
+        log_debug { encode( 'UTF-8', sprintf("Indexing %s: %s <%s>", $pauseid, $name, $email ) ) };
+        my $conf = $self->author_config( $pauseid, MetaCPAN::Util::author_dir($pauseid) );
+        my $put = { pauseid  => $pauseid,
+            name     => $name,
+            email    => $email,
+            website  => $homepage,
+            map { $_ => $conf->{$_} }
+              grep { defined $conf->{$_} } keys %$conf
+          };
+        $put->{website} = [$put->{website}] unless(ref $put->{website} eq 'ARRAY');
+        $put->{website} = [ 
+            map { $_->scheme ? $_->as_string : 'http://' . $_->as_string }
+            map { URI->new($_)->canonical }
+            @{$put->{website}}
+        ];
+        $type->put( $put );
     }
     log_info { "done" };
 }
+
 
 sub author_config {
     my $self    = shift;
@@ -100,16 +104,6 @@ sub author_config {
           };
         return $author;
     }
-}
-
-sub _build_author_fh {
-
-    my $self = shift;
-    my $file = $self->cpan . "/authors/01mailrc.txt.gz";
-
-    return new IO::Uncompress::AnyInflate $file
-      or die "anyinflate failed: $AnyInflateError\n";
-
 }
 
 1;
