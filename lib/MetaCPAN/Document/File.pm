@@ -20,7 +20,7 @@ has id => ( id => [qw(author release path)] );
 
 has [qw(path author name distribution)] => ();
 has module => ( required => 0, is => 'rw', isa => Module, coerce => 1, clearer => 'clear_module' );
-has documentation => ( required => 1, is => 'rw', lazy_build => 1, index => 'analyzed', analyzer => 'camelcase' );
+has documentation => ( required => 1, is => 'rw', lazy_build => 1, index => 'analyzed', analyzer => [qw(standard camelcase)] );
 has release => ( parent => 1 );
 has date => ( isa => 'DateTime' );
 has stat => ( isa => Stat, required => 0 );

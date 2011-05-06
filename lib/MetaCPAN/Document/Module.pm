@@ -3,7 +3,7 @@ use Moose;
 use ElasticSearchX::Model::Document;
 use MetaCPAN::Util;
 
-has name => ( index => 'analyzed', analyzer => 'camelcase' );
+has name => ( index => 'analyzed', analyzer => [qw(standard camelcase)] );
 has version => ( required => 0 );
 has version_numified => ( isa => 'Num', lazy_build => 1, required => 1 );
 has indexed => ( is => 'rw', isa => 'Bool', default => 0 );
