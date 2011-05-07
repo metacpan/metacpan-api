@@ -34,7 +34,7 @@ has status => ( default => 'cpan' );
 has maturity => ( default => 'released' );
 has directory => ( isa => 'Bool', default => 0 );
 has level => ( isa => 'Int', lazy_build => 1 );
-
+has indexed => ( is => 'rw', isa => 'Bool', default => 1 );
 
 has content => ( isa => 'ScalarRef', lazy_build => 1, property => 0, required => 0 );
 has pom => ( lazy_build => 1, property => 0, required => 0 );
