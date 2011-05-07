@@ -35,7 +35,7 @@ has 'author_fh' => (
 sub run {
     my $self = shift;
     $self->index_authors;
-    $self->es->refresh_index( index => 'cpan' );
+    $self->index->refresh;
 }
 
 sub index_authors {
@@ -68,6 +68,7 @@ sub index_authors {
         ];
         $type->put( $put );
     }
+    $self->index->refresh;
     log_info { "done" };
 }
 

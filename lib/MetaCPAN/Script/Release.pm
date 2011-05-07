@@ -14,8 +14,6 @@ use Module::Metadata   ();
 use File::stat         ('stat');
 use CPAN::DistnameInfo ();
 use File::Spec::Functions ('tmpdir', 'catdir');
-
-use feature 'say';
 use MetaCPAN::Script::Latest;
 use DateTime::Format::Epoch::Unix;
 use File::Find::Rule;
@@ -257,9 +255,8 @@ sub import_tarball {
             push(@{$file->{module}}, { name => $module, version => $data->{version} });
             push(@modules, $file);
         }
-
     } else {
-        @files = grep { $_->{name} =~ /\.pod$/i || $_->{name} =~ /\.pm$/ } grep { $_->{indexed} } @files;
+        @files = grep { $_->{name} =~ /\.pm$/ } grep { $_->{indexed} } @files;
 
         foreach my $file (@files) {
             eval {
@@ -287,25 +284,26 @@ sub import_tarball {
     $i = 1;
     my $mod_set = $cpan->type('module');
     foreach my $file (@modules) {
-        #my @modules = map { { name => $_, %{$file->{module}->{$_}} } } keys %{$file->{module}};
-        #my %module = @modules ? (module => \@modules) : ();
-        # delete $file->{module};
         $file = MetaCPAN::Document::File->new( %$file, index => $cpan );
-        foreach my $mod (@{$file->{module}}) {
-            if((grep { $_ eq $mod->name } @{$no_index->{package} || []}) ||
-                (grep { $mod->name =~ /^\Q$_\E/ } @{$no_index->{namespace} || []})) {
-                    $mod->indexed(0);
-                    next;
-                }
-            
-            $mod->indexed($mod->hide_from_pause(${$file->content}) ? 0 : 1);
+        foreach my $mod ( @{ $file->module } ) {
+            if ( ( grep { $_ eq $mod->name } @{ $no_index->{package} || [] } )
+                 || ( grep { $mod->name =~ /^\Q$_\E/ }
+                      @{ $no_index->{namespace} || [] } ) )
+            {
+                $mod->indexed(0);
+            } else {
+                $mod->indexed(
+                         $mod->hide_from_pause( ${ $file->content } ) ? 0 : 1 );
+            }
         }
+        $file->indexed(!!grep { $file->documentation eq $_->name } @{$file->module})
+            if($file->documentation);
         log_trace { "reindexing file $file->{path}" };
         Dlog_trace { $_ } $file->meta->get_data($file);
         $file->clear_module if($file->is_pod_file);
         $file->put;
     }
-    
+
     $tmpdir->rmtree;
 
     if ( $self->latest ) {
