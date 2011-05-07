@@ -17,13 +17,13 @@ Expanding Your Author Info
 
 MetaCPAN allows authors to add custom metadata about themselves to the index.
 You are encouraged to add your own custom fields. Have a look at [this short
-article](http://blogs.perl.org/users/olaf_alders/2010/12/expanding-your-author-info-in-the-metacpan.html)
-on how to expand your author info:
+article](https://github.com/CPAN-API/cpan-api/wiki/How-to-upload-author-meta-data)
+on how to expand your author info.
 
 Installing Your Own MetaCPAN:
 ---------------------------------------
 
-See [getting started](https://github.com/CPAN-API/cpan-api/wiki/Getting-Started%3A-How-to-Install-MetaCPAN) page in the wiki to start playing with your own MetaCPAN installation.
+See the [installation](https://github.com/CPAN-API/cpan-api/wiki/Installation) page in the wiki to start playing with your own MetaCPAN installation.
 
 Contributing:
 -------------
