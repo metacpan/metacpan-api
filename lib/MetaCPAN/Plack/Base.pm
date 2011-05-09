@@ -60,18 +60,22 @@ sub call {
             $env->{REQUEST_METHOD} eq $_
         } qw(GET POST) )
     {
-        return [ 403, [ 'Content-type', 'text/plain' ], ['Not allowed'] ];
+        return [ 403, [$self->_headers], [encode_json({ message => 'Not allowed' }) ]];
     } elsif ( $env->{PATH_INFO} =~ /^\/_search/ ) {
         my $input = $env->{'psgi.input'};
         my @body = $input->getlines;
         use Devel::Dwarn; DwarnN(\@body);
         my $set = $self->index->type( $self->type )->inflate(0);
-        $set->query(decode_json(join('', @body))) if(@body);
-        try {
-            my $res = $set->all;
-            return [200, [$self->_headers], [encode_json($res)]];
+        return try {
+            $set->query(JSON::XS->new->relaxed->decode(join('', @body))) if(@body);
+            return try {
+                my $res = $set->all;
+                return [200, [$self->_headers], [encode_json($res)]];
+            } catch {
+                return $self->error404;
+            };
         } catch {
-            return $self->error404;
+            return [500, [$self->_headers], [encode_json({message => 'Malformed JSON: ' . $_ })]];
         };
     } else {
         return $self->handle($env);
