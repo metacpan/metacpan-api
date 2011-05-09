@@ -36,6 +36,8 @@ Name of the tarball (e.g. C<Some-Module-1.12.tar.gz>).
 
 =head2 date
 
+B<Required>
+
 Release date (i.e. C<mtime> of the tarball).
 
 =head2 version

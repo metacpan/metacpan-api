@@ -3,9 +3,19 @@ use Moose;
 use ElasticSearchX::Model::Document;
 use MetaCPAN::Util;
 
+=head1 SYNOPSIS
+
+MetaCPAN::Document::Module->new(
+                                 { name             => "Some::Module",
+                                   version          => "1.1.1"
+                                 } );
+
+
 =head1 PROPERTIES
 
 =head2 name
+
+B<Required>
 
 =head2 name.analyzed
 
@@ -20,10 +30,14 @@ Contains the raw version string.
 
 =head2 version_numified
 
+B<Required>, B<Lazy Build>
+
 Numified version of L</version>. Contains 0 if there is no version or the
 version could not be parsed.
 
 =head2 indexed
+
+B<Default 0>
 
 Indicates whether the module should be included in the search index or
 not. Releases usually exclude modules in folders like C<t/> or C<example/>

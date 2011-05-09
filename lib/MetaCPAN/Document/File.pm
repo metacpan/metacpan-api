@@ -16,11 +16,116 @@ Plack::MIME->add_type( ".t"   => "text/x-script.perl" );
 Plack::MIME->add_type( ".pod" => "text/x-script.perl" );
 Plack::MIME->add_type( ".xs"  => "text/x-c" );
 
+=head1 PROPERTIES
+
+=head2 abstract
+
+Abstract of the documentation (if any). This is built by parsing the
+C<NAME> section. It also sets L</documentation> if it succeeds.
+
+=head2 id
+
+Unique identifier of the release. Consists of the L</author>'s pauseid and
+the release L</name>. See L</ElasticSearchX::Model::Util::digest>.
+
+=head2 module
+
+An ArrayRef of L<MetaCPAN::Document::Module> objects, that represent
+modules defined in that class (i.e. package declarations).
+
+=head2 date
+
+B<Required>
+
+Release date (i.e. C<mtime> of the tarball).
+
+=head2 distribution
+
+=head2 distribution.analyzed
+
+=head2 distribution.camelcase
+
+Name of the distribution (e.g. C<Some-Module>).
+
+=head2 author
+
+PAUSE ID of the author.
+
+=head2 status
+
+Valid values are C<latest>, C<cpan>, and C<backpan>. The most recent upload
+of a distribution is tagged as C<latest> as long as it's not a developer
+release, unless there are only developer releases. Everything else is
+tagged C<cpan>. Once a release is deleted from PAUSE it is tagged as
+C<backpan>.
+
+=head2 maturity
+
+Maturity of the release. This can either be C<released> or C<developer>.
+See L<CPAN::DistnameInfo>.
+
+=head2 directory
+
+Return true if this object represents a directory.
+
+=head2 documentation
+
+Holds the name for the documentation in this file. 
+
+If the file L</is_pod_file|is a pod file, the name is derived from the
+C<NAME> section. If the file L</is_perl_file|is a perl file> and the
+name from the C<NAME> section matches on of the modules in L</module>,
+it returns the name. Otherwise it returns the name of the first module
+in L</module>. If there are no modules in the file the documentation is
+set to C<undef>.
+
+=head2 indexed
+
+B<Default 0>
+
+Indicates whether the file should be included in the search index or
+not. If the L</documentation> refers to an unindexed module in
+L</module>, the file is considered unindexed.
+
+=head2 level
+
+Level of this file in the directory tree of the release (i.e. C<META.yml>
+has a level of C<0>).
+
+=head2 pod
+
+Pure text format of the pod (see L</Pod::Text>.
+
+=head2 pod_lines
+
+ArrayRef of ArrayRefs of offset and length of pod blocks. Example:
+
+ # Two blocks of pod, starting at line 1 and line 15 with length
+ # of 10 lines each
+ [[1,10], [15,10]]
+
+=head2 sloc
+
+Source Lines of Code. Strips empty lines, pod and C<END> section from
+L</content> and returns the number of lines.
+
+=head2 slop
+
+Source Lines of Pod. Returns the number of pod lines using L</pod_lines>.
+
+=head2 stat
+
+L<File::stat> info of the tarball. Contains C<mode>, C<uid>, C<gid>, C<size>
+and C<mtime>.
+
+=cut
+
 has id => ( id => [qw(author release path)] );
 
-has [qw(path author name distribution)] => ();
+has [qw(path author name)];
+has distribution => ( analyzer => [qw(standard camelcase)] );
 has module => ( required => 0, is => 'rw', isa => Module, coerce => 1, clearer => 'clear_module' );
-has documentation => ( required => 1, is => 'rw', lazy_build => 1, index => 'analyzed', analyzer => [qw(standard camelcase)] );
+has documentation => ( is => 'rw', lazy_build => 1, index => 'analyzed', analyzer => [qw(standard camelcase)] );
 has release => ( parent => 1 );
 has date => ( isa => 'DateTime' );
 has stat => ( isa => Stat, required => 0 );
@@ -28,7 +133,7 @@ has sloc => ( isa => 'Int',        lazy_build => 1 );
 has slop => ( isa => 'Int', is => 'rw', default => 0 );
 has pod_lines => ( isa => 'ArrayRef', type => 'integer', lazy_build => 1, index => 'no' );
 has pod  => ( isa => 'ScalarRef', lazy_build => 1, index => 'analyzed', not_analyzed => 0, store => 'no', term_vector => 'with_positions_offsets' );
-has [qw(mime)] => ( lazy_build => 1 );
+has mime => ( lazy_build => 1 );
 has abstract => ( lazy_build => 1, not_analyzed => 0, index => 'analyzed' );
 has status => ( default => 'cpan' );
 has maturity => ( default => 'released' );
@@ -36,9 +141,42 @@ has directory => ( isa => 'Bool', default => 0 );
 has level => ( isa => 'Int', lazy_build => 1 );
 has indexed => ( is => 'rw', isa => 'Bool', default => 1 );
 
+=head1 ATTRIBUTES
+
+These attributes are not stored.
+
+=head2 content
+
+The content of the file. It is built by calling L</content_cb> and
+stripping the C<DATA> section for performance reasons.
+
+=head2 content_cb
+
+Callback, that returns the content of the as ScalarRef.
+
+=head2 pom
+
+L<Pod::Tree> object if the file is a perl file (L</is_perl_file>).
+
+=cut
+
 has content => ( isa => 'ScalarRef', lazy_build => 1, property => 0, required => 0 );
 has pom => ( lazy_build => 1, property => 0, required => 0 );
 has content_cb => ( property => 0, required => 0 );
+
+=head1 METHODS
+
+=head2 is_perl_file
+
+Return true if the file extension is one of C<pl>, C<pm>, C<pod>, C<t>
+or if the file has no extension and the shebang line contains the
+term C<perl>.
+
+=head2 is_pod_file
+
+Retruns true if the file extension is C<pod>.
+
+=cut
 
 sub is_perl_file {
     my $self = shift;
