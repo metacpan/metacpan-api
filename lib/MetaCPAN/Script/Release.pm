@@ -179,9 +179,7 @@ sub import_tarball {
     $meta = $self->load_meta_file($meta, $tmpdir->file($meta_file))
         if($meta_file);
 
-    my $no_index = $meta->no_index;
-    push( @{ $meta->no_index->{directory} }, qw(t xt inc) );
-
+    push( @{ $meta->{no_index}->{directory} }, qw(t xt inc example examples eg) );
     map { $_->{indexed} = 0 } grep { !$meta->should_index_file($_->{path}) } @files;
 
     log_debug { "Indexing ", scalar @files, " files" };
