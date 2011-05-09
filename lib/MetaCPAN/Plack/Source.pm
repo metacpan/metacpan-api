@@ -33,6 +33,9 @@ sub call {
         my $res = shift;
         my $h = [$self->_headers];
         Plack::Util::header_remove($h, 'content-type');
+        my $ct = Plack::Util::header_get($res->[1], 'content-type');
+        $ct = 'text/plain' unless($ct =~ /^text\/html/ || $ct =~ /^image\//);
+        Plack::Util::header_set($res->[1], 'content-type', $ct);
         Plack::Util::header_push($res->[1], shift @$h, shift @$h) while(@$h);
         return $res;
     });
