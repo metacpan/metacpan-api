@@ -16,45 +16,61 @@ __PACKAGE__->mk_accessors(qw(cpan remote));
 
 sub call {
     my ( $self, $env ) = @_;
-    if ( $env->{REQUEST_URI} =~ m{\A/source/([A-Z0-9]+)/([^\/\?]+)/([^\?]+)} ) {
-        my $new_path = $self->file_path( $1, $2, $3 );
-        $env->{PATH_INFO} = $new_path if $new_path;
-    } elsif ($env->{REQUEST_URI} =~ m{\A/source/authors/id/[A-Z]/[A-Z0-9][A-Z0-9]/([A-Z0-9]+)/([^\/\?]+)/([^\?]+)} ) {
-            my $new_path = $self->file_path( $1, $2, $3 );
-            $env->{PATH_INFO} = $new_path if $new_path;
+    my ($source, $file);
+    if ( $env->{REQUEST_URI} =~ m{\A/source/([A-Z0-9]+)/([^\/\?]+)(/([^\?]+))?} ) {
+        $source = $self->file_path( $1, $2, $4 );
+        $file = $3;
+    } elsif ($env->{REQUEST_URI} =~ m{\A/source/authors/id/[A-Z]/[A-Z0-9][A-Z0-9]/([A-Z0-9]+)/([^\/\?]+)(/([^\?]+))?} ) {
+        $source = $self->file_path( $1, $2, $4 );
+        $file = $3;
     }
-
-    Plack::Util::response_cb(Plack::App::Directory->new( root => "." )->to_app->($env), sub {
+    return $self->error404 unless($source);
+    $file ||= "";
+    my $root = $file ? substr($source, 0, -length($file)) : $source;
+    $env->{PATH_INFO} = $file ? $file : '/';
+    ($env->{SCRIPT_NAME} = $env->{REQUEST_URI}) =~ s/\/?\Q$file\E$//;
+    Plack::Util::response_cb(Plack::App::Directory->new( root => $root )->to_app->($env), sub {
         my $res = shift;
-        push(@{$res->[1]}, $self->_headers);
+        my $h = [$self->_headers];
+        Plack::Util::header_remove($h, 'content-type');
+        Plack::Util::header_push($res->[1], shift @$h, shift @$h) while(@$h);
         return $res;
     });
 }
 
 sub file_path {
     my ( $self, $pauseid, $distvname, $file ) = @_;
+    $file ||= "";
     my $base = dir(qw(var tmp source));
-    my $source = file($base, $pauseid, $distvname, $file );
-    my $source_dir = file( $base, $pauseid );
-    return $source if ( -e $source );
-    
+    my $source_dir = dir( $base, $pauseid, $distvname );
+    my $source = $self->find_file($source_dir, $file);
+    return $source if($source);
     return if -e $source_dir; # previously extracted, but file does not exist
-        
-    my $darkpan = dir(qw(var darkpan source))->file($source->relative($base));
-    return $darkpan if ( -e $darkpan );
     
     my $author = MetaCPAN::Util::author_dir($pauseid);
     my $http = dir(qw(var tmp http authors), $author);
     $author = $self->cpan . "/authors/$author";
-    my ($tarball) = File::Find::Rule->new->file->name("$distvname.tar.gz")->in($author, $http);
+    my ($tarball) = File::Find::Rule->new->file->name(
+            qr/^\Q$distvname\E\.(tgz|tbz|tar[\._-]gz|tar\.bz2|tar\.Z|zip|7z)$/)
+      ->in( $author, $http );
     return unless ( $tarball && -e $tarball );
         
     my $archive = Archive::Any->new($tarball);
-    $archive->extract( "$source_dir" );
+    return if($archive->is_naughty); # unpacks outside the current directory 
+    $source_dir->mkpath;
+    $archive->extract($source_dir);
     
-    return $source if ( -e $source );
-    return;
+    return $self->find_file($source_dir, $file);
 
+}
+
+sub find_file {
+    my ( $self, $dir, $file ) = @_;
+    my ($source) = glob "$dir/*/$file"; # file can be in any subdirectory
+    return $source if ( $source && -e $source );
+    return $dir->file($file)
+        if( -e $dir->file($file) );     # or even at top level
+    return undef;
 }
 
 1;
@@ -81,6 +97,6 @@ Perform some regexes on the URL to extract pauseid, release and filename.
 =head2 file_path( $pauseid, $distvname, $file )
 
  $self->file_path( 'IONCACHE', 'Plack-Middleware-HTMLify-0.1.1', 'lib/Plack/Middleware/HTMLify.pm' );
- # id/I/IO/IONCACHE/Plack-Middleware-HTMLify-0.1.1/lib/Plack/Middleware/HTMLify.pm
+ # var/tmp/source/IONCACHE/Plack-Middleware-HTMLify-0.1.1/Plack-Middleware-HTMLify-0.1.1/lib/Plack/Middleware/HTMLify.pm
 
 =cut
