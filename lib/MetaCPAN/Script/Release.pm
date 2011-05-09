@@ -180,14 +180,9 @@ sub import_tarball {
         if($meta_file);
 
     my $no_index = $meta->no_index;
-    foreach my $no_dir ( @{ $no_index->{directory} || [] }, qw(t xt inc) ) {
-        map { $_->{indexed} = 0 }
-          grep { $_->{path} =~ /^\Q$no_dir\E\// } @files;
-    }
+    push( @{ $meta->no_index->{directory} }, qw(t xt inc) );
 
-    foreach my $no_file ( @{ $no_index->{file} || [] } ) {
-        map { $_->{indexed} = 0 } grep { $_->{path} =~ /^\Q$no_file\E/ } @files;
-    }
+    map { $_->{indexed} = 0 } grep { !$meta->should_index_file($_->{path}) } @files;
 
     log_debug { "Indexing ", scalar @files, " files" };
     my $i = 1;
@@ -222,14 +217,8 @@ sub import_tarball {
 
     my $st = stat($tarball);
     my $stat = { map { $_ => $st->$_ } qw(mode uid gid size mtime) };
-    my $create =
-      { map { $_ => $meta->$_ } qw(version name license abstract resources) };
-
-    $create->{abstract} = MetaCPAN::Util::strip_pod($create->{abstract});
-    delete $create->{abstract} if($create->{abstract} eq 'unknown');
-
-    $create = DlogS_trace { "adding release $_" }
-    +{  %$create,
+    my $create = DlogS_trace { "adding release $_" }
+    +{  %{$meta->as_struct},
         name         => $name,
         author       => $author,
         distribution => $meta->name,
@@ -237,7 +226,10 @@ sub import_tarball {
         maturity     => $d->maturity,
         stat         => $stat,
         date         => $date,
-        dependency => \@dependencies };
+        dependency   => \@dependencies };
+    $create->{abstract} = MetaCPAN::Util::strip_pod($create->{abstract});
+    delete $create->{abstract} if($create->{abstract} eq 'unknown');
+
 
     my $release = $cpan->type('release')->put($create);
 
@@ -257,7 +249,6 @@ sub import_tarball {
         }
     } else {
         @files = grep { $_->{name} =~ /\.pm$/ } grep { $_->{indexed} } @files;
-
         foreach my $file (@files) {
             eval {
                 local $SIG{'ALRM'} = sub {
@@ -286,15 +277,11 @@ sub import_tarball {
     foreach my $file (@modules) {
         $file = MetaCPAN::Document::File->new( %$file, index => $cpan );
         foreach my $mod ( @{ $file->module } ) {
-            if ( ( grep { $_ eq $mod->name } @{ $no_index->{package} || [] } )
-                 || ( grep { $mod->name =~ /^\Q$_\E/ }
-                      @{ $no_index->{namespace} || [] } ) )
-            {
-                $mod->indexed(0);
-            } else {
-                $mod->indexed(
-                         $mod->hide_from_pause( ${ $file->content } ) ? 0 : 1 );
-            }
+            $mod->indexed(   $meta->should_index_package( $mod->name )
+                           ? $mod->hide_from_pause( ${ $file->content } )
+                                 ? 0
+                                 : 1
+                           : 0 );
         }
         $file->indexed(!!grep { $file->documentation eq $_->name } @{$file->module})
             if($file->documentation);
