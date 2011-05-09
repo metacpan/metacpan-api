@@ -3,7 +3,7 @@ package MetaCPAN::Plack::Source;
 use base 'MetaCPAN::Plack::Base';
 use strict;
 use warnings;
-use Archive::Tar::Wrapper;
+use Archive::Any;
 use File::Copy;
 use feature 'say';
 use Path::Class qw(file dir);
@@ -34,28 +34,25 @@ sub call {
 sub file_path {
     my ( $self, $pauseid, $distvname, $file ) = @_;
     my $base = dir(qw(var tmp source));
-    my $source = file($base,
-        $pauseid, $distvname, $file );
-    return $source if ( -e $source );    
+    my $source = file($base, $pauseid, $distvname, $file );
+    my $source_dir = file( $base, $pauseid );
+    return $source if ( -e $source );
+    
+    return if -e $source_dir; # previously extracted, but file does not exist
+        
     my $darkpan = dir(qw(var darkpan source))->file($source->relative($base));
     return $darkpan if ( -e $darkpan );
+    
     my $author = MetaCPAN::Util::author_dir($pauseid);
     my $http = dir(qw(var tmp http authors), $author);
     $author = $self->cpan . "/authors/$author";
     my ($tarball) = File::Find::Rule->new->file->name("$distvname.tar.gz")->in($author, $http);
     return unless ( $tarball && -e $tarball );
-    my $arch = Archive::Tar::Wrapper->new();
-    $distvname =~ s/-TRIAL$//; # FIXME: while(my $entry = $arch->list_next()) {
-    my $logic_path = "$distvname/$file";    # path within unzipped archive
-    $arch->read( $tarball, $logic_path ); # read only one file
-    my $phys_path = $arch->locate( $logic_path );
-
-    if ( $phys_path ) {
-        $source->dir->mkpath;
-        copy( $phys_path, $source );
-        return $source;
-    }
-
+        
+    my $archive = Archive::Any->new($tarball);
+    $archive->extract( "$source_dir" );
+    
+    return $source if ( -e $source );
     return;
 
 }
