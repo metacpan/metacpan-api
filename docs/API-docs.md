@@ -134,3 +134,10 @@ By distribution name (exact match)
 By distribution name (find all rated Moose distros)
 [[http://api.metacpan.org/cpanratings/_search?q=dist:Moose]]
 
+# Beta API
+
+## Downstream Dependencies
+
+````
+curl -XPOST api.beta.metacpan.org/release/_search -d '{"query":{"match_all":{}},"size":999999,"filter":{"term":{"release.dependency.module":"MooseX::NonMoose"}}}'
+````
