@@ -9,3 +9,7 @@ The latest Moose distribution currently on CPAN:
 The latest version of Moose::Role (which is part of the Moose distribution):
 
 [http://api.beta.metacpan.org/module/Moose::Role](http://api.beta.metacpan.org/module/Moose::Role)
+
+Author info for FLORA:
+
+[http://api.beta.metacpan.org/author/FLORA](http://api.beta.metacpan.org/author/FLORA)
