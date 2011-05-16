@@ -1,3 +1,5 @@
+**Please note that there is now documentation online for the [Beta API](Beta-API-docs).  We encourage you to use the Beta API wherever possible as the current API will be deprecated.**
+
 The API itself is in its very early stages.  Everything will change, but here are some sample URLs to play with.
 
 * All URLs return JSON
@@ -133,11 +135,3 @@ By distribution name (exact match)
 
 By distribution name (find all rated Moose distros)
 [[http://api.metacpan.org/cpanratings/_search?q=dist:Moose]]
-
-# Beta API
-
-## Downstream Dependencies
-
-````
-curl -XPOST api.beta.metacpan.org/release/_search -d '{"query":{"match_all":{}},"size":999999,"filter":{"term":{"release.dependency.module":"MooseX::NonMoose"}}}'
-````
