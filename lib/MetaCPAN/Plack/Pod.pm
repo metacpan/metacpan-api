@@ -5,83 +5,48 @@ use base 'MetaCPAN::Plack::Module';
 use strict;
 use warnings;
 use MetaCPAN::Pod::XHTML;
+use Try::Tiny;
 
 sub handle {
     my ( $self, $env ) = @_;
+    my $source;
     if ( $env->{REQUEST_URI} =~ m{\A/pod/([^\/]*?)\/?$} ) {
-        use Devel::Dwarn; DwarnN($env);
-        my $res =
-          Plack::App::Proxy->new( backend => 'LWP', remote => "http://" . $self->remote . "/cpan" )
-          ->to_app->($env);
-        return sub {
-            my $respond = shift;
-            $res->(
-                sub {
-                    my $res = shift;
-                    Plack::Util::header_remove( $res->[1], 'Content-Length' );
-                    my $writer = $respond->($res);
-                    my $json   = "";
-                    return Plack::Util::inline_object(
-                        write => sub { $json .= $_[0] },
-                        close => sub {
-                            $json = JSON::XS::decode_json($json);
-                            my $hit;
-                            unless ( $hit =
-                                     shift( @{ $json->{hits}->{hits} } ) )
-                            {
-                                $writer->write("not found");
-                                $writer->close;
-                                return;
-                            }
-                            my $file    = $hit->{_source}->{path};
-                            my $release = $hit->{_source}->{release};
-                            my $author  = $hit->{_source}->{author};
-                            $env->{REQUEST_URI} = $env->{PATH_INFO} =
-                              "/source/$author/$release/$file";
-                            delete $env->{CONTENT_LENGTH};
-                            delete $env->{'psgi.input'};
+        $env->{REQUEST_URI} = "/module/$1";;
+        $env->{PATH_INFO} = "/$1";
+        $env->{SCRIPT_NAME} = "/module";
+        my $res = MetaCPAN::Plack::Module->new({
+            index => $self->index
+        })->to_app->($env);
+        return $res if($res->[0] != 200);
+        my $hit = JSON::XS::decode_json(join("", @{$res->[2]}));
 
-                            my $res = MetaCPAN::Plack::Source->new(
-                                      { cpan => $self->cpan } )->to_app->($env);
-                            if ( ref $res->[2] eq 'ARRAY' ) {
-                                $writer->write( $res->[2]->[0] );
-                                $writer->close;
-                                return;
-                            }
-
-                            my $source = "";
-                            my $body   = $res->[2];
-                            while ( my $line = $body->getline ) {
-                                $source .= $line;
-                            }
-
-                            $writer->write( $self->build_pod_html($source) );
-                            $writer->close;
-                        } );
-                } );
-        };
+        my $file    = $hit->{path};
+        my $release = $hit->{release};
+        my $author  = $hit->{author};
+        $env->{REQUEST_URI} = $env->{PATH_INFO} =
+          "/source/$author/$release/$file";
+        delete $env->{CONTENT_LENGTH};
+        delete $env->{'psgi.input'};
+        $source = MetaCPAN::Plack::Source->new(
+                  { cpan => $self->cpan } )->to_app->($env)->[2];
     } else {
         $env->{REQUEST_URI} =~ s/^\/pod\//\/source\//;
         $env->{PATH_INFO} = $env->{REQUEST_URI};
 
-        my $res =
+        $source =
           MetaCPAN::Plack::Source->new( { cpan => $self->cpan } )
-          ->to_app->($env);
-        if ( ref $res->[2] eq 'ARRAY' ) {
-            return $res;
-        }
-
-        my $source = "";
-        my $body   = $res->[2];
-        while ( my $line = $body->getline ) {
-            $source .= $line;
-        }
-        return [200, ['Content-type', 'text/html', $self->_headers], [$self->build_pod_html($source)]];
+          ->to_app->($env)->[2];
     }
+    
+    return [200, ['Content-type', 'text/html', $self->_headers], [$self->build_pod_html($source)]];
 }
 
 sub build_pod_html {
-    my ( $self, $content ) = @_;
+    my ( $self, $body ) = @_;
+    my $source = "";
+    while ( my $line = $body->getline ) {
+        $source .= $line;
+    }
     my $parser = MetaCPAN::Pod::XHTML->new();
     $parser->index(1);
     $parser->html_header('');
@@ -90,7 +55,7 @@ sub build_pod_html {
     $parser->no_errata_section(1);
     my $html = "";
     $parser->output_string( \$html );
-    $parser->parse_string_document($content);
+    $parser->parse_string_document($source);
     return $html;
 }
 
