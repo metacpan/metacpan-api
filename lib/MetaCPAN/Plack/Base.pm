@@ -53,6 +53,7 @@ sub get_first_result {
 
 sub call {
     my ( $self, $env ) = @_;
+    my $req = Plack::Request->new($env);
     if ( $env->{REQUEST_METHOD} eq "OPTIONS" ) {
         return [ 200, [ $self->_headers ], [] ];
     } elsif (
@@ -61,6 +62,16 @@ sub call {
         } qw(GET POST) )
     {
         return [ 403, [$self->_headers], [encode_json({ message => 'Not allowed' }) ]];
+    } elsif ( $env->{PATH_INFO} =~ /^\/_search/ && $req->method eq 'GET' ) {
+        my $res =
+          $self->model->es->searchqs(
+            index => $self->index->name,
+            type  => $self->type,
+            map { $_ => $req->parameters->{$_} }
+              grep { defined $req->parameters->{$_} }
+              qw(q analyzer default_operator explain fields sort track_scores timeout from size search_type)
+          );
+        return [200, [$self->_headers], [encode_json($res)]];
     } elsif ( $env->{PATH_INFO} =~ /^\/_search/ ) {
         my $input = $env->{'psgi.input'};
         my @body = $input->getlines;
