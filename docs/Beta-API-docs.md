@@ -16,7 +16,13 @@ Author info for FLORA:
 
 [http://api.beta.metacpan.org/author/FLORA](http://api.beta.metacpan.org/author/FLORA)
 
-## Complex Queries
+## GET Searches
+
+Names of latest releases by OALDERS:
+
+[http://api.beta.metacpan.org/release/_search?q=author:OALDERS&filter=status:latest&fields=name&size=100](http://api.beta.metacpan.org/release/_search?q=author:OALDERS&filter=status:latest&fields=name&size=100)
+
+## POST Searches
 
 Please feel free to add queries here as you use them in your own work, so that others can learn from you.
 
