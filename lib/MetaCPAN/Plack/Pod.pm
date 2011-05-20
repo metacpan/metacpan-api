@@ -5,14 +5,25 @@ use base 'MetaCPAN::Plack::Module';
 use strict;
 use warnings;
 use MetaCPAN::Pod::XHTML;
+use Pod::POM;
+use Pod::Text;
 use Try::Tiny;
 
 sub handle {
     my ( $self, $env ) = @_;
     my $source;
-    if ( $env->{REQUEST_URI} =~ m{\A/pod/([^\/]*?)\/?$} ) {
-        $env->{REQUEST_URI} = "/module/$1";;
-        $env->{PATH_INFO} = "/$1";
+    my $format;
+    
+    my $formats = qr{(pod|htmlpod|textpod)};
+    if ( $env->{REQUEST_URI} =~ m{\A/$formats/} ) {
+        $format = $1;
+    }
+        
+    if ( $env->{REQUEST_URI} =~ m{\A/$formats/([^\/]*?)\/?$} ) {
+        my $format = $1;
+        my $path = $2;
+        $env->{REQUEST_URI} = "/module/$2";;
+        $env->{PATH_INFO} = "/$2";
         $env->{SCRIPT_NAME} = "/module";
         my $res = MetaCPAN::Plack::Module->new({
             index => $self->index
@@ -30,7 +41,7 @@ sub handle {
         $source = MetaCPAN::Plack::Source->new(
                   { cpan => $self->cpan } )->to_app->($env)->[2];
     } else {
-        $env->{REQUEST_URI} =~ s/^\/pod\//\/source\//;
+        my $format = $env->{REQUEST_URI} =~ s/^\/$formats\//\/source\//;
         $env->{PATH_INFO} = $env->{REQUEST_URI};
 
         $source =
@@ -38,15 +49,40 @@ sub handle {
           ->to_app->($env)->[2];
     }
     
-    return [200, ['Content-type', 'text/html', $self->_headers], [$self->build_pod_html($source)]];
+    my $content = "";
+    while ( my $line = $source->getline ) {
+        $content .= $line;
+    }
+    
+    if ( $format eq 'htmlpod' ) {
+        return [
+           200,
+           [ 'Content-type', 'text/html', $self->_headers ],
+           [ $self->build_pod_html( $content ) ]
+       ];       
+    }
+    
+    if ( $format eq 'pod' ) {
+        return [
+           200,
+           [ 'Content-type', 'text/plain', $self->_headers ],
+           [ $self->extract_pod( $content ) ]
+       ];       
+    }    
+
+    if ( $format eq 'textpod' ) {
+        return [
+           200,
+           [ 'Content-type', 'text/plain', $self->_headers ],
+           [ $self->build_pod_txt( $content ) ]
+       ];       
+    }
+    
 }
 
 sub build_pod_html {
-    my ( $self, $body ) = @_;
-    my $source = "";
-    while ( my $line = $body->getline ) {
-        $source .= $line;
-    }
+    my ( $self, $source ) = @_;
+
     my $parser = MetaCPAN::Pod::XHTML->new();
     $parser->index(1);
     $parser->html_header('');
@@ -59,6 +95,29 @@ sub build_pod_html {
     return $html;
 }
 
+sub extract_pod {
+    
+    my ( $self, $source ) = @_;
+    my $parser = Pod::POM->new;
+    my $pom = $parser->parse_text( $source );
+    return Pod::POM::View::Pod->print( $pom );  
+    
+}
+
+sub build_pod_txt {
+    
+    my ( $self, $source ) = @_;
+
+    my $parser = Pod::Text->new( sentence => 0, width => 78 );
+
+    my $text = "";
+    $parser->output_string( \$text );
+    $parser->parse_string_document( $source );
+
+    return $text;
+
+}    
+
 1;
 __END__
 
@@ -66,7 +125,7 @@ __END__
 
 =head2 index
 
-Returns C<file>, because ther eis no C<pod> index, so we look
+Returns C<file>, because there is no C<pod> index, so we look
 the module up in the C<file> index.
 
 =head2 query

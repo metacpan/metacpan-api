@@ -28,6 +28,20 @@ sub build_app {
                                 index  => $index,
                    ) );
     }
+    
+    # add special cases for text and html pod formatters
+    foreach my $format ( 'textpod', 'htmlpod' ) {
+        my $class = "MetaCPAN::Plack::Pod";
+        Class::MOP::load_class($class);
+        $app->map( "/$format",
+                   $class->new( model  => $self->model,
+                                cpan   => $self->cpan,
+                                remote => $self->remote,
+                                index  => $index,
+                   ) );        
+    }
+    
+    
     Plack::Middleware::Session->wrap(
              $app->to_app,
              store => Plack::Session::Store::ElasticSearch->new( index => 'user', type => 'account', property => 'session', es => $self->model->es ),
