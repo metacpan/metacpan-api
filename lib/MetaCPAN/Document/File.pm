@@ -256,7 +256,7 @@ sub _build_abstract {
             if ( $in_name == 1 && $text =~ /^\h*(\S+?)(\h+-+\h+(.*))?$/s ) {
                 chomp($abstract = $3);
                 my $name = $1;
-                $documentation = $name if($name =~ /^[\w:']+$/);
+                $documentation = $name if($name =~ /^[\w\.:']+$/);
             } elsif ( $in_name == 1 && $text =~ /^\h*([\w\:']+?)\n/s ) {
                 chomp($documentation = $1);
             } elsif( $in_name == 2 && !$abstract && $text) {
