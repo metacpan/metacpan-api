@@ -45,6 +45,7 @@ END
     is($file->documentation, 'MyModule' );
     is_deeply( $file->pod_lines, [ [ 3, 12 ], [ 18, 6 ] ] );
     is( $file->sloc, 3 );
+    is( $file->slop, 11 );
 }
 {
     my $content = <<'END';
@@ -64,6 +65,7 @@ END
                                      content      => \$content );
 
     is( $file->abstract, undef );
+    is( $file->slop, 2 );
     is( $file->documentation, 'MyModule');
 }
 {

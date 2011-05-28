@@ -129,7 +129,7 @@ has release => ( parent => 1 );
 has date => ( isa => 'DateTime' );
 has stat => ( isa => Stat, required => 0 );
 has sloc => ( isa => 'Int',        lazy_build => 1 );
-has slop => ( isa => 'Int', is => 'rw', default => 0 );
+has slop => ( isa => 'Int', is => 'rw', lazy_build => 1 );
 has pod_lines => ( isa => 'ArrayRef', type => 'integer', lazy_build => 1, index => 'no' );
 has pod  => ( isa => 'ScalarRef', lazy_build => 1, index => 'analyzed', not_analyzed => 0, store => 'no', term_vector => 'with_positions_offsets' );
 has mime => ( lazy_build => 1 );
@@ -265,7 +265,13 @@ sub _build_pod_lines {
     my ($lines, $slop) = MetaCPAN::Util::pod_lines(${$self->content});
     $self->slop($slop || 0);
     return $lines;
-    
+}
+
+sub _build_slop {
+    my $self = shift;
+    return 0 unless ( $self->is_perl_file );
+    $self->_build_pod_lines;
+    return $self->slop;
 }
 
 # Copied from Perl::Metrics2::Plugin::Core
