@@ -22,7 +22,7 @@ Returns the corresponding `file` of the latest version of the `module`. Consider
 
 ### `/pod/{author}/{release}/{path}`
 
-Returns the POD of the give module. You can change the output format by either passing a `content-type` query parameter (e.g. [[/pod/Moose?content-type=text/plain|http://api.beta.metacpan.org/pod/Moose?content-type=text/plain]] or by adding an `Accept` header to the HTTP request. Valid content types are:
+Returns the POD of the given module. You can change the output format by either passing a `content-type` query parameter (e.g. [[/pod/Moose?content-type=text/plain|http://api.beta.metacpan.org/pod/Moose?content-type=text/plain]] or by adding an `Accept` header to the HTTP request. Valid content types are:
 
 * text/html (default)
 * text/plain
