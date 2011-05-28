@@ -12,17 +12,10 @@ use Try::Tiny;
 sub handle {
     my ( $self, $req ) = @_;
     my $source;
-    my $format;
-    my $formats = qr{(pod|htmlpod|textpod)};
-    if ( $req->path =~ m{\A/$formats/} ) {
-        $format = $1;
-    }
-    if ( $req->path =~ m{\A/$formats/([^\/]*?)\/?$} ) {
-        my $format = $1;
-        my $path = $2;
+    if ( $req->path =~ m/^\/pod\/([^\/]*?)\/?$/ ) {
         my $env = $req->env;
-        $env->{REQUEST_URI} = "/module/$2";
-        $env->{PATH_INFO} = "/$2";
+        $env->{REQUEST_URI} = "/module/$1";
+        $env->{PATH_INFO} = "/$1";
         $env->{SCRIPT_NAME} = "/module";
         my $res = MetaCPAN::Plack::Module->new({
             index => $self->index
@@ -41,7 +34,7 @@ sub handle {
                   { cpan => $self->cpan } )->to_app->($env)->[2];
     } else {
         my $env = $req->env;
-        my $format = $env->{REQUEST_URI} =~ s/^\/$formats\//\/source\//;
+        my $format = $env->{REQUEST_URI} =~ s/^\/pod\//\/source\//;
         $env->{PATH_INFO} = $env->{REQUEST_URI};
 
         $source =
@@ -54,29 +47,22 @@ sub handle {
         $content .= $line;
     }
     
-    if ( $format eq 'htmlpod' ) {
-        return [
-           200,
-           [ 'Content-type', 'text/html', $self->_headers ],
-           [ $self->build_pod_html( $content ) ]
-       ];       
+    my ($body, $content_type);
+    if($req->preferred_content_type eq 'text/plain') {
+      $body = $self->build_pod_txt( $content );
+      $content_type = 'text/plain';
+    } elsif($req->preferred_content_type eq 'text/x-pod') {
+      $body = $self->extract_pod( $content );
+      $content_type = 'text/plain';
+    } else {
+      $body = $self->build_pod_html( $content );
+      $content_type = 'text/html';
     }
-    
-    if ( $format eq 'pod' ) {
-        return [
-           200,
-           [ 'Content-type', 'text/plain', $self->_headers ],
-           [ $self->extract_pod( $content ) ]
-       ];       
-    }    
-
-    if ( $format eq 'textpod' ) {
-        return [
-           200,
-           [ 'Content-type', 'text/plain', $self->_headers ],
-           [ $self->build_pod_txt( $content ) ]
-       ];       
-    }
+    return [
+         200,
+         [ $self->_headers, 'Content-type', $content_type ],
+         [ $body ]
+    ];
     
 }
 
