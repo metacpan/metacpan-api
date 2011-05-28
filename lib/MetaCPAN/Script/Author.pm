@@ -49,6 +49,7 @@ sub index_authors {
     while ( my ( $pauseid, $data ) = each %$authors ) {
         my ( $name, $email, $homepage ) =
           ( @$data{qw(fullname email homepage)} );
+        $name = undef if(ref $name);
         $email = lc($pauseid) . '@cpan.org'
           unless ( $email && Email::Valid->address($email) );
         log_debug { encode( 'UTF-8', sprintf("Indexing %s: %s <%s>", $pauseid, $name, $email ) ) };
