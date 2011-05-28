@@ -10,19 +10,18 @@ use Pod::Text;
 use Try::Tiny;
 
 sub handle {
-    my ( $self, $env ) = @_;
+    my ( $self, $req ) = @_;
     my $source;
     my $format;
-    
     my $formats = qr{(pod|htmlpod|textpod)};
-    if ( $env->{REQUEST_URI} =~ m{\A/$formats/} ) {
+    if ( $req->path =~ m{\A/$formats/} ) {
         $format = $1;
     }
-        
-    if ( $env->{REQUEST_URI} =~ m{\A/$formats/([^\/]*?)\/?$} ) {
+    if ( $req->path =~ m{\A/$formats/([^\/]*?)\/?$} ) {
         my $format = $1;
         my $path = $2;
-        $env->{REQUEST_URI} = "/module/$2";;
+        my $env = $req->env;
+        $env->{REQUEST_URI} = "/module/$2";
         $env->{PATH_INFO} = "/$2";
         $env->{SCRIPT_NAME} = "/module";
         my $res = MetaCPAN::Plack::Module->new({
@@ -41,6 +40,7 @@ sub handle {
         $source = MetaCPAN::Plack::Source->new(
                   { cpan => $self->cpan } )->to_app->($env)->[2];
     } else {
+        my $env = $req->env;
         my $format = $env->{REQUEST_URI} =~ s/^\/$formats\//\/source\//;
         $env->{PATH_INFO} = $env->{REQUEST_URI};
 

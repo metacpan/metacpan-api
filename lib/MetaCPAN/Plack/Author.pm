@@ -6,8 +6,8 @@ use warnings;
 sub type { 'author' }
 
 sub handle {
-    my ( $self, $env ) = @_;
-    $self->get_source($env);
+    my ( $self, $req ) = @_;
+    $self->get_source($req);
 }
 
 1;

@@ -18,15 +18,14 @@ sub query {
 }
 
 sub handle {
-    my ( $self, $env ) = @_;
-    my ( $index, @args ) = split( "/", $env->{PATH_INFO} );
+    my ( $self, $req ) = @_;
+    my ( undef, $index, @args ) = split( "/", $req->path );
     my $digest;
     if(@args == 2) {
         $digest = MetaCPAN::Util::digest( @args );
-        $env->{PATH_INFO} = join("/", $index, $digest );
-        return $self->get_source($env);
+        return $self->get_source($req->clone( PATH_INFO => join("/", $index, $digest ) ) );
     } elsif(@args == 1) {
-        return $self->get_first_result($env);;
+        return $self->get_first_result($req);
     }
 }
 

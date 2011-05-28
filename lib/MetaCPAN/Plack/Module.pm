@@ -18,8 +18,8 @@ sub query {
 
 
 sub handle {
-    my ($self, $env) = @_;
-    $self->get_first_result($env);
+    my ($self, $req) = @_;
+    $self->get_first_result($req);
 }
 
 

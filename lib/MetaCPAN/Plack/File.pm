@@ -21,8 +21,8 @@ sub query {
 }
 
 sub get_source {
-    my ( $self, $env ) = @_;
-    my ( $index, @args ) = split( "/", $env->{PATH_INFO} );
+    my ( $self, $req ) = @_;
+    my ( undef, $index, @args ) = split( "/", $req->path );
     my $digest;
     if ( $args[0] =~ /^[A-Za-z0-9-_]{27}$/ ) {
         $digest = $args[0];
@@ -30,23 +30,20 @@ sub get_source {
         $digest = MetaCPAN::Util::digest( shift @args, shift @args,
                                              join( "/", @args ) );
     }
-    $env->{PATH_INFO} = join("/", $index, $digest );
-    $self->next::method($env);
+    $self->next::method($req->clone( PATH_INFO => join("/", $index, $digest ) ) );
 }
 
 sub handle {
-    my ( $self, $env ) = @_;
-    my ( $index, @args ) = split( "/", $env->{PATH_INFO} );
+    my ( $self, $req ) = @_;
+    my ( undef, $index, @args ) = split( "/", $req->path );
     my $digest;
     if ( @args == 1 && $args[0] =~ /^[A-Za-z0-9-_]{27}$/ ) {
         $digest = $args[0];
-        $env->{PATH_INFO} = join("/", $index, $digest );
-        return $self->get_source($env);
+        return $self->get_source($req->clone( PATH_INFO => join("/", $index, $digest ) ) );
     } elsif(@args > 2) {
         $digest = MetaCPAN::Util::digest( shift @args, shift @args,
                                              join( "/", @args ) );
-        $env->{PATH_INFO} = join("/", $index, $digest );
-        return $self->get_source($env);
+        return $self->get_source($req->clone( PATH_INFO => join("/", $index, $digest ) ) );
     }
     # disabled for now because /MOO/abc/abc.t can either be the file
     # abc.t in release abc of author MOO or the file abc/abc.t

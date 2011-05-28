@@ -6,14 +6,15 @@ use JSON::XS;
 use Try::Tiny;
 use IO::String;
 use Plack::App::Proxy;
+use MetaCPAN::Plack::Request;
 use mro 'c3';
 use Try::Tiny;
 
 __PACKAGE__->mk_accessors(qw(cpan remote model index));
 
 sub get_source {
-    my ( $self, $env ) = @_;
-    my ( undef, @args ) = split( "/", $env->{PATH_INFO} );
+    my ( $self, $req ) = @_;
+    my ( undef, undef, @args ) = split( "/", $req->path );
     try {
         my $res =
           $self->index->type( $self->type )->inflate(0)->get( $args[0] );
@@ -30,8 +31,8 @@ sub error404 {
 }
 
 sub get_first_result {
-    my ( $self, $env ) = @_;
-    my ( undef, @args ) = split( "/", $env->{PATH_INFO} );
+    my ( $self, $req ) = @_;
+    my ( undef, undef, @args ) = split( "/", $req->path );
     my $query = $self->query(@args);
     $query->{size} = 1;
     try {
@@ -53,7 +54,7 @@ sub get_first_result {
 
 sub call {
     my ( $self, $env ) = @_;
-    my $req = Plack::Request->new($env);
+    my $req = MetaCPAN::Plack::Request->new($env);
     if ( $env->{REQUEST_METHOD} eq "OPTIONS" ) {
         return [ 200, [ $self->_headers ], [] ];
     } elsif (
@@ -89,7 +90,7 @@ sub call {
             return [500, [$self->_headers], [encode_json({message => 'Malformed JSON: ' . $_ })]];
         };
     } else {
-        return $self->handle($env);
+        return $self->handle($req);
     }
 }
 
