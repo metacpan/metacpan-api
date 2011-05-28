@@ -41,11 +41,13 @@ END
                                      content      => \$content );
 
     is( $file->abstract, 'mymodule1 abstract' );
+    is($file->documentation, 'MyModule' );
     is_deeply( $file->pod_lines, [ [ 3, 11 ], [ 17, 6 ] ] );
     is( $file->sloc, 3 );
 }
 {
     my $content = <<'END';
+
 =head1 NAME
 
 MyModule
@@ -61,6 +63,7 @@ END
                                      content      => \$content );
 
     is( $file->abstract, undef );
+    is( $file->documentation, 'MyModule');
 }
 {
     my $content = <<'END';
@@ -120,7 +123,7 @@ END
 'An object containing information about how to get access to teh Moby databases, resources, etc. from the mobycentral.config file'
     );
     is( $file->module->[0]->hide_from_pause(${$file->content}), 0, 'indexed' );
-    is( $file->documentation, 'MOBY::Config' );
+    is( $file->documentation, 'MOBY::Config.pm' );
     is( $file->level, 2);
 }
 

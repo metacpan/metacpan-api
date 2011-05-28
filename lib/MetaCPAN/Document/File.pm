@@ -3,7 +3,6 @@ use Moose;
 use ElasticSearchX::Model::Document;
 
 use URI::Escape ();
-use Pod::Tree;
 use MetaCPAN::Pod::XHTML;
 use Pod::Text;
 use Plack::MIME;
@@ -154,14 +153,9 @@ stripping the C<DATA> section for performance reasons.
 
 Callback, that returns the content of the as ScalarRef.
 
-=head2 pom
-
-L<Pod::Tree> object if the file is a perl file (L</is_perl_file>).
-
 =cut
 
 has content => ( isa => 'ScalarRef', lazy_build => 1, property => 0, required => 0 );
-has pom => ( lazy_build => 1, property => 0, required => 0 );
 has content_cb => ( property => 0, required => 0 );
 
 =head1 METHODS
@@ -231,60 +225,34 @@ sub _build_mime {
     Plack::MIME->mime_type( shift->name ) || 'text/plain';
 }
 
-sub _build_pom {
-    my $self = shift;
-    return undef unless($self->is_perl_file);
-    my $pod = Pod::Tree->new;
-    $pod->load_string( ${ $self->content } );
-    return $pod;
-}
-
 sub _build_abstract {
-    my $self = shift;
-    return undef unless ( $self->is_perl_file );
-    my $root    = $self->pom->get_root;
-    my $in_name = 0;
-    my ( $abstract, $documentation );
-    foreach my $node ( @{ $root->get_children } ) {
-        if ($in_name) {
-            last
-              if (    $node->get_type eq 'command'
-                   && $node->get_command eq 'head1' );
+  my $self = shift;
+  return undef unless ( $self->is_perl_file );
+  my $text = ${$self->content};
+  my ( $documentation, $abstract );
+  if ( $text =~ /^=head1 NAME\s+(\S+)((\h+-+\h+(.+))|(\n\n(.+)))?/ms ) {
+    chomp( $abstract = $4 || $6 ) if($4 || $6);
+    my $name = $1;
+    $documentation = $name if ( $name =~ /^[\w\.:-_']+$/ );
+  } elsif ( $text =~ /^=head1 NAME\s+([\w\.:-_']+?)\n/ms ) {
+    chomp( $documentation = $1 );
+  }
 
-            my $text = MetaCPAN::Util::strip_pod($node->get_text);
-            # warn $text;
-            if ( $in_name == 1 && $text =~ /^\h*(\S+?)(\h+-+\h+(.*))?$/s ) {
-                chomp($abstract = $3);
-                my $name = $1;
-                $documentation = $name if($name =~ /^[\w\.:']+$/);
-            } elsif ( $in_name == 1 && $text =~ /^\h*([\w\:']+?)\n/s ) {
-                chomp($documentation = $1);
-            } elsif( $in_name == 2 && !$abstract && $text) {
-                chomp($abstract = $text);
-            }
+  if ($abstract) {
+    $abstract =~ s{\n\h*\n\h*.*$}{}xms;
+    $abstract =~ s{\n}{ }gxms;
+    $abstract =~ s{\s+$}{}gxms;
+    $abstract =~ s{(\s)+}{$1}gxms;
+    $abstract = MetaCPAN::Util::strip_pod($abstract);
+  }
 
-            if ($abstract) {
-                $abstract =~ s{=head.*}{}xms;
-                $abstract =~ s{\n\n.*$}{}xms;
-                $abstract =~ s{\n}{ }gxms;
-                $abstract =~ s{\s+$}{}gxms;
-                $abstract =~ s{(\s)+}{$1}gxms;
-            }
-            $in_name++;
-        }
-
-        last if ( $abstract && $documentation );
-
-        $in_name++
-          if (    $node->get_type eq 'command'
-               && $node->get_command eq 'head1'
-               && $node->get_text =~ /^NAME\s*$/ );
-
-    }
-    $self->documentation($documentation) if ($documentation);
-    return $abstract;
+  if ($documentation) {
+    $self->documentation(MetaCPAN::Util::strip_pod($documentation));
+  }
+  return $abstract;
 
 }
+
 
 sub _build_path {
     my $self = shift;

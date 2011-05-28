@@ -187,7 +187,7 @@ sub import_tarball {
     my $file_set = $cpan->type('file');
     foreach my $file (@files) {
         my $obj = $file_set->put($file);
-        $file->{$_} = $obj->$_ for(qw(abstract id pom pod sloc pod_lines));
+        $file->{$_} = $obj->$_ for(qw(abstract id pod sloc pod_lines));
         $file->{module}   = [];
     }
 
