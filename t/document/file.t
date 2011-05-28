@@ -10,6 +10,7 @@ package Foo;
 use strict;
 
 =head1 NAME
+X<Foo> X<Bar>
 
 MyModule - mymodule1 abstract
 
@@ -42,7 +43,7 @@ END
 
     is( $file->abstract, 'mymodule1 abstract' );
     is($file->documentation, 'MyModule' );
-    is_deeply( $file->pod_lines, [ [ 3, 11 ], [ 17, 6 ] ] );
+    is_deeply( $file->pod_lines, [ [ 3, 12 ], [ 18, 6 ] ] );
     is( $file->sloc, 3 );
 }
 {
