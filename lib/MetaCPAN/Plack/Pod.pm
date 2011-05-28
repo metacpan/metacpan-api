@@ -7,6 +7,8 @@ use warnings;
 use MetaCPAN::Pod::XHTML;
 use Pod::POM;
 use Pod::Text;
+use Pod::Markdown;
+use IO::String;
 use Try::Tiny;
 
 sub handle {
@@ -54,6 +56,9 @@ sub handle {
     } elsif($req->preferred_content_type eq 'text/x-pod') {
       $body = $self->extract_pod( $content );
       $content_type = 'text/plain';
+    } elsif($req->preferred_content_type eq 'text/x-markdown') {
+      $body = $self->build_pod_markdown( $content );
+      $content_type = 'text/plain';
     } else {
       $body = $self->build_pod_html( $content );
       $content_type = 'text/html';
@@ -66,9 +71,15 @@ sub handle {
     
 }
 
+sub build_pod_markdown {
+    my $self = shift;
+    my $parser = Pod::Markdown->new;
+    $parser->parse_from_filehandle(IO::String->new(shift));
+    return $parser->as_markdown;
+}
+
 sub build_pod_html {
     my ( $self, $source ) = @_;
-
     my $parser = MetaCPAN::Pod::XHTML->new();
     $parser->index(1);
     $parser->html_header('');
@@ -82,26 +93,19 @@ sub build_pod_html {
 }
 
 sub extract_pod {
-    
     my ( $self, $source ) = @_;
     my $parser = Pod::POM->new;
     my $pom = $parser->parse_text( $source );
     return Pod::POM::View::Pod->print( $pom );  
-    
 }
 
 sub build_pod_txt {
-    
     my ( $self, $source ) = @_;
-
     my $parser = Pod::Text->new( sentence => 0, width => 78 );
-
     my $text = "";
     $parser->output_string( \$text );
     $parser->parse_string_document( $source );
-
     return $text;
-
 }    
 
 1;
