@@ -61,9 +61,11 @@ sub index_authors {
               grep { defined $conf->{$_} } keys %$conf
           };
         $put->{website} = [$put->{website}] unless(ref $put->{website} eq 'ARRAY');
-        $put->{website} = [ 
+        $put->{website} = [
+            # fix www.homepage.com to be http://www.homepage.com
             map { $_->scheme ? $_->as_string : 'http://' . $_->as_string }
             map { URI->new($_)->canonical }
+            grep { $_ }
             @{$put->{website}}
         ];
         $type->put( $put );
