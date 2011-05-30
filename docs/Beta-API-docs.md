@@ -57,3 +57,17 @@ curl -XPOST api.beta.metacpan.org/release/_search -d '{
   }
 }'
 ```
+
+### The size of the CPAN unpacked
+
+````sh
+curl -XPOST api.beta.metacpan.org/file/_search -d '{
+  "query": { "match_all": {} },
+  "facets": { 
+    "size": {
+      "statistical": {
+        "field": "stat.size"
+  } } },
+  "size":0
+}'
+````
