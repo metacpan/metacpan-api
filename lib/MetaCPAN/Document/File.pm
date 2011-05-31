@@ -12,7 +12,7 @@ use MetaCPAN::Types qw(:all);
 use MooseX::Types::Moose qw(ArrayRef);
 
 Plack::MIME->add_type( ".t"   => "text/x-script.perl" );
-Plack::MIME->add_type( ".pod" => "text/x-script.perl" );
+Plack::MIME->add_type( ".pod" => "text/x-pod" );
 Plack::MIME->add_type( ".xs"  => "text/x-c" );
 
 =head1 PROPERTIES
@@ -93,7 +93,8 @@ has a level of C<0>).
 
 =head2 pod
 
-Pure text format of the pod (see L</Pod::Text>.
+Pure text format of the pod (see L</Pod::Text>). Consecutive whitespaces
+are removed to save space and for better snippet previews.
 
 =head2 pod_lines
 
@@ -117,6 +118,17 @@ Source Lines of Pod. Returns the number of pod lines using L</pod_lines>.
 L<File::stat> info of the tarball. Contains C<mode>, C<uid>, C<gid>, C<size>
 and C<mtime>.
 
+=head2 version
+
+Contains the raw version string.
+
+=head2 version_numified
+
+B<Required>, B<Lazy Build>
+
+Numified version of L</version>. Contains 0 if there is no version or the
+version could not be parsed.
+
 =cut
 
 has id => ( id => [qw(author release path)] );
@@ -127,18 +139,35 @@ has module => ( required => 0, is => 'rw', isa => Module, coerce => 1, clearer =
 has documentation => ( is => 'rw', lazy_build => 1, index => 'analyzed', analyzer => [qw(standard camelcase)] );
 has release => ( parent => 1 );
 has date => ( isa => 'DateTime' );
-has stat => ( isa => Stat, required => 0 );
+has stat => ( isa => Stat, required => 0, dynamic => 1 );
 has sloc => ( isa => 'Int',        lazy_build => 1 );
 has slop => ( isa => 'Int', is => 'rw', lazy_build => 1 );
 has pod_lines => ( isa => 'ArrayRef', type => 'integer', lazy_build => 1, index => 'no' );
-has pod  => ( isa => 'ScalarRef', lazy_build => 1, index => 'analyzed', not_analyzed => 0, store => 'no', term_vector => 'with_positions_offsets' );
+
+has pod => (
+  isa            => 'ScalarRef',
+  lazy_build     => 1,
+  index          => 'analyzed',
+  not_analyzed   => 0,
+  store          => 'no',
+  term_vector    => 'with_positions_offsets',
+  include_in_all => 0 );
+
 has mime => ( lazy_build => 1 );
-has abstract => ( lazy_build => 1, not_analyzed => 0, index => 'analyzed' );
+has abstract => ( lazy_build => 1, index => 'analyzed' );
 has status => ( default => 'cpan' );
 has maturity => ( default => 'released' );
 has directory => ( isa => 'Bool', default => 0 );
 has level => ( isa => 'Int', lazy_build => 1 );
 has indexed => ( is => 'rw', isa => 'Bool', default => 1 );
+has version => ( required => 0 );
+has version_numified => ( isa => 'Num', lazy_build => 1, required => 1 );
+
+sub _build_version_numified {
+    my $self = shift;
+    return 0 unless($self->version);
+    return MetaCPAN::Util::numify_version( $self->version );
+}
 
 =head1 ATTRIBUTES
 
@@ -298,7 +327,7 @@ sub _build_pod {
     my $text = "";
     $parser->output_string( \$text );
     $parser->parse_string_document( ${ $self->content } );
-
+    $text =~ s/\s+/ /g;
     return \$text;
 }
 

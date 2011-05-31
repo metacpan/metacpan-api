@@ -169,6 +169,7 @@ sub import_tarball {
                     author       => $author,
                     full_path    => $child,
                     path         => $fpath,
+                    version      => $d->version,
                     stat         => $stat,
                     maturity     => $d->maturity,
                     indexed      => 1,
