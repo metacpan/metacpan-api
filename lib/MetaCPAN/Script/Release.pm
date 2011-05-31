@@ -229,11 +229,7 @@ sub import_tarball {
     $create->{abstract} = MetaCPAN::Util::strip_pod($create->{abstract});
     delete $create->{abstract} if($create->{abstract} eq 'unknown');
 
-
     my $release = $cpan->type('release')->put($create);
-
-    my $distribution =
-      $cpan->type('distribution')->put( { name => $meta->name } );
 
     log_debug { "Gathering modules" };
 
