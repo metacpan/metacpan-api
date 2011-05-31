@@ -94,13 +94,13 @@ has date             => ( isa        => 'DateTime' );
 has download_url     => ( lazy_build => 1 );
 has name             => ( index => 'analyzed' );
 has version_numified => ( isa        => 'Num', lazy_build => 1 );
-has resources        => ( isa        => Resources, required => 0, coerce => 1 );
+has resources        => ( isa        => Resources, required => 0, coerce => 1, dynamic => 1 );
 has abstract => ( index => 'analyzed', required => 0 );
 has distribution => ( analyzer => [qw(standard camelcase)] );
 has dependency => ( required => 0, is => 'rw', isa => Dependency, coerce => 1 );
 has status => ( default => 'cpan' );
 has maturity => ( default => 'released' );
-has stat => ( isa => Stat, required => 0 );
+has stat => ( isa => Stat, required => 0, dynamic => 1 );
 
 sub _build_version_numified {
     return MetaCPAN::Util::numify_version( shift->version )
