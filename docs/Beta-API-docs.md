@@ -35,10 +35,6 @@ Names of latest releases by OALDERS:
 
 [http://api.beta.metacpan.org/release/_search?q=author:OALDERS&filter=status:latest&fields=name&size=100](http://api.beta.metacpan.org/release/_search?q=author:OALDERS&filter=status:latest&fields=name&size=100)
 
-Latest modules in the DBIx namespace:
-
-[http://api.beta.metacpan.org/module/_search?q=status:latest%20AND%20name:DBIx](http://api.beta.metacpan.org/module/_search?q=status:latest%20AND%20name:DBIx)
-
 ## POST Searches
 
 Please feel free to add queries here as you use them in your own work, so that others can learn from you.
