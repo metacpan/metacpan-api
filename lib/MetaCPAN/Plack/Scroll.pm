@@ -16,7 +16,7 @@ sub handle {
     });
     return [ 200, [ $self->_headers ], [encode_json($res)] ];
   }
-  return $self->not_found;
+  return $self->error404;
 
 }
 

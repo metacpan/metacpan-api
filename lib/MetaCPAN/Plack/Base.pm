@@ -66,28 +66,32 @@ sub call {
             403,
             [ $self->_headers ],
             [ encode_json( { message => 'Not allowed' } ) ] ];
-    } elsif ( $env->{PATH_INFO} =~ /^\/_search$/ ) {
-      return try {
-        my $body      = $req->decoded_body;
-        my $transport = $self->model->es->transport;
-        my $res       = $transport->request(
-            {   method => $req->method,
-                qs     => $req->parameters->as_hashref,
-                cmd    => join( '/', '', $self->index->name, $self->type, '_search' ),
-                data   => $body
-            } );
-        return [ 200, [ $self->_headers ], [ encode_json($res) ] ];
-      } catch {
-        ref $_ eq 'ARRAY'
-          ? $_
-          : [500, [$self->_headers], [encode_json({ message => "$_" })]];
-      };
+    } elsif ( $req->path_info eq '/_search'
+        || ( $req->path_info eq '/_mapping' && $req->method eq 'GET' ) )
+    {
+        return try {
+            my $body      = $req->decoded_body;
+            my $transport = $self->model->es->transport;
+            my $res       = $transport->request(
+                {   method => $req->method,
+                    qs     => $req->parameters->as_hashref,
+                    cmd    => sprintf("/%s/%s%s", $self->index->name, $self->type, $req->path_info ),
+                    data => $body
+                } );
+            return [ 200, [ $self->_headers ], [ encode_json($res) ] ];
+        }
+        catch {
+            ref $_ eq 'ARRAY'
+              ? $_
+              : [
+                500,
+                [ $self->_headers ],
+                [ encode_json( { message => "$_" } ) ] ];
+        };
     } else {
         return $self->handle($req);
     }
 }
-
-
 
 sub _headers {
     return ( 'Access-Control-Allow-Origin',
