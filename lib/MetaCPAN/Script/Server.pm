@@ -10,24 +10,29 @@ use Plack::Middleware::CrossOrigin;
 use Plack::Middleware::Session;
 use Plack::Session::Store::ElasticSearch;
 use Plack::Session::State::Cookie;
+use MetaCPAN::Plack::Scroll;
 use Class::MOP;
 
 sub build_app {
     my $self = shift;
     my $app  = Plack::App::URLMap->new;
     my $index = $self->index;
+    my %args = (
+      model  => $self->model,
+      cpan   => $self->cpan,
+      remote => $self->remote,
+      index  => $index );
     for ( qw(Author File Mirror Module
           Pod Release Source Login User) )
     {
         my $class = "MetaCPAN::Plack::" . $_;
         Class::MOP::load_class($class);
-        $app->map( "/" . lc($_),
-                   $class->new( model  => $self->model,
-                                cpan   => $self->cpan,
-                                remote => $self->remote,
-                                index  => $index,
-                   ) );
+        my $handler = $class->new(%args);
+        $app->map( "/" . lc($_), $handler);
+        $app->map( "/v0/" . lc($_), $handler);
     }
+
+    $app->map("/_search", MetaCPAN::Plack::Scroll->new( %args ) );
 
     Plack::Middleware::Session->wrap(
              $app->to_app,
