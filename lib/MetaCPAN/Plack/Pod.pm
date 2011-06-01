@@ -44,11 +44,7 @@ sub handle {
           ->to_app->($env)->[2];
     }
     if( ref $source eq 'ARRAY') {
-      return [
-           404,
-           [ $self->_headers ],
-           $source
-      ];
+      return $req->new_response( 404, undef, $source )->finalize;
     }
     my $content = "";
     while ( my $line = $source->getline ) {
@@ -70,12 +66,9 @@ sub handle {
       $body = $self->build_pod_html( $content );
       $content_type = 'text/html';
     }
-    return [
-         200,
-         [ $self->_headers, 'Content-type', $content_type ],
-         [ $body ]
-    ];
-    
+    my $res = $req->new_response( 200, undef, [ $body ] );
+    $res->header('Content-type' => $content_type );
+    return $res->finalize;
 }
 
 sub build_pod_markdown {

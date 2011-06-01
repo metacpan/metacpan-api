@@ -14,7 +14,7 @@ sub handle {
       cmd => '/_search/scroll',
       data => $req->decoded_body
     });
-    return [ 200, [ $self->_headers ], [encode_json($res)] ];
+    return $req->new_response( 200, undef, $res )->finalize;
   }
   return $self->error404;
 

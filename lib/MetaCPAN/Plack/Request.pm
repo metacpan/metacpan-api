@@ -8,6 +8,7 @@ use URI::Escape;
 use HTTP::Headers::Util qw(split_header_words);
 use JSON::XS;
 use Try::Tiny;
+use MetaCPAN::Plack::Response;
 
 my $CHECK = Encode::FB_CROAK | Encode::LEAVE_SRC;
 
@@ -52,6 +53,13 @@ sub clone {
     application/xhtml+xml
   );
 
+  sub looks_like_browser {
+      my $self = shift;
+      $self->{_looks_like_browser} = $self->_build_looks_like_browser
+        unless(defined $self->{_looks_like_browser});
+      return $self->{_looks_like_browser};
+  }
+
   sub _build_looks_like_browser {
     my $self = shift;
 
@@ -74,11 +82,11 @@ sub clone {
       if grep { $self->accepts($_) } keys %HTMLTypes;
 
     return 0
-      if @{ $self->accepted_content_types() };
+      if $self->preferred_content_type;
 
     # If the client did not specify any content types at all,
-    # assume they are a browser.
-    return 1;
+    # assume they are not a browser.
+    return 0;
   }
 }
 
@@ -140,10 +148,7 @@ sub decoded_body {
         @body ? JSON::XS->new->relaxed->decode( join( '', @body ) ) : undef;
     }
     catch {
-        die [
-            500,
-            [MetaCPAN::Plack::Base->_headers],
-            [ encode_json( { message => $_ } ) ] ];
+        die $self->new_response( 500, undef, { message => $_ } )->finalize;
     };
     return $self->{_decoded_body};
 }
@@ -157,5 +162,10 @@ sub accepts {
   return grep { $_ eq $type } @{ $self->{_accepts} };
 }
 
-
+sub new_response {
+    my $self = shift;
+    my $res = MetaCPAN::Plack::Response->new(@_);
+    $res->request($self);
+    return $res;
+}
 1;

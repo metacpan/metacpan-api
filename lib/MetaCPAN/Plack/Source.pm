@@ -10,6 +10,7 @@ use Path::Class qw(file dir);
 use File::Find::Rule;
 use MetaCPAN::Util;
 use Plack::App::Directory;
+use MetaCPAN::Plack::Response;
 use File::Temp ();
 
 __PACKAGE__->mk_accessors(qw(cpan remote));
@@ -31,7 +32,7 @@ sub call {
     ($env->{SCRIPT_NAME} = $env->{REQUEST_URI}) =~ s/\/?\Q$file\E$//;
     Plack::Util::response_cb(Plack::App::Directory->new( root => $root )->to_app->($env), sub {
         my $res = shift;
-        my $h = [$self->_headers];
+        my $h = [MetaCPAN::Plack::Response->_headers];
         Plack::Util::header_remove($h, 'content-type');
         my $ct = Plack::Util::header_get($res->[1], 'content-type');
         $ct = 'text/plain' unless($ct =~ /^text\/html/ || $ct =~ /^image\//);

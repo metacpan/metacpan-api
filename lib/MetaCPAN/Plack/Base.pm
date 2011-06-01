@@ -7,6 +7,7 @@ use Try::Tiny;
 use IO::String;
 use Plack::App::Proxy;
 use MetaCPAN::Plack::Request;
+use MetaCPAN::Plack::Response;
 use mro 'c3';
 use Try::Tiny;
 
@@ -18,7 +19,7 @@ sub get_source {
     try {
         my $res =
           $self->index->type( $self->type )->inflate(0)->get( $args[0] );
-        return [ 200, [ $self->_headers ], [ encode_json( $res->{_source} ) ] ];
+        return $req->new_response( 200, undef, $res->{_source} )->finalize;
     }
     catch {
         return $self->error404;
@@ -27,7 +28,7 @@ sub get_source {
 
 
 sub error404 {
-    [ 404, [shift->_headers], ['{"message":"Not found"}'] ];
+    MetaCPAN::Plack::Response->new( 404, undef, { message => "Not found" } )->finalize;
 }
 
 sub get_first_result {
@@ -39,9 +40,8 @@ sub get_first_result {
         my ($res) =
           $self->index->type( $self->type )->query($query)->inflate(0)->all;
         if ( $res->{hits}->{total} ) {
-            return [ 200,
-                     [ $self->_headers ],
-                     [ encode_json( $res->{hits}->{hits}->[0]->{_source} ) ] ];
+            my $data = $res->{hits}->{hits}->[0]->{_source};
+            return $req->new_response( 200, undef, $data )->finalize;
         } else {
             return $self->error404;
         }
@@ -56,16 +56,13 @@ sub call {
     my ( $self, $env ) = @_;
     my $req = MetaCPAN::Plack::Request->new($env);
     if ( $req->method eq "OPTIONS" ) {
-        return [ 200, [ $self->_headers ], [] ];
+        return $req->new_response( 200, undef, [] )->finalize;
     } elsif (
         !grep {
             $req->method eq $_
         } qw(GET POST) )
     {
-        return [
-            403,
-            [ $self->_headers ],
-            [ encode_json( { message => 'Not allowed' } ) ] ];
+        return $req->new_response( 403, undef, { message => 'Not allowed' } )->finalize;
     } elsif ( $req->path_info eq '/_search'
         || ( $req->path_info eq '/_mapping' && $req->method eq 'GET' ) )
     {
@@ -78,32 +75,16 @@ sub call {
                     cmd    => sprintf("/%s/%s%s", $self->index->name, $self->type, $req->path_info ),
                     data => $body
                 } );
-            return [ 200, [ $self->_headers ], [ encode_json($res) ] ];
+            return $req->new_response( 200, undef, $res )->finalize;
         }
         catch {
             ref $_ eq 'ARRAY'
               ? $_
-              : [
-                500,
-                [ $self->_headers ],
-                [ encode_json( { message => "$_" } ) ] ];
+              : $req->new_response( 500, undef, { message => "$_" } )->finalize;
         };
     } else {
         return $self->handle($req);
     }
-}
-
-sub _headers {
-    return ( 'Access-Control-Allow-Origin',
-             'http://localhost:3030',
-             'Access-Control-Allow-Headers',
-             'X-Requested-With, Content-Type',
-             'Access-Control-Allow-Methods',
-             'POST',
-             'Access-Control-Max-Age',
-             '17000000',
-             'Access-Control-Allow-Credentials',
-             'true', 'Content-type', 'application/json' );
 }
 
 1;
