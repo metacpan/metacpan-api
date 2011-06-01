@@ -150,8 +150,7 @@ has pod => (
   index          => 'analyzed',
   not_analyzed   => 0,
   store          => 'no',
-  term_vector    => 'with_positions_offsets',
-  include_in_all => 0 );
+  term_vector    => 'with_positions_offsets' );
 
 has mime => ( lazy_build => 1 );
 has abstract => ( lazy_build => 1, index => 'analyzed' );
