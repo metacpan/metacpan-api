@@ -56,13 +56,14 @@ sub handle {
     }
     
     my ($body, $content_type);
-    if($req->preferred_content_type eq 'text/plain') {
+    my $accept = $req->preferred_content_type || 'text/html';
+    if($accept eq 'text/plain') {
       $body = $self->build_pod_txt( $content );
       $content_type = 'text/plain';
-    } elsif($req->preferred_content_type eq 'text/x-pod') {
+    } elsif($accept eq 'text/x-pod') {
       $body = $self->extract_pod( $content );
       $content_type = 'text/plain';
-    } elsif($req->preferred_content_type eq 'text/x-markdown') {
+    } elsif($accept eq 'text/x-markdown') {
       $body = $self->build_pod_markdown( $content );
       $content_type = 'text/plain';
     } else {
