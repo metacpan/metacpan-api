@@ -43,7 +43,13 @@ sub handle {
           MetaCPAN::Plack::Source->new( { cpan => $self->cpan } )
           ->to_app->($env)->[2];
     }
-    
+    if( ref $source eq 'ARRAY') {
+      return [
+           404,
+           [ $self->_headers ],
+           $source
+      ];
+    }
     my $content = "";
     while ( my $line = $source->getline ) {
         $content .= $line;
