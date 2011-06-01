@@ -258,7 +258,7 @@ sub _build_abstract {
   return undef unless ( $self->is_perl_file );
   my $text = ${$self->content};
   my ( $documentation, $abstract );
-  if ( $text =~ /^=head1 NAME(\nX<.*?>\h*\n)?\s+(\S+)((\h+-+\h+(.+))|(\r?\n\h*\r?\n\h*(.+)))?/ms ) {
+  if ( $text =~ /^=head1 NAME(\r?\nX<.*?>\h*\r?\n)?\s+(\S+)((\h+-+\h+(.+))|(\r?\n\h*\r?\n\h*(.+)))?/ms ) {
     chomp( $abstract = $5 || $7 ) if($5 || $7);
     my $name = $2;
     $documentation = $name if ( $name =~ /^[\w\.:-_']+$/ );
@@ -267,6 +267,7 @@ sub _build_abstract {
   }
 
   if ($abstract) {
+    $abstract =~ s/^=\w+.*$//xms;
     $abstract =~ s{\r?\n\h*\r?\n\h*.*$}{}xms;
     $abstract =~ s{\n}{ }gxms;
     $abstract =~ s{\s+$}{}gxms;
