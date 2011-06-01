@@ -55,44 +55,39 @@ sub get_first_result {
 sub call {
     my ( $self, $env ) = @_;
     my $req = MetaCPAN::Plack::Request->new($env);
-    if ( $env->{REQUEST_METHOD} eq "OPTIONS" ) {
+    if ( $req->method eq "OPTIONS" ) {
         return [ 200, [ $self->_headers ], [] ];
     } elsif (
         !grep {
-            $env->{REQUEST_METHOD} eq $_
+            $req->method eq $_
         } qw(GET POST) )
     {
-        return [ 403, [$self->_headers], [encode_json({ message => 'Not allowed' }) ]];
-    } elsif ( $env->{PATH_INFO} =~ /^\/_search/ && $req->method eq 'GET' ) {
-        my $res =
-          $self->model->es->searchqs(
-            index => $self->index->name,
-            type  => $self->type,
-            map { $_ => $req->parameters->{$_} }
-              grep { defined $req->parameters->{$_} }
-              qw(q analyzer default_operator explain fields sort track_scores timeout from size search_type)
-          );
-        return [200, [$self->_headers], [encode_json($res)]];
-    } elsif ( $env->{PATH_INFO} =~ /^\/_search/ ) {
-        my $input = $env->{'psgi.input'};
-        my @body = $input->getlines;
-        warn @body;
-        my $set = $self->index->type( $self->type )->inflate(0);
-        return try {
-            $set->query(JSON::XS->new->relaxed->decode(join('', @body))) if(@body);
-            return try {
-                my $res = $set->all;
-                return [200, [$self->_headers], [encode_json($res)]];
-            } catch {
-                return $self->error404;
-            };
-        } catch {
-            return [500, [$self->_headers], [encode_json({message => 'Malformed JSON: ' . $_ })]];
-        };
+        return [
+            403,
+            [ $self->_headers ],
+            [ encode_json( { message => 'Not allowed' } ) ] ];
+    } elsif ( $env->{PATH_INFO} =~ /^\/_search$/ ) {
+      return try {
+        my $body      = $req->decoded_body;
+        my $transport = $self->model->es->transport;
+        my $res       = $transport->request(
+            {   method => $req->method,
+                qs     => $req->parameters->as_hashref,
+                cmd    => join( '/', '', $self->index->name, $self->type, '_search' ),
+                data   => $body
+            } );
+        return [ 200, [ $self->_headers ], [ encode_json($res) ] ];
+      } catch {
+        ref $_ eq 'ARRAY'
+          ? $_
+          : [500, [$self->_headers], [encode_json({ message => "$_" })]];
+      };
     } else {
         return $self->handle($req);
     }
 }
+
+
 
 sub _headers {
     return ( 'Access-Control-Allow-Origin',

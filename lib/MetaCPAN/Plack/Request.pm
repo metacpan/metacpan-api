@@ -6,6 +6,8 @@ use base 'Plack::Request';
 use Encode;
 use URI::Escape;
 use HTTP::Headers::Util qw(split_header_words);
+use JSON::XS;
+use Try::Tiny;
 
 my $CHECK = Encode::FB_CROAK | Encode::LEAVE_SRC;
 
@@ -129,6 +131,24 @@ sub preferred_content_type {
   $self->{_accepts}->[0];
 
 }
+
+sub decoded_body {
+    my $self = shift;
+    return $self->{_decoded_body} if ( exists $self->{_decoded_body} );
+    my @body = $self->env->{'psgi.input'}->getlines;
+    $self->{_decoded_body} = try {
+        @body ? JSON::XS->new->relaxed->decode( join( '', @body ) ) : undef;
+    }
+    catch {
+        die [
+            500,
+            [MetaCPAN::Plack::Base->_headers],
+            [ encode_json( { message => $_ } ) ] ];
+    };
+    return $self->{_decoded_body};
+}
+
+
 
 sub accepts {
   my $self = shift;
