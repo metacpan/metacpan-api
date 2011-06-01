@@ -76,7 +76,7 @@ sub call {
     } elsif ( $env->{PATH_INFO} =~ /^\/_search/ ) {
         my $input = $env->{'psgi.input'};
         my @body = $input->getlines;
-        use Devel::Dwarn; DwarnN(\@body);
+        warn @body;
         my $set = $self->index->type( $self->type )->inflate(0);
         return try {
             $set->query(JSON::XS->new->relaxed->decode(join('', @body))) if(@body);
