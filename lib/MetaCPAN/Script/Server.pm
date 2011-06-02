@@ -42,7 +42,7 @@ sub build_app {
 
 sub run {
     my ($self) = @_;
-    my $runner = Plack::Runner->new;
+    my $runner = Plack::Runner->new( server => 'Starman', env => 'deployment' );
     shift @ARGV;
 
     $runner->parse_options(@{$self->extra_argv});
