@@ -7,6 +7,7 @@ use Log::Contextual qw( :log :dlog );
 with 'MetaCPAN::Role::Common';
 use MetaCPAN::Document::Mirror;
 use JSON ();
+use LWP::UserAgent;
 
 sub run {
     my $self = shift;
