@@ -12,7 +12,7 @@ sub _body {
     return [] unless defined $body;
     if(ref $body eq 'HASH') {
         return $self->request && $self->request->looks_like_browser
-            ? [JSON::XS->new->pretty->encode($body)]
+            ? [JSON::XS->new->utf8->pretty->encode($body)]
             : [encode_json($body)];
     } else {
         return $self->SUPER::_body(@_);
