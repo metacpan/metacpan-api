@@ -227,7 +227,8 @@ sub import_tarball {
         date         => $date,
         dependency   => \@dependencies };
     $create->{abstract} = MetaCPAN::Util::strip_pod($create->{abstract});
-    delete $create->{abstract} if($create->{abstract} eq 'unknown');
+    delete $create->{abstract}
+        if($create->{abstract} eq 'unknown' || $create->{abstract} eq 'null');
 
     my $release = $cpan->type('release')->put($create);
 
