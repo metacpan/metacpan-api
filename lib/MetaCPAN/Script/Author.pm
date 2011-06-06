@@ -97,7 +97,7 @@ sub author_config {
         $json = <FILE>;
         close FILE
     }
-    my $author = eval { JSON::XS->new->relaxed->decode($json) };
+    my $author = eval { JSON::XS->new->utf8->relaxed->decode($json) };
     if (@$) {
         log_warn { "$file is broken: $@" };
         return {};
