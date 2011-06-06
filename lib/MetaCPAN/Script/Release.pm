@@ -78,13 +78,12 @@ sub run {
               ( $d->cpanid, $d->filename, $d->distvname );
 
             my $count = $cpan->type('release')->query(
-                                     { query  => { match_all => {} },
-                                       filter => {
-                                            and => [
-                                                { term => { archive => $archive } },
-                                                { term => { author  => $author } } ]
-                                       } } )->inflate(0)->count;
-
+            { query => { filtered => { query  => { match_all => {} },
+              filter => {
+                and => [
+                    { term => { archive => $archive } },
+                    { term => { author  => $author } } ]
+            } } } } )->inflate(0)->count;
             if($count) {
                 log_info { "Skipping $file" };
                 next;
