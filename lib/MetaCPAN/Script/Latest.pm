@@ -71,12 +71,12 @@ sub reindex {
            scroll      => '1h',
            size        => 1000,
            search_type => 'scan',
-           query       => { match_all => {} },
+           query => { filtered => { query       => { match_all => {} },
            filter      => {
                        and => [
                            { term => { 'file.release' => $source->{name} } },
                            { term => { 'file.author'  => $source->{author} } } ]
-           } } );
+           } } } } );
 
     while ( my $row = $scroll->next(1) ) {
         my $source = $row->{_source};
