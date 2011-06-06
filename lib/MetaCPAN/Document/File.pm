@@ -241,9 +241,15 @@ sub _build_content {
     my $self = shift;
     my @content = split("\n", ${$self->content_cb->()} || '');
     my $content = "";
+    my $in_data = 0; # skip DATA section
     while(@content) {
         my $line = shift @content;
-        last if($line =~ /^\s*__DATA__$/);
+        if($line =~ /^\s*__END__\s*$/) {
+            $in_data = 0;
+        } elsif($line =~ /^\s*__DATA__\s*$/) {
+            $in_data++;
+        };
+        next if($in_data);
         $content .= $line . "\n";
     }
     return \$content;
