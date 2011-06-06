@@ -60,7 +60,7 @@ curl -XPOST api.beta.metacpan.org/release/_search -d '{
 
 ### The size of the CPAN unpacked
 
-````sh
+```sh
 curl -XPOST api.beta.metacpan.org/file/_search -d '{
   "query": { "match_all": {} },
   "facets": { 
@@ -70,4 +70,21 @@ curl -XPOST api.beta.metacpan.org/file/_search -d '{
   } } },
   "size":0
 }'
-````
+```
+
+### Get license types of all releases in an arbitrary time span:
+
+```sh
+curl -XPOST api.beta.metacpan.org/release/_search?size=100 -d '{
+  "query": {
+    "match_all": {},
+    "range" : {
+        "release.date" : {
+            "from" : "2010-06-05T00:00:00",
+            "to" : "2011-06-05T00:00:00",
+        }
+    }
+  },
+  "fields": ["release.license", "release.name", "release.distribution", "release.date", "release.version_numified"]
+}'
+```
