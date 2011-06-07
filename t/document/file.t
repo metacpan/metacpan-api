@@ -99,6 +99,8 @@ END
 
 =head1 NAME
 
+=for html foobar
+
  MOBY::Config.pm - An object B<containing> information about how to get access to teh Moby databases, resources, etc. from the 
 mobycentral.config file
 
