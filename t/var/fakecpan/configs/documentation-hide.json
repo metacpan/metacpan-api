@@ -1,0 +1,14 @@
+{
+  "name": "Documentation-Hide",
+  "abstract": ".pm file with hidden package declaration and name section",
+  "X_Module_Faker": {
+    "cpan_author": "MO",
+    "append": [ {
+        "file": "lib/Documentation/Hide.pm",
+        "content": "\npackage\nDocumentation::Hide::Internal;\n\n=head1 NAME\n\nDocumentation::Hide::Internal - abstract\n"
+    }, {
+        "file": "lib/Documentation/Hide/Doc.pod",
+        "content": "=head1 NAME\n\nDocumentation::Hide::Doc - abstract\n"
+    } ]
+  }
+}
