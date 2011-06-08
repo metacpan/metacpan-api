@@ -13,9 +13,9 @@ use Try::Tiny;
 
 sub handle {
     my ( $self, $req ) = @_;
-    my $source;
+    my $path;
+    my $env = $req->env;
     if ( $req->path =~ m/^\/pod\/([^\/]*?)\/?$/ ) {
-        my $env = $req->env;
         $env->{REQUEST_URI} = "/module/$1";
         $env->{PATH_INFO} = "/$1";
         $env->{SCRIPT_NAME} = "/module";
@@ -28,21 +28,15 @@ sub handle {
         my $file    = $hit->{path};
         my $release = $hit->{release};
         my $author  = $hit->{author};
-        $env->{REQUEST_URI} = $env->{PATH_INFO} =
-          "/source/$author/$release/$file";
-        delete $env->{CONTENT_LENGTH};
-        delete $env->{'psgi.input'};
-        $source = MetaCPAN::Plack::Source->new(
-                  { cpan => $self->cpan } )->to_app->($env)->[2];
+        $path = "/source/$author/$release/$file";
     } else {
-        my $env = $req->env;
-        my $format = $env->{REQUEST_URI} =~ s/^\/pod\//\/source\//;
-        $env->{PATH_INFO} = $env->{REQUEST_URI};
-
-        $source =
-          MetaCPAN::Plack::Source->new( { cpan => $self->cpan } )
-          ->to_app->($env)->[2];
+        ($path = $env->{REQUEST_URI}) =~ s/^\/pod\//\/source\//;
     }
+
+    # prefer .pod over .pm file
+    (my $pod = $path) =~ s/\.pm$/.pod/i;
+    my $source = $self->request_source($env, $pod);
+    $source ||= $self->request_source($env, $path);
     if( ref $source eq 'ARRAY') {
       return $req->new_response( 404, undef, $source )->finalize;
     }
@@ -50,7 +44,7 @@ sub handle {
     while ( my $line = $source->getline ) {
         $content .= $line;
     }
-    
+
     my ($body, $content_type);
     my $accept = $req->preferred_content_type || 'text/html';
     if($accept eq 'text/plain') {
@@ -69,6 +63,16 @@ sub handle {
     my $res = $req->new_response( 200, undef, [ $body ] );
     $res->header('Content-type' => $content_type );
     return $res->finalize;
+}
+
+sub request_source {
+    my ($self, $env, $path) = @_;
+    $env->{REQUEST_URI} = $env->{PATH_INFO} = $path;
+    delete $env->{CONTENT_LENGTH};
+    delete $env->{'psgi.input'};
+    my $res = MetaCPAN::Plack::Source->new(
+              { cpan => $self->cpan } )->to_app->($env);
+    return $res->[2] if($res->[0] == 200);
 }
 
 sub build_pod_markdown {

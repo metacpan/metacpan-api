@@ -7,13 +7,15 @@ sub type { 'file' }
 
 sub query {
     shift;
-    return { query  => { match_all => {} },
-             filter => {
-                         and => [ { term => { documentation => shift } },
-                                  { term => { status        => 'latest' } } ]
-             },
-             size => 1,
-             sort => { date => { reverse => \1 } } };
+    return { size   => 1,
+      query => { filtered => { query  => { match_all => {} },
+      filter => {
+        and => [
+          { term => { 'documentation' => shift } },
+          { term => { 'file.indexed'  => \1, } },
+          { term => { status          => 'latest', } } ]
+      } } },
+      sort => [ { 'date' => { order => "desc" } }, { 'mime' => { order => "desc" } } ] };
 }
 
 
