@@ -108,4 +108,20 @@ curl -XPOST api.beta.metacpan.org/release/_search -d '{
   } } },
   "size":0
 }'
-````
+```
+
+### Most used file names in the root directory of releases:
+
+```sh
+curl -XPOST api.beta.metacpan.org/file/_search -d '{
+  "query": { "filtered":{"query":{"match_all":{}},"filter":{"term":{"level":0}}}
+   },
+  "facets": { 
+    "license": {
+      "terms": {
+        "size":100,
+        "field":"file.name"
+  } } },
+  "size":0
+}'
+```
