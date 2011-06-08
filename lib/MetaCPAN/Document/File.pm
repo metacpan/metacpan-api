@@ -10,6 +10,8 @@ use List::MoreUtils qw(uniq);
 use MetaCPAN::Util;
 use MetaCPAN::Types qw(:all);
 use MooseX::Types::Moose qw(ArrayRef);
+use Encode;
+use utf8;
 
 Plack::MIME->add_type( ".t"   => "text/x-script.perl" );
 Plack::MIME->add_type( ".pod" => "text/x-pod" );
@@ -263,8 +265,12 @@ sub _build_abstract {
   my $self = shift;
   return undef unless ( $self->is_perl_file );
   my $text = ${$self->content};
+  $text = Encode::decode_utf8($text);
   my ( $documentation, $abstract );
-  (my $section = $text) =~ s/^.*?^=head1 NAME(.*?)(^((\=head1)|(\=cut)).*)?$/$1/ms;
+  return undef
+    unless($text =~ /^=head1 NAME(.*?)(^((\=head1)|(\=cut)))/ms
+    || $text =~ /^=head1 NAME(.*)/ms);
+  my $section = $1;
   $section =~ s/^=\w+.*$//mg;
   $section =~ s/X<.*?>//mg;
   if ( $section =~ /^\s*(\S+)((\h+-+\h+(.+))|(\r?\n\h*\r?\n\h*(.+)))?/ms ) {
