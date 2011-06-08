@@ -22,7 +22,7 @@ sub build_app {
       cpan   => $self->cpan,
       remote => $self->remote,
       index  => $index );
-    for ( qw(Author File Mirror Module
+    for ( qw(Author File Mirror Module Rating
           Pod Release Source Login User) )
     {
         my $class = "MetaCPAN::Plack::" . $_;
