@@ -1,0 +1,14 @@
+{
+  "name": "Scripts",
+  "abstract": "contains various scripts that should be declared as such",
+  "X_Module_Faker": {
+    "cpan_author": "MO",
+    "append": [ {
+        "file": "bin/catalyst.pl",
+        "content": "#!/usr/bin/env perl\n\n=head1 NAME\n\ncatalyst - starter"
+    }, {
+        "file": "bin/starman",
+        "content": "#!/usr/bin/perl\n\n=head1 NAME\n\nstarman - starter"
+    } ]
+  }
+}

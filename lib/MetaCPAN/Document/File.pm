@@ -205,10 +205,7 @@ Retruns true if the file extension is C<pod>.
 sub is_perl_file {
     my $self = shift;
     return 1 if($self->name =~ /\.(pl|pm|pod|t)$/i);
-    if($self->name !~ /\./) {
-        my $content = ${$self->content};
-        return 1 if($content =~ /^#!.*?perl/);
-    }
+    return 1 if($self->mime eq "text/x-script.perl");
     return 0;
 }
 
@@ -258,7 +255,13 @@ sub _build_content {
 }
 
 sub _build_mime {
-    Plack::MIME->mime_type( shift->name ) || 'text/plain';
+    my $self = shift;
+    if($self->name !~ /\./) {
+        my $content = ${$self->content};
+        return "text/x-script.perl" if($content =~ /^#!.*?perl/);
+    } else {
+        return Plack::MIME->mime_type( $self->name ) || 'text/plain';
+    }
 }
 
 sub _build_abstract {
