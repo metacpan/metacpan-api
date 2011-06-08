@@ -1,18 +1,8 @@
-# crontab file for metacpan
-
+MAILTO=onken@netcubed.de
 SHELL=/bin/bash
-# PERLBREW
-eval $(perl -Mlocal::lib=/home/api/perl5)
-PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/home/api/cpan-api/bin/
+PATH=/home/metacpan/perl5/perlbrew/bin:/home/metacpan/perl5/perlbrew/perls/perl-5.14.0/bin:/usr/local/bin:/usr/bin:/bin:/usr/X11R6/bin
 
-# m h dom mon dow user  command
-51 1    * * *   api    metacpan author
-38 1    * * *   api    metacpan mirrors
-
-# we need a near real-time mirror
-22 2    * * *   api    rsync -avz --delete rsync: /home/cpan/CPAN/
-
-# reindex modules from the last 24 hours
-# (friendfeed might be down or it skipped an announcement)
-# set latest property immediately and run sanity check afterwards
-22 3    * * *   api    metacpan release --age 24 --latest && metacpan latest
+# m h  dom mon dow   command
+0 * * * * metacpan $HOME/api.metacpan.org/bin/metacpan author
+0 * * * * metacpan $HOME/api.metacpan.org/bin/metacpan mirrors
+55 * * * * metacpan rsync -avz rsync://cpan-rsync.perl.org/CPAN/authors/id/ $HOME/CPAN/authors/id/ > /dev/null
