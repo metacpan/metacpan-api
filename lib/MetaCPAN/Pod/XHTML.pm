@@ -4,7 +4,7 @@ use Moose;
 extends 'Pod::Simple::XHTML';
 
 sub perldoc_url_prefix {
-    'http://metacpan.org/module/'
+    'http://beta.metacpan.org/module/'
 }
 
 1;
