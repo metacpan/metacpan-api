@@ -56,6 +56,9 @@ sub handle {
     } elsif($accept eq 'text/x-markdown') {
       $body = $self->build_pod_markdown( $content );
       $content_type = 'text/plain';
+    } elsif($accept eq 'application/x-perl') {
+      $body = $content;
+      $content_type = 'application/x-perl';
     } else {
       $body = $self->build_pod_html( $content );
       $content_type = 'text/html';
