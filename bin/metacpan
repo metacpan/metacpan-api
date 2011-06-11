@@ -1,6 +1,18 @@
 #!/usr/bin/env perl
 # PODNAME: metadbic
 
+=head1 SYNOPSIS
+
+    # sample usage
+
+    bin/metacpan release /path/to/cpan/authors/id/
+    bin/metacpan release /path/to/cpan/authors/id/{A,B}
+    bin/metacpan release /path/to/cpan/authors/id/D/DO/DOY/Try-Tiny-0.09.tar.gz  
+    bin/metacpan latest
+    bin/metacpan server --cpan /path/to/cpan/
+
+=cut
+
 use strict;
 use warnings;
 use FindBin;
