@@ -295,9 +295,9 @@ sub _build_abstract {
   my $text = ${$self->content};
   my ( $documentation, $abstract );
   my $section = MetaCPAN::Util::extract_section($text, 'NAME');
+  return undef unless($section);
   $section =~ s/^=\w+.*$//mg;
   $section =~ s/X<.*?>//mg;
-  return undef unless($section);
   if ( $section =~ /^\s*(\S+)((\h+-+\h+(.+))|(\r?\n\h*\r?\n\h*(.+)))?/ms ) {
     chomp( $abstract = $4 || $6 ) if($4 || $6);
     my $name = $1;
