@@ -272,18 +272,12 @@ sub _build_abstract {
   my $text = ${$self->content};
   $text = Encode::decode_utf8($text);
   my ( $documentation, $abstract );
-  return undef
-    unless($text =~ /^=head1 NAME(.*?)(^((\=head1)|(\=cut)))/ms
-    || $text =~ /^=head1 NAME(.*)/ms);
-  my $section = $1;
-  $section =~ s/^=\w+.*$//mg;
-  $section =~ s/X<.*?>//mg;
+  my $section = MetaCPAN::Util::extract_section($text);
+  return undef unless($section);
   if ( $section =~ /^\s*(\S+)((\h+-+\h+(.+))|(\r?\n\h*\r?\n\h*(.+)))?/ms ) {
     chomp( $abstract = $4 || $6 ) if($4 || $6);
     my $name = $1;
     $documentation = $name if ( $name =~ /^[\w\.:-_']+$/ );
-  } elsif ( $text =~ /^=head1 NAME\s+([\w\.:-_']+?)\n/ms ) {
-    chomp( $documentation = $1 );
   }
 
   if ($abstract) {

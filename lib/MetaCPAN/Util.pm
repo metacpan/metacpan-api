@@ -50,6 +50,17 @@ sub strip_pod {
     return $pod;
 }
 
+sub extract_section {
+    my $pod = shift;
+    return undef
+        unless($pod =~ /^=head1 NAME(.*?)(^((\=head1)|(\=cut)))/ms
+        || $pod =~ /^=head1 NAME(.*)/ms);
+      my $section = $1;
+      $section =~ s/^=\w+.*$//mg;
+      $section =~ s/X<.*?>//mg;
+      return $section;
+}
+
 sub pod_lines {
     my $content = shift;
     return [] unless($content);
