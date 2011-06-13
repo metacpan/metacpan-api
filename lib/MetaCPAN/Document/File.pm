@@ -247,7 +247,9 @@ sub _build_content {
             $in_data = 0;
         } elsif($line =~ /^\s*__DATA__\s*$/) {
             $in_data++;
-        };
+        } elsif($in_data && $line =~ /^=head1/) {
+            $in_data = 0;
+        }
         next if($in_data);
         $content .= $line . "\n";
     }

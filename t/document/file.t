@@ -3,6 +3,13 @@ use strict;
 use warnings;
 
 use MetaCPAN::Document::File;
+my %stub = (
+    author       => 'Foo',
+    path         => 'bar',
+    release      => 'release',
+    distribution => 'foo',
+    name         => 'module.pm',
+);
 
 {
     my $content = <<'END';
@@ -34,11 +41,7 @@ even more
 END
 
     my $file =
-      MetaCPAN::Document::File->new( author       => 'Foo',
-                                     path         => 'bar',
-                                     release      => 'release',
-                                     distribution => 'foo',
-                                     name         => 'module.pm',
+      MetaCPAN::Document::File->new( %stub,
                                      content      => \$content );
 
     is( $file->abstract, 'mymodule1 abstract' );
@@ -57,11 +60,7 @@ MyModule
 END
 
     my $file =
-      MetaCPAN::Document::File->new( author       => 'Foo',
-                                     path         => 'bar',
-                                     release      => 'release',
-                                     distribution => 'foo',
-                                     name         => 'module.pm',
+      MetaCPAN::Document::File->new( %stub,
                                      content      => \$content );
 
     is( $file->abstract, undef );
@@ -83,11 +82,7 @@ Version 0.5.0
 END
 
     my $file =
-      MetaCPAN::Document::File->new( author       => 'Foo',
-                                     path         => 'bar',
-                                     release      => 'release',
-                                     distribution => 'foo',
-                                     name         => 'script',
+      MetaCPAN::Document::File->new( %stub,
                                      content      => \$content );
 
     is( $file->abstract, 'a command line tool' );
@@ -116,11 +111,8 @@ package MOBY::Config;
 END
 
     my $file =
-      MetaCPAN::Document::File->new( author       => 'Foo',
+      MetaCPAN::Document::File->new( %stub,
                                      path         => 't/bar/bat.t',
-                                     release      => 'release',
-                                     distribution => 'foo',
-                                     name         => 'module.pm',
                                      module       => { name => 'MOBY::Config' },
                                      content_cb   => sub { \$content } );
 
@@ -163,11 +155,7 @@ AS-specific methods for Number::Phone
 1;
 END
     my $file =
-      MetaCPAN::Document::File->new( author       => 'Foo',
-                                     path         => 'bar',
-                                     release      => 'release',
-                                     distribution => 'foo',
-                                     name         => 'module.pm',
+      MetaCPAN::Document::File->new( %stub,
                                      module => [{ name => 'Number::Phone::NANP::ASS', version => 1.1 }],
                                      content_cb   => sub { \$content } );
     is( $file->sloc, 8, '8 lines of code' );
@@ -190,15 +178,30 @@ C<Perl6Attribute> -- An example attribute metaclass for Perl 6 style attributes
 
 END
     my $file =
-      MetaCPAN::Document::File->new( author       => 'Foo',
-                                     path         => 'bar',
-                                     release      => 'release',
-                                     distribution => 'foo',
+      MetaCPAN::Document::File->new( %stub,
                                      name         => 'Perl6Attribute.pod',
                                      module => [{ name => 'main', version => 1.1 }],
                                      content_cb   => sub { \$content } );
     is($file->documentation, 'Perl6Attribute');
     is($file->abstract, 'An example attribute metaclass for Perl 6 style attributes');
+}
+
+{
+    my $content = <<'END';
+package Foo;
+
+__DATA__
+
+=head1 NAME
+
+Foo -- An example attribute metaclass for Perl 6 style attributes
+
+END
+    my $file =
+      MetaCPAN::Document::File->new( %stub,
+                                       name         => 'Foo.pod',
+                                     content_cb   => sub { \$content } );
+    is($file->documentation, 'Foo', 'POD in __DATA__ section');
 }
 
 done_testing;
