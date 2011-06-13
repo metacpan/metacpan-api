@@ -12,6 +12,7 @@ use MetaCPAN::Util;
 use Plack::App::Directory;
 use MetaCPAN::Plack::Response;
 use File::Temp ();
+use JSON::XS ();
 
 __PACKAGE__->mk_accessors(qw(cpan remote));
 
@@ -24,6 +25,10 @@ sub call {
     } elsif ($env->{REQUEST_URI} =~ m{\A/source/authors/id/[A-Z]/[A-Z0-9][A-Z0-9]/([A-Z0-9]+)/([^\/\?]+)(/([^\?]+))?} ) {
         $source = $self->file_path( $1, $2, $4 );
         $file = $3;
+    } elsif($env->{REQUEST_URI} =~ /^\/source\/([^\/]+)\/?/) {
+        my ($pauseid, $distvname, $path ) = $self->module_to_path($env, $1);
+        $source = $self->file_path($pauseid, $distvname, $path) if($pauseid);
+        $file = $path;
     }
     return $self->error404 unless($source);
     $file ||= "";
@@ -75,6 +80,16 @@ sub find_file {
     return $dir->file($file)
         if( -e $dir->file($file) );     # or even at top level
     return undef;
+}
+
+sub module_to_path {
+    my ($self, $env, $module) = @_;
+    local $env->{REQUEST_URI} = "/module/$module";
+    my $res = MetaCPAN::Plack::Module->new(
+              { index => $self->index } )->to_app->($env);
+    return () unless($res->[0] == 200);
+    my $data = JSON::XS::decode_json(join("",@{$res->[2]}));
+    return (@$data{qw(author release path)});
 }
 
 1;
