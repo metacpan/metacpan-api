@@ -144,38 +144,40 @@ sub import_tarball {
     my $meta_file;
     log_debug { "Gathering files" };
     my @list = $at->files;
-    while ( my $child = shift @list ) {
-        if ( ref $child ne 'HASH' ) {
-            $meta_file = $child if ( !$meta_file && $child =~ /^[^\/]+\/META\./ || $child =~ /^[^\/]+\/META\.json/ );
-            my $stat = do {
-                my $s = stat $tmpdir->file($child);
-                +{ map { $_ => $s->$_ } qw(mode uid gid size mtime) };
-            };
-            next unless ( $child =~ /\// );
-            ( my $fpath = $child ) =~ s/.*?\///;
-            my $fname = $fpath;
-            -d $tmpdir->file($child)
-              ? $fname =~ s/^(.*\/)?(.+?)\/?$/$2/
-              : $fname =~ s/.*\///;
-            push(
-                @files,
-                Dlog_trace { "adding file $_" } +{
-                    name         => $fname,
-                    directory    => -d $tmpdir->file($child) ? 1 : 0,
-                    release      => $name,
-                    date         => $date,
-                    distribution => $d->dist,
-                    author       => $author,
-                    full_path    => $child,
-                    path         => $fpath,
-                    version      => $d->version,
-                    stat         => $stat,
-                    maturity     => $d->maturity,
-                    indexed      => 1,
-                    content_cb   => sub { \( scalar $tmpdir->file($child)->slurp ) },
-                } );
-        }
-    }
+    $tmpdir->recurse(callback => sub {
+        my $child = shift;
+        my $relative = $child->relative($tmpdir);
+        $meta_file = $relative if ( !$meta_file && $relative =~ /^[^\/]+\/META\./ || $relative =~ /^[^\/]+\/META\.json/ );
+        my $stat = do {
+            my $s = $child->stat;
+            +{ map { $_ => $s->$_ } qw(mode uid gid size mtime) };
+        };
+        return if ( $relative eq '.' );
+        ( my $fpath = "$relative" ) =~ s/^.*?\///;
+        my $fname = $fpath;
+        $child->is_dir
+          ? $fname =~ s/^(.*\/)?(.+?)\/?$/$2/
+          : $fname =~ s/.*\///;
+        $fpath = "" unless($relative =~ /\//);
+        warn $fpath if($child->is_dir);
+        push(
+            @files,
+            Dlog_trace { "adding file $_" } +{
+                name         => $fname,
+                directory    => $child->is_dir,
+                release      => $name,
+                date         => $date,
+                distribution => $d->dist,
+                author       => $author,
+                full_path    => $child,
+                path         => $fpath,
+                version      => $d->version,
+                stat         => $stat,
+                maturity     => $d->maturity,
+                indexed      => 1,
+                content_cb   => sub { \( scalar $child->slurp ) },
+            } );
+    });
     $meta = $self->load_meta_file($meta, $tmpdir->file($meta_file))
         if($meta_file);
 

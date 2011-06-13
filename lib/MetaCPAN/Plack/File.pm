@@ -40,7 +40,7 @@ sub handle {
     if ( @args == 1 && $args[0] =~ /^[A-Za-z0-9-_]{27}$/ ) {
         $digest = $args[0];
         return $self->get_source($req->clone( PATH_INFO => join("/", $index, $digest ) ) );
-    } elsif(@args > 2) {
+    } elsif(@args > 1) {
         $digest = MetaCPAN::Util::digest( shift @args, shift @args,
                                              join( "/", @args ) );
         return $self->get_source($req->clone( PATH_INFO => join("/", $index, $digest ) ) );
