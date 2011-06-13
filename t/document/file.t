@@ -196,12 +196,27 @@ __DATA__
 
 Foo -- An example attribute metaclass for Perl 6 style attributes
 
+=head1 DESCRIPTION
+
+hot stuff
+
+=over
+
+=item Foo
+
+=item *
+
+Bar
+
+=back
+
 END
     my $file =
       MetaCPAN::Document::File->new( %stub,
                                        name         => 'Foo.pod',
                                      content_cb   => sub { \$content } );
     is($file->documentation, 'Foo', 'POD in __DATA__ section');
+    is($file->description, 'hot stuff Foo * Bar');
 }
 
 done_testing;

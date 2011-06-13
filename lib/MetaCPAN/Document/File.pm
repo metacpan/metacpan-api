@@ -40,6 +40,11 @@ B<Required>
 
 Release date (i.e. C<mtime> of the tarball).
 
+=head2 description
+
+Contains the C<DESCRIPTION> section of the POD if any. Will be stripped from
+whitespaces and POD commands.
+
 =head2 distribution
 
 =head2 distribution.analyzed
@@ -156,6 +161,7 @@ has pod => (
 
 has mime => ( lazy_build => 1 );
 has abstract => ( lazy_build => 1, index => 'analyzed' );
+has description => ( lazy_build => 1, index => 'analyzed' );
 has status => ( default => 'cpan' );
 has maturity => ( default => 'released' );
 has directory => ( isa => 'Bool', default => 0 );
@@ -266,13 +272,31 @@ sub _build_mime {
     }
 }
 
+sub _build_description {
+    my $self = shift;
+    return undef unless ( $self->is_perl_file );
+    my $section =
+      MetaCPAN::Util::extract_section( ${ $self->content }, 'DESCRIPTION' );
+    return undef unless ($section);
+    my $parser = Pod::Text->new;
+    my $text   = "";
+    $parser->output_string( \$text );
+    $parser->parse_string_document("=pod\n\n$section");
+    $text =~ s/\s+/ /g;
+    $text =~ s/^\s+//;
+    $text =~ s/\s+$//;
+    return $text;
+}
+
+
 sub _build_abstract {
   my $self = shift;
   return undef unless ( $self->is_perl_file );
   my $text = ${$self->content};
-  $text = Encode::decode_utf8($text);
   my ( $documentation, $abstract );
-  my $section = MetaCPAN::Util::extract_section($text);
+  my $section = MetaCPAN::Util::extract_section($text, 'NAME');
+  $section =~ s/^=\w+.*$//mg;
+  $section =~ s/X<.*?>//mg;
   return undef unless($section);
   if ( $section =~ /^\s*(\S+)((\h+-+\h+(.+))|(\r?\n\h*\r?\n\h*(.+)))?/ms ) {
     chomp( $abstract = $4 || $6 ) if($4 || $6);

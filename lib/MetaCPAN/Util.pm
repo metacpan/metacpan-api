@@ -5,6 +5,7 @@ use warnings;
 use Digest::SHA1;
 use version;
 use Try::Tiny;
+use Encode;
 
 sub digest {
     my $digest = Digest::SHA1::sha1_base64(join("\0", grep { defined } @_));
@@ -51,15 +52,17 @@ sub strip_pod {
 }
 
 sub extract_section {
-    my $pod = shift;
+    my ( $pod, $section ) = @_;
+    $pod = Encode::decode_utf8($pod);
     return undef
-        unless($pod =~ /^=head1 NAME(.*?)(^((\=head1)|(\=cut)))/ms
-        || $pod =~ /^=head1 NAME(.*)/ms);
-      my $section = $1;
-      $section =~ s/^=\w+.*$//mg;
-      $section =~ s/X<.*?>//mg;
-      return $section;
+      unless ( $pod =~ /^=head1 $section(.*?)(^((\=head1)|(\=cut)))/ms
+        || $pod =~ /^=head1 $section(.*)/ms );
+    my $out = $1;
+    $out =~ s/^\s*//g;
+    $out =~ s/\s*$//g;
+    return $out;
 }
+
 
 sub pod_lines {
     my $content = shift;
