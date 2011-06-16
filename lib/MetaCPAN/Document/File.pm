@@ -163,6 +163,7 @@ has mime => ( lazy_build => 1 );
 has abstract => ( lazy_build => 1, index => 'analyzed' );
 has description => ( lazy_build => 1, index => 'analyzed' );
 has status => ( default => 'cpan' );
+has authorized => ( is => 'ro', isa => 'Bool', default => 1 );
 has maturity => ( default => 'released' );
 has directory => ( isa => 'Bool', default => 0 );
 has level => ( isa => 'Int', lazy_build => 1 );

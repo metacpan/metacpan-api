@@ -61,6 +61,7 @@ has name => ( index => 'analyzed', analyzer => [qw(standard camelcase)] );
 has version => ( required => 0 );
 has version_numified => ( isa => 'Num', lazy_build => 1, required => 1 );
 has indexed => ( is => 'rw', isa => 'Bool', default => 0 );
+has authorized => ( is => 'ro', isa => 'Bool', default => 1 );
 
 sub _build_version_numified {
     my $self = shift;
