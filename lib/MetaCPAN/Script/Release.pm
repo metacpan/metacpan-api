@@ -21,11 +21,11 @@ use Try::Tiny;
 use LWP::UserAgent;
 use MetaCPAN::Document::Author;
 
-has latest  => ( is => 'ro', isa => 'Bool', default => 0 );
-has age     => ( is => 'ro', isa => 'Int' );
-has children  => ( is => 'ro', isa => 'Int', default => 2 );
-has skip    => ( is => 'ro', isa => 'Bool', default => 0 );
-has status => ( is => 'ro', isa => 'Str', default => 'cpan' );
+has latest  => ( is => 'ro', isa => 'Bool', default => 0, documentation => 'run \'latest\' script after each release' );
+has age     => ( is => 'ro', isa => 'Int', documentation => 'index releases no older than x hours (undef)' );
+has children  => ( is => 'ro', isa => 'Int', default => 2, documentation => 'number of worker processes (2)' );
+has skip    => ( is => 'ro', isa => 'Bool', default => 0, documentation => 'skip already indexed modules (0)' );
+has status => ( is => 'ro', isa => 'Str', default => 'cpan', documentation => "status of the indexed releases (cpan)" );
 
 sub run {
     my $self = shift;
@@ -83,8 +83,7 @@ sub run {
               filter => {
                 and => [
                     { term => { archive => $archive } },
-                    { term => { author  => $author } },
-                    { term => { status => $self->status } }, ]
+                    { term => { author  => $author } }, ]
             } } } } )->inflate(0)->count;
             if($count) {
                 log_info { "Skipping $file" };
@@ -161,7 +160,6 @@ sub import_tarball {
           ? $fname =~ s/^(.*\/)?(.+?)\/?$/$2/
           : $fname =~ s/.*\///;
         $fpath = "" unless($relative =~ /\//);
-        warn $fpath if($child->is_dir);
         push(
             @files,
             Dlog_trace { "adding file $_" } +{
