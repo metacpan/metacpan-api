@@ -25,6 +25,7 @@ has latest  => ( is => 'ro', isa => 'Bool', default => 0 );
 has age     => ( is => 'ro', isa => 'Int' );
 has children  => ( is => 'ro', isa => 'Int', default => 2 );
 has skip    => ( is => 'ro', isa => 'Bool', default => 0 );
+has status => ( is => 'ro', isa => 'Str', default => 'cpan' );
 
 sub run {
     my $self = shift;
@@ -82,7 +83,8 @@ sub run {
               filter => {
                 and => [
                     { term => { archive => $archive } },
-                    { term => { author  => $author } } ]
+                    { term => { author  => $author } },
+                    { term => { status => $self->status } }, ]
             } } } } )->inflate(0)->count;
             if($count) {
                 log_info { "Skipping $file" };
@@ -174,6 +176,7 @@ sub import_tarball {
                 version      => $d->version,
                 stat         => $stat,
                 maturity     => $d->maturity,
+                status       => $self->status,
                 indexed      => 1,
                 content_cb   => sub { \( scalar $child->slurp ) },
             } );
@@ -225,6 +228,7 @@ sub import_tarball {
         archive      => $archive,
         maturity     => $d->maturity,
         stat         => $stat,
+        status       => $self->status,
         date         => $date,
         dependency   => \@dependencies };
     $create->{abstract} = MetaCPAN::Util::strip_pod($create->{abstract});
