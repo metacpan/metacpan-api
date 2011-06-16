@@ -16,19 +16,39 @@ sub run {
     log_info { "Dry run: updates will not be written to ES" }
     if ( $self->dry_run );
     $es->refresh_index();
-    my $query =
-      $self->distribution
-      ? { term => { distribution => $self->distribution } }
-      : { match_all => {} };
-    my $scroll = $es->scrolled_search({ index => $self->index->name,
-                   type   => 'release',
-                   query  => $query,
-                   scroll => '1h',
-                   size => 1000,
-                   sort   => ['distribution',
-                             { maturity => { reverse => \1 } },
-                             { date     => { reverse => \1 } }
-                   ], });
+    my $scroll = $es->scrolled_search(
+        {
+            index => $self->index->name,
+            type  => 'release',
+            query => {
+                filtered => {
+                    query  => { match_all => {} },
+                    filter => {
+                        and => [
+                            $self->distribution
+                            ? {
+                                term => { distribution => $self->distribution }
+                              }
+                            : (),
+                            {
+                                not => {
+                                    filter =>
+                                      { term => { status => 'backpan' } }
+                                }
+                            }
+                        ]
+                    }
+                }
+            },
+            scroll => '1h',
+            size   => 1000,
+            sort   => [
+                'distribution',
+                { maturity => { reverse => \1 } },
+                { date     => { reverse => \1 } }
+            ],
+        }
+    );
 
     my $dist = '';
     while ( my $row = $scroll->next(1) ) {
