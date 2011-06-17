@@ -15,7 +15,7 @@ sub run {
     my $es   = $self->es;
     log_info { "Dry run: updates will not be written to ES" }
     if ( $self->dry_run );
-    $es->refresh_index();
+    $self->index->refresh;
     my $scroll = $es->scrolled_search(
         {
             index => $self->index->name,
@@ -80,6 +80,7 @@ sub run {
 
         }
     }
+    $self->index->refresh;
 }
 
 sub reindex {
