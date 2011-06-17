@@ -16,15 +16,15 @@ sub run {
     log_info { "Dry run: updates will not be written to ES" }
     if ( $self->dry_run );
     my @authorized;
-    my ( $authors, $perl ) = $self->parse_perms;
+    my $authors = $self->parse_perms;
+    log_info { "looking for modules" };
     my $scroll = $self->scroll;
     log_info { $scroll->total . " modules found" };
 
     while ( my $file = $scroll->next ) {
-        my $data = $file->{fields};
+        my $data = $file->{_source};
         my @modules =
-          map  { $_->{name} }
-          grep { $_->{indexed} } @{ $data->{'_source.module'} };
+          grep { $_->{indexed} } @{ $data->{module} };
         foreach my $module (@modules) {
             if (
                 $data->{distribution} eq 'perl'
@@ -32,29 +32,16 @@ sub run {
                     && grep { $_ eq $data->{author} } @{ $authors->{$module} } )
               )
             {
-                push(
-                    @authorized,
-                    {
-                        file       => $file->{_id},
-                        module     => $module,
-                        authorized => \1
-                    }
-                );
+                $module->{authorized} = \1;
             }
             else {
                 log_debug {
-"unauthorized module $module in $data->{release} by $data->{author}";
+"unauthorized module $module->{name} in $data->{release} by $data->{author}";
                 };
-                push(
-                    @authorized,
-                    {
-                        file       => $file->{_id},
-                        module     => $module,
-                        authorized => \0
-                    }
-                );
+                $module->{authorized} = \0;
             }
         }
+        push( @authorized, $data );
         if ( @authorized > 100 ) {
             $self->bulk_update(@authorized);
             @authorized = ();
@@ -71,33 +58,10 @@ sub bulk_update {
         return;
     }
     my @bulk;
-    my $es      = $self->model->es;
-    my $results = $es->search(
-        index => $self->index->name,
-        type  => 'file',
-        size  => scalar @authorized,
-        query => {
-            filtered => {
-                query  => { match_all => {} },
-                filter => {
-                    or => [
-                        map { { term => { 'file.id' => $_->{file} } } }
-                          @authorized
-                    ]
-                }
-            }
-        }
-    );
-    my %files =
-      map { $_->{_source}->{id} => $_->{_source} }
-      @{ $results->{hits}->{hits} };
-    foreach my $item (@authorized) {
-        my $file = $files{ $item->{file} };
-        $file->{authorized} = $item->{authorized}
-          if ( $file->{documentation}
-            && $file->{documentation} eq $item->{module} );
-        map { $_->{authorized} = $item->{authorized} }
-          grep { $_->{name} eq $item->{module} } @{ $file->{module} };
+    foreach my $file (@authorized) {
+        my ($module) =
+          grep { $_->{name} eq $file->{documentation} } @{ $file->{module} };
+        $file->{authorized} = $module->{authorized} if ($module);
         push(
             @bulk,
             {
@@ -138,10 +102,9 @@ sub scroll {
                     }
                 }
             },
-            scroll => '1h',
-            size   => 1000,
-            fields => [qw(distribution _source.module author release date)],
-            sort   => ['date'],
+            scroll      => '1h',
+            size        => 1000,
+            search_type => 'scan',
         }
     );
 }
@@ -151,19 +114,14 @@ sub parse_perms {
     my $file = $self->cpan->file(qw(modules 06perms.txt.gz))->stringify;
     log_info { "parsing $file" };
     my $gz = IO::Zlib->new( $file, 'rb' );
-    my ( %perl, %authors );
+    my %authors;
     while ( my $line = $gz->readline ) {
         my ( $module, $author, $type ) = split( /,/, $line );
         next unless ($type);
         $authors{$module} ||= [];
-        if ( $author eq 'perl' ) {
-            $perl{$module} = 1;
-        }
-        else {
-            push( @{ $authors{$module} }, $author );
-        }
+        push( @{ $authors{$module} }, $author );
     }
-    return \%authors, \%perl;
+    return \%authors;
 
 }
 
