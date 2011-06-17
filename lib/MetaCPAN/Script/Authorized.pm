@@ -28,8 +28,8 @@ sub run {
         foreach my $module (@modules) {
             if (
                 $data->{distribution} eq 'perl'
-                || ( $authors->{$module}
-                    && grep { $_ eq $data->{author} } @{ $authors->{$module} } )
+                || ( $authors->{$module->{name}}
+                    && grep { $_ eq $data->{author} } @{ $authors->{$module->{name}} } )
               )
             {
                 $module->{authorized} = \1;
