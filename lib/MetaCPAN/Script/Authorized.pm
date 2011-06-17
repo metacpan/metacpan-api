@@ -55,7 +55,7 @@ sub run {
                 );
             }
         }
-        if ( @authorized == 100 ) {
+        if ( @authorized > 100 ) {
             $self->bulk_update(@authorized);
             @authorized = ();
         }
