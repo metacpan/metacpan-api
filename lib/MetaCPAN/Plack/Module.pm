@@ -7,23 +7,32 @@ sub type { 'file' }
 
 sub query {
     shift;
-    return { size   => 1,
-      query => { filtered => { query  => { match_all => {} },
-      filter => {
-        and => [
-          { term => { 'documentation' => shift } },
-          { term => { 'file.indexed'  => \1, } },
-          { term => { status          => 'latest', } } ]
-      } } },
-      sort => [ { 'date' => { order => "desc" } }, { 'mime' => { order => "desc" } } ] };
+    return {
+        size  => 1,
+        query => {
+            filtered => {
+                query  => { match_all => {} },
+                filter => {
+                    and => [
+                        { term => { 'documentation' => shift } },
+                        { term => { 'file.indexed'  => \1, } },
+                        { term => { status          => 'latest', } }
+                    ]
+                }
+            }
+        },
+        sort => [
+            { 'date'       => { order => "desc" } },
+            { 'mime'       => { order => "desc" } },
+            { 'stat.mtime' => { order => 'desc' } }
+        ]
+    };
 }
-
 
 sub handle {
-    my ($self, $req) = @_;
+    my ( $self, $req ) = @_;
     $self->get_first_result($req);
 }
-
 
 1;
 
