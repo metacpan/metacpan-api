@@ -47,8 +47,8 @@ sub index_authors {
     log_info { "Indexing $count authors" };
 
     while ( my ( $pauseid, $data ) = each %$authors ) {
-        my ( $name, $email, $homepage ) =
-          ( @$data{qw(fullname email homepage)} );
+        my ( $name, $email, $homepage, $asciiname ) =
+          ( @$data{qw(fullname email homepage asciiname)} );
         $name = undef if(ref $name);
         $email = lc($pauseid) . '@cpan.org'
           unless ( $email && Email::Valid->address($email) );
@@ -56,6 +56,7 @@ sub index_authors {
         my $conf = $self->author_config( $pauseid, MetaCPAN::Util::author_dir($pauseid) );
         my $put = { pauseid  => $pauseid,
             name     => $name,
+            asciiname => ref $asciiname ? undef : $asciiname,
             email    => $email,
             website  => $homepage,
             map { $_ => $conf->{$_} }
@@ -104,7 +105,7 @@ sub author_config {
     } else {
         $author =
           { map { $_ => $author->{$_} }
-            qw(name profile blog perlmongers donation email website city region country location extra)
+            qw(name asciiname profile blog perlmongers donation email website city region country location extra)
           };
         return $author;
     }
