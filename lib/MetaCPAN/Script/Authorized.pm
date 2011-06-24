@@ -28,8 +28,9 @@ sub run {
         foreach my $module (@modules) {
             if (
                 $data->{distribution} eq 'perl'
-                || ( $authors->{$module->{name}}
-                    && grep { $_ eq $data->{author} } @{ $authors->{$module->{name}} } )
+                || ( $authors->{ $module->{name} }
+                    && grep { $_ eq $data->{author} }
+                    @{ $authors->{ $module->{name} } } )
               )
             {
                 $module->{authorized} = \1;
@@ -60,7 +61,8 @@ sub bulk_update {
     my @bulk;
     foreach my $file (@authorized) {
         my ($module) =
-          grep { $_->{name} eq $file->{documentation} } @{ $file->{module} };
+          grep { $_->{name} eq $file->{documentation} } @{ $file->{module} }
+          if ( $file->{documentation} );
         $file->{authorized} = $module->{authorized} if ($module);
         push(
             @bulk,
