@@ -83,6 +83,7 @@ analyzed JSON string.
 =cut
 
 has name         => ( index      => 'analyzed' );
+has asciiname    => ( index      => 'analyzed' );
 has email        => ( isa        => ArrayRef, coerce => 1 );
 has pauseid      => ( id         => 1 );
 has dir          => ( lazy_build => 1 );
