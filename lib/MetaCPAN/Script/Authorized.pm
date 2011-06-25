@@ -43,7 +43,8 @@ sub run {
                 $update = 1;
             }
         }
-        if ( $authors->{ $data->{documentation} }
+        if (   $data->{documentation}
+            && $authors->{ $data->{documentation} }
             && !grep { $_ eq $data->{author} }
             @{ $authors->{ $data->{documentation} } } )
         {
@@ -53,7 +54,7 @@ sub run {
             $data->{authorized} = \0;
             $update = 1;
         }
-        push( @authorized, $data ) if($update);
+        push( @authorized, $data ) if ($update);
         if ( @authorized > 100 ) {
             $self->bulk_update(@authorized);
             @authorized = ();
