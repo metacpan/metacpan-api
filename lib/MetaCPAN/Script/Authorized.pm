@@ -20,6 +20,7 @@ sub run {
     log_info {"looking for modules"};
     my $scroll = $self->scroll;
     log_info { $scroll->total . " modules found" };
+    my $update = 0;
 
     while ( my $file = $scroll->next ) {
         my $data = $file->{_source};
@@ -32,12 +33,14 @@ sub run {
                 )
             {
                 $module->{authorized} = \1;
+                $update = 1;
             }
             else {
                 log_debug {
                     "unauthorized module $module->{name} in $data->{release} by $data->{author}";
                 };
                 $module->{authorized} = \0;
+                $update = 1;
             }
         }
         if ( $authors->{ $data->{documentation} }
@@ -48,8 +51,9 @@ sub run {
                 "unauthorized documentation $data->{documentation} in $data->{release} by $data->{author}";
             };
             $data->{authorized} = \0;
+            $update = 1;
         }
-        push( @authorized, $data );
+        push( @authorized, $data ) if($update);
         if ( @authorized > 100 ) {
             $self->bulk_update(@authorized);
             @authorized = ();
