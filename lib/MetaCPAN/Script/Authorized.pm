@@ -13,34 +13,41 @@ sub run {
     my $self = shift;
     my $es   = $self->es;
     $self->index->refresh;
-    log_info { "Dry run: updates will not be written to ES" }
+    log_info {"Dry run: updates will not be written to ES"}
     if ( $self->dry_run );
     my @authorized;
     my $authors = $self->parse_perms;
-    log_info { "looking for modules" };
+    log_info {"looking for modules"};
     my $scroll = $self->scroll;
     log_info { $scroll->total . " modules found" };
 
     while ( my $file = $scroll->next ) {
         my $data = $file->{_source};
-        my @modules =
-          grep { $_->{indexed} } @{ $data->{module} };
+        my @modules = grep { $_->{indexed} } @{ $data->{module} };
         foreach my $module (@modules) {
-            if (
-                $data->{distribution} eq 'perl'
+            if ($data->{distribution} eq 'perl'
                 || ( $authors->{ $module->{name} }
                     && grep { $_ eq $data->{author} }
                     @{ $authors->{ $module->{name} } } )
-              )
+                )
             {
                 $module->{authorized} = \1;
             }
             else {
                 log_debug {
-"unauthorized module $module->{name} in $data->{release} by $data->{author}";
+                    "unauthorized module $module->{name} in $data->{release} by $data->{author}";
                 };
                 $module->{authorized} = \0;
             }
+        }
+        if ( $authors->{ $data->{documentation} }
+            && !grep { $_ eq $data->{author} }
+            @{ $authors->{ $data->{documentation} } } )
+        {
+            log_debug {
+                "unauthorized documentation $data->{documentation} in $data->{release} by $data->{author}";
+            };
+            $data->{authorized} = \0;
         }
         push( @authorized, $data );
         if ( @authorized > 100 ) {
@@ -55,19 +62,19 @@ sub run {
 sub bulk_update {
     my ( $self, @authorized ) = @_;
     if ( $self->dry_run ) {
-        log_info { "dry run, not updating" };
+        log_info {"dry run, not updating"};
         return;
     }
     my @bulk;
     foreach my $file (@authorized) {
-        my ($module) =
-          grep { $_->{name} eq $file->{documentation} } @{ $file->{module} }
-          if ( $file->{documentation} );
+        my ($module)
+            = grep { $_->{name} eq $file->{documentation} }
+            @{ $file->{module} }
+            if ( $file->{documentation} );
         $file->{authorized} = $module->{authorized} if ($module);
         push(
             @bulk,
-            {
-                index => {
+            {   index => {
                     index => $self->index->name,
                     type  => 'file',
                     id    => $file->{id},
@@ -82,24 +89,40 @@ sub bulk_update {
 sub scroll {
     my $self = shift;
     return $self->model->es->scrolled_search(
-        {
-            index => $self->index->name,
+        {   index => $self->index->name,
             type  => 'file',
             query => {
                 filtered => {
                     query  => { match_all => {} },
                     filter => {
                         and => [
-                            {
-                                not => {
-                                    filter => {
-                                        exists =>
-                                          { field => 'file.module.authorized' }
+                            { missing => { field => 'file.authorized' } },
+                            {   or => [
+                                    {   and => [
+                                            {   exists => {
+                                                    field =>
+                                                        'file.module.name'
+                                                }
+                                            },
+                                            {   term => {
+                                                    'file.module.indexed' =>
+                                                        \1
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {   and => [
+                                            {   exists => {
+                                                    field => 'documentation'
+                                                }
+                                            },
+                                            {   term =>
+                                                    { 'file.indexed' => \1 }
+                                            }
+                                        ]
                                     }
-                                }
-                            },
-                            { term => { 'file.module.indexed' => \1 } },
-                            { exists => { field => 'file.module.name' } },
+                                ]
+                            }
                         ]
                     }
                 }
@@ -114,7 +137,7 @@ sub scroll {
 sub parse_perms {
     my $self = shift;
     my $file = $self->cpan->file(qw(modules 06perms.txt.gz))->stringify;
-    log_info { "parsing $file" };
+    log_info {"parsing $file"};
     my $gz = IO::Zlib->new( $file, 'rb' );
     my %authors;
     while ( my $line = $gz->readline ) {
