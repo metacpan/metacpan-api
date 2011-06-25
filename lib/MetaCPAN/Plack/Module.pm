@@ -3,7 +3,7 @@ use base 'MetaCPAN::Plack::Base';
 use strict;
 use warnings;
 
-sub type { 'file' }
+sub type {'file'}
 
 sub query {
     shift;
@@ -16,7 +16,12 @@ sub query {
                     and => [
                         { term => { 'documentation' => shift } },
                         { term => { 'file.indexed'  => \1, } },
-                        { term => { status          => 'latest', } }
+                        { term => { status          => 'latest', } },
+                        {   not => {
+                                filter =>
+                                    { term => { 'file.authorized' => \0 } }
+                            }
+                        },
                     ]
                 }
             }
