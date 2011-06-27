@@ -15,6 +15,7 @@ sub handle {
     my ( $self, $req ) = @_;
     my $path;
     my $env = $req->env;
+    my $accept = $req->preferred_content_type || 'text/html';
     if ( $req->path =~ m/^\/pod\/([^\/]*?)\/?$/ ) {
         $env->{REQUEST_URI} = "/module/$1";
         $env->{PATH_INFO} = "/$1";
