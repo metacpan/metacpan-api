@@ -47,7 +47,6 @@ sub handle {
     }
 
     my ($body, $content_type);
-    my $accept = $req->preferred_content_type || 'text/html';
     if($accept eq 'text/plain') {
       $body = $self->build_pod_txt( $content );
       $content_type = 'text/plain';
