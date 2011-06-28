@@ -7,6 +7,12 @@ sub perldoc_url_prefix {
     'http://beta.metacpan.org/module/'
 }
 
+# thanks to Marc Green
+
+sub start_item_text   {
+    # see end_item_text
+}
+
 sub end_item_text   {
     # idify =item content, reset 'scratch'
     my $id = $_[0]->idify($_[0]{'scratch'});
