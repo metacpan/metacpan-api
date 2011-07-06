@@ -33,7 +33,15 @@ Returns the POD of the given module. You can change the output format by either 
 
 Names of latest releases by OALDERS:
 
-[http://api.beta.metacpan.org/release/_search?q=author:OALDERS&filter=status:latest&fields=name&size=100](http://api.beta.metacpan.org/release/_search?q=author:OALDERS&filter=status:latest&fields=name&size=100)
+[http://api.metacpan.org/v0/release/_search?q=author:OALDERS&filter=status:latest&fields=name&size=100](http://api.metacpan.org/v0/release/_search?q=author:OALDERS&filter=status:latest&fields=name&size=100)
+
+All CPAN Authors:
+
+[http://api.metacpan.org/v0/author/_search?pretty=true&q=*&size=100000](http://api.metacpan.org/author/_search?pretty=true&q=*&size=100000)
+
+All CPAN Authors Who Have Provided Twitter IDs:
+
+[http://api.metacpan.org/author/_search?pretty=true&q=profile.name:twitter&size=100000](http://api.metacpan.org/author/_search?pretty=true&q=profile.name:twitter&size=100000)
 
 ## POST Searches
 
