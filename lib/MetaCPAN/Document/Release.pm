@@ -92,25 +92,53 @@ has id => ( id => [qw(author name)] );
 has [qw(license version author archive)] => ();
 has date             => ( isa        => 'DateTime' );
 has download_url     => ( lazy_build => 1 );
-has name             => ( index => 'analyzed' );
+has name             => ( index      => 'analyzed' );
 has version_numified => ( isa        => 'Num', lazy_build => 1 );
-has resources        => ( isa        => Resources, required => 0, coerce => 1, dynamic => 1 );
+has resources =>
+    ( isa => Resources, required => 0, coerce => 1, dynamic => 1 );
 has abstract => ( index => 'analyzed', required => 0 );
 has distribution => ( analyzer => [qw(standard camelcase)] );
-has dependency => ( required => 0, is => 'rw', isa => Dependency, coerce => 1 );
-has status => ( default => 'cpan' );
+has dependency =>
+    ( required => 0, is => 'rw', isa => Dependency, coerce => 1 );
+has status   => ( default => 'cpan' );
 has maturity => ( default => 'released' );
-has stat => ( isa => Stat, required => 0, dynamic => 1 );
+has stat     => ( isa     => Stat, required => 0, dynamic => 1 );
 
 sub _build_version_numified {
-    return MetaCPAN::Util::numify_version( shift->version )
+    return MetaCPAN::Util::numify_version( shift->version );
 }
 
 sub _build_download_url {
     my $self = shift;
     'http://cpan.cpantesters.org/authors/'
-      . MetaCPAN::Document::Author::_build_dir( $self->author ) . '/'
-      . $self->archive;
+        . MetaCPAN::Document::Author::_build_dir( $self->author ) . '/'
+        . $self->archive;
+}
+
+__PACKAGE__->meta->make_immutable;
+
+package MetaCPAN::Document::Release::Set;
+use Moose;
+extends 'ElasticSearchX::Model::Document::Set';
+
+sub find {
+    my ( $self, $name ) = @_;
+    return $self->query(
+        {   query => {
+                filtered => {
+                    query  => { match_all => {} },
+                    filter => {
+                        and => [
+                            { term => { 'release.distribution' => $name } },
+                            { term => { status                 => 'latest' } }
+                        ]
+                    }
+                }
+            },
+            sort => [ { date => 'desc' } ],
+            size => 1
+        }
+    )->first;
 }
 
 __PACKAGE__->meta->make_immutable;
