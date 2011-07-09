@@ -140,11 +140,11 @@ version could not be parsed.
 
 has id => ( id => [qw(author release path)] );
 
-has [qw(path author name)];
+has [qw(path author name release)];
 has distribution => ( analyzer => [qw(standard camelcase)] );
 has module => ( required => 0, is => 'rw', isa => Module, coerce => 1, clearer => 'clear_module' );
-has documentation => ( is => 'rw', lazy_build => 1, index => 'analyzed', analyzer => [qw(standard camelcase)] );
-has release => ( parent => 1 );
+has documentation => ( is => 'rw', lazy_build => 1, index => 'analyzed', predicate => 'has_documentation', analyzer => [qw(standard camelcase)] );
+has release_id => ( parent => 1 );
 has date => ( isa => 'DateTime' );
 has stat => ( isa => Stat, required => 0, dynamic => 1 );
 has sloc => ( isa => 'Int',        lazy_build => 1 );
@@ -193,7 +193,7 @@ Callback, that returns the content of the as ScalarRef.
 =cut
 
 has content => ( isa => 'ScalarRef', lazy_build => 1, property => 0, required => 0 );
-has content_cb => ( property => 0, required => 0 );
+has content_cb => ( property => 0, required => 0, default => sub{sub{\''}} );
 
 =head1 METHODS
 
@@ -369,6 +369,41 @@ sub _build_pod {
     $parser->parse_string_document( ${ $self->content } );
     $text =~ s/\s+/ /g;
     return \$text;
+}
+
+__PACKAGE__->meta->make_immutable;
+
+package MetaCPAN::Document::File::Set;
+use Moose;
+extends 'ElasticSearchX::Model::Document::Set';
+
+sub find {
+    my ($self, $module) = @_;
+    return $self->query({
+        size  => 1,
+        query => {
+            filtered => {
+                query  => { match_all => {} },
+                filter => {
+                    and => [
+                        { term => { 'documentation' => $module   } },
+                        { term => { 'file.indexed'  => \1, } },
+                        { term => { status          => 'latest', } },
+                        {   not => {
+                                filter =>
+                                    { term => { 'file.authorized' => \0 } }
+                            }
+                        },
+                    ]
+                }
+            }
+        },
+        sort => [
+            { 'date'       => { order => "desc" } },
+            { 'mime'       => { order => "desc" } },
+            { 'stat.mtime' => { order => 'desc' } }
+        ]
+    })->first;
 }
 
 __PACKAGE__->meta->make_immutable;
