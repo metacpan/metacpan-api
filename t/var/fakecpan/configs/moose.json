@@ -1,0 +1,11 @@
+{
+  "name": "Moose",
+  "abstract": "A standard perl distribution",
+  "X_Module_Faker": {
+    "cpan_author": "DOY",
+    "append": [ {
+        "file": "lib/Moose.pm",
+        "content": "\n\n=head1 NAME\n\nMoose - abstract"
+    } ]
+  }
+}

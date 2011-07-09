@@ -7,13 +7,14 @@ use ElasticSearch::TestServer;
 use MetaCPAN::Script::Runner;
 use MetaCPAN::Script::Mapping;
 use MetaCPAN::Script::Release;
-use Path::Class qw(dir);
+use MetaCPAN::Script::Author;
+use Path::Class qw(dir file);
+use File::Copy;
 
-ok(my $es = ElasticSearch::TestServer->new(
-      instances   => 1,
-      transport   => 'http',
-      ip          => '127.0.0.1',
-      port        => '9900',
+ok(my $es = ElasticSearch->new(
+     # instances   => 1,
+      transport   => 'httplite',
+      servers          => '127.0.0.1:9200',
 ), 'connect to es');
 
 my $config = MetaCPAN::Script::Runner->build_config;
@@ -42,6 +43,19 @@ ok(
     MetaCPAN::Script::Release->new_with_options($config)->run,
     'index fakecpan'
 );
+
+local @ARGV = ('latest');
+ok(
+    MetaCPAN::Script::Latest->new_with_options($config)->run,
+    'latest'
+);
+
+copy(file(qw(t var fakecpan 00whois.xml)),file($config->{cpan}, qw(authors 00whois.xml)));
+local @ARGV = ('author', '--cpan', $config->{cpan});
+ok(
+    MetaCPAN::Script::Author->new_with_options($config)->run,
+    'index authors'
+);
 wait_for_es();
 
 sub wait_for_es {
@@ -54,7 +68,7 @@ sub wait_for_es {
 }
 
 my $tests = Test::Aggregate->new( {
-    dirs    => 't/fakecpan',
+    dirs    => [qw(t/release t/server)],
     verbose => 2,
 } );
 

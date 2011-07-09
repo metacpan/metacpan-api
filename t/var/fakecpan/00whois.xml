@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cpan-whois xmlns='http://www.cpan.org/xmlns/whois'
+            last-generated='Fri May  6 04:19:02 2011 GMT'
+            generated-by='Id'>
+ <cpanid>
+  <id>MO</id>
+  <type>author</type>
+  <fullname>Moritz Onken</fullname>
+  <email>onken@netcubed.de</email>
+  <homepage>http://blog.netcubed.de</homepage>
+  <has_cpandir>1</has_cpandir>
+ </cpanid>
+ <cpanid>
+  <id>MOFAKE</id>
+  <type>author</type>
+  <fullname>Moritz Onken</fullname>
+  <email>onken@netcubed.de</email>
+  <homepage>http://blog.netcubed.de</homepage>
+  <has_cpandir>1</has_cpandir>
+ </cpanid>
+</cpan-whois>
