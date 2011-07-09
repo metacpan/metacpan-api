@@ -61,7 +61,7 @@ sub handle {
       $content_type = 'text/html';
     }
     my $res = $req->new_response( 200, undef, [ $body ] );
-    $res->header('Content-type' => $content_type );
+    $res->header('Content-type' => "$content_type; charset=UTF-8" );
     return $res->finalize;
 }
 
