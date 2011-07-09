@@ -26,6 +26,7 @@ sub run {
         my $data = $file->{_source};
         my @modules = grep { $_->{indexed} } @{ $data->{module} };
         foreach my $module (@modules) {
+            next if(defined $module->{authorized});
             if ($data->{distribution} eq 'perl'
                 || ( $authors->{ $module->{name} }
                     && grep { $_ eq $data->{author} }
@@ -35,7 +36,7 @@ sub run {
                 $module->{authorized} = \1;
                 $update = 1;
             }
-            else {
+            elsif($authors->{ $module->{name} }) {
                 log_debug {
                     "unauthorized module $module->{name} in $data->{release} by $data->{author}";
                 };
@@ -43,7 +44,8 @@ sub run {
                 $update = 1;
             }
         }
-        if (   $data->{documentation}
+        if (   !defined $data->{authorized}
+            && $data->{documentation}
             && $authors->{ $data->{documentation} }
             && !grep { $_ eq $data->{author} }
             @{ $authors->{ $data->{documentation} } } )
