@@ -4,20 +4,23 @@ use strict;
 use warnings;
 use MetaCPAN::Util;
 
-sub type { 'file' }
+sub type {'file'}
 
 sub query {
-    my ($self, $distribution, @path) = @_;
-    my $path = join('/', @path);
-    warn $path;
-    return { query  => { match_all => {} },
-       filter => {
+    my ( $self, $distribution, @path ) = @_;
+    my $path = join( '/', @path );
+    return {
+        query  => { match_all => {} },
+        filter => {
             and => [
                 { term => { 'file.distribution' => $distribution } },
-                { term => { 'file.path' => $path } },
-                { term => { status              => 'latest' } } ] },
-     sort => [ { date => 'desc' } ],
-     size => 1 };
+                { term => { 'file.path'         => $path } },
+                { term => { status              => 'latest' } }
+            ]
+        },
+        sort => [ { date => 'desc' } ],
+        size => 1
+    };
 }
 
 sub get_source {
@@ -26,11 +29,13 @@ sub get_source {
     my $digest;
     if ( $args[0] =~ /^[A-Za-z0-9-_]{27}$/ ) {
         $digest = $args[0];
-    } else {
-        $digest = MetaCPAN::Util::digest( shift @args, shift @args,
-                                             join( "/", @args ) );
     }
-    $self->next::method($req->clone( PATH_INFO => join("/", $index, $digest ) ) );
+    else {
+        $digest = MetaCPAN::Util::digest( shift @args, shift @args,
+            join( "/", @args ) );
+    }
+    $self->next::method(
+        $req->clone( PATH_INFO => join( "/", $index, $digest ) ) );
 }
 
 sub handle {
@@ -39,12 +44,19 @@ sub handle {
     my $digest;
     if ( @args == 1 && $args[0] =~ /^[A-Za-z0-9-_]{27}$/ ) {
         $digest = $args[0];
-        return $self->get_source($req->clone( PATH_INFO => join("/", $index, $digest ) ) );
-    } elsif(@args > 1) {
-        $digest = MetaCPAN::Util::digest( shift @args, shift @args,
-                                             join( "/", @args ) );
-        return $self->get_source($req->clone( PATH_INFO => join("/", $index, $digest ) ) );
+        return $self->get_source(
+            $req->clone( PATH_INFO => join( "/", $index, $digest ) ) );
     }
+    elsif ( @args > 1 ) {
+        $digest = MetaCPAN::Util::digest( shift @args, shift @args,
+            join( "/", @args ) );
+        return $self->get_source(
+            $req->clone( PATH_INFO => join( "/", $index, $digest ) ) );
+    }
+    else {
+        return $self->error404;
+    }
+
     # disabled for now because /MOO/abc/abc.t can either be the file
     # abc.t in release abc of author MOO or the file abc/abc.t
     # in the latest MOO release
