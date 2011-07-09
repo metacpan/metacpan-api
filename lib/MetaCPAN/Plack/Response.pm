@@ -34,7 +34,7 @@ sub _headers {
         'Access-Control-Allow-Methods',     'POST',
         'Access-Control-Max-Age',           '17000000',
         'Access-Control-Allow-Credentials', 'true',
-        'Content-type',                     'application/json' );
+        'Content-type',                     'application/json; charset=UTF-8' );
 }
 
 
