@@ -19,6 +19,7 @@ sub get_source {
     try {
         my $res =
           $self->index->type( $self->type )->inflate(0)->get( $args[0] );
+        die "not found" unless($res->{_source});
         return $req->new_response( 200, undef, $res->{_source} )->finalize;
     }
     catch {
@@ -29,6 +30,10 @@ sub get_source {
 
 sub error404 {
     MetaCPAN::Plack::Response->new( 404, undef, { message => "Not found" } )->finalize;
+}
+
+sub error403 {
+    MetaCPAN::Plack::Response->new( 403, undef, { message => "Not allowed" } )->finalize;
 }
 
 sub get_first_result {
