@@ -94,7 +94,9 @@ has perlmongers => ( isa => Dict [ url  => Str, name => Str ], required => 0, dy
 has donation    => ( isa => Dict [ name => Str, id   => Str ], required => 0, dynamic => 1 );
 has [qw(website city region country)] => ( required => 0 );
 has location => ( isa => Location, coerce   => 1, required => 0 );
-has extra    => ( isa => Extra,    required => 0, index    => 'analyzed' );
+has extra =>
+    ( isa => 'HashRef', source_only => 1, dynamic => 1, required => 0 );
+has updated => ( isa => 'DateTime', required => 0 );
 
 sub _build_dir {
     my $pauseid = ref $_[0] ? shift->pauseid : shift;

@@ -7,6 +7,7 @@ use Log::Contextual qw( :log );
 with 'MetaCPAN::Role::Common';
 use Email::Valid;
 use File::Find;
+use File::stat;
 use JSON;
 use XML::Simple qw(XMLin);
 use URI;
@@ -27,8 +28,8 @@ use MooseX::Getopt;
 use Scalar::Util qw( reftype );
 
 has 'author_fh' => (
-    is => 'rw',
-    traits => ['NoGetopt'],
+    is      => 'rw',
+    traits  => ['NoGetopt'],
     default => sub { shift->cpan . "/authors/00whois.xml" }
 );
 
@@ -43,70 +44,72 @@ sub index_authors {
     my $type    = $self->index->type('author');
     my $authors = XMLin( $self->author_fh )->{cpanid};
     my $count   = keys %$authors;
-    log_debug { "Counting author" };
-    log_info { "Indexing $count authors" };
+    log_debug {"Counting author"};
+    log_info {"Indexing $count authors"};
 
     while ( my ( $pauseid, $data ) = each %$authors ) {
-        my ( $name, $email, $homepage, $asciiname ) =
-          ( @$data{qw(fullname email homepage asciiname)} );
-        $name = undef if(ref $name);
+        my ( $name, $email, $homepage, $asciiname )
+            = ( @$data{qw(fullname email homepage asciiname)} );
+        $name = undef if ( ref $name );
         $email = lc($pauseid) . '@cpan.org'
-          unless ( $email && Email::Valid->address($email) );
-        log_debug { encode( 'UTF-8', sprintf("Indexing %s: %s <%s>", $pauseid, $name, $email ) ) };
-        my $conf = $self->author_config( $pauseid, MetaCPAN::Util::author_dir($pauseid) );
-        my $put = { pauseid  => $pauseid,
-            name     => $name,
+            unless ( $email && Email::Valid->address($email) );
+        log_debug {
+            encode( 'UTF-8',
+                sprintf( "Indexing %s: %s <%s>", $pauseid, $name, $email ) );
+        };
+        my $conf = $self->author_config( $pauseid,
+            MetaCPAN::Util::author_dir($pauseid) );
+        my $put = {
+            pauseid   => $pauseid,
+            name      => $name,
             asciiname => ref $asciiname ? undef : $asciiname,
-            email    => $email,
-            website  => $homepage,
+            email     => $email,
+            website   => $homepage,
             map { $_ => $conf->{$_} }
-              grep { defined $conf->{$_} } keys %$conf
-          };
-        $put->{website} = [$put->{website}] unless(ref $put->{website} eq 'ARRAY');
+                grep { defined $conf->{$_} } keys %$conf
+        };
+        $put->{website} = [ $put->{website} ]
+            unless ( ref $put->{website} eq 'ARRAY' );
         $put->{website} = [
+
             # fix www.homepage.com to be http://www.homepage.com
             map { $_->scheme ? $_->as_string : 'http://' . $_->as_string }
-            map { URI->new($_)->canonical }
-            grep { $_ }
-            @{$put->{website}}
+                map  { URI->new($_)->canonical }
+                grep {$_} @{ $put->{website} }
         ];
-        $type->put( $put );
+        $type->put($put);
     }
     $self->index->refresh;
-    log_info { "done" };
+    log_info {"done"};
 }
-
 
 sub author_config {
     my $self    = shift;
     my $pauseid = shift;
     my $dir     = shift;
-    $dir = $self->cpan . "/authors/$dir/";
+    $dir = $self->cpan->subdir( 'authors', $dir );
     my @files;
     opendir( my $dh, $dir ) || return {};
-    my ($file) =
-      sort { ( stat( $dir . $b ) )[9] <=> ( stat( $dir . $a ) )[9] }
-      grep { m/author-.*?\.json/ } readdir($dh);
-    return {} unless($file);
-    $file = $dir . $file;
+    my ($file)
+        = sort { ( stat( $dir . $b ) )[9] <=> ( stat( $dir . $a ) )[9] }
+        grep {m/author-.*?\.json/} readdir($dh);
+    return {} unless ($file);
+    $file = $dir->file($file);
     return {} if !-e $file;
-    my $json;
-    {
-        local $/ = undef;
-        local *FILE;
-        open FILE, "<", $file;
-        $json = <FILE>;
-        close FILE
-    }
+    my $json = $file->slurp;
     my $author = eval { JSON::XS->new->utf8->relaxed->decode($json) };
+
     if (@$) {
-        log_warn { "$file is broken: $@" };
+        log_warn {"$file is broken: $@"};
         return {};
-    } else {
-        $author =
-          { map { $_ => $author->{$_} }
-            qw(name asciiname profile blog perlmongers donation email website city region country location extra)
-          };
+    }
+    else {
+        $author
+            = { map { $_ => $author->{$_} }
+                qw(name asciiname profile blog perlmongers donation email website city region country location extra)
+            };
+        $author->{updated}
+            = DateTime->from_epoch( epoch => stat($file)->mtime );
         return $author;
     }
 }

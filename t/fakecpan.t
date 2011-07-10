@@ -51,6 +51,7 @@ ok(
 );
 
 copy(file(qw(t var fakecpan 00whois.xml)),file($config->{cpan}, qw(authors 00whois.xml)));
+copy(file(qw(t var fakecpan author-1.0.json)),file($config->{cpan}, qw(authors id M MO MO author-1.0.json)));
 local @ARGV = ('author', '--cpan', $config->{cpan});
 ok(
     MetaCPAN::Script::Author->new_with_options($config)->run,
