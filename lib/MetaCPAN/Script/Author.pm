@@ -10,6 +10,7 @@ use JSON::XS     ();
 use URI          ();
 use Encode       ();
 use XML::Simple qw(XMLin);
+use DateTime::Format::ISO8601 ();
 
 use MetaCPAN::Document::Author;
 
@@ -39,6 +40,15 @@ sub index_authors {
     log_debug {"Counting author"};
     log_info {"Indexing $count authors"};
 
+    log_debug {"Getting last update dates"};
+    my $dates
+        = $type->inflate(0)->filter( { exists => { field => 'updated' } } )
+        ->all;
+    $dates = { map {
+        $_->{pauseid} =>
+            DateTime::Format::ISO8601->parse_datetime( $_->{updated} )
+    } map { $_->{_source} } @{ $dates->{hits}->{hits} } };
+
     while ( my ( $pauseid, $data ) = each %$authors ) {
         my ( $name, $email, $homepage, $asciiname )
             = ( @$data{qw(fullname email homepage asciiname)} );
@@ -49,8 +59,7 @@ sub index_authors {
             Encode::encode_utf8(
                 sprintf( "Indexing %s: %s <%s>", $pauseid, $name, $email ) );
         };
-        my $conf = $self->author_config( $pauseid,
-            MetaCPAN::Util::author_dir($pauseid) );
+        my $conf = $self->author_config( $pauseid, $dates ) || next;
         my $put = {
             pauseid   => $pauseid,
             name      => $name,
@@ -76,10 +85,8 @@ sub index_authors {
 }
 
 sub author_config {
-    my $self    = shift;
-    my $pauseid = shift;
-    my $dir     = shift;
-    $dir = $self->cpan->subdir( 'authors', $dir );
+    my ($self, $pauseid, $dates) = @_;
+    my $dir = $self->cpan->subdir( 'authors', MetaCPAN::Util::author_dir($pauseid) );
     my @files;
     opendir( my $dh, $dir ) || return {};
     my ($file)
@@ -88,6 +95,11 @@ sub author_config {
     return {} unless ($file);
     $file = $dir->file($file);
     return {} if !-e $file;
+    my $mtime = DateTime->from_epoch( epoch => File::stat::stat($file)->mtime );
+    if($dates->{$pauseid} >= $mtime) {
+        log_debug {"Skipping $pauseid (newer version in index)"};
+        return undef;
+    }
     my $json = $file->slurp;
     my $author = eval { JSON::XS->new->utf8->relaxed->decode($json) };
 
@@ -101,7 +113,7 @@ sub author_config {
                 qw(name asciiname profile blog perlmongers donation email website city region country location extra)
             };
         $author->{updated}
-            = DateTime->from_epoch( epoch => File::stat::stat($file)->mtime );
+            = $mtime;
         return $author;
     }
 }
