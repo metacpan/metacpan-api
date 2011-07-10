@@ -9,6 +9,7 @@ use MooseX::Types -declare => [
       Resources
       Stat
       Module
+      Identity
       Dependency
       Extra
       ) ];
@@ -22,6 +23,10 @@ subtype Stat, as Dict [ mode => Int, uid => Int, gid => Int, size => Int, mtime 
 subtype Module, as ArrayRef [ Type [ 'MetaCPAN::Document::Module' ] ];
 coerce Module, from ArrayRef, via { [ map { ref $_ eq 'HASH' ? MetaCPAN::Document::Module->new($_) : $_ } @$_ ]; };
 coerce Module, from HashRef, via { [ MetaCPAN::Document::Module->new($_) ] };
+
+subtype Identity, as ArrayRef [ Type [ 'MetaCPAN::Model::User::Identity' ] ];
+coerce Identity, from ArrayRef, via { [ map { ref $_ eq 'HASH' ? MetaCPAN::Model::User::Identity->new($_) : $_ } @$_ ]; };
+coerce Identity, from HashRef, via { [ MetaCPAN::Model::User::Identity->new($_) ] };
 
 
 subtype Dependency, as ArrayRef [ Type [ 'MetaCPAN::Document::Dependency' ] ];
