@@ -1,17 +1,15 @@
 package MetaCPAN::Script::Author;
 
 use Moose;
-use feature 'say';
 with 'MooseX::Getopt';
 use Log::Contextual qw( :log );
 with 'MetaCPAN::Role::Common';
-use Email::Valid;
-use File::Find;
-use File::stat;
-use JSON;
+use Email::Valid ();
+use File::stat   ();
+use JSON::XS     ();
+use URI          ();
+use Encode       ();
 use XML::Simple qw(XMLin);
-use URI;
-use Encode;
 
 use MetaCPAN::Document::Author;
 
@@ -20,12 +18,6 @@ use MetaCPAN::Document::Author;
 Loads author info into db. Requires the presence of a local CPAN/minicpan.
 
 =cut
-
-use Data::Dump qw( dump );
-use IO::File;
-use IO::Uncompress::AnyInflate qw(anyinflate $AnyInflateError);
-use MooseX::Getopt;
-use Scalar::Util qw( reftype );
 
 has 'author_fh' => (
     is      => 'rw',
@@ -54,7 +46,7 @@ sub index_authors {
         $email = lc($pauseid) . '@cpan.org'
             unless ( $email && Email::Valid->address($email) );
         log_debug {
-            encode( 'UTF-8',
+            Encode::encode_utf8(
                 sprintf( "Indexing %s: %s <%s>", $pauseid, $name, $email ) );
         };
         my $conf = $self->author_config( $pauseid,
@@ -109,7 +101,7 @@ sub author_config {
                 qw(name asciiname profile blog perlmongers donation email website city region country location extra)
             };
         $author->{updated}
-            = DateTime->from_epoch( epoch => stat($file)->mtime );
+            = DateTime->from_epoch( epoch => File::stat::stat($file)->mtime );
         return $author;
     }
 }
