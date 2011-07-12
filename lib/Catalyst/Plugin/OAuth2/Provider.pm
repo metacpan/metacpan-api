@@ -132,4 +132,25 @@ sub _build_code {
     return $digest;
 }
 
+sub redirect {
+    my ($self, $c, $type, $message) = @_;
+    my $clients = $self->clients;
+    my $params = $c->req->params;
+    if ( my $cid = $c->req->cookie('oauth_tmp') ) {
+        eval { $params = decode_json($cid->value) };
+        $cid->expires('-1y');
+        $c->res->cookies->{oauth_tmp} = $cid;
+    }
+    my ($client, $redirect_uri) = @$params{qw(client_id redirect_uri)};
+    $redirect_uri ||= $self->clients->{$client}->{redirect_uri}->[0];
+
+    if($redirect_uri) {
+        $c->res->redirect($redirect_uri . "?$type=$message");
+    } else {
+        $c->res->body(encode_json({ $type => $message }));
+        $c->res->content_type('application/json');
+    }
+    $c->detach;
+}
+
 1;

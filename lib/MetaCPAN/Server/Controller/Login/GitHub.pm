@@ -21,12 +21,11 @@ sub index : Path {
                 code          => $code,
             ]
         );
-        if ( $res->content =~ /^error=(.*)$/ ) {
-            $c->res->code(500);
-            $c->res->body($1);
-            return;
-        }
+        $c->controller('OAuth2')->redirect($c, error => $1)
+            if ( $res->content =~ /^error=(.*)$/ );
         ( my $token = $res->content ) =~ s/^access_token=//;
+        $c->controller('OAuth2')->redirect($c, error => 'token')
+            unless($token);
         $token =~ s/&.*$//;
         my $extra_res = $ua->request(
             GET "https://api.github.com/user?access_token=$token" );

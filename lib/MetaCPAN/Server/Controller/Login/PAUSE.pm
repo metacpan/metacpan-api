@@ -32,7 +32,8 @@ sub index : Path {
         && $c->req->parameters->{id} =~ /[a-zA-Z]+/ )
     {
         my $author = $c->model('CPAN::Author')->get( uc($id) );
-        die "$id could no be found" unless ($author);
+        $c->controller('OAuth2')->redirect($c, error => "author_not_found")
+            unless ($author);
         my $code = $self->generate_sid;
         $self->cache->set( $code, $author->pauseid, 86400 );
         my $uri = $c->request->uri->clone;
@@ -54,7 +55,7 @@ MetaCPAN
 }
         );
         Email::Sender::Simple->send($email);
-        $c->res->body('You got mail');
+        $c->controller('OAuth2')->redirect($c, success => "mail_sent");
     }
 }
 
