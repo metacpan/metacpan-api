@@ -19,24 +19,20 @@ sub get_session_data {
             index  => $self->session_es_index,
             type   => $self->session_es_type,
             id     => $session_id,
-            fields => [ '_parent', '_source' ]
         );
     } || return undef;
-    $data->{__user} = $data->{fields}->{_parent};
-    delete $data->{fields};
-    return $data;
+    return $data->{_source};
 }
 
 sub store_session_data {
     my ( $self, $session_id, $session ) = @_;
-    $session = {} unless(ref $session);
+    $session = { $self->session_es_type => {} } unless(ref $session);
     $self->session_es->index(
         index  => $self->session_es_index,
         type   => $self->session_es_type,
         id     => $session_id || undef,
         parent => $session->{__user} || "",
-        data   => { session => {}}
-        , #keys %$session ? $session->{_source} : { $self->session_es_type => {} },
+        data   => $session,
         refresh => 1,
     );
 }
