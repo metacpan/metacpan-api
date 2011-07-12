@@ -52,15 +52,12 @@ sub authorize : Local {
     }
     my ( $response_type, $client_id, $redirect_uri, $scope, $state )
         = @$params{qw(response_type client_id redirect_uri scope state)};
-    $self->bad_request( $c,
-        invalid_request => 'client_id query parameter is required' )
+    $self->redirect( $c, error => 'invalid_request' )
         unless ($client_id);
-    $self->bad_request( $c,
-        unauthorized_client => 'client_id does not exist' )
+    $self->redirect( $c, error => 'unauthorized_client' )
         unless ( $self->clients->{$client_id} );
     $redirect_uri ||= $self->clients->{$client_id}->{redirect_uri}->[0];
-    $self->bad_request( $c,
-        invalid_request => 'redirect_uri query parameter is required' )
+    $self->redirect( $c, error => 'invalid_request' )
         unless ($redirect_uri);
     $response_type ||= 'code';
     my $uri  = URI->new($redirect_uri);
@@ -133,21 +130,22 @@ sub _build_code {
 }
 
 sub redirect {
-    my ($self, $c, $type, $message) = @_;
+    my ( $self, $c, $type, $message ) = @_;
     my $clients = $self->clients;
-    my $params = $c->req->params;
+    my $params  = $c->req->params;
     if ( my $cid = $c->req->cookie('oauth_tmp') ) {
-        eval { $params = decode_json($cid->value) };
+        eval { $params = decode_json( $cid->value ) };
         $cid->expires('-1y');
         $c->res->cookies->{oauth_tmp} = $cid;
     }
-    my ($client, $redirect_uri) = @$params{qw(client_id redirect_uri)};
+    my ( $client, $redirect_uri ) = @$params{qw(client_id redirect_uri)};
     $redirect_uri ||= $self->clients->{$client}->{redirect_uri}->[0];
 
-    if($redirect_uri) {
-        $c->res->redirect($redirect_uri . "?$type=$message");
-    } else {
-        $c->res->body(encode_json({ $type => $message }));
+    if ($redirect_uri) {
+        $c->res->redirect( $redirect_uri . "?$type=$message" );
+    }
+    else {
+        $c->res->body( encode_json( { $type => $message } ) );
         $c->res->content_type('application/json');
     }
     $c->detach;
