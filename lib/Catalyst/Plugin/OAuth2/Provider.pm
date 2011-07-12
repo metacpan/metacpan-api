@@ -56,7 +56,7 @@ sub authorize : Local {
         unless ($client_id);
     $self->redirect( $c, error => 'unauthorized_client' )
         unless ( $self->clients->{$client_id} );
-    $redirect_uri ||= $self->clients->{$client_id}->{redirect_uri}->[0];
+    $redirect_uri = $self->clients->{$client_id}->{redirect_uri}->[0];
     $self->redirect( $c, error => 'invalid_request' )
         unless ($redirect_uri);
     $response_type ||= 'code';
@@ -84,7 +84,7 @@ sub access_token : Local {
         unauthorized_client => 'client_secret does not match' )
         unless ( $self->clients->{$client_id}->{secret} eq $client_secret );
 
-    $redirect_uri ||= $self->clients->{$client_id}->{redirect_uri}->[0];
+    $redirect_uri = $self->clients->{$client_id}->{redirect_uri}->[0];
     $self->bad_request( $c,
         invalid_request => 'redirect_uri query parameter is required' )
         unless ($redirect_uri);
@@ -139,7 +139,7 @@ sub redirect {
         $c->res->cookies->{oauth_tmp} = $cid;
     }
     my ( $client, $redirect_uri ) = @$params{qw(client_id redirect_uri)};
-    $redirect_uri ||= $self->clients->{$client}->{redirect_uri}->[0];
+    $redirect_uri = $self->clients->{$client}->{redirect_uri}->[0];
 
     if ($redirect_uri) {
         $c->res->redirect( $redirect_uri . "?$type=$message" );
