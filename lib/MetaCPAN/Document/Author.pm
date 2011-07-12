@@ -8,6 +8,7 @@ use MetaCPAN::Types qw(:all);
 use MooseX::Types::Structured qw(Dict Tuple Optional);
 use MooseX::Types::Moose qw/Int Num Str ArrayRef HashRef Undef/;
 use ElasticSearchX::Model::Document::Types qw(:all);
+use MooseX::Types::Common::String qw(NonEmptySimpleStr);
 
 =head1 PROPERTIES
 
@@ -82,18 +83,35 @@ analyzed JSON string.
 
 =cut
 
-has name         => ( index      => 'analyzed' );
-has asciiname    => ( index      => 'analyzed' );
-has email        => ( isa        => ArrayRef, coerce => 1 );
+has name      => ( index => 'analyzed', isa      => NonEmptySimpleStr );
+has asciiname => ( index => 'analyzed', isa      => NonEmptySimpleStr, required => 0 );
+has [qw(website email)] => ( isa => ArrayRef, coerce => 1 );
 has pauseid      => ( id         => 1 );
 has dir          => ( lazy_build => 1 );
-has gravatar_url => ( lazy_build => 1 );
-has profile => ( isa => Dict [ name => Str, id => Str ], required => 0, dynamic => 1 );
-has blog        => ( isa => Dict [ url  => Str, feed => Str ], required => 0, dynamic => 1 );
-has perlmongers => ( isa => Dict [ url  => Str, name => Str ], required => 0, dynamic => 1 );
-has donation    => ( isa => Dict [ name => Str, id   => Str ], required => 0, dynamic => 1 );
-has [qw(website city region country)] => ( required => 0 );
-has location => ( isa => Location, coerce   => 1, required => 0 );
+has gravatar_url => ( lazy_build => 1, isa => NonEmptySimpleStr );
+has profile => (
+    isa => ArrayRef [
+        Dict [ name => NonEmptySimpleStr, id => NonEmptySimpleStr ] ],
+    required => 0,
+    dynamic  => 1
+);
+has blog => (
+    isa => ArrayRef [ Dict [ url => NonEmptySimpleStr, feed => Str ] ],
+    required => 0,
+    dynamic  => 1
+);
+has perlmongers => (
+    isa => ArrayRef [ Dict [ url => Str, name => NonEmptySimpleStr ] ],
+    required => 0,
+    dynamic  => 1
+);
+has donation => (
+    isa => ArrayRef [ Dict [ name => NonEmptySimpleStr, id => Str ] ],
+    required => 0,
+    dynamic  => 1
+);
+has [qw(city region country)] => ( required => 0, isa => NonEmptySimpleStr );
+has location => ( isa => Location, coerce => 1, required => 0 );
 has extra =>
     ( isa => 'HashRef', source_only => 1, dynamic => 1, required => 0 );
 has updated => ( isa => 'DateTime', required => 0 );
@@ -107,6 +125,29 @@ sub _build_gravatar_url {
     my $self = shift;
     my $email = ref $self->email ? $self->email->[0] : $self->email;
     Gravatar::URL::gravatar_url( email => $email );
+}
+
+sub validate {
+    my ( $class, $data ) = @_;
+    my @result;
+    foreach my $attr ( $class->meta->get_all_attributes ) {
+        if ( $attr->is_required && !exists $data->{ $attr->name } ) {
+            push(
+                @result,
+                {   field   => $attr->name,
+                    message => $attr->name . ' is required'
+                }
+            );
+        }
+        elsif ( exists $data->{ $attr->name } && $attr->has_type_constraint )
+        {
+            my $message
+                = $attr->type_constraint->validate( $data->{ $attr->name } );
+            push( @result, { field => $attr->name, message => $message } )
+                if ( defined $message );
+        }
+    }
+    return @result;
 }
 
 __PACKAGE__->meta->make_immutable;
