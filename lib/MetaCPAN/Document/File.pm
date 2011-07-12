@@ -303,7 +303,7 @@ sub _build_abstract {
   if ( $section =~ /^\s*(\S+)((\h+-+\h+(.+))|(\r?\n\h*\r?\n\h*(.+)))?/ms ) {
     chomp( $abstract = $4 || $6 ) if($4 || $6);
     my $name = $1;
-    $documentation = $name if ( $name =~ /^[\w\.:-_']+$/ );
+    $documentation = $name if ( $name =~ /^[\w\.:\-_']+$/ );
   }
 
   if ($abstract) {
