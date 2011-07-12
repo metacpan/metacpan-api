@@ -96,7 +96,7 @@ sub author_config {
     $file = $dir->file($file);
     return {} if !-e $file;
     my $mtime = DateTime->from_epoch( epoch => File::stat::stat($file)->mtime );
-    if($dates->{$pauseid} >= $mtime) {
+    if($dates->{$pauseid} && $dates->{$pauseid} >= $mtime) {
         log_debug {"Skipping $pauseid (newer version in index)"};
         return undef;
     }
