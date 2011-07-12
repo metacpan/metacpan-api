@@ -6,24 +6,25 @@ use LWP::UserAgent;
 use HTTP::Request::Common;
 use JSON;
 
-has [qw(consumer_key consumer_secret redirect_uri)] =>
+has [qw(consumer_key consumer_secret)] =>
     ( is => 'ro', required => 1 );
 
 sub index : Path {
     my ( $self, $c ) = @_;
-
     if ( my $code = $c->req->params->{code} ) {
         my $ua  = LWP::UserAgent->new;
         my $res = $ua->request(
             POST 'https://github.com/login/oauth/access_token',
             [   client_id     => $self->consumer_key,
-                redirect_uri  => $self->redirect_uri,
+                redirect_uri  => $c->uri_for($self->action_for('index')),
                 client_secret => $self->consumer_secret,
                 code          => $code,
             ]
         );
-        if ( $res->content =~ /^error/ ) {
-            return $self->unauthorized;
+        if ( $res->content =~ /^error=(.*)$/ ) {
+            $c->res->code(500);
+            $c->res->body($1);
+            return;
         }
         ( my $token = $res->content ) =~ s/^access_token=//;
         $token =~ s/&.*$//;

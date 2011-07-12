@@ -7,8 +7,7 @@ use HTTP::Request::Common;
 use Net::Twitter;
 use JSON;
 
-has [qw(consumer_key consumer_secret redirect_uri)] =>
-    ( is => 'ro', required => 1 );
+has [qw(consumer_key consumer_secret)] => ( is => 'ro', required => 1 );
 
 sub nt {
     my $self = shift;
@@ -41,9 +40,9 @@ sub index : Path {
         );
     }
     else {
-        my $nt = $self->nt;
-        my $url
-            = $nt->get_authorization_url( callback => $self->redirect_uri );
+        my $nt  = $self->nt;
+        my $url = $nt->get_authorization_url(
+            callback => $c->uri_for( $self->action_for('index') ) );
         my $body = 'Authorization required';
         my $res  = $c->res;
         $res->redirect($url);
