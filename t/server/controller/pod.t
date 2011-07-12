@@ -21,7 +21,7 @@ test_psgi app, sub {
         is( $res->header('content-type'),
             $v == 200
             ? 'text/html; charset=UTF-8'
-            : 'application/json; charset=UTF-8',
+            : 'application/json; charset=utf-8',
             'Content-type'
         );
         if ( $v eq 200 ) {

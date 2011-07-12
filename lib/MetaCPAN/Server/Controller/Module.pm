@@ -2,6 +2,8 @@ package MetaCPAN::Server::Controller::Module;
 use Moose;
 BEGIN { extends 'MetaCPAN::Server::Controller::File' }
 
+has '+type' => ( default => 'file' );
+
 sub index : Chained('/') : PathPart('module') : CaptureArgs(0) {
 }
 

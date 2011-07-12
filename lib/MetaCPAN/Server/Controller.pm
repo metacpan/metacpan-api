@@ -4,6 +4,8 @@ use namespace::autoclean;
 
 BEGIN { extends 'Catalyst::Controller'; }
 
+has type => ( is => 'ro', lazy => 1, default => sub { shift->action_namespace } );
+
 sub mapping : Path('_mapping') {
     my ( $self, $c ) = @_;
     $c->stash( $c->model('CPAN')
@@ -26,7 +28,7 @@ sub search : Path('_search') {
                 {   method => $req->method,
                     qs     => $req->parameters,
                     cmd    => join( '/',
-                        undef, 'cpan', $self->action_namespace, '_search' ),
+                        '', 'cpan', $self->type, '_search' ),
                     data => $req->data
                 }
             )

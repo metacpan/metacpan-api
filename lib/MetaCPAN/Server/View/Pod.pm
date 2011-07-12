@@ -14,7 +14,7 @@ sub process {
     my $content = $c->res->body || $c->stash->{source};
     $content = eval { join($/, $content->getlines) };
     my ($body, $content_type);
-    my $accept = $c->req->preferred_content_type || 'text/html';
+    my $accept = eval { $c->req->preferred_content_type } || 'text/html';
     if($accept eq 'text/plain') {
       $body = $self->build_pod_txt( $content );
       $content_type = 'text/plain';

@@ -7,16 +7,13 @@ use warnings;
 use Plack::Test;
 use HTTP::Request::Common;
 use JSON::XS;
-use Encode;
-use MetaCPAN::Script::Runner;
 use base 'Exporter';
-our @EXPORT = qw(GET test_psgi app tx decode_json);
+our @EXPORT = qw(GET test_psgi app decode_json);
 
-use MetaCPAN::Script::Server;
-my $config = MetaCPAN::Script::Runner->build_config;
-$config->{es} = '127.0.0.1:9200';
+BEGIN { $ENV{METACPAN_SERVER_CONFIG_LOCAL_SUFFIX} = 'testing'; }
 
-sub app { MetaCPAN::Script::Server->new_with_options($config)->build_app; }
+my $app = require MetaCPAN::Server;
+sub app { $app }
 
 
 1;
@@ -38,7 +35,3 @@ L<Plack::Test/test_psgi>
 =head2 app
 
 Returns the L<MetaCPAN::Web> psgi app.
-
-=head2 tx($res)
-
-Parses C<< $res->content >> and generates a L<Test::XPath> object.

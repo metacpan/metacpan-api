@@ -1,0 +1,46 @@
+{
+   "profile" : [
+      {
+         "name" : "github",
+         "id" : "monken"
+      },
+      {
+         "name" : "facebook",
+         "id" : "moritz.onken"
+      },
+      {
+         "name" : "twitter",
+         "id" : "moritzonken"
+      }
+   ],
+   "country" : "DE",
+   "website" : [
+      "http://metacpan.org/"
+   ],
+   "gravatar_url" : "http://www.gravatar.com/avatar/874db45ef3a1c18dec3cb18349f1e713",
+   "donation" : [
+      {
+         "name" : "paypal",
+         "id" : "onken@houseofdesign.de"
+      }
+   ],
+   "region" : "BW",
+   "asciiname" : null,
+   "name" : "Moritz Onken",
+   "blog" : [
+      {
+         "feed" : "http://blogs.perl.org/users/mo/atom.xml",
+         "url" : "http://blogs.perl.org/users/mo/"
+      },
+      {
+         "feed" : "http://blog.netcubed.de/feed/",
+         "url" : "http://blog.netcubed.de/"
+      }
+   ],
+   "dir" : "id/P/PE/PERLER",
+   "email" : [
+      "onken@netcubed.de"
+   ],
+   "city" : "Karlsruhe",
+   "pauseid" : "PERLER"
+}

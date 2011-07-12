@@ -10,6 +10,7 @@ use MetaCPAN::Script::Release;
 use MetaCPAN::Script::Author;
 use Path::Class qw(dir file);
 use File::Copy;
+use Config::General;
 
 ok(my $es = ElasticSearch->new(
      # instances   => 1,
