@@ -25,6 +25,16 @@ test_psgi app, sub {
         ok( ref $json->{author} eq 'HASH', '_mapping' )
             if ( $k eq '/author/_mapping' );
     }
+
+    ok( my $res = $cb->(
+            POST '/author/_search',
+            #'Content-type' => 'application/json',
+            Content        => '{"query":{"match_all":{}},"size":0}'
+        ),
+        "POST _search"
+    );
+    ok( my $json = eval { decode_json( $res->content ) }, 'valid json' );
+    is( @{ $json->{hits}->{hits} }, 0, '0 results' );
 };
 
 done_testing;

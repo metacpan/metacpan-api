@@ -8,7 +8,7 @@ use Plack::Test;
 use HTTP::Request::Common;
 use JSON::XS;
 use base 'Exporter';
-our @EXPORT = qw(GET test_psgi app decode_json);
+our @EXPORT = qw(POST GET test_psgi app decode_json);
 
 BEGIN { $ENV{METACPAN_SERVER_CONFIG_LOCAL_SUFFIX} = 'testing'; }
 

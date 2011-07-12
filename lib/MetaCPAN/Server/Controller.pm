@@ -1,10 +1,14 @@
 package MetaCPAN::Server::Controller;
 use Moose;
 use namespace::autoclean;
+use JSON;
 
 BEGIN { extends 'Catalyst::Controller'; }
 
-has type => ( is => 'ro', lazy => 1, default => sub { shift->action_namespace } );
+__PACKAGE__->config( default => 'application/json', map => { 'application/json' => 'JSON' } );
+
+has type =>
+    ( is => 'ro', lazy => 1, default => sub { shift->action_namespace } );
 
 sub mapping : Path('_mapping') {
     my ( $self, $c ) = @_;
@@ -19,7 +23,7 @@ sub all : Chained('index') : PathPart('') : Args(0) {
     $c->forward('search');
 }
 
-sub search : Path('_search') {
+sub search : Path('_search') : ActionClass('Deserialize') {
     my ( $self, $c ) = @_;
     my $req = $c->req;
     eval {
@@ -27,9 +31,8 @@ sub search : Path('_search') {
             $c->model('CPAN')->es->request(
                 {   method => $req->method,
                     qs     => $req->parameters,
-                    cmd    => join( '/',
-                        '', 'cpan', $self->type, '_search' ),
-                    data => $req->data
+                    cmd    => join( '/', '', 'cpan', $self->type, '_search' ),
+                    data   => $req->data
                 }
             )
         );
