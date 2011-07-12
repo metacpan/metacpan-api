@@ -11,7 +11,7 @@ sub encode_json($) {
         = $c->req->looks_like_browser
         ? JSON::XS->new->utf8->pretty
         : JSON::XS->new->utf8;
-    $encoder->encode($data);
+    $encoder->encode(exists $data->{rest} ? $data->{rest} : $data);
 }
 
 1;
