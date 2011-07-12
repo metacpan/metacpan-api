@@ -33,6 +33,11 @@ sub has_identity {
     return scalar grep { $_->name eq $identity } @{$self->identity};
 }
 
+sub get_identities {
+    my ($self, $identity) = @_;
+    return grep { $_->name eq $identity } @{$self->identity};
+}
+
 __PACKAGE__->meta->make_immutable;
 
 package MetaCPAN::Model::User::Account::Set;
