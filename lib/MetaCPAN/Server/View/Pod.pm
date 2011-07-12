@@ -12,7 +12,7 @@ use IO::String;
 sub process {
     my ($self, $c) = @_;
     my $content = $c->res->body || $c->stash->{source};
-    $content = eval { join($/, $content->getlines) };
+    $content = eval { join("", $content->getlines) };
     my ($body, $content_type);
     my $accept = eval { $c->req->preferred_content_type } || 'text/html';
     if($accept eq 'text/plain') {
