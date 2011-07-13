@@ -59,7 +59,7 @@ sub run {
         if ( -d $_ ) {
             log_info {"Looking for tarballs in $_"};
             my $find = File::Find::Rule->new->file->name(
-                qr/\.(tgz|tbz|tar[\._-]gz|tar\.bz2|tar\.Z|zip|7z)$/ );
+                qr/\.(tgz|tbz|tar[\._-]gz|tar\.bz2|tar\.Z|zip|7z)$/);
             $find = $find->mtime( ">" . ( time - $self->age * 3600 ) )
                 if ( $self->age );
             push( @files, sort $find->in($_) );
@@ -183,9 +183,14 @@ sub import_tarball {
 
     log_debug { "Found ", scalar @dependencies, " dependencies" };
 
-    my $st     = stat($tarball);
-    my $stat   = { map { $_ => $st->$_ } qw(mode uid gid size mtime) };
-    my $create = DlogS_trace {"adding release $_"} +{
+    my $st = stat($tarball);
+    my $stat = { map { $_ => $st->$_ } qw(mode uid gid size mtime) };
+
+    $meta = $self->load_meta_file($tmpdir) || $meta;
+
+    my $create = { map { $_ => $meta->$_ }
+            qw(version name license abstract resources) };
+    $create = DlogS_trace {"adding release $_"} +{
         %{ $meta->as_struct },
         name         => $name,
         author       => $author,
@@ -212,10 +217,7 @@ sub import_tarball {
         callback => sub {
             my $child    = shift;
             my $relative = $child->relative($tmpdir);
-            $meta_file = $relative
-                if ( !$meta_file && $relative =~ /^[^\/]+\/META\./
-                || $relative =~ /^[^\/]+\/META\.json/ );
-            my $stat = do {
+            my $stat     = do {
                 my $s = $child->stat;
                 +{ map { $_ => $s->$_ } qw(mode uid gid size mtime) };
             };
@@ -248,8 +250,6 @@ sub import_tarball {
             );
         }
     );
-    $meta = $self->load_meta_file( $meta, $tmpdir->file($meta_file) )
-        if ($meta_file);
 
     push(
         @{ $meta->{no_index}->{directory} },
@@ -351,7 +351,17 @@ sub pkg_datestamp {
 }
 
 sub load_meta_file {
-    my ( $self, $meta, $meta_file ) = @_;
+    my ( $self, $dir ) = @_;
+    my $file;
+    for (qw{*/META.json */META.yml */META.yaml META.json META.yml META.yaml})
+    {
+        my $path = <$dir/$_>;
+        if ( $path && -e $path ) {
+            $file = $path;
+            last;
+        }
+    }
+    return unless($file);
 
     #  YAML YAML::Tiny YAML::XS don't offer better results
     my @backends = qw(CPAN::Meta::YAML YAML::Syck);
@@ -360,14 +370,13 @@ sub load_meta_file {
         $ENV{PERL_YAML_BACKEND} = $mod;
         my $last;
         try {
-            $last = CPAN::Meta->load_file($meta_file);
+            $last = CPAN::Meta->load_file($file);
         };
         return $last if ($last);
     }
 
     log_warn {"META file could not be loaded: $_"}
     unless (@backends);
-    return $meta;
 }
 
 sub dependencies {
