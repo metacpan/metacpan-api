@@ -24,6 +24,9 @@
          "id" : "onken@houseofdesign.de"
       }
    ],
+   "perlmongers": {
+       "name": "test.pm"
+   },
    "region" : "BW",
    "asciiname" : null,
    "name" : "Moritz Onken",

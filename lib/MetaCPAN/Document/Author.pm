@@ -83,25 +83,28 @@ analyzed JSON string.
 
 =cut
 
-has name      => ( index => 'analyzed', isa      => NonEmptySimpleStr );
-has asciiname => ( index => 'analyzed', isa      => NonEmptySimpleStr, required => 0 );
+has name => ( index => 'analyzed', isa => NonEmptySimpleStr );
+has asciiname =>
+    ( index => 'analyzed', isa => NonEmptySimpleStr, required => 0 );
 has [qw(website email)] => ( isa => ArrayRef, coerce => 1 );
 has pauseid      => ( id         => 1 );
 has dir          => ( lazy_build => 1 );
 has gravatar_url => ( lazy_build => 1, isa => NonEmptySimpleStr );
 has profile => (
-    isa => ArrayRef [
-        Dict [ name => NonEmptySimpleStr, id => NonEmptySimpleStr ] ],
+    isa      => Profile,
+    coerce   => 1,
     required => 0,
     dynamic  => 1
 );
 has blog => (
-    isa => ArrayRef [ Dict [ url => NonEmptySimpleStr, feed => Str ] ],
+    isa      => Blog,
+    coerce   => 1,
     required => 0,
     dynamic  => 1
 );
 has perlmongers => (
-    isa => ArrayRef [ Dict [ url => Str, name => NonEmptySimpleStr ] ],
+    isa      => PerlMongers,
+    coerce   => 1,
     required => 0,
     dynamic  => 1
 );

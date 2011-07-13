@@ -12,11 +12,26 @@ use MooseX::Types -declare => [
       Identity
       Dependency
       Extra
+      
+      Profile
+      Blog
+      PerlMongers
       ) ];
 
 use MooseX::Types::Structured qw(Dict Tuple Optional);
 use MooseX::Types::Moose qw/Int Num Str ArrayRef HashRef Undef/;
 use ElasticSearchX::Model::Document::Types qw(:all);
+use MooseX::Types::Common::String qw(NonEmptySimpleStr);
+
+subtype PerlMongers, as ArrayRef [ Dict [ url => Str, name => NonEmptySimpleStr ] ];
+coerce PerlMongers, from HashRef, via { [$_] };
+
+subtype Profile, as ArrayRef [
+    Dict [ name => NonEmptySimpleStr, id => NonEmptySimpleStr ] ];
+coerce Profile, from HashRef, via { [$_] };
+
+subtype Blog, as ArrayRef [ Dict [ url => NonEmptySimpleStr, feed => Str ] ];
+coerce Blog, from HashRef, via { [$_] };
 
 subtype Stat, as Dict [ mode => Int, uid => Int, gid => Int, size => Int, mtime => Int ];
 
@@ -27,7 +42,6 @@ coerce Module, from HashRef, via { [ MetaCPAN::Document::Module->new($_) ] };
 subtype Identity, as ArrayRef [ Type [ 'MetaCPAN::Model::User::Identity' ] ];
 coerce Identity, from ArrayRef, via { [ map { ref $_ eq 'HASH' ? MetaCPAN::Model::User::Identity->new($_) : $_ } @$_ ]; };
 coerce Identity, from HashRef, via { [ MetaCPAN::Model::User::Identity->new($_) ] };
-
 
 subtype Dependency, as ArrayRef [ Type [ 'MetaCPAN::Document::Dependency' ] ];
 coerce Dependency, from ArrayRef, via { [ map { ref $_ eq 'HASH' ? MetaCPAN::Document::Dependency->new($_) : $_ } @$_ ]; };
