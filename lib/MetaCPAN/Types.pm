@@ -23,7 +23,7 @@ use MooseX::Types::Moose qw/Int Num Str ArrayRef HashRef Undef/;
 use ElasticSearchX::Model::Document::Types qw(:all);
 use MooseX::Types::Common::String qw(NonEmptySimpleStr);
 
-subtype PerlMongers, as ArrayRef [ Dict [ url => Str, name => NonEmptySimpleStr ] ];
+subtype PerlMongers, as ArrayRef [ Dict [ url => Optional [ Str ], name => NonEmptySimpleStr ] ];
 coerce PerlMongers, from HashRef, via { [$_] };
 
 subtype Profile, as ArrayRef [

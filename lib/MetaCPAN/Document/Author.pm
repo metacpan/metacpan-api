@@ -144,8 +144,12 @@ sub validate {
         }
         elsif ( exists $data->{ $attr->name } && $attr->has_type_constraint )
         {
+            my $value = $data->{$attr->name};
+            if($attr->should_coerce) {
+                $value = $attr->type_constraint->coerce($value);
+            }
             my $message
-                = $attr->type_constraint->validate( $data->{ $attr->name } );
+                = $attr->type_constraint->validate( $value );
             push( @result, { field => $attr->name, message => $message } )
                 if ( defined $message );
         }
