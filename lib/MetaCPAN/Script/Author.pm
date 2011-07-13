@@ -90,7 +90,7 @@ sub author_config {
     my @files;
     opendir( my $dh, $dir ) || return {};
     my ($file)
-        = sort { ( stat( $dir . $b ) )->mtime <=> ( stat( $dir . $a ) )->mtime }
+        = sort { $dir->file($b)->stat->mtime <=> $dir->file($a)->stat->mtime }
         grep {m/author-.*?\.json/} readdir($dh);
     return {} unless ($file);
     $file = $dir->file($file);
