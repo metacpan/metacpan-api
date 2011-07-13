@@ -30,18 +30,24 @@ sub update_user {
         $user = $model->get( $c->user->id )
             if ( $c->session->{__user} );
         $user ||= $model->new_document;
-        $user->add_identity(
-            { name => $type, key => $id, extra => $data } );
+        $user->add_identity( { name => $type, key => $id, extra => $data } );
         $user->put( { refresh => 1 } );
     }
     $c->authenticate( { user => $user } );
     if ( my $cid = $c->req->cookie('oauth_tmp') ) {
         $cid->expires('-1y');
-        $c->res->redirect($c->uri_for('/oauth2/authorize', undef, decode_json($cid->value)));
+        $c->res->redirect(
+            $c->uri_for(
+                '/oauth2/authorize', undef, decode_json( $cid->value )
+            )
+        );
         $c->res->cookies->{oauth_tmp} = $cid;
-        $c->detach;
     }
-    
+    else {
+        $c->res->redirect('/user');
+    }
+    $c->detach;
+
 }
 
 1;

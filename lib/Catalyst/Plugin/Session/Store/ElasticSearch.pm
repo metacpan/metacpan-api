@@ -1,52 +1,76 @@
 package Catalyst::Plugin::Session::Store::ElasticSearch;
 
+# ABSTRACT: Store session data in ElasticSearch
+
 use Moose;
 extends 'Catalyst::Plugin::Session::Store';
 use List::MoreUtils qw();
 use MooseX::Types::ElasticSearch qw(:all);
 
-has session_es =>
-    ( required => 1, is => 'ro', coerce => 1, default => ':9200', isa => ES );
-has session_es_index => ( required => 1, is => 'ro', default => 'user' );
-has session_es_type  => ( required => 1, is => 'ro', default => 'session' );
-has session_es_property => ( required => 1, is => 'ro', default => 'id' );
+has _session_es => (
+    required => 1,
+    is       => 'rw',
+    coerce   => 1,
+    isa      => ES,
+    default  => sub { shift->_session_plugin_config->{es} || ':9200' }
+);
+has _session_es_index => (
+    required => 1,
+    is       => 'rw',
+    default  => sub { shift->_session_plugin_config->{index} || 'user' }
+);
+has _session_es_type => (
+    required => 1,
+    is       => 'rw',
+    default  => sub { shift->_session_plugin_config->{type} || 'session' }
+);
 
 sub get_session_data {
-    my ( $self, $session_id ) = @_;
-    return undef unless ($session_id);
-    my $data = eval {
-        $self->session_es->get(
-            index  => $self->session_es_index,
-            type   => $self->session_es_type,
-            id     => $session_id,
-        );
-    } || return undef;
-    return $data->{_source};
+    my ( $self, $key ) = @_;
+    if ( my ($sid) = $key =~ /^\w+:(.*)/ ) {
+        my $data = eval {
+            $self->_session_es->get(
+                index => $self->_session_es_index,
+                type  => $self->_session_es_type,
+                id    => $sid,
+            );
+        } || return undef;
+        if ( $key =~ /^expires:/ ) {
+            return $data->{_source}->{_expires};
+        }
+        else {
+            return $data->{_source};
+        }
+    }
 }
 
 sub store_session_data {
-    my ( $self, $session_id, $session ) = @_;
-    $session = { $self->session_es_type => {} } unless(ref $session);
-    $self->session_es->index(
-        index  => $self->session_es_index,
-        type   => $self->session_es_type,
-        id     => $session_id || undef,
-        parent => $session->{__user} || "",
-        data   => $session,
-        refresh => 1,
-    );
+    my ( $self, $key, $session ) = @_;
+    if ( my ($sid) = $key =~ /^session:(.*)/ ) {
+        $session->{_expires} = $self->session_expires;
+        $self->_session_es->index(
+            index   => $self->_session_es_index,
+            type    => $self->_session_es_type,
+            id      => $sid,
+            parent  => $session->{__user} || "",
+            data    => $session,
+            refresh => 1,
+        );
+    }
 }
 
 sub delete_session_data {
-    my ( $self, $session_id ) = @_;
-    eval {
-        $self->session_es->delete(
-            index   => $self->session_es_index,
-            type    => $self->session_es_type,
-            id      => $session_id,
-            refresh => 1,
-        );
-    };
+    my ( $self, $key ) = @_;
+    if ( my ($sid) = $key =~ /^session:(.*)/ ) {
+        eval {
+            $self->_session_es->delete(
+                index   => $self->_session_es_index,
+                type    => $self->_session_es_type,
+                id      => $sid,
+                refresh => 1,
+            );
+        };
+    }
 }
 
 sub delete_expired_sessions { }
@@ -54,3 +78,54 @@ sub delete_expired_sessions { }
 1;
 
 =head1 SYNOPSIS
+
+ $ curl -XPUT localhost:9200/user
+ $ curl -XPUT localhost:9200/user/session/_mapping -d '{"session":{"dynamic":false}}'
+
+ use Catalyst qw(
+     Session
+     Session::Store::ElasticSearch
+ );
+ 
+ # defaults
+ MyApp->config(
+     'Plugin::Session' => {
+         es    => ':9200',
+         index => 'user',
+         type  => 'session',
+     } );
+
+=head1 DESCRIPTION
+
+This module will store session data in ElasticSearch. ElasticSearch
+is a fast and reliable document store.
+
+=head1 CONFIGURATION
+
+=head2 es
+
+Connection string to an ElasticSearch instance. Can be either a port
+on localhost (e.g. C<:9200>), a full address to the ElasticSearch
+server (e.g. C<127.0.0.1:9200>), an ArrayRef of connection strings or
+a HashRef that initialized an L<ElasticSearch> instance.
+
+=head2 index
+
+The ElasticSearch index to use. Defaults to C<user>.
+
+=head2 type
+
+The ElasticSearch type to use. Defaults to C<session>.
+
+=head1 MAP TO A USER DOCUMENT
+
+Usually you will want to map a session to a user account. So you will
+probably have a user document in ElasticSearch that you want to map
+to the session. ElasticSearch can do this very efficiently by establishing
+a parent/child relationship. L<Catalyst::Plugin::Authentication> will set
+the C<__user> attribute on the session once a user has been authorized.
+This attribute will be used as the C<_parent> of the session. Make sure
+you define the C<_parent> type of the session type mapping.
+
+ $ curl -XPUT localhost:9200/user/session/_mapping -d '
+    {"session":{"dynamic":false,"_parent":{"type":"account"}}}'
