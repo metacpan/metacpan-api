@@ -50,10 +50,9 @@ sub path {
 sub find_file {
     my ( $self, $dir, $file ) = @_;
     my ($source) = glob "$dir/*/$file";    # file can be in any subdirectory
-    return file($source) if ( $source && -e $source );
-    return $dir->file($file)
-        if ( -e $dir->file($file) );       # or even at top level
-    return undef;
+    ($source) ||= glob "$dir/$file";    # file can be in any subdirectory
+    return undef unless(-e $source);
+    return -d $source ? dir($source) : file($source);
 }
 
 1;

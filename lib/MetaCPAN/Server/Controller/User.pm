@@ -56,7 +56,6 @@ sub identity_DELETE {
 sub profile : Local : ActionClass('REST') {
     my ( $self, $c ) = @_;
     my ($pause) = $c->user->get_identities('pause');
-    use Data::Printer; warn p($c->user->identity);
     my $profile = $c->model('CPAN::Author')->inflate(0)->get( $pause->key );
     $c->stash->{profile} = $profile->{_source};
 }
@@ -69,7 +68,6 @@ sub profile_GET {
 sub profile_PUT {
     my ( $self, $c ) = @_;
     my $profile = $c->stash->{profile};
-    use Data::Printer;
 
     map {
         defined $c->req->data->{$_}
