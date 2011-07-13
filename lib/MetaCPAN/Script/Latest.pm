@@ -109,7 +109,7 @@ sub reindex {
         $es->index( index => $self->index->name,
                     type  => 'file',
                     id    => $row->{_id},
-                    parent => $row->{fields}->{_parent},
+                    parent => $row->{fields}->{_parent} || "",
                     data  => { %$source, status => $status }
         ) unless ( $self->dry_run );
     }
