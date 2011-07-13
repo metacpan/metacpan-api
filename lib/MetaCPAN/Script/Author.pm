@@ -90,12 +90,12 @@ sub author_config {
     my @files;
     opendir( my $dh, $dir ) || return {};
     my ($file)
-        = sort { ( stat( $dir . $b ) )[9] <=> ( stat( $dir . $a ) )[9] }
+        = sort { ( stat( $dir . $b ) )->mtime <=> ( stat( $dir . $a ) )->mtime }
         grep {m/author-.*?\.json/} readdir($dh);
     return {} unless ($file);
     $file = $dir->file($file);
     return {} if !-e $file;
-    my $mtime = DateTime->from_epoch( epoch => File::stat::stat($file)->mtime );
+    my $mtime = DateTime->from_epoch( epoch => stat($file)->mtime );
     if($dates->{$pauseid} && $dates->{$pauseid} >= $mtime) {
         log_debug {"Skipping $pauseid (newer version in index)"};
         return undef;
