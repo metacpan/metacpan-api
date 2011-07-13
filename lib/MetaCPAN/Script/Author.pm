@@ -41,13 +41,18 @@ sub index_authors {
     log_info {"Indexing $count authors"};
 
     log_debug {"Getting last update dates"};
-    my $dates
-        = $type->inflate(0)->filter( { exists => { field => 'updated' } } )
-        ->all;
-    $dates = { map {
-        $_->{pauseid} =>
-            DateTime::Format::ISO8601->parse_datetime( $_->{updated} )
-    } map { $_->{_source} } @{ $dates->{hits}->{hits} } };
+    my $dates = $type->inflate(0)->query(
+        {   query  => { match_all => {} },
+            filter => { exists    => { field => 'updated' } },
+            size => 99999
+        }
+    )->all;
+    $dates = {
+        map {
+            $_->{pauseid} =>
+                DateTime::Format::ISO8601->parse_datetime( $_->{updated} )
+            } map { $_->{_source} } @{ $dates->{hits}->{hits} }
+    };
 
     while ( my ( $pauseid, $data ) = each %$authors ) {
         my ( $name, $email, $homepage, $asciiname )
@@ -85,18 +90,20 @@ sub index_authors {
 }
 
 sub author_config {
-    my ($self, $pauseid, $dates) = @_;
-    my $dir = $self->cpan->subdir( 'authors', MetaCPAN::Util::author_dir($pauseid) );
+    my ( $self, $pauseid, $dates ) = @_;
+    my $dir = $self->cpan->subdir( 'authors',
+        MetaCPAN::Util::author_dir($pauseid) );
     my @files;
     opendir( my $dh, $dir ) || return {};
     my ($file)
         = sort { $dir->file($b)->stat->mtime <=> $dir->file($a)->stat->mtime }
-        grep {m/author-.*?\.json/} readdir($dh);
+        grep   {m/author-.*?\.json/} readdir($dh);
     return {} unless ($file);
     $file = $dir->file($file);
     return {} if !-e $file;
     my $mtime = DateTime->from_epoch( epoch => $file->stat->mtime );
-    if($dates->{$pauseid} && $dates->{$pauseid} >= $mtime) {
+
+    if ( $dates->{$pauseid} && $dates->{$pauseid} >= $mtime ) {
         log_debug {"Skipping $pauseid (newer version in index)"};
         return undef;
     }
@@ -112,8 +119,7 @@ sub author_config {
             = { map { $_ => $author->{$_} }
                 qw(name asciiname profile blog perlmongers donation email website city region country location extra)
             };
-        $author->{updated}
-            = $mtime;
+        $author->{updated} = $mtime;
         return $author;
     }
 }
