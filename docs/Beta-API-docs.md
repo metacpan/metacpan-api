@@ -43,6 +43,10 @@ All CPAN Authors Who Have Provided Twitter IDs:
 
 [http://api.metacpan.org/author/_search?pretty=true&q=profile.name:twitter&size=100000](http://api.metacpan.org/author/_search?pretty=true&q=profile.name:twitter&size=100000)
 
+All CPAN Authors Who Have Updated MetaCPAN Profiles:
+
+[[http://api.metacpan.org/v0/author/_search?q=updated:*&sort=updated:desc]]
+
 ## POST Searches
 
 Please feel free to add queries here as you use them in your own work, so that others can learn from you.
