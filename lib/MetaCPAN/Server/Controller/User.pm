@@ -22,7 +22,7 @@ sub auto : Private {
 sub index : Path {
     my ( $self, $c ) = @_;
     $c->stash( $c->user->data );
-    $c->detach($c->view('JSON'));
+    $c->detach( $c->view('JSON') );
 }
 
 sub identity : Local : ActionClass('REST') {
@@ -56,6 +56,10 @@ sub identity_DELETE {
 sub profile : Local : ActionClass('REST') {
     my ( $self, $c ) = @_;
     my ($pause) = $c->user->get_identities('pause');
+    unless($pause) {
+        $self->status_not_found( $c, message => 'Profile doesn\'t exist' );
+        $c->detach;
+    }
     my $profile = $c->model('CPAN::Author')->inflate(0)->get( $pause->key );
     $c->stash->{profile} = $profile->{_source};
 }
@@ -71,7 +75,8 @@ sub profile_PUT {
 
     map {
         defined $c->req->data->{$_}
-            ? $profile->{$_} = $c->req->data->{$_}
+            ? $profile->{$_}
+            = $c->req->data->{$_}
             : delete $profile->{$_}
         } qw(name asciiname website email
         gravatar_url profile blog
@@ -79,18 +84,19 @@ sub profile_PUT {
         location extra);
     $profile->{updated} = DateTime->now;
     my @errors = $c->model('CPAN::Author')->new_document->validate($profile);
+
     if (@errors) {
-            $self->status_bad_request( $c, message => 'Validation failed' );
-            $c->stash->{rest}->{errors} = \@errors;
+        $self->status_bad_request( $c, message => 'Validation failed' );
+        $c->stash->{rest}->{errors} = \@errors;
     }
     else {
-            $profile = $c->model('CPAN::Author')
-                ->put( $profile, { refresh => 1 } );
-            $self->status_created(
-                $c,
-                location => $c->uri_for( '/author/' . $profile->{pauseid} ),
-                entity   => $profile->meta->get_data($profile)
-            );
+        $profile
+            = $c->model('CPAN::Author')->put( $profile, { refresh => 1 } );
+        $self->status_created(
+            $c,
+            location => $c->uri_for( '/author/' . $profile->{pauseid} ),
+            entity   => $profile->meta->get_data($profile)
+        );
     }
 }
 
