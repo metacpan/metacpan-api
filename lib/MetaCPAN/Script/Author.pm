@@ -91,6 +91,7 @@ sub index_authors {
 
 sub author_config {
     my ( $self, $pauseid, $dates ) = @_;
+    my $fallback = $dates->{$pauseid} ? undef : {};
     my $dir = $self->cpan->subdir( 'authors',
         MetaCPAN::Util::author_dir($pauseid) );
     my @files;
@@ -98,9 +99,9 @@ sub author_config {
     my ($file)
         = sort { $dir->file($b)->stat->mtime <=> $dir->file($a)->stat->mtime }
         grep   {m/author-.*?\.json/} readdir($dh);
-    return !$dates->{$pauseid} unless ($file);
+    return $fallback unless ($file);
     $file = $dir->file($file);
-    return !$dates->{$pauseid} if !-e $file;
+    return $fallback if !-e $file;
     my $mtime = DateTime->from_epoch( epoch => $file->stat->mtime );
 
     if ( $dates->{$pauseid} && $dates->{$pauseid} >= $mtime ) {
@@ -112,7 +113,7 @@ sub author_config {
 
     if (@$) {
         log_warn {"$file is broken: $@"};
-        return !$dates->{$pauseid};
+        return $fallback;
     }
     else {
         $author
