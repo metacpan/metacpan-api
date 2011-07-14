@@ -98,9 +98,9 @@ sub author_config {
     my ($file)
         = sort { $dir->file($b)->stat->mtime <=> $dir->file($a)->stat->mtime }
         grep   {m/author-.*?\.json/} readdir($dh);
-    return {} unless ($file);
+    return !$dates->{$pauseid} unless ($file);
     $file = $dir->file($file);
-    return {} if !-e $file;
+    return !$dates->{$pauseid} if !-e $file;
     my $mtime = DateTime->from_epoch( epoch => $file->stat->mtime );
 
     if ( $dates->{$pauseid} && $dates->{$pauseid} >= $mtime ) {
@@ -112,7 +112,7 @@ sub author_config {
 
     if (@$) {
         log_warn {"$file is broken: $@"};
-        return {};
+        return !$dates->{$pauseid};
     }
     else {
         $author
