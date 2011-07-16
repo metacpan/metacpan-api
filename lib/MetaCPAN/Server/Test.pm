@@ -5,16 +5,20 @@ package MetaCPAN::Server::Test;
 use strict;
 use warnings;
 use Plack::Test;
-use HTTP::Request::Common;
+use HTTP::Request::Common qw(POST GET DELETE);
 use JSON::XS;
 use base 'Exporter';
-our @EXPORT = qw(POST GET test_psgi app decode_json);
+our @EXPORT = qw(POST GET DELETE test_psgi app encode_json decode_json);
 
 BEGIN { $ENV{METACPAN_SERVER_CONFIG_LOCAL_SUFFIX} = 'testing'; }
 
 my $app = require MetaCPAN::Server;
-sub app { $app }
-
+MetaCPAN::Server->model('User::Account')->put(
+    {   identity      => [ { name   => 'pause',   key    => 'MO' } ],
+        access_token => [ { client => 'testing', token => 'testing' } ]
+    }, { refresh => 1 }
+);
+sub app {$app}
 
 1;
 

@@ -2,7 +2,7 @@ package MetaCPAN::Server::Role::Request;
 
 use Moose::Role;
 
-around header => sub {
+around [qw(content_type header)] => sub {
     my ($orig, $self) = (shift,shift);
     my $header = $self->$orig(@_);
     return unless($header);
