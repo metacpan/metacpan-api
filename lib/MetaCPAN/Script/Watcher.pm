@@ -20,8 +20,8 @@ my @segments = qw(1h 6h 1d 1W 1M 1Q 1Y Z);
 
 sub run {
     my $self = shift;
-    $latest = $self->latest_release;
     while (1) {
+        $latest = $self->latest_release;
         my @changes = $self->changes;
         while ( my $release = pop(@changes) ) {
             $self->index_release($release);
@@ -75,7 +75,6 @@ sub latest_release {
             sort  => [ { 'date' => { order => "desc" } } ]
         }
     )->first;
-    log_info { "Latest release found from " . $latest->date } if ($latest);
     return $latest ? $latest->date->epoch : 1;
 }
 
