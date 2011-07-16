@@ -5,47 +5,94 @@ with 'MooseX::Getopt';
 with 'MetaCPAN::Role::Common';
 use Log::Contextual qw( :log );
 
-use AnyEvent::FriendFeed::Realtime;
-use AnyEvent::Run;
+use JSON::XS;
 
-my $fails = 0;
+has backpan => (
+    is            => 'ro',
+    isa           => 'Bool',
+    documentation => 'update deleted tarballs only',
+);
+has dry_run => ( is => 'ro', isa => 'Bool', default => 0 );
+
+my $fails    = 0;
+my $latest   = 0;
+my @segments = qw(1h 6h 1d 1W 1M 1Q 1Y Z);
+
 sub run {
     my $self = shift;
-    log_warn { "Reconnecting after $fails fails" } if($fails);
-    my($user, $remote_key, $request) = @ARGV;
-    my $done = AnyEvent->condvar;
+    $latest = $self->latest_release;
+    while (1) {
+        my @changes = $self->changes;
+        while ( my $release = pop(@changes) ) {
+            $self->index_release($release);
+        }
+        sleep(15);
+    }
+}
 
-    binmode STDOUT, ":utf8";
-    my %handles;
+sub changes {
+    my $self = shift;
+    my $now  = DateTime->now->epoch;
+    my @changes;
+    for my $segment (@segments) {
+        log_debug {"Loading RECENT-$segment.json"};
+        my $json
+            = decode_json( $self->cpan->file("RECENT-$segment.json")->slurp );
+        map { push( @changes, $_ ) } grep {
+                   $_->{epoch} > $latest
+                && $_->{path}
+                =~ /^authors\/id\/.*\.(tgz|tbz|tar[\._-]gz|tar\.bz2|tar\.Z|zip|7z)$/
+            } grep { $self->backpan ? $_->{type} eq "delete" : 1 }
+            @{ $json->{recent} };
+        if ( $json->{meta}->{minmax}->{min} < $latest ) {
+            log_debug {"Includes latest release"};
+            last;
+        }
+    }
+    return @changes;
+}
 
-    my $client = AnyEvent::FriendFeed::Realtime->new(
-        request    => "/feed/cpan",
-        on_entry   => sub {
-            my $entry = shift;
-            $fails = 0; # on_connect actually
-            $entry->{body} =~ /href="(.*?)"/;
-            my $file = $1;
-            return unless( $file );
-            log_info { "New upload: $file" };
-            $handles{$file} = AnyEvent::Run->new(
-                cmd => $FindBin::RealBin . "/metacpan",
-                args => ['release', $file, '--latest', '--level', $self->level, '--index', $self->index->name],
-                on_read => sub { },
-                on_eof => sub { },
-                on_error  => sub { }
-            );
-        },
-        on_error   => sub {
-            $done->send;
-        },
+sub latest_release {
+    my $self   = shift;
+    my $latest = $self->index->type('release')->query(
+        {   query => { match_all => {} },
+            $self->backpan
+            ? ( filter => { term => { 'release.status' => 'backpan' } } )
+            : (),
+            size => 1,
+            sort => [ { 'release.date' => 'desc' } ]
+        }
+    )->first;
+    log_info { "Latest release found from " . $latest->date } if ($latest);
+    return $latest ? $latest->date->epoch : 1;
+}
+
+sub index_release {
+    my ( $self, $release ) = @_;
+    my $tarball = $self->cpan->file( $release->{path} )->stringify;
+    for ( my $i = 0; $i < 15; $i++ ) {
+        last if ( -e $tarball );
+        log_warn {"Tarball $tarball does not yet exist"};
+        sleep(1);
+    }
+
+    unless ( -e $tarball ) {
+        log_error {
+            "Aborting, tarball $tarball not available after 15 seconds";
+        };
+        return;
+    }
+
+    my @run = (
+        $FindBin::RealBin . "/metacpan",
+        'release',
+        $tarball,
+        $release->{type} eq 'new' ? '--latest' : ( '--status', 'backpan' ),
+        '--index',
+        $self->index->name
     );
-    log_info { "Up and running. Watching http://friendfeed.com/cpan for updates" }
-        unless($fails);
-    $done->recv;
-    $fails++;
-    $self->run if($fails < 5);
-    log_fatal { "Giving up after $fails fails" };
-    
+    log_debug {"Running @run"};
+    system(@run) unless ( $self->dry_run );
 }
 
 1;
@@ -56,13 +103,16 @@ sub run {
 
 =head1 DESCRIPTION
 
-Uses L<AnyEvent::FriendFeed::Realtime> to watch the CPAN friendfeed.
-On a new upload it will fork a new process using L<AnyEvent::Run>
-and run L<MetaCPAN::Script::Release> to index the new release.
+This script requires a local CPAN mirror. It watches the RECENT-*.json
+files for changes to the CPAN directory every 15 seconds. New uploads
+as well as deletions are processed sequentially.
 
-If the connection to friendfeed is reset the process will try up
-to five times to reconnects or exists otherwise.
+=head1 OPTIONS
 
-=head1 SOURCE
+=head2 --backpan
+
+This will look for the most recent release that has been deleted.
+From that point on, it will look in the RECENT files for new deletions
+and process them.
 
 L<http://friendfeed.com/cpan>
