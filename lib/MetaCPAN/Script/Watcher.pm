@@ -33,17 +33,29 @@ sub run {
 sub changes {
     my $self = shift;
     my $now  = DateTime->now->epoch;
+    my %seen;
     my @changes;
     for my $segment (@segments) {
         log_debug {"Loading RECENT-$segment.json"};
         my $json
             = decode_json( $self->cpan->file("RECENT-$segment.json")->slurp );
-        map { push( @changes, $_ ) } grep {
-                   $_->{epoch} > $latest
-                && $_->{path}
-                =~ /^authors\/id\/.*\.(tgz|tbz|tar[\._-]gz|tar\.bz2|tar\.Z|zip|7z)$/
+        for (
+            grep {
+                       $_->{epoch} > $latest
+                    && $_->{path}
+                    =~ /^authors\/id\/.*\.(tgz|tbz|tar[\._-]gz|tar\.bz2|tar\.Z|zip|7z)$/
             } grep { $self->backpan ? $_->{type} eq "delete" : 1 }
-            @{ $json->{recent} };
+            @{ $json->{recent} }
+            )
+        {
+            my $seen = $seen{ $_->{path} };
+            next
+                if ( $seen
+                && ( $_->{type} eq $seen->{type} || $_->{type} eq 'delete' )
+                );
+            $seen{ $_->{path} } = $_;
+            push( @changes, $_ );
+        }
         if ( $json->{meta}->{minmax}->{min} < $latest ) {
             log_debug {"Includes latest release"};
             last;
