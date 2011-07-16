@@ -72,7 +72,7 @@ sub latest_release {
             ? ( filter => { term => { 'release.status' => 'backpan' } } )
             : (),
             size => 1,
-            sort => [ { 'release.date' => 'desc' } ]
+            sort  => [ { 'date' => { order => "desc" } } ]
         }
     )->first;
     log_info { "Latest release found from " . $latest->date } if ($latest);
