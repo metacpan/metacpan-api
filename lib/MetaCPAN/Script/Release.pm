@@ -361,21 +361,22 @@ sub load_meta_file {
             last;
         }
     }
-    return unless($file);
+    return unless ($file);
 
     #  YAML YAML::Tiny YAML::XS don't offer better results
     my @backends = qw(CPAN::Meta::YAML YAML::Syck);
-
+    my $error;
     while ( my $mod = shift @backends ) {
         $ENV{PERL_YAML_BACKEND} = $mod;
         my $last;
         try {
             $last = CPAN::Meta->load_file($file);
-        };
+        }
+        catch { $error = $_ };
         return $last if ($last);
     }
 
-    log_warn {"META file could not be loaded: $_"}
+    log_warn {"META file could not be loaded: $error"}
     unless (@backends);
 }
 
