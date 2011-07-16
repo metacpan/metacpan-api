@@ -81,7 +81,7 @@ sub profile_PUT {
         } qw(name asciiname website email
         gravatar_url profile blog
         donation city region country
-        location extra);
+        location extra perlmongers);
     $profile->{updated} = DateTime->now;
     my @errors = $c->model('CPAN::Author')->new_document->validate($profile);
 
