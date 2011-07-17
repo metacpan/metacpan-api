@@ -51,7 +51,7 @@ sub find_file {
     my ( $self, $dir, $file ) = @_;
     my ($source) = glob "$dir/*/$file";    # file can be in any subdirectory
     ($source) ||= glob "$dir/$file";    # file can be in any subdirectory
-    return undef unless(-e $source);
+    return undef unless($source && -e $source);
     return -d $source ? dir($source) : file($source);
 }
 
