@@ -33,6 +33,7 @@ sub run {
 sub changes {
     my $self = shift;
     my $now  = DateTime->now->epoch;
+    my $archive = $latest->archive unless($self->backpan);
     my %seen;
     my @changes;
     for my $segment (@segments) {
@@ -41,8 +42,7 @@ sub changes {
             = decode_json( $self->cpan->file("RECENT-$segment.json")->slurp );
         for (
             grep {
-                       $_->{epoch} > $latest
-                    && $_->{path}
+                    $_->{path}
                     =~ /^authors\/id\/.*\.(tgz|tbz|tar[\._-]gz|tar\.bz2|tar\.Z|zip|7z)$/
             } grep { $self->backpan ? $_->{type} eq "delete" : 1 }
             @{ $json->{recent} }
@@ -54,9 +54,17 @@ sub changes {
                 && ( $_->{type} eq $seen->{type} || $_->{type} eq 'delete' )
                 );
             $seen{ $_->{path} } = $_;
+	    if($self->backpan) {
+	       if($self->skip($_->{path})) {
+	       log_info {"Skipping $_->{path}"};
+	       next;
+	       }
+	    } elsif($_->{path} =~ /\/\Q$archive\E$/) {
+	       last;
+	    }
             push( @changes, $_ );
         }
-        if ( $json->{meta}->{minmax}->{min} < $latest ) {
+        if ( !$self->backpan && $json->{meta}->{minmax}->{min} < $latest->date->epoch ) {
             log_debug {"Includes latest release"};
             last;
         }
@@ -66,16 +74,35 @@ sub changes {
 
 sub latest_release {
     my $self   = shift;
-    my $latest = $self->index->type('release')->query(
+    return undef if($self->backpan);
+    return $self->index->type('release')->query(
         {   query => { match_all => {} },
             $self->backpan
             ? ( filter => { term => { 'release.status' => 'backpan' } } )
             : (),
-            size => 1,
             sort  => [ { 'date' => { order => "desc" } } ]
         }
     )->first;
-    return $latest ? $latest->date->epoch : 1;
+}
+
+sub skip {
+    my ($self, $archive) = @_;
+    $archive =~ s/^.*\///;
+    return $self->index->type('release')->query(
+                {   query => {
+                        filtered => {
+                            query  => { match_all => {} },
+                            filter => {
+                                and => [
+				    { term => { status => 'backpan' } },
+                                    { term => { archive => $archive } },
+                                    #{ term => { author  => $author } },
+                                ]
+                            }
+                        }
+                    }
+                }
+            )->inflate(0)->count;
 }
 
 sub index_release {
