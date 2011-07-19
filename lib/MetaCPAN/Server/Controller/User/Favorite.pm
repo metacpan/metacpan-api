@@ -26,14 +26,19 @@ sub index_POST {
     );
     $self->status_created(
         $c,
-        location => $c->uri_for( '/favorite/' . $favorite->_id ),
-        entity   => $favorite->meta->get_data($favorite)
+        location => $c->uri_for(
+            join( '/',
+                '/favorite', $favorite->user, $favorite->distribution )
+        ),
+        entity => $favorite->meta->get_data($favorite)
     );
 }
 
 sub index_DELETE {
-    my ( $self, $c, $id ) = @_;
-    my $favorite = $c->model('CPAN::Favorite')->get($id);
+    my ( $self, $c, $distribution ) = @_;
+    my $pause    = $c->stash->{pause};
+    my $favorite = $c->model('CPAN::Favorite')
+        ->get( { user => $pause->key, distribution => $distribution } );
     if ($favorite) {
         $favorite->delete( { refresh => 1 } );
         $self->status_ok( $c,
