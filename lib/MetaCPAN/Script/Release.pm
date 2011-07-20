@@ -177,16 +177,17 @@ sub import_tarball {
         }
     );
 
-    log_debug {"Gathering dependencies"};
-
-    my @dependencies = $self->dependencies($meta);
-
-    log_debug { "Found ", scalar @dependencies, " dependencies" };
 
     my $st = stat($tarball);
     my $stat = { map { $_ => $st->$_ } qw(mode uid gid size mtime) };
 
     $meta = $self->load_meta_file($tmpdir) || $meta;
+
+    log_debug {"Gathering dependencies"};
+
+    my @dependencies = $self->dependencies($meta);
+
+    log_debug { "Found ", scalar @dependencies, " dependencies" };
 
     my $create = { map { $_ => $meta->$_ }
             qw(version name license abstract resources) };
