@@ -93,7 +93,7 @@ curl -XPOST api.beta.metacpan.org/release/_search?size=100 -d '{
     "range" : {
         "release.date" : {
             "from" : "2010-06-05T00:00:00",
-            "to" : "2011-06-05T00:00:00",
+            "to" : "2011-06-05T00:00:00"
         }
     }
   },
