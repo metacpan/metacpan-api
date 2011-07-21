@@ -40,6 +40,7 @@ sub index : Path {
         $uri->query( "code=$code" );
         my $email = Email::Simple->create(
             header => [
+                'Content-Type' => 'text/plain; charset=utf-8',
                 To      => $author->{email}->[0],
                 From    => 'noreply@metacpan.org',
                 Subject => "Connect MetaCPAN with your PAUSE account",
