@@ -1,5 +1,7 @@
 # Beta API Docs
 
+_All of these URLs can be tested using tokuhirom's excellent [MetaCPAN Explorer](http://943d31f8.dotcloud.com)_
+
 ## GET convenience URLs
 
 You should be able to run most POST queries, but very few GET urls are currently exposed. However, these convenience endpoints can get you started.  You should note that they behave differently than the POST queries in that they will return to you the latest version of a module or dist and they remove a lot of the verbose ElasticSearch data which wraps results.
