@@ -16,6 +16,8 @@ is( $release->name, 'Scripts-0.01', 'name ok' );
 
 is( $release->author, 'MO', 'author ok' );
 
+is( $release->version, '0.01', 'version ok' );
+
 {
     my @files = $idx->type('file')->filter(
         {   and => [
