@@ -10,21 +10,21 @@ You should be able to run most POST queries, but very few GET urls are currently
 
 ### `/release/{author}/{release}`
 
-The `/release` endpoint accepts either the name of a `distribution` (e.g. [[/release/Moose|http://api.beta.metacpan.org/release/Moose]]), which returns the most recent release of the distribution. Or provide the full path which consists of its `author` and the name of the `release` (e.g. [[/release/DOY/Moose-2.0001|http://api.beta.metacpan.org/release/DOY/Moose-2.0001]]).
+The `/release` endpoint accepts either the name of a `distribution` (e.g. [[/release/Moose|http://api.metacpan.org/v0/release/Moose]]), which returns the most recent release of the distribution. Or provide the full path which consists of its `author` and the name of the `release` (e.g. [[/release/DOY/Moose-2.0001|http://api.metacpan.org/0/release/DOY/Moose-2.0001]]).
 
 ### `/author/{author}`
 
-`author` refers to the pauseid of the author. It must be uppercased (e.g. [[/author/DOY|http://api.beta.metacpan.org/author/DOY]]).
+`author` refers to the pauseid of the author. It must be uppercased (e.g. [[/author/DOY|http://api.metacpan.org/v0/author/DOY]]).
 
 ### `/module/{module}`
 
-Returns the corresponding `file` of the latest version of the `module`. Considering that Moose-2.0001 is the latest release, the result of [[/module/Moose|http://api.beta.metacpan.org/module/Moose]] is the same as [[/file/DOY/Moose-2.0001/lib/Moose.pm|http://api.beta.metacpan.org/file/DOY/Moose-2.0001/lib/Moose.pm]].
+Returns the corresponding `file` of the latest version of the `module`. Considering that Moose-2.0001 is the latest release, the result of [[/module/Moose|http://api.metacpan.org/v0/module/Moose]] is the same as [[/file/DOY/Moose-2.0001/lib/Moose.pm|http://api.metacpan.org/v0/file/DOY/Moose-2.0001/lib/Moose.pm]].
 
 ### `/pod/{module}`
 
 ### `/pod/{author}/{release}/{path}`
 
-Returns the POD of the given module. You can change the output format by either passing a `content-type` query parameter (e.g. [[/pod/Moose?content-type=text/plain|http://api.beta.metacpan.org/pod/Moose?content-type=text/plain]] or by adding an `Accept` header to the HTTP request. Valid content types are:
+Returns the POD of the given module. You can change the output format by either passing a `content-type` query parameter (e.g. [[/pod/Moose?content-type=text/plain|http://api.metacpan.org/v0/pod/Moose?content-type=text/plain]] or by adding an `Accept` header to the HTTP request. Valid content types are:
 
 * text/html (default)
 * text/plain
@@ -43,7 +43,7 @@ All CPAN Authors:
 
 All CPAN Authors Who Have Provided Twitter IDs:
 
-[http://api.metacpan.org/author/_search?pretty=true&q=profile.name:twitter&size=100000](http://api.metacpan.org/author/_search?pretty=true&q=profile.name:twitter&size=100000)
+[http://api.metacpan.org/v0/author/_search?pretty=true&q=profile.name:twitter&size=100000](http://api.metacpan.org/v0/author/_search?pretty=true&q=profile.name:twitter&size=100000)
 
 All CPAN Authors Who Have Updated MetaCPAN Profiles:
 
@@ -59,7 +59,7 @@ This query returns a list of all releases which list MooseX::NonMoose as a
 dependency.
 
 ```sh
-curl -XPOST api.beta.metacpan.org/release/_search -d '{
+curl -XPOST api.metacpan.org/v0/release/_search -d '{
   "query": {
     "match_all": {}
   },
@@ -75,7 +75,7 @@ curl -XPOST api.beta.metacpan.org/release/_search -d '{
 ### The size of the CPAN unpacked
 
 ```sh
-curl -XPOST api.beta.metacpan.org/file/_search -d '{
+curl -XPOST api.metacpan.org/v0/file/_search -d '{
   "query": { "match_all": {} },
   "facets": { 
     "size": {
@@ -89,7 +89,7 @@ curl -XPOST api.beta.metacpan.org/file/_search -d '{
 ### Get license types of all releases in an arbitrary time span:
 
 ```sh
-curl -XPOST api.beta.metacpan.org/release/_search?size=100 -d '{
+curl -XPOST api.metacpan.org/v0/release/_search?size=100 -d '{
   "query": {
     "match_all": {},
     "range" : {
@@ -106,7 +106,7 @@ curl -XPOST api.beta.metacpan.org/release/_search?size=100 -d '{
 Aggregate by license:
 
 ```sh
-curl -XPOST api.beta.metacpan.org/release/_search -d '{
+curl -XPOST api.metacpan.org/v0/release/_search -d '{
   "query": { "range" : {
         "release.date" : {
             "from" : "2010-06-05T00:00:00",
@@ -127,7 +127,7 @@ curl -XPOST api.beta.metacpan.org/release/_search -d '{
 ### Most used file names in the root directory of releases:
 
 ```sh
-curl -XPOST api.beta.metacpan.org/file/_search -d '{
+curl -XPOST api.metacpan.org/v0/file/_search -d '{
   "query": { "filtered":{"query":{"match_all":{}},"filter":{"term":{"level":0}}}
    },
   "facets": { 
