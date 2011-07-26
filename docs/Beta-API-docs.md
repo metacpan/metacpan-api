@@ -1,6 +1,6 @@
 # Beta API Docs
 
-_All of these URLs can be tested using tokuhirom's excellent [MetaCPAN Explorer](http://943d31f8.dotcloud.com)_
+_All of these URLs can be tested using tokuhirom's excellent [MetaCPAN Explorer](http://explorer.metacpan.org)_
 
 ## Available fields
 
