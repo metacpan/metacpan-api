@@ -53,6 +53,29 @@ All CPAN Authors Who Have Updated MetaCPAN Profiles:
 
 [[http://api.metacpan.org/v0/author/_search?q=updated:*&sort=updated:desc]]
 
+## Querying the API with ElasticSearch.pm
+
+The API server at api.metacpan.org is a wrapper around an ElasticSearch instance. It adds support for the convenient GET URLs, handles authentication and does some access control. Therefore you can use the powerful API of [ElasticSearch.pm](https://metacpan.org/module/ElasticSearch) to query MetaCPAN:
+
+```perl
+use ElasticSearch;
+
+my $es = ElasticSearch->new( servers => 'api.metacpan.org', no_refresh => 1 );
+
+my $scroller = $es->scrolled_search(
+    query       => { match_all => {} },
+    search_type => 'scan',
+    scroll      => '5m',
+    index       => 'v0',
+    type        => 'release',
+    size        => 100,
+);
+
+while ( my $result = $scroller->next ) {
+    print $result->{_source}->{author}, $/;
+}
+```
+
 ## POST Searches
 
 Please feel free to add queries here as you use them in your own work, so that others can learn from you.
