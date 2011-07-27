@@ -16,8 +16,8 @@ Expanding Your Author Info
 --------------------------
 
 MetaCPAN allows authors to add custom metadata about themselves to the index.
-Log in to MetaCPAN and add more information about yourself:
-[[https://metacpan.org/account/profile]]
+[Log in to MetaCPAN](https://metacpan.org/account/profile) to add more
+information about yourself.
 
 Installing Your Own MetaCPAN:
 ---------------------------------------
