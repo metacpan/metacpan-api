@@ -166,3 +166,19 @@ curl -XPOST api.metacpan.org/v0/file/_search -d '{
   "size":0
 }'
 ```
+
+### Find all releases that contain a particular version of a module:
+
+```sh
+curl -XPOST api.metacpan.org/v0/file/_search -d '{
+  "query": { "filtered":{
+      "query":{"match_all":{}},
+      "filter":{"and":[
+          {"term":{"file.module.name":"DBI::Profile"}},
+          {"term":{"file.module.version":"2.014123"}}
+      ]}
+  }},
+  "fields":["release"]
+}'
+```
+[example](http://explorer.metacpan.org/?url=%2Ffile&content=%7B%22query%22%3A%7B%22filtered%22%3A%7B%22query%22%3A%7B%22match_all%22%3A%7B%7D%7D%2C%22filter%22%3A%7B%22and%22%3A%5B%7B%22term%22%3A%7B%22file.module.name%22%3A%22DBI%3A%3AProfile%22%7D%7D%2C%7B%22term%22%3A%7B%22file.module.version%22%3A%222.014123%22%7D%7D%5D%7D%7D%7D%2C%22fields%22%3A%5B%22release%22%5D%7D)
