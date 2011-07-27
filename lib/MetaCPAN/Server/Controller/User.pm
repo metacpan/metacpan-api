@@ -22,6 +22,7 @@ sub auto : Private {
 sub index : Path {
     my ( $self, $c ) = @_;
     $c->stash( $c->user->data );
+    delete $c->stash->{code};
     $c->detach( $c->view('JSON') );
 }
 
