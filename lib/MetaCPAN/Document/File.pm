@@ -400,7 +400,7 @@ sub find {
         },
         sort => [
             { 'date'       => { order => "desc" } },
-            { 'mime'       => { order => "desc" } },
+            'mime',
             { 'stat.mtime' => { order => 'desc' } }
         ]
     })->first;
