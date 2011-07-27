@@ -21,7 +21,12 @@ my @segments = qw(1h 6h 1d 1W 1M 1Q 1Y Z);
 sub run {
     my $self = shift;
     while (1) {
-        $latest = $self->latest_release;
+        $latest = eval { $self->latest_release };
+        if ($@) {
+            log_error {"getting latest release failed: $@"};
+            sleep(15);
+            next;
+        }
         my @changes = $self->changes;
         while ( my $release = pop(@changes) ) {
             $self->index_release($release);
