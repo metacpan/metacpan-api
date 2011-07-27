@@ -302,8 +302,8 @@ sub import_tarball {
                 push(
                     @{ $file->{module} },
                     {   name => $_,
-                        $info->version
-                        ? ( version => $info->version->numify )
+                        defined $info->version($_)
+                        ? ( version => $info->version($_)->stringify )
                         : ()
                     }
                 ) for ( grep { $_ ne 'main' } $info->packages_inside );
