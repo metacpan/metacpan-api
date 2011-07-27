@@ -78,12 +78,15 @@ sub index_authors {
             unless ( ref $put->{website} eq 'ARRAY' );
         $put->{website} = [
 
-            # fix www.homepage.com to be http://www.homepage.com
+            # normalize www.homepage.com to http://www.homepage.com
             map { $_->scheme ? $_->as_string : 'http://' . $_->as_string }
                 map  { URI->new($_)->canonical }
                 grep {$_} @{ $put->{website} }
         ];
-        $type->put($put);
+        my $author = $type->new_document($put);
+        $author->gravatar_url;    # build gravatar_url
+        eval { $author->put }
+            or log_error {"Couldn't index $pauseid: $_"};    # index
     }
     $self->index->refresh;
     log_info {"done"};

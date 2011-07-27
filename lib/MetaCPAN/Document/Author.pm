@@ -89,7 +89,7 @@ has asciiname =>
 has [qw(website email)] => ( isa => ArrayRef, coerce => 1 );
 has pauseid      => ( id         => 1 );
 has dir          => ( lazy_build => 1 );
-has gravatar_url => ( lazy_build => 1, isa => NonEmptySimpleStr );
+has gravatar_url => ( required => 0, lazy_build => 1, isa => NonEmptySimpleStr );
 has profile => (
     isa      => Profile,
     coerce   => 1,
@@ -127,7 +127,18 @@ sub _build_dir {
 sub _build_gravatar_url {
     my $self = shift;
     my $email = ref $self->email ? $self->email->[0] : $self->email;
-    Gravatar::URL::gravatar_url( email => $email );
+    return Gravatar::URL::gravatar_url(
+        email   => $email,
+        size    => 130,
+        default => Gravatar::URL::gravatar_url(
+
+           # Fallback to the CPAN address, as used by s.c.o, which will in
+           # turn fallback to a generated image.
+            email   => $self->{pauseid} . '@cpan.org',
+            size    => 130,
+            default => 'identicon',
+        )
+    );
 }
 
 sub validate {
