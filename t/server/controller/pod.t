@@ -11,6 +11,7 @@ my %tests = (
     '/pod/DOESNEXIST'                  => 404,
     '/pod/Moose'                       => 200,
     '/pod/DOY/Moose-0.01/lib/Moose.pm' => 200,
+    '/pod/Pod::Pm'                     => 200,
 );
 
 test_psgi app, sub {
@@ -24,7 +25,9 @@ test_psgi app, sub {
             : 'application/json; charset=utf-8',
             'Content-type'
         );
-        if ( $v eq 200 ) {
+        if($k eq '/pod/Pod::Pm') {
+            like( $res->content, qr/Pod::Pm - abstract/, 'NAME section' );
+        } elsif ( $v eq 200 ) {
             like( $res->content, qr/Moose - abstract/, 'NAME section' );
             ok( $res = $cb->( GET "$k?content-type=text/plain" ),
                 "GET plain" );
@@ -33,6 +36,7 @@ test_psgi app, sub {
                 'Content-type'
             );
         }
+        
     }
 };
 

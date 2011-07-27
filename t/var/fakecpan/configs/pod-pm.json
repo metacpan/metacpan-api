@@ -1,0 +1,14 @@
+{
+  "name": "Pod-Pm",
+  "abstract": "Distribution with documentation in .pod",
+  "X_Module_Faker": {
+    "cpan_author": "MO",
+    "append": [ {
+        "file": "lib/Pod/Pm.pod",
+        "content": "\n\n=head1 NAME\n\nPod::Pm - abstract"
+    },{
+        "file": "lib/Pod/Pm.pm",
+        "content": "\n\n=head1 NAME\n\nPod::Pm - foo"
+    } ]
+  }
+}
