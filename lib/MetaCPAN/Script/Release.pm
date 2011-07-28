@@ -4,6 +4,10 @@ with 'MooseX::Getopt';
 with 'MetaCPAN::Role::Common';
 use Log::Contextual qw( :log :dlog );
 
+BEGIN {
+    $ENV{PERL_JSON_BACKEND} = 'JSON::XS';
+}
+
 use Path::Class qw(file dir);
 use File::Temp            ();
 use CPAN::Meta            ();
@@ -176,7 +180,6 @@ sub import_tarball {
             no_index => { directory => [qw(t xt inc)] }
         }
     );
-
 
     my $st = stat($tarball);
     my $stat = { map { $_ => $st->$_ } qw(mode uid gid size mtime) };
