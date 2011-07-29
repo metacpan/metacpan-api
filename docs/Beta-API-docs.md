@@ -5,7 +5,6 @@ _All of these URLs can be tested using tokuhirom's excellent [MetaCPAN Explorer]
 ## Available fields
 
 Available fields can be found by accessing the corresponding `_mapping` endpoint, e.g., [[/release/_mapping|http://api.metacpan.org/v0/release/_mapping]], [[/author/_mapping|http://api.metacpan.org/v0/author/_mapping]], [[/module/_mapping|http://api.metacpan.org/v0/module/_mapping]],
-[[/pod/_mapping|http://api.metacpan.org/v0/pod/_mapping]],
 [[/file/_mapping|http://api.metacpan.org/v0/file/_mapping]].
 
 ## GET convenience URLs
