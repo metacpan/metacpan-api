@@ -5,16 +5,17 @@ use Class::MOP;
 use Config::JFDI;
 use FindBin;
 use IO::Interactive qw(is_interactive);
-use Hash::Merge::Simple qw/ merge /;
+use Hash::Merge::Simple qw(merge);
+use Module::Pluggable search_path => ['MetaCPAN::Script'];
 
 sub run {
     my ( $class, @actions ) = @ARGV;
+    my %plugins = map { (my $key = $_) =~ s/^MetaCPAN::Script:://; lc($key) => $_ } plugins;
     die "Usage: metacpan [command] [args]" unless ($class);
-    $class = 'MetaCPAN::Script::' . ucfirst($class);
-    Class::MOP::load_class($class);
+    Class::MOP::load_class($plugins{$class});
 
     my $config = build_config();
-    my $obj = $class->new_with_options($config);
+    my $obj = $plugins{$class}->new_with_options($config);
     $obj->run;
 }
 
