@@ -7,8 +7,6 @@ with 'MetaCPAN::Role::Common';
 use File::Spec::Functions qw(catfile);
 use File::Temp qw(tempdir);
 use File::stat qw(stat);
-use JSON           ();
-use Parse::CSV     ();
 use LWP::UserAgent ();
 use IO::Uncompress::Bunzip2 qw(bunzip2);
 use DBI ();
@@ -34,11 +32,10 @@ sub index_reports {
     $ua->mirror( $self->db, "$db.bz2" );
     if ( -e $db && stat($db)->mtime > stat("$db.bz2")->mtime ) {
         log_info {"DB hasn't been modified"};
-
-        #return;
+        return;
     }
 
-    #bunzip2 "$db.bz2" => $db, AutoClose => 1;
+    bunzip2 "$db.bz2" => $db, AutoClose => 1;
     $db = catfile(qw(var tmp cpantesters.db));
 
     my $scroll = $es->scrolled_search(
@@ -98,7 +95,7 @@ sub bulk {
             }
         );
     }
-    $self->es->bulk(\@bulk);
+    $self->es->bulk( \@bulk );
 }
 
 1;
@@ -107,10 +104,16 @@ sub bulk {
 
 =head1 SYNOPSIS
 
- $ bin/metacpan mirrors
+ $ bin/metacpan cpantesters
+ 
+=head1 DESCRIPTION
 
-=head1 SOURCE
+Index CPAN Testers test results.
 
-L<http://www.cpan.org/indices/mirrors.json>
+=head1 ARGUMENTS
+
+=head2 db
+
+Defaults to C<http://devel.cpantesters.org/release/release.db.bz2>.
 
 =cut
