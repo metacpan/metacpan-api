@@ -87,20 +87,22 @@ has name => ( index => 'analyzed', isa => NonEmptySimpleStr );
 has asciiname =>
     ( index => 'analyzed', isa => NonEmptySimpleStr, required => 0 );
 has [qw(website email)] => ( isa => ArrayRef, coerce => 1 );
-has pauseid      => ( id         => 1 );
-has dir          => ( lazy_build => 1 );
-has gravatar_url => ( required => 0, lazy_build => 1, isa => NonEmptySimpleStr );
+has pauseid => ( id         => 1 );
+has dir     => ( lazy_build => 1 );
+has gravatar_url =>
+    ( required => 0, lazy_build => 1, isa => NonEmptySimpleStr );
 has profile => (
     isa      => Profile,
     coerce   => 1,
+    type     => 'nested',
     required => 0,
-    dynamic  => 1
+    include_in_root => 1,
 );
 has blog => (
     isa      => Blog,
     coerce   => 1,
     required => 0,
-    dynamic  => 1
+    dynamic  => 1,
 );
 has perlmongers => (
     isa      => PerlMongers,
@@ -132,8 +134,8 @@ sub _build_gravatar_url {
         size    => 130,
         default => Gravatar::URL::gravatar_url(
 
-           # Fallback to the CPAN address, as used by s.c.o, which will in
-           # turn fallback to a generated image.
+            # Fallback to the CPAN address, as used by s.c.o, which will in
+            # turn fallback to a generated image.
             email   => $self->{pauseid} . '@cpan.org',
             size    => 130,
             default => 'identicon',
@@ -155,12 +157,11 @@ sub validate {
         }
         elsif ( exists $data->{ $attr->name } && $attr->has_type_constraint )
         {
-            my $value = $data->{$attr->name};
-            if($attr->should_coerce) {
+            my $value = $data->{ $attr->name };
+            if ( $attr->should_coerce ) {
                 $value = $attr->type_constraint->coerce($value);
             }
-            my $message
-                = $attr->type_constraint->validate( $value );
+            my $message = $attr->type_constraint->validate($value);
             push( @result, { field => $attr->name, message => $message } )
                 if ( defined $message );
         }

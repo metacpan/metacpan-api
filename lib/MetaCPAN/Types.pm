@@ -26,10 +26,6 @@ use MooseX::Types::Common::String qw(NonEmptySimpleStr);
 subtype PerlMongers, as ArrayRef [ Dict [ url => Optional [ Str ], name => NonEmptySimpleStr ] ];
 coerce PerlMongers, from HashRef, via { [$_] };
 
-subtype Profile, as ArrayRef [
-    Dict [ name => NonEmptySimpleStr, id => NonEmptySimpleStr ] ];
-coerce Profile, from HashRef, via { [$_] };
-
 subtype Blog, as ArrayRef [ Dict [ url => NonEmptySimpleStr, feed => Str ] ];
 coerce Blog, from HashRef, via { [$_] };
 
@@ -46,6 +42,10 @@ coerce Identity, from HashRef, via { [ MetaCPAN::Model::User::Identity->new($_) 
 subtype Dependency, as ArrayRef [ Type [ 'MetaCPAN::Document::Dependency' ] ];
 coerce Dependency, from ArrayRef, via { [ map { ref $_ eq 'HASH' ? MetaCPAN::Document::Dependency->new($_) : $_ } @$_ ]; };
 coerce Dependency, from HashRef, via { [ MetaCPAN::Document::Dependency->new($_) ] };
+
+subtype Profile, as ArrayRef [ Type [ 'MetaCPAN::Document::Author::Profile' ] ];
+coerce Profile, from ArrayRef, via { [ map { ref $_ eq 'HASH' ? MetaCPAN::Document::Author::Profile->new($_) : $_ } @$_ ]; };
+coerce Profile, from HashRef, via { [ MetaCPAN::Document::Author::Profile->new($_) ] };
 
 subtype Extra, as HashRef;
 
