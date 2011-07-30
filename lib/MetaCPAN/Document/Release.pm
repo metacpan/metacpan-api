@@ -103,6 +103,7 @@ has dependency =>
 has status   => ( default => 'cpan' );
 has maturity => ( default => 'released' );
 has stat     => ( isa     => Stat, required => 0, dynamic => 1 );
+has tests => ( isa => Tests, required => 0 );
 
 sub _build_version_numified {
     return MetaCPAN::Util::numify_version( shift->version );

@@ -16,6 +16,7 @@ use MooseX::Types -declare => [
       Profile
       Blog
       PerlMongers
+      Tests
       ) ];
 
 use MooseX::Types::Structured qw(Dict Tuple Optional);
@@ -46,6 +47,8 @@ coerce Dependency, from HashRef, via { [ MetaCPAN::Document::Dependency->new($_)
 subtype Profile, as ArrayRef [ Type [ 'MetaCPAN::Document::Author::Profile' ] ];
 coerce Profile, from ArrayRef, via { [ map { ref $_ eq 'HASH' ? MetaCPAN::Document::Author::Profile->new($_) : $_ } @$_ ]; };
 coerce Profile, from HashRef, via { [ MetaCPAN::Document::Author::Profile->new($_) ] };
+
+subtype Tests, as Dict [ fail => Int, na => Int, pass => Int, unknown => Int ];
 
 subtype Extra, as HashRef;
 
