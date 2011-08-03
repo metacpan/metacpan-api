@@ -69,6 +69,10 @@ All CPAN Authors Who Have Updated MetaCPAN Profiles:
 
 [[http://api.metacpan.org/v0/author/_search?q=updated:*&sort=updated:desc]]
 
+First 100 distributions which SZABGAB has given a +1:
+
+[[http://api.metacpan.org/v0/favorite/_search?q=user:SZABGAB&size=100&fields=distribution]]
+
 ## Querying the API with ElasticSearch.pm
 
 The API server at api.metacpan.org is a wrapper around an ElasticSearch instance. It adds support for the convenient GET URLs, handles authentication and does some access control. Therefore you can use the powerful API of [ElasticSearch.pm](https://metacpan.org/module/ElasticSearch) to query MetaCPAN:
