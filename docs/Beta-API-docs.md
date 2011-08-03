@@ -12,6 +12,16 @@ Available fields can be found by accessing the corresponding `_mapping` endpoint
 * [[/file/_mapping|http://api.metacpan.org/v0/file/_mapping]]
 * [[/favorite/_mapping|http://api.metacpan.org/v0/favorite/_mapping]]
 
+## Search without constraints
+
+Performing a search without any constraints is an easy way to get sample data
+
+* [[/release/_search|http://api.metacpan.org/v0/release/_search]]
+* [[/author/_search|http://api.metacpan.org/v0/author/_search]]
+* [[/module/_search|http://api.metacpan.org/v0/module/_search]]
+* [[/file/_search|http://api.metacpan.org/v0/file/_search]]
+* [[/favorite/_search|http://api.metacpan.org/v0/favorite/_search]]
+
 ## GET convenience URLs
 
 You should be able to run most POST queries, but very few GET urls are currently exposed. However, these convenience endpoints can get you started.  You should note that they behave differently than the POST queries in that they will return to you the latest version of a module or dist and they remove a lot of the verbose ElasticSearch data which wraps results.
