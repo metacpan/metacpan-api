@@ -63,7 +63,7 @@ All CPAN Authors:
 
 All CPAN Authors Who Have Provided Twitter IDs:
 
-[http://api.metacpan.org/v0/author/_search?pretty=true&q=profile.name:twitter](http://api.metacpan.org/v0/author/_search?pretty=true&q=profile.name:twitter)
+[[http://api.metacpan.org/v0/author/_search?pretty=true&q=author.profile.name:twitter]]
 
 All CPAN Authors Who Have Updated MetaCPAN Profiles:
 
