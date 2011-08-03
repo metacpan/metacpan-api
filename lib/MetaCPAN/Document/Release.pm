@@ -142,4 +142,27 @@ sub find {
     )->first;
 }
 
+sub predecessor {
+    my ( $self, $name ) = @_;
+    return $self->query(
+        {   query => {
+                filtered => {
+                    query  => { match_all => {} },
+                    filter => {
+                        and => [
+                            { term => { 'release.distribution' => $name } },
+                            {   not => {
+                                    filter => { term => { status => 'latest' } }
+                                }
+                            },
+                        ]
+                    }
+                }
+            },
+            sort => [ { date => 'desc' } ],
+            size => 1,
+        }
+    )->first;
+}
+
 __PACKAGE__->meta->make_immutable;
