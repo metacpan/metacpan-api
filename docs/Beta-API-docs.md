@@ -59,11 +59,11 @@ Names of latest releases by OALDERS:
 
 All CPAN Authors:
 
-[http://api.metacpan.org/v0/author/_search?pretty=true&q=*&size=100000](http://api.metacpan.org/author/_search?pretty=true&q=*&size=100000)
+[http://api.metacpan.org/v0/author/_search?pretty=true&q=*&size=100000](http://api.metacpan.org/author/_search?pretty=true&q=*)
 
 All CPAN Authors Who Have Provided Twitter IDs:
 
-[http://api.metacpan.org/v0/author/_search?pretty=true&q=profile.name:twitter&size=100000](http://api.metacpan.org/v0/author/_search?pretty=true&q=profile.name:twitter&size=100000)
+[http://api.metacpan.org/v0/author/_search?pretty=true&q=profile.name:twitter](http://api.metacpan.org/v0/author/_search?pretty=true&q=profile.name:twitter)
 
 All CPAN Authors Who Have Updated MetaCPAN Profiles:
 
@@ -79,7 +79,7 @@ Number of favorites that DOY's dists have received:
 
 List of users who have favorited DOY's dists and the dists they have voted on:
 
-[[http://api.metacpan.org/v0/favorite/_search?q=author:DOY&size=99999&fields=user,distribution]]
+[[http://api.metacpan.org/v0/favorite/_search?q=author:DOY&fields=user,distribution]]
 
 ## Querying the API with ElasticSearch.pm
 
@@ -118,7 +118,6 @@ curl -XPOST api.metacpan.org/v0/release/_search -d '{
   "query": {
     "match_all": {}
   },
-  "size": 999999,
   "filter": {
     "term": {
       "release.dependency.module": "MooseX::NonMoose"
