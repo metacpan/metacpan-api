@@ -73,6 +73,14 @@ First 100 distributions which SZABGAB has given a +1:
 
 [[http://api.metacpan.org/v0/favorite/_search?q=user:SZABGAB&size=100&fields=distribution]]
 
+Number of favorites that DOY's dists have received:
+
+[[http://api.metacpan.org/v0/favorite/_search?q=author:DOY&size=0]]
+
+List of users who have favorited DOY's dists and the dists they have voted on:
+
+[[http://api.metacpan.org/v0/favorite/_search?q=author:DOY&size=99999&fields=user,distribution]]
+
 ## Querying the API with ElasticSearch.pm
 
 The API server at api.metacpan.org is a wrapper around an ElasticSearch instance. It adds support for the convenient GET URLs, handles authentication and does some access control. Therefore you can use the powerful API of [ElasticSearch.pm](https://metacpan.org/module/ElasticSearch) to query MetaCPAN:
