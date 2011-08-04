@@ -114,7 +114,7 @@ sub author_config {
     my $json = $file->slurp;
     my $author = eval { JSON::XS->new->utf8->relaxed->decode($json) };
 
-    if (@$) {
+    if ($@) {
         log_warn {"$file is broken: $@"};
         return $fallback;
     }
