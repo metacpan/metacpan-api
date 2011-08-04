@@ -7,45 +7,66 @@ use Log::Log4perl ':easy';
 use MetaCPAN::Types qw(:all);
 use ElasticSearchX::Model::Document::Types qw(:all);
 use MooseX::Types::Path::Class qw(:all);
+use FindBin;
 use MetaCPAN::Model;
 
-has 'cpan' => ( is            => 'rw',
-                isa           => Dir,
-                lazy_build    => 1,
-                coerce => 1,
-                documentation => 'Location of a local CPAN mirror, looks for $ENV{MINICPAN} and ~/CPAN' );
+has 'cpan' => (
+    is         => 'rw',
+    isa        => Dir,
+    lazy_build => 1,
+    coerce     => 1,
+    documentation =>
+        'Location of a local CPAN mirror, looks for $ENV{MINICPAN} and ~/CPAN'
+);
 
-has level => ( is            => 'ro',
-               isa           => 'Str',
-               required      => 1,
-               trigger       => \&set_level,
-               documentation => 'Log level' );
+has level => (
+    is            => 'ro',
+    isa           => 'Str',
+    required      => 1,
+    trigger       => \&set_level,
+    documentation => 'Log level'
+);
 
-has es => ( isa           => ES,
-            is            => 'ro',
-            required      => 1,
-            coerce        => 1,
-            documentation => 'ElasticSearch http connection string' );
+has es => (
+    isa           => ES,
+    is            => 'ro',
+    required      => 1,
+    coerce        => 1,
+    documentation => 'ElasticSearch http connection string'
+);
 
 has model => ( lazy_build => 1, is => 'ro', traits => ['NoGetopt'] );
 
-has index => ( reader        => '_index',
-               is            => 'ro',
-               isa           => 'Str',
-               default       => 'cpan',
-               documentation => 'Index to use, defaults to "cpan"' );
+has index => (
+    reader        => '_index',
+    is            => 'ro',
+    isa           => 'Str',
+    default       => 'cpan',
+    documentation => 'Index to use, defaults to "cpan"'
+);
 
-has port => ( isa           => 'Int',
-              is            => 'ro',
-              required      => 1,
-              documentation => 'Port for the proxy, defaults to 5000' );
+has port => (
+    isa           => 'Int',
+    is            => 'ro',
+    required      => 1,
+    documentation => 'Port for the proxy, defaults to 5000'
+);
 
-has logger => ( is        => 'ro',
-                required  => 1,
-                isa       => Logger,
-                coerce    => 1,
-                predicate => 'has_logger',
-                traits    => ['NoGetopt'] );
+has logger => (
+    is        => 'ro',
+    required  => 1,
+    isa       => Logger,
+    coerce    => 1,
+    predicate => 'has_logger',
+    traits    => ['NoGetopt']
+);
+
+has home => (
+    is      => 'ro',
+    isa     => Dir,
+    coerce  => 1,
+    default => "$FindBin::RealBin/..",
+);
 
 sub index {
     my $self = shift;
@@ -55,7 +76,7 @@ sub index {
 sub set_level {
     my $self = shift;
     $self->logger->level(
-                      Log::Log4perl::Level::to_priority( uc( $self->level ) ) );
+        Log::Log4perl::Level::to_priority( uc( $self->level ) ) );
 }
 
 sub _build_model {
@@ -68,9 +89,8 @@ sub _build_logger {
     my ($config) = @_;
     my $log = Log::Log4perl->get_logger( $ARGV[0] );
     foreach my $c (@$config) {
-        my $layout =
-          Log::Log4perl::Layout::PatternLayout->new( $c->{layout}
-                                                || "%d %p{1} %c: %m{chomp}%n" );
+        my $layout = Log::Log4perl::Layout::PatternLayout->new( $c->{layout}
+                || "%d %p{1} %c: %m{chomp}%n" );
         my $app = Log::Log4perl::Appender->new( $c->{class}, %$c );
         $app->layout($layout);
         $log->add_appender($app);
@@ -93,13 +113,13 @@ sub file2mod {
 sub _build_cpan {
 
     my $self = shift;
-    my @dirs =
-      ( "$ENV{'HOME'}/CPAN", "$ENV{'HOME'}/minicpan", $ENV{'MINICPAN'} );
-    foreach my $dir ( grep { defined } @dirs ) {
+    my @dirs
+        = ( "$ENV{'HOME'}/CPAN", "$ENV{'HOME'}/minicpan", $ENV{'MINICPAN'} );
+    foreach my $dir ( grep {defined} @dirs ) {
         return $dir if -d $dir;
     }
     die
-"Couldn't find a local cpan mirror. Please specify --cpan or set MINICPAN";
+        "Couldn't find a local cpan mirror. Please specify --cpan or set MINICPAN";
 
 }
 
@@ -114,7 +134,7 @@ before run => sub {
         $MetaCPAN::Role::Common::log = $self->logger;
         set_logger $self->logger;
     }
-    Dlog_debug { "Connected to $_" } $self->remote;
+    Dlog_debug {"Connected to $_"} $self->remote;
 };
 
 1;
