@@ -18,6 +18,7 @@ use Module::Metadata      ();
 use File::stat            ('stat');
 use CPAN::DistnameInfo    ();
 use File::Spec::Functions ( 'tmpdir', 'catdir' );
+use File::Find            ();
 use MetaCPAN::Script::Latest;
 use DateTime::Format::Epoch::Unix;
 use File::Find::Rule;
@@ -217,9 +218,12 @@ sub import_tarball {
     my $meta_file;
     log_debug {"Gathering files"};
     my @list = $at->files;
-    $tmpdir->recurse(
-        callback => sub {
-            my $child    = shift;
+    File::Find::find(
+        sub {
+            my $child
+                = -d $File::Find::name
+                ? dir($File::Find::name)
+                : file($File::Find::name);
             my $relative = $child->relative($tmpdir);
             my $stat     = do {
                 my $s = $child->stat;
@@ -252,7 +256,8 @@ sub import_tarball {
                     content_cb   => sub { \( scalar $child->slurp ) },
                 }
             );
-        }
+        },
+        $tmpdir
     );
 
     push(
