@@ -27,7 +27,7 @@ sub index_reports {
     my $es    = $self->model->es;
     my $index = $self->index->name;
     my $ua    = LWP::UserAgent->new;
-    my $db    = catfile(qw(var tmp cpantesters.db));
+    my $db    = $self->home->file(qw(var tmp cpantesters.db));
     log_info { "Mirroring " . $self->db };
     $ua->mirror( $self->db, "$db.bz2" );
     if ( -e $db && stat($db)->mtime > stat("$db.bz2")->mtime ) {
@@ -35,7 +35,7 @@ sub index_reports {
         return;
     }
 
-    bunzip2 "$db.bz2" => $db, AutoClose => 1;
+    bunzip2 "$db.bz2" => "$db", AutoClose => 1;
     $db = catfile(qw(var tmp cpantesters.db));
 
     my $scroll = $es->scrolled_search(
