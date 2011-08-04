@@ -5,7 +5,14 @@ use JSON;
 
 BEGIN { extends 'Catalyst::Controller'; }
 
-__PACKAGE__->config( default => 'application/json', map => { 'application/json' => 'JSON' } );
+__PACKAGE__->config(
+    default     => 'application/json',
+    map         => { 'application/json' => 'JSON' },
+    action_args => {
+        'search' =>
+            { deserialize_http_methods => [qw(POST PUT OPTIONS DELETE GET)] }
+    }
+);
 
 has type =>
     ( is => 'ro', lazy => 1, default => sub { shift->action_namespace } );
