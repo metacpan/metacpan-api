@@ -73,13 +73,17 @@ First 100 distributions which SZABGAB has given a +1:
 
 [[http://api.metacpan.org/v0/favorite/_search?q=user:SZABGAB&size=100&fields=distribution]]
 
-Number of favorites that DOY's dists have received:
+Number of +1s that DOY's dists have received:
 
 [[http://api.metacpan.org/v0/favorite/_search?q=author:DOY&size=0]]
 
-List of users who have favorited DOY's dists and the dists they have voted on:
+List of users who have +1 DOY's dists and the dists they have +1:
 
 [[http://api.metacpan.org/v0/favorite/_search?q=author:DOY&fields=user,distribution]]
+
+Last 50 dists to get a +1:
+
+[[http://api.metacpan.org/v0/favorite/_search?size=50&fields=author,user,release,date&sort=date:desc]]
 
 ## Querying the API with ElasticSearch.pm
 
