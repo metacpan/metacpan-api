@@ -15,14 +15,19 @@ sub diff_releases : Chained('index') : PathPart('release') : Args(4) {
         source   => $path1,
         target   => $path2,
         git      => $c->config->{git},
-        relative => $path1->parent,
+        relative => $c->path_to(qw(var tmp source)),
     );
+    warn $c->req->preferred_content_type;
+    if($c->req->preferred_content_type eq 'text/plain') {
+        $c->res->content_type('text/plain');
+        $c->res->body($diff->raw);
+        $c->detach;
+    }
 
     $c->stash(
         {   source     => join( '/', $path[0], $path[1] ),
             target     => join( '/', $path[2], $path[3] ),
             statistics => $diff->structured,
-            diff       => $diff->raw,
         }
     );
 }
@@ -38,7 +43,7 @@ sub release : Chained('index') : PathPart('release') : Args(1) {
     }
         or $c->detach('/not_found');
     $c->forward( 'diff_releases',
-        [ @$release{qw(author name)}, @$with{qw(author name)} ] );
+        [ @$with{qw(author name)}, @$release{qw(author name)} ] );
 }
 
 sub file : Chained('index') : PathPart('file') : Args(2) {

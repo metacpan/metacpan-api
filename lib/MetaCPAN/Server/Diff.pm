@@ -23,15 +23,22 @@ sub _build_raw {
 sub _build_structured {
     my $self = shift;
     my @structured;
-    $self->raw; # run the builder
+    my $raw = $self->raw; # run the builder
+    my @raw = split(/\n/, $raw);
     my @lines = split(/\0/, $self->numstat);
     while( my $line = shift @lines ) {
         my ($insertions, $deletions) = split(/\t/, $line);
+        my $segment = "";
+        while(my $diff = shift @raw) {
+            $segment .= "$diff\n";
+            last if($raw[0] =~ /^diff --git a\//m);
+        }
         push(@structured, {
             source => shift @lines,
             target => shift @lines,
             insertions => $insertions,
             deletions => $deletions,
+            diff => $segment,
         });
     }
     return \@structured;
