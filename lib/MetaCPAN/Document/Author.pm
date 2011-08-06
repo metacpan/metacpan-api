@@ -128,18 +128,18 @@ sub _build_dir {
 
 sub _build_gravatar_url {
     my $self = shift;
-    my $email = ref $self->email ? $self->email->[0] : $self->email;
+    # We do not use the author personal address ($self->email[0])
+    # because we want to show the author's CPAN identity.
+    # Using another e-mail than the CPAN one removes flexibility for
+    # the author and ultimately could be a privacy leak.
+    # The author can manage this identity both on his gravatar account
+    # (by assigning an image to his author@cpan.org)
+    # and now by changing this URL from metacpa.org
     return Gravatar::URL::gravatar_url(
-        email   => $email,
+        email   => $self->{pauseid} . '@cpan.org',
         size    => 130,
-        default => Gravatar::URL::gravatar_url(
-
-            # Fallback to the CPAN address, as used by s.c.o, which will in
-            # turn fallback to a generated image.
-            email   => $self->{pauseid} . '@cpan.org',
-            size    => 130,
-            default => 'identicon',
-        )
+        # Fallback to a generated image
+        default => 'identicon',
     );
 }
 
