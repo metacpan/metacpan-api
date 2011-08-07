@@ -43,7 +43,8 @@ sub run {
             sort   => [
                 'distribution',
                 { maturity         => { reverse => \1 } },
-                { version_numified => { reverse => \1 } }
+                { version_numified => { reverse => \1 } },
+                { date             => { reverse => \1 } },
             ],
         }
     );
@@ -129,12 +130,12 @@ sub reindex {
                 }
             }
         ) unless ( $self->dry_run );
-        if(@bulk > 100) {
-            $self->es->bulk(\@bulk);
+        if ( @bulk > 100 ) {
+            $self->es->bulk( \@bulk );
             @bulk = ();
         }
-    }    
-    $self->es->bulk(\@bulk) if(@bulk);
+    }
+    $self->es->bulk( \@bulk ) if (@bulk);
 }
 
 __PACKAGE__->meta->make_immutable;
