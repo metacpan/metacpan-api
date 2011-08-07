@@ -92,10 +92,10 @@ has dir     => ( lazy_build => 1 );
 has gravatar_url =>
     ( required => 0, lazy_build => 1, isa => NonEmptySimpleStr );
 has profile => (
-    isa      => Profile,
-    coerce   => 1,
-    type     => 'nested',
-    required => 0,
+    isa             => Profile,
+    coerce          => 1,
+    type            => 'nested',
+    required        => 0,
     include_in_root => 1,
 );
 has blog => (
@@ -132,6 +132,7 @@ sub _build_gravatar_url {
     return Gravatar::URL::gravatar_url(
         email   => $email,
         size    => 130,
+        https   => 1,
         default => Gravatar::URL::gravatar_url(
 
             # Fallback to the CPAN address, as used by s.c.o, which will in
@@ -139,6 +140,7 @@ sub _build_gravatar_url {
             email   => $self->{pauseid} . '@cpan.org',
             size    => 130,
             default => 'identicon',
+            https   => 1,
         )
     );
 }
