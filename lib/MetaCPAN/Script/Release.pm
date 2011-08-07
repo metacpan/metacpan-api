@@ -270,11 +270,14 @@ sub import_tarball {
     log_debug { "Indexing ", scalar @files, " files" };
     my $i        = 1;
     my $file_set = $cpan->type('file');
+    my $bulk = $cpan->bulk( size => 50 );
     foreach my $file (@files) {
-        my $obj = $file_set->put($file);
+        my $obj = $file_set->new_document($file);
+        $bulk->put($obj);
         $file->{$_} = $obj->$_ for (qw(abstract id pod sloc pod_lines));
         $file->{module} = [];
     }
+    $bulk->commit;
 
     log_debug {"Gathering modules"};
 
@@ -339,8 +342,9 @@ sub import_tarball {
             if ( $file->documentation );
         log_trace {"reindexing file $file->{path}"};
         $file->clear_module if ( $file->is_pod_file );
-        $file->put;
+        $bulk->put($file);
     }
+    $bulk->commit;
 
     $tmpdir->rmtree;
 
