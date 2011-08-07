@@ -31,7 +31,7 @@ sub _build_structured {
         my $segment = "";
         while(my $diff = shift @raw) {
             $segment .= "$diff\n";
-            last if($raw[0] =~ /^diff --git a\//m);
+            last if($raw[0] && $raw[0] =~ /^diff --git a\//m);
         }
         push(@structured, {
             source => shift @lines,

@@ -17,8 +17,9 @@ sub diff_releases : Chained('index') : PathPart('release') : Args(4) {
         git      => $c->config->{git},
         relative => $c->path_to(qw(var tmp source)),
     );
-    warn $c->req->preferred_content_type;
-    if($c->req->preferred_content_type eq 'text/plain') {
+
+    my $ct = eval { $c->req->preferred_content_type };
+    if($ct && $ct eq 'text/plain') {
         $c->res->content_type('text/plain');
         $c->res->body($diff->raw);
         $c->detach;
