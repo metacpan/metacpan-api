@@ -53,6 +53,8 @@ sub index_authors {
                 DateTime::Format::ISO8601->parse_datetime( $_->{updated} )
             } map { $_->{_source} } @{ $dates->{hits}->{hits} }
     };
+    
+    my $bulk = $self->model->bulk( size => 500 );
 
     while ( my ( $pauseid, $data ) = each %$authors ) {
         my ( $name, $email, $homepage, $asciiname )
@@ -85,8 +87,7 @@ sub index_authors {
         ];
         my $author = $type->new_document($put);
         $author->gravatar_url;    # build gravatar_url
-        eval { $author->put }
-            or log_error {"Couldn't index $pauseid: $_"};    # index
+        $bulk->put($author);
     }
     $self->index->refresh;
     log_info {"done"};
