@@ -4,6 +4,8 @@ use Moose;
 with 'MooseX::Getopt';
 with 'MetaCPAN::Role::Common';
 use Log::Contextual qw( :log );
+use CPAN::DistnameInfo;
+use MetaCPAN::Util;
 
 use JSON::XS;
 
@@ -14,9 +16,11 @@ has backpan => (
 );
 has dry_run => ( is => 'ro', isa => 'Bool', default => 0 );
 
-my $fails    = 0;
-my $latest   = 0;
+my $fails  = 0;
+my $latest = 0;
+
 my @segments = qw(1h 6h 1d 1W 1M 1Q 1Y Z);
+#my @segments = qw(1Y);
 
 sub run {
     my $self = shift;
@@ -27,10 +31,14 @@ sub run {
             sleep(15);
             next;
         }
-        my @changes = $self->changes;
+        my @changes
+            = $self->backpan ? $self->backpan_changes : $self->changes;
         while ( my $release = pop(@changes) ) {
-            $self->index_release($release);
+            $release->{type} eq 'delete'
+                ? $self->reindex_release($release)
+                : $self->index_release($release);
         }
+        last if ( $self->backpan );
         sleep(15);
     }
 }
@@ -38,7 +46,7 @@ sub run {
 sub changes {
     my $self    = shift;
     my $now     = DateTime->now->epoch;
-    my $archive = $latest->archive unless ( $self->backpan );
+    my $archive = $latest->archive;
     my %seen;
     my @changes;
     for my $segment (@segments) {
@@ -53,19 +61,15 @@ sub changes {
             @{ $json->{recent} }
             )
         {
-            my $seen = $seen{ $_->{path} };
+            my $info = CPAN::DistnameInfo->new( $_->{path} );
+            my $path = $info->cpanid . "/" . $info->filename;
+            my $seen = $seen{$path};
             next
                 if ( $seen
                 && ( $_->{type} eq $seen->{type} || $_->{type} eq 'delete' )
                 );
-            $seen{ $_->{path} } = $_;
-            if ( $self->backpan ) {
-                if ( $self->skip( $_->{path} ) ) {
-                    log_info {"Skipping $_->{path}"};
-                    next;
-                }
-            }
-            elsif ( $_->{path} =~ /\/\Q$archive\E$/ ) {
+            $seen{$path} = $_;
+            if ( $_->{path} =~ /\/\Q$archive\E$/ ) {
                 last;
             }
             push( @changes, $_ );
@@ -80,22 +84,50 @@ sub changes {
     return @changes;
 }
 
+sub backpan_changes {
+    my $self   = shift;
+    my $scroll = $self->es->scrolled_search(
+        {   size   => 1000,
+            scroll => '1m',
+            index  => $self->index->name,
+            type   => 'release',
+            fields => [qw(author archive)],
+            query  => {
+                filtered => {
+                    query  => { match_all => {} },
+                    filter => {
+                        not =>
+                            { filter => { term => { status => 'backpan' } } }
+                    },
+                }
+            },
+        }
+    );
+    my @changes;
+    while ( my $release = $scroll->next ) {
+        my $data = $release->{fields};
+        my $path = $self->cpan->file( 'authors',
+            MetaCPAN::Util::author_dir( $data->{author} ),
+            $data->{archive} );
+        next if(-e $path);
+        log_debug {"$path not in the CPAN"};
+        push( @changes, { path => $path, type => 'delete' } );
+    }
+    return @changes;
+}
+
 sub latest_release {
     my $self = shift;
     return undef if ( $self->backpan );
     return $self->index->type('release')->query(
         {   query => { match_all => {} },
-            $self->backpan
-            ? ( filter => { term => { 'release.status' => 'backpan' } } )
-            : (),
             sort => [ { 'date' => { order => "desc" } } ]
         }
     )->first;
 }
 
 sub skip {
-    my ( $self, $archive ) = @_;
-    $archive =~ s/^.*\///;
+    my ( $self, $author, $archive ) = @_;
     return $self->index->type('release')->query(
         {   query => {
                 filtered => {
@@ -104,8 +136,7 @@ sub skip {
                         and => [
                             { term => { status  => 'backpan' } },
                             { term => { archive => $archive } },
-
-                            #{ term => { author  => $author } },
+                            { term => { author  => $author } },
                         ]
                     }
                 }
@@ -132,14 +163,86 @@ sub index_release {
 
     my @run = (
         $FindBin::RealBin . "/metacpan",
-        'release',
-        $tarball,
-        $release->{type} eq 'new' ? '--latest' : ( '--status', 'backpan' ),
-        '--index',
-        $self->index->name
+        'release', $tarball, '--latest', '--index', $self->index->name
     );
     log_debug {"Running @run"};
     system(@run) unless ( $self->dry_run );
+}
+
+sub reindex_release {
+    my ( $self, $release ) = @_;
+    my $info = CPAN::DistnameInfo->new( $release->{path} );
+    $release = $self->index->type('release')->filter(
+        {   and => [
+                { term => { author  => $info->cpanid } },
+                { term => { archive => $info->filename } },
+            ]
+        }
+    )->inflate(0)->first;
+    return unless ($release);
+    log_info {"Moving $release->{_source}->{name} to BackPAN"};
+
+    my $es     = $self->es;
+    my $scroll = $es->scrolled_search(
+        {   index       => $self->index->name,
+            type        => 'file',
+            scroll      => '1m',
+            size        => 1000,
+            search_type => 'scan',
+            fields      => [ '_parent', '_source' ],
+            query       => {
+                filtered => {
+                    query  => { match_all => {} },
+                    filter => {
+                        and => [
+                            {   term => {
+                                    'file.release' =>
+                                        $release->{_source}->{name}
+                                }
+                            },
+                            {   term => {
+                                    'file.author' =>
+                                        $release->{_source}->{author}
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    );
+    return if($self->dry_run);
+    my @bulk;
+    while ( my $row = $scroll->next ) {
+        my $source = $row->{_source};
+        push(
+            @bulk,
+            {   index => {
+                    index  => $self->index->name,
+                    type   => 'file',
+                    id     => $row->{_id},
+                    parent => $row->{fields}->{_parent} || "",
+                    data   => { %$source, status => 'backpan' }
+                }
+            }
+        );
+        if ( @bulk > 100 ) {
+            $self->es->bulk( \@bulk );
+            @bulk = ();
+        }
+    }
+    push(
+        @bulk,
+        {   index => {
+                index => $self->index->name,
+                type  => 'release',
+                id    => $release->{_id},
+                data  => { %{ $release->{_source} }, status => 'backpan' },
+            }
+        }
+    );
+    $self->es->bulk( \@bulk ) if (@bulk);
+
 }
 
 1;
