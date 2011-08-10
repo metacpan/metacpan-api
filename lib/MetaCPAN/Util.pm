@@ -53,7 +53,7 @@ sub strip_pod {
 
 sub extract_section {
     my ( $pod, $section ) = @_;
-    $pod = Encode::decode_utf8($pod);
+    eval { $pod = Encode::decode_utf8($pod, Encode::FB_CROAK) };
     return undef
       unless ( $pod =~ /^=head1 $section(.*?)(^((\=head1)|(\=cut)))/ms
         || $pod =~ /^=head1 $section(.*)/ms );
