@@ -111,7 +111,9 @@ sub _build_version_numified {
 
 sub _build_download_url {
     my $self = shift;
-    'http://cpan.cpantesters.org/authors/'
+    ($self->status eq 'backpan'
+        ? 'http://backpan.perl.org/authors/'
+        : 'http://cpan.cpantesters.org/authors/')
         . MetaCPAN::Document::Author::_build_dir( $self->author ) . '/'
         . $self->archive;
 }
