@@ -4,9 +4,14 @@ use ElasticSearchX::Model;
 
 analyzer lowercase => ( tokenizer => 'keyword', filter => 'lowercase' );
 analyzer fulltext => ( type => 'snowball', language => 'English' );
-analyzer camelcase => (
+tokenizer camelcase => (
     type => 'pattern',
     pattern => "([^\\p{L}\\d]+)|(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)|(?<=[\\p{L}&&[^\\p{Lu}]])(?=\\p{Lu})|(?<=\\p{Lu})(?=\\p{Lu}[\\p{L}&&[^\\p{Lu}]])"
+);
+analyzer camelcase => (
+    type => 'custom',
+    tokenizer => 'camelcase',
+    filter => ['lowercase', 'unique']
 );
 
 index cpan => ( namespace => 'MetaCPAN::Document', alias_for => 'cpan_v3' );
