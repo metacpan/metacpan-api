@@ -5,14 +5,11 @@ with 'MooseX::Getopt';
 use Log::Contextual qw( :log :dlog );
 with 'MetaCPAN::Role::Common';
 use List::MoreUtils qw(uniq);
-use IO::Zlib ();
 
 has dry_run => ( is => 'ro', isa => 'Bool', default => 0 );
 
 sub run {
     my $self = shift;
-    my $es   = $self->es;
-    $self->index->refresh;
     log_info {"Dry run: updates will not be written to ES"}
     if ( $self->dry_run );
     my @authorized;
@@ -84,10 +81,11 @@ sub bulk_update {
         push(
             @bulk,
             {   index => {
-                    index => $self->index->name,
-                    type  => 'file',
-                    id    => $file->{id},
-                    data  => $file
+                    index  => $self->index->name,
+                    type   => 'file',
+                    id     => $file->{id},
+                    parent => $file->{release_id},
+                    data   => $file
                 }
             }
         );
@@ -97,6 +95,7 @@ sub bulk_update {
 
 sub scroll {
     my $self = shift;
+    $self->index->refresh;
     return $self->model->es->scrolled_search(
         {   index => $self->index->name,
             type  => 'file',
@@ -104,33 +103,10 @@ sub scroll {
                 filtered => {
                     query  => { match_all => {} },
                     filter => {
-                        and => [
-                            {   or => [
-                                    {   and => [
-                                            {   exists => {
-                                                    field =>
-                                                        'file.module.name'
-                                                }
-                                            },
-                                            {   term => {
-                                                    'file.module.indexed' =>
-                                                        \1
-                                                }
-                                            }
-                                        ]
-                                    },
-                                    {   and => [
-                                            {   exists => {
-                                                    field => 'documentation'
-                                                }
-                                            },
-                                            {   term =>
-                                                    { 'file.indexed' => \1 }
-                                            }
-                                        ]
-                                    }
-                                ]
-                            }
+                        or => [
+                            { exists => { field => 'file.module.name' } },
+
+                            { exists => { field => 'documentation' } }
                         ]
                     }
                 }
@@ -144,16 +120,17 @@ sub scroll {
 
 sub parse_perms {
     my $self = shift;
-    my $file = $self->cpan->file(qw(modules 06perms.txt.gz))->stringify;
-    log_info {"parsing $file"};
-    my $gz = IO::Zlib->new( $file, 'rb' );
+    my $file = $self->cpan->file(qw(modules 06perms.txt));
+    log_info {"parsing ", $file};
+    my $fh = $file->openr;
     my %authors;
-    while ( my $line = $gz->readline ) {
+    while ( my $line = <$fh> ) {
         my ( $module, $author, $type ) = split( /,/, $line );
         next unless ($type);
         $authors{$module} ||= [];
         push( @{ $authors{$module} }, $author );
     }
+    die;
     return \%authors;
 
 }
