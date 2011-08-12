@@ -270,7 +270,7 @@ sub import_tarball {
     log_debug { "Indexing ", scalar @files, " files" };
     my $i        = 1;
     my $file_set = $cpan->type('file');
-    my $bulk = $cpan->bulk( size => 50 );
+    my $bulk = $cpan->bulk( size => 10 );
     foreach my $file (@files) {
         my $obj = $file_set->new_document($file);
         $bulk->put($obj);
