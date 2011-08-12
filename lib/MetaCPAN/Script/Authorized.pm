@@ -17,11 +17,13 @@ sub run {
     log_info {"looking for modules"};
     my $scroll = $self->scroll;
     log_info { $scroll->total . " modules found" };
-    my $update = 0;
     my @releases;
+    my $i = 0;
 
     while ( my $file = $scroll->next ) {
-        my $data = $file->{_source};
+        $i++;
+        my $update = 0;
+        my $data   = $file->{_source};
         next if ( $data->{distribution} eq 'perl' );
         my @modules
             = grep { $_->{indexed} && $_->{authorized} } @{ $data->{module} };
@@ -41,7 +43,7 @@ sub run {
                 $update = 1;
             }
         }
-        if (   !defined $data->{authorized}
+        if (   $data->{authorized}
             && $data->{documentation}
             && $authors->{ $data->{documentation} }
             && !grep { $_ eq $data->{author} }
@@ -58,16 +60,18 @@ sub run {
             $self->bulk_update(@authorized);
             @authorized = ();
         }
+        log_info { "$i files processed, ", $scroll->total - $i, " to go" }
+            unless ( $i % 1000 );
     }
-    $self->bulk_update(@authorized)
-        if (@authorized);    # update the rest
+    $self->bulk_update(@authorized);
     $self->index->refresh;
 }
 
 sub bulk_update {
     my ( $self, @authorized ) = @_;
+    return unless (@authorized);
     if ( $self->dry_run ) {
-        log_info {"dry run, not updating"};
+        log_debug {"dry run, not updating"};
         return;
     }
     my @bulk;
@@ -103,10 +107,18 @@ sub scroll {
                 filtered => {
                     query  => { match_all => {} },
                     filter => {
-                        or => [
-                            { exists => { field => 'file.module.name' } },
+                        and => [
+                            {   or => [
+                                    {   exists =>
+                                            { field => 'file.module.name' }
+                                    },
 
-                            { exists => { field => 'documentation' } }
+                                    {   exists => { field => 'documentation' }
+                                    }
+                                ]
+                            },
+
+                           #		    { term => { documentation => 'Template' } },
                         ]
                     }
                 }
@@ -121,7 +133,7 @@ sub scroll {
 sub parse_perms {
     my $self = shift;
     my $file = $self->cpan->file(qw(modules 06perms.txt));
-    log_info {"parsing ", $file};
+    log_info { "parsing ", $file };
     my $fh = $file->openr;
     my %authors;
     while ( my $line = <$fh> ) {
@@ -130,7 +142,6 @@ sub parse_perms {
         $authors{$module} ||= [];
         push( @{ $authors{$module} }, $author );
     }
-    die;
     return \%authors;
 
 }
