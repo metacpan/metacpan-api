@@ -21,22 +21,22 @@ sub run {
     my $scroll = $self->scroll;
     log_info { $scroll->total . " modules found" };
     my $update = 0;
+    my @releases;
 
     while ( my $file = $scroll->next ) {
         my $data = $file->{_source};
-        my @modules = grep { $_->{indexed} } @{ $data->{module} };
+        next if ( $data->{distribution} eq 'perl' );
+        my @modules
+            = grep { $_->{indexed} && $_->{authorized} } @{ $data->{module} };
         foreach my $module (@modules) {
-            next if(defined $module->{authorized});
-            if ($data->{distribution} eq 'perl'
-                || ( $authors->{ $module->{name} }
+            if (!$authors->{ $module->{name} }
+                || !(
+                    $authors->{ $module->{name} }
                     && grep { $_ eq $data->{author} }
-                    @{ $authors->{ $module->{name} } } )
+                    @{ $authors->{ $module->{name} } }
+                )
                 )
             {
-                $module->{authorized} = \1;
-                $update = 1;
-            }
-            elsif($authors->{ $module->{name} }) {
                 log_debug {
                     "unauthorized module $module->{name} in $data->{release} by $data->{author}";
                 };
@@ -62,7 +62,8 @@ sub run {
             @authorized = ();
         }
     }
-    $self->bulk_update(@authorized) if (@authorized);    # update the rest
+    $self->bulk_update(@authorized)
+        if (@authorized);    # update the rest
     $self->index->refresh;
 }
 
@@ -78,7 +79,8 @@ sub bulk_update {
             = grep { $_->{name} eq $file->{documentation} }
             @{ $file->{module} }
             if ( $file->{documentation} );
-        $file->{authorized} = $module->{authorized} if ($module);
+        $file->{authorized} = $module->{authorized}
+            if ( $module && $module->{indexed} );
         push(
             @bulk,
             {   index => {
@@ -103,7 +105,6 @@ sub scroll {
                     query  => { match_all => {} },
                     filter => {
                         and => [
-                            { missing => { field => 'file.authorized' } },
                             {   or => [
                                     {   and => [
                                             {   exists => {
@@ -163,10 +164,26 @@ __END__
 
 =head1 NAME
 
-MetaCPAN::Script::Authorized - set the C<authorized> property on files
+MetaCPAN::Script::Authorized - Set the C<authorized> property on files
+
+=head1 SYNOPSIS
+
+ $ bin/metacpan authorized
+ 
+ $ bin/metacpan release /path/to/tarball.tar.gz --authorized
 
 =head1 DESCRIPTION
 
-Unauthorized modules are modules that have been uploaded by by different
-user than the previous version of the module unless the name of the
-distribution matches.
+Unauthorized modules are modules that were uploaded in the name of a
+different author than stated in the C<06perms.txt.gz> file. One problem
+with this file is, that it doesn't record historical data. It may very
+well be that an author was authorized to upload a module at the time.
+But then his co-maintainer rights might have been revoked, making consecutive
+uploads of that release unauthorized. However, since this script runs
+with the latest version of C<06perms.txt.gz>, the former upload will
+be flagged as unauthorized as well. Same holds the other way round,
+a previously unauthorized release would be flagged authorized if the
+co-maintainership was added later on.
+
+If a release contains unauthorized modules, the whole release is marked
+as unauthorized as well.
