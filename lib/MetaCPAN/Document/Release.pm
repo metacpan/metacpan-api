@@ -112,9 +112,8 @@ sub _build_version_numified {
 
 sub _build_download_url {
     my $self = shift;
-    ($self->status eq 'backpan'
-        ? 'http://backpan.perl.org/authors/'
-        : 'http://cpan.cpantesters.org/authors/')
+    return
+          'http://cpan.metacpan.org/authors/'
         . MetaCPAN::Document::Author::_build_dir( $self->author ) . '/'
         . $self->archive;
 }
@@ -155,7 +154,8 @@ sub predecessor {
                         and => [
                             { term => { 'release.distribution' => $name } },
                             {   not => {
-                                    filter => { term => { status => 'latest' } }
+                                    filter =>
+                                        { term => { status => 'latest' } }
                                 }
                             },
                         ]
