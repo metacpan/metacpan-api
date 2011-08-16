@@ -15,7 +15,7 @@ use Config::General;
 ok(my $es = ElasticSearch->new(
      # instances   => 1,
       transport   => 'httplite',
-      servers          => '127.0.0.1:9200',
+      servers          => '127.0.0.1:9900',
 ), 'connect to es');
 
 my $config = MetaCPAN::Script::Runner->build_config;
