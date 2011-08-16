@@ -348,7 +348,7 @@ sub _build_abstract {
     $section =~ s/X<.*?>//mg;
     if ( $section =~ /^\s*(\S+)((\h+-+\h+(.+))|(\r?\n\h*\r?\n\h*(.+)))?/ms ) {
         chomp( $abstract = $4 || $6 ) if ( $4 || $6 );
-        my $name = $1;
+        my $name = MetaCPAN::Util::strip_pod($1);
         $documentation = $name if ( $name =~ /^[\w\.:\-_']+$/ );
     }
 
