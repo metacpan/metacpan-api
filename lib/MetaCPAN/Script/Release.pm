@@ -111,18 +111,11 @@ sub run {
             my ( $author, $archive, $name )
                 = ( $d->cpanid, $d->filename, $d->distvname );
 
-            my $count = $cpan->type('release')->query(
-                {   query => {
-                        filtered => {
-                            query  => { match_all => {} },
-                            filter => {
-                                and => [
-                                    { term => { archive => $archive } },
-                                    { term => { author  => $author } },
-                                ]
-                            }
-                        }
-                    }
+            my $count = $cpan->type('release')->filter(
+                {   and => [
+                        { term => { archive => $archive } },
+                        { term => { author  => $author } },
+                    ]
                 }
             )->inflate(0)->count;
             if ($count) {
@@ -270,7 +263,7 @@ sub import_tarball {
     log_debug { "Indexing ", scalar @files, " files" };
     my $i        = 1;
     my $file_set = $cpan->type('file');
-    my $bulk = $cpan->bulk( size => 10 );
+    my $bulk     = $cpan->bulk( size => 10 );
     foreach my $file (@files) {
         my $obj = $file_set->new_document($file);
         $bulk->put($obj);

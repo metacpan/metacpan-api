@@ -41,19 +41,16 @@ sub index_authors {
     log_info {"Indexing $count authors"};
 
     log_debug {"Getting last update dates"};
-    my $dates = $type->inflate(0)->query(
-        {   query  => { match_all => {} },
-            filter => { exists    => { field => 'updated' } },
-            size => 99999
-        }
-    )->all;
+    my $dates
+        = $type->inflate(0)->filter( { exists => { field => 'updated' } } )
+        ->size(99999)->all;
     $dates = {
         map {
             $_->{pauseid} =>
                 DateTime::Format::ISO8601->parse_datetime( $_->{updated} )
             } map { $_->{_source} } @{ $dates->{hits}->{hits} }
     };
-    
+
     my $bulk = $self->model->bulk( size => 500 );
 
     while ( my ( $pauseid, $data ) = each %$authors ) {

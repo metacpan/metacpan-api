@@ -20,6 +20,7 @@ my $fails  = 0;
 my $latest = 0;
 
 my @segments = qw(1h 6h 1d 1W 1M 1Q 1Y Z);
+
 #my @segments = qw(1Y);
 
 sub run {
@@ -106,10 +107,11 @@ sub backpan_changes {
     my @changes;
     while ( my $release = $scroll->next ) {
         my $data = $release->{fields};
-        my $path = $self->cpan->file( 'authors',
+        my $path
+            = $self->cpan->file( 'authors',
             MetaCPAN::Util::author_dir( $data->{author} ),
             $data->{archive} );
-        next if(-e $path);
+        next if ( -e $path );
         log_debug {"$path not in the CPAN"};
         push( @changes, { path => $path, type => 'delete' } );
     }
@@ -119,28 +121,18 @@ sub backpan_changes {
 sub latest_release {
     my $self = shift;
     return undef if ( $self->backpan );
-    return $self->index->type('release')->query(
-        {   query => { match_all => {} },
-            sort => [ { 'date' => { order => "desc" } } ]
-        }
-    )->first;
+    return $self->index->type('release')
+        ->sort( [ { 'date' => { order => "desc" } } ] )->first;
 }
 
 sub skip {
     my ( $self, $author, $archive ) = @_;
-    return $self->index->type('release')->query(
-        {   query => {
-                filtered => {
-                    query  => { match_all => {} },
-                    filter => {
-                        and => [
-                            { term => { status  => 'backpan' } },
-                            { term => { archive => $archive } },
-                            { term => { author  => $author } },
-                        ]
-                    }
-                }
-            }
+    return $self->index->type('release')->filter(
+        {   and => [
+                { term => { status  => 'backpan' } },
+                { term => { archive => $archive } },
+                { term => { author  => $author } },
+            ]
         }
     )->inflate(0)->count;
 }
@@ -211,8 +203,9 @@ sub reindex_release {
             }
         }
     );
-    return if($self->dry_run);
+    return if ( $self->dry_run );
     my @bulk;
+
     while ( my $row = $scroll->next ) {
         my $source = $row->{_source};
         push(
