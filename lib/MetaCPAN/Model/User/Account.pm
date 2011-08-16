@@ -10,32 +10,35 @@ use MetaCPAN::Types qw(:all);
 has id => ( id => 1, required => 0, is => 'rw' );
 
 has identity => (
-    isa     => Identity,
-    coerce  => 1,
-    traits  => ['Array'],
-    handles => { add_identity => 'push' },
-    default => sub { [] }
+    is       => 'ro',
+    required => 1,
+    isa      => Identity,
+    coerce   => 1,
+    traits   => ['Array'],
+    handles  => { add_identity => 'push' },
+    default  => sub { [] }
 );
 
-has code => ( is => 'rw', clearer => 'clear_token', required => 0 );
+has code => ( is => 'rw', clearer => 'clear_token' );
 
 has access_token => (
-    is      => 'ro',
-    isa     => ArrayRef[Dict[token => Str, client => Str]],
-    default => sub { [] },
+    is       => 'ro',
+    required => 1,
+    isa      => ArrayRef [ Dict [ token => Str, client => Str ] ],
+    default => sub                { [] },
     dynamic => 1,
     traits  => ['Array'],
     handles => { add_access_token => 'push' }
 );
 
 sub has_identity {
-    my ($self, $identity) = @_;
-    return scalar grep { $_->name eq $identity } @{$self->identity};
+    my ( $self, $identity ) = @_;
+    return scalar grep { $_->name eq $identity } @{ $self->identity };
 }
 
 sub get_identities {
-    my ($self, $identity) = @_;
-    return grep { $_->name eq $identity } @{$self->identity};
+    my ( $self, $identity ) = @_;
+    return grep { $_->name eq $identity } @{ $self->identity };
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -47,14 +50,11 @@ extends 'ElasticSearchX::Model::Document::Set';
 
 sub find {
     my ( $self, $p ) = @_;
-    return $self->query(
-        {   query  => { match_all => {} },
-            filter => {
-                and => [
-                    { term => { 'account.identity.name' => $p->{name} } },
-                    { term => { 'account.identity.key'  => $p->{key} } }
-                ]
-            },
+    return $self->filter(
+        {   and => [
+                { term => { 'account.identity.name' => $p->{name} } },
+                { term => { 'account.identity.key'  => $p->{key} } }
+            ]
         }
     )->first;
 }
@@ -66,8 +66,8 @@ sub find_code {
 
 sub find_token {
     my ( $self, $token ) = @_;
-    return $self->filter( { term => { 'account.access_token.token' => $token } } )->first;
+    return $self->filter(
+        { term => { 'account.access_token.token' => $token } } )->first;
 }
-
 
 __PACKAGE__->meta->make_immutable;

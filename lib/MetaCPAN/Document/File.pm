@@ -138,42 +138,70 @@ version could not be parsed.
 
 =cut
 
-has id => ( id => [qw(author release path)] );
+has id => ( is => 'ro', id => [qw(author release path)] );
 
-has [qw(path author name release)];
-has distribution => ( analyzer => [qw(standard camelcase)] );
-has module => ( required => 0, is => 'rw', isa => Module, coerce => 1, clearer => 'clear_module' );
-has documentation => ( is => 'rw', lazy_build => 1, index => 'analyzed', predicate => 'has_documentation', analyzer => [qw(standard camelcase)] );
-has release_id => ( parent => 1 );
-has date => ( isa => 'DateTime' );
-has stat => ( isa => Stat, required => 0, dynamic => 1 );
-has sloc => ( isa => 'Int',        lazy_build => 1 );
-has slop => ( isa => 'Int', is => 'rw', lazy_build => 1 );
-has pod_lines => ( isa => 'ArrayRef', type => 'integer', lazy_build => 1, index => 'no' );
+has [qw(path author name release)] => ( is => 'ro', required => 1 );
+has distribution =>
+    ( is => 'ro', required => 1, analyzer => [qw(standard camelcase)] );
+has module => (
+    required => 0,
+    is       => 'rw',
+    isa      => Module,
+    coerce   => 1,
+    clearer  => 'clear_module'
+);
+has documentation => (
+    required   => 1,
+    is         => 'rw',
+    lazy_build => 1,
+    index      => 'analyzed',
+    predicate  => 'has_documentation',
+    analyzer   => [qw(standard camelcase)]
+);
+has release_id => ( is => 'ro', required => 1, parent => 1 );
+has date       => ( is => 'ro', required => 1, isa    => 'DateTime' );
+has stat => ( is => 'ro', isa => Stat, required => 0, dynamic => 1 );
+has sloc => ( is => 'ro', required => 1, isa => 'Int', lazy_build => 1 );
+has slop =>
+    ( is => 'ro', required => 1, isa => 'Int', is => 'rw', lazy_build => 1 );
+has pod_lines => (
+    is         => 'ro',
+    required   => 1,
+    isa        => 'ArrayRef',
+    type       => 'integer',
+    lazy_build => 1,
+    index      => 'no'
+);
 
 has pod => (
-  isa            => 'ScalarRef',
-  lazy_build     => 1,
-  index          => 'analyzed',
-  not_analyzed   => 0,
-  store          => 'no',
-  term_vector    => 'with_positions_offsets' );
+    is           => 'ro',
+    required     => 1,
+    isa          => 'ScalarRef',
+    lazy_build   => 1,
+    index        => 'analyzed',
+    not_analyzed => 0,
+    store        => 'no',
+    term_vector  => 'with_positions_offsets'
+);
 
-has mime => ( lazy_build => 1 );
-has abstract => ( lazy_build => 1, index => 'analyzed' );
-has description => ( lazy_build => 1, index => 'analyzed' );
-has status => ( default => 'cpan' );
-has authorized => ( is => 'ro', isa => 'Bool', default => 1 );
-has maturity => ( default => 'released' );
-has directory => ( isa => 'Bool', default => 0 );
-has level => ( isa => 'Int', lazy_build => 1 );
-has indexed => ( is => 'rw', isa => 'Bool', default => 1 );
-has version => ( required => 0 );
-has version_numified => ( isa => 'Num', lazy_build => 1, required => 1 );
+has mime => ( is => 'ro', required => 1, lazy_build => 1 );
+has abstract =>
+    ( is => 'ro', required => 1, lazy_build => 1, index => 'analyzed' );
+has description =>
+    ( is => 'ro', required => 1, lazy_build => 1, index => 'analyzed' );
+has status => ( is => 'ro', required => 1, default => 'cpan' );
+has authorized => ( required => 1, is => 'ro', isa => 'Bool', default => 1 );
+has maturity => ( is => 'ro', required => 1, default => 'released' );
+has directory => ( is => 'ro', required => 1, isa => 'Bool', default => 0 );
+has level => ( is => 'ro', required => 1, isa => 'Int', lazy_build => 1 );
+has indexed => ( required => 1, is => 'rw', isa => 'Bool', default => 1 );
+has version => ( is => 'ro', required => 0 );
+has version_numified =>
+    ( is => 'ro', isa => 'Num', lazy_build => 1, required => 1 );
 
 sub _build_version_numified {
     my $self = shift;
-    return 0 unless($self->version);
+    return 0 unless ( $self->version );
     return MetaCPAN::Util::numify_version( $self->version );
 }
 
@@ -192,8 +220,21 @@ Callback, that returns the content of the as ScalarRef.
 
 =cut
 
-has content => ( isa => 'ScalarRef', lazy_build => 1, property => 0, required => 0 );
-has content_cb => ( property => 0, required => 0, default => sub{sub{\''}} );
+has content => (
+    is         => 'ro',
+    isa        => 'ScalarRef',
+    lazy_build => 1,
+    property   => 0,
+    required   => 0
+);
+has content_cb => (
+    is       => 'ro',
+    property => 0,
+    required => 0,
+    default  => sub {
+        sub { \'' }
+    }
+);
 
 =head1 METHODS
 
@@ -211,9 +252,9 @@ Retruns true if the file extension is C<pod>.
 
 sub is_perl_file {
     my $self = shift;
-    return 0 if($self->directory);
-    return 1 if($self->name =~ /\.(pl|pm|pod|t)$/i);
-    return 1 if($self->mime eq "text/x-script.perl");
+    return 0 if ( $self->directory );
+    return 1 if ( $self->name =~ /\.(pl|pm|pod|t)$/i );
+    return 1 if ( $self->mime eq "text/x-script.perl" );
     return 0;
 }
 
@@ -224,41 +265,46 @@ sub is_pod_file {
 sub _build_documentation {
     my $self = shift;
     $self->_build_abstract;
-    my $documentation = $self->documentation if($self->has_documentation);
-    return undef unless(${$self->pod});
-    my @indexed = grep { $_->indexed } @{$self->module || []};
-    if($documentation && $self->is_pod_file) {
+    my $documentation = $self->documentation if ( $self->has_documentation );
+    return undef unless ( ${ $self->pod } );
+    my @indexed = grep { $_->indexed } @{ $self->module || [] };
+    if ( $documentation && $self->is_pod_file ) {
         return $documentation;
-    } elsif($documentation && grep {$_->name eq $documentation} @indexed) {
+    }
+    elsif ( $documentation && grep { $_->name eq $documentation } @indexed ) {
         return $documentation;
-    } elsif(@indexed) {
+    }
+    elsif (@indexed) {
         return $indexed[0]->name;
-    } else {
+    }
+    else {
         return undef;
     }
 }
 
 sub _build_level {
     my $self = shift;
-    my @level = split(/\//, $self->path);
+    my @level = split( /\//, $self->path );
     return @level - 1;
 }
 
 sub _build_content {
-    my $self = shift;
-    my @content = split("\n", ${$self->content_cb->()} || '');
+    my $self    = shift;
+    my @content = split( "\n", ${ $self->content_cb->() } || '' );
     my $content = "";
-    my $in_data = 0; # skip DATA section
-    while(@content) {
+    my $in_data = 0;    # skip DATA section
+    while (@content) {
         my $line = shift @content;
-        if($line =~ /^\s*__END__\s*$/) {
-            $in_data = 0;
-        } elsif($line =~ /^\s*__DATA__\s*$/) {
-            $in_data++;
-        } elsif($in_data && $line =~ /^=head1/) {
+        if ( $line =~ /^\s*__END__\s*$/ ) {
             $in_data = 0;
         }
-        next if($in_data);
+        elsif ( $line =~ /^\s*__DATA__\s*$/ ) {
+            $in_data++;
+        }
+        elsif ( $in_data && $line =~ /^=head1/ ) {
+            $in_data = 0;
+        }
+        next if ($in_data);
         $content .= $line . "\n";
     }
     return \$content;
@@ -266,10 +312,11 @@ sub _build_content {
 
 sub _build_mime {
     my $self = shift;
-    if(!$self->directory && $self->name !~ /\./) {
-        my $content = ${$self->content};
-        return "text/x-script.perl" if($content =~ /^#!.*?perl/);
-    } else {
+    if ( !$self->directory && $self->name !~ /\./ ) {
+        my $content = ${ $self->content };
+        return "text/x-script.perl" if ( $content =~ /^#!.*?perl/ );
+    }
+    else {
         return Plack::MIME->mime_type( $self->name ) || 'text/plain';
     }
 }
@@ -277,8 +324,8 @@ sub _build_mime {
 sub _build_description {
     my $self = shift;
     return undef unless ( $self->is_perl_file );
-    my $section =
-      MetaCPAN::Util::extract_section( ${ $self->content }, 'DESCRIPTION' );
+    my $section = MetaCPAN::Util::extract_section( ${ $self->content },
+        'DESCRIPTION' );
     return undef unless ($section);
     my $parser = Pod::Text->new;
     my $text   = "";
@@ -290,38 +337,36 @@ sub _build_description {
     return $text;
 }
 
-
 sub _build_abstract {
-  my $self = shift;
-  return undef unless ( $self->is_perl_file );
-  my $text = ${$self->content};
-  my ( $documentation, $abstract );
-  my $section = MetaCPAN::Util::extract_section($text, 'NAME');
-  return undef unless($section);
-  $section =~ s/^=\w+.*$//mg;
-  $section =~ s/X<.*?>//mg;
-  if ( $section =~ /^\s*(\S+)((\h+-+\h+(.+))|(\r?\n\h*\r?\n\h*(.+)))?/ms ) {
-    chomp( $abstract = $4 || $6 ) if($4 || $6);
-    my $name = $1;
-    $documentation = $name if ( $name =~ /^[\w\.:\-_']+$/ );
-  }
+    my $self = shift;
+    return undef unless ( $self->is_perl_file );
+    my $text = ${ $self->content };
+    my ( $documentation, $abstract );
+    my $section = MetaCPAN::Util::extract_section( $text, 'NAME' );
+    return undef unless ($section);
+    $section =~ s/^=\w+.*$//mg;
+    $section =~ s/X<.*?>//mg;
+    if ( $section =~ /^\s*(\S+)((\h+-+\h+(.+))|(\r?\n\h*\r?\n\h*(.+)))?/ms ) {
+        chomp( $abstract = $4 || $6 ) if ( $4 || $6 );
+        my $name = $1;
+        $documentation = $name if ( $name =~ /^[\w\.:\-_']+$/ );
+    }
 
-  if ($abstract) {
-    $abstract =~ s/^=\w+.*$//xms;
-    $abstract =~ s{\r?\n\h*\r?\n\h*.*$}{}xms;
-    $abstract =~ s{\n}{ }gxms;
-    $abstract =~ s{\s+$}{}gxms;
-    $abstract =~ s{(\s)+}{$1}gxms;
-    $abstract = MetaCPAN::Util::strip_pod($abstract);
-  }
+    if ($abstract) {
+        $abstract =~ s/^=\w+.*$//xms;
+        $abstract =~ s{\r?\n\h*\r?\n\h*.*$}{}xms;
+        $abstract =~ s{\n}{ }gxms;
+        $abstract =~ s{\s+$}{}gxms;
+        $abstract =~ s{(\s)+}{$1}gxms;
+        $abstract = MetaCPAN::Util::strip_pod($abstract);
+    }
 
-  if ($documentation) {
-    $self->documentation(MetaCPAN::Util::strip_pod($documentation));
-  }
-  return $abstract;
+    if ($documentation) {
+        $self->documentation( MetaCPAN::Util::strip_pod($documentation) );
+    }
+    return $abstract;
 
 }
-
 
 sub _build_path {
     my $self = shift;
@@ -331,8 +376,8 @@ sub _build_path {
 sub _build_pod_lines {
     my $self = shift;
     return [] unless ( $self->is_perl_file );
-    my ($lines, $slop) = MetaCPAN::Util::pod_lines(${$self->content});
-    $self->slop($slop || 0);
+    my ( $lines, $slop ) = MetaCPAN::Util::pod_lines( ${ $self->content } );
+    $self->slop( $slop || 0 );
     return $lines;
 }
 
@@ -347,14 +392,16 @@ sub _build_slop {
 sub _build_sloc {
     my $self = shift;
     return 0 unless ( $self->is_perl_file );
-    my @content = split("\n", ${$self->content});
+    my @content = split( "\n", ${ $self->content } );
     my $pods = 0;
-    map { splice(@content, $_->[0], $_->[1], map { '' } 1 .. $_->[1]) } @{$self->pod_lines};
+    map {
+        splice( @content, $_->[0], $_->[1], map {''} 1 .. $_->[1] )
+    } @{ $self->pod_lines };
     my $sloc = 0;
-    while(@content) {
+    while (@content) {
         my $line = shift @content;
-        last if($line =~ /^\s*__END__/s);
-        $sloc++ if( $line !~ /^\s*#/ && $line =~ /\S/ );
+        last if ( $line =~ /^\s*__END__/s );
+        $sloc++ if ( $line !~ /^\s*#/ && $line =~ /\S/ );
     }
     return $sloc;
 }
@@ -378,32 +425,23 @@ use Moose;
 extends 'ElasticSearchX::Model::Document::Set';
 
 sub find {
-    my ($self, $module) = @_;
-    return $self->query({
-        size  => 1,
-        query => {
-            filtered => {
-                query  => { match_all => {} },
-                filter => {
-                    and => [
-                        { term => { 'documentation' => $module   } },
-                        { term => { 'file.indexed'  => \1, } },
-                        { term => { status          => 'latest', } },
-                        {   not => {
-                                filter =>
-                                    { term => { 'file.authorized' => \0 } }
-                            }
-                        },
-                    ]
-                }
-            }
-        },
-        sort => [
-            { 'date'       => { order => "desc" } },
+    my ( $self, $module ) = @_;
+    return $self->filter(
+        {   and => [
+                { term => { 'documentation' => $module } },
+                { term => { 'file.indexed'  => \1, } },
+                { term => { status          => 'latest', } },
+                {   not =>
+                        { filter => { term => { 'file.authorized' => \0 } } }
+                },
+            ]
+        }
+        )->sort(
+        [   { 'date' => { order => "desc" } },
             'mime',
             { 'stat.mtime' => { order => 'desc' } }
         ]
-    })->first;
+        )->first;
 }
 
 __PACKAGE__->meta->make_immutable;

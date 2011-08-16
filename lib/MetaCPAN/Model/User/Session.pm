@@ -3,11 +3,11 @@ use Moose;
 use ElasticSearchX::Model::Document;
 use DateTime;
 
-has id => ( id => 1 );
+has id => ( is => 'ro', id => 1 );
 
 has date =>
-    ( required => 1, isa => 'DateTime', default => sub { DateTime->now } );
+    ( is => 'ro', required => 1, isa => 'DateTime', default => sub { DateTime->now } );
 
-has account => ( parent => 1, is => 'rw' );
+has account => ( parent => 1, is => 'rw', required => 1 );
 
 __PACKAGE__->meta->make_immutable;

@@ -57,20 +57,26 @@ not declared in one line, the module is considered not-indexed.
 
 =cut
 
-has name => ( index => 'analyzed', analyzer => [qw(standard camelcase)] );
-has version => ( required => 0 );
-has version_numified => ( isa => 'Num', lazy_build => 1, required => 1 );
-has indexed => ( is => 'rw', isa => 'Bool', default => 0 );
-has authorized => ( is => 'ro', isa => 'Bool', default => 1 );
+has name => (
+    is       => 'ro',
+    required => 1,
+    index    => 'analyzed',
+    analyzer => [qw(standard camelcase)]
+);
+has version => ( is => 'ro' );
+has version_numified =>
+    ( is => 'ro', isa => 'Num', lazy_build => 1, required => 1 );
+has indexed    => ( is => 'rw', required => 1, isa => 'Bool', default => 0 );
+has authorized => ( is => 'ro', required => 1, isa => 'Bool', default => 1 );
 
 sub _build_version_numified {
     my $self = shift;
-    return 0 unless($self->version);
+    return 0 unless ( $self->version );
     return MetaCPAN::Util::numify_version( $self->version );
 }
 
 sub hide_from_pause {
-    my ($self, $content) = @_;
+    my ( $self, $content ) = @_;
     my $pkg = $self->name;
     return $content =~ /    # match a package declaration
       ^[\h\{;]*             # intro chars on a line
