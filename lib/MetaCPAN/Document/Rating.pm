@@ -5,20 +5,23 @@ use ElasticSearchX::Model::Document::Types qw(:all);
 use MooseX::Types::Structured qw(Dict Tuple Optional);
 use MooseX::Types::Moose qw(Int Num Bool Str ArrayRef HashRef Undef);
 
-has user => ( required => 1, is => 'ro', isa => Str );
-has details =>
-  ( required => 0, is => 'ro', isa => Dict [ documentation => Str ] );
+has details => ( is => 'ro', isa => Dict [ documentation => Str ] );
 has rating =>
-  ( required => 1, is => 'ro', isa => Num, builder => '_build_rating' );
-has distribution => ( required => 1, is => 'ro', isa => Str );
-has release      => ( required => 1, is => 'ro', isa => Str );
-has author       => ( required => 1, is => 'ro', isa => Str );
-has date =>
-  ( required => 1, isa => 'DateTime', default => sub { DateTime->now } );
+    ( required => 1, is => 'ro', isa => Num, builder => '_build_rating' );
+has [qw(distribution release author user)] =>
+    ( required => 1, is => 'ro', isa => Str );
+has date => (
+    required => 1,
+    is       => 'ro',
+    isa      => 'DateTime',
+    default  => sub { DateTime->now }
+);
 has helpful => (
     required => 1,
+    is       => 'ro',
     isa      => ArrayRef [ Dict [ user => Str, value => Bool ] ],
-    default => sub { [] } );
+    default => sub { [] }
+);
 
 sub _build_rating {
     my $self = shift;

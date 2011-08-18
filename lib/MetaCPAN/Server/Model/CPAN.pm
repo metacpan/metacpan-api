@@ -6,13 +6,13 @@ with 'CatalystX::Component::Traits';
 
 use MetaCPAN::Model;
 
-__PACKAGE__->config( index => 'cpan' );
 
 has esx_model => ( is => 'ro', lazy_build => 1, handles => ['es'] );
-has index => ( is => 'ro' );
+has index => ( is => 'ro', default => 'cpan' );
+has servers => ( is => 'ro', default => ':9200' );
 
 sub _build_esx_model {
-    MetaCPAN::Model->new;
+    MetaCPAN::Model->new( es => shift->servers );
 }
 
 sub BUILD {

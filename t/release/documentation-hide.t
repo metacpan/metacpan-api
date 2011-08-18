@@ -4,7 +4,7 @@ use warnings;
 
 use MetaCPAN::Model;
 
-my $model   = MetaCPAN::Model->new( es => ':9200' );
+my $model   = MetaCPAN::Model->new( es => ':9900' );
 my $idx     = $model->index('cpan');
 my $release = $idx->type('release')->get(
     {   author => 'MO',

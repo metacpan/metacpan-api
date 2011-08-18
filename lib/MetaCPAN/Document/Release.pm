@@ -88,23 +88,24 @@ and C<mtime>.
 
 =cut
 
-has id => ( id => [qw(author name)] );
-has [qw(license version author archive)] => ();
-has date             => ( isa        => 'DateTime' );
-has download_url     => ( lazy_build => 1 );
-has name             => ( index      => 'analyzed' );
-has version_numified => ( isa        => 'Num', lazy_build => 1 );
-has resources =>
-    ( isa => Resources, required => 0, coerce => 1, dynamic => 1 );
-has abstract => ( index => 'analyzed', required => 0 );
-has distribution => ( analyzer => [qw(standard camelcase)] );
+has id => ( is => 'ro', id => [qw(author name)] );
+has [qw(license version author archive)] => ( is => 'ro', required => 1 );
+has date         => ( is => 'ro', required => 1, isa        => 'DateTime' );
+has download_url => ( is => 'ro', required => 1, lazy_build => 1 );
+has name         => ( is => 'ro', required => 1, index      => 'analyzed' );
+has version_numified =>
+    ( is => 'ro', required => 1, isa => 'Num', lazy_build => 1 );
+has resources => ( is => 'ro', isa => Resources, coerce => 1, dynamic => 1 );
+has abstract => ( is => 'ro', index => 'analyzed' );
+has distribution =>
+    ( is => 'ro', required => 1, analyzer => [qw(standard camelcase)] );
 has dependency =>
     ( required => 0, is => 'rw', isa => Dependency, coerce => 1 );
-has status   => ( default => 'cpan' );
-has maturity => ( default => 'released' );
-has stat     => ( isa     => Stat, required => 0, dynamic => 1 );
-has tests => ( isa => Tests, required => 0 );
-has authorized => ( is => 'ro', isa => 'Bool', default => 1 );
+has status   => ( is => 'ro', required => 1, default => 'cpan' );
+has maturity => ( is => 'ro', required => 1, default => 'released' );
+has stat => ( is => 'ro', isa => Stat, dynamic => 1 );
+has tests => ( is => 'ro', isa => Tests );
+has authorized => ( is => 'ro', required => 1, isa => 'Bool', default => 1 );
 
 sub _build_version_numified {
     return MetaCPAN::Util::numify_version( shift->version );
@@ -126,46 +127,24 @@ extends 'ElasticSearchX::Model::Document::Set';
 
 sub find {
     my ( $self, $name ) = @_;
-    return $self->query(
-        {   query => {
-                filtered => {
-                    query  => { match_all => {} },
-                    filter => {
-                        and => [
-                            { term => { 'release.distribution' => $name } },
-                            { term => { status                 => 'latest' } }
-                        ]
-                    }
-                }
-            },
-            sort => [ { date => 'desc' } ],
-            size => 1
+    return $self->filter(
+        {   and => [
+                { term => { 'release.distribution' => $name } },
+                { term => { status                 => 'latest' } }
+            ]
         }
-    )->first;
+    )->sort( [ { date => 'desc' } ] )->first;
 }
 
 sub predecessor {
     my ( $self, $name ) = @_;
-    return $self->query(
-        {   query => {
-                filtered => {
-                    query  => { match_all => {} },
-                    filter => {
-                        and => [
-                            { term => { 'release.distribution' => $name } },
-                            {   not => {
-                                    filter =>
-                                        { term => { status => 'latest' } }
-                                }
-                            },
-                        ]
-                    }
-                }
-            },
-            sort => [ { date => 'desc' } ],
-            size => 1,
+    return $self->filter(
+        {   and => [
+                { term => { 'release.distribution' => $name } },
+                { not => { filter => { term => { status => 'latest' } } } },
+            ]
         }
-    )->first;
+    )->sort( [ { date => 'desc' } ] )->first;
 }
 
 __PACKAGE__->meta->make_immutable;
