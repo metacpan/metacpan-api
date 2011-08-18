@@ -150,7 +150,7 @@ sub index_release {
     my $tarball = $self->cpan->file( $release->{path} )->stringify;
     for ( my $i = 0; $i < 15; $i++ ) {
         last if ( -e $tarball );
-        log_warn {"Tarball $tarball does not yet exist"};
+        log_debug {"Tarball $tarball does not yet exist"};
         sleep(1);
     }
 
