@@ -121,7 +121,7 @@ sub run_purge {
                 log_info        {"Removing old backup $file"};
                 return log_info {"Not (dry run)"}
                 if ( $self->dry_run );
-                $file->unlink;
+                $file->remove;
             }
         }
     );
