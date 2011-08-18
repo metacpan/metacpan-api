@@ -3,11 +3,6 @@ package MetaCPAN::Server::Controller::User::Favorite;
 use Moose;
 BEGIN { extends 'Catalyst::Controller::REST' }
 
-sub auto : Private {
-    my ( $self, $c ) = @_;
-    ( $c->stash->{pause} ) = $c->user->get_identities('pause');
-}
-
 sub index : Path : ActionClass('REST') {
 }
 
@@ -16,7 +11,7 @@ sub index_POST {
     my $pause    = $c->stash->{pause};
     my $req      = $c->req;
     my $favorite = $c->model('CPAN::Favorite')->put(
-        {   user         => $pause->key,
+        {   user         => $c->user->id,
             author       => $req->data->{author},
             release      => $req->data->{release},
             distribution => $req->data->{distribution},
@@ -36,9 +31,8 @@ sub index_POST {
 
 sub index_DELETE {
     my ( $self, $c, $distribution ) = @_;
-    my $pause    = $c->stash->{pause};
     my $favorite = $c->model('CPAN::Favorite')
-        ->get( { user => $pause->key, distribution => $distribution } );
+        ->get( { user => $c->user->id, distribution => $distribution } );
     if ($favorite) {
         $favorite->delete( { refresh => 1 } );
         $self->status_ok( $c,
