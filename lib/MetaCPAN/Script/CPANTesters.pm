@@ -36,7 +36,6 @@ sub index_reports {
     }
 
     bunzip2 "$db.bz2" => "$db", AutoClose => 1;
-    $db = catfile(qw(var tmp cpantesters.db));
 
     my $scroll = $es->scrolled_search(
         index       => $index,
