@@ -6,11 +6,11 @@ _All of these URLs can be tested using tokuhirom's excellent [MetaCPAN Explorer]
 
 Available fields can be found by accessing the corresponding `_mapping` endpoint.
 
-* [[/release/_mapping|http://api.metacpan.org/v0/release/_mapping]]
-* [[/author/_mapping|http://api.metacpan.org/v0/author/_mapping]]
-* [[/module/_mapping|http://api.metacpan.org/v0/module/_mapping]]
-* [[/file/_mapping|http://api.metacpan.org/v0/file/_mapping]]
-* [[/favorite/_mapping|http://api.metacpan.org/v0/favorite/_mapping]]
+* [[/release/_mapping|http://api.metacpan.org/v0/release/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/release/_mapping]]
+* [[/author/_mapping|http://api.metacpan.org/v0/author/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/author/_mapping]]
+* [[/module/_mapping|http://api.metacpan.org/v0/module/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/module/_mapping]]
+* [[/file/_mapping|http://api.metacpan.org/v0/file/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/file/_mapping]]
+* [[/favorite/_mapping|http://api.metacpan.org/v0/favorite/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/favorite/_mapping]]
 
 ## Search without constraints
 
