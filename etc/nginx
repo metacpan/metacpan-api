@@ -1,6 +1,8 @@
 server {
         listen 80;
-        server_name api.beta.metacpan.org;
+	listen 443;
+	ssl	on;
+        server_name api.beta.metacpan.org api.metacpan.org;
         access_log /home/metacpan/api.metacpan.org/var/log/api/access.log;
         error_log /home/metacpan/api.metacpan.org/var/log/api/error.log error;
         location /v0 {

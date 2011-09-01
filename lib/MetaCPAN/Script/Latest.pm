@@ -36,6 +36,8 @@ sub run {
         }
         log_info {"$distribution consists of " . @filter . " modules"};
     }
+
+    return if(!@filter && $self->distribution);
     my $scroll = $modules->filter(
         {   and => [
                 @filter
