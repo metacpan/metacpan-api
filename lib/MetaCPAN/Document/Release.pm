@@ -101,10 +101,10 @@ has distribution =>
     ( is => 'ro', required => 1, analyzer => [qw(standard camelcase)] );
 has dependency =>
     ( required => 0, is => 'rw', isa => Dependency, coerce => 1 );
-has status   => ( is => 'ro', required => 1, default => 'cpan' );
+has status   => ( is => 'rw', required => 1, default => 'cpan' );
 has maturity => ( is => 'ro', required => 1, default => 'released' );
 has stat => ( is => 'ro', isa => Stat, dynamic => 1 );
-has tests => ( is => 'ro', isa => Tests );
+has tests => ( is => 'ro', isa => Tests, dynamic => 1 );
 has authorized => ( is => 'ro', required => 1, isa => 'Bool', default => 1 );
 
 sub _build_version_numified {
