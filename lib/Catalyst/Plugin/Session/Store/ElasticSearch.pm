@@ -12,7 +12,7 @@ has _session_es => (
     is       => 'rw',
     coerce   => 1,
     isa      => ES,
-    default  => sub { shift->_session_plugin_config->{es} || ':9200' }
+    default  => sub { shift->_session_plugin_config->{servers} || ':9200' }
 );
 has _session_es_index => (
     required => 1,
@@ -90,9 +90,9 @@ sub delete_expired_sessions { }
  # defaults
  MyApp->config(
      'Plugin::Session' => {
-         es    => ':9200',
-         index => 'user',
-         type  => 'session',
+         servers => ':9200',
+         index   => 'user',
+         type    => 'session',
      } );
 
 =head1 DESCRIPTION
@@ -104,7 +104,7 @@ is a fast and reliable document store.
 
 =head2 es
 
-Connection string to an ElasticSearch instance. Can be either a port
+Connection string to an ElasticSearch instance. Can either be a port
 on localhost (e.g. C<:9200>), a full address to the ElasticSearch
 server (e.g. C<127.0.0.1:9200>), an ArrayRef of connection strings or
 a HashRef that initialized an L<ElasticSearch> instance.
@@ -119,13 +119,13 @@ The ElasticSearch type to use. Defaults to C<session>.
 
 =head1 MAP TO A USER DOCUMENT
 
-Usually you will want to map a session to a user account. So you will
+Usually you will want to map a session to a user account. You will
 probably have a user document in ElasticSearch that you want to map
 to the session. ElasticSearch can do this very efficiently by establishing
 a parent/child relationship. L<Catalyst::Plugin::Authentication> will set
 the C<__user> attribute on the session once a user has been authorized.
 This attribute will be used as the C<_parent> of the session. Make sure
-you define the C<_parent> type of the session type mapping.
+you define the C<_parent> type in the session type mapping.
 
  $ curl -XPUT localhost:9200/user/session/_mapping -d '
     {"session":{"dynamic":false,"_parent":{"type":"account"}}}'
