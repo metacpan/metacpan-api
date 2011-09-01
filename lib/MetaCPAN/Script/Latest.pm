@@ -114,7 +114,7 @@ sub reindex {
     });
     
     $release->status($status);
-    log_debug {
+    log_info {
         $status eq 'latest' ? "Upgrading " : "Downgrading ",
             "release ", $release->name || '';
     };
@@ -145,7 +145,7 @@ sub reindex {
     my @bulk;
     while ( my $row = $scroll->next ) {
         my $source = $row->{_source};
-        log_debug {
+        log_trace {
             $status eq 'latest' ? "Upgrading " : "Downgrading ",
                 "file ", $source->{name} || '';
         };
