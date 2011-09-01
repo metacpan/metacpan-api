@@ -38,7 +38,7 @@ sub run {
     }
     my $scroll = $modules->filter(
         {   and => [
-                $self->distribution
+                @filter
                 ? { or => [
                         map { { term => { 'file.module.name' => $_ } } }
                             @filter
