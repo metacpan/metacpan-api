@@ -32,18 +32,19 @@ sub index : Path {
         && $c->req->parameters->{id} =~ /[a-zA-Z]+/ )
     {
         my $author = $c->model('CPAN::Author')->get( uc($id) );
-        $c->controller('OAuth2')->redirect($c, error => "author_not_found")
+        $c->controller('OAuth2')->redirect( $c, error => "author_not_found" )
             unless ($author);
         my $code = $self->generate_sid;
         $self->cache->set( $code, $author->pauseid, 86400 );
         my $uri = $c->request->uri->clone;
-        $uri->query( "code=$code" );
+        $uri->query("code=$code");
         my $email = Email::Simple->create(
             header => [
                 'Content-Type' => 'text/plain; charset=utf-8',
-                To      => $author->{email}->[0],
-                From    => 'noreply@metacpan.org',
-                Subject => "Connect MetaCPAN with your PAUSE account",
+                To             => $author->{email}->[0],
+                From           => 'noreply@metacpan.org',
+                Subject        => "Connect MetaCPAN with your PAUSE account",
+                'MIME-Version' => 1.0,
             ],
             body => qq{Hi ${\$author->name},
 
@@ -56,7 +57,7 @@ MetaCPAN
 }
         );
         Email::Sender::Simple->send($email);
-        $c->controller('OAuth2')->redirect($c, success => "mail_sent");
+        $c->controller('OAuth2')->redirect( $c, success => "mail_sent" );
     }
 }
 
