@@ -139,7 +139,9 @@ sub redirect {
         $c->res->cookies->{oauth_tmp} = $cid;
     }
     my ( $client, $redirect_uri ) = @$params{qw(client_id redirect_uri)};
-    $redirect_uri = $self->clients->{$client}->{redirect_uri}->[0];
+    # we don't trust the user's redirect uri
+    $redirect_uri = $self->clients->{$client}->{redirect_uri}->[0]
+        if($client);
 
     if ($redirect_uri) {
         $c->res->redirect( $redirect_uri . "?$type=$message" );

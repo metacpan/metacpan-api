@@ -8,8 +8,11 @@ use JSON;
 sub auto : Private {
     my ( $self, $c ) = @_;
     if ( $c->req->params->{client_id} ) {
-        $c->res->cookies->{oauth_tmp}
-            = { value => encode_json( $c->req->parameters ), path => '/' };
+        $c->res->cookies->{oauth_tmp} = {
+            value   => encode_json( $c->req->parameters ),
+            path    => '/',
+            expires => '+7d'
+        };
     }
     return 1;
 }
