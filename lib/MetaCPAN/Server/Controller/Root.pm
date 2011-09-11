@@ -21,6 +21,11 @@ sub end : ActionClass('RenderView') {
         && $c->controller->enable_jsonp )
     {
 
+        # See also: http://www.w3.org/TR/cors/
+        if ( my $origin = $c->req->header('Origin') ) {
+            $c->res->header( 'Access-Control-Allow-Origin' => $origin );
+        }
+
         # call default view unless body has been set
         $c->forward( $c->view ) unless ( $c->res->body );
         $c->forward( $c->view('JSONP') );
