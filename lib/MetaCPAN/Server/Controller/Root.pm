@@ -17,7 +17,9 @@ sub not_found : Private {
 
 sub end : ActionClass('RenderView') {
     my ( $self, $c ) = @_;
-    if ( $c->controller->enable_jsonp ) {
+    if (   $c->controller->does('MetaCPAN::Server::Role::JSONP')
+        && $c->controller->enable_jsonp )
+    {
 
         # call default view unless body has been set
         $c->forward( $c->view ) unless ( $c->res->body );
