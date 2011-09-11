@@ -16,7 +16,15 @@ sub not_found : Private {
 }
 
 sub end : ActionClass('RenderView') {
-    my ($self, $c) = @_;
+    my ( $self, $c ) = @_;
+    if ( $c->controller->enable_jsonp ) {
+
+        # call default view unless body has been set
+        $c->forward( $c->view ) unless ( $c->res->body );
+        $c->forward( $c->view('JSONP') );
+        $c->res->content_type('text/javascript')
+            if ( $c->req->params->{callback} );
+    }
 }
 
 1;

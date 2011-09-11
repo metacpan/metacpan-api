@@ -26,7 +26,14 @@ test_psgi app, sub {
             if ( $k eq '/author/_mapping' );
     }
 
-    ok( my $res = $cb->(
+    my $res = $cb->( GET '/author/MO?callback=jsonp'), "GET jsonp";
+    is( $res->header('content-type'),
+        'text/javascript; charset=UTF-8',
+        'Content-type'
+    );
+    like( $res->content, qr/^jsonp\(.*\);$/ms, 'includes jsonp callback' );
+
+    ok( $res = $cb->(
             POST '/author/_search',
             #'Content-type' => 'application/json',
             Content        => '{"query":{"match_all":{}},"size":0}'

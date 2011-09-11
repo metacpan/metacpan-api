@@ -1,6 +1,7 @@
 package MetaCPAN::Server::Controller::Pod;
 use Moose;
 BEGIN { extends 'MetaCPAN::Server::Controller' }
+with 'MetaCPAN::Server::Role::JSONP';
 
 sub index : Chained('/') : PathPart('pod') : CaptureArgs(0) {
 }

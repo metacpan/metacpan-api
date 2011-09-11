@@ -37,6 +37,13 @@ test_psgi app, sub {
             );
         }
         
+        ok( $res = $cb->( GET "$k?callback=foo"), "GET $k with callback" );
+        is( $res->code, $v, "code $v" );
+        is( $res->header('content-type'),
+            'text/javascript; charset=UTF-8',
+            'Content-type'
+        );
+        like($res->content, qr/^foo\(/, 'callback included');
     }
 };
 

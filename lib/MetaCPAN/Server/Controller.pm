@@ -33,11 +33,14 @@ sub all : Chained('index') : PathPart('') : Args(0) {
 sub search : Path('_search') : ActionClass('Deserialize') {
     my ( $self, $c ) = @_;
     my $req = $c->req;
+    # shallow copy
+    my $params = {%{$req->params}};
+    delete $params->{callback};
     eval {
         $c->stash(
             $c->model('CPAN')->es->request(
                 {   method => $req->method,
-                    qs     => $req->parameters,
+                    qs     => $params,
                     cmd    => join( '/', '', 'cpan', $self->type, '_search' ),
                     data   => $req->data
                 }

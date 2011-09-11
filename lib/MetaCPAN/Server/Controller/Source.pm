@@ -1,6 +1,7 @@
 package MetaCPAN::Server::Controller::Source;
 use Moose;
 BEGIN { extends 'MetaCPAN::Server::Controller' }
+with 'MetaCPAN::Server::Role::JSONP';
 use Plack::App::Directory;
 
 sub index : Chained('/') : PathPart('source') : CaptureArgs(0) {
