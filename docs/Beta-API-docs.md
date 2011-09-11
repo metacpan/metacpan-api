@@ -26,6 +26,12 @@ Performing a search without any constraints is an easy way to get sample data
 
 You should be able to run most POST queries, but very few GET urls are currently exposed. However, these convenience endpoints can get you started.  You should note that they behave differently than the POST queries in that they will return to you the latest version of a module or dist and they remove a lot of the verbose ElasticSearch data which wraps results.
 
+## JSONP
+
+Simply add a `callback` query parameter with the name of your callback, and you'll get a JSONP response.
+
+* [[/favorite?q=distribution:Moose&callback=cb|http://api.metacpan.org/favorite?q=distribution:Moose&callback=cb]]
+
 ### `/release/{distribution}`
 
 ### `/release/{author}/{release}`
