@@ -55,8 +55,8 @@ sub extract_section {
     my ( $pod, $section ) = @_;
     eval { $pod = Encode::decode_utf8($pod, Encode::FB_CROAK) };
     return undef
-      unless ( $pod =~ /^=head1 $section(.*?)(^((\=head1)|(\=cut)))/ms
-        || $pod =~ /^=head1 $section(.*)/ms );
+      unless ( $pod =~ /^=head1 $section(.*?)(^((\=head1)|(\=cut)))/msi
+        || $pod =~ /^=head1 $section(.*)/msi );
     my $out = $1;
     $out =~ s/^\s*//g;
     $out =~ s/\s*$//g;
