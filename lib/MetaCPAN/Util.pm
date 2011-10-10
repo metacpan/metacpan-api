@@ -17,10 +17,10 @@ sub numify_version {
     my $version = shift;
     no warnings;
     try {
-        $version = eval version->parse( $version )->numify;
+        $version = version->parse( $version )->numify;
     } catch {
         $version = fix_version($version);
-        $version = eval version->parse( $version || 0 )->numify;
+        $version = eval { version->parse( $version || 0 )->numify };
     };
     return $version;
 }
