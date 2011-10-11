@@ -328,7 +328,7 @@ sub import_tarball {
                         ? 0
                         : 1
                 : 0
-            ) unless($file->indexed);
+            ) unless($mod->indexed);
         }
         $file->indexed( !!grep { $file->documentation eq $_->name }
                 @{ $file->module } )
