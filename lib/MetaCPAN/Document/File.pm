@@ -277,6 +277,9 @@ sub _build_documentation {
     elsif (@indexed) {
         return $indexed[0]->name;
     }
+    elsif (!@{ $self->module || [] }) {
+        return $documentation;
+    }
     else {
         return undef;
     }
@@ -351,7 +354,6 @@ sub _build_abstract {
         my $name = MetaCPAN::Util::strip_pod($1);
         $documentation = $name if ( $name =~ /^[\w\.:\-_']+$/ );
     }
-
     if ($abstract) {
         $abstract =~ s/^=\w+.*$//xms;
         $abstract =~ s{\r?\n\h*\r?\n\h*.*$}{}xms;
