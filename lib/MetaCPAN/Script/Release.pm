@@ -283,7 +283,7 @@ sub import_tarball {
                 = List::Util::first { $_->{path} =~ /\Q$path\E$/ } @files;
             push(
                 @{ $file->{module} },
-                { name => $module, version => $data->{version} }
+                { name => $module, version => $data->{version}, indexed => 1 }
             );
             push( @modules, $file );
         }
@@ -328,7 +328,7 @@ sub import_tarball {
                         ? 0
                         : 1
                 : 0
-            );
+            ) unless($file->indexed);
         }
         $file->indexed( !!grep { $file->documentation eq $_->name }
                 @{ $file->module } )
