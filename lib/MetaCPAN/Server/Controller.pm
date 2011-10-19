@@ -20,7 +20,7 @@ has type =>
 sub mapping : Path('_mapping') {
     my ( $self, $c ) = @_;
     $c->stash( $c->model('CPAN')
-            ->es->mapping( index => 'cpan', type => $self->action_namespace )
+            ->es->mapping( index => 'cpan', type => $self->type )
     );
 }
 
