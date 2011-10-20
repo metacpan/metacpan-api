@@ -13,7 +13,7 @@ has relative => ( is => 'ro', required => 1 );
 sub _build_raw {
     my $self = shift;
     my $raw = "";
-    run3([$self->git, qw(diff -C -z --no-index -u --no-color --numstat), "--relative=" . $self->relative, $self->source, $self->target], undef, \$raw);
+    run3([$self->git, qw(diff --no-renames -z --no-index -u --no-color --numstat), "--relative=" . $self->relative, $self->source, $self->target], undef, \$raw);
     (my $stats = $raw ) =~ s/^([^\n]*\0).*$/$1/s;
     $self->numstat($stats);
     $raw = substr($raw, length($stats));
