@@ -91,6 +91,16 @@ Last 50 dists to get a +1:
 
 [[http://api.metacpan.org/v0/favorite/_search?size=50&fields=author,user,release,date&sort=date:desc]]
 
+## Querying the API with MetaCPAN::API
+
+Perhaps the easiest way to get started using MetaCPAN is with [MetaCPAN::API](https://metacpan.org/module/MetaCPAN::API).  
+
+```perl
+my $mcpan  = MetaCPAN::API->new();
+my $author = $mcpan->author('XSAWYERX');
+my $dist   = $mcpan->release( distribution => 'MetaCPAN-API' );
+```
+
 ## Querying the API with ElasticSearch.pm
 
 The API server at api.metacpan.org is a wrapper around an ElasticSearch instance. It adds support for the convenient GET URLs, handles authentication and does some access control. Therefore you can use the powerful API of [ElasticSearch.pm](https://metacpan.org/module/ElasticSearch) to query MetaCPAN:
