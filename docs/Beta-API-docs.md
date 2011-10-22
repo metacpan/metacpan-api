@@ -36,7 +36,7 @@ Simply add a `callback` query parameter with the name of your callback, and you'
 
 ### `/release/{author}/{release}`
 
-The `/release` endpoint accepts either the name of a `distribution` (e.g. [[/release/Moose|http://api.metacpan.org/v0/release/Moose]]), which returns the most recent release of the distribution. Or provide the full path which consists of its `author` and the name of the `release` (e.g. [[/release/DOY/Moose-2.0001|http://api.metacpan.org/0/release/DOY/Moose-2.0001]]).
+The `/release` endpoint accepts either the name of a `distribution` (e.g. [[/release/Moose|http://api.metacpan.org/v0/release/Moose]]), which returns the most recent release of the distribution. Or provide the full path which consists of its `author` and the name of the `release` (e.g. [[/release/DOY/Moose-2.0001|http://api.metacpan.org/v0/release/DOY/Moose-2.0001]]).
 
 ### `/author/{author}`
 
