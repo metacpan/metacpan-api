@@ -8,7 +8,6 @@ Available fields can be found by accessing the corresponding `_mapping` endpoint
 
 * [[/release/_mapping|http://api.metacpan.org/v0/release/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/release/_mapping]]
 * [[/author/_mapping|http://api.metacpan.org/v0/author/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/author/_mapping]]
-* [[/module/_mapping|http://api.metacpan.org/v0/module/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/module/_mapping]]
 * [[/file/_mapping|http://api.metacpan.org/v0/file/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/file/_mapping]]
 * [[/favorite/_mapping|http://api.metacpan.org/v0/favorite/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/favorite/_mapping]]
 
@@ -18,7 +17,6 @@ Performing a search without any constraints is an easy way to get sample data
 
 * [[/release/_search|http://api.metacpan.org/v0/release/_search]]
 * [[/author/_search|http://api.metacpan.org/v0/author/_search]]
-* [[/module/_search|http://api.metacpan.org/v0/module/_search]]
 * [[/file/_search|http://api.metacpan.org/v0/file/_search]]
 * [[/favorite/_search|http://api.metacpan.org/v0/favorite/_search]]
 
