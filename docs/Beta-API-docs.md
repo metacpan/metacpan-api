@@ -73,19 +73,19 @@ All CPAN Authors Who Have Updated MetaCPAN Profiles:
 
 [[http://api.metacpan.org/v0/author/_search?q=updated:*&sort=updated:desc]]
 
-First 100 distributions which SZABGAB has given a +1:
+First 100 distributions which SZABGAB has given a ++:
 
 [[http://api.metacpan.org/v0/favorite/_search?q=user:SZABGAB&size=100&fields=distribution]]
 
-Number of +1s that DOY's dists have received:
+Number of ++'es that DOY's dists have received:
 
 [[http://api.metacpan.org/v0/favorite/_search?q=author:DOY&size=0]]
 
-List of users who have +1 DOY's dists and the dists they have +1:
+List of users who have ++'ed DOY's dists and the dists they have ++'ed:
 
 [[http://api.metacpan.org/v0/favorite/_search?q=author:DOY&fields=user,distribution]]
 
-Last 50 dists to get a +1:
+Last 50 dists to get a ++:
 
 [[http://api.metacpan.org/v0/favorite/_search?size=50&fields=author,user,release,date&sort=date:desc]]
 
@@ -241,5 +241,21 @@ curl -XPOST api.metacpan.org/v0/author/_search -d '{
       "author.profile.name": "github-meets-cpan"
     }
   }
+}'
+```
+
+### Get a leaderboard of ++'ed distributions
+
+```sh
+curl -XPOST api.metacpan.org/v0/favorite/_search -d '{
+  "query": { "match_all": {}
+   },
+  "facets": { 
+    "leaderboard": {
+      "terms": {
+        "field":"distribution",
+        "size" : 100
+  } } },
+  "size":0
 }'
 ```
