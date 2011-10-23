@@ -179,20 +179,17 @@ curl -XPOST api.metacpan.org/v0/release/_search?size=100 -d '{
 
 ```sh
 curl -XPOST api.metacpan.org/v0/release/_search -d '{
-  "query": { "range" : {
-        "release.date" : {
-            "from" : "2010-06-05T00:00:00",
-            "to" : "2011-06-05T00:00:00",
+    "query": {
+        "match_all": {}
+    },
+    "facets": {
+        "license": {
+            "terms": {
+                "field": "release.license"
+            }
         }
-    }
-   },
-  "facets": { 
-    "license": {
-
-      "terms": {
-        "field":"release.license"
-  } } },
-  "size":0
+    },
+    "size": 0
 }'
 ```
 
