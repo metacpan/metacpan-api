@@ -2,6 +2,8 @@
 
 _All of these URLs can be tested using tokuhirom's excellent [MetaCPAN Explorer](http://explorer.metacpan.org)_
 
+To learn more about the ElasticSearch query DSL check out Clinton Gormley's [Terms of Endearment - ES Query DSL Explained] (http://www.slideshare.net/clintongormley/terms-of-endearment-the-elasticsearch-query-dsl-explained) slides.
+
 ## Available fields
 
 Available fields can be found by accessing the corresponding `_mapping` endpoint.
