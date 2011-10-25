@@ -147,6 +147,7 @@ has module => (
     required => 0,
     is       => 'rw',
     isa      => Module,
+    type     => 'nested',
     coerce   => 1,
     clearer  => 'clear_module'
 );
@@ -277,7 +278,7 @@ sub _build_documentation {
     elsif (@indexed) {
         return $indexed[0]->name;
     }
-    elsif (!@{ $self->module || [] }) {
+    elsif ( !@{ $self->module || [] } ) {
         return $documentation;
     }
     else {

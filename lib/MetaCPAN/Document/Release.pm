@@ -95,15 +95,26 @@ has download_url => ( is => 'ro', required => 1, lazy_build => 1 );
 has name         => ( is => 'ro', required => 1, index      => 'analyzed' );
 has version_numified =>
     ( is => 'ro', required => 1, isa => 'Num', lazy_build => 1 );
-has resources => ( is => 'ro', isa => Resources, coerce => 1, dynamic => 1 );
+has resources => (
+    is      => 'ro',
+    isa     => Resources,
+    coerce  => 1,
+    dynamic => 1,
+    type    => 'nested'
+);
 has abstract => ( is => 'ro', index => 'analyzed' );
 has distribution =>
     ( is => 'ro', required => 1, analyzer => [qw(standard camelcase)] );
-has dependency =>
-    ( required => 0, is => 'rw', isa => Dependency, coerce => 1 );
+has dependency => (
+    required => 0,
+    is       => 'rw',
+    isa      => Dependency,
+    coerce   => 1,
+    type     => 'nested'
+);
 has status   => ( is => 'rw', required => 1, default => 'cpan' );
 has maturity => ( is => 'ro', required => 1, default => 'released' );
-has stat => ( is => 'ro', isa => Stat, dynamic => 1 );
+has stat  => ( is => 'ro', isa => Stat,  dynamic => 1 );
 has tests => ( is => 'ro', isa => Tests, dynamic => 1 );
 has authorized => ( is => 'ro', required => 1, isa => 'Bool', default => 1 );
 
