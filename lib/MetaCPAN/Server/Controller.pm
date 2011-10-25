@@ -20,7 +20,7 @@ has type =>
 sub mapping : Path('_mapping') {
     my ( $self, $c ) = @_;
     $c->stash( $c->model('CPAN')
-            ->es->mapping( index => 'cpan', type => $self->type )
+            ->es->mapping( index => $c->model('CPAN')->index, type => $self->type )
     );
 }
 
@@ -41,7 +41,7 @@ sub search : Path('_search') : ActionClass('Deserialize') {
             $c->model('CPAN')->es->request(
                 {   method => $req->method,
                     qs     => $params,
-                    cmd    => join( '/', '', 'cpan', $self->type, '_search' ),
+                    cmd    => join( '/', '', $c->model('CPAN')->index, $self->type, '_search' ),
                     data   => $req->data
                 }
             )
