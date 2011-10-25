@@ -58,8 +58,16 @@ sub not_found : Private {
 sub internal_error {
     my ( $self, $c, $message ) = @_;
     $c->res->code(500);
-    $c->stash( { message => "$message" } );
-    $c->detach( $c->view('JSON') );
+    if ( eval { $message->isa('ElasticSearch::Error') } ) {
+        $c->res->content_type('text/plain');
+        $c->res->body( $message->{'-text'} );
+        $c->detach;
+    }
+    else {
+        $c->stash( { message => "$message" } );
+        $c->detach( $c->view('JSON') );
+    }
 }
+
 
 __PACKAGE__->meta->make_immutable;
