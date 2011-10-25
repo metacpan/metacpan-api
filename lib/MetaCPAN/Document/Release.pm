@@ -96,21 +96,23 @@ has name         => ( is => 'ro', required => 1, index      => 'analyzed' );
 has version_numified =>
     ( is => 'ro', required => 1, isa => 'Num', lazy_build => 1 );
 has resources => (
-    is      => 'ro',
-    isa     => Resources,
-    coerce  => 1,
-    dynamic => 1,
-    type    => 'nested'
+    is              => 'ro',
+    isa             => Resources,
+    coerce          => 1,
+    dynamic         => 1,
+    type            => 'nested',
+    include_in_root => 1,
 );
 has abstract => ( is => 'ro', index => 'analyzed' );
 has distribution =>
     ( is => 'ro', required => 1, analyzer => [qw(standard camelcase)] );
 has dependency => (
-    required => 0,
-    is       => 'rw',
-    isa      => Dependency,
-    coerce   => 1,
-    type     => 'nested'
+    required        => 0,
+    is              => 'rw',
+    isa             => Dependency,
+    coerce          => 1,
+    type            => 'nested',
+    include_in_root => 1,
 );
 has status   => ( is => 'rw', required => 1, default => 'cpan' );
 has maturity => ( is => 'ro', required => 1, default => 'released' );

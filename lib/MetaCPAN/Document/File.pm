@@ -144,12 +144,13 @@ has [qw(path author name release)] => ( is => 'ro', required => 1 );
 has distribution =>
     ( is => 'ro', required => 1, analyzer => [qw(standard camelcase)] );
 has module => (
-    required => 0,
-    is       => 'rw',
-    isa      => Module,
-    type     => 'nested',
-    coerce   => 1,
-    clearer  => 'clear_module'
+    required        => 0,
+    is              => 'rw',
+    isa             => Module,
+    type            => 'nested',
+    include_in_root => 1,
+    coerce          => 1,
+    clearer         => 'clear_module'
 );
 has documentation => (
     required   => 1,
