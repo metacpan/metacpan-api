@@ -171,7 +171,9 @@ sub import_tarball {
         {   version => $version || 0,
             license => 'unknown',
             name    => $d->dist,
-            no_index => { directory => [qw(t xt inc)] }
+            no_index => { directory => [
+        qw(t xt inc example blib examples eg)
+		    ] }
         }
     );
 
@@ -255,7 +257,7 @@ sub import_tarball {
 
     push(
         @{ $meta->{no_index}->{directory} },
-        qw(t xt inc example examples eg)
+        qw(t xt inc example blib examples eg)
     );
     map { $_->{indexed} = 0 }
         grep { !$meta->should_index_file( $_->{path} ) } @files;
