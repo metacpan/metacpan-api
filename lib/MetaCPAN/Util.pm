@@ -15,10 +15,10 @@ sub digest {
 
 sub numify_version {
     my $version = shift;
-    no warnings;
-    try {
+    use warnings FATAL => 'numeric';
+    eval {
         $version = version->parse( $version )->numify+0;
-    } catch {
+    } or do {
         $version = fix_version($version);
         $version = eval { version->parse( $version || 0 )->numify+0 };
     };
@@ -29,7 +29,7 @@ sub fix_version {
     my $version = shift;
     return undef unless(defined $version);
     $version =~ s/[^\d\._]//g;
-    $version =~ s/\._/./g;
+    $version =~ s/_/00/g;
     return $version;
 }
 
