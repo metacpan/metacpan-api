@@ -119,6 +119,7 @@ has maturity => ( is => 'ro', required => 1, default => 'released' );
 has stat  => ( is => 'ro', isa => Stat,  dynamic => 1 );
 has tests => ( is => 'ro', isa => Tests, dynamic => 1 );
 has authorized => ( is => 'ro', required => 1, isa => 'Bool', default => 1 );
+has first => ( is => 'ro', required => 1, isa => 'Bool', lazy => 1, builder => '_build_first' );
 
 sub _build_version_numified {
     return MetaCPAN::Util::numify_version( shift->version );
@@ -130,6 +131,13 @@ sub _build_download_url {
           'http://cpan.metacpan.org/authors/'
         . MetaCPAN::Document::Author::_build_dir( $self->author ) . '/'
         . $self->archive;
+}
+
+sub _build_first {
+    my $self = shift;
+    $self->index->type('release')->filter({
+        term => { 'release.distribution' => $self->distribution }
+    })->count ? 0 : 1;
 }
 
 __PACKAGE__->meta->make_immutable;

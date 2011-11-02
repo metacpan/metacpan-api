@@ -16,6 +16,8 @@ is( $release->name, 'Documentation-Hide-0.01', 'name ok' );
 
 is( $release->author, 'MO', 'author ok' );
 
+ok( $release->first, 'Release is first');
+
 {
     my @files = $idx->type('file')->filter(
         {   and => [
