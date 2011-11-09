@@ -81,4 +81,8 @@ inflate Extra, via { decode_json($_) };
 deflate Extra, via { encode_json($_) };
 no MooseX::Attribute::Deflator;
 
+
+MooseX::Getopt::OptionTypeMap->add_option_type_to_map(
+    'MooseX::Types::ElasticSearch::ES' => '=s'
+);
 1;
