@@ -1,6 +1,7 @@
 package MetaCPAN::Types;
 use ElasticSearch;
 use MetaCPAN::Document::Module;
+use MooseX::Getopt::OptionTypeMap;
 use JSON;
 
 use MooseX::Types -declare => [
