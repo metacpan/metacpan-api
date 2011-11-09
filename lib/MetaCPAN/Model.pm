@@ -14,7 +14,7 @@ analyzer camelcase => (
     filter => ['lowercase', 'unique']
 );
 
-index cpan => ( namespace => 'MetaCPAN::Document', alias_for => 'cpan_v3' );
+index cpan => ( namespace => 'MetaCPAN::Document', alias_for => 'cpan_v1', shards => 5 );
 
 index user => ( namespace => 'MetaCPAN::Model::User' );
 
