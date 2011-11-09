@@ -140,9 +140,12 @@ version could not be parsed.
 
 has id => ( is => 'ro', id => [qw(author release path)] );
 
-has [qw(path author name release)] => ( is => 'ro', required => 1 );
-has distribution =>
-    ( is => 'ro', required => 1, analyzer => [qw(standard camelcase)] );
+has [qw(path author name)] => ( is => 'ro', required => 1 );
+has [qw(release distribution)] => (
+    is       => 'ro',
+    required => 1,
+    analyzer => [qw(standard camelcase lowercase)],
+);
 has module => (
     required        => 0,
     is              => 'rw',
@@ -158,10 +161,10 @@ has documentation => (
     lazy_build => 1,
     index      => 'analyzed',
     predicate  => 'has_documentation',
-    analyzer   => [qw(standard camelcase)]
+    analyzer   => [qw(standard camelcase lowercase)]
 );
-has release_id => ( is => 'ro', required => 1, parent => 1 );
-has date       => ( is => 'ro', required => 1, isa    => 'DateTime' );
+
+has date => ( is => 'ro', required => 1, isa => 'DateTime' );
 has stat => ( is => 'ro', isa => Stat, required => 0, dynamic => 1 );
 has sloc => ( is => 'ro', required => 1, isa => 'Int', lazy_build => 1 );
 has slop =>

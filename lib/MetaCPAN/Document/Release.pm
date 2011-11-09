@@ -92,7 +92,11 @@ has id => ( is => 'ro', id => [qw(author name)] );
 has [qw(license version author archive)] => ( is => 'ro', required => 1 );
 has date         => ( is => 'ro', required => 1, isa        => 'DateTime' );
 has download_url => ( is => 'ro', required => 1, lazy_build => 1 );
-has name         => ( is => 'ro', required => 1, index      => 'analyzed' );
+has [qw(distribution name)] => (
+    is       => 'ro',
+    required => 1,
+    analyzer => [qw(standard camelcase lowercase)],
+);
 has version_numified =>
     ( is => 'ro', required => 1, isa => 'Num', lazy_build => 1 );
 has resources => (
@@ -104,8 +108,6 @@ has resources => (
     include_in_root => 1,
 );
 has abstract => ( is => 'ro', index => 'analyzed' );
-has distribution =>
-    ( is => 'ro', required => 1, analyzer => [qw(standard camelcase)] );
 has dependency => (
     required        => 0,
     is              => 'rw',
@@ -119,7 +121,13 @@ has maturity => ( is => 'ro', required => 1, default => 'released' );
 has stat  => ( is => 'ro', isa => Stat,  dynamic => 1 );
 has tests => ( is => 'ro', isa => Tests, dynamic => 1 );
 has authorized => ( is => 'ro', required => 1, isa => 'Bool', default => 1 );
-has first => ( is => 'ro', required => 1, isa => 'Bool', lazy => 1, builder => '_build_first' );
+has first => (
+    is       => 'ro',
+    required => 1,
+    isa      => 'Bool',
+    lazy     => 1,
+    builder  => '_build_first'
+);
 
 sub _build_version_numified {
     return MetaCPAN::Util::numify_version( shift->version );
@@ -135,9 +143,11 @@ sub _build_download_url {
 
 sub _build_first {
     my $self = shift;
-    $self->index->type('release')->filter({
-        term => { 'release.distribution' => $self->distribution }
-    })->count ? 0 : 1;
+    $self->index->type('release')
+        ->filter(
+        { term => { 'release.distribution' => $self->distribution } } )->count
+        ? 0
+        : 1;
 }
 
 __PACKAGE__->meta->make_immutable;

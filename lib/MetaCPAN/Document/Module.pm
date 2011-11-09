@@ -61,7 +61,7 @@ has name => (
     is       => 'ro',
     required => 1,
     index    => 'analyzed',
-    analyzer => [qw(standard camelcase)]
+    analyzer => [qw(standard camelcase lowercase)],
 );
 has version => ( is => 'ro' );
 has version_numified =>
