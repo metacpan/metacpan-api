@@ -26,7 +26,7 @@ sub mapping : Path('_mapping') {
 
 sub all : Chained('index') : PathPart('') : Args(0) {
     my ( $self, $c ) = @_;
-    $c->req->query_parameters->{p} ||= '*';
+    $c->req->params->{q} ||= '*';
     $c->forward('search');
 }
 
