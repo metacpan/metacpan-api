@@ -6,7 +6,6 @@ use DateTime;
 use MetaCPAN::Util;
 
 has id => ( is => 'ro', id => [qw(user distribution)] );
-has release_id => ( is => 'ro', required => 1, parent => 1, lazy_build => 1 );
 has [qw(author release user distribution)] => ( is => 'ro', required => 1 );
 has date => (
     is       => 'ro',
