@@ -261,3 +261,22 @@ curl -XPOST api.metacpan.org/v0/favorite/_search -d '{
   "size":0
 }'
 ```
+
+### Get a leaderboard of Authors with Most Uploads
+
+```sh
+curl -XPOST api.metacpan.org/v0/release/_search -d '{
+    "query": {
+        "match_all": {}
+    },
+    "facets": {
+        "author": {
+            "terms": {
+                "field": "author",
+                "size": 100
+            }
+        }
+    },
+    "size": 0
+}'
+```
