@@ -12,6 +12,7 @@ Available fields can be found by accessing the corresponding `_mapping` endpoint
 * [[/author/_mapping|http://api.metacpan.org/v0/author/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/author/_mapping]]
 * [[/file/_mapping|http://api.metacpan.org/v0/file/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/file/_mapping]]
 * [[/favorite/_mapping|http://api.metacpan.org/v0/favorite/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/favorite/_mapping]]
+* [[/rating/_mapping|http://api.metacpan.org/v0/rating/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/rating/_mapping]]
 
 ## Search without constraints
 
@@ -21,6 +22,7 @@ Performing a search without any constraints is an easy way to get sample data
 * [[/author/_search|http://api.metacpan.org/v0/author/_search]]
 * [[/file/_search|http://api.metacpan.org/v0/file/_search]]
 * [[/favorite/_search|http://api.metacpan.org/v0/favorite/_search]]
+* [[/rating/_search|http://api.metacpan.org/v0/rating/_search]]
 
 ## GET convenience URLs
 
