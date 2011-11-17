@@ -8,21 +8,22 @@ To learn more about the ElasticSearch query DSL check out Clinton Gormley's [Ter
 
 Available fields can be found by accessing the corresponding `_mapping` endpoint.
 
-* [[/release/_mapping|http://api.metacpan.org/v0/release/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/release/_mapping]]
+
 * [[/author/_mapping|http://api.metacpan.org/v0/author/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/author/_mapping]]
-* [[/file/_mapping|http://api.metacpan.org/v0/file/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/file/_mapping]]
 * [[/favorite/_mapping|http://api.metacpan.org/v0/favorite/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/favorite/_mapping]]
+* [[/file/_mapping|http://api.metacpan.org/v0/file/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/file/_mapping]]
 * [[/rating/_mapping|http://api.metacpan.org/v0/rating/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/rating/_mapping]]
+* [[/release/_mapping|http://api.metacpan.org/v0/release/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/release/_mapping]]
 
 ## Search without constraints
 
 Performing a search without any constraints is an easy way to get sample data
 
-* [[/release/_search|http://api.metacpan.org/v0/release/_search]]
 * [[/author/_search|http://api.metacpan.org/v0/author/_search]]
-* [[/file/_search|http://api.metacpan.org/v0/file/_search]]
 * [[/favorite/_search|http://api.metacpan.org/v0/favorite/_search]]
+* [[/file/_search|http://api.metacpan.org/v0/file/_search]]
 * [[/rating/_search|http://api.metacpan.org/v0/rating/_search]]
+* [[/release/_search|http://api.metacpan.org/v0/release/_search]]
 
 ## GET convenience URLs
 
