@@ -4,6 +4,7 @@ use Moose;
 extends 'Catalyst';
 use CatalystX::RoleApplicator;
 use Plack::Middleware::ReverseProxy;
+use Plack::Middleware::ServerStatus::Lite;
 
 use FindBin;
 use lib "$FindBin::RealBin/../";
@@ -72,8 +73,15 @@ __PACKAGE__->setup(
 __PACKAGE__->setup_engine('PSGI');
 __PACKAGE__->meta->make_immutable( replace_constructor => 1 );
 
-Plack::Middleware::ReverseProxy->wrap(
+my $app = Plack::Middleware::ReverseProxy->wrap(
     sub {
         __PACKAGE__->run(@_);
     }
+);
+
+Plack::Middleware::ServerStatus::Lite->wrap(
+   $app,
+   path       => '/server-status',
+   allow      => ['127.0.0.1'],
+   scoreboard => "$FindBin::RealBin/../../var/tmp/scoreboard"
 );
