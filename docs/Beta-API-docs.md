@@ -141,10 +141,14 @@ curl -XPOST api.metacpan.org/v0/release/_search -d '{
   "query": {
     "match_all": {}
   },
+  "size": 5000,
+  "fields": [ "distribution" ],
   "filter": {
-    "term": {
-      "release.dependency.module": "MooseX::NonMoose"
-    }
+    "and": [
+      { "term": { "release.dependency.module": "MooseX::NonMoose" } },
+      { "term": {"release.maturity": "released"} },
+      { "term": {"release.status": "latest"} }
+    ]
   }
 }'
 ```
