@@ -34,10 +34,10 @@ sub run {
             push( @filter, $package )
                 if ( $dist && $dist eq $distribution );
         }
-        log_info {"$distribution consists of " . @filter . " modules"};
+        log_info { "$distribution consists of " . @filter . " modules" };
     }
 
-    return if(!@filter && $self->distribution);
+    return if ( !@filter && $self->distribution );
     my $scroll = $modules->filter(
         {   and => [
                 @filter
@@ -51,13 +51,17 @@ sub run {
                 { term   => { 'file.module.indexed' => \1 } },
                 { term   => { 'file.maturity'       => 'released' } },
                 { not => { filter => { term => { status => 'backpan' } } } },
-                { not => { filter => { term => { 'file.distribution' => 'perl' } } } },
+                {   not => {
+                        filter =>
+                            { term => { 'file.distribution' => 'perl' } }
+                    }
+                },
             ]
         }
         )->fields(
-        [   'file.module.name',      'file.author',
-            'file.release',          'file.distribution',
-            'file.date', 'file.status',
+        [   'file.module.name', 'file.author',
+            'file.release',     'file.distribution',
+            'file.date',        'file.status',
         ]
         )->size(10000)->raw->scroll('1h');
 
@@ -84,7 +88,8 @@ sub run {
                 my $upgrade = $upgrade{ $data->{distribution} };
                 next
                     if ( $upgrade
-                    && $self->compare_dates($upgrade->{date}, $data->{date}) );
+                    && $self->compare_dates( $upgrade->{date}, $data->{date} )
+                    );
                 $upgrade{ $data->{distribution} } = $data;
             }
             elsif ( $data->{status} eq 'latest' ) {
@@ -94,34 +99,35 @@ sub run {
     }
     while ( my ( $dist, $data ) = each %upgrade ) {
         next if ( $data->{status} eq 'latest' );
-        $self->reindex($data, 'latest');
+        $self->reindex( $data, 'latest' );
     }
     while ( my ( $release, $data ) = each %downgrade ) {
         next
             if ( $upgrade{ $data->{distribution} }
             && $upgrade{ $data->{distribution} }->{release} eq
             $data->{release} );
-            $self->reindex($data, 'cpan');
+        $self->reindex( $data, 'cpan' );
     }
     $self->index->refresh;
 }
 
 sub reindex {
     my ( $self, $source, $status ) = @_;
-    my $es     = $self->es;
-    
-    my $release = $self->index->type('release')->get({
-        author => $source->{author},
-        name => $source->{release},
-    });
-    
+    my $es = $self->es;
+
+    my $release = $self->index->type('release')->get(
+        {   author => $source->{author},
+            name   => $source->{release},
+        }
+    );
+
     $release->status($status);
     log_info {
         $status eq 'latest' ? "Upgrading " : "Downgrading ",
             "release ", $release->name || '';
     };
-    $release->put unless($self->dry_run);
-    
+    $release->put unless ( $self->dry_run );
+
     my $scroll = $es->scrolled_search(
         {   index       => $self->index->name,
             type        => 'file',
@@ -134,7 +140,9 @@ sub reindex {
                     query  => { match_all => {} },
                     filter => {
                         and => [
-                            { term => { 'file.release' => $source->{release} } },
+                            {   term =>
+                                    { 'file.release' => $source->{release} }
+                            },
                             {   term => { 'file.author' => $source->{author} }
                             }
                         ]
@@ -154,11 +162,13 @@ sub reindex {
         push(
             @bulk,
             {   index => {
-                    index  => $self->index->name,
-                    type   => 'file',
-                    id     => $row->{_id},
-                    parent => $row->{fields}->{_parent} || "",
-                    data   => { %$source, status => $status }
+                    index => $self->index->name,
+                    type  => 'file',
+                    id    => $row->{_id},
+                    $row->{fields}->{_parent}
+                    ? ( parent => $row->{fields}->{_parent} )
+                    : (),
+                    data => { %$source, status => $status }
                 }
             }
         ) unless ( $self->dry_run );

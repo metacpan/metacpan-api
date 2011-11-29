@@ -211,11 +211,13 @@ sub reindex_release {
         push(
             @bulk,
             {   index => {
-                    index  => $self->index->name,
-                    type   => 'file',
-                    id     => $row->{_id},
-                    parent => $row->{fields}->{_parent} || "",
-                    data   => { %$source, status => 'backpan' }
+                    index => $self->index->name,
+                    type  => 'file',
+                    id    => $row->{_id},
+                    $row->{fields}->{_parent}
+                    ? ( parent => $row->{fields}->{_parent} )
+                    : (),
+                    data => { %$source, status => 'backpan' }
                 }
             }
         );
