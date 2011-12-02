@@ -110,6 +110,7 @@ sub run {
         }
     }
     log_info { scalar @files, " tarballs found" } if ( @files > 1 );
+    $self->backpan_index if($self->detect_backpan);
     my @pid;
     my $cpan = $self->index if ( $self->skip );
     while ( my $file = shift @files ) {
