@@ -83,5 +83,5 @@ Plack::Middleware::ServerStatus::Lite->wrap(
    $app,
    path       => '/server-status',
    allow      => ['127.0.0.1'],
-   scoreboard => "$FindBin::RealBin/../../var/tmp/scoreboard"
+   scoreboard => __PACKAGE__->path_to(qw(var tmp scoreboard)),
 );

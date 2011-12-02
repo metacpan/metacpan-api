@@ -12,6 +12,7 @@ our @EXPORT = qw(POST GET DELETE test_psgi app encode_json decode_json);
 
 BEGIN { $ENV{METACPAN_SERVER_CONFIG_LOCAL_SUFFIX} = 'testing'; }
 
+$FindBin::RealBin .= '/some';
 my $app = require MetaCPAN::Server;
 MetaCPAN::Server->model('User::Account')->put(
     {   identity      => [ { name   => 'pause',   key    => 'MO' } ],
@@ -24,7 +25,7 @@ sub app {$app}
 
 =head1 ENVIRONMENTAL VARIABLES
 
-Sets C<PLACK_TEST_IMPL> to C<Server> and C<PLACK_SERVER> to C<Twiggy>.
+Sets C<METACPAN_SERVER_CONFIG_LOCAL_SUFFIX> to C<testing>.
 
 =head1 EXPORTS
 
