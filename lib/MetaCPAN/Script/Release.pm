@@ -110,7 +110,7 @@ sub run {
         }
     }
     log_info { scalar @files, " tarballs found" } if ( @files > 1 );
-    $self->backpan_index if($self->detect_backpan);
+    $self->backpan_index if ( $self->detect_backpan );
     my @pid;
     my $cpan = $self->index if ( $self->skip );
     while ( my $file = shift @files ) {
@@ -444,11 +444,11 @@ sub detect_status {
     my ( $self, $author, $archive ) = @_;
     return $self->status unless ( $self->detect_backpan );
     if ( $self->backpan_index->{ join( '/', $author, $archive ) } ) {
-        log_debug {'BackPAN detected'};
-        return 'backpan';
+        return 'cpan';
     }
     else {
-        return 'cpan';
+        log_debug {'BackPAN detected'};
+        return 'backpan';
     }
 }
 
