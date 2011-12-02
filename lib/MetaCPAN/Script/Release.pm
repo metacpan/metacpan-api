@@ -215,7 +215,7 @@ sub import_tarball {
         if ( $create->{abstract} eq 'unknown'
         || $create->{abstract} eq 'null' );
 
-    my $release = $cpan->type('release')->put($create);
+    my $release = $cpan->type('release')->put( $create, { refresh => 1 } );
 
     my @files;
     my $meta_file;
