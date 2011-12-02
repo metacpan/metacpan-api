@@ -3,6 +3,7 @@ use Moose;
 with 'MooseX::Getopt';
 with 'MetaCPAN::Role::Common';
 use Log::Contextual qw( :log :dlog );
+use PerlIO::gzip;
 
 BEGIN {
     $ENV{PERL_JSON_BACKEND} = 'JSON::XS';
@@ -55,6 +56,13 @@ has status => (
     default       => 'cpan',
     documentation => "status of the indexed releases (cpan)"
 );
+has detect_backpan => (
+    is            => 'ro',
+    isa           => 'Bool',
+    default       => 0,
+    documentation => 'enable when indexing from a backpan'
+);
+has backpan_index => ( is => 'ro', lazy_build => 1 );
 
 sub run {
     my $self = shift;
@@ -171,9 +179,8 @@ sub import_tarball {
         {   version => $version || 0,
             license => 'unknown',
             name    => $d->dist,
-            no_index => { directory => [
-        qw(t xt inc example blib examples eg)
-		    ] }
+            no_index =>
+                { directory => [qw(t xt inc example blib examples eg)] }
         }
     );
 
@@ -198,7 +205,7 @@ sub import_tarball {
         archive      => $archive,
         maturity     => $d->maturity,
         stat         => $stat,
-        status       => $self->status,
+        status       => $self->detect_status( $author, $archive ),
         date         => $date,
         dependency   => \@dependencies
     };
@@ -246,7 +253,7 @@ sub import_tarball {
                     version      => $d->version,
                     stat         => $stat,
                     maturity     => $d->maturity,
-                    status       => $self->status,
+                    status       => $release->status,
                     indexed      => 1,
                     content_cb   => sub { \( scalar $child->slurp ) },
                 }
@@ -285,7 +292,10 @@ sub import_tarball {
                 = List::Util::first { $_->{path} =~ /\Q$path\E$/ } @files;
             push(
                 @{ $file->{module} },
-                { name => $module, version => $data->{version}, indexed => 1 }
+                {   name    => $module,
+                    version => $data->{version},
+                    indexed => 1
+                }
             );
             push( @modules, $file );
         }
@@ -330,7 +340,7 @@ sub import_tarball {
                         ? 0
                         : 1
                 : 0
-            ) unless($mod->indexed);
+            ) unless ( $mod->indexed );
         }
         $file->indexed( !!grep { $file->documentation eq $_->name }
                 @{ $file->module } )
@@ -408,6 +418,37 @@ sub dependencies {
         }
     }
     return @dependencies;
+}
+
+sub _build_backpan_index {
+    my $self = shift;
+    my $ls   = $self->cpan->file(qw(indices find-ls.gz));
+    unless ( -e $ls ) {
+        log_error {"File $ls does not exist"};
+        exit;
+    }
+    log_info {"Reading $ls"};
+    my $cpan = {};
+    open my $fh, "<:gzip", $ls;
+    while (<$fh>) {
+        my $path = ( split(/\s+/) )[-1];
+        next unless ( $path =~ /^authors\/id\/\w+\/\w+\/(.*)$/ );
+        $cpan->{$1} = 1;
+    }
+    close $fh;
+    return $cpan;
+}
+
+sub detect_status {
+    my ( $self, $author, $archive ) = @_;
+    return $self->status unless ( $self->detect_backpan );
+    if ( $self->backpan_index->{ join( '/', $author, $archive ) } ) {
+        log_debug {'BackPAN detected'};
+        return 'backpan';
+    }
+    else {
+        return 'cpan';
+    }
 }
 
 1;
