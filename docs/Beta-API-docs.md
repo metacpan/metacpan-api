@@ -15,6 +15,10 @@ Available fields can be found by accessing the corresponding `_mapping` endpoint
 * [[/rating/_mapping|http://api.metacpan.org/v0/rating/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/rating/_mapping]]
 * [[/release/_mapping|http://api.metacpan.org/v0/release/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/release/_mapping]]
 
+## Field documentation
+
+Fields are documented in the API codebase: [[https://github.com/CPAN-API/cpan-api/tree/master/lib/MetaCPAN/Document]]  Check the Pod for discussion of what the various fields represent.  Be sure to have a look at [[https://github.com/CPAN-API/cpan-api/blob/master/lib/MetaCPAN/Document/File.pm]] in particular as results for /module are really a thin wrapper around the file type.
+
 ## Search without constraints
 
 Performing a search without any constraints is an easy way to get sample data
