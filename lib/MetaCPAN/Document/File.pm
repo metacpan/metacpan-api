@@ -451,4 +451,16 @@ sub find {
         )->first;
 }
 
+sub find_provided_by {
+    my ( $self, $name ) = @_;
+    return $self->filter({
+        and => [
+            { term => { 'file.distribution'      => $name } },
+            { term => { 'file.status'            => 'latest' } },
+            { term => { 'file.module.authorized' => 1 } },
+            { term => { 'file.module.indexed'    => 1 } },
+        ]
+    })->fields( [qw( file.module.name )] )->all;
+}
+
 __PACKAGE__->meta->make_immutable;
