@@ -156,6 +156,16 @@ package MetaCPAN::Document::Release::Set;
 use Moose;
 extends 'ElasticSearchX::Model::Document::Set';
 
+sub find_depending_on {
+    my ( $self, $modules ) = @_;
+    return $self->filter(
+        {   or => [
+                map { { term => { 'release.dependency.module' => $_ } } } @$modules
+            ]
+        }
+    )->all;
+}
+
 sub find {
     my ( $self, $name ) = @_;
     return $self->filter(
