@@ -88,7 +88,6 @@ sub bulk_update {
                     index  => $self->index->name,
                     type   => 'file',
                     id     => $file->{id},
-                    parent => $file->{release_id},
                     data   => $file
                 }
             }
