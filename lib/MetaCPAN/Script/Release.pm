@@ -246,7 +246,6 @@ sub import_tarball {
                     name         => $fname,
                     directory    => $child->is_dir,
                     release      => $name,
-                    release_id   => $release->id,
                     date         => $date,
                     distribution => $d->dist,
                     author       => $author,
