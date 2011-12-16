@@ -20,6 +20,7 @@ use File::stat            ('stat');
 use CPAN::DistnameInfo    ();
 use File::Spec::Functions ( 'tmpdir', 'catdir' );
 use File::Find            ();
+use File::stat ();
 use MetaCPAN::Script::Latest;
 use DateTime::Format::Epoch::Unix;
 use File::Find::Rule;
@@ -75,7 +76,7 @@ sub run {
                 qr/\.(tgz|tbz|tar[\._-]gz|tar\.bz2|tar\.Z|zip|7z)$/);
             $find = $find->mtime( ">" . ( time - $self->age * 3600 ) )
                 if ( $self->age );
-            push( @files, sort $find->in($_) );
+		    push( @files, map { $_->{file}} sort { $a->{mtime} <=> $b->{mtime} } map { +{ file => $_, mtime => File::stat::stat($_)->mtime } } $find->in($_) );
         }
         elsif ( -f $_ ) {
             push( @files, $_ );
@@ -165,7 +166,7 @@ sub import_tarball {
     # load Archive::Any in the child due to bugs in MMagic and MIME::Types
     require Archive::Any;
     my $at = Archive::Any->new($tarball);
-    my $tmpdir = dir( File::Temp::tempdir( CLEANUP => 1 ) );
+	    my $tmpdir = dir( File::Temp::tempdir( CLEANUP => 0 ) );
 
     # TODO: add release to the index with status => 'broken' and move along
     log_error {"$tarball is being naughty"}
