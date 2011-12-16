@@ -163,7 +163,6 @@ has documentation => (
     predicate  => 'has_documentation',
     analyzer   => [qw(standard camelcase lowercase)]
 );
-has release_id => ( is => 'ro', required => 1, parent => 1 );
 has date => ( is => 'ro', required => 1, isa => 'DateTime' );
 has stat => ( is => 'ro', isa => Stat, required => 0, dynamic => 1 );
 has sloc => ( is => 'ro', required => 1, isa => 'Int', lazy_build => 1 );
