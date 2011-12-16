@@ -134,7 +134,6 @@ sub reindex {
             scroll      => '1h',
             size        => 1000,
             search_type => 'scan',
-            fields      => [ '_parent', '_source' ],
             query       => {
                 filtered => {
                     query  => { match_all => {} },
@@ -165,9 +164,6 @@ sub reindex {
                     index => $self->index->name,
                     type  => 'file',
                     id    => $row->{_id},
-                    $row->{fields}->{_parent}
-                    ? ( parent => $row->{fields}->{_parent} )
-                    : (),
                     data => { %$source, status => $status }
                 }
             }
