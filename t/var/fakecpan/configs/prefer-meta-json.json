@@ -1,0 +1,20 @@
+{
+  "name": "Prefer-Meta-JSON",
+  "abstract": "A dist with META.yml and META.json",
+  "version": 1.1,
+  "X_Module_Faker": {
+    "cpan_author": "LOCAL",
+    "append": [ {
+        "file": "lib/Prefer/Meta/JSON.pm",
+        "content": "package Prefer::Meta::JSON;\n\n=head1 NAME\n\nPrefer::Meta::JSON - abstract\n\n=cut\n\npackage Prefer::Meta::JSON::Gremlin;\n"
+    },
+    {
+        "file": "META.json",
+        "content": "{\"no_index\":{\"package\":[\"Prefer::Meta::JSON::Gremlin\"]},\"meta-spec\":{\"version\":2,\"url\":\"http://search.cpan.org/perldoc?CPAN::Meta::Spec\"},\"generated_by\":\"hand\",\"version\":1.1,\"name\":\"Prefer-Meta-JSON\",\"dynamic_config\":0,\"author\":\"LOCAL\",\"license\":\"unknown\",\"abstract\":\"A dist with META.yml and META.json\",\"release_status\":\"stable\"}"
+    },
+    {
+        "file": "t/foo.t",
+        "content": "use Test::More;"
+    } ]
+  }
+}

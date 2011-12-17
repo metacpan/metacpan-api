@@ -373,7 +373,10 @@ sub load_meta_file {
     my $file;
     for (qw{*/META.json */META.yml */META.yaml META.json META.yml META.yaml})
     {
-        my $path = <$dir/$_>;
+        # scalar context globbing (without exhausting results) produces
+        # confusing results (which caused existsing */META.json files to
+        # get skipped).  using list context seems more reliable.
+        my ($path) = <$dir/$_>;
         if ( $path && -e $path ) {
             $file = $path;
             last;
