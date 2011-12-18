@@ -10,12 +10,7 @@ sub get : Chained('index') : PathPart('') : Args(1) {
     my ( $self, $c, $name ) = @_;
 
     my $modules = eval {
-        my $mods = $c->model('CPAN::File')->inflate(0)->find_provided_by($name);
-        [
-            map { ref($_) eq 'ARRAY' ? @$_ : $_ } # multiple packages in one file
-            map { $_->{fields}->{'module.name'} }
-            @{ $mods->{hits}->{hits} }
-        ];
+        $c->model('CPAN::File')->find_module_names_provided_by($name);
     } or $c->detach('/not_found');
 
     eval {
