@@ -6,8 +6,9 @@ use MetaCPAN::Server::Test;
 my %tests = (
     '/reverse_dependencies/NonExistent'      => [ 404 ],
     '/reverse_dependencies/Pod-Pm'           => [ 200, [] ],
+
     '/reverse_dependencies/Multiple-Modules' => [ 200,
-            [ sort qw(Multiple-Modules-RDeps Multiple-Modules-RDeps-A) ] ]
+            [ sort qw(Multiple-Modules-RDeps Multiple-Modules-RDeps-A) ] ],
 );
 
 test_psgi app, sub {
