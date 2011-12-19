@@ -1,0 +1,28 @@
+{
+  "name": "Multiple-Modules",
+  "abstract": "A dist that provides multiple modules",
+  "version": 1.01,
+  "X_Module_Faker": {
+    "cpan_author": "LOCAL",
+    "append": [ {
+        "file": "lib/Multiple/Modules.pm",
+        "content": "package Multiple::Modules;\n\n=head1 NAME\n\nMultiple::Modules - abstract"
+    },
+    {
+        "file": "lib/Multiple/Modules/A.pm",
+        "content": "package Multiple::Modules::A;\n\n=head1 NAME\n\nMultiple::Modules::A - MMA\n\n=cut\n\npackage Multiple::Modules::A2;\n"
+    },
+    {
+        "file": "lib/Multiple/Modules/B.pm",
+        "content": "package Multiple::Modules::B;\n\n=head1 NAME\n\nMultiple::Modules::B - MMB\n\n=cut\n\npackage\nMultiple::Modules::_B2;# hidden from pause\n\npackage Multiple::Modules::B::Secret; # meta no_index\n"
+    },
+    {
+        "file": "META.json",
+        "content": "{\"no_index\":{\"package\":[\"Multiple::Modules::B::Secret\"]},\"meta-spec\":{\"version\":2,\"url\":\"http://search.cpan.org/perldoc?CPAN::Meta::Spec\"},\"generated_by\":\"hand\",\"version\":1.01,\"name\":\"Multiple-Modules\",\"dynamic_config\":0,\"author\":\"LOCAL\",\"license\":\"unknown\",\"abstract\":\"A dist that provides multiple modules\",\"release_status\":\"stable\"}"
+    },
+    {
+        "file": "t/foo.t",
+        "content": "use Test::More;"
+    } ]
+  }
+}

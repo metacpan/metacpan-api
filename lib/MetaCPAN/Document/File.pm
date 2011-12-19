@@ -450,4 +450,32 @@ sub find {
         )->first;
 }
 
+# return files that contain modules that match the given dist
+# NOTE: these still need to be filtered by authorized/indexed
+# TODO: test that we are getting the correct version (latest)
+sub find_provided_by {
+    my ( $self, $release ) = @_;
+    return $self->filter({
+        and => [
+            { term => { 'release' => $release->{name}   } },
+            { term => { 'author'  => $release->{author} } },
+            { term => { 'file.module.authorized' => 1 } },
+            { term => { 'file.module.indexed'    => 1 } },
+        ]
+    })->all;
+}
+
+# filter find_provided_by results for indexed/authorized modules
+# and return a list of package names
+sub find_module_names_provided_by {
+    my ( $self, $release ) = @_;
+    my $mods = $self->inflate(0)->find_provided_by($release);
+    return (
+        map  { $_->{name} }
+        grep { $_->{indexed} && $_->{authorized} }
+        map  { @{ $_->{_source}->{module} } }
+        @{ $mods->{hits}->{hits} }
+    );
+}
+
 __PACKAGE__->meta->make_immutable;
