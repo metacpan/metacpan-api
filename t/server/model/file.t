@@ -33,7 +33,7 @@ foreach my $test (
         'got all included modules';
 
     is_deeply
-        [ sort @{ $c->model('CPAN::File')->raw->find_module_names_provided_by( $release ) } ],
+        [ sort $c->model('CPAN::File')->raw->find_module_names_provided_by( $release ) ],
         [ sort @$indexed ],
         'got only the module names expected';
 }

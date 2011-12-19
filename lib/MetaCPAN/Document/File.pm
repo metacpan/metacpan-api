@@ -467,16 +467,16 @@ sub find_provided_by {
 }
 
 # filter find_provided_by results for indexed/authorized modules
-# and return an arrayref of package names
+# and return a list of package names
 sub find_module_names_provided_by {
     my ( $self, $name ) = @_;
     my $mods = $self->inflate(0)->find_provided_by($name);
-    return [
+    return (
         map  { $_->{name} }
         grep { $_->{indexed} && $_->{authorized} }
         map  { @{ $_->{_source}->{module} } }
         @{ $mods->{hits}->{hits} }
-    ];
+    );
 }
 
 __PACKAGE__->meta->make_immutable;
