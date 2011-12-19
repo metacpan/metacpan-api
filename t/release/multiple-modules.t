@@ -16,7 +16,7 @@ is( $release->name, 'Multiple-Modules-1.01', 'name ok' );
 
 is( $release->author, 'LOCAL', 'author ok' );
 
-ok( $release->first, 'Release is first');
+ok(!$release->first, 'Release is not first');
 
 {
     my @files = $idx->type('file')->filter(
