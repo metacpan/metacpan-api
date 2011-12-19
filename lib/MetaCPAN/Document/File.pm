@@ -454,11 +454,11 @@ sub find {
 # NOTE: these still need to be filtered by authorized/indexed
 # TODO: test that we are getting the correct version (latest)
 sub find_provided_by {
-    my ( $self, $name ) = @_;
+    my ( $self, $release ) = @_;
     return $self->filter({
         and => [
-            { term => { 'file.distribution'      => $name } },
-            { term => { 'file.status'            => 'latest' } },
+            { term => { 'release' => $release->{name}   } },
+            { term => { 'author'  => $release->{author} } },
             { term => { 'file.module.authorized' => 1 } },
             { term => { 'file.module.indexed'    => 1 } },
         ]
@@ -468,8 +468,8 @@ sub find_provided_by {
 # filter find_provided_by results for indexed/authorized modules
 # and return a list of package names
 sub find_module_names_provided_by {
-    my ( $self, $name ) = @_;
-    my $mods = $self->inflate(0)->find_provided_by($name);
+    my ( $self, $release ) = @_;
+    my $mods = $self->inflate(0)->find_provided_by($release);
     return (
         map  { $_->{name} }
         grep { $_->{indexed} && $_->{authorized} }
