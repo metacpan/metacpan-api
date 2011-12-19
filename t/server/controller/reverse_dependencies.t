@@ -9,6 +9,12 @@ my %tests = (
 
     '/reverse_dependencies/Multiple-Modules' => [ 200,
             [ sort qw(Multiple-Modules-RDeps Multiple-Modules-RDeps-A) ] ],
+
+    '/reverse_dependencies/LOCAL/Multiple-Modules-1.01' => [ 200,
+            [ sort qw(Multiple-Modules-RDeps Multiple-Modules-RDeps-A) ] ],
+
+    '/reverse_dependencies/LOCAL/Multiple-Modules-0.1'  => [ 200,
+            [ sort qw(Multiple-Modules-RDeps Multiple-Modules-RDeps-Deprecated) ] ],
 );
 
 test_psgi app, sub {
