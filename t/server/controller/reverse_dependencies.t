@@ -4,16 +4,16 @@ use Test::More;
 use MetaCPAN::Server::Test;
 
 my %tests = (
-    '/reverse_dependencies/NonExistent'      => [ 404 ],
-    '/reverse_dependencies/Pod-Pm'           => [ 200, [] ],
+    '/search/reverse_dependencies/NonExistent'      => [ 404 ],
+    '/search/reverse_dependencies/Pod-Pm'           => [ 200, [] ],
 
-    '/reverse_dependencies/Multiple-Modules' => [ 200,
+    '/search/reverse_dependencies/Multiple-Modules' => [ 200,
             [ sort qw(Multiple-Modules-RDeps Multiple-Modules-RDeps-A) ] ],
 
-    '/reverse_dependencies/LOCAL/Multiple-Modules-1.01' => [ 200,
+    '/search/reverse_dependencies/LOCAL/Multiple-Modules-1.01' => [ 200,
             [ sort qw(Multiple-Modules-RDeps Multiple-Modules-RDeps-A) ] ],
 
-    '/reverse_dependencies/LOCAL/Multiple-Modules-0.1'  => [ 200,
+    '/search/reverse_dependencies/LOCAL/Multiple-Modules-0.1'  => [ 200,
             [ sort qw(Multiple-Modules-RDeps Multiple-Modules-RDeps-Deprecated) ] ],
 );
 

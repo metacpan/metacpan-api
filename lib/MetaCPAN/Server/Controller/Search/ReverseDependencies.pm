@@ -1,12 +1,11 @@
-package MetaCPAN::Server::Controller::ReverseDependencies;
+package MetaCPAN::Server::Controller::Search::ReverseDependencies;
 use Moose;
 BEGIN { extends 'MetaCPAN::Server::Controller' }
 with 'MetaCPAN::Server::Role::JSONP';
 
-sub index : Chained('/') : PathPart('reverse_dependencies') : CaptureArgs(0) {
-}
+has '+type' => ( default => 'release' );
 
-sub get : Chained('index') : PathPart('') : Args(2) {
+sub get : Chained('/search/index') : PathPart('reverse_dependencies') : Args(2) {
     my ( $self, $c, $author, $release ) = @_;
 
     my @modules = eval {
@@ -23,7 +22,7 @@ sub get : Chained('index') : PathPart('') : Args(2) {
     } or $c->detach('/not_found');
 }
 
-sub find : Chained('index') : PathPart('') : Args(1) {
+sub find : Chained('/search/index') : PathPart('reverse_dependencies') : Args(1) {
     my ( $self, $c, $name ) = @_;
     my $release = eval {
         $c->model('CPAN::Release')->inflate(0)->find($name)->{_source}
