@@ -163,7 +163,7 @@ sub find_depending_on {
                 map { { term => { 'release.dependency.module' => $_ } } } @$modules
             ]
         }
-    )->all;
+    );
 }
 
 sub find {
