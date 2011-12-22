@@ -462,7 +462,7 @@ sub find_provided_by {
             { term => { 'file.module.authorized' => 1 } },
             { term => { 'file.module.indexed'    => 1 } },
         ]
-    })->all;
+    })->size(999)->all;
 }
 
 # filter find_provided_by results for indexed/authorized modules
