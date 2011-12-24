@@ -430,6 +430,9 @@ package MetaCPAN::Document::File::Set;
 use Moose;
 extends 'ElasticSearchX::Model::Document::Set';
 
+my @ROGUE_DISTRIBUTIONS
+    = qw(kurila perl_debug perl-5.005_02+apache1.3.3+modperl pod2texi perlbench spodcxx Bundle-Everything);
+
 sub find {
     my ( $self, $module ) = @_;
     return $self->filter(
@@ -455,14 +458,15 @@ sub find {
 # TODO: test that we are getting the correct version (latest)
 sub find_provided_by {
     my ( $self, $release ) = @_;
-    return $self->filter({
-        and => [
-            { term => { 'release' => $release->{name}   } },
-            { term => { 'author'  => $release->{author} } },
-            { term => { 'file.module.authorized' => 1 } },
-            { term => { 'file.module.indexed'    => 1 } },
-        ]
-    })->size(999)->all;
+    return $self->filter(
+        {   and => [
+                { term => { 'release' => $release->{name} } },
+                { term => { 'author'  => $release->{author} } },
+                { term => { 'file.module.authorized' => 1 } },
+                { term => { 'file.module.indexed'    => 1 } },
+            ]
+        }
+    )->size(999)->all;
 }
 
 # filter find_provided_by results for indexed/authorized modules
@@ -471,10 +475,57 @@ sub find_module_names_provided_by {
     my ( $self, $release ) = @_;
     my $mods = $self->inflate(0)->find_provided_by($release);
     return (
-        map  { $_->{name} }
+        map { $_->{name} }
         grep { $_->{indexed} && $_->{authorized} }
-        map  { @{ $_->{_source}->{module} } }
-        @{ $mods->{hits}->{hits} }
+        map { @{ $_->{_source}->{module} } } @{ $mods->{hits}->{hits} }
+    );
+}
+
+sub prefix {
+    my ( $self, $prefix ) = @_;
+    my @query = split( /\s+/, $prefix );
+    my $should = [
+        map {
+            { field     => { 'documentation.analyzed'  => "$_*" } },
+                { field => { 'documentation.camelcase' => "$_*" } }
+            } grep {$_} @query
+    ];
+    return $self->query(
+        {   filtered => {
+                query => {
+                    custom_score => {
+                        query => { bool => { should => $should } },
+                        script =>
+                            "_score - doc['documentation'].stringValue.length()/100"
+                    },
+                },
+                filter => {
+                    and => [
+                        {   not => {
+                                filter => {
+                                    or => [
+                                        map {
+                                            +{  term => {
+                                                    'file.distribution' => $_
+                                                }
+                                                }
+                                            } @ROGUE_DISTRIBUTIONS
+                                    ]
+                                }
+                            }
+                        },
+                        { exists => { field          => 'documentation' } },
+                        { term   => { 'file.indexed' => \1 } },
+                        { term   => { 'file.status'  => 'latest' } },
+                        {   not => {
+                                filter =>
+                                    { term => { 'file.authorized' => \0 } }
+                            }
+                        }
+                    ]
+                }
+            }
+        }
     );
 }
 

@@ -15,6 +15,12 @@ sub not_found : Private {
     $c->response->status(404);
 }
 
+sub not_allowed : Private {
+    my ( $self, $c ) = @_;
+    $c->stash( { message => 'Not allowed' } );
+    $c->response->status(403);
+}
+
 sub end : ActionClass('RenderView') {
     my ( $self, $c ) = @_;
     if (   $c->controller->does('MetaCPAN::Server::Role::JSONP')
