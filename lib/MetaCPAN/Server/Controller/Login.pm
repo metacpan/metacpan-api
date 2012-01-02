@@ -34,6 +34,7 @@ sub update_user {
             if ( $c->session->{__user} );
         $user ||= $model->new_document;
         $user->add_identity( { name => $type, key => $id, extra => $data } );
+        $user->clear_looks_human;    # rebuild
         $user->put( { refresh => 1 } );
     }
     $c->authenticate( { user => $user } );

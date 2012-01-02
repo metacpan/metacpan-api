@@ -3,6 +3,16 @@ package MetaCPAN::Server::Controller::User::Favorite;
 use Moose;
 BEGIN { extends 'Catalyst::Controller::REST' }
 
+sub auto : Private {
+    my ($self, $c) = @_;
+    unless($c->user->looks_human) {
+        $self->status_forbidden($c, message => 'please complete the turing test');
+        return 0;
+    } else {
+        return 1;
+    }
+}
+
 sub index : Path : ActionClass('REST') {
 }
 

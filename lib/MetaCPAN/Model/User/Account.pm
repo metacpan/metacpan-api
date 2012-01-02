@@ -31,6 +31,15 @@ has access_token => (
     handles => { add_access_token => 'push' }
 );
 
+has passed_captcha => ( is => 'rw', isa => 'DateTime' );
+
+has looks_human => ( is => 'ro', isa => 'Bool', required => 1, lazy_build => 1 );
+
+sub _build_looks_human {
+    my $self = shift;
+    return $self->has_identity('pause') || $self->passed_captcha;
+}
+
 sub has_identity {
     my ( $self, $identity ) = @_;
     return scalar grep { $_->name eq $identity } @{ $self->identity };

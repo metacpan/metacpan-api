@@ -15,10 +15,15 @@ BEGIN { $ENV{METACPAN_SERVER_CONFIG_LOCAL_SUFFIX} = 'testing'; }
 $FindBin::RealBin .= '/some';
 my $app = require MetaCPAN::Server;
 MetaCPAN::Server->model('User::Account')->put(
-    {   identity      => [ { name   => 'pause',   key    => 'MO' } ],
+    {   identity     => [ { name   => 'pause',   key   => 'MO' } ],
         access_token => [ { client => 'testing', token => 'testing' } ]
-    }, { refresh => 1 }
+    },
+    { refresh => 1 }
 );
+
+MetaCPAN::Server->model('User::Account')
+    ->put( { access_token => [ { client => 'testing', token => 'bot' } ] },
+    { refresh => 1 } );
 sub app {$app}
 
 1;
