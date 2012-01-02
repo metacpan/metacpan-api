@@ -131,7 +131,7 @@ sub reindex {
     my $scroll = $es->scrolled_search(
         {   index       => $self->index->name,
             type        => 'file',
-            scroll      => '1h',
+            scroll      => '5m',
             size        => 1000,
             search_type => 'scan',
             query       => {

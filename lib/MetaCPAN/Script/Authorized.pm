@@ -122,7 +122,7 @@ sub scroll {
                     }
                 }
             },
-            scroll      => '1h',
+            scroll      => '5m',
             size        => 1000,
             search_type => 'scan',
         }
