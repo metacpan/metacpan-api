@@ -1,7 +1,7 @@
 package MetaCPAN::Server::Controller::User::Turing;
 
 use Moose;
-use Captcha::ReCAPTCHA;
+use Captcha::reCAPTCHA;
 use DateTime;
 BEGIN { extends 'Catalyst::Controller::REST' }
 
