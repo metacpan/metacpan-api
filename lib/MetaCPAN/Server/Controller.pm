@@ -24,9 +24,9 @@ sub mapping : Path('_mapping') {
     );
 }
 
-sub all : Chained('index') : PathPart('') : Args(0) {
+sub all : Chained('index') : PathPart('') : Args(0) : ActionClass('Deserialize') {
     my ( $self, $c ) = @_;
-    $c->req->params->{q} ||= '*';
+    $c->req->params->{q} ||= '*' unless($c->req->data);
     $c->forward('search');
 }
 
