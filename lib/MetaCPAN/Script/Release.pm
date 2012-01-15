@@ -224,6 +224,7 @@ sub import_tarball {
         || $release->{abstract} eq 'null' );
 
     $release = $cpan->type('release')->put( $release, { refresh => 1 } );
+    my $dist = $cpan->type('distribution')->put({ name => $d->dist }, { refresh => 1 });
 
     my @files;
     my @list = $at->files;
