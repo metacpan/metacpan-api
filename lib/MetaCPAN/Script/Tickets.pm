@@ -23,6 +23,24 @@ sub run {
     $self->index_bug_summary($bug_summary);
 }
 
+sub index_bug_summary {
+    my ($self, $summary) = @_;
+
+    for my $dist (keys %{ $summary }) {
+        my $dist_data =  $self->index->type('distribution')->inflate(0)->get({
+            name => $dist,
+        }) or next;
+
+        use Data::Dump 'pp';
+        pp $dist_data;
+
+        $self->index->type('distribution')->put({
+            %{ $dist_data->{_source} },
+            rt_bug_count => $summary->{$dist},
+        }, { refresh => 1 });
+    }
+}
+
 sub retrieve_bug_summary {
     my ($self) = @_;
 
