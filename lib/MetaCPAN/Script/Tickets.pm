@@ -21,6 +21,8 @@ sub run {
 
     my $bug_summary = $self->retrieve_bug_summary;
     $self->index_bug_summary($bug_summary);
+
+    return 1;
 }
 
 sub index_bug_summary {
