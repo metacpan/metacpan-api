@@ -217,6 +217,7 @@ sub import_tarball {
         || $create->{abstract} eq 'null' );
 
     my $release = $cpan->type('release')->put( $create, { refresh => 1 } );
+    my $dist = $cpan->type('distribution')->put({ name => $d->dist }, { refresh => 1 });
 
     my @files;
     my $meta_file;
