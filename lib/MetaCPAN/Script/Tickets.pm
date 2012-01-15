@@ -10,7 +10,11 @@ use namespace::autoclean;
 
 with 'MooseX::Getopt', 'MetaCPAN::Role::Common';
 
-my $rt_summary_url = 'https://rt.cpan.org/Public/bugs-per-dist.tsv';
+has rt_summary_url => (
+    is       => 'ro',
+    required => 1,
+    default  => 'https://rt.cpan.org/Public/bugs-per-dist.tsv',
+);
 
 sub run {
     my ($self) = @_;
@@ -23,7 +27,7 @@ sub retrieve_bug_summary {
     my ($self) = @_;
 
     my $ua = LWP::UserAgent->new;
-    my $resp = $ua->request(GET $rt_summary_url);
+    my $resp = $ua->request(GET $self->rt_summary_url);
 
     confess $resp->reason unless $resp->is_success;
 
