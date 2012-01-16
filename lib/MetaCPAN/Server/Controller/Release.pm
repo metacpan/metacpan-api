@@ -3,6 +3,15 @@ use Moose;
 BEGIN { extends 'MetaCPAN::Server::Controller' }
 with 'MetaCPAN::Server::Role::JSONP';
 
+__PACKAGE__->config(
+    relationships => {
+        author => {
+            type    => 'Author',
+            foreign => 'pauseid',
+        }
+    }
+);
+
 sub index : Chained('/') : PathPart('release') : CaptureArgs(0) {
 }
 
