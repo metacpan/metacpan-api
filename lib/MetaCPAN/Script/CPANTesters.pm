@@ -30,7 +30,7 @@ sub index_reports {
     my $db    = $self->home->file(qw(var tmp cpantesters.db));
     log_info { "Mirroring " . $self->db };
     $ua->mirror( $self->db, "$db.bz2" );
-    if ( -e $db && stat($db)->mtime > stat("$db.bz2")->mtime ) {
+    if ( -e $db && stat($db)->mtime >= stat("$db.bz2")->mtime ) {
         log_info {"DB hasn't been modified"};
         return;
     }
