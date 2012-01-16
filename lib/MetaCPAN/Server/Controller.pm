@@ -96,12 +96,13 @@ sub join : ActionClass('Deserialize') {
         my @ids = List::MoreUtils::uniq grep {defined}
             map { ref $cself eq 'CODE' ? $cself->($_) : $_->{$cself} } @$data;
         my $filter = { terms => { $config->{foreign} => [@ids] } };
-        $query->{filter}
+        my $filtered = {%$query}; # don't work on $query
+        $filtered->{filter}
             = $query->{filter}
             ? { and => [ $filter, $query->{filter} ] }
             : $filter;
-        my $foreign = $c->model("CPAN::$type")->query( $query->{query} )
-            ->filter( $query->{filter} )->size(1000)->raw->all;
+        my $foreign = $c->model("CPAN::$type")->query( $filtered->{query} )
+            ->filter( $filtered->{filter} )->size(1000)->raw->all;
         $c->detach(
             "/not_allowed",
             [   "The number of joined documents exceeded the allowed number of 1000 documents by "
