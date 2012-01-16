@@ -26,7 +26,7 @@ test_psgi app, sub {
             if ( $k eq '/author/_mapping' );
     }
 
-    my $res = $cb->( GET '/author/MO?callback=jsonp'), "GET jsonp";
+    ok(my $res = $cb->( GET '/author/MO?callback=jsonp'), "GET jsonp");
     is( $res->header('content-type'),
         'text/javascript; charset=UTF-8',
         'Content-type'
