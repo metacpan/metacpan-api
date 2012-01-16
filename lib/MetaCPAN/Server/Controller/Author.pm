@@ -9,6 +9,11 @@ __PACKAGE__->config(
             type    => ['Release'],
             self    => 'pauseid',
             foreign => 'author',
+        },
+        favorite => {
+            type    => ['Favorite'],
+            self    => 'user',
+            foreign => 'user',
         }
     }
 );
