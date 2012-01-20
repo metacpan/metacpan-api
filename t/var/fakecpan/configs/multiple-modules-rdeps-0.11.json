@@ -1,0 +1,22 @@
+{
+  "name": "Multiple-Modules-RDeps",
+  "abstract": "A dist that depends on Multiple::Modules",
+  "version": 0.11,
+  "meta-spec": {
+    "version": 1.3
+  },
+  "requires": {
+    "Multiple::Modules": 0
+  },
+  "X_Module_Faker": {
+    "cpan_author": "LOCAL",
+    "append": [ {
+        "file": "lib/Multiple/Modules/RDeps.pm",
+        "content": "use Multiple::Modules;\n1;\n\n=head1 NAME\n\nMultiple::Modules::RDeps - abstract"
+    },
+    {
+        "file": "t/foo.t",
+        "content": "use Test::More;"
+    } ]
+  }
+}
