@@ -4,42 +4,76 @@ use Test::More;
 use MetaCPAN::Server::Test;
 
 my %tests = (
-    '/search/reverse_dependencies/NonExistent' => [404],
-    '/search/reverse_dependencies/Pod-Pm'      => [ 200, [] ],
+    '/search/reverse_dependencies/NonExistent' => [ 404, [], [] ],
+    '/search/reverse_dependencies/Pod-Pm'      => [ 200, [], [] ],
 
-    '/search/reverse_dependencies/Multiple-Modules' =>
-        [ 200, [ sort qw(Multiple-Modules-RDeps Multiple-Modules-RDeps-A) ] ],
+    # just dist name
+    '/search/reverse_dependencies/Multiple-Modules' => [
+        200,
+        [ qw( Multiple-Modules-RDeps-0.11 ) ],
+        [ qw( Multiple-Modules-RDeps-2.03 Multiple-Modules-RDeps-A-2.03 ) ],
+    ],
 
-    '/search/reverse_dependencies/LOCAL/Multiple-Modules-1.01' =>
-        [ 200, [ sort qw(Multiple-Modules-RDeps Multiple-Modules-RDeps-A) ] ],
+    # author/name-version
+    '/search/reverse_dependencies/LOCAL/Multiple-Modules-1.01' => [
+        200,
+        [ qw( Multiple-Modules-RDeps-0.11 ) ],
+        [ qw( Multiple-Modules-RDeps-2.03 Multiple-Modules-RDeps-A-2.03 ) ],
+    ],
 
+    # older author/name-version with different modules
     '/search/reverse_dependencies/LOCAL/Multiple-Modules-0.1' => [
         200,
-        [ sort qw(Multiple-Modules-RDeps Multiple-Modules-RDeps-Deprecated) ]
+        [ qw( Multiple-Modules-RDeps-0.11 ) ],
+        [ qw( Multiple-Modules-RDeps-2.03 Multiple-Modules-RDeps-Deprecated-0.01 ) ],
     ],
 );
 
+sub check_search_results {
+    my ($name, $res, $code, $rdeps) = @_;
+    ok( $res, $name );
+    is( $res->code, $code, "code $code" );
+    is( $res->header('content-type'),
+        'application/json; charset=utf-8',
+        'Content-type'
+    );
+    ok( my $json = eval { decode_json( $res->content ) }, 'valid json' );
+    return unless $code == 200;
+
+    $json = $json->{hits}{hits} if $json->{hits};
+    is scalar @$json, @$rdeps, 'got expected number of releases';
+    is_deeply
+        [ sort map { join '-', @{$_->{_source}}{qw(distribution version)} } @$json ],
+        $rdeps,
+        'got expected releases';
+}
+
 test_psgi app, sub {
     my $cb = shift;
+
+    # verify search results
     while ( my ( $k, $v ) = each %tests ) {
-        my ( $code, $rdeps ) = @$v;
+        my ( $code, $rdep_old, $rdep_latest ) = @$v;
 
-        ok( my $res = $cb->( GET $k), "GET $k" );
-        is( $res->code, $code, "code $code" );
-        is( $res->header('content-type'),
-            'application/json; charset=utf-8',
-            'Content-type'
-        );
-        ok( my $json = eval { decode_json( $res->content ) }, 'valid json' );
-        next unless $code == 200;
+        # all results
+        check_search_results("GET $k"  => $cb->(GET $k
+        ), $code, [sort(@$rdep_old, @$rdep_latest)]);
 
-        $json = $json->{hits}{hits} if $json->{hits};
-        is scalar @$json, @$rdeps, 'got expected number of releases';
-        is_deeply
-            [ sort map { $_->{_source}{distribution} } @$json ],
-            $rdeps,
-            'got expected releases';
+        # only releases marked as latest
+        check_search_results("POST $k" => $cb->(POST $k,
+            Content => encode_json(
+                { query => { match_all => {} },
+                    filter => {
+                        term => {
+                            'release.status' => 'latest'
+                        },
+                    },
+                }
+            )
+        ), $code, [sort(@$rdep_latest)]);
     }
+
+    # test passing additional ES parameters
     {
         ok( my $res = $cb->(
                 POST "/search/reverse_dependencies/Multiple-Modules",
@@ -50,10 +84,11 @@ test_psgi app, sub {
             "POST"
         );
         ok( my $json = eval { decode_json( $res->content ) }, 'valid json' );
-        is( $json->{hits}->{total},            2, 'total is 3' );
+        is( $json->{hits}->{total},            3, 'total is 3' );
         is( scalar @{ $json->{hits}->{hits} }, 1, 'only 1 received' );
     }
 
+    # test appending filters
     {
         ok( my $res = $cb->(
                 POST
