@@ -50,7 +50,7 @@ test_psgi app, sub {
         ),
         "POST favorite"
     );
-    ok( my $json = decode_json( $res->content ), 'decode response' );
+    ok( $json = decode_json( $res->content ), 'decode response' );
     is( $res->code, 403, 'forbidden' );
 
 };
