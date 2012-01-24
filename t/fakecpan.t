@@ -12,11 +12,13 @@ use Path::Class qw(dir file);
 use File::Copy;
 use Config::General;
 
-ok(my $es = ElasticSearch->new(
-     # instances   => 1,
-      transport   => 'httplite',
-      servers          => '127.0.0.1:9900',
-), 'connect to es');
+ok( my $es = ElasticSearch->new(
+        transport => 'httplite',
+        servers   => '127.0.0.1:9900',
+        # trace_calls => 1,
+    ),
+    'connect to es'
+);
 
 my $config = MetaCPAN::Script::Runner->build_config;
 $config->{es} = $es;
@@ -73,5 +75,4 @@ my $tests = Test::Aggregate->new( {
     dirs    => [qw(t/release t/server)],
     verbose => 2,
 } );
-
 $tests->run;
