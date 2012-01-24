@@ -29,16 +29,22 @@ sub run {
 sub index_bug_summary {
     my ( $self, $summary ) = @_;
 
+    my $bulk = $self->index->bulk( size => 300 );
     for my $dist ( keys %{$summary} ) {
         my $dist_data = $self->index->type('distribution')->raw->get($dist)
             or next;
 
-        $self->index->type('distribution')->put(
-            {   %{ $dist_data->{_source} }, rt_bug_count => $summary->{$dist},
-            },
-            { refresh => 1 }
+        delete $dist_data->{exists};
+        $bulk->put(
+            {   %$dist_data,
+                _source => {
+                    %{ $dist_data->{_source} },
+                    rt_bug_count => $summary->{$dist},
+                }
+            }
         );
     }
+    $bulk->commit;
 }
 
 sub retrieve_bug_summary {
@@ -56,8 +62,10 @@ sub parse_tsv {
     my ( $self, $tsv ) = @_;
     $tsv =~ s/^#.*\n//mg;
 
-    my $tsv_parser = Parse::CSV->new( handle => IO::String->new($tsv),
-        sep_char => "\t" );
+    my $tsv_parser = Parse::CSV->new(
+        handle   => IO::String->new($tsv),
+        sep_char => "\t"
+    );
 
     my %summary;
     while ( my $row = $tsv_parser->fetch ) {
