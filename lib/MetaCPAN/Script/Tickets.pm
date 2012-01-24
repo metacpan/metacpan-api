@@ -2,10 +2,11 @@ package MetaCPAN::Script::Tickets;
 
 use Moose;
 use Log::Contextual qw( :log :dlog );
-use List::AllUtils 'sum';
+use List::Util 'sum';
 use LWP::UserAgent;
-use Text::CSV;
+use Parse::CSV;
 use HTTP::Request::Common;
+use IO::String;
 use namespace::autoclean;
 
 with 'MooseX::Getopt', 'MetaCPAN::Role::Common';
@@ -29,12 +30,7 @@ sub index_bug_summary {
     my ($self, $summary) = @_;
 
     for my $dist (keys %{ $summary }) {
-        my $dist_data =  $self->index->type('distribution')->inflate(0)->get({
-            name => $dist,
-        }) or next;
-
-        use Data::Dump 'pp';
-        pp $dist_data;
+        my $dist_data =  $self->index->type('distribution')->raw->get($dist) or next;
 
         $self->index->type('distribution')->put({
             %{ $dist_data->{_source} },
@@ -49,7 +45,7 @@ sub retrieve_bug_summary {
     my $ua = LWP::UserAgent->new;
     my $resp = $ua->request(GET $self->rt_summary_url);
 
-    confess $resp->reason unless $resp->is_success;
+    log_error { $resp->reason } unless $resp->is_success;
 
     return $self->parse_tsv($resp->content);
 }
@@ -58,11 +54,10 @@ sub parse_tsv {
     my ($self, $tsv) = @_;
     $tsv =~ s/^#.*\n//mg;
 
-    my $tsv_parser = Text::CSV->new({ sep_char => "\t" });
-    open my $tsv_io, '<', \$tsv or confess $!;
+    my $tsv_parser = Parse::CSV->new( handle => IO::String->new($tsv), sep_char => "\t" );
 
     my %summary;
-    while (my $row = $tsv_parser->getline($tsv_io)) {
+    while (my $row = $tsv_parser->fetch) {
         $summary{ $row->[0] } = sum @{ $row }[1..3];
     }
 
