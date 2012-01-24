@@ -27,38 +27,41 @@ sub run {
 }
 
 sub index_bug_summary {
-    my ($self, $summary) = @_;
+    my ( $self, $summary ) = @_;
 
-    for my $dist (keys %{ $summary }) {
-        my $dist_data =  $self->index->type('distribution')->raw->get($dist) or next;
+    for my $dist ( keys %{$summary} ) {
+        my $dist_data = $self->index->type('distribution')->raw->get($dist)
+            or next;
 
-        $self->index->type('distribution')->put({
-            %{ $dist_data->{_source} },
-            rt_bug_count => $summary->{$dist},
-        }, { refresh => 1 });
+        $self->index->type('distribution')->put(
+            {   %{ $dist_data->{_source} }, rt_bug_count => $summary->{$dist},
+            },
+            { refresh => 1 }
+        );
     }
 }
 
 sub retrieve_bug_summary {
     my ($self) = @_;
 
-    my $ua = LWP::UserAgent->new;
-    my $resp = $ua->request(GET $self->rt_summary_url);
+    my $ua   = LWP::UserAgent->new;
+    my $resp = $ua->request( GET $self->rt_summary_url );
 
     log_error { $resp->reason } unless $resp->is_success;
 
-    return $self->parse_tsv($resp->content);
+    return $self->parse_tsv( $resp->content );
 }
 
 sub parse_tsv {
-    my ($self, $tsv) = @_;
+    my ( $self, $tsv ) = @_;
     $tsv =~ s/^#.*\n//mg;
 
-    my $tsv_parser = Parse::CSV->new( handle => IO::String->new($tsv), sep_char => "\t" );
+    my $tsv_parser = Parse::CSV->new( handle => IO::String->new($tsv),
+        sep_char => "\t" );
 
     my %summary;
-    while (my $row = $tsv_parser->fetch) {
-        $summary{ $row->[0] } = sum @{ $row }[1..3];
+    while ( my $row = $tsv_parser->fetch ) {
+        $summary{ $row->[0] } = sum @{$row}[ 1 .. 3 ];
     }
 
     return \%summary;
