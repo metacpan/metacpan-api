@@ -31,18 +31,10 @@ sub index_bug_summary {
 
     my $bulk = $self->index->bulk( size => 300 );
     for my $dist ( keys %{$summary} ) {
-        my $dist_data = $self->index->type('distribution')->raw->get($dist)
+        my $dist = $self->index->type('distribution')->get($dist)
             or next;
-
-        delete $dist_data->{exists};
-        $bulk->put(
-            {   %$dist_data,
-                _source => {
-                    %{ $dist_data->{_source} },
-                    rt_bug_count => $summary->{$dist},
-                }
-            }
-        );
+        $dist->add_bugs( $summary->{ $dist->name } );
+        $bulk->put($dist);
     }
     $bulk->commit;
 }
@@ -69,7 +61,14 @@ sub parse_tsv {
 
     my %summary;
     while ( my $row = $tsv_parser->fetch ) {
-        $summary{ $row->[0] } = sum @{$row}[ 1 .. 3 ];
+        my $i = 1;
+        $summary{ $row->[0] } = {
+            type   => 'rt',
+            active => ( sum @{$row}[ 1 .. 3 ] ),
+            closed => ( sum @{$row}[ 4 .. 5 ] ),
+            map { $_ => $row->[ $i++ ]+0 }
+                qw(new open stalled resolved rejected),
+        };
     }
 
     return \%summary;
