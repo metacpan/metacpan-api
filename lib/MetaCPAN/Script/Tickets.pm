@@ -2,7 +2,8 @@ package MetaCPAN::Script::Tickets;
 
 use Moose;
 use Log::Contextual qw( :log :dlog );
-use List::Util 'sum';
+use List::MoreUtils qw(uniq);
+use List::Util      qw(sum);
 use LWP::UserAgent;
 use Parse::CSV;
 use HTTP::Request::Common;
@@ -17,11 +18,27 @@ has rt_summary_url => (
     default  => 'https://rt.cpan.org/Public/bugs-per-dist.tsv',
 );
 
+has source => (
+    is       => 'ro',
+    required => 1,
+    isa      => 'ArrayRef[Str]',
+    default  => sub { [qw(rt)] },
+);
+
+has ua => (
+    is      => 'ro',
+    default => sub { LWP::UserAgent->new },
+);
+
 sub run {
     my ($self) = @_;
-
-    my $bug_summary = $self->retrieve_bug_summary;
-    $self->index_bug_summary($bug_summary);
+    my $bugs = {};
+    foreach my $source ( @{ $self->source } ) {
+        if ( $source eq 'rt' ) {
+            $bugs->{$source} = $self->retrieve_rt_bugs;
+        }
+    }
+    $self->index_bug_summary($bugs);
 
     return 1;
 }
@@ -30,20 +47,22 @@ sub index_bug_summary {
     my ( $self, $summary ) = @_;
 
     my $bulk = $self->index->bulk( size => 300 );
-    for my $dist ( keys %{$summary} ) {
+    for my $dist ( uniq map { keys %$_ } values %{$summary} ) {
         my $dist = $self->index->type('distribution')->get($dist)
             or next;
-        $dist->add_bugs( $summary->{ $dist->name } );
+        $dist->add_bugs(
+            grep {defined}
+            map  { $summary->{$_}->{ $dist->name } } keys %$summary
+        );
         $bulk->put($dist);
     }
     $bulk->commit;
 }
 
-sub retrieve_bug_summary {
+sub retrieve_rt_bugs {
     my ($self) = @_;
 
-    my $ua   = LWP::UserAgent->new;
-    my $resp = $ua->request( GET $self->rt_summary_url );
+    my $resp = $self->ua->request( GET $self->rt_summary_url );
 
     log_error { $resp->reason } unless $resp->is_success;
 
@@ -66,7 +85,7 @@ sub parse_tsv {
             source => 'http://rt.cpan.org/NoAuth/Bugs.html?Dist=' . $row->[0],
             active => ( sum @{$row}[ 1 .. 3 ] ),
             closed => ( sum @{$row}[ 4 .. 5 ] ),
-            map { $_ => $row->[ $i++ ]+0 }
+            map { $_ => $row->[ $i++ ] + 0 }
                 qw(new open stalled resolved rejected),
         };
     }

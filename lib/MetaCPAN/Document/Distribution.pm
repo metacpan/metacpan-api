@@ -16,12 +16,9 @@ has bugs => (
 );
 
 sub add_bugs {
-    my ( $self, $add ) = @_;
-    BugSummary->assert_valid($add);
-    my $bugs = {
-        ( map { $_->{source} => $_ } @{ $self->bugs } ),
-        $add->{source} => $add,
-    };
+   my ( $self, @add ) = @_;
+    Bugs->assert_valid($_) for(@add);
+    my $bugs = { map { $_->{type} => $_ } @{ $self->bugs }, @add };
     $self->bugs( [ values %$bugs ] );
 }
 
