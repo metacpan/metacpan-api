@@ -294,3 +294,21 @@ curl -XPOST api.metacpan.org/v0/release/_search -d '{
     "size": 0
 }'
 ```
+### Get the latest version numbers of your favorite modules
+
+Note that "size" should be the number of distributions you are looking for.
+
+```sh
+lynx --dump --post_data http://api.metacpan.org/v0/release/_search <<EOL 
+{
+    "query" : { "terms" : { "release.distribution" : [
+        "Mojolicious",
+        "MetaCPAN-API",
+        "DBIx-Class"
+    ] } },
+    "filter" : { "term" : { "release.status" : "latest" } },
+    "fields" : [ "distribution", "version" ],
+    "size"   : 3
+}
+EOL
+```
