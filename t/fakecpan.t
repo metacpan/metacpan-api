@@ -26,7 +26,8 @@ ok(!$@, "Connected to the ElasticSearch test instance on 127.0.0.1:9900")
 	or do {
 	diag(<<EOF);
 Failed to connect to the ElasticSearch test instance on 127.0.0.1:9900.
-Did you start one up? See <INSERT DOC LINK HERE> for more information.
+Did you start one up? See https://github.com/CPAN-API/cpan-api/wiki/Installation
+for more information.
 EOF
 
 	BAIL_OUT("Test environment not set up properly");
