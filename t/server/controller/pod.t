@@ -37,13 +37,26 @@ test_psgi app, sub {
             );
         }
         
-        ok( $res = $cb->( GET "$k?callback=foo"), "GET $k with callback" );
+        my $ct = $k =~ /Moose[.]pm$/ ? '&content-type=text/x-pod' : '';
+        ok( $res = $cb->( GET "$k?callback=foo$ct"), "GET $k with callback" );
         is( $res->code, $v, "code $v" );
         is( $res->header('content-type'),
             'text/javascript; charset=UTF-8',
             'Content-type'
         );
-        like($res->content, qr/^foo\(/, 'callback included');
+        ok( my( $function_args ) = $res->content =~ /^foo\((.*)\)/s, 'callback included');
+        ok( my $jsdata = decode_json( $function_args ), 'decode json' );
+        if ( $v eq 200 ) {
+            if($ct) {
+                like( $jsdata->{plain}, qr{=head1 NAME}, 'POD body was JSON encoded' );
+            }
+            else {
+                like( $jsdata->{html}, qr{<h1>NAME</h1>}, 'HTML body was JSON encoded' );
+            }
+        }
+        else {
+            is( $jsdata->{message}, 'DOESNEXIST', '404 response body was JSON encoded' );
+        }
     }
 };
 
