@@ -1,7 +1,7 @@
 package MetaCPAN::Server::View::JSONP;
 use Moose;
 use Encode qw(decode_utf8);
-use JSON::XS qw();
+use JSON qw(encode_json);
 extends 'Catalyst::View';
 
 sub process {
@@ -12,7 +12,7 @@ sub process {
     return 1 if($content_type eq 'text/javascript');
     if($content_type ne 'application/json') {
         if(my($key) = $content_type =~ m{^text/(.*)$}) {
-            $body = JSON::XS->new->utf8->encode({ $key => $body });
+            $body = encode_json({ $key => $body });
         }
     }
     $c->res->body( "$cb($body);" );
