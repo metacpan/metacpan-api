@@ -1,0 +1,4 @@
+# A fake https://rt.cpan.org/Public/bugs-per-dist.tsv
+Monkey-Patch	0	0	0	1	0
+Moo	2	5	0	2	1
+Moose	15	20	4	122	23
