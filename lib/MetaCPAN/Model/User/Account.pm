@@ -33,7 +33,19 @@ has access_token => (
 
 has passed_captcha => ( is => 'rw', isa => 'DateTime' );
 
-has looks_human => ( is => 'ro', isa => 'Bool', required => 1, lazy_build => 1 );
+has looks_human =>
+    ( is => 'ro', isa => 'Bool', required => 1, lazy_build => 1 );
+
+after add_identity => sub {
+    my ( $self, $identity ) = @_;
+    if ( $identity->{name} eq 'pause' ) {
+        my $profile = $self->index->model->index('cpan')->type('author')
+            ->get( $identity->{key} );
+        return unless ($profile);
+        $profile->user( $self->id );
+        $profile->put;
+    }
+};
 
 sub _build_looks_human {
     my $self = shift;

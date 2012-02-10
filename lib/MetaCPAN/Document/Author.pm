@@ -99,9 +99,9 @@ has asciiname => (
 has [qw(website email)] =>
     ( is => 'ro', required => 1, isa => ArrayRef, coerce => 1 );
 has pauseid => ( is => 'ro', required => 1, id         => 1 );
+has user    => ( is => 'rw' );
 has dir     => ( is => 'ro', required => 1, lazy_build => 1 );
-has gravatar_url =>
-    ( is => 'ro', lazy_build => 1, isa => NonEmptySimpleStr );
+has gravatar_url => ( is => 'ro', lazy_build => 1, isa => NonEmptySimpleStr );
 has profile => (
     is              => 'ro',
     isa             => Profile,

@@ -2,6 +2,8 @@ package MetaCPAN::Server::Controller;
 use Moose;
 use namespace::autoclean;
 use JSON;
+use List::MoreUtils ();
+use Moose::Util     ();
 
 BEGIN { extends 'Catalyst::Controller'; }
 
@@ -17,36 +19,127 @@ __PACKAGE__->config(
 has type =>
     ( is => 'ro', lazy => 1, default => sub { shift->action_namespace } );
 
+has relationships => (
+    is      => 'ro',
+    isa     => 'HashRef',
+    default => sub { {} },
+    traits  => ['Hash'],
+    handles => { has_relationships => 'count' }
+);
+
 sub mapping : Path('_mapping') {
     my ( $self, $c ) = @_;
-    $c->stash( $c->model('CPAN')
-            ->es->mapping( index => $c->model('CPAN')->index, type => $self->type )
+    $c->stash(
+        $c->model('CPAN')->es->mapping(
+            index => $c->model('CPAN')->index,
+            type  => $self->type
+        )
     );
 }
 
-sub all : Chained('index') : PathPart('') : Args(0) : ActionClass('Deserialize') {
+sub all : Chained('index') : PathPart('') : Args(0) :
+    ActionClass('Deserialize') {
     my ( $self, $c ) = @_;
-    $c->req->params->{q} ||= '*' unless($c->req->data);
+    $c->req->params->{q} ||= '*' unless ( $c->req->data );
     $c->forward('search');
 }
 
 sub search : Path('_search') : ActionClass('Deserialize') {
     my ( $self, $c ) = @_;
     my $req = $c->req;
+
     # shallow copy
-    my $params = {%{$req->params}};
+    my $params = { %{ $req->params } };
     delete $params->{callback};
     eval {
         $c->stash(
             $c->model('CPAN')->es->request(
                 {   method => $req->method,
                     qs     => $params,
-                    cmd    => join( '/', '', $c->model('CPAN')->index, $self->type, '_search' ),
-                    data   => $req->data
+                    cmd    => join( '/',
+                        '',          $c->model('CPAN')->index,
+                        $self->type, '_search' ),
+                    data => $req->data
                 }
             )
         );
     } or do { $self->internal_error( $c, $@ ) };
+}
+
+sub join : ActionClass('Deserialize') {
+    my ( $self, $c ) = @_;
+    my $joins     = $self->relationships;
+    my @req_joins = $c->req->param('join');
+    my $is_get    = ref $c->stash->{hits} ? 0 : 1;
+    my $query
+        = $c->req->params->{q}
+        ? { query => { query_string => { query => $c->req->params->{q} } } }
+        : $c->req->data ? $c->req->data
+        :                 { query => { match_all => {} } };
+    $c->detach(
+        "/not_allowed",
+        [   "unknown join type, valid values are "
+                . Moose::Util::english_list( keys %$joins )
+        ]
+    ) if ( scalar grep { !$joins->{$_} } @req_joins );
+
+    while ( my ( $join, $config ) = each %$joins ) {
+        my $has_many = ref $config->{type};
+        my ($type) = $has_many ? @{ $config->{type} } : $config->{type};
+        my $cself = $config->{self} || $join;
+        next unless ( grep { $_ eq $join } @req_joins );
+        my $data
+            = $is_get
+            ? [ $c->stash ]
+            : [ map { $_->{_source} || $_->{fields} }
+                @{ $c->stash->{hits}->{hits} } ];
+        my @ids = List::MoreUtils::uniq grep {defined}
+            map { ref $cself eq 'CODE' ? $cself->($_) : $_->{$cself} } @$data;
+        my $filter = { terms => { $config->{foreign} => [@ids] } };
+        my $filtered = {%$query}; # don't work on $query
+        $filtered->{filter}
+            = $query->{filter}
+            ? { and => [ $filter, $query->{filter} ] }
+            : $filter;
+        my $foreign = $c->model("CPAN::$type")->query( $filtered->{query} )
+            ->filter( $filtered->{filter} )->size(1000)->raw->all;
+        $c->detach(
+            "/not_allowed",
+            [   "The number of joined documents exceeded the allowed number of 1000 documents by "
+                    . ( $foreign->{hits}->{total} - 1000 )
+                    . ". Please reduce the number of documents or apply additional filters."
+            ]
+        ) if ( $foreign->{hits}->{total} > 1000 );
+        $c->stash->{took} += $foreign->{took} unless ($is_get);
+
+        if ($has_many) {
+            my $many;
+            for ( @{ $foreign->{hits}->{hits} } ) {
+                my $list = $many->{ $_->{_source}->{ $config->{foreign} } }
+                    ||= [];
+                push( @$list, $_ );
+            }
+            $foreign = $many;
+        }
+        else {
+            $foreign = { map { $_->{_source}->{ $config->{foreign} } => $_ }
+                    @{ $foreign->{hits}->{hits} } };
+        }
+        for (@$data) {
+            my $key = ref $cself eq 'CODE' ? $cself->($_) : $_->{$cself};
+            next unless ($key);
+            my $result = $foreign->{$key};
+            $_->{$join}
+                = $has_many
+                ? {
+                hits => {
+                    hits  => $result,
+                    total => scalar @{ $result || [] }
+                }
+                }
+                : $result;
+        }
+    }
 }
 
 sub not_found : Private {
@@ -69,5 +162,56 @@ sub internal_error {
     }
 }
 
+sub end : Private {
+    my ( $self, $c ) = @_;
+    $c->forward("join")
+        if ( $self->has_relationships && $c->req->param('join') );
+    $c->forward("/end");
+}
 
 __PACKAGE__->meta->make_immutable;
+
+__END__
+
+=head1 ATTRIBUTES
+
+=head2 relationships
+
+ MetaCPAN::Server::Controller::Author->config(
+     relationships => {
+         release => {
+             type    => ['Release'],
+             self    => 'pauseid',
+             foreign => 'author',
+         }
+     }
+ );
+
+Contains a HashRef of relationships with other controllers.
+If C<type> is an ArrayRef, the relationship is considered a
+I<has many> relationship.
+
+Unless a C<self> exists, the name of the relationship is used
+as key to join on. C<self> can also be a CodeRef, if the foreign
+key is build from several local keys. In this case, again the name of
+the relationship is used as key in the result.
+
+C<foreign> refers to the foreign key on the C<type> controller the data
+is joined with.
+
+=head1 ACTIONS
+
+=head2 join
+
+This action is called if the controller has L</relationships> defined
+and if one or more C<join> query parameters are defined. It then
+does a I<left join> based on the information provided by
+L</relationships>.
+
+This works both for GET requests, where only one document is requested
+and search requests, where a number of documents is returned.
+It also passes through search data (either the C<q> query string or
+the request body).
+
+B<The number of documents that can be joined is limited to 1000 per
+relationship for now.>

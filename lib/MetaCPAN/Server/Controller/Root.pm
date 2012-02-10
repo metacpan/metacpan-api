@@ -10,15 +10,19 @@ sub default : Path {
 }
 
 sub not_found : Private {
-    my ( $self, $c ) = @_;
-    $c->stash( { message => 'Not found' } );
+    my ( $self, $c, $message ) = @_;
+    $c->clear_stash;
+    $c->stash( { message => $message || 'Not found' } );
     $c->response->status(404);
+    $c->detach("/end");
 }
 
 sub not_allowed : Private {
-    my ( $self, $c ) = @_;
-    $c->stash( { message => 'Not allowed' } );
+    my ( $self, $c, $message ) = @_;
+    $c->clear_stash;
+    $c->stash( { message => $message || 'Not allowed' } );
     $c->response->status(403);
+    $c->detach("/end");
 }
 
 sub end : ActionClass('RenderView') {

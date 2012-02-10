@@ -7,6 +7,7 @@ use warnings;
 use Plack::Test;
 use HTTP::Request::Common qw(POST GET DELETE);
 use JSON::XS;
+use Test::More;
 use base 'Exporter';
 our @EXPORT = qw(POST GET DELETE test_psgi app encode_json decode_json);
 
@@ -14,16 +15,21 @@ BEGIN { $ENV{METACPAN_SERVER_CONFIG_LOCAL_SUFFIX} = 'testing'; }
 
 $FindBin::RealBin .= '/some';
 my $app = require MetaCPAN::Server;
-MetaCPAN::Server->model('User::Account')->put(
-    {   identity     => [ { name   => 'pause',   key   => 'MO' } ],
-        access_token => [ { client => 'testing', token => 'testing' } ]
-    },
-    { refresh => 1 }
+ok( my $user = MetaCPAN::Server->model('User::Account')->put(
+        { access_token => [ { client => 'testing', token => 'testing' } ] }
+    ),
+    'prepare user'
 );
+ok( $user->add_identity( { name => 'pause', key => 'MO' } ),
+    'add pause identity' );
+ok( $user->put( { refresh => 1 } ), 'put user' );
 
-MetaCPAN::Server->model('User::Account')
-    ->put( { access_token => [ { client => 'testing', token => 'bot' } ] },
-    { refresh => 1 } );
+ok( MetaCPAN::Server->model('User::Account')->put(
+        { access_token => [ { client => 'testing', token => 'bot' } ] },
+        { refresh      => 1 }
+    ),
+    'put bot user'
+);
 sub app {$app}
 
 1;
