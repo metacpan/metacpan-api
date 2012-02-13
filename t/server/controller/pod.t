@@ -50,17 +50,17 @@ test_psgi app, sub {
             'Content-type'
         );
         ok( my( $function_args ) = $res->content =~ /^foo\((.*)\)/s, 'callback included');
-        ok( my $jsdata = decode_json( $function_args ), 'decode json' );
+        ok( my $jsdata = JSON->new->allow_nonref->decode( $function_args ), 'decode json' );
         if ( $v eq 200 ) {
             if($ct) {
-                like( $jsdata->{plain}, qr{=head1 NAME}, 'POD body was JSON encoded' );
+                like( $jsdata, qr{=head1 NAME}, 'POD body was JSON encoded' );
             }
             else {
-                like( $jsdata->{html}, qr{<h1>NAME</h1>}, 'HTML body was JSON encoded' );
+                like( $jsdata, qr{<h1 id="NAME">NAME</h1>}, 'HTML body was JSON encoded' );
             }
         }
         else {
-            is( $jsdata->{message}, 'DOESNEXIST', '404 response body was JSON encoded' );
+            ok( $jsdata->{message}, 'error response body was JSON encoded' );
         }
     }
 };
