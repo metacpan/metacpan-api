@@ -25,6 +25,7 @@ sub get : Chained('index') : PathPart('') : Args {
         $c->res->body( $res->[2]->[0] );
     }
     else {
+        $c->stash->{path} = $file;
         $c->res->content_type('text/plain');
         $c->res->body( $file->openr );
     }

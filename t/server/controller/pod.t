@@ -1,8 +1,12 @@
-
 use strict;
 use warnings;
 use Test::More;
+use Path::Class qw(file);
 use MetaCPAN::Server::Test;
+
+my $fh = file('var/tmp/source/DOY/Moose-0.02/Moose-0.02/binary.bin')->openw;
+print $fh "\x00" x 10;
+$fh->close;
 
 my %tests = (
 
@@ -11,6 +15,7 @@ my %tests = (
     '/pod/DOESNEXIST'                  => 404,
     '/pod/Moose'                       => 200,
     '/pod/DOY/Moose-0.01/lib/Moose.pm' => 200,
+    '/pod/DOY/Moose-0.02/binary.bin'   => 400,
     '/pod/Pod::Pm'                     => 200,
 );
 
