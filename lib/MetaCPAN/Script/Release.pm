@@ -343,12 +343,18 @@ sub import_tarball {
                 : 0
             ) unless ( $mod->indexed );
         }
-        $file->indexed( !!grep { $file->documentation eq $_->name }
-                @{ $file->module } )
-            if ( $file->documentation );
+        $file->indexed(
+
+            # .pm file with no package declaration but pod should be indexed
+            !@{ $file->module } ||
+
+           # don't index if the documentation doesn't match any of its modules
+                !!grep { $file->documentation eq $_->name } @{ $file->module }
+        ) if ( $file->documentation );
         log_trace {"reindexing file $file->{path}"};
         $file->clear_module if ( $file->is_pod_file );
         $bulk->put($file);
+
     }
     $bulk->commit;
 

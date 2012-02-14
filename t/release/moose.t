@@ -16,4 +16,12 @@ map { $first++ } grep { $_->first } @moose;
 
 ok($first, 'only one moose is first');
 
+ok(my $faq = $idx->type('file')->filter({
+    term => { 'file.documentation' => 'Moose::FAQ' }
+})->first, 'get Moose::FAQ');
+
+is($faq->status, 'latest', 'is latest');
+
+ok($faq->indexed, 'is indexed');
+
 done_testing;

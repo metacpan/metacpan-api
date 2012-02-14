@@ -11,6 +11,10 @@
     {
         "file": "t/foo.t",
         "content": "use Test::More;"
-    } ]
+    },
+    {
+        "file": "lib/Moose/FAQ.pm",
+        "content": "1; \n\n=head1 NAME\n\nMoose::FAQ - abstract"
+    }]
   }
 }
