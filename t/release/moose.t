@@ -32,4 +32,11 @@ ok(my $binary = $idx->type('file')->filter({
 
 ok($binary->binary, 'is binary');
 
+ok(my $ppport = $idx->type('file')->filter({
+    term => { 'file.documentation' => 'ppport.h' }
+})->first, 'get ppport.h');
+
+is($ppport->name, 'ppphdoc', 'name doesn\'t contain a dot');
+
+
 done_testing;

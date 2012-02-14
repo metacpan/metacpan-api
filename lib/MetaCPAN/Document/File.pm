@@ -246,8 +246,9 @@ has content_cb => (
 =head2 is_perl_file
 
 Return true if the file extension is one of C<pl>, C<pm>, C<pod>, C<t>
-or if the file has no extension and the shebang line contains the
-term C<perl>.
+or if the file has no extension, is not a binary file and its size is less
+than 131072 bytes. This is an arbitrary limit but it keeps the pod parser
+happy and the indexer fast.
 
 =head2 is_pod_file
 
@@ -260,6 +261,7 @@ sub is_perl_file {
     return 0 if ( $self->directory );
     return 1 if ( $self->name =~ /\.(pl|pm|pod|t)$/i );
     return 1 if ( $self->mime eq "text/x-script.perl" );
+    return 1 if($self->name !~ /\./ && !$self->binary && $self->stat->{size} < 2**17);
     return 0;
 }
 
