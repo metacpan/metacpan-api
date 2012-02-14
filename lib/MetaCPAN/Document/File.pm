@@ -165,6 +165,7 @@ has documentation => (
 );
 has date => ( is => 'ro', required => 1, isa => 'DateTime' );
 has stat => ( is => 'ro', isa => Stat, required => 0, dynamic => 1 );
+has binary => ( is => 'ro', isa => 'Bool', required => 1, default => 0 );
 has sloc => ( is => 'ro', required => 1, isa => 'Int', lazy_build => 1 );
 has slop =>
     ( is => 'ro', required => 1, isa => 'Int', is => 'rw', lazy_build => 1 );

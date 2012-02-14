@@ -256,6 +256,7 @@ sub import_tarball {
                     maturity     => $d->maturity,
                     status       => $release->status,
                     indexed      => 1,
+                    binary       => -B $child,
                     content_cb   => sub { \( scalar $child->slurp ) },
                 }
             );

@@ -24,4 +24,12 @@ is($faq->status, 'latest', 'is latest');
 
 ok($faq->indexed, 'is indexed');
 
+ok(!$faq->binary, 'is not binary');
+
+ok(my $binary = $idx->type('file')->filter({
+    term => { 'file.name' => 't' }
+})->first, 'get a t/ directory');
+
+ok($binary->binary, 'is binary');
+
 done_testing;
