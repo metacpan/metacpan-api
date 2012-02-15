@@ -261,7 +261,10 @@ sub is_perl_file {
     return 0 if ( $self->directory );
     return 1 if ( $self->name =~ /\.(pl|pm|pod|t)$/i );
     return 1 if ( $self->mime eq "text/x-script.perl" );
-    return 1 if($self->name !~ /\./ && !$self->binary && $self->stat->{size} < 2**17);
+    return 1
+        if ( $self->name !~ /\./
+        && !$self->binary
+        && $self->stat->{size} < 2**17 );
     return 0;
 }
 
@@ -438,11 +441,15 @@ my @ROGUE_DISTRIBUTIONS
 
 sub find {
     my ( $self, $module ) = @_;
-    return $self->filter(
+    my @candidates = $self->filter(
         {   and => [
-                { term => { 'documentation' => $module } },
-                { term => { 'file.indexed'  => \1, } },
-                { term => { status          => 'latest', } },
+                {   or => [
+                        { term => { 'file.module.name'   => $module } },
+                        { term => { 'file.documentation' => $module } },
+                    ]
+                },
+                { term => { 'file.indexed' => \1, } },
+                { term => { status         => 'latest', } },
                 {   not =>
                         { filter => { term => { 'file.authorized' => \0 } } }
                 },
@@ -453,7 +460,58 @@ sub find {
             'mime',
             { 'stat.mtime' => { order => 'desc' } }
         ]
-        )->first;
+        )->all;
+
+    my ($file) = grep {
+        grep { $_->indexed && $_->authorized && $_->name eq $module }
+            @{ $_->module || [] }
+    } @candidates;
+
+    # REINDEX: after a full reindex, the rest of the sub can be replaced with
+    # return $file ? $file : shift @candidates;
+    return shift @candidates unless ($file);
+
+    ($module) = grep { $_->name eq $module } @{ $file->module };
+    return $file if ( $module->associated_pod );
+
+    # if there is a .pod file in the same release, we use that instead
+    if (my ($pod) = grep {
+                   $_->release eq $file->release
+                && $_->author  eq $file->author
+                && $_->is_pod_file
+        } @candidates
+        )
+    {
+        $module->associated_pod(
+            join( "/", map { $pod->$_ } qw(author release path) ) );
+    }
+    return $file;
+}
+
+sub find_pod {
+    my ( $self, $module ) = @_;
+    my @files = $self->filter(
+        {   and => [
+                { term => { 'file.documentation' => $module } },
+                { term => { 'file.indexed'       => \1, } },
+                { term => { status               => 'latest', } },
+                {   not =>
+                        { filter => { term => { 'file.authorized' => \0 } } }
+                },
+            ]
+        }
+        )->sort(
+        [   { 'date' => { order => "desc" } },
+            'mime',
+            { 'stat.mtime' => { order => 'desc' } }
+        ]
+        )->all;
+    my ($file) = grep { $_->is_pod_file } @files;
+    ($file) = grep {
+        grep { $_->indexed && $_->authorized && $_->name eq $module }
+            @{ $_->module || [] }
+    } @files unless($file);
+    return $file ? $file : shift @files;
 }
 
 # return files that contain modules that match the given dist
@@ -513,6 +571,7 @@ sub prefix {
                                                 }
                                                 }
                                             } @ROGUE_DISTRIBUTIONS
+
                                     ]
                                 }
                             }
