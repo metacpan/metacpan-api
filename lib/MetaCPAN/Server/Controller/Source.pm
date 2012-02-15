@@ -33,9 +33,8 @@ sub get : Chained('index') : PathPart('') : Args {
 
 sub module : Chained('index') : PathPart('') : Args(1) {
     my ( $self, $c, $module ) = @_;
-    $c->forward('/module/get', [$module]);
-    $module = $c->stash;
-    $c->forward( 'get', [ @$module{qw(author release path)} ] );
+    $module = $c->model('CPAN::File')->find_pod($module) or $c->detach('/not_found');
+    $c->forward( 'get', [ map { $module->$_ } qw(author release path) ] );
 }
 
 1;
