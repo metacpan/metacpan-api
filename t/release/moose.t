@@ -38,5 +38,8 @@ ok(my $ppport = $idx->type('file')->filter({
 
 is($ppport->name, 'ppphdoc', 'name doesn\'t contain a dot');
 
+ok(my $moose = $idx->type('file')->find('Moose'), 'find Moose module');
+
+is($moose->name, 'Moose.pm', 'defined in Moose.pm');
 
 done_testing;
