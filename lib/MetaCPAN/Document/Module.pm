@@ -69,6 +69,10 @@ has version_numified =>
 has indexed    => ( is => 'rw', required => 1, isa => 'Bool', default => 0 );
 has authorized => ( is => 'ro', required => 1, isa => 'Bool', default => 1 );
 
+# REINDEX: make 'ro' once a full reindex has been done
+has associated_pod => ( required => 0, is => 'rw' );
+
+
 sub _build_version_numified {
     my $self = shift;
     return 0 unless ( $self->version );

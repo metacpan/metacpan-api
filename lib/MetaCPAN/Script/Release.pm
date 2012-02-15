@@ -278,12 +278,17 @@ sub import_tarball {
     foreach my $file (@files) {
         my $obj = $file_set->new_document($file);
         $bulk->put($obj);
-        $file->{$_} = $obj->$_ for (qw(abstract id pod sloc pod_lines));
+        $file->{$_} = $obj->$_ for (qw(abstract id pod sloc pod_lines documentation));
         $file->{module} = [];
     }
     $bulk->commit;
 
     log_debug {"Gathering modules"};
+
+    # build module -> pod file mapping
+    # delete $file->{documentation} for it to be rebuild
+    my %associated_pod = map { delete $_->{documentation} => $_ }
+        grep { $_->{indexed} && $_->{documentation} } @files;
 
     # find modules
     my @modules;
@@ -336,6 +341,11 @@ sub import_tarball {
     foreach my $file (@modules) {
         $file = MetaCPAN::Document::File->new( %$file, index => $cpan );
         foreach my $mod ( @{ $file->module } ) {
+            if ( my $pod = $associated_pod{ $mod->name } ) {
+                $mod->associated_pod(
+                    join( "/", map { $pod->{$_} } qw(author release path) ) )
+                    if ( $pod->{path} ne $file->path );
+            }
             $mod->indexed(
                   $meta->should_index_package( $mod->name )
                 ? $mod->hide_from_pause( ${ $file->content } )
