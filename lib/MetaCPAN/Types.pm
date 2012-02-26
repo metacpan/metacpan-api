@@ -78,4 +78,10 @@ coerce Logger, from ArrayRef, via {
 MooseX::Getopt::OptionTypeMap->add_option_type_to_map(
     'MooseX::Types::ElasticSearch::ES' => '=s'
 );
+
+use MooseX::Attribute::Deflator;
+deflate 'ScalarRef', via {$$_};
+inflate 'ScalarRef', via { \$_ };
+no MooseX::Attribute::Deflator;
+
 1;
