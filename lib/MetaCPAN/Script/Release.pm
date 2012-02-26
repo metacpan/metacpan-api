@@ -20,7 +20,7 @@ use File::stat            ('stat');
 use CPAN::DistnameInfo    ();
 use File::Spec::Functions ( 'tmpdir', 'catdir' );
 use File::Find            ();
-use File::stat ();
+use File::stat            ();
 use MetaCPAN::Script::Latest;
 use DateTime::Format::Epoch::Unix;
 use File::Find::Rule;
@@ -65,6 +65,13 @@ has detect_backpan => (
 );
 has backpan_index => ( is => 'ro', lazy_build => 1 );
 
+has perms => (
+    is         => 'ro',
+    isa        => 'HashRef',
+    lazy_build => 1,
+    traits     => ['NoGetopt']
+);
+
 sub run {
     my $self = shift;
     my ( undef, @args ) = @{ $self->extra_argv };
@@ -76,7 +83,12 @@ sub run {
                 qr/\.(tgz|tbz|tar[\._-]gz|tar\.bz2|tar\.Z|zip|7z)$/);
             $find = $find->mtime( ">" . ( time - $self->age * 3600 ) )
                 if ( $self->age );
-		    push( @files, map { $_->{file}} sort { $a->{mtime} <=> $b->{mtime} } map { +{ file => $_, mtime => File::stat::stat($_)->mtime } } $find->in($_) );
+            push(
+                @files,
+                map { $_->{file} } sort { $a->{mtime} <=> $b->{mtime} } map {
+                    +{ file => $_, mtime => File::stat::stat($_)->mtime }
+                    } $find->in($_)
+            );
         }
         elsif ( -f $_ ) {
             push( @files, $_ );
@@ -166,7 +178,7 @@ sub import_tarball {
     # load Archive::Any in the child due to bugs in MMagic and MIME::Types
     require Archive::Any;
     my $at = Archive::Any->new($tarball);
-	    my $tmpdir = dir( File::Temp::tempdir( CLEANUP => 0 ) );
+    my $tmpdir = dir( File::Temp::tempdir( CLEANUP => 0 ) );
 
     # TODO: add release to the index with status => 'broken' and move along
     log_error {"$tarball is being naughty"}
@@ -278,7 +290,8 @@ sub import_tarball {
     foreach my $file (@files) {
         my $obj = $file_set->new_document($file);
         $bulk->put($obj);
-        $file->{$_} = $obj->$_ for (qw(abstract id pod sloc pod_lines documentation));
+        $file->{$_} = $obj->$_
+            for (qw(abstract id pod sloc pod_lines documentation));
         $file->{module} = [];
     }
     $bulk->commit;
@@ -337,7 +350,9 @@ sub import_tarball {
     }
     log_debug { "Indexing ", scalar @modules, " modules" };
     $i = 1;
+    my $perms = $self->perms;
     my $mod_set = $cpan->type('module');
+    my @release_unauthorized;
     foreach my $file (@modules) {
         $file = MetaCPAN::Document::File->new( %$file, index => $cpan );
         foreach my $mod ( @{ $file->module } ) {
@@ -363,11 +378,22 @@ sub import_tarball {
                 !!grep { $file->documentation eq $_->name } @{ $file->module }
         ) if ( $file->documentation );
         log_trace {"reindexing file $file->{path}"};
+        push(@release_unauthorized, $file->set_authorized($perms)) if(keys %$perms);
         $file->clear_module if ( $file->is_pod_file );
         $bulk->put($file);
-
     }
     $bulk->commit;
+    if (@release_unauthorized) {
+        log_info {
+            "release "
+                . $release->name
+                . " contains unauthorized modules: "
+                . join( ",", map { $_->name } @release_unauthorized );
+        };
+        $release->authorized(0);
+        $release->put;
+    }
+
 
     $tmpdir->rmtree;
 
@@ -390,6 +416,7 @@ sub load_meta_file {
     my $file;
     for (qw{*/META.json */META.yml */META.yaml META.json META.yml META.yaml})
     {
+
         # scalar context globbing (without exhausting results) produces
         # confusing results (which caused existsing */META.json files to
         # get skipped).  using list context seems more reliable.
@@ -470,6 +497,25 @@ sub detect_status {
         log_debug {'BackPAN detected'};
         return 'backpan';
     }
+}
+
+sub _build_perms {
+    my $self = shift;
+    my $file = $self->cpan->file(qw(modules 06perms.txt));
+    unless(-e $file) {
+        log_warn {"$file could not be found. All modules are assumed authorized."};
+        return {};
+    }
+    log_info { "parsing ", $file };
+    my $fh = $file->openr;
+    my %authors;
+    while ( my $line = <$fh> ) {
+        my ( $module, $author, $type ) = split( /,/, $line );
+        next unless ($type);
+        $authors{$module} ||= [];
+        push( @{ $authors{$module} }, $author );
+    }
+    return \%authors;
 }
 
 1;

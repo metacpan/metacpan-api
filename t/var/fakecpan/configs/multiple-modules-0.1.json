@@ -13,6 +13,10 @@
         "content": "package Multiple::Modules::Deprecated;\n\n=head1 NAME\n\nMultiple::Modules::Deprecated - Will be removed in a future release\n"
     },
     {
+        "file": "lib/Moose.pm",
+        "content": "package Moose;\n\n=head1 NAME\n\nMoose - Unauthorized\n"
+    },
+    {
         "file": "t/foo.t",
         "content": "use Test::More;"
     } ]

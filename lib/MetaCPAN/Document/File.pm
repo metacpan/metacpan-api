@@ -195,7 +195,7 @@ has abstract =>
 has description =>
     ( is => 'ro', required => 1, lazy_build => 1, index => 'analyzed' );
 has status => ( is => 'ro', required => 1, default => 'cpan' );
-has authorized => ( required => 1, is => 'ro', isa => 'Bool', default => 1 );
+has authorized => ( required => 1, is => 'rw', isa => 'Bool', default => 1 );
 has maturity => ( is => 'ro', required => 1, default => 'released' );
 has directory => ( is => 'ro', required => 1, isa => 'Bool', default => 0 );
 has level => ( is => 'ro', required => 1, isa => 'Int', lazy_build => 1 );
@@ -430,6 +430,48 @@ sub _build_pod {
     return \$text;
 }
 
+=head2 set_authorized
+
+Expects a C<$perms> parameter which is a HashRef. The key is the module name
+and the value an ArrayRef of author names who are allowed to release
+that module.
+
+The method returns a list of unauthorized, but indexed modules.
+
+Unauthorized modules are modules that were uploaded in the name of a
+different author than stated in the C<06perms.txt.gz> file. One problem
+with this file is, that it doesn't record historical data. It may very
+well be that an author was authorized to upload a module at the time.
+But then his co-maintainer rights might have been revoked, making consecutive
+uploads of that release unauthorized. However, since this script runs
+with the latest version of C<06perms.txt.gz>, the former upload will
+be flagged as unauthorized as well. Same holds the other way round,
+a previously unauthorized release would be flagged authorized if the
+co-maintainership was added later on.
+
+If a release contains unauthorized modules, the whole release is marked
+as unauthorized as well.
+
+=cut
+
+sub set_authorized {
+    my ( $self, $perms ) = @_;
+    # only authorized perl distributions make it into the CPAN
+    return () if ( $self->distribution eq 'perl' );
+    foreach my $module ( @{ $self->module } ) {
+        $module->authorized(0)
+            if ( $perms->{ $module->name } && !grep { $_ eq $self->author }
+            @{ $perms->{ $module->name } } );
+    }
+    $self->authorized(0)
+        if ( $self->authorized
+        && $self->documentation
+        && $perms->{ $self->documentation }
+        && !grep { $_ eq $self->author }
+        @{ $perms->{ $self->documentation } } );
+    return grep { !$_->authorized && $_->indexed } @{ $self->module };
+}
+
 __PACKAGE__->meta->make_immutable;
 
 package MetaCPAN::Document::File::Set;
@@ -510,7 +552,7 @@ sub find_pod {
     ($file) = grep {
         grep { $_->indexed && $_->authorized && $_->name eq $module }
             @{ $_->module || [] }
-    } @files unless($file);
+    } @files unless ($file);
     return $file ? $file : shift @files;
 }
 

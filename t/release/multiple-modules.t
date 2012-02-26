@@ -65,4 +65,25 @@ ok(!$release->first, 'Release is not first');
     }
 }
 
+$release = $idx->type('release')->get(
+    {   author => 'LOCAL',
+        name   => 'Multiple-Modules-0.1'
+    }
+);
+
+ok(my $file = $idx->type('file')->filter(
+    {   and => [
+            { term => { release       => 'Multiple-Modules-0.1' } },
+            { term => { documentation => 'Moose' } }
+        ]
+    }
+)->first, 'get Moose.pm');
+
+ok( my ($moose) = ( grep { $_->name eq 'Moose' } @{ $file->module } ),
+    'grep Moose module' );
+
+ok( !$moose->authorized, 'Moose is not authorized' );
+
+ok( !$release->authorized, 'release is not authorized' );
+
 done_testing;
