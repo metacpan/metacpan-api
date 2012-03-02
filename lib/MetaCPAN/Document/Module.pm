@@ -72,7 +72,6 @@ has authorized => ( is => 'rw', required => 1, isa => 'Bool', default => 1 );
 # REINDEX: make 'ro' once a full reindex has been done
 has associated_pod => ( required => 0, is => 'rw' );
 
-
 sub _build_version_numified {
     my $self = shift;
     return 0 unless ( $self->version );
@@ -92,6 +91,25 @@ sub hide_from_pause {
       \h*                   # optional whitesapce
       ;                     # semicolon line terminator
     /mx ? 0 : 1;
+}
+
+=head2 set_associated_pod
+
+Expects an instance C<$file> of L<MetaCPAN::Document::File> as first parameter
+and a HashRef C<$pod> which contains all files with a L<MetaCPAN::Document::File/documentation>
+and maps those to the file names.
+
+L</associated_pod> is set to the path of the file, which contains the documentation.
+
+=cut
+
+sub set_associated_pod {
+    my ( $self, $file, $associated_pod ) = @_;
+    if ( my $pod = $associated_pod->{ $self->name } ) {
+        $self->associated_pod(
+            join( "/", map { $pod->{$_} } qw(author release path) ) )
+            if ( $pod->{path} ne $file->path );
+    }
 }
 
 __PACKAGE__->meta->make_immutable;

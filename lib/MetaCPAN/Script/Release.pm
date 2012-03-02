@@ -352,25 +352,20 @@ sub import_tarball {
         }
     }
     log_debug { "Indexing ", scalar @modules, " modules" };
-    $i = 1;
     my $perms = $self->perms;
-    my $mod_set = $cpan->type('module');
     my @release_unauthorized;
     foreach my $file (@modules) {
-        $file = MetaCPAN::Document::File->new( %$file, index => $cpan );
-        foreach my $mod ( @{ $file->module } ) {
-            if ( my $pod = $associated_pod{ $mod->name } ) {
-                $mod->associated_pod(
-                    join( "/", map { $pod->{$_} } qw(author release path) ) )
-                    if ( $pod->{path} ne $file->path );
-            }
-        }
+        $file = $cpan->type('file')->new_document($file);
+        $_->set_associated_pod( $file, \%associated_pod )
+            for ( @{ $file->module } );
         $file->set_indexed($meta);
-        push(@release_unauthorized, $file->set_authorized($perms)) if(keys %$perms);
+        push( @release_unauthorized, $file->set_authorized($perms) )
+            if ( keys %$perms );
         $file->clear_module if ( $file->is_pod_file );
         log_trace {"reindexing file $file->{path}"};
         $bulk->put($file);
     }
+
     $bulk->commit;
     if (@release_unauthorized) {
         log_info {
