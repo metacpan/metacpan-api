@@ -90,8 +90,7 @@ set to C<undef>.
 B<Default 0>
 
 Indicates whether the file should be included in the search index or
-not. If the L</documentation> refers to an unindexed module in
-L</module>, the file is considered unindexed.
+not. See L</set_indexed> for a more verbose explanation.
 
 =head2 level
 
@@ -428,6 +427,47 @@ sub _build_pod {
     $parser->parse_string_document( ${ $self->content } );
     $text =~ s/\s+/ /g;
     return \$text;
+}
+
+=head2 set_indexed
+
+Expects a C<$meta> parameter which is an instance of L<CPAN::Meta>.
+
+For each package (L</module>) in the file and based on L<CPAN::Meta/should_index_package>
+it is decided, whether the module should have a true L</indexed> attribute.
+If L<CPAN::Meta/should_index_package> returns true but the package declaration
+uses the I<hide from PAUSE> hack, the L</indexed> property is set to false.
+
+ package # hide from PAUSE
+   MyTest::Module;
+ # will result in indexed => 0
+
+Once that is done, the L</indexed> property of the file is determined by searching
+the list of L<modules|/module> for a module that matches the value of L</documentation>.
+If there is no such module, the L</indexed> property is set to false. If the file
+does not include any modules, the L</indexed> property is true.
+
+=cut
+
+sub set_indexed {
+    my ($self, $meta) = @_;
+    foreach my $mod ( @{ $self->module } ) {
+        $mod->indexed(
+              $meta->should_index_package( $mod->name )
+            ? $mod->hide_from_pause( ${ $self->content } )
+                    ? 0
+                    : 1
+            : 0
+        ) unless ( $mod->indexed );
+    }
+    $self->indexed(
+
+        # .pm file with no package declaration but pod should be indexed
+        !@{ $self->module } ||
+
+       # don't index if the documentation doesn't match any of its modules
+            !!grep { $self->documentation eq $_->name } @{ $self->module }
+    ) if ( $self->documentation );
 }
 
 =head2 set_authorized

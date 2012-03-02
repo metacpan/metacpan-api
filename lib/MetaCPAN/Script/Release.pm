@@ -364,25 +364,11 @@ sub import_tarball {
                     join( "/", map { $pod->{$_} } qw(author release path) ) )
                     if ( $pod->{path} ne $file->path );
             }
-            $mod->indexed(
-                  $meta->should_index_package( $mod->name )
-                ? $mod->hide_from_pause( ${ $file->content } )
-                        ? 0
-                        : 1
-                : 0
-            ) unless ( $mod->indexed );
         }
-        $file->indexed(
-
-            # .pm file with no package declaration but pod should be indexed
-            !@{ $file->module } ||
-
-           # don't index if the documentation doesn't match any of its modules
-                !!grep { $file->documentation eq $_->name } @{ $file->module }
-        ) if ( $file->documentation );
-        log_trace {"reindexing file $file->{path}"};
+        $file->set_indexed($meta);
         push(@release_unauthorized, $file->set_authorized($perms)) if(keys %$perms);
         $file->clear_module if ( $file->is_pod_file );
+        log_trace {"reindexing file $file->{path}"};
         $bulk->put($file);
     }
     $bulk->commit;
