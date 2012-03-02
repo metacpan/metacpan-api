@@ -190,6 +190,7 @@ sub import_tarball {
     log_debug {"Extracting archive to filesystem"};
     $at->extract($tmpdir);
 
+    # fixme
     my $date    = $self->pkg_datestamp($tarball);
     my $version = MetaCPAN::Util::fix_version( $d->version );
     my $meta    = CPAN::Meta->new(
@@ -264,7 +265,7 @@ sub import_tarball {
                     date         => $date,
                     distribution => $d->dist,
                     author       => $author,
-                    full_path    => $child,
+                    local_path   => $child,
                     path         => $fpath,
                     version      => $d->version,
                     stat         => $stat,
@@ -291,40 +292,36 @@ sub import_tarball {
     my $file_set = $cpan->type('file');
     my $bulk     = $cpan->bulk( size => 10 );
     foreach my $file (@files) {
-        my $obj = $file_set->new_document($file);
-        $bulk->put($obj);
-        $file->{$_} = $obj->$_
-            for (qw(abstract id pod sloc pod_lines documentation));
-        $file->{module} = [];
+        $file = $file_set->new_document($file);
+        $bulk->put($file);
     }
     $bulk->commit;
 
     log_debug {"Gathering modules"};
 
     # build module -> pod file mapping
-    # delete $file->{documentation} for it to be rebuild
-    my %associated_pod = map { delete $_->{documentation} => $_ }
-        grep { $_->{indexed} && $_->{documentation} } @files;
+    # $file->clear_documentation to force a rebuild
+    my %associated_pod = map { $_->clear_documentation => $_ }
+        grep { $_->indexed && $_->documentation } @files;
 
     # find modules
     my @modules;
-    if ( keys %{ $meta->provides } && ( my $provides = $meta->provides ) ) {
-        while ( my ( $module, $data ) = each %$provides ) {
+    if ( my %provides = %{ $meta->provides } ) {
+        while ( my ( $module, $data ) = each %provides ) {
             my $path = $data->{file};
             my $file
-                = List::Util::first { $_->{path} =~ /\Q$path\E$/ } @files;
-            push(
-                @{ $file->{module} },
+                = List::Util::first { $_->path =~ /\Q$path\E$/ } @files;
+            $file->add_module(
                 {   name    => $module,
                     version => $data->{version},
-                    indexed => 1
+                    indexed => 1,
                 }
             );
             push( @modules, $file );
         }
     }
     else {
-        @files = grep { $_->{name} =~ /\.pm$/ } grep { $_->{indexed} } @files;
+        @files = grep { $_->name =~ /\.pm$/ } grep { $_->indexed } @files;
         foreach my $file (@files) {
             eval {
                 local $SIG{'ALRM'} = sub {
@@ -336,10 +333,9 @@ sub import_tarball {
                 {
                     local $SIG{__WARN__} = sub { };
                     $info = Module::Metadata->new_from_file(
-                        $file->{full_path} );
+                        $file->local_path );
                 }
-                push(
-                    @{ $file->{module} },
+                $file->add_module(
                     {   name => $_,
                         defined $info->version($_)
                         ? ( version => $info->version($_)->stringify )
@@ -355,7 +351,6 @@ sub import_tarball {
     my $perms = $self->perms;
     my @release_unauthorized;
     foreach my $file (@modules) {
-        $file = $cpan->type('file')->new_document($file);
         $_->set_associated_pod( $file, \%associated_pod )
             for ( @{ $file->module } );
         $file->set_indexed($meta);
@@ -377,7 +372,6 @@ sub import_tarball {
         $release->authorized(0);
         $release->put;
     }
-
 
     $tmpdir->rmtree;
 
@@ -486,8 +480,10 @@ sub detect_status {
 sub _build_perms {
     my $self = shift;
     my $file = $self->cpan->file(qw(modules 06perms.txt));
-    unless(-e $file) {
-        log_warn {"$file could not be found. All modules are assumed authorized."};
+    unless ( -e $file ) {
+        log_warn {
+            "$file could not be found. All modules are assumed authorized."
+        };
         return {};
     }
     log_info { "parsing ", $file };

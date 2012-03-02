@@ -152,7 +152,9 @@ has module => (
     type            => 'nested',
     include_in_root => 1,
     coerce          => 1,
-    clearer         => 'clear_module'
+    clearer         => 'clear_module',
+    lazy            => 1,
+    default         => sub {[]},
 );
 has documentation => (
     required   => 1,
@@ -160,7 +162,8 @@ has documentation => (
     lazy_build => 1,
     index      => 'analyzed',
     predicate  => 'has_documentation',
-    analyzer   => [qw(standard camelcase lowercase)]
+    analyzer   => [qw(standard camelcase lowercase)],
+    clearer    => 'clear_documentation',
 );
 has date => ( is => 'ro', required => 1, isa => 'DateTime' );
 has stat => ( is => 'ro', isa => Stat, required => 0, dynamic => 1 );
@@ -238,6 +241,17 @@ has content_cb => (
     default  => sub {
         sub { \'' }
     }
+);
+
+=head2 local_path
+
+This attribute holds the path to the file on the local filesystem.
+
+=cut
+
+has local_path => (
+    is       => 'ro',
+    property => 0,
 );
 
 =head1 METHODS
@@ -429,6 +443,20 @@ sub _build_pod {
     return \$text;
 }
 
+=head2 add_module
+
+Requires at least one parameter which can be either a HashRef or
+an instance of L<MetaCPAN::Document::Module>.
+
+=cut
+
+sub add_module {
+    my ( $self, @modules ) = @_;
+    $_ = MetaCPAN::Document::Module->new($_)
+        for ( grep { ref $_ eq 'HASH' } @modules );
+    $self->module( [ @{ $self->module }, @modules ] );
+}
+
 =head2 set_indexed
 
 Expects a C<$meta> parameter which is an instance of L<CPAN::Meta>.
@@ -450,7 +478,7 @@ does not include any modules, the L</indexed> property is true.
 =cut
 
 sub set_indexed {
-    my ($self, $meta) = @_;
+    my ( $self, $meta ) = @_;
     foreach my $mod ( @{ $self->module } ) {
         $mod->indexed(
               $meta->should_index_package( $mod->name )
@@ -465,7 +493,7 @@ sub set_indexed {
         # .pm file with no package declaration but pod should be indexed
         !@{ $self->module } ||
 
-       # don't index if the documentation doesn't match any of its modules
+           # don't index if the documentation doesn't match any of its modules
             !!grep { $self->documentation eq $_->name } @{ $self->module }
     ) if ( $self->documentation );
 }
@@ -496,6 +524,7 @@ as unauthorized as well.
 
 sub set_authorized {
     my ( $self, $perms ) = @_;
+
     # only authorized perl distributions make it into the CPAN
     return () if ( $self->distribution eq 'perl' );
     foreach my $module ( @{ $self->module } ) {
