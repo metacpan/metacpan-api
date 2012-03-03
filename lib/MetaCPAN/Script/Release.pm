@@ -121,6 +121,7 @@ sub run {
     log_info { scalar @files, " tarballs found" } if ( @files > 1 );
 
     # build here before we fork
+    $self->index;
     $self->backpan_index if ( $self->detect_backpan );
     $self->perms;
     my @pid;
