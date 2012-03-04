@@ -41,6 +41,16 @@ my $cpan = CPAN::Faker->new({
  
 ok($cpan->make_cpan, 'make fake cpan');
 
+# do some changes to 06perms.txt
+{
+    my $perms_file = dir($config->{cpan})->file(qw(modules 06perms.txt));
+    my $perms = $perms_file->slurp;
+    $perms =~ s/^Some,LOCAL,f$/Some,MO,f/m;
+    my $fh = $perms_file->openw;
+    print $fh $perms;
+    close $fh;
+}
+
 local @ARGV = ('release', $config->{cpan}, '--children', 0);
 ok(
     MetaCPAN::Script::Release->new_with_options($config)->run,

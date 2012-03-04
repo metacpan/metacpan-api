@@ -455,20 +455,33 @@ sub detect_status {
 sub _build_perms {
     my $self = shift;
     my $file = $self->cpan->file(qw(modules 06perms.txt));
-    unless ( -e $file ) {
-        log_warn {
-            "$file could not be found. All modules are assumed authorized.";
-        };
-        return {};
-    }
-    log_info { "parsing ", $file };
-    my $fh = $file->openr;
     my %authors;
-    while ( my $line = <$fh> ) {
-        my ( $module, $author, $type ) = split( /,/, $line );
-        next unless ($type);
-        $authors{$module} ||= [];
-        push( @{ $authors{$module} }, $author );
+    if ( -e $file ) {
+        log_debug { "parsing ", $file };
+        my $fh = $file->openr;
+        while ( my $line = <$fh> ) {
+            my ( $module, $author, $type ) = split( /,/, $line );
+            next unless ($type);
+            $authors{$module} ||= [];
+            push( @{ $authors{$module} }, $author );
+        }
+        close $fh;
+    }
+    else {
+        log_warn {"$file could not be found."};
+    }
+
+    my $packages = $self->cpan->file(qw(modules 02packages.details.txt.gz));
+    if ( -e $packages ) {
+        log_debug { "parsing ", $packages };
+        open my $fh, "<:gzip", $packages;
+        while ( my $line = <$fh> ) {
+            if ( $line =~ /^(.+?)\s+.+?\s+\S\/\S+\/(\S+)\// ) {
+                $authors{$1} ||= [];
+                push( @{ $authors{$1} }, $2 );
+            }
+        }
+        close $fh;
     }
     return \%authors;
 }
