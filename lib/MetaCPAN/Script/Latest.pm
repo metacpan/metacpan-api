@@ -1,6 +1,5 @@
 package MetaCPAN::Script::Latest;
 
-use feature qw(say);
 use Moose;
 use MooseX::Aliases;
 with 'MooseX::Getopt';
