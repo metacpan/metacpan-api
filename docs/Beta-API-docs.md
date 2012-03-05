@@ -294,6 +294,16 @@ curl -XPOST api.metacpan.org/v0/release/_search -d '{
     "size": 0
 }'
 ```
+
+### Search for a release by name
+
+```sh
+curl -XPOST api.metacpan.org/v0/release/_search -d '{ 
+  "query" : { "match_all" : {  } },
+  "filter" : { "term" : { "release.name" : "YAML-Syck-1.07_01" } }
+}'
+
+```
 ### Get the latest version numbers of your favorite modules
 
 Note that "size" should be the number of distributions you are looking for.
