@@ -72,11 +72,7 @@ __PACKAGE__->setup(
         )
 );
 
-my $app = Plack::Middleware::ReverseProxy->wrap(
-    sub {
-        __PACKAGE__->run(@_);
-    }
-);
+my $app = __PACKAGE__->psgi_app;
 
 Plack::Middleware::ServerStatus::Lite->wrap(
    $app,
