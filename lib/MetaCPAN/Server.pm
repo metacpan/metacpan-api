@@ -71,8 +71,6 @@ __PACKAGE__->setup(
         OAuth2::Provider
         )
 );
-__PACKAGE__->setup_engine('PSGI');
-__PACKAGE__->meta->make_immutable( replace_constructor => 1 );
 
 my $app = Plack::Middleware::ReverseProxy->wrap(
     sub {
