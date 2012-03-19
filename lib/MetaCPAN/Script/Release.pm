@@ -368,10 +368,7 @@ sub load_meta_file {
         # confusing results (which caused existsing */META.json files to
         # get skipped).  using list context seems more reliable.
         my ($path) = <$dir/$_>;
-        if ( $path && -e $path ) {
-            push @files, $path;
-#            last;
-        }
+        push( @files, $path ) if ( $path && -e $path );
     }
     return unless (@files);
 
