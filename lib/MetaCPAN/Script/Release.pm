@@ -386,6 +386,9 @@ sub load_meta_file {
                 $last = CPAN::Meta->load_file($file);
             }
             catch { $error = $_ };
+            if ($last) {
+                last;
+            }
         }
         if ($last) {
             push(
