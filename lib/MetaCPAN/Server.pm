@@ -72,7 +72,7 @@ __PACKAGE__->setup(
         )
 );
 
-my $app = __PACKAGE__->psgi_app;
+my $app = __PACKAGE__->apply_default_middlewares(__PACKAGE__->psgi_app);
 
 Plack::Middleware::ServerStatus::Lite->wrap(
    $app,
