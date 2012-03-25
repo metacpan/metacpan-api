@@ -49,7 +49,7 @@ sub index_reports {
     my %releases;
     while ( my $release = $scroll->next ) {
         my $data = $release->{_source};
-        $releases{ join( "-", $data->{distribution}, $data->{version} ) }
+        $releases{ join( "-", grep { defined } $data->{distribution}, $data->{version} ) }
             = $data;
     }
 

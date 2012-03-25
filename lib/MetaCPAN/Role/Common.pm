@@ -111,7 +111,6 @@ sub file2mod {
 }
 
 sub _build_cpan {
-
     my $self = shift;
     my @dirs
         = ( "$ENV{'HOME'}/CPAN", "$ENV{'HOME'}/minicpan", $ENV{'MINICPAN'} );
