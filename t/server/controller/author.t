@@ -26,7 +26,7 @@ test_psgi app, sub {
             if ( $k eq '/author/_mapping' );
     }
 
-    ok( my $res = $cb->( GET '/author/MO?callback=jsonp' ), "GET jsonp" );
+    ok(my $res = $cb->( GET '/author/MO?callback=jsonp'), "GET jsonp");
     is( $res->header('content-type'),
         'text/javascript; charset=UTF-8',
         'Content-type'
@@ -35,68 +35,13 @@ test_psgi app, sub {
 
     ok( $res = $cb->(
             POST '/author/_search',
-
             #'Content-type' => 'application/json',
-            Content => '{"query":{"match_all":{}},"size":0}'
+            Content        => '{"query":{"match_all":{}},"size":0}'
         ),
         "POST _search"
     );
     ok( my $json = eval { decode_json( $res->content ) }, 'valid json' );
     is( @{ $json->{hits}->{hits} }, 0, '0 results' );
-
-    ok( $res = $cb->( GET '/author/DOY?join=release' ),
-        "GET /author/DOY?join=release" );
-    ok( $json = eval { decode_json( $res->content ) }, 'valid json' );
-    is( @{ $json->{release}->{hits}->{hits} }, 2, 'joined 2 releases' );
-
-    ok( $res = $cb->(
-            POST '/author/DOY?join=release',
-            Content => encode_json(
-                {   query => {
-                        constant_score =>
-                            { filter => { term => { status => 'latest' } } }
-                    }
-                }
-            )
-        ),
-        "POST /author/DOY?join=release with query body"
-    );
-    ok( $json = eval { decode_json( $res->content ) }, 'valid json' );
-    is( @{ $json->{release}->{hits}->{hits} }, 1, 'joined 1 release' );
-    is( $json->{release}->{hits}->{hits}->[0]->{_source}->{status},
-        'latest', '1 release has status latest' );
-    my $doy = $json;
-
-    ok( $res = $cb->(
-            POST '/author/_search?join=release',
-            Content => encode_json(
-                {   query => {
-                        constant_score => {
-                            filter => {
-                                bool => {
-                                    should => [
-                                        {   term => {
-                                                'release.status' => 'latest'
-                                            }
-                                        },
-                                        {   term =>
-                                                { 'author.pauseid' => 'DOY' }
-                                        }
-                                    ]
-                                }
-                            }
-                        }
-                    }
-                }
-            )
-        ),
-        "POST /author/_search?join=release with query body"
-    );
-    ok( $json = eval { decode_json( $res->content ) }, 'valid json' );
-    is( @{ $json->{hits}->{hits} }, 1, "1 hit" );
-    is_deeply( $json->{hits}->{hits}->[0]->{_source},
-        $doy, 'same result as direct get' );
-
 };
 
 done_testing;
