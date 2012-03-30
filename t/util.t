@@ -29,4 +29,36 @@ sub version {
                        version => MetaCPAN::Util::fix_version(shift) } )->version;
 }
 
+# extract_section tests
+
+{
+	my $content = <<EOF;
+=head1 NAME
+
+Some::Thing - Test
+
+=head1 NAMED PIPE
+
+Some data about a named pipe
+
+EOF
+
+	my $section = MetaCPAN::Util::extract_section( $content, 'NAME');
+	is($section, 'Some::Thing - Test', 'NAME matched correct head1 section');
+}
+
+# https://github.com/CPAN-API/cpan-api/issues/167
+{
+	my $content = <<EOF;
+=head1 NAMED PIPE
+
+Some description
+
+=cut
+EOF
+
+	my $section = MetaCPAN::Util::extract_section( $content, 'NAME');
+	is($section, undef, 'NAMED did not match requested section NAME');
+}
+
 done_testing;
