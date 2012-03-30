@@ -16,7 +16,18 @@ is( $release->name, 'Multiple-Modules-1.01', 'name ok' );
 
 is( $release->author, 'LOCAL', 'author ok' );
 
-ok(!$release->first, 'Release is not first');
+# This test depends on files being indexed in the right order
+# which depends on the mtime of the files. Currently CPAN::Faker just
+# generates them all at once and so file reading can be effectively
+# random, breaking this test. Once CPAN::Faker supports setting
+# specific mtimes, the test suite should be updated to set it
+# properly, and this TODO can be removed.
+# (See https://rt.cpan.org/Ticket/Display.html?id=76159 for the feature request).
+TODO: {
+	local $TODO = "Waiting for CPAN::Faker to support setting mtimes";
+
+	ok(!$release->first, 'Release is not first');
+}
 
 {
     my @files = $idx->type('file')->filter(

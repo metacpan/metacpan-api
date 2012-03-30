@@ -360,7 +360,7 @@ sub import_tarball {
 
 sub load_meta_file {
     my ( $self, $dir ) = @_;
-    my $file;
+    my @files;
     for (qw{*/META.json */META.yml */META.yaml META.json META.yml META.yaml})
     {
 
@@ -368,12 +368,9 @@ sub load_meta_file {
         # confusing results (which caused existsing */META.json files to
         # get skipped).  using list context seems more reliable.
         my ($path) = <$dir/$_>;
-        if ( $path && -e $path ) {
-            $file = $path;
-            last;
-        }
+        push( @files, $path ) if ( $path && -e $path );
     }
-    return unless ($file);
+    return unless (@files);
 
     #  YAML YAML::Tiny YAML::XS don't offer better results
     my @backends = qw(CPAN::Meta::YAML YAML::Syck);
@@ -381,10 +378,15 @@ sub load_meta_file {
     while ( my $mod = shift @backends ) {
         $ENV{PERL_YAML_BACKEND} = $mod;
         my $last;
-        try {
-            $last = CPAN::Meta->load_file($file);
+        for my $file (@files) {
+            try {
+                $last = CPAN::Meta->load_file($file);
+            }
+            catch { $error = $_ };
+            if ($last) {
+                last;
+            }
         }
-        catch { $error = $_ };
         if ($last) {
             push(
                 @{ $last->{no_index}->{directory} },

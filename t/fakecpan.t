@@ -32,7 +32,9 @@ $config->{es} = $es;
     wait_for_es();
 }
 
-ok(dir($config->{cpan})->rmtree, 'remove old fakecpan'); 
+if (-e dir($config->{cpan})->absolute) {
+	ok(dir($config->{cpan})->rmtree, 'remove old fakepan');
+}
 
 my $cpan = CPAN::Faker->new({
   source => 't/var/fakecpan/configs',
