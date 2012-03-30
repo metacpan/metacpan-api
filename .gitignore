@@ -6,3 +6,4 @@
 /var/log/metacpan.*
 /t/var/tmp/
 /etc/metacpan_local.pl
+metacpan_server_local.conf
