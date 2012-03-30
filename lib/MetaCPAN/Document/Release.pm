@@ -120,7 +120,7 @@ has status   => ( is => 'rw', required => 1, default => 'cpan' );
 has maturity => ( is => 'ro', required => 1, default => 'released' );
 has stat  => ( is => 'ro', isa => Stat,  dynamic => 1 );
 has tests => ( is => 'ro', isa => Tests, dynamic => 1 );
-has authorized => ( is => 'ro', required => 1, isa => 'Bool', default => 1 );
+has authorized => ( is => 'rw', required => 1, isa => 'Bool', default => 1 );
 has first => (
     is       => 'ro',
     required => 1,

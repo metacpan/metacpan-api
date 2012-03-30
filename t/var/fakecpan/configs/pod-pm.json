@@ -9,6 +9,12 @@
     },{
         "file": "lib/Pod/Pm.pm",
         "content": "\n\n=head1 NAME\n\nPod::Pm - foo"
+    },{
+        "file": "lib/Pod/Pm/NoPod.pm",
+        "content": "1;"
+    },{
+        "file": "lib/Pod/Pm/NoPod.pod",
+        "content": "\n\n=head1 NAME\n\nPod::Pm::NoPod - foo"
     } ]
   }
 }

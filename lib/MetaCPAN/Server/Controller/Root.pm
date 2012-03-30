@@ -14,7 +14,7 @@ sub not_found : Private {
     $c->clear_stash;
     $c->stash( { message => $message || 'Not found' } );
     $c->response->status(404);
-    $c->detach("/end");
+    $c->forward($c->view('JSON'));
 }
 
 sub not_allowed : Private {
@@ -22,7 +22,15 @@ sub not_allowed : Private {
     $c->clear_stash;
     $c->stash( { message => $message || 'Not allowed' } );
     $c->response->status(403);
-    $c->detach("/end");
+    $c->forward($c->view('JSON'));
+}
+
+sub bad_request : Private {
+    my ( $self, $c, $message ) = @_;
+    $c->clear_stash;
+    $c->stash( { message => $message || 'Bad request' } );
+    $c->response->status(400);
+    $c->forward($c->view('JSON'));
 }
 
 sub end : ActionClass('RenderView') {

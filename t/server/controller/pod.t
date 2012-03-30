@@ -1,8 +1,12 @@
-
 use strict;
 use warnings;
 use Test::More;
+use Path::Class qw(file);
 use MetaCPAN::Server::Test;
+
+my $fh = file('var/tmp/source/DOY/Moose-0.02/Moose-0.02/binary.bin')->openw;
+print $fh "\x00" x 10;
+$fh->close;
 
 my %tests = (
 
@@ -11,6 +15,7 @@ my %tests = (
     '/pod/DOESNEXIST'                  => 404,
     '/pod/Moose'                       => 200,
     '/pod/DOY/Moose-0.01/lib/Moose.pm' => 200,
+    '/pod/DOY/Moose-0.02/binary.bin'   => 400,
     '/pod/Pod::Pm'                     => 200,
 );
 
@@ -37,13 +42,26 @@ test_psgi app, sub {
             );
         }
         
-        ok( $res = $cb->( GET "$k?callback=foo"), "GET $k with callback" );
+        my $ct = $k =~ /Moose[.]pm$/ ? '&content-type=text/x-pod' : '';
+        ok( $res = $cb->( GET "$k?callback=foo$ct"), "GET $k with callback" );
         is( $res->code, $v, "code $v" );
         is( $res->header('content-type'),
             'text/javascript; charset=UTF-8',
             'Content-type'
         );
-        like($res->content, qr/^foo\(/, 'callback included');
+        ok( my( $function_args ) = $res->content =~ /^foo\((.*)\)/s, 'callback included');
+        ok( my $jsdata = JSON->new->allow_nonref->decode( $function_args ), 'decode json' );
+        if ( $v eq 200 ) {
+            if($ct) {
+                like( $jsdata, qr{=head1 NAME}, 'POD body was JSON encoded' );
+            }
+            else {
+                like( $jsdata, qr{<h1 id="NAME">NAME</h1>}, 'HTML body was JSON encoded' );
+            }
+        }
+        else {
+            ok( $jsdata->{message}, 'error response body was JSON encoded' );
+        }
     }
 };
 

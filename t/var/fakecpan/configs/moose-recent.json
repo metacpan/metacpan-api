@@ -11,6 +11,18 @@
     {
         "file": "t/foo.t",
         "content": "use Test::More;"
-    } ]
+    },
+    {
+        "file": "lib/Moose/FAQ.pm",
+        "content": "1; \n\n=head1 NAME\n\nMoose::FAQ - abstract"
+    },
+    {
+        "file": "parts/inc/ppphdoc",
+        "content": "\n\n=head1 NAME\n\nppport.h - Perl/Pollution/Portability"
+    },
+    {
+        "file": "lib/some_script.pl",
+        "content": "\n\n=head1 NAME\n\nMoose - moose script"
+    }]
   }
 }

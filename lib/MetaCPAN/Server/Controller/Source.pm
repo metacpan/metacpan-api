@@ -25,6 +25,7 @@ sub get : Chained('index') : PathPart('') : Args {
         $c->res->body( $res->[2]->[0] );
     }
     else {
+        $c->stash->{path} = $file;
         $c->res->content_type('text/plain');
         $c->res->body( $file->openr );
     }
@@ -32,11 +33,8 @@ sub get : Chained('index') : PathPart('') : Args {
 
 sub module : Chained('index') : PathPart('') : Args(1) {
     my ( $self, $c, $module ) = @_;
-    $module = $c->model('CPAN::File')->inflate(0)->find($module)
-        or $c->detach('/not_found');
-    $module = $module->{_source};
-    $module = $c->stash($module);
-    $c->forward( 'get', [ @$module{qw(author release path)} ] );
+    $module = $c->model('CPAN::File')->find_pod($module) or $c->detach('/not_found');
+    $c->forward( 'get', [ map { $module->$_ } qw(author release path) ] );
 }
 
 1;

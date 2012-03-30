@@ -90,8 +90,7 @@ set to C<undef>.
 B<Default 0>
 
 Indicates whether the file should be included in the search index or
-not. If the L</documentation> refers to an unindexed module in
-L</module>, the file is considered unindexed.
+not. See L</set_indexed> for a more verbose explanation.
 
 =head2 level
 
@@ -153,7 +152,9 @@ has module => (
     type            => 'nested',
     include_in_root => 1,
     coerce          => 1,
-    clearer         => 'clear_module'
+    clearer         => 'clear_module',
+    lazy            => 1,
+    default         => sub {[]},
 );
 has documentation => (
     required   => 1,
@@ -161,10 +162,12 @@ has documentation => (
     lazy_build => 1,
     index      => 'analyzed',
     predicate  => 'has_documentation',
-    analyzer   => [qw(standard camelcase lowercase)]
+    analyzer   => [qw(standard camelcase lowercase)],
+    clearer    => 'clear_documentation',
 );
 has date => ( is => 'ro', required => 1, isa => 'DateTime' );
 has stat => ( is => 'ro', isa => Stat, required => 0, dynamic => 1 );
+has binary => ( is => 'ro', isa => 'Bool', required => 1, default => 0 );
 has sloc => ( is => 'ro', required => 1, isa => 'Int', lazy_build => 1 );
 has slop =>
     ( is => 'ro', required => 1, isa => 'Int', is => 'rw', lazy_build => 1 );
@@ -194,7 +197,7 @@ has abstract =>
 has description =>
     ( is => 'ro', required => 1, lazy_build => 1, index => 'analyzed' );
 has status => ( is => 'ro', required => 1, default => 'cpan' );
-has authorized => ( required => 1, is => 'ro', isa => 'Bool', default => 1 );
+has authorized => ( required => 1, is => 'rw', isa => 'Bool', default => 1 );
 has maturity => ( is => 'ro', required => 1, default => 'released' );
 has directory => ( is => 'ro', required => 1, isa => 'Bool', default => 0 );
 has level => ( is => 'ro', required => 1, isa => 'Int', lazy_build => 1 );
@@ -240,13 +243,25 @@ has content_cb => (
     }
 );
 
+=head2 local_path
+
+This attribute holds the path to the file on the local filesystem.
+
+=cut
+
+has local_path => (
+    is       => 'ro',
+    property => 0,
+);
+
 =head1 METHODS
 
 =head2 is_perl_file
 
 Return true if the file extension is one of C<pl>, C<pm>, C<pod>, C<t>
-or if the file has no extension and the shebang line contains the
-term C<perl>.
+or if the file has no extension, is not a binary file and its size is less
+than 131072 bytes. This is an arbitrary limit but it keeps the pod parser
+happy and the indexer fast.
 
 =head2 is_pod_file
 
@@ -259,6 +274,10 @@ sub is_perl_file {
     return 0 if ( $self->directory );
     return 1 if ( $self->name =~ /\.(pl|pm|pod|t)$/i );
     return 1 if ( $self->mime eq "text/x-script.perl" );
+    return 1
+        if ( $self->name !~ /\./
+        && !$self->binary
+        && $self->stat->{size} < 2**17 );
     return 0;
 }
 
@@ -424,6 +443,104 @@ sub _build_pod {
     return \$text;
 }
 
+=head2 add_module
+
+Requires at least one parameter which can be either a HashRef or
+an instance of L<MetaCPAN::Document::Module>.
+
+=cut
+
+sub add_module {
+    my ( $self, @modules ) = @_;
+    $_ = MetaCPAN::Document::Module->new($_)
+        for ( grep { ref $_ eq 'HASH' } @modules );
+    $self->module( [ @{ $self->module }, @modules ] );
+}
+
+=head2 set_indexed
+
+Expects a C<$meta> parameter which is an instance of L<CPAN::Meta>.
+
+For each package (L</module>) in the file and based on L<CPAN::Meta/should_index_package>
+it is decided, whether the module should have a true L</indexed> attribute.
+If L<CPAN::Meta/should_index_package> returns true but the package declaration
+uses the I<hide from PAUSE> hack, the L</indexed> property is set to false.
+
+ package # hide from PAUSE
+   MyTest::Module;
+ # will result in indexed => 0
+
+Once that is done, the L</indexed> property of the file is determined by searching
+the list of L<modules|/module> for a module that matches the value of L</documentation>.
+If there is no such module, the L</indexed> property is set to false. If the file
+does not include any modules, the L</indexed> property is true.
+
+=cut
+
+sub set_indexed {
+    my ( $self, $meta ) = @_;
+    foreach my $mod ( @{ $self->module } ) {
+        $mod->indexed(
+              $meta->should_index_package( $mod->name )
+            ? $mod->hide_from_pause( ${ $self->content } )
+                    ? 0
+                    : 1
+            : 0
+        ) unless ( $mod->indexed );
+    }
+    $self->indexed(
+
+        # .pm file with no package declaration but pod should be indexed
+        !@{ $self->module } ||
+
+           # don't index if the documentation doesn't match any of its modules
+            !!grep { $self->documentation eq $_->name } @{ $self->module }
+    ) if ( $self->documentation );
+}
+
+=head2 set_authorized
+
+Expects a C<$perms> parameter which is a HashRef. The key is the module name
+and the value an ArrayRef of author names who are allowed to release
+that module.
+
+The method returns a list of unauthorized, but indexed modules.
+
+Unauthorized modules are modules that were uploaded in the name of a
+different author than stated in the C<06perms.txt.gz> file. One problem
+with this file is, that it doesn't record historical data. It may very
+well be that an author was authorized to upload a module at the time.
+But then his co-maintainer rights might have been revoked, making consecutive
+uploads of that release unauthorized. However, since this script runs
+with the latest version of C<06perms.txt.gz>, the former upload will
+be flagged as unauthorized as well. Same holds the other way round,
+a previously unauthorized release would be flagged authorized if the
+co-maintainership was added later on.
+
+If a release contains unauthorized modules, the whole release is marked
+as unauthorized as well.
+
+=cut
+
+sub set_authorized {
+    my ( $self, $perms ) = @_;
+
+    # only authorized perl distributions make it into the CPAN
+    return () if ( $self->distribution eq 'perl' );
+    foreach my $module ( @{ $self->module } ) {
+        $module->authorized(0)
+            if ( $perms->{ $module->name } && !grep { $_ eq $self->author }
+            @{ $perms->{ $module->name } } );
+    }
+    $self->authorized(0)
+        if ( $self->authorized
+        && $self->documentation
+        && $perms->{ $self->documentation }
+        && !grep { $_ eq $self->author }
+        @{ $perms->{ $self->documentation } } );
+    return grep { !$_->authorized && $_->indexed } @{ $self->module };
+}
+
 __PACKAGE__->meta->make_immutable;
 
 package MetaCPAN::Document::File::Set;
@@ -435,11 +552,15 @@ my @ROGUE_DISTRIBUTIONS
 
 sub find {
     my ( $self, $module ) = @_;
-    return $self->filter(
+    my @candidates = $self->filter(
         {   and => [
-                { term => { 'documentation' => $module } },
-                { term => { 'file.indexed'  => \1, } },
-                { term => { status          => 'latest', } },
+                {   or => [
+                        { term => { 'file.module.name'   => $module } },
+                        { term => { 'file.documentation' => $module } },
+                    ]
+                },
+                { term => { 'file.indexed' => \1, } },
+                { term => { status         => 'latest', } },
                 {   not =>
                         { filter => { term => { 'file.authorized' => \0 } } }
                 },
@@ -450,7 +571,58 @@ sub find {
             'mime',
             { 'stat.mtime' => { order => 'desc' } }
         ]
-        )->first;
+        )->all;
+
+    my ($file) = grep {
+        grep { $_->indexed && $_->authorized && $_->name eq $module }
+            @{ $_->module || [] }
+    } @candidates;
+
+    # REINDEX: after a full reindex, the rest of the sub can be replaced with
+    # return $file ? $file : shift @candidates;
+    return shift @candidates unless ($file);
+
+    ($module) = grep { $_->name eq $module } @{ $file->module };
+    return $file if ( $module->associated_pod );
+
+    # if there is a .pod file in the same release, we use that instead
+    if (my ($pod) = grep {
+                   $_->release eq $file->release
+                && $_->author  eq $file->author
+                && $_->is_pod_file
+        } @candidates
+        )
+    {
+        $module->associated_pod(
+            join( "/", map { $pod->$_ } qw(author release path) ) );
+    }
+    return $file;
+}
+
+sub find_pod {
+    my ( $self, $module ) = @_;
+    my @files = $self->filter(
+        {   and => [
+                { term => { 'file.documentation' => $module } },
+                { term => { 'file.indexed'       => \1, } },
+                { term => { status               => 'latest', } },
+                {   not =>
+                        { filter => { term => { 'file.authorized' => \0 } } }
+                },
+            ]
+        }
+        )->sort(
+        [   { 'date' => { order => "desc" } },
+            'mime',
+            { 'stat.mtime' => { order => 'desc' } }
+        ]
+        )->all;
+    my ($file) = grep { $_->is_pod_file } @files;
+    ($file) = grep {
+        grep { $_->indexed && $_->authorized && $_->name eq $module }
+            @{ $_->module || [] }
+    } @files unless ($file);
+    return $file ? $file : shift @files;
 }
 
 # return files that contain modules that match the given dist
@@ -510,6 +682,7 @@ sub prefix {
                                                 }
                                                 }
                                             } @ROGUE_DISTRIBUTIONS
+
                                     ]
                                 }
                             }

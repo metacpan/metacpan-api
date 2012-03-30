@@ -9,10 +9,9 @@ sub index : Chained('/') : PathPart('module') : CaptureArgs(0) {
 
 sub get : Chained('index') : PathPart('') : Args(1) {
     my ( $self, $c, $module ) = @_;
-    eval {
-        $c->stash(
-            $c->model('CPAN::File')->raw->find($module)->{_source} );
-    } or $c->detach('/not_found');
+    $module = $c->model('CPAN::File')->find($module)
+        or $c->detach( '/not_found', [$@] );
+    $c->stash( $module->meta->get_data($module) );
 }
 
 1;

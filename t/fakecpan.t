@@ -12,11 +12,13 @@ use Path::Class qw(dir file);
 use File::Copy;
 use Config::General;
 
-ok(my $es = ElasticSearch->new(
-     # instances   => 1,
-      transport   => 'httplite',
-      servers          => '127.0.0.1:9900',
-), 'got ElasticSearch object');
+ok( my $es = ElasticSearch->new(
+        transport => 'httplite',
+        servers   => '127.0.0.1:9900',
+        # trace_calls => 1,
+    ),
+    'connect to es'
+);
 
 eval {
 	$es->transport->refresh_servers;
@@ -53,6 +55,16 @@ my $cpan = CPAN::Faker->new({
 });
  
 ok($cpan->make_cpan, 'make fake cpan');
+
+# do some changes to 06perms.txt
+{
+    my $perms_file = dir($config->{cpan})->file(qw(modules 06perms.txt));
+    my $perms = $perms_file->slurp;
+    $perms =~ s/^Some,LOCAL,f$/Some,MO,f/m;
+    my $fh = $perms_file->openw;
+    print $fh $perms;
+    close $fh;
+}
 
 local @ARGV = ('release', $config->{cpan}, '--children', 0);
 ok(

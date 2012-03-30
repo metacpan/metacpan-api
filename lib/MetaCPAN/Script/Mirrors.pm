@@ -1,7 +1,6 @@
 package MetaCPAN::Script::Mirrors;
 
 use Moose;
-use feature 'say';
 with 'MooseX::Getopt';
 use Log::Contextual qw( :log :dlog );
 with 'MetaCPAN::Role::Common';

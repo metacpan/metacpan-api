@@ -43,11 +43,11 @@ sub authorize : Local {
         )
     {
         $c->res->redirect(
-            $c->uri_for( "/login/$params->{choice}", undef, $params ) );
+            $c->uri_for( "/login/$params->{choice}", $params ) );
         $c->detach;
     }
     elsif ( !$c->user_exists ) {
-        $c->res->redirect( $c->uri_for( "/login", undef, $params ) );
+        $c->res->redirect( $c->uri_for( "/login", $params ) );
         $c->detach;
     }
     my ( $response_type, $client_id, $redirect_uri, $scope, $state )

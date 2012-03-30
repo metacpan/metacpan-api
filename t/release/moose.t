@@ -16,4 +16,30 @@ map { $first++ } grep { $_->first } @moose;
 
 ok($first, 'only one moose is first');
 
+ok(my $faq = $idx->type('file')->filter({
+    term => { 'file.documentation' => 'Moose::FAQ' }
+})->first, 'get Moose::FAQ');
+
+is($faq->status, 'latest', 'is latest');
+
+ok($faq->indexed, 'is indexed');
+
+ok(!$faq->binary, 'is not binary');
+
+ok(my $binary = $idx->type('file')->filter({
+    term => { 'file.name' => 't' }
+})->first, 'get a t/ directory');
+
+ok($binary->binary, 'is binary');
+
+ok(my $ppport = $idx->type('file')->filter({
+    term => { 'file.documentation' => 'ppport.h' }
+})->first, 'get ppport.h');
+
+is($ppport->name, 'ppphdoc', 'name doesn\'t contain a dot');
+
+ok(my $moose = $idx->type('file')->find('Moose'), 'find Moose module');
+
+is($moose->name, 'Moose.pm', 'defined in Moose.pm');
+
 done_testing;
