@@ -19,6 +19,7 @@ use Module::Metadata   ();
 use CPAN::DistnameInfo ();
 use File::Find         ();
 use File::stat         ();
+use Module::Signature  ();
 use MetaCPAN::Script::Latest;
 use File::Find::Rule;
 use Try::Tiny;
@@ -67,6 +68,13 @@ has perms => (
     isa        => 'HashRef',
     lazy_build => 1,
     traits     => ['NoGetopt']
+);
+
+has signed => (
+    is         => 'ro',
+    isa        => 'Bool',
+    lazy_build => 1,
+    documentation => 'whether the module is signed',  
 );
 
 sub run {
@@ -199,6 +207,8 @@ sub import_tarball {
     my $stat = { map { $_ => $st->$_ } qw(mode uid gid size mtime) };
 
     $meta = $self->load_meta_file($tmpdir) || $meta;
+    
+    $self->signed($self->verify_signature($tmpdir));
 
     log_debug {"Gathering dependencies"};
 
@@ -398,6 +408,15 @@ sub load_meta_file {
 
     log_warn {"META file could not be loaded: $error"}
     unless (@backends);
+}
+
+sub verify_signature {
+  my ( $self, $dir ) = @_;
+  # We want to make sure that this global doesn't stick around after we've
+  # used it for each particular module, so we use local(). -- apeiron,
+  # 2012-03-30 
+  local $Module::Signature::SIGNATURE = Path::Class::file($dir, 'SIGNATURE');
+  return (Module::Signature::verify() == Module::Signature::SIGNATURE_OK);
 }
 
 sub dependencies {

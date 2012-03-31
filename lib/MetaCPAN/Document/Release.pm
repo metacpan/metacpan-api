@@ -129,6 +129,13 @@ has first => (
     builder  => '_build_first'
 );
 
+has signed => (
+    is         => 'ro',
+    isa        => 'Bool',
+    lazy_build => 1,
+    documentation => 'whether the module is signed',  
+);
+
 sub _build_version_numified {
     return MetaCPAN::Util::numify_version( shift->version );
 }
