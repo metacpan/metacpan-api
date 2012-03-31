@@ -18,10 +18,10 @@ use MooseX::Types -declare => [
       Blog
       PerlMongers
       Tests
-      Bugs
+      BugSummary
       ) ];
 
-use MooseX::Types::Structured qw(Dict Tuple Optional);
+use MooseX::Types::Structured qw(Dict Tuple Optional slurpy);
 use MooseX::Types::Moose qw/Int Num Str ArrayRef HashRef Undef/;
 use ElasticSearchX::Model::Document::Types qw(:all);
 use MooseX::Types::Common::String qw(NonEmptySimpleStr);
@@ -51,7 +51,12 @@ coerce Profile, from ArrayRef, via { [ map { ref $_ eq 'HASH' ? MetaCPAN::Docume
 coerce Profile, from HashRef, via { [ MetaCPAN::Document::Author::Profile->new($_) ] };
 
 subtype Tests, as Dict [ fail => Int, na => Int, pass => Int, unknown => Int ];
-subtype Bugs, as Dict [ (map { $_ => Optional[Int]} qw(new open stalled resolved rejected active closed)), type => Str ];
+subtype BugSummary, as Dict [
+    source => Str,
+    active => Int,
+    closed => Int,
+    slurpy HashRef,
+];
 
 subtype Resources,
   as Dict [

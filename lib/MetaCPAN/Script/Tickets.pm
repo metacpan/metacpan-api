@@ -63,7 +63,7 @@ sub parse_tsv {
     while ( my $row = $tsv_parser->fetch ) {
         my $i = 1;
         $summary{ $row->[0] } = {
-            type   => 'rt',
+            source => 'http://rt.cpan.org/NoAuth/Bugs.html?Dist=' . $row->[0],
             active => ( sum @{$row}[ 1 .. 3 ] ),
             closed => ( sum @{$row}[ 4 .. 5 ] ),
             map { $_ => $row->[ $i++ ]+0 }
