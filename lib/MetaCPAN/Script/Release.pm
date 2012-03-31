@@ -248,7 +248,7 @@ sub import_tarball {
             $child->is_dir
                 ? $fname =~ s/^(.*\/)?(.+?)\/?$/$2/
                 : $fname =~ s/.*\///;
-            $fpath = "" unless ( $relative =~ /\// );
+            $fpath = "" unless ( $relative =~ /\// || $fpath =~ /\.pm$/ );
             my $file = $file_set->new_document(
                 Dlog_trace {"adding file $_"} +{
                     name         => $fname,
