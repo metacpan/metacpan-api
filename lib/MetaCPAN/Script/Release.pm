@@ -177,9 +177,9 @@ sub import_tarball {
     my $at = Archive::Any->new($tarball);
     my $tmpdir = dir( File::Temp::tempdir( CLEANUP => 0 ) );
 
+    log_error { "$tarball is being impolite" } if $at->is_impolite;
     # TODO: add release to the index with status => 'broken' and move along
-    log_error {"$tarball is being naughty"}
-    if $at->is_naughty || $at->is_impolite;
+    log_error { "$tarball is being naughty" }  if $at->is_naughty;
 
     log_debug {"Extracting archive to filesystem"};
     $at->extract($tmpdir);
@@ -248,7 +248,7 @@ sub import_tarball {
             $child->is_dir
                 ? $fname =~ s/^(.*\/)?(.+?)\/?$/$2/
                 : $fname =~ s/.*\///;
-            $fpath = "" unless ( $relative =~ /\// );
+            $fpath = "" if $relative !~ /\// && !$at->is_impolite;
             my $file = $file_set->new_document(
                 Dlog_trace {"adding file $_"} +{
                     name         => $fname,
