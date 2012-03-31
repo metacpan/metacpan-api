@@ -322,3 +322,19 @@ lynx --dump --post_data http://api.metacpan.org/v0/release/_search <<EOL
 }
 EOL
 ```
+
+### Get a list of all files where the directory is false and the path is blank
+```sh
+curl -XPOST api.metacpan.org/v0/file/_search -d '{
+  "query": {
+    "match_all": {}
+  },
+  "size": 1000,
+  "fields": [ "name", "status", "directory", "path", "distribution" ],
+  "filter": {
+    "and": [
+      { "term": { "directory": false } }, { "term" : { "path" : "" } }
+    ]
+  }
+}'
+```
