@@ -1,6 +1,5 @@
 .DS_Store
-*.swp
-*.swo
+*.sw*
 *.kpf
 *.komodoproject
 *.sqlite*
