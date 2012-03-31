@@ -1,0 +1,89 @@
+#!/usr/bin/perl
+# takes the root directory of an extracted distribution and outputs a JSON file
+# suitable for CPAN::Faker to STDOUT 
+use strictures 1;
+use JSON;
+use YAML;
+
+use IO::All;
+use Email::Address;
+use File::Find;
+use File::Spec;
+use Path::Class;
+
+my ($dir) = @ARGV;
+
+my $meta_data;
+if(-e "$dir/META.yml") {
+  $meta_data = YAML::LoadFile("$dir/META.yml");
+} elsif(-e "$dir/META.json") {
+  $meta_data = JSON::decode_json(io("$dir/META.json")->all);
+} else {
+  die "no meta file";
+}
+
+my $authors = $meta_data->{author};
+my @authors = map { my ($addr) = Email::Address->parse($_); $addr->name } @$authors;
+
+my $files;
+File::Find::find(
+  {
+    no_chdir => 1,
+    wanted => sub {
+      return unless -f;
+      push @$files, {
+        file => File::Spec->abs2rel($File::Find::name, dir($dir)),
+        content => io($_)->all,
+      }
+    },
+  },
+  $dir
+);
+
+my $output = {
+  name => $meta_data->{name},
+  version => $meta_data->{version},
+  abstract => $meta_data->{abstract},
+  X_Module_Faker => {
+    cpan_author => [ @authors ],
+    append => [
+      $files
+    ]
+  },
+};
+
+print JSON->new->pretty->encode($output);
+
+__DATA__
+{
+  "name": "MetaFile-Both",
+  "abstract": "A dist with META.yml and META.json",
+  "version": 1.1,
+  "X_Module_Faker": {
+    "cpan_author": "LOCAL",
+    "append": [ {
+        "file": "lib/MetaFile/Both.pm",
+        "content": "package MetaFile::Both;\n\n=head1 NAME\n\nMetaFile::Both - abstract"
+    },
+    {
+        "file": "META.json",
+        "content": "{\"meta-spec\":{\"version\":2,\"url\":\"http://search.cpan.org/perldoc?CPAN::Meta::Spec\"},\"generated_by\":\"hand\",\"version\":1.1,\"name\":\"MetaFile-Both\",\"dynamic_config\":0,\"author\":\"LOCAL\",\"license\":\"unknown\",\"abstract\":\"A dist with META.yml and META.json\",\"release_status\":\"stable\",\"x_meta_file\":\"json\"}"
+    },
+    {
+        "file": "t/foo.t",
+        "content": "use Test::More;"
+    } ]
+  }
+}
+
+---
+name: SignedModule
+version: 1.1
+abstract: A signed dist
+author:
+  - LOCAL <LOCAL@cpan.local>
+generated_by: Module::Faker version
+license: unknown
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.3.html
+  version: 1.3
