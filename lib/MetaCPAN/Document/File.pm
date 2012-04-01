@@ -154,7 +154,7 @@ has module => (
     coerce          => 1,
     clearer         => 'clear_module',
     lazy            => 1,
-    default         => sub {[]},
+    default         => sub { [] },
 );
 has documentation => (
     required   => 1,
@@ -269,6 +269,8 @@ Retruns true if the file extension is C<pod>.
 
 =cut
 
+my @NOT_PERL_FILES = qw(SIGNATURE);
+
 sub is_perl_file {
     my $self = shift;
     return 0 if ( $self->directory );
@@ -276,6 +278,7 @@ sub is_perl_file {
     return 1 if ( $self->mime eq "text/x-script.perl" );
     return 1
         if ( $self->name !~ /\./
+        && !grep { $self->name eq $_ } @NOT_PERL_FILES
         && !$self->binary
         && $self->stat->{size} < 2**17 );
     return 0;
@@ -338,7 +341,10 @@ sub _build_content {
 
 sub _build_mime {
     my $self = shift;
-    if ( !$self->directory && $self->name !~ /\./ ) {
+    if (  !$self->directory
+        && $self->name !~ /\./
+        && grep { $self->name ne $_ } @NOT_PERL_FILES )
+    {
         my $content = ${ $self->content };
         return "text/x-script.perl" if ( $content =~ /^#!.*?perl/ );
     }
