@@ -10,6 +10,7 @@ Available fields can be found by accessing the corresponding `_mapping` endpoint
 
 
 * [[/author/_mapping|http://api.metacpan.org/v0/author/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/author/_mapping]]
+* [[/distribution/_mapping|http://api.metacpan.org/v0/distribution/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/distribution/_mapping]]
 * [[/favorite/_mapping|http://api.metacpan.org/v0/favorite/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/favorite/_mapping]]
 * [[/file/_mapping|http://api.metacpan.org/v0/file/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/file/_mapping]]
 * [[/rating/_mapping|http://api.metacpan.org/v0/rating/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/rating/_mapping]]
@@ -24,6 +25,7 @@ Fields are documented in the API codebase: [[https://github.com/CPAN-API/cpan-ap
 Performing a search without any constraints is an easy way to get sample data
 
 * [[/author/_search|http://api.metacpan.org/v0/author/_search]]
+* [[/distribution/_search|http://api.metacpan.org/v0/distribution/_search]]
 * [[/favorite/_search|http://api.metacpan.org/v0/favorite/_search]]
 * [[/file/_search|http://api.metacpan.org/v0/file/_search]]
 * [[/rating/_search|http://api.metacpan.org/v0/rating/_search]]
@@ -38,6 +40,10 @@ You should be able to run most POST queries, but very few GET urls are currently
 Simply add a `callback` query parameter with the name of your callback, and you'll get a JSONP response.
 
 * [[/favorite?q=distribution:Moose&callback=cb|http://api.metacpan.org/favorite?q=distribution:Moose&callback=cb]]
+
+### `/distribution/{distribution}`
+
+The `/distribution` endpoint accepts the name of a `distribution` (e.g. [[/distribution/Moose|http://api.metacpan.org/v0/distribution/Moose]]), which returns information about the distribution which is not specific to a version (like RT bug counts).
 
 ### `/release/{distribution}`
 
