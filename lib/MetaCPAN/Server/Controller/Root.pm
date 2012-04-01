@@ -12,7 +12,7 @@ sub default : Path {
 sub not_found : Private {
     my ( $self, $c, $message ) = @_;
     $c->clear_stash;
-    $c->stash( { message => $message || 'Not found' } );
+    $c->stash( { message => "Not found: " . ($message || "No error...") } );
     $c->response->status(404);
     $c->forward($c->view('JSON'));
 }
