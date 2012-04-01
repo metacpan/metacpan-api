@@ -23,6 +23,10 @@
     {
         "file": "lib/some_script.pl",
         "content": "\n\n=head1 NAME\n\nMoose - moose script"
+    },
+    {
+        "file": "SIGNATURE",
+        "content": "A Module::Signature file"
     }]
   }
 }
