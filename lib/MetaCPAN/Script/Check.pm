@@ -36,6 +36,13 @@ has max_errors => (
     documentation => 'the maximum number of errors to encounter before stopping',
 );
 
+has errors_only => (
+    is            => 'ro',
+    isa           => 'Bool',
+    default       => 0,
+    documentation => 'just show errors',
+);
+
 has error_count => (
     is      => 'rw',
     isa     => 'Int',
@@ -135,7 +142,8 @@ sub check_modules {
                 # if we found the releases tell them about it
                 if (@releases) {
                     if (@releases == 1 && $releases[0]->{fields}->{status} eq 'latest') {
-                        log_info { "Found latest release $releases[0]->{fields}->{name} for $pkg" };
+                        log_info { "Found latest release $releases[0]->{fields}->{name} for $pkg" }
+                        unless $self->errors_only;
                     } else {
                         log_error { "Could not find latest release for $pkg" };
                         foreach my $rel (@releases) {
