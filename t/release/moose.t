@@ -42,4 +42,23 @@ ok(my $moose = $idx->type('file')->find('Moose'), 'find Moose module');
 
 is($moose->name, 'Moose.pm', 'defined in Moose.pm');
 
+my $signature;
+$signature = $idx->type('file')->filter(
+  {   and => [
+      { term => { mime => 'text/x-script.perl' } },
+      { term => { name => 'SIGNATURE' } }
+    ]
+  }
+)->first;
+ok(!$signature, 'SIGNATURE is not perl code');
+$signature = $idx->type('file')->filter(
+  {   and => [
+      { term => { 'file.documentation' => 'SIGNATURE' } },
+      { term => { mime => 'text/x-script.perl' } },
+      { term => { name => 'SIGNATURE' } }
+    ]
+  }
+)->first;
+ok(!$signature, 'SIGNATURE is not documentation');
+
 done_testing;
