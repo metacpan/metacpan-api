@@ -51,8 +51,7 @@ test_psgi app, sub {
                 'text/plain; charset=UTF-8',
                 'Content-type'
             );
-            my $expected = "2012-01-01  0.01  First release - codename 'M\x{fc}nchen'";
-            is( $res->decoded_content, $expected, 'Change-log content' );
+            like( $res->decoded_content, qr/codename 'M\x{fc}nchen'/, 'Change-log content' );
         }
         elsif ( $k eq '/source/DOY/Moose-0.01/Changes?callback=foo' ) {
             is( $res->header('content-type'),
@@ -61,10 +60,9 @@ test_psgi app, sub {
             );
             ok( my( $function_args ) = $res->content =~ /^foo\((.*)\)/s, 'JSONP wrapper');
             ok( my $jsdata = JSON->new->allow_nonref->decode( $function_args ), 'decode json' );
-            my $expected = "2012-01-01  0.01  First release - codename 'M\x{fc}nchen'";
 TODO: {
             local $TODO = "need to fix double encoding in source controller";
-            is( $jsdata, $expected, 'JSONP-wrapped change-log' );
+            like( $jsdata, qr/codename 'M\x{fc}nchen'/, 'JSONP-wrapped change-log' );
 }
         }
         elsif ( $v eq 200 ) {
