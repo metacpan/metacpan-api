@@ -60,10 +60,7 @@ test_psgi app, sub {
             );
             ok( my( $function_args ) = $res->content =~ /^foo\((.*)\)/s, 'JSONP wrapper');
             ok( my $jsdata = JSON->new->allow_nonref->decode( $function_args ), 'decode json' );
-TODO: {
-            local $TODO = "need to fix double encoding in source controller";
             like( $jsdata, qr/codename 'M\x{fc}nchen'/, 'JSONP-wrapped change-log' );
-}
         }
         elsif ( $v eq 200 ) {
             like( $res->content, qr/Index of/, 'Index of' );
