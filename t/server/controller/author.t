@@ -97,6 +97,11 @@ test_psgi app, sub {
     is_deeply( $json->{hits}->{hits}->[0]->{_source},
         $doy, 'same result as direct get' );
 
+    {
+        ok( my $res = $cb->( GET '/author/_search?q=*&size=99999' ), "GET size=99999" );
+        is( $res->code, 416, 'bad request');
+    }
+
 };
 
 done_testing;

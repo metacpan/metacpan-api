@@ -50,6 +50,12 @@ sub search : Path('_search') : ActionClass('Deserialize') {
 
     # shallow copy
     my $params = { %{ $req->params } };
+    {
+        my $size = $params->{size} || ( $req->data || {} )->{size};
+        $c->detach( '/bad_request',
+            [ 'Size is currently to a maximum of 5000', 416 ] )
+            if ( $size && $size > 5000 );
+    }
     delete $params->{callback};
     eval {
         $c->stash(
@@ -96,7 +102,7 @@ sub join : ActionClass('Deserialize') {
         my @ids = List::MoreUtils::uniq grep {defined}
             map { ref $cself eq 'CODE' ? $cself->($_) : $_->{$cself} } @$data;
         my $filter = { terms => { $config->{foreign} => [@ids] } };
-        my $filtered = {%$query}; # don't work on $query
+        my $filtered = {%$query};    # don't work on $query
         $filtered->{filter}
             = $query->{filter}
             ? { and => [ $filter, $query->{filter} ] }

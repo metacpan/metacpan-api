@@ -26,10 +26,10 @@ sub not_allowed : Private {
 }
 
 sub bad_request : Private {
-    my ( $self, $c, $message ) = @_;
+    my ( $self, $c, $message, $code ) = @_;
     $c->clear_stash;
     $c->stash( { message => $message || 'Bad request' } );
-    $c->response->status(400);
+    $c->response->status($code || 400);
     $c->forward($c->view('JSON'));
 }
 
