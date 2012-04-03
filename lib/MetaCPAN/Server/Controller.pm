@@ -53,7 +53,7 @@ sub search : Path('_search') : ActionClass('Deserialize') {
     {
         my $size = $params->{size} || ( $req->data || {} )->{size};
         $c->detach( '/bad_request',
-            [ 'Size is currently to a maximum of 5000', 416 ] )
+            [ 'size parameter exceeds maximum of 5000', 416 ] )
             if ( $size && $size > 5000 );
     }
     delete $params->{callback};
