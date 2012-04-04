@@ -107,7 +107,7 @@ has resources => (
     type            => 'nested',
     include_in_root => 1,
 );
-has abstract => ( is => 'ro', index => 'analyzed' );
+has abstract => ( is => 'rw', index => 'analyzed', predicate => 'has_abstract' );
 has dependency => (
     required        => 0,
     is              => 'rw',

@@ -12,6 +12,8 @@ my $release = $idx->type('release')->get(
     }
 );
 
+is( $release->abstract, 'abstract', 'abstract set from Multiple::Modules');
+
 is( $release->name, 'Multiple-Modules-1.01', 'name ok' );
 
 is( $release->author, 'LOCAL', 'author ok' );

@@ -340,6 +340,13 @@ sub import_tarball {
     }
 
     $bulk->commit;
+    unless($release->has_abstract) {
+        (my $module = $release->distribution) =~ s/-/::/g;
+        if(my $file = $associated_pod{$module}) {
+            $release->abstract($file->abstract);
+            $release->put;
+        }
+    }
     if (@release_unauthorized) {
         log_info {
             "release "
