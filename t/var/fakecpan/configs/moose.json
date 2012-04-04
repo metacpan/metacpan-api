@@ -6,6 +6,9 @@
     "append": [ {
         "file": "lib/Moose.pm",
         "content": "\n\n=head1 NAME\n\nMoose - abstract"
+    }, {
+        "file": "Changes",
+        "content": "2012-01-01  0.01  First release - codename 'M\u00FCnchen'\n"
     } ]
   }
 }
