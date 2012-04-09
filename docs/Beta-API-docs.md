@@ -4,6 +4,14 @@ _All of these URLs can be tested using tokuhirom's excellent [MetaCPAN Explorer]
 
 To learn more about the ElasticSearch query DSL check out Clinton Gormley's [Terms of Endearment - ES Query DSL Explained] (http://www.slideshare.net/clintongormley/terms-of-endearment-the-elasticsearch-query-dsl-explained) slides.
 
+## Being polite
+
+Currently, the only rules around using the API are to "be polite". We have enforced an upper limit of a size of 5000 on search requests.  If you need to fetch more than 5000 items, you should look at using the scrolling API.  Search this page for "scroll" to get an example using ElasticSearch.pm or see the [ElasticSearch scroll docs](http://www.elasticsearch.org/guide/reference/api/search/scroll.html) if you are connecting in some other way.  
+
+You can certainly scroll if you are fetching less than 5000 items.  You might want to do this if you are expecting a large data set, but will still need to run many requests to get all of the required data.
+
+Be aware that when you scroll, your docs will come back unsorted, as noted in the [ElasticSearch scan documentation](http://www.elasticsearch.org/guide/reference/api/search/search-type.html).
+
 ## Available fields
 
 Available fields can be found by accessing the corresponding `_mapping` endpoint.
