@@ -577,12 +577,12 @@ sub find {
             'mime',
             { 'stat.mtime' => { order => 'desc' } }
         ]
-        )->all;
+        )->size(100)->all;
 
     my ($file) = grep {
         grep { $_->indexed && $_->authorized && $_->name eq $module }
             @{ $_->module || [] }
-    } @candidates;
+    } grep { !$_->documentation || $_->documentation eq $module } @candidates;
 
     # REINDEX: after a full reindex, the rest of the sub can be replaced with
     # return $file ? $file : shift @candidates;
