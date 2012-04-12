@@ -352,3 +352,22 @@ curl -XPOST api.metacpan.org/v0/file/_search -d '{
   }
 }'
 ```
+
+### List releases which have an email address for a bugtracker, but not an url
+```sh
+curl -XPOST api.metacpan.org/v0/release/_search -d '{
+  "query": {
+    "match_all": {}
+  },
+  "size": 5,
+  "fields": [ "release.name", "release.resources.bugtracker.mailto" ],
+  "filter": {
+    "and": [
+      { "term": {"release.maturity": "released"} },
+      { "term": {"release.status": "latest"} },
+      {  "exists" : { "field" : "release.resources.bugtracker.mailto" } },
+      {  "missing" : { "field" : "release.resources.bugtracker.web" } }
+    ]
+  }
+}'
+```
