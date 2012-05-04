@@ -1,4 +1,7 @@
 #!/usr/bin/perl
+
+# PODNAME: write_config_json
+#
 # takes the root directory of an extracted distribution and outputs a JSON file
 # suitable for CPAN::Faker to STDOUT 
 use strictures 1;
