@@ -47,9 +47,11 @@ sub run {
     my $bugs = {};
     foreach my $source ( @{ $self->source } ) {
         if ( $source eq 'github' ) {
+	    log_debug {"Fetching GitHub issues"};
             $bugs = { %$bugs, %{$self->retrieve_github_bugs} };
         }
         elsif ( $source eq 'rt' ) {
+	    log_debug {"Fetching RT bugs"};
             $bugs = { %$bugs, %{$self->retrieve_rt_bugs} };
         }
     }
@@ -77,16 +79,18 @@ sub retrieve_github_bugs {
     my $self = shift;
     my $scroll
         = $self->index->type('release')->find_github_based->scroll;
+    log_debug {sprintf("Found %s repos", $scroll->total)};
     my $summary = {};
     while ( my $release = $scroll->next ) {
         my $resources = $release->resources;
         my ( $user, $repo, $source )
             = $self->github_user_repo_from_resources($resources);
-        next unless $user;
+	next unless $user;
+        log_debug { "Retrieving issues from $user/$repo" };
         my $open = $self->pithub->issues->list( user => $user, repo => $repo, params => { state => 'open' } );
-        last unless($open->success);
+        next unless($open->success);
         my $closed = $self->pithub->issues->list( user => $user, repo => $repo, params => { state => 'closed' } );
-        last unless($closed->success);
+        next unless($closed->success);
         $summary->{$release->{distribution}} = { open => 0, closed => 0, source => $source, type => 'github' };
         $summary->{$release->{distribution}}->{open}++ while($open->next);
         $summary->{$release->{distribution}}->{closed}++ while($closed->next);
@@ -99,7 +103,7 @@ sub github_user_repo_from_resources {
     my ( $user, $repo, $source );
     while ( my ( $k, $v ) = each %$resources ) {
         if ( !ref $v
-            && $v =~ /^(https?|git):\/\/github\.com\/([^\/]+)\/([^\/]+)\/?/ )
+            && $v =~ /^(https?|git):\/\/github\.com\/([^\/]+)\/([^\/]+?)(\.git)?\/?$/ )
         {
             return ( $2, $3, $v );
         }
