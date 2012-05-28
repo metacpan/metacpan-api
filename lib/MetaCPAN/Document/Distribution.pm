@@ -9,16 +9,9 @@ use namespace::autoclean;
 has name => ( is => 'ro', required => 1, id => 1 );
 has bugs => (
     is      => 'rw',
-    isa     => ArrayRef[BugSummary],
+    isa     => BugSummary,
     dynamic => 1,
 );
-
-sub add_bugs {
-   my ( $self, @add ) = @_;
-    BugSummary->assert_valid($_) for(@add);
-    my $bugs = { map { $_->{type} => $_ } @{ $self->bugs || [] }, @add };
-    $self->bugs( [ values %$bugs ] );
-}
 
 __PACKAGE__->meta->make_immutable;
 
