@@ -160,7 +160,8 @@ sub find_depending_on {
     my ( $self, $modules ) = @_;
     return $self->filter(
         {   or => [
-                map { { term => { 'release.dependency.module' => $_ } } } @$modules
+                map { { term => { 'release.dependency.module' => $_ } } }
+                    @$modules
             ]
         }
     );
@@ -186,6 +187,24 @@ sub predecessor {
             ]
         }
     )->sort( [ { date => 'desc' } ] )->first;
+}
+
+sub find_github_based {
+    my $or = [
+        { prefix => { "resources.homepage"       => 'http://github.com/' } },
+        { prefix => { "resources.homepage"       => 'https://github.com/' } },
+        { prefix => { "resources.repository.web" => 'http://github.com/' } },
+        { prefix => { "resources.repository.web" => 'https://github.com/' } },
+        { prefix => { "resources.repository.url" => 'http://github.com/' } },
+        { prefix => { "resources.repository.url" => 'https://github.com/' } },
+        { prefix => { "resources.repository.url" => 'git://github.com/' } },
+        { prefix => { "resources.bugtracker.web" => 'http://github.com/' } },
+        { prefix => { "resources.bugtracker.web" => 'https://github.com/' } },
+    ];
+    shift#->fields([qw(resources)])
+    ->filter(
+        { and => [ { term => { status => 'latest' } }, { or => $or } ] }
+    );
 }
 
 __PACKAGE__->meta->make_immutable;
