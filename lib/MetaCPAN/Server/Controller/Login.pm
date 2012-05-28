@@ -42,7 +42,7 @@ sub update_user {
         $cid->expires('-1y');
         $c->res->redirect(
             $c->uri_for(
-                '/oauth2/authorize', undef, decode_json( $cid->value )
+                '/oauth2/authorize', decode_json( $cid->value )
             )
         );
         $c->res->cookies->{oauth_tmp} = $cid;
