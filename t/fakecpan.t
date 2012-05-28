@@ -90,8 +90,13 @@ ok(
     'index authors'
 );
 
-ok(
-    MetaCPAN::Script::Tickets->new_with_options({%$config, rt_summary_url => "file://" . file($config->{cpan}, 'bugs.tsv')->absolute})->run,
+ok( MetaCPAN::Script::Tickets->new_with_options(
+        {   %$config,
+            rt_summary_url => "file://"
+                . file( $config->{cpan}, 'bugs.tsv' )->absolute,
+            github_issues => "file://" . dir(qw(t var fakecpan github))->absolute . '/%s/%s.json?per_page=100',
+        }
+        )->run,
     'tickets'
 );
 
