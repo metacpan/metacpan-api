@@ -78,7 +78,7 @@ Return true if this object represents a directory.
 
 Holds the name for the documentation in this file. 
 
-If the file L</is_pod_file|is a pod file, the name is derived from the
+If the file L</is_pod_file|is a pod file>, the name is derived from the
 C<NAME> section. If the file L</is_perl_file|is a perl file> and the
 name from the C<NAME> section matches on of the modules in L</module>,
 it returns the name. Otherwise it returns the name of the first module
@@ -223,7 +223,7 @@ stripping the C<DATA> section for performance reasons.
 
 =head2 content_cb
 
-Callback, that returns the content of the as ScalarRef.
+Callback that returns the content of the file as ScalarRef.
 
 =cut
 
@@ -265,7 +265,7 @@ happy and the indexer fast.
 
 =head2 is_pod_file
 
-Retruns true if the file extension is C<pod>.
+Returns true if the file extension is C<pod>.
 
 =cut
 
@@ -408,7 +408,7 @@ sub _build_pod_lines {
     my $self = shift;
     return [] unless ( $self->is_perl_file );
     my ( $lines, $slop ) = MetaCPAN::Util::pod_lines( ${ $self->content } );
-    $self->slop( $slop || 0 );
+    $self->slop( $slop );
     return $lines;
 }
 
@@ -514,7 +514,7 @@ The method returns a list of unauthorized, but indexed modules.
 
 Unauthorized modules are modules that were uploaded in the name of a
 different author than stated in the C<06perms.txt.gz> file. One problem
-with this file is, that it doesn't record historical data. It may very
+with this file is that it doesn't record historical data. It may very
 well be that an author was authorized to upload a module at the time.
 But then his co-maintainer rights might have been revoked, making consecutive
 uploads of that release unauthorized. However, since this script runs

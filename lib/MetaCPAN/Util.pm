@@ -1,5 +1,4 @@
 package MetaCPAN::Util;
-# ABSTRACT: Helper functions for MetaCPAN
 use strict;
 use warnings;
 use Digest::SHA1;
@@ -66,14 +65,22 @@ sub extract_section {
 
 sub pod_lines {
     my $content = shift;
-    return [] unless($content);
+    return ([], 0) unless($content);
     my @lines = split( "\n", $content );
     my @return;
-    my $count  = 1;
+    my $line_number = 0;
     my $length = 0;
     my $start  = 0;
     my $slop = 0;
+    my $in_data;
     foreach my $line (@lines) {
+        $line_number++;
+        if ($in_data) {
+            if( $line =~ /\A\s*__END__/) {
+                $in_data = undef;
+            }
+            next;
+        }
         if ( $line =~ /\A=cut/ ) {
             $length++;
             $slop++;
@@ -81,15 +88,14 @@ sub pod_lines {
               if ( $start && $length );
             $start = $length = 0;
         } elsif ( $line =~ /\A=[a-zA-Z]/ && !$length ) {
-            $start = $count;
+            $start = $line_number;
         } elsif( $line =~ /\A\s*__DATA__/) {
-            last;
+            $in_data = 1;
         }
         if ($start) {
             $length++;
             $slop++ if( $line =~ /\S/ );
         }
-        $count++;
     }
     push( @return, [ $start-1, $length ] )
       if ( $start && $length );
@@ -100,6 +106,10 @@ sub pod_lines {
 
 __END__
 
+=head1 NAME
+
+MetaCPAN::Util - Helper functions for MetaCPAN
+
 =head1 FUNCTIONS
 
 =head2 digest
@@ -108,3 +118,27 @@ This function will digest the passed parameters to a 32 byte string and makes it
 It consists of the characters A-Z, a-z, 0-9, - and _.
 
 The digest is built using L<Digest::SHA1>.
+
+=head2 numify_version
+
+=head2 fix_version
+
+=head2 author_dir
+
+=head2 strip_pod
+
+=head2 extract_section
+
+=head2 pod_lines
+
+    my ($lines, $slop) = pod_lines ($content);
+
+Given Perl code in C<$content>, return an array reference C<$lines> of
+array references C<[[first1, last1], [first2, last2], ...]>, where the
+line numbers refer to the start and end of Pod documentation in
+C<$content>. If the file is empty or does not contain Pod, $lines is a
+reference to an empty array. C<$slop> contains the number of lines of
+pod. If the file contains no pod, it is zero.
+
+=cut
+
