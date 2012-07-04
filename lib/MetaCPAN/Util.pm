@@ -69,11 +69,19 @@ sub pod_lines {
     return [] unless($content);
     my @lines = split( "\n", $content );
     my @return;
-    my $count  = 1;
+    my $line_number = 0;
     my $length = 0;
     my $start  = 0;
     my $slop = 0;
+    my $in_data;
     foreach my $line (@lines) {
+        $line_number++;
+        if ($in_data) {
+            if( $line =~ /\A\s*__END__/) {
+                $in_data = undef;
+            }
+            next;
+        }
         if ( $line =~ /\A=cut/ ) {
             $length++;
             $slop++;
@@ -81,15 +89,14 @@ sub pod_lines {
               if ( $start && $length );
             $start = $length = 0;
         } elsif ( $line =~ /\A=[a-zA-Z]/ && !$length ) {
-            $start = $count;
+            $start = $line_number;
         } elsif( $line =~ /\A\s*__DATA__/) {
-            last;
+            $in_data = 1;
         }
         if ($start) {
             $length++;
             $slop++ if( $line =~ /\S/ );
         }
-        $count++;
     }
     push( @return, [ $start-1, $length ] )
       if ( $start && $length );
