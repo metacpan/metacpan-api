@@ -408,7 +408,7 @@ sub _build_pod_lines {
     my $self = shift;
     return [] unless ( $self->is_perl_file );
     my ( $lines, $slop ) = MetaCPAN::Util::pod_lines( ${ $self->content } );
-    $self->slop( $slop || 0 );
+    $self->slop( $slop );
     return $lines;
 }
 

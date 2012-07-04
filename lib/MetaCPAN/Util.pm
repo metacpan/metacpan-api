@@ -63,10 +63,23 @@ sub extract_section {
     return $out;
 }
 
+=head2 pod_lines
+
+    my ($lines, $slop) = pod_lines ($content);
+
+Given Perl code in C<$content>, return an array reference C<$lines> of
+array references C<[[first1, last1], [first2, last2], ...]>, where the
+line numbers refer to the start and end of Pod documentation in
+C<$content>. If the file is empty or does not contain Pod, $lines is a
+reference to an empty array. C<$slop> contains the number of lines of
+pod. If the file contains no pod, it is zero.
+
+=cut
+
 
 sub pod_lines {
     my $content = shift;
-    return [] unless($content);
+    return ([], 0) unless($content);
     my @lines = split( "\n", $content );
     my @return;
     my $line_number = 0;
