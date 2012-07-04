@@ -1,5 +1,4 @@
 package MetaCPAN::Util;
-# ABSTRACT: Helper functions for MetaCPAN
 use strict;
 use warnings;
 use Digest::SHA1;
@@ -63,19 +62,6 @@ sub extract_section {
     return $out;
 }
 
-=head2 pod_lines
-
-    my ($lines, $slop) = pod_lines ($content);
-
-Given Perl code in C<$content>, return an array reference C<$lines> of
-array references C<[[first1, last1], [first2, last2], ...]>, where the
-line numbers refer to the start and end of Pod documentation in
-C<$content>. If the file is empty or does not contain Pod, $lines is a
-reference to an empty array. C<$slop> contains the number of lines of
-pod. If the file contains no pod, it is zero.
-
-=cut
-
 
 sub pod_lines {
     my $content = shift;
@@ -120,6 +106,10 @@ sub pod_lines {
 
 __END__
 
+=head1 NAME
+
+MetaCPAN::Util - Helper functions for MetaCPAN
+
 =head1 FUNCTIONS
 
 =head2 digest
@@ -128,3 +118,27 @@ This function will digest the passed parameters to a 32 byte string and makes it
 It consists of the characters A-Z, a-z, 0-9, - and _.
 
 The digest is built using L<Digest::SHA1>.
+
+=head2 numify_version
+
+=head2 fix_version
+
+=head2 author_dir
+
+=head2 strip_pod
+
+=head2 extract_section
+
+=head2 pod_lines
+
+    my ($lines, $slop) = pod_lines ($content);
+
+Given Perl code in C<$content>, return an array reference C<$lines> of
+array references C<[[first1, last1], [first2, last2], ...]>, where the
+line numbers refer to the start and end of Pod documentation in
+C<$content>. If the file is empty or does not contain Pod, $lines is a
+reference to an empty array. C<$slop> contains the number of lines of
+pod. If the file contains no pod, it is zero.
+
+=cut
+
