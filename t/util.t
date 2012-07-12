@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use MetaCPAN::Util;
 use CPAN::Meta;
+use Pod::Text;
 
 is( MetaCPAN::Util::numify_version(1),        1.000 );
 is( MetaCPAN::Util::numify_version('010'),    10.000 );
@@ -61,6 +62,49 @@ EOF
 
 	my $section = MetaCPAN::Util::extract_section( $content, 'NAME');
 	is($section, undef, 'NAMED did not match requested section NAME');
+}
+
+# section extraction should honour =encoding declaration
+
+sub pod_to_text {
+	my($pod) = @_;
+
+	my $parser = Pod::Text->new;
+	my $text   = "";
+	$parser->output_string( \$text );
+	$parser->parse_string_document("=pod\n\n$pod");
+	return $text;
+}
+
+{
+	my $content = <<"EOF";
+
+=encoding CP1252
+
+=head1 NAME
+
+Some::Thing - Somethin\x92 or nothin\x92
+
+=head1 DESCRIPTION
+
+This is meant to be \x93descriptive\x94.
+
+EOF
+
+	my $section = MetaCPAN::Util::extract_section( $content, 'NAME');
+	is($section, "=encoding CP1252\n\nSome::Thing - Somethin\x92 or nothin\x92",
+	    'NAME section came through as bytes with =encoding declaration');
+	my $formatted = pod_to_text( $section );
+	like($formatted, qr/Some::Thing - Somethin\x{2019} or nothin\x{2019}/,
+	    'POD parser was able to decode bytes');
+
+	$section = MetaCPAN::Util::extract_section( $content, 'DESCRIPTION');
+	is($section, "=encoding CP1252\n\nThis is meant to be \x93descriptive\x94.",
+	    'DESCRIPTION section came through as bytes with =encoding declaration');
+	$formatted = pod_to_text( $section );
+	like($formatted, qr/This is meant to be \x{201C}descriptive\x{201D}./,
+	    'POD parser was able to decode bytes');
+
 }
 
 done_testing;
