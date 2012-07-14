@@ -100,6 +100,11 @@ is(
     "Alien::Not - Ňôţ ăń ąĺíęň",
     'strip_pod honoured latin2 encoding'
 );
+is(
+    MetaCPAN::Util::strip_pod("=encoding BOGUS-ENC-9000\n\nMoose - \xC9lan\n"),
+    "Moose - Élan",
+    'bytes in unknown encoding decoded as Latin1'
+);
 
 sub version {
     CPAN::Meta->new({

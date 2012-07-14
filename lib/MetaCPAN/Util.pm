@@ -47,7 +47,8 @@ sub strip_pod {
     my $pod = shift;
 
     # If encoding not declared, replace "smart-quote" bytes with ASCII
-    if($pod !~ /^=encoding/m) {
+    my $have_encoding = $pod =~ /^=encoding/m;
+    if(!$have_encoding) {
         $pod =~ tr/\x91\x92\x93\x94\x96\x97/''""\-\-/;
     }
 
@@ -58,6 +59,10 @@ sub strip_pod {
     {
         local($Text::Wrap::columns) = 10_000;
         $parser->parse_string_document("=pod\n\n$pod");
+    }
+    if($have_encoding  and  $text =~ /POD ERRORS.*unsupported encoding/s) {
+        $pod =~ s/^=encoding.*$//mg;
+        return strip_pod($pod);
     }
 
     $text =~ s/\h+/ /g;
