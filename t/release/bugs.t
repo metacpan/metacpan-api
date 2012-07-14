@@ -10,7 +10,7 @@ my $release = $idx->type('distribution')->get('Moose');
 
 is( $release->name, 'Moose', 'Got correct release' );
 
-is( $release->bugs->{source}, 'http://rt.cpan.org/NoAuth/Bugs.html?Dist=Moose' );
+is( $release->bugs->{source}, 'https://rt.cpan.org/Public/Dist/Display.html?Name=Moose' );
 is( $release->bugs->{active},  39, 'Got correct bug count (active)' );
 is( $release->bugs->{stalled}, 4,  'Got correct bug count (stalled)' );
 
