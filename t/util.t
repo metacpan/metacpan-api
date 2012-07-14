@@ -23,19 +23,23 @@ lives_ok { is(version('0.99.01'), '0.99.01') };
 
 is(
     MetaCPAN::Util::strip_pod('hello L<link|http://www.google.com> foo'),
-    'hello link <http://www.google.com> foo'
+    'hello link <http://www.google.com> foo',
+    'link to URL'
 );
 is(
     MetaCPAN::Util::strip_pod('hello L<Module/section> foo'),
-    'hello "section" in Module foo'
+    'hello "section" in Module foo',
+    'link to Module/section'
 );
 is(
     MetaCPAN::Util::strip_pod('for L<Dist::Zilla>'),
-    'for Dist::Zilla'
+    'for Dist::Zilla',
+    'link to Module'
 );
 is(
     MetaCPAN::Util::strip_pod('without a leading C<$>.'),
-    'without a leading $.'
+    'without a leading $.',
+    'code section'
 );
 is(
     MetaCPAN::Util::strip_pod('B<bold> I<italics> C<code> F<file>'),
