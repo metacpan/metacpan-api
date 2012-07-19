@@ -94,6 +94,8 @@ sub retrieve_github_bugs {
         $summary->{$release->{distribution}} = { open => 0, closed => 0, source => $source, type => 'github' };
         $summary->{$release->{distribution}}->{open}++ while($open->next);
         $summary->{$release->{distribution}}->{closed}++ while($closed->next);
+        $summary->{$release->{distribution}}->{active} = $summary->{$release->{distribution}}->{open};
+
     }
     return $summary;
 }
