@@ -18,9 +18,9 @@ sub run {
     my $self = shift;
     my $ua   = LWP::UserAgent->new;
     log_info { "Downloading " . $self->ratings };
-    my $target = $self->home->file(qw( var tmp ratings.csv ));
+    my $target = $self->home->file(qw( var tmp ratings.csv ))->resolve;
     my $md5 = -e $target ? $self->digest($target) : 0;
-    $ua->mirror( $self->ratings, $target );
+    my $res = $ua->mirror( $self->ratings, $target );
     if ( $md5 eq $self->digest($target) ) {
         log_info {"No changes to ratings.csv"};
         return;
@@ -65,7 +65,8 @@ sub digest {
     my ( $self, $file ) = @_;
     my $md5 = Digest::MD5->new;
     $md5->addfile( $file->openr );
-    return Dlog_debug {"MD5 of file $file is $_"} $md5->hexdigest;
+    my ($digest) = Dlog_debug {"MD5 of file $file is $_"} $md5->hexdigest;
+    return $digest;
 }
 
 1;
