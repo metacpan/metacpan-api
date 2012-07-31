@@ -14,7 +14,7 @@ my @moose = $idx->type('release')->filter(
 my $first = 0;
 map { $first++ } grep { $_->first } @moose;
 
-ok($first, 'only one moose is first');
+is($first, 1, 'only one moose is first');
 
 ok(my $faq = $idx->type('file')->filter({
     term => { 'file.documentation' => 'Moose::FAQ' }

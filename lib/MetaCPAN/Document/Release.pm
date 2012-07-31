@@ -71,6 +71,11 @@ See L<MetaCPAN::Document::Dependency>.
 
 See L<CPAN::Meta::Spec/resources>.
 
+=head2 meta
+
+See L<CPAN::Meta/as_struct>. Upgraded to version 2 if possible. This property
+is not indexed by ElasticSearch and only available from the source.
+
 =head2 abstract
 
 Description of the release.
@@ -128,6 +133,7 @@ has first => (
     lazy     => 1,
     builder  => '_build_first'
 );
+has metadata => ( coerce => 1, is => 'ro', isa => 'HashRef', dynamic => 1, source_only => 1 );
 
 sub _build_version_numified {
     return MetaCPAN::Util::numify_version( shift->version );

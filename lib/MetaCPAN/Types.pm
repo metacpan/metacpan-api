@@ -3,6 +3,7 @@ use ElasticSearch;
 use MetaCPAN::Document::Module;
 use MooseX::Getopt::OptionTypeMap;
 use JSON;
+use CPAN::Meta;
 
 use MooseX::Types -declare => [
     qw(
@@ -70,6 +71,12 @@ coerce Resources, from HashRef, via {
           map { $_ => $r->{$_} }
           grep { defined $r->{$_} } qw(license homepage bugtracker repository)
     };
+};
+
+class_type "CPAN::Meta";
+coerce HashRef, from "CPAN::Meta", via {
+    my $struct = eval { $_->as_struct( { version => 2 } ); };
+    return $struct ? $struct : $_->as_struct;
 };
 
 class_type Logger, { class => 'Log::Log4perl::Logger' };

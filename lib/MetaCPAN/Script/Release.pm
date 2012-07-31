@@ -218,6 +218,7 @@ sub import_tarball {
         status       => $self->detect_status( $author, $archive ),
         date         => $date,
         dependency   => \@dependencies,
+        metadata     => $meta,
     };
     delete $release->{abstract}
         if ( $release->{abstract} eq 'unknown'
