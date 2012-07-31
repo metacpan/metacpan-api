@@ -67,4 +67,23 @@ test_psgi app, sub {
     }
 };
 
+test_psgi app, sub {
+    my $cb = shift;
+
+    my $path = '/pod/BadPod';
+    ok( my $res = $cb->( GET $path), "GET $path" );
+    is( $res->code, 200, "code 200" );
+    unlike( $res->content, qr/<div[^>]*id="pod-errors"/, 'no POD errors section' );
+
+    $path = '/pod/BadPod?show_errors=1';
+    ok( my $res = $cb->( GET $path), "GET $path" );
+    is( $res->code, 200, "code 200" );
+    like( $res->content, qr/<div[^>]*id="pod-errors"/, 'got POD errors section' );
+
+    my @err = $res->content =~ m{<dd.*?>(.*?)</dd>}sg;
+    is( scalar(@err), 2, "two parse errors listed ");
+    like( $err[0], qr/=head\b/, "first error mentions =head" );
+    like( $err[1], qr/C&lt;/, "first error mentions C< ... >" );
+};
+
 done_testing;

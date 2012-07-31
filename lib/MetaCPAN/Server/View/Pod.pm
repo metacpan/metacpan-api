@@ -15,6 +15,7 @@ sub process {
     $content = eval { join("", $content->getlines) };
     my ($body, $content_type);
     my $accept = eval { $c->req->preferred_content_type } || 'text/html';
+    my $show_errors = $c->req->params->{show_errors};
     if($accept eq 'text/plain') {
       $body = $self->build_pod_txt( $content );
       $content_type = 'text/plain';
@@ -25,7 +26,7 @@ sub process {
       $body = $self->build_pod_markdown( $content );
       $content_type = 'text/plain';
     } else {
-      $body = $self->build_pod_html( $content );
+      $body = $self->build_pod_html( $content, $show_errors );
       $content_type = 'text/html';
     }
     $c->res->content_type($content_type);
@@ -40,13 +41,13 @@ sub build_pod_markdown {
 }
 
 sub build_pod_html {
-    my ( $self, $source ) = @_;
+    my ( $self, $source, $show_errors ) = @_;
     my $parser = MetaCPAN::Pod::XHTML->new();
     $parser->index(1);
     $parser->html_header('');
     $parser->html_footer('');
     $parser->perldoc_url_prefix('');
-    $parser->no_errata_section(1);
+    $parser->no_errata_section( !$show_errors );
     my $html = "";
     $parser->output_string( \$html );
     $parser->parse_string_document($source);
