@@ -52,6 +52,14 @@ sub strip_pod {
         $pod =~ tr/\x91\x92\x93\x94\x96\x97/''""\-\-/;
     }
 
+    # If we have a character string, we need to convert it back to bytes
+    # for the POD parser
+    if ( Encode::is_utf8($pod) ) {
+        $pod = Encode::encode_utf8($pod);
+        $pod =~ s{^=encoding.*$}{}m;
+        $pod = "=encoding utf8\n\n" . $pod;
+    }
+
     my $parser = Pod::Simple::Text->new();
     my $text   = "";
     $parser->output_string( \$text );
