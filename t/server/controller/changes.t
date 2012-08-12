@@ -5,8 +5,10 @@ use MetaCPAN::Server::Test;
 
 my @tests = (
     # TODO: w/ no arg?
-    [ '/changes/File-Changes'    => 200 ],
-# TODO: '/changes/LOCAL/File-Changes-1.0'        => 200
+    [ '/changes/File-Changes'           => 200,
+        Changes => qr/^Revision history for Changes\n\n1\.0.+^  - Initial Release/sm, ],
+    [ '/changes/LOCAL/File-Changes-1.0' => 200,
+        Changes => qr/^Revision history for Changes\n\n1\.0.+/sm, ],
 # TODO: '/changes/File-Changes-News'             => 200
 # TODO: '/changes/LOCAL/File-Changes-News-11.22' => 200
     [ '/changes/NOEXISTY'        => 404 ],
@@ -15,9 +17,9 @@ my @tests = (
 test_psgi app, sub {
     my $cb = shift;
     for my $test (@tests) {
-        my ($k, $v) = @{ $test };
-        ok( my $res = $cb->( GET $k), "GET $k" );
-        is( $res->code, $v, "code $v" );
+        my ($path, $code, $name, $content) = @{ $test };
+        ok( my $res = $cb->( GET $path), "GET $path" );
+        is( $res->code, $code, "code $code" );
         is( $res->header('content-type'),
             'application/json; charset=utf-8',
             'Content-type'
@@ -26,14 +28,13 @@ test_psgi app, sub {
 
         next unless $res->code == 200;
 
-#        if ( $k eq '/distribution' ) {
+#        if ( $path eq '/distribution' ) {
 #            ok( $json->{hits}->{total}, 'got total count' );
 #        }
 
-        is $json->{name}, 'Changes', 'got file named Changes';
-        is $json->{distribution}, 'File-Changes', 'got expected dist';
+        is $json->{name}, $name, 'change log has expected name';
         like $json->{content},
-            qr/^Revision history for Changes.+^  - Initial Release/sm,
+            $content,
             'file content';
     }
 };
