@@ -1,0 +1,12 @@
+{
+  "name": "File-Changes",
+  "abstract": "A dist with a Changes file",
+  "version": "2.0",
+  "X_Module_Faker": {
+    "cpan_author": "LOCAL",
+    "append": [ {
+        "file": "Changes",
+        "content": "Revision history for Changes\n\n2.0 2012-08-11T18:03:41\n\n  - finally\n1.0 2011-12-18T20:28:20Z\n  - Initial Release\n"
+    } ]
+  }
+}
