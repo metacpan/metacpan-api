@@ -11,9 +11,12 @@ my @tests = (
         Changes => qr/^Revision history for Changes\n\n2\.0.+1\.0.+/sm, ],
     [ '/changes/LOCAL/File-Changes-1.0' => 200,
         Changes => qr/^Revision history for Changes\n\n1\.0.+/sm, ],
-# TODO: '/changes/File-Changes-News'             => 200
-# TODO: '/changes/LOCAL/File-Changes-News-11.22' => 200
+    [ '/changes/File-Changes-News'             => 200,
+        NEWS    => qr/^F\nR\nE\nE\nF\nO\nR\nM\n/, ],
+    [ '/changes/LOCAL/File-Changes-News-11.22' => 200,
+        NEWS    => qr/^F\nR\nE\nE\nF\nO\nR\nM\n/, ],
     [ '/changes/NOEXISTY'        => 404 ],
+    [ '/changes/NOAUTHOR/NODIST' => 404 ],
 );
 
 test_psgi app, sub {
