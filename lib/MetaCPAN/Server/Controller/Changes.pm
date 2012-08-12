@@ -9,7 +9,6 @@ sub index : Chained('/') : PathPart('changes') : CaptureArgs(0) {
 }
 
 # TODO: get/find (/dist-name vs /author/release-v)
-# TODO: ->size(@candidates)
 
 sub get : Chained('index') : PathPart('') : Args(1) {
     my ( $self, $c, $name ) = @_;
@@ -17,6 +16,10 @@ sub get : Chained('index') : PathPart('') : Args(1) {
     # find the most likely file
     # TODO: should we do this when the release is indexed
     # and store the result as { 'changes_file' => $name }
+
+    my @candidates = qw(
+        CHANGES Changes ChangeLog Changelog CHANGELOG NEWS
+    );
 
     my $file = eval {
         my $release = $c->model('CPAN::Release')->inflate(0)->find($name)->{_source}->{name};
@@ -28,11 +31,13 @@ sub get : Chained('index') : PathPart('') : Args(1) {
                 { term => { directory => \0 } },
                 {   or => [
                         map { { term => { 'file.name' => $_ } } }
-                            qw( CHANGES Changes ChangeLog Changelog CHANGELOG NEWS )
+                            @candidates
                     ]
                 }
             ]
-        })->sort( [ { name => 'asc' } ] )->first->{_source};
+        })
+        ->size(scalar @candidates)
+        ->sort( [ { name => 'asc' } ] )->first->{_source};
     } or $c->detach('/not_found');
 
     my $source = $c->model('Source')->path( @$file{qw(author release path)} )
