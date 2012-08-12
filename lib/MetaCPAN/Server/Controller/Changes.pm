@@ -8,10 +8,8 @@ with 'MetaCPAN::Server::Role::JSONP';
 sub index : Chained('/') : PathPart('changes') : CaptureArgs(0) {
 }
 
-# TODO: get/find (/dist-name vs /author/release-v)
-
-sub get : Chained('index') : PathPart('') : Args(1) {
-    my ( $self, $c, $name ) = @_;
+sub get : Chained('index') : PathPart('') : Args(2) {
+    my ( $self, $c, $author, $release ) = @_;
 
     # find the most likely file
     # TODO: should we do this when the release is indexed
@@ -22,11 +20,10 @@ sub get : Chained('index') : PathPart('') : Args(1) {
     );
 
     my $file = eval {
-        my $release = $c->model('CPAN::Release')->inflate(0)->find($name)->{_source}->{name};
         my $files = $c->model('CPAN::File')->inflate(0)->filter({
             and => [
                 { term => { release   => $release } },
-                #{ term => { author    => $author } },
+                { term => { author    => $author } },
                 { term => { level     => 0 } },
                 { term => { directory => \0 } },
                 {   or => [
@@ -44,6 +41,15 @@ sub get : Chained('index') : PathPart('') : Args(1) {
         or $c->detach('/not_found');
     $file->{content} = eval { local $/; $source->openr->getline };
     $c->stash( $file );
+}
+
+sub find : Chained('index') : PathPart('') : Args(1) {
+    my ( $self, $c, $name ) = @_;
+    my $release = eval {
+        $c->model('CPAN::Release')->inflate(0)->find($name)->{_source};
+    } or $c->detach('/not_found');
+
+    $c->forward( 'get', [ @$release{qw( author name )} ]);
 }
 
 1;
