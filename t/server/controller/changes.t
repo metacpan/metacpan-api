@@ -6,7 +6,9 @@ use MetaCPAN::Server::Test;
 my @tests = (
     # TODO: w/ no arg?
     [ '/changes/File-Changes'           => 200,
-        Changes => qr/^Revision history for Changes\n\n1\.0.+^  - Initial Release/sm, ],
+        Changes => qr/^Revision history for Changes\n\n2\.0.+1\.0.+/sm, ],
+    [ '/changes/LOCAL/File-Changes-2.0' => 200,
+        Changes => qr/^Revision history for Changes\n\n2\.0.+1\.0.+/sm, ],
     [ '/changes/LOCAL/File-Changes-1.0' => 200,
         Changes => qr/^Revision history for Changes\n\n1\.0.+/sm, ],
 # TODO: '/changes/File-Changes-News'             => 200
