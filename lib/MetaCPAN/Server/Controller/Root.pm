@@ -10,7 +10,8 @@ sub default : Path {
 }
 
 sub not_found : Private {
-    my ( $self, $c, $message ) = @_;
+    my ( $self, $c, @params ) = @_;
+    my $message = join('/', @params);
     $c->clear_stash;
     $c->stash( { message => "Not found: " . ($message || "No error...") } );
     $c->response->status(404);
