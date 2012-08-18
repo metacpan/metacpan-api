@@ -98,7 +98,7 @@ All CPAN Authors Who Have Updated MetaCPAN Profiles:
 
 First 100 distributions which SZABGAB has given a ++:
 
-[[http://api.metacpan.org/v0/favorite/_search?q=user:SZABGAB&size=100&fields=distribution]]
+[[ http://api.metacpan.org/v0/favorite/_search?q=user:sWuxlxYeQBKoCQe1f-FQ_Q&size=100&fields=distribution]]
 
 Number of ++'es that DOY's dists have received:
 
