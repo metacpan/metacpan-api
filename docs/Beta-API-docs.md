@@ -12,6 +12,10 @@ You can certainly scroll if you are fetching less than 5000 items.  You might wa
 
 Be aware that when you scroll, your docs will come back unsorted, as noted in the [ElasticSearch scan documentation](http://www.elasticsearch.org/guide/reference/api/search/search-type.html).
 
+## Identifying Yourself
+
+Part of being polite is letting us know who you are and how to reach you.  This is not mandatory, but please do consider adding your app to the [[API-Consumers]] page.
+
 ## Available fields
 
 Available fields can be found by accessing the corresponding `_mapping` endpoint.
