@@ -107,8 +107,10 @@ sub join : ActionClass('Deserialize') {
             = $query->{filter}
             ? { and => [ $filter, $query->{filter} ] }
             : $filter;
-        my $foreign = $c->model("CPAN::$type")->query( $filtered->{query} )
-            ->filter( $filtered->{filter} )->size(1000)->raw->all;
+        my $foreign = eval {
+            $c->model("CPAN::$type")->query( $filtered->{query} )
+                ->filter( $filtered->{filter} )->size(1000)->raw->all
+            } or do { $self->internal_error( $c, $@ ) };
         $c->detach(
             "/not_allowed",
             [   "The number of joined documents exceeded the allowed number of 1000 documents by "
