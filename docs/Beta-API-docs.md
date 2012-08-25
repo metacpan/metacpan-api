@@ -47,6 +47,19 @@ Performing a search without any constraints is an easy way to get sample data
 
 You should be able to run most POST queries, but very few GET urls are currently exposed. However, these convenience endpoints can get you started.  You should note that they behave differently than the POST queries in that they will return to you the latest version of a module or dist and they remove a lot of the verbose ElasticSearch data which wraps results.
 
+## Joins
+
+ElasticSearch itself doesn't support joining data across multiple types. The API server can, however, handle a `join` query parameter if the underlying type was set up accordingly. Browse [[https://github.com/CPAN-API/cpan-api/blob/master/lib/MetaCPAN/Server/Controller/]] to see all join conditions. Here are some examples.
+
+Joins on documents:
+
+* [[/author/PERLER?join=favorite|http://api.metacpan.org/v0/author/PERLER?join=favorite]]
+* [[/author/PERLER?join=favorite&join=release|http://api.metacpan.org/v0/author/PERLER?join=favorite&join=release]]
+* [[/release/Moose?join=author|http://api.metacpan.org/v0/release/Moose?join=author]]
+* [[/module/Moose?join=release|http://api.metacpan.org/v0/module/Moose?join=release]]
+
+Joins on search results is work in progress.
+
 ## JSONP
 
 Simply add a `callback` query parameter with the name of your callback, and you'll get a JSONP response.
