@@ -60,7 +60,7 @@ Joins on documents:
 
 Joins on search results is work in progress.
 
-Restricting the joined results can be done by using the boolean `should` occurrence type:
+Restricting the joined results can be done by using the [[boolean "should"|http://www.elasticsearch.org/guide/reference/query-dsl/bool-query.html]] occurrence type:
 
 ```sh
 curl -XPOST http://api.metacpan.org/v0/author/PERLER?join=release -d '
