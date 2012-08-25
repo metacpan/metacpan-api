@@ -96,7 +96,7 @@ sub author_config {
     my $dir = $self->cpan->subdir( 'authors',
         MetaCPAN::Util::author_dir($pauseid) );
     my @files;
-    opendir( my $dh, $dir ) || return {};
+    opendir( my $dh, $dir ) || return $fallback;
     my ($file)
         = sort { $dir->file($b)->stat->mtime <=> $dir->file($a)->stat->mtime }
         grep   {m/author-.*?\.json/} readdir($dh);
