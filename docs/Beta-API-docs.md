@@ -60,6 +60,23 @@ Joins on documents:
 
 Joins on search results is work in progress.
 
+Restricting the joined results can be done by using the boolean `should` occurrence type:
+
+```sh
+curl -XPOST http://api.metacpan.org/v0/author/PERLER?join=release -d '
+{
+    "query": {
+        "bool": {
+            "should": [{
+                "term": {
+                    "release.status": "latest"
+                }
+            }]
+        }
+    }
+}'
+```
+
 ## JSONP
 
 Simply add a `callback` query parameter with the name of your callback, and you'll get a JSONP response.
