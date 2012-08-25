@@ -292,6 +292,7 @@ sub import_tarball {
         while ( my ( $module, $data ) = each %provides ) {
             my $path = $data->{file};
             my $file = List::Util::first { $_->path =~ /\Q$path\E$/ } @files;
+            next unless $file;
             $file->add_module(
                 {   name    => $module,
                     version => $data->{version},
