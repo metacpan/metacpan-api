@@ -5,7 +5,7 @@ use warnings;
 use Digest::SHA1;
 use version;
 use Try::Tiny;
-use Pod::Simple::Text;
+use Pod::Simple::Text 3.23;
 
 sub digest {
     my $digest = Digest::SHA1::sha1_base64(join("\0", grep { defined } @_));
