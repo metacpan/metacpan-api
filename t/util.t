@@ -105,6 +105,14 @@ is(
     "Moose - Élan",
     'bytes in unknown encoding decoded as Latin1'
 );
+my $chars = Encode::decode_utf8(
+    "=encoding utf8\x0A\x0AModule \xE2\x80\x93 \xE2\x80\x9CName\xE2\x80\x9D\x0A"
+);
+is(
+    MetaCPAN::Util::strip_pod($chars),
+    "Module – “Name”",
+    'when source POD is already char string, characters are not decoded'
+);
 
 sub version {
     CPAN::Meta->new({
