@@ -46,11 +46,8 @@ sub author_dir {
 sub strip_pod {
     my $pod = shift;
 
-    # If encoding not declared, replace "smart-quote" bytes with ASCII
+    # Was encoding explicitly declared or inferred by POD parser?
     my $have_encoding = $pod =~ /^=encoding/m;
-    if(!$have_encoding) {
-        $pod =~ tr/\x91\x92\x93\x94\x96\x97/''""\-\-/;
-    }
 
     my $parser = Pod::Simple::Text->new();
     my $text   = "";
@@ -63,6 +60,11 @@ sub strip_pod {
     if($have_encoding  and  $text =~ /POD ERRORS.*unsupported encoding/s) {
         $pod =~ s/^=encoding.*$//mg;
         return strip_pod($pod);
+    }
+
+    # If encoding was not declared, replace "smart-quote" chars with ASCII
+    if(!$have_encoding) {
+        $text =~ tr/\x{91}\x{92}\x{93}\x{94}\x{96}\x{97}/''""\-\-/;
     }
 
     $text =~ s/\h+/ /g;

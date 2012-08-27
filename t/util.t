@@ -83,14 +83,14 @@ is(
 );
 is(
     MetaCPAN::Util::strip_pod(
-        "=encoding CP1252\n\nMoose \x96\x97 \x91\xC9lan\x92 \x93Dou\xE9\x94"
+        "=encoding CP1252\n\nMoose \x96 \xC9lan \x97 \x93 Dou\xE9 \x94 \x91 Fut\xE9 \x92"
     ),
-    "Moose –— ‘Élan’ “Doué”",
+    "Moose – Élan — “ Doué ” ‘ Futé ’",
     'CP1252 bytes decoded'
 );
 is(
-    MetaCPAN::Util::strip_pod("Moose \x96\x97 \x91\xC9lan\x92 \x93Dou\xE9\x94"),
-    "Moose -- 'Élan' \"Doué\"",
+    MetaCPAN::Util::strip_pod("Moose \x96 \xC9lan \x97 \x93 Dou\xE9 \x94 \x91 Fut\xE9 \x92"),
+    q{Moose - Élan - " Doué " ' Futé '},
     'CP1252 bytes de-smarted without encoding declaration'
 );
 is(
