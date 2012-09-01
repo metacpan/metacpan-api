@@ -1,5 +1,6 @@
+use Test::More 0.96 (); # require version for subtests but let Test::Most do the ->import()
 use Test::Most;
-use Test::Aggregate;
+use Test::Aggregate::Nested ();
 use strict;
 use warnings;
 use CPAN::Faker;
@@ -111,9 +112,19 @@ sub wait_for_es {
     $es->refresh_index();
 }
 
-my $tests = Test::Aggregate->new( {
-    dirs    => [qw(t/release t/server)],
-    verbose => 2,
-} );
+subtest 'Nested tests' => sub {
+    my $tests = Test::Aggregate::Nested->new( {
+        # should we do a glob to get these (and strip out t/var)?
+        dirs    => [qw(
+            t/document
+            t/release
+            t/script
+            t/server
+        )],
+        verbose => 2,
+    } );
 
-$tests->run;
+    $tests->run;
+};
+
+done_testing;
