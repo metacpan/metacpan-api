@@ -11,9 +11,9 @@ Loads PerlMonger groups into db.
 use feature 'say';
 use Data::Dump qw( dump );
 use Find::Lib '../lib';
-use MetaCPAN::PerlMongers;
+use MetaCPAN::Script::PerlMongers;
 
-my $author = MetaCPAN::PerlMongers->new;
+my $author = MetaCPAN::Script::PerlMongers->new;
 my $result = $author->index_perlmongers;
 say dump( $result );
 
