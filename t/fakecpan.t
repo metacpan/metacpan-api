@@ -4,6 +4,7 @@ use Test::Aggregate::Nested ();
 use strict;
 use warnings;
 use CPAN::Faker;
+use Module::Faker 0.010 (); # encoding fix for newer perls
 use ElasticSearch::TestServer;
 use MetaCPAN::Script::Runner;
 use MetaCPAN::Script::Mapping;
