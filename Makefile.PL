@@ -210,6 +210,10 @@ WriteMakefile(%WriteMakefileArgs);
 sub MY::postamble {
   return <<POST
 
+# let install exist but make it a no-op
+# that way 'cpanm .' appears successful
+install:
+
 # the tests should not recurse, t/fakecpan.t does that with Test::Aggregate
 test :
 \t prove -lv t/
