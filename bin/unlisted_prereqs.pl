@@ -49,6 +49,11 @@ foreach my $phase ( keys %$files ){
   foreach my $file ( @{ $files->{ $phase } } ){
     $pr->add_requirements( $scanner->scan_file( $file ) );
   }
+
+  # ignore packages we provide locally
+  $pr->clear_requirement($_)
+    for grep { exists $local->{$_} } $pr->required_modules;
+
   $reqs->{ $phase } = $pr->as_string_hash;
 }
 
@@ -56,15 +61,6 @@ foreach my $phase ( keys %$files ){
 foreach my $dep ( keys %{ $reqs->{runtime} } ){
   # TODO: check version
   delete $reqs->{build}{ $dep };
-}
-
-# ignore packages we provide locally
-foreach my $phase ( keys %$files ){
-  #$reqs->clear_requirements($_) for grep { exists $local->{$_} } $reqs->required_modules;
-  foreach my $dep ( keys %{ $reqs->{ $phase } } ){
-    delete $reqs->{ $phase }{ $dep }
-      if $local->{ $dep };
-  }
 }
 
 sub check_prereqs {
@@ -89,6 +85,4 @@ delete $reqs->{runtime}{perl}
 
 use Data::Dumper;
 $Data::Dumper::Sortkeys = 1;
-#print Dumper({ local => $local, files => $files, });
-#print Dumper({ PPM => $PREREQ_PM, BR => $BUILD_REQUIRES });
-print Dumper($reqs);
+print Data::Dumper->Dump([$reqs], ['requires']);
