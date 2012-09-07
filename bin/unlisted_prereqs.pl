@@ -7,39 +7,35 @@ use strict;
 use warnings;
 use Perl::PrereqScanner 1.014;
 use CPAN::Meta::Requirements;
-use File::Find qw( find );
+use File::Find::Rule::Perl;
 use version 0.77;
 
-my $dir = '.';
+# TODO: use CPAN::Meta::Prereqs
 
-# CPAN::Meta::Prereqs
-# File::Find::Rule->not( File::Find::Rule->name('var')->prune->discard )->perl_file->in('.')
+my @found = File::Find::Rule->not(
+  File::Find::Rule->name(qw(
+    .git
+    t/var/tmp
+    var
+  ))->prune->discard,
+)->perl_file->in('.');
+
 my $local = {};
 my $files = {};
-{
-  my $phase = 'runtime';
-  find(
-    {
+
+foreach ( @found ){
       # FIXME: unix slashes
-      wanted => sub {
         my $phase =
           # beneath t/ or xt/
           m{^(\./)?x?t/} ? 'build' :
           'runtime';
 
-        push @{ $files->{ $phase } }, $_
-          if /\.(pm|pl|t)$/i;
+        push @{ $files->{ $phase } }, $_;
 
         if( m{^(?:\./)?(?:t/)?lib/(.+?)\.pm$} ){
           (my $pm = $1) =~ s!/!::!g;
           $local->{ $pm } = $_;
         }
-      },
-      no_chdir => 1,
-    },
-    # TODO: ignore qw( .git var )
-    $dir,
-  );
 }
 
 my $scanner = Perl::PrereqScanner->new(
