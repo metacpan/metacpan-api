@@ -393,7 +393,7 @@ curl -XPOST api.metacpan.org/v0/release/_search -d '{
   "query": {
     "match_all": {}
   },
-  "size": 5,
+  "size": 10,
   "fields": [ "release.name", "release.resources.bugtracker.mailto" ],
   "filter": {
     "and": [
@@ -402,6 +402,19 @@ curl -XPOST api.metacpan.org/v0/release/_search -d '{
       {  "exists" : { "field" : "release.resources.bugtracker.mailto" } },
       {  "missing" : { "field" : "release.resources.bugtracker.web" } }
     ]
+  }
+}'
+```
+
+### List distributions for which we have a bugtracker URL
+```sh
+curl -XPOST api.metacpan.org/v0/distribution/_search -d '{
+  "query": {
+    "match_all": {}
+  },
+  "size": 1000,
+  "filter": {
+    "exists" : { "field" : "distribution.bugs.source" }
   }
 }'
 ```
