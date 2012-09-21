@@ -9,7 +9,9 @@ is( MetaCPAN::Util::numify_version('010'),    10.000 );
 is( MetaCPAN::Util::numify_version('v2.1.1'), 2.001001 );
 is( MetaCPAN::Util::numify_version(undef),    0.000 );
 is( MetaCPAN::Util::numify_version('LATEST'), 0.000 );
-is( MetaCPAN::Util::numify_version('0.20_8'), 0.20008 );
+is( MetaCPAN::Util::numify_version('0.20_8'), 0.208 );
+is( MetaCPAN::Util::numify_version('0.20_88'), 0.200088 );
+is( MetaCPAN::Util::numify_version('0.208_8'), 0.208008 );
 is( MetaCPAN::Util::numify_version('0.20_108'), 0.2000108 );
 
 lives_ok { is(version("2a"), 2) };
