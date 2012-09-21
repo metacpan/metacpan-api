@@ -43,7 +43,7 @@ test_psgi app, sub {
         } elsif ( $v == 404 ) {
             like( $res->content, qr/Not found: (\w+)/, "404 correct error");
         }
-        
+
         my $ct = $k =~ /Moose[.]pm$/ ? '&content-type=text/x-pod' : '';
         ok( $res = $cb->( GET "$k?callback=foo$ct"), "GET $k with callback" );
         is( $res->code, $v, "code $v" );
@@ -70,13 +70,14 @@ test_psgi app, sub {
 test_psgi app, sub {
     my $cb = shift;
 
+    my $res;
     my $path = '/pod/BadPod';
-    ok( my $res = $cb->( GET $path), "GET $path" );
+    ok( $res = $cb->( GET $path), "GET $path" );
     is( $res->code, 200, "code 200" );
     unlike( $res->content, qr/<div[^>]*id="pod-errors"/, 'no POD errors section' );
 
     $path = '/pod/BadPod?show_errors=1';
-    ok( my $res = $cb->( GET $path), "GET $path" );
+    ok( $res = $cb->( GET $path), "GET $path" );
     is( $res->code, 200, "code 200" );
     like( $res->content, qr/<div[^>]*id="pod-errors"/, 'got POD errors section' );
 
