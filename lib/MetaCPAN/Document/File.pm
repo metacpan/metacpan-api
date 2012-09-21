@@ -27,7 +27,7 @@ C<NAME> section. It also sets L</documentation> if it succeeds.
 =head2 id
 
 Unique identifier of the release. Consists of the L</author>'s pauseid and
-the release L</name>. See L</ElasticSearchX::Model::Util::digest>.
+the release L</name>. See L<ElasticSearchX::Model::Util/digest>.
 
 =head2 module
 
@@ -76,11 +76,11 @@ Return true if this object represents a directory.
 
 =head2 documentation
 
-Holds the name for the documentation in this file. 
+Holds the name for the documentation in this file.
 
-If the file L</is_pod_file|is a pod file, the name is derived from the
+If the file L</is_pod_file|is a pod file>, the name is derived from the
 C<NAME> section. If the file L</is_perl_file|is a perl file> and the
-name from the C<NAME> section matches on of the modules in L</module>,
+name from the C<NAME> section matches one of the modules in L</module>,
 it returns the name. Otherwise it returns the name of the first module
 in L</module>. If there are no modules in the file the documentation is
 set to C<undef>.
@@ -132,7 +132,7 @@ Contains the raw version string.
 
 B<Required>, B<Lazy Build>
 
-Numified version of L</version>. Contains 0 if there is no version or the
+Numeric representation of L</version>. Contains 0 if there is no version or the
 version could not be parsed.
 
 =cut
@@ -223,7 +223,7 @@ stripping the C<DATA> section for performance reasons.
 
 =head2 content_cb
 
-Callback, that returns the content of the as ScalarRef.
+Callback that returns the content of the file as a ScalarRef.
 
 =cut
 
