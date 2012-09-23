@@ -169,7 +169,7 @@ my %WriteMakefileArgs = (
     "strict" => 0,
     "strictures" => 1,
     "utf8" => 0,
-    "version" => 0,
+    "version" => '0.9901',
     "warnings" => 0,
   },
 
