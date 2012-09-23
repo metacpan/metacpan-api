@@ -42,6 +42,8 @@ ok(my $moose = $idx->type('file')->find('Moose'), 'find Moose module');
 
 is($moose->name, 'Moose.pm', 'defined in Moose.pm');
 
+is($moose->module->[0]->associated_pod, "DOY/Moose-0.02/lib/Moose.pm");
+
 my $signature;
 $signature = $idx->type('file')->filter(
   {   and => [

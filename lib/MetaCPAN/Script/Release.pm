@@ -283,9 +283,11 @@ sub import_tarball {
 
     # build module -> pod file mapping
     # $file->clear_documentation to force a rebuild
-    my %associated_pod = map { $_->clear_documentation => $_ }
-        grep { $_->indexed && $_->documentation } @files;
-
+    my %associated_pod;
+    for(grep { $_->indexed && $_->documentation } @files) {
+        my $documentation = $_->clear_documentation;
+        $associated_pod{$documentation} = [ @{$associated_pod{$documentation} || []}, $_ ];
+    }
     # find modules
     my @modules;
     if ( my %provides = %{ $meta->provides } ) {
@@ -341,16 +343,14 @@ sub import_tarball {
         $file->clear_module if ( $file->is_pod_file );
         log_trace {"reindexing file $file->{path}"};
         $bulk->put($file);
-    }
-
-    $bulk->commit;
-    unless($release->has_abstract) {
-        (my $module = $release->distribution) =~ s/-/::/g;
-        if(my $file = $associated_pod{$module}) {
+        unless($release->has_abstract) {
+            (my $module = $release->distribution) =~ s/-/::/g;
             $release->abstract($file->abstract);
             $release->put;
         }
     }
+    $bulk->commit;
+
     if (@release_unauthorized) {
         log_info {
             "release "
