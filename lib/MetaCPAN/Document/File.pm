@@ -547,6 +547,17 @@ sub set_authorized {
     return grep { !$_->authorized && $_->indexed } @{ $self->module };
 }
 
+=head2 full_path
+
+Concatenate L</author>, L</release> and L</path>.
+
+=cut
+
+sub full_path {
+    my $self = shift;
+    return join("/", $self->author, $self->release, $self->path);
+}
+
 __PACKAGE__->meta->make_immutable;
 
 package MetaCPAN::Document::File::Set;
@@ -606,29 +617,21 @@ sub find {
 }
 
 sub find_pod {
-    my ( $self, $module ) = @_;
-    my @files = $self->filter(
-        {   and => [
-                { term => { 'file.documentation' => $module } },
-                { term => { 'file.indexed'       => \1, } },
-                { term => { status               => 'latest', } },
-                {   not =>
-                        { filter => { term => { 'file.authorized' => \0 } } }
-                },
-            ]
-        }
-        )->sort(
-        [   { 'date' => { order => "desc" } },
-            'mime',
-            { 'stat.mtime' => { order => 'desc' } }
-        ]
-        )->all;
-    my ($file) = grep { $_->is_pod_file } @files;
-    ($file) = grep {
-        grep { $_->indexed && $_->authorized && $_->name eq $module }
-            @{ $_->module || [] }
-    } @files unless ($file);
-    return $file ? $file : shift @files;
+    my ( $self, $name ) = @_;
+    my $file = $self->find($name);
+    return $file unless($file);
+    my ($module) = grep { $_->indexed && $_->authorized && $_->name eq $name }
+            @{ $file->module || [] };
+    if($module && (my $pod = $module->associated_pod)) {
+        my ($author, $release, @path) = split(/\//, $pod);
+        return $self->get({
+            author => $author,
+            release => $release,
+            path => join("/", @path),
+        });
+    } else {
+        return $file;
+    }
 }
 
 # return files that contain modules that match the given dist
