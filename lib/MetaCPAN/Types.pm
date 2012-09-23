@@ -1,6 +1,5 @@
 package MetaCPAN::Types;
 use ElasticSearch;
-use MetaCPAN::Document::Module;
 use MooseX::Getopt::OptionTypeMap;
 use JSON;
 use CPAN::Meta;
@@ -11,6 +10,7 @@ use MooseX::Types -declare => [
       Resources
       Stat
       Module
+      AssociatedPod
       Identity
       Dependency
       Extra
@@ -23,7 +23,7 @@ use MooseX::Types -declare => [
       ) ];
 
 use MooseX::Types::Structured qw(Dict Tuple Optional);
-use MooseX::Types::Moose qw/Int Num Str ArrayRef HashRef Undef/;
+use MooseX::Types::Moose qw/Int Num Str ArrayRef HashRef Item Undef/;
 use ElasticSearchX::Model::Document::Types qw(:all);
 use MooseX::Types::Common::String qw(NonEmptySimpleStr);
 
@@ -88,9 +88,13 @@ MooseX::Getopt::OptionTypeMap->add_option_type_to_map(
     'MooseX::Types::ElasticSearch::ES' => '=s'
 );
 
+subtype AssociatedPod, as Item;
+
 use MooseX::Attribute::Deflator;
 deflate 'ScalarRef', via {$$_};
 inflate 'ScalarRef', via { \$_ };
+
+deflate AssociatedPod, via { ref $_ ? $_->full_path : $_ };
 no MooseX::Attribute::Deflator;
 
 1;

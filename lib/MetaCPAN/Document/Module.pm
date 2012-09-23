@@ -2,6 +2,7 @@ package MetaCPAN::Document::Module;
 use Moose;
 use ElasticSearchX::Model::Document;
 use MetaCPAN::Util;
+use MetaCPAN::Types qw(AssociatedPod);
 
 =head1 SYNOPSIS
 
@@ -70,7 +71,7 @@ has indexed    => ( is => 'rw', required => 1, isa => 'Bool', default => 0 );
 has authorized => ( is => 'rw', required => 1, isa => 'Bool', default => 1 );
 
 # REINDEX: make 'ro' once a full reindex has been done
-has associated_pod => ( required => 0, is => 'rw' );
+has associated_pod => ( isa => AssociatedPod, required => 0, is => 'rw' );
 
 sub _build_version_numified {
     my $self = shift;
@@ -105,11 +106,13 @@ L</associated_pod> is set to the path of the file, which contains the documentat
 
 sub set_associated_pod {
     my ( $self, $file, $associated_pod ) = @_;
-    if ( my $pod = $associated_pod->{ $self->name } ) {
-        $self->associated_pod(
-            join( "/", map { $pod->{$_} } qw(author release path) ) )
-            if ( $pod->{path} ne $file->path );
-    }
+    return unless ( my $files = $associated_pod->{ $self->name } );
+    my ($pod) =
+      ((grep { $_->name =~ /\.pod$/i } @$files),
+      (grep { $_->name =~ /\.pm$/i } @$files),
+      (grep { $_->name =~ /\.pl$/i } @$files), @$files);
+    $self->associated_pod( $pod );
+    return $pod;
 }
 
 __PACKAGE__->meta->make_immutable;
