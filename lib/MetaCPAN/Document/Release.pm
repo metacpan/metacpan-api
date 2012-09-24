@@ -89,7 +89,9 @@ See L<CPAN::Meta::Spec/license>.
 L<File::stat> info of the tarball. Contains C<mode>, C<uid>, C<gid>, C<size>
 and C<mtime>.
 
+=head2 first
 
+B<Boolean>; Indicates whether this is the first ever release for this distribution.
 
 =cut
 
