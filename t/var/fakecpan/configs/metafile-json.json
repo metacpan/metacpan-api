@@ -1,6 +1,6 @@
 {
   "name": "MetaFile-JSON",
-  "abstract": "A dist with META.yml and META.json",
+  "abstract": "A dist with just META.json",
   "version": 1.1,
   "X_Module_Faker": {
     "cpan_author": "LOCAL",
