@@ -1,0 +1,12 @@
+{
+  "name": "Pod-No-Head1Name",
+  "abstract": "Dist with pod but no '=head1 NAME'",
+  "version": "0.2.0",
+  "X_Module_Faker": {
+    "cpan_author": "LOCAL",
+    "append": [ {
+        "file": "lib/Pod/No/Head1Name.pm",
+        "content": "package Pod::No::Head1Name;\n\n=head2 DESCRIPTION\n\nPod::No::Head1Name\n\n"
+    }]
+  }
+}

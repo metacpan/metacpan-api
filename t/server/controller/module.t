@@ -47,4 +47,24 @@ run_tests(
     },
 );
 
+# NOTE: These tests are mostly to clarify/document current behavior
+# as discovered in https://github.com/CPAN-API/cpan-api/issues/232.
+# If we make decisions that change this behavior these tests should be
+# modified and/or removed as appropriate.
+
+run_tests(
+    'module/file api output for a module with no =head1 NAME',
+    [map { "MetaCPAN::Tests::API::$_" } qw( Module Pod )],
+    {
+        package        => 'Pod::No::Head1Name',
+        author         => 'LOCAL',
+        release        => 'Pod-No-Head1Name-0.2.0',
+        path           => 'lib/Pod/No/Head1Name.pm',
+        associated_pod => undef,
+        documentation  => undef,
+        pod_format     => 'pod',
+        pod_re         => qr/=head2 DESCRIPTION\n\nPod::No::Head1Name\n\n/,
+    },
+);
+
 done_testing;
