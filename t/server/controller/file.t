@@ -1,8 +1,9 @@
-
 use strict;
 use warnings;
 use Test::More;
 use MetaCPAN::Server::Test;
+use Test::Routine::Util;
+use lib 't/lib';
 
 my %tests = (
     '/file'                             => 200,
@@ -30,5 +31,15 @@ test_psgi app, sub {
         }
     }
 };
+
+run_tests(
+    'dist test script',
+    ['MetaCPAN::Tests::API::File'],
+    {
+        author         => 'DOY',
+        release        => 'Moose-0.02',
+        path           => 't/foo.t',
+    },
+);
 
 done_testing;

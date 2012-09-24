@@ -115,7 +115,7 @@ sub wait_for_es {
 
 subtest 'Nested tests' => sub {
     my $tests = Test::Aggregate::Nested->new( {
-        # should we do a glob to get these (and strip out t/var)?
+        # should we do a glob to get these (and strip out t/var and t/lib)?
         dirs    => [qw(
             t/document
             t/release

@@ -1,8 +1,9 @@
-
 use strict;
 use warnings;
 use Test::More;
 use MetaCPAN::Server::Test;
+use Test::Routine::Util;
+use lib 't/lib';
 
 my %tests = (
     '/module'                   => 200,
@@ -30,5 +31,20 @@ test_psgi app, sub {
         }
     }
 };
+
+run_tests(
+    'module/file api output for a "normal" module',
+    [map { "MetaCPAN::Tests::API::$_" } qw( Module Pod )],
+    {
+        package        => 'Moose',
+        author         => 'DOY',
+        release        => 'Moose-0.02',
+        associated_pod => 'DOY/Moose-0.02/lib/some_script.pl',
+        path           => 'lib/Moose.pm',
+        documentation  => 'Moose',
+        pod_format     => 'pod',
+        pod_re         => qr/=head1 NAME\n\nMoose - abstract\n\n/,
+    },
+);
 
 done_testing;
