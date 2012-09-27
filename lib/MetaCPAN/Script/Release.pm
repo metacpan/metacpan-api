@@ -343,7 +343,7 @@ sub import_tarball {
         $file->clear_module if ( $file->is_pod_file );
         log_trace {"reindexing file $file->{path}"};
         $bulk->put($file);
-        unless($release->has_abstract && $file->abstract) {
+        unless($release->has_abstract || $file->abstract) {
             (my $module = $release->distribution) =~ s/-/::/g;
             $release->abstract($file->abstract);
             $release->put;
