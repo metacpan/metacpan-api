@@ -375,6 +375,16 @@ sub _build_abstract {
     my $text = ${ $self->content };
     my ( $documentation, $abstract );
     my $section = MetaCPAN::Util::extract_section( $text, 'NAME' );
+
+    # if it's a POD file without a name section, let's try to generate
+    # an abstract and name based on filename
+    if( !$section && $self->path =~ /\.pod$/ ) {
+        $section = $self->path;
+        $section =~ s{^lib/}{};
+        $section =~ s{\.pod$}{};
+        $section =~ s{/}{::}g;
+    }
+
     return undef unless ($section);
     $section =~ s/^=\w+.*$//mg;
     $section =~ s/X<.*?>//mg;
