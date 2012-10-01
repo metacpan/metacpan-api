@@ -18,7 +18,7 @@ sub run {
     my $self = shift;
     my $ua   = LWP::UserAgent->new;
     log_info { "Downloading " . $self->ratings };
-    my $target = $self->home->file(qw( var tmp ratings.csv ))->resolve;
+    my $target = $self->home->file(qw( var tmp ratings.csv ));
     my $md5 = -e $target ? $self->digest($target) : 0;
     my $res = $ua->mirror( $self->ratings, $target );
     if ( $md5 eq $self->digest($target) ) {
