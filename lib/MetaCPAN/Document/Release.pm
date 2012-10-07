@@ -153,7 +153,12 @@ sub _build_first {
     my $self = shift;
     $self->index->type('release')
         ->filter(
-        { term => { 'release.distribution' => $self->distribution } } )->count
+        {
+            and => [
+                { term => { 'release.distribution' => $self->distribution } },
+                { range => { 'release.date' => { 'lt' => $self->date . '.000Z' } } }
+            ]
+        } )->count
         ? 0
         : 1;
 }
