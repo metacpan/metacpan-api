@@ -1,3 +1,0 @@
-[submodule "inc/hidek/Plack-Middleware-Auth-OAuth"]
-	path = inc/hidek/Plack-Middleware-Auth-OAuth
-	url = https://github.com/hidek/Plack-Middleware-Auth-OAuth.git
