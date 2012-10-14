@@ -156,7 +156,11 @@ sub _build_first {
         {
             and => [
                 { term => { 'release.distribution' => $self->distribution } },
-                { range => { 'release.date' => { 'lt' => $self->date . '.000Z' } } }
+                { range => { 'release.version_numified' => { 'lt' => $self->version_numified } } },
+                # REINDEX: after a full reindex, the above line is to replaced with:
+                # { term => { 'release.first' => \1 } },
+                # currently, the "first" property is not computed on all releases
+                # since this feature has not been around when last reindexed
             ]
         } )->count
         ? 0
