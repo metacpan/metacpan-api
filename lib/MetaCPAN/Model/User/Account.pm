@@ -54,7 +54,7 @@ after add_identity => sub {
 
 sub _build_looks_human {
     my $self = shift;
-    return $self->has_identity('pause') || $self->passed_captcha;
+    return $self->has_identity('pause') || ($self->passed_captcha ? 1 : 0);
 }
 
 sub has_identity {
