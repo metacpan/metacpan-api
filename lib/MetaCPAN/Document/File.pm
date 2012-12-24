@@ -17,6 +17,8 @@ Plack::MIME->add_type( ".t"   => "text/x-script.perl" );
 Plack::MIME->add_type( ".pod" => "text/x-pod" );
 Plack::MIME->add_type( ".xs"  => "text/x-c" );
 
+my @NOT_PERL_FILES = qw(SIGNATURE);
+
 =head1 PROPERTIES
 
 =head2 abstract
@@ -24,15 +26,73 @@ Plack::MIME->add_type( ".xs"  => "text/x-c" );
 Abstract of the documentation (if any). This is built by parsing the
 C<NAME> section. It also sets L</documentation> if it succeeds.
 
+=cut
+
+has abstract => (
+    is         => 'ro',
+    required   => 1,
+    lazy_build => 1,
+    index      => 'analyzed',
+);
+
+sub _build_abstract {
+    my $self = shift;
+    return undef unless ( $self->is_perl_file );
+    my $text = ${ $self->content };
+    my ( $documentation, $abstract );
+    my $section = MetaCPAN::Util::extract_section( $text, 'NAME' );
+    return undef unless ($section);
+    $section =~ s/^=\w+.*$//mg;
+    $section =~ s/X<.*?>//mg;
+    if ( $section =~ /^\s*(\S+)((\h+-+\h+(.+))|(\r?\n\h*\r?\n\h*(.+)))?/ms ) {
+        chomp( $abstract = $4 || $6 ) if ( $4 || $6 );
+        my $name = MetaCPAN::Util::strip_pod($1);
+        $documentation = $name if ( $name =~ /^[\w\.:\-_']+$/ );
+    }
+    if ($abstract) {
+        $abstract =~ s/^=\w+.*$//xms;
+        $abstract =~ s{\r?\n\h*\r?\n\h*.*$}{}xms;
+        $abstract =~ s{\n}{ }gxms;
+        $abstract =~ s{\s+$}{}gxms;
+        $abstract =~ s{(\s)+}{$1}gxms;
+        $abstract = MetaCPAN::Util::strip_pod($abstract);
+    }
+    if ($documentation) {
+        $self->documentation( MetaCPAN::Util::strip_pod($documentation) );
+    }
+    return $abstract;
+}
+
 =head2 id
 
 Unique identifier of the release. Consists of the L</author>'s pauseid and
 the release L</name>. See L<ElasticSearchX::Model::Util/digest>.
 
+=cut
+
+has id => (
+    is => 'ro',
+    id => [qw(author release path)],
+);
+
 =head2 module
 
 An ArrayRef of L<MetaCPAN::Document::Module> objects, that represent
 modules defined in that class (i.e. package declarations).
+
+=cut
+
+has module => (
+    required        => 0,
+    is              => 'rw',
+    isa             => Module,
+    type            => 'nested',
+    include_in_root => 1,
+    coerce          => 1,
+    clearer         => 'clear_module',
+    lazy            => 1,
+    default         => sub { [] },
+);
 
 =head2 date
 
@@ -40,10 +100,43 @@ B<Required>
 
 Release date (i.e. C<mtime> of the tarball).
 
+=cut
+
+has date => (
+    is       => 'ro',
+    required => 1,
+    isa      => 'DateTime',
+);
+
 =head2 description
 
 Contains the C<DESCRIPTION> section of the POD if any. Will be stripped from
 whitespaces and POD commands.
+
+=cut
+
+has description => (
+    is         => 'ro',
+    required   => 1,
+    lazy_build => 1,
+    index      => 'analyzed',
+);
+
+sub _build_description {
+    my $self = shift;
+    return undef unless ( $self->is_perl_file );
+    my $section = MetaCPAN::Util::extract_section( ${ $self->content },
+        'DESCRIPTION' );
+    return undef unless ($section);
+    my $parser = Pod::Text->new;
+    my $text   = "";
+    $parser->output_string( \$text );
+    $parser->parse_string_document("=pod\n\n$section");
+    $text =~ s/\s+/ /g;
+    $text =~ s/^\s+//;
+    $text =~ s/\s+$//;
+    return $text;
+}
 
 =head2 distribution
 
@@ -65,14 +158,61 @@ release, unless there are only developer releases. Everything else is
 tagged C<cpan>. Once a release is deleted from PAUSE it is tagged as
 C<backpan>.
 
+=cut
+
+has status => ( is => 'ro', required => 1, default => 'cpan' );
+
+=head2 binary
+
+File is binary or not.
+
+=cut
+
+has binary => (
+    is       => 'ro',
+    isa      => 'Bool',
+    required => 1,
+    default  => 0,
+);
+
+=head2 authorized
+
+See L</set_authorized>.
+
+=cut
+
+has authorized => (
+    required => 1,
+    is       => 'rw',
+    isa      => 'Bool',
+    default  => 1,
+);
+
 =head2 maturity
 
 Maturity of the release. This can either be C<released> or C<developer>.
 See L<CPAN::DistnameInfo>.
 
+=cut
+
+has maturity => (
+    is       => 'ro',
+    required => 1,
+    default  => 'released',
+);
+
 =head2 directory
 
 Return true if this object represents a directory.
+
+=cut
+
+has directory => (
+    is       => 'ro',
+    required => 1,
+    isa      => 'Bool',
+    default  => 0,
+);
 
 =head2 documentation
 
@@ -85,85 +225,8 @@ it returns the name. Otherwise it returns the name of the first module
 in L</module>. If there are no modules in the file the documentation is
 set to C<undef>.
 
-=head2 indexed
-
-B<Default 0>
-
-Indicates whether the file should be included in the search index or
-not. See L</set_indexed> for a more verbose explanation.
-
-=head2 level
-
-Level of this file in the directory tree of the release (i.e. C<META.yml>
-has a level of C<0>).
-
-=head2 pod
-
-Pure text format of the pod (see L</Pod::Text>). Consecutive whitespaces
-are removed to save space and for better snippet previews.
-
-=head2 pod_lines
-
-ArrayRef of ArrayRefs of offset and length of pod blocks. Example:
-
- # Two blocks of pod, starting at line 1 and line 15 with length
- # of 10 lines each
- [[1,10], [15,10]]
-
-=head2 sloc
-
-Source Lines of Code. Strips empty lines, pod and C<END> section from
-L</content> and returns the number of lines.
-
-=head2 slop
-
-Source Lines of Pod. Returns the number of pod lines using L</pod_lines>.
-
-=head2 stat
-
-L<File::stat> info of the tarball. Contains C<mode>, C<uid>, C<gid>, C<size>
-and C<mtime>.
-
-=head2 version
-
-Contains the raw version string.
-
-=head2 version_numified
-
-B<Required>, B<Lazy Build>
-
-Numeric representation of L</version>. Contains 0 if there is no version or the
-version could not be parsed.
-
 =cut
 
-has id => ( is => 'ro', id => [qw(author release path)] );
-
-has [qw(path author name)] => ( is => 'ro', required => 1 );
-has [qw(release distribution)] => (
-    is       => 'ro',
-    required => 1,
-    analyzer => [qw(standard camelcase lowercase)],
-);
-
-has metadata => (
-    is => "ro",
-    lazy => 1,
-    default => sub { die "meta attribute missing" },
-    isa => "CPAN::Meta",
-);
-
-has module => (
-    required        => 0,
-    is              => 'rw',
-    isa             => Module,
-    type            => 'nested',
-    include_in_root => 1,
-    coerce          => 1,
-    clearer         => 'clear_module',
-    lazy            => 1,
-    default         => sub { [] },
-);
 has documentation => (
     required   => 1,
     is         => 'rw',
@@ -173,128 +236,6 @@ has documentation => (
     analyzer   => [qw(standard camelcase lowercase)],
     clearer    => 'clear_documentation',
 );
-has date => ( is => 'ro', required => 1, isa => 'DateTime' );
-has stat => ( is => 'ro', isa => Stat, required => 0, dynamic => 1 );
-has binary => ( is => 'ro', isa => 'Bool', required => 1, default => 0 );
-has sloc => ( is => 'ro', required => 1, isa => 'Int', lazy_build => 1 );
-has slop =>
-    ( is => 'ro', required => 1, isa => 'Int', is => 'rw', lazy_build => 1 );
-has pod_lines => (
-    is         => 'ro',
-    required   => 1,
-    isa        => 'ArrayRef',
-    type       => 'integer',
-    lazy_build => 1,
-    index      => 'no'
-);
-
-has pod => (
-    is           => 'ro',
-    required     => 1,
-    isa          => 'ScalarRef',
-    lazy_build   => 1,
-    index        => 'analyzed',
-    not_analyzed => 0,
-    store        => 'no',
-    term_vector  => 'with_positions_offsets'
-);
-
-has mime => ( is => 'ro', required => 1, lazy_build => 1 );
-has abstract =>
-    ( is => 'ro', required => 1, lazy_build => 1, index => 'analyzed' );
-has description =>
-    ( is => 'ro', required => 1, lazy_build => 1, index => 'analyzed' );
-has status => ( is => 'ro', required => 1, default => 'cpan' );
-has authorized => ( required => 1, is => 'rw', isa => 'Bool', default => 1 );
-has maturity => ( is => 'ro', required => 1, default => 'released' );
-has directory => ( is => 'ro', required => 1, isa => 'Bool', default => 0 );
-has level => ( is => 'ro', required => 1, isa => 'Int', lazy_build => 1 );
-has indexed => ( required => 1, is => 'rw', isa => 'Bool', default => 1 );
-has version => ( is => 'ro', required => 0 );
-has version_numified =>
-    ( is => 'ro', isa => 'Num', lazy_build => 1, required => 1 );
-
-sub _build_version_numified {
-    my $self = shift;
-    return 0 unless ( $self->version );
-    return MetaCPAN::Util::numify_version( $self->version );
-}
-
-=head1 ATTRIBUTES
-
-These attributes are not stored.
-
-=head2 content
-
-The content of the file. It is built by calling L</content_cb> and
-stripping the C<DATA> section for performance reasons.
-
-=head2 content_cb
-
-Callback that returns the content of the file as a ScalarRef.
-
-=cut
-
-has content => (
-    is         => 'ro',
-    isa        => 'ScalarRef',
-    lazy_build => 1,
-    property   => 0,
-    required   => 0
-);
-has content_cb => (
-    is       => 'ro',
-    property => 0,
-    required => 0,
-    default  => sub {
-        sub { \'' }
-    }
-);
-
-=head2 local_path
-
-This attribute holds the path to the file on the local filesystem.
-
-=cut
-
-has local_path => (
-    is       => 'ro',
-    property => 0,
-);
-
-=head1 METHODS
-
-=head2 is_perl_file
-
-Return true if the file extension is one of C<pl>, C<pm>, C<pod>, C<t>
-or if the file has no extension, is not a binary file and its size is less
-than 131072 bytes. This is an arbitrary limit but it keeps the pod parser
-happy and the indexer fast.
-
-=head2 is_pod_file
-
-Retruns true if the file extension is C<pod>.
-
-=cut
-
-my @NOT_PERL_FILES = qw(SIGNATURE);
-
-sub is_perl_file {
-    my $self = shift;
-    return 0 if ( $self->directory );
-    return 1 if ( $self->name =~ /\.(pl|pm|pod|t)$/i );
-    return 1 if ( $self->mime eq "text/x-script.perl" );
-    return 1
-        if ( $self->name !~ /\./
-        && !grep { $self->name eq $_ } @NOT_PERL_FILES
-        && !$self->binary
-        && $self->stat->{size} < 2**17 );
-    return 0;
-}
-
-sub is_pod_file {
-    shift->name =~ /\.pod$/i;
-}
 
 sub _build_documentation {
     my $self = shift;
@@ -319,11 +260,256 @@ sub _build_documentation {
     }
 }
 
+=head2 indexed
+
+B<Default 0>
+
+Indicates whether the file should be included in the search index or
+not. See L</set_indexed> for a more verbose explanation.
+
+=cut
+
+has indexed => (
+    required => 1,
+    is       => 'rw',
+    isa      => 'Bool',
+    default  => 1,
+);
+
+=head2 level
+
+Level of this file in the directory tree of the release (i.e. C<META.yml>
+has a level of C<0>).
+
+=cut
+
+has level => (
+    is         => 'ro',
+    required   => 1,
+    isa        => 'Int',
+    lazy_build => 1,
+);
+
 sub _build_level {
     my $self = shift;
     my @level = split( /\//, $self->path );
     return @level - 1;
 }
+
+=head2 pod
+
+Pure text format of the pod (see L</Pod::Text>). Consecutive whitespaces
+are removed to save space and for better snippet previews.
+
+=cut
+
+has pod => (
+    is           => 'ro',
+    required     => 1,
+    isa          => 'ScalarRef',
+    lazy_build   => 1,
+    index        => 'analyzed',
+    not_analyzed => 0,
+    store        => 'no',
+    term_vector  => 'with_positions_offsets',
+);
+
+sub _build_pod {
+    my $self = shift;
+    return \'' unless ( $self->is_perl_file );
+    my $parser = Pod::Text->new( sentence => 0, width => 78 );
+
+    my $text = "";
+    $parser->output_string( \$text );
+    $parser->parse_string_document( ${ $self->content } );
+    $text =~ s/\s+/ /g;
+    return \$text;
+}
+
+=head2 pod_lines
+
+ArrayRef of ArrayRefs of offset and length of pod blocks. Example:
+
+ # Two blocks of pod, starting at line 1 and line 15 with length
+ # of 10 lines each
+ [[1,10], [15,10]]
+
+=cut
+
+has pod_lines => (
+    is         => 'ro',
+    required   => 1,
+    isa        => 'ArrayRef',
+    type       => 'integer',
+    lazy_build => 1,
+    index      => 'no',
+);
+
+sub _build_pod_lines {
+    my $self = shift;
+    return [] unless ( $self->is_perl_file );
+    my ( $lines, $slop ) = MetaCPAN::Util::pod_lines( ${ $self->content } );
+    $self->slop( $slop || 0 );
+    return $lines;
+}
+
+=head2 sloc
+
+Source Lines of Code. Strips empty lines, pod and C<END> section from
+L</content> and returns the number of lines.
+
+=cut
+
+has sloc => (
+    is         => 'ro',
+    required   => 1,
+    isa        => 'Int',
+    lazy_build => 1,
+);
+
+# Copied from Perl::Metrics2::Plugin::Core
+sub _build_sloc {
+    my $self = shift;
+    return 0 unless ( $self->is_perl_file );
+    my @content = split( "\n", ${ $self->content } );
+    my $pods = 0;
+    map {
+        splice( @content, $_->[0], $_->[1], map {''} 1 .. $_->[1] )
+    } @{ $self->pod_lines };
+    my $sloc = 0;
+    while (@content) {
+        my $line = shift @content;
+        last if ( $line =~ /^\s*__END__/s );
+        $sloc++ if ( $line !~ /^\s*#/ && $line =~ /\S/ );
+    }
+    return $sloc;
+}
+
+=head2 slop
+
+Source Lines of Pod. Returns the number of pod lines using L</pod_lines>.
+
+=cut
+
+has slop => (
+    is         => 'ro',
+    required   => 1,
+    isa        => 'Int',
+    is         => 'rw',
+    lazy_build => 1,
+);
+
+sub _build_slop {
+    my $self = shift;
+    return 0 unless ( $self->is_perl_file );
+    $self->_build_pod_lines;
+    return $self->slop;
+}
+
+=head2 stat
+
+L<File::stat> info of the tarball. Contains C<mode>, C<uid>, C<gid>, C<size>
+and C<mtime>.
+
+=cut
+
+has stat => (
+    is       => 'ro',
+    isa      => Stat,
+    required => 0,
+    dynamic  => 1,
+);
+
+=head2 version
+
+Contains the raw version string.
+
+=cut
+
+has version => (
+    is       => 'ro',
+    required => 0,
+);
+
+=head2 version_numified
+
+B<Required>, B<Lazy Build>
+
+Numeric representation of L</version>. Contains 0 if there is no version or the
+version could not be parsed.
+
+=cut
+
+has version_numified => (
+    is         => 'ro',
+    isa        => 'Num',
+    lazy_build => 1,
+    required   => 1,
+);
+
+sub _build_version_numified {
+    my $self = shift;
+    return 0 unless ( $self->version );
+    return MetaCPAN::Util::numify_version( $self->version );
+}
+
+=head2 mime
+
+MIME type of file. Derived using L<Plack::MIME> (for speed).
+
+=cut
+
+has mime => (
+    is         => 'ro',
+    required   => 1,
+    lazy_build => 1,
+);
+
+sub _build_mime {
+    my $self = shift;
+    if (  !$self->directory
+        && $self->name !~ /\./
+        && grep { $self->name ne $_ } @NOT_PERL_FILES )
+    {
+        my $content = ${ $self->content };
+        return "text/x-script.perl" if ( $content =~ /^#!.*?perl/ );
+    }
+    else {
+        return Plack::MIME->mime_type( $self->name ) || 'text/plain';
+    }
+}
+
+has [qw(path author name)] => ( is => 'ro', required => 1 );
+
+sub _build_path {
+    my $self = shift;
+    return join( '/', $self->release->name, $self->name );
+}
+
+has [qw(release distribution)] => (
+    is       => 'ro',
+    required => 1,
+    analyzer => [qw(standard camelcase lowercase)],
+);
+
+=head1 ATTRIBUTES
+
+These attributes are not stored.
+
+=head2 content
+
+The content of the file. It is built by calling L</content_cb> and
+stripping the C<DATA> section for performance reasons.
+
+=cut
+
+has content => (
+    is         => 'ro',
+    isa        => 'ScalarRef',
+    lazy_build => 1,
+    property   => 0,
+    required   => 0,
+);
 
 sub _build_content {
     my $self    = shift;
@@ -347,114 +533,78 @@ sub _build_content {
     return \$content;
 }
 
-sub _build_mime {
+=head2 content_cb
+
+Callback that returns the content of the file as a ScalarRef.
+
+=cut
+
+has content_cb => (
+    is       => 'ro',
+    property => 0,
+    required => 0,
+    default  => sub {
+        sub { \'' }
+    },
+);
+
+=head2 local_path
+
+This attribute holds the path to the file on the local filesystem.
+
+=cut
+
+has local_path => (
+    is       => 'ro',
+    property => 0,
+);
+
+=head2 metadata
+
+Reference to the L<CPAN::Meta> object of the release.
+
+=cut
+
+has metadata => (
+    is       => "ro",
+    lazy     => 1,
+    default  => sub { die "meta attribute missing" },
+    isa      => "CPAN::Meta",
+    property => 0,
+);
+
+=head1 METHODS
+
+=head2 is_perl_file
+
+Return true if the file extension is one of C<pl>, C<pm>, C<pod>, C<t>
+or if the file has no extension, is not a binary file and its size is less
+than 131072 bytes. This is an arbitrary limit but it keeps the pod parser
+happy and the indexer fast.
+
+=cut
+
+sub is_perl_file {
     my $self = shift;
-    if (  !$self->directory
-        && $self->name !~ /\./
-        && grep { $self->name ne $_ } @NOT_PERL_FILES )
-    {
-        my $content = ${ $self->content };
-        return "text/x-script.perl" if ( $content =~ /^#!.*?perl/ );
-    }
-    else {
-        return Plack::MIME->mime_type( $self->name ) || 'text/plain';
-    }
+    return 0 if ( $self->directory );
+    return 1 if ( $self->name =~ /\.(pl|pm|pod|t)$/i );
+    return 1 if ( $self->mime eq "text/x-script.perl" );
+    return 1
+        if ( $self->name !~ /\./
+        && !grep { $self->name eq $_ } @NOT_PERL_FILES
+        && !$self->binary
+        && $self->stat->{size} < 2**17 );
+    return 0;
 }
 
-sub _build_description {
-    my $self = shift;
-    return undef unless ( $self->is_perl_file );
-    my $section = MetaCPAN::Util::extract_section( ${ $self->content },
-        'DESCRIPTION' );
-    return undef unless ($section);
-    my $parser = Pod::Text->new;
-    my $text   = "";
-    $parser->output_string( \$text );
-    $parser->parse_string_document("=pod\n\n$section");
-    $text =~ s/\s+/ /g;
-    $text =~ s/^\s+//;
-    $text =~ s/\s+$//;
-    return $text;
-}
+=head2 is_pod_file
 
-sub _build_abstract {
-    my $self = shift;
-    return undef unless ( $self->is_perl_file );
-    my $text = ${ $self->content };
-    my ( $documentation, $abstract );
-    my $section = MetaCPAN::Util::extract_section( $text, 'NAME' );
-    return undef unless ($section);
-    $section =~ s/^=\w+.*$//mg;
-    $section =~ s/X<.*?>//mg;
-    if ( $section =~ /^\s*(\S+)((\h+-+\h+(.+))|(\r?\n\h*\r?\n\h*(.+)))?/ms ) {
-        chomp( $abstract = $4 || $6 ) if ( $4 || $6 );
-        my $name = MetaCPAN::Util::strip_pod($1);
-        $documentation = $name if ( $name =~ /^[\w\.:\-_']+$/ );
-    }
-    if ($abstract) {
-        $abstract =~ s/^=\w+.*$//xms;
-        $abstract =~ s{\r?\n\h*\r?\n\h*.*$}{}xms;
-        $abstract =~ s{\n}{ }gxms;
-        $abstract =~ s{\s+$}{}gxms;
-        $abstract =~ s{(\s)+}{$1}gxms;
-        $abstract = MetaCPAN::Util::strip_pod($abstract);
-    }
+Returns true if the file extension is C<pod>.
 
-    if ($documentation) {
-        $self->documentation( MetaCPAN::Util::strip_pod($documentation) );
-    }
-    return $abstract;
+=cut
 
-}
-
-sub _build_path {
-    my $self = shift;
-    return join( '/', $self->release->name, $self->name );
-}
-
-sub _build_pod_lines {
-    my $self = shift;
-    return [] unless ( $self->is_perl_file );
-    my ( $lines, $slop ) = MetaCPAN::Util::pod_lines( ${ $self->content } );
-    $self->slop( $slop || 0 );
-    return $lines;
-}
-
-sub _build_slop {
-    my $self = shift;
-    return 0 unless ( $self->is_perl_file );
-    $self->_build_pod_lines;
-    return $self->slop;
-}
-
-# Copied from Perl::Metrics2::Plugin::Core
-sub _build_sloc {
-    my $self = shift;
-    return 0 unless ( $self->is_perl_file );
-    my @content = split( "\n", ${ $self->content } );
-    my $pods = 0;
-    map {
-        splice( @content, $_->[0], $_->[1], map {''} 1 .. $_->[1] )
-    } @{ $self->pod_lines };
-    my $sloc = 0;
-    while (@content) {
-        my $line = shift @content;
-        last if ( $line =~ /^\s*__END__/s );
-        $sloc++ if ( $line !~ /^\s*#/ && $line =~ /\S/ );
-    }
-    return $sloc;
-}
-
-sub _build_pod {
-    my $self = shift;
-    return \'' unless ( $self->is_perl_file );
-    my $parser = Pod::Text->new( sentence => 0, width => 78 );
-
-    my $text = "";
-    $parser->output_string( \$text );
-    $parser->parse_string_document( ${ $self->content } );
-    $text =~ s/\s+/ /g;
-    return \$text;
+sub is_pod_file {
+    shift->name =~ /\.pod$/i;
 }
 
 =head2 add_module
@@ -563,7 +713,7 @@ Concatenate L</author>, L</release> and L</path>.
 
 sub full_path {
     my $self = shift;
-    return join("/", $self->author, $self->release, $self->path);
+    return join( "/", $self->author, $self->release, $self->path );
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -601,7 +751,8 @@ sub find {
     my ($file) = grep {
         grep { $_->indexed && $_->authorized && $_->name eq $module }
             @{ $_->module || [] }
-    } grep { !$_->documentation || $_->documentation eq $module } @candidates;
+        } grep { !$_->documentation || $_->documentation eq $module }
+        @candidates;
 
     # REINDEX: after a full reindex, the rest of the sub can be replaced with
     # return $file ? $file : shift @candidates;
@@ -627,17 +778,20 @@ sub find {
 sub find_pod {
     my ( $self, $name ) = @_;
     my $file = $self->find($name);
-    return $file unless($file);
-    my ($module) = grep { $_->indexed && $_->authorized && $_->name eq $name }
-            @{ $file->module || [] };
-    if($module && (my $pod = $module->associated_pod)) {
-        my ($author, $release, @path) = split(/\//, $pod);
-        return $self->get({
-            author => $author,
-            release => $release,
-            path => join("/", @path),
-        });
-    } else {
+    return $file unless ($file);
+    my ($module)
+        = grep { $_->indexed && $_->authorized && $_->name eq $name }
+        @{ $file->module || [] };
+    if ( $module && ( my $pod = $module->associated_pod ) ) {
+        my ( $author, $release, @path ) = split( /\//, $pod );
+        return $self->get(
+            {   author  => $author,
+                release => $release,
+                path    => join( "/", @path ),
+            }
+        );
+    }
+    else {
         return $file;
     }
 }
