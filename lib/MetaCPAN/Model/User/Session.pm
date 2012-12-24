@@ -1,13 +1,16 @@
 package MetaCPAN::Model::User::Session;
 use Moose;
 use ElasticSearchX::Model::Document;
-use DateTime;
 
-has id => ( is => 'ro', id => 1 );
+=head2 timestamp
 
-has date =>
-    ( is => 'ro', required => 1, isa => 'DateTime', default => sub { DateTime->now } );
+Sets the C<_timestamp> field.
 
-has account => ( parent => 1, is => 'rw', required => 1 );
+=cut
+
+has timestamp => (
+    is        => 'ro',
+    timestamp => { store => 1 },
+);
 
 __PACKAGE__->meta->make_immutable;
