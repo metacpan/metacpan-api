@@ -145,6 +145,14 @@ has [qw(release distribution)] => (
     required => 1,
     analyzer => [qw(standard camelcase lowercase)],
 );
+
+has metadata => (
+    is => "ro",
+    lazy => 1,
+    default => sub { die "meta attribute missing" },
+    isa => "CPAN::Meta",
+);
+
 has module => (
     required        => 0,
     is              => 'rw',

@@ -126,6 +126,7 @@ sub run {
     $self->perms;
     my @pid;
     my $cpan = $self->index if ( $self->skip );
+    eval { DB::enable_profile() };
     while ( my $file = shift @files ) {
 
         if ( $self->skip ) {
@@ -255,6 +256,7 @@ sub import_tarball {
             $fpath = "" if $relative !~ /\// && !$at->is_impolite;
             my $file = $file_set->new_document(
                 Dlog_trace {"adding file $_"} +{
+                    metadata     => $meta,
                     name         => $fname,
                     directory    => $child->is_dir,
                     release      => $name,
