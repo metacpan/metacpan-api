@@ -5,18 +5,38 @@ use MetaCPAN::Types qw(:all);
 use DateTime;
 use MetaCPAN::Util;
 
-has id => ( is => 'ro', id => [qw(user distribution)] );
-has [qw(author release user distribution)] => ( is => 'ro', required => 1 );
+has id => (
+    is => 'ro',
+    id => [qw(user distribution)],
+);
+
+has [qw(author release user distribution)] => (
+    is       => 'ro',
+    required => 1,
+);
+
+=head2 date
+
+L<DateTime> when the item was created.
+
+=cut
+
 has date => (
     is       => 'ro',
     required => 1,
     isa      => 'DateTime',
-    default  => sub { DateTime->now }
+    default  => sub { DateTime->now },
 );
 
-sub _build_release_id {
-    my $self = shift;
-    return MetaCPAN::Util::digest( $self->author, $self->release );
-}
+=head2 timestamp
+
+Sets the C<_timestamp> field to the value of L</date>.
+
+=cut
+
+has timestamp => (
+    is        => 'ro',
+    timestamp => { path => 'date', store => 1 },
+);
 
 __PACKAGE__->meta->make_immutable;
