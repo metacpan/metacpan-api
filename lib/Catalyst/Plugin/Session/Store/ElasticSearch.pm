@@ -115,16 +115,3 @@ The ElasticSearch index to use. Defaults to C<user>.
 =head2 type
 
 The ElasticSearch type to use. Defaults to C<session>.
-
-=head1 MAP TO A USER DOCUMENT
-
-Usually you will want to map a session to a user account. You will
-probably have a user document in ElasticSearch that you want to map
-to the session. ElasticSearch can do this very efficiently by establishing
-a parent/child relationship. L<Catalyst::Plugin::Authentication> will set
-the C<__user> attribute on the session once a user has been authorized.
-This attribute will be used as the C<_parent> of the session. Make sure
-you define the C<_parent> type in the session type mapping.
-
- $ curl -XPUT localhost:9200/user/session/_mapping -d '
-    {"session":{"dynamic":false,"_parent":{"type":"account"}}}'
