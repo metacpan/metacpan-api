@@ -19,8 +19,7 @@ sub run {
     my $ua   = LWP::UserAgent->new;
     log_info { "Downloading " . $self->ratings };
     my @path   = qw( var tmp ratings.csv );
-    my $target = $self->home->file( @path )->resolve
-        || $self->home->file( @path );
+    my $target = $self->home->file( @path );
     my $md5 = -e $target ? $self->digest( $target ) : 0;
     my $res = $ua->mirror( $self->ratings, $target );
     if ( $md5 eq $self->digest($target) ) {
