@@ -7,9 +7,15 @@ use warnings;
 use Plack::Test;
 use HTTP::Request::Common qw(POST GET DELETE);
 use JSON::XS;
+use Try::Tiny;
 use Test::More;
 use base 'Exporter';
-our @EXPORT = qw(POST GET DELETE test_psgi app encode_json decode_json);
+our @EXPORT = qw(
+    POST GET DELETE
+    test_psgi app
+    encode_json decode_json
+    try catch finally
+);
 
 BEGIN { $ENV{METACPAN_SERVER_CONFIG_LOCAL_SUFFIX} = 'testing'; }
 
