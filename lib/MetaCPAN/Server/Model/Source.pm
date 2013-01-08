@@ -19,10 +19,14 @@ sub COMPONENT {
     return $self->SUPER::COMPONENT( $app, $config );
 }
 
+sub base_dir {
+    return dir(qw(var tmp source));
+}
+
 sub path {
     my ( $self, $pauseid, $distvname, $file ) = @_;
     $file ||= "";
-    my $base       = dir(qw(var tmp source));
+    my $base       = $self->base_dir;
     my $source_dir = dir( $base, $pauseid, $distvname );
     my $source     = $self->find_file( $source_dir, $file );
     return $source if ($source);

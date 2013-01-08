@@ -10,6 +10,13 @@ has structured => ( is => 'ro', isa => 'ArrayRef', lazy_build => 1 );
 has numstat => ( is => 'rw' );
 has relative => ( is => 'ro', required => 1 );
 
+# NOTE: Found this in the git(1) change log (cd676a513672eeb9663c6d4de276a1c860a4b879):
+#  > [--relative] is inherently incompatible with --no-index, which is a
+#  > bolted-on hack that does not have much to do with git
+#  > itself.  I didn't bother checking and erroring out on the
+#  > combined use of the options, but probably I should.
+# So if that ever stops working we'll have to strip the prefix from the paths ourselves.
+
 sub _build_raw {
     my $self = shift;
     my $raw = "";

@@ -16,7 +16,8 @@ sub diff_releases : Chained('index') : PathPart('release') : Args(4) {
         source   => $path1,
         target   => $path2,
         git      => $c->config->{git},
-        relative => $c->path_to(qw(var tmp source)),
+        # use same dir prefix as source and target
+        relative => $c->model('Source')->base_dir,
     );
 
     my $ct = eval { $c->req->preferred_content_type };
