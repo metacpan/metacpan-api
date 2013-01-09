@@ -1,3 +1,4 @@
+use lib 't/lib';
 use Test::More 0.96 (); # require version for subtests but let Test::Most do the ->import()
 use Test::Most;
 use Test::Aggregate::Nested ();
@@ -54,11 +55,15 @@ if (-e dir($config->{cpan})->absolute) {
 	ok(dir($config->{cpan})->rmtree, 'remove old fakepan');
 }
 
+my $mod_faker = 'Module::Faker::Dist::WithPerl';
+eval "require $mod_faker" or die $@;
+
 my $cpan = CPAN::Faker->new({
   source => 't/var/fakecpan/configs',
   dest   => $config->{cpan},
+  dist_class => $mod_faker,
 });
- 
+
 ok($cpan->make_cpan, 'make fake cpan');
 
 # do some changes to 06perms.txt
