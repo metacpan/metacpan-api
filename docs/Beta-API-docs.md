@@ -423,7 +423,7 @@ curl -XPOST api.metacpan.org/v0/distribution/_search -d '{
 
 ### Search the current PDL documentation for the string `axisvals`
 ```sh
-curl -XPOST api.metacpan.org/v0/files/_search -d '{
+curl -XPOST api.metacpan.org/v0/file/_search -d '{
   "query" : { "field" : { "pod.analyzed" : "axisvals" }},
   "filter" : { "and" : [
     { "term" : { "distribution" : "PDL" } },
