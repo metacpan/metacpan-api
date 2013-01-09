@@ -4,6 +4,8 @@ _All of these URLs can be tested using tokuhirom's excellent [MetaCPAN Explorer]
 
 To learn more about the ElasticSearch query DSL check out Clinton Gormley's [Terms of Endearment - ES Query DSL Explained] (http://www.slideshare.net/clintongormley/terms-of-endearment-the-elasticsearch-query-dsl-explained) slides.
 
+The query syntax is explained on ElasticSearch's [reference page](http://www.elasticsearch.org/guide/reference/query-dsl/).
+
 ## Being polite
 
 Currently, the only rules around using the API are to "be polite". We have enforced an upper limit of a size of 5000 on search requests.  If you need to fetch more than 5000 items, you should look at using the scrolling API.  Search this page for "scroll" to get an example using ElasticSearch.pm or see the [ElasticSearch scroll docs](http://www.elasticsearch.org/guide/reference/api/search/scroll.html) if you are connecting in some other way.  
@@ -418,3 +420,16 @@ curl -XPOST api.metacpan.org/v0/distribution/_search -d '{
   }
 }'
 ```
+
+### Search the current PDL documentation for the string `axisvals`
+```sh
+curl -XPOST api.metacpan.org/v0/distribution/_search -d '{
+  "query" : { "field" : { "pod.analyzed" : query }},
+  "filter" : { "and" : [
+    { "term" : { "distribution" : "PDL" } },
+    { "term" : { "status" : "latest" } }
+  ]},
+  "fields" : [ "documentation", "abstract", "module" ],
+  "size" : 20
+}'
+``` 
