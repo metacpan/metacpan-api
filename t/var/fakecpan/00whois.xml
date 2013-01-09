@@ -23,4 +23,11 @@
         <email>doy@cpan.org</email>
         <has_cpandir>1</has_cpandir>
     </cpanid>
+    <cpanid>
+        <id>RWSTAUNER</id>
+        <type>author</type>
+        <fullname>Trouble Maker</fullname>
+        <email>rwstauner@cpan.org</email>
+        <has_cpandir>1</has_cpandir>
+    </cpanid>
 </cpan-whois>
