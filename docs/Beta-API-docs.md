@@ -424,12 +424,18 @@ curl -XPOST api.metacpan.org/v0/distribution/_search -d '{
 ### Search the current PDL documentation for the string `axisvals`
 ```sh
 curl -XPOST api.metacpan.org/v0/file/_search -d '{
-  "query" : { "field" : { "pod.analyzed" : "axisvals" }},
-  "filter" : { "and" : [
-    { "term" : { "distribution" : "PDL" } },
-    { "term" : { "status" : "latest" } }
-  ]},
-  "fields" : [ "documentation", "abstract", "module" ],
-  "size" : 20
-}'
+    "query" : { "filtered" : {
+      "query" : { 
+        "query_string" : { 
+          "query" : "axisvals", 
+          "fields" : [ "pod.analyzed", "module.name" ] }
+      },
+      "filter" : { "and" : [
+        { "term" : { "distribution" : "PDL" } },
+        { "term" : { "status" : "latest" } }
+      ]}
+    }},
+    "fields" : [ "documentation", "abstract", "module" ],
+    "size" : 20
+  }'
 ``` 
