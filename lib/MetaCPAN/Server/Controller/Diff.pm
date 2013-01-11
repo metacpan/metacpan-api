@@ -60,7 +60,7 @@ sub file : Chained('index') : PathPart('file') : Args(2) {
 
     my $diff = MetaCPAN::Server::Diff->new(
         relative =>
-            $c->model('Source')->path( @$source{qw(author release)} )->parent,
+            $c->model('Source')->base_dir,
         source =>
             $c->model('Source')->path( @$source{qw(author release path)} ),
         target =>
