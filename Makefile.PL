@@ -79,6 +79,7 @@ my %WriteMakefileArgs = (
     "Email::Simple" => 0,
     "Email::Valid" => 0,
     "Encode" => 0,
+    "Encoding::FixLatin" => 0,
     "Exporter" => 0,
     "Facebook::Graph" => 0,
     "File::Basename" => 0,

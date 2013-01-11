@@ -2,6 +2,7 @@ package MetaCPAN::Server::Diff;
 
 use Moose;
 use IPC::Run3;
+use Encoding::FixLatin ();
 
 has git => ( is => 'ro', required => 1 );
 has [qw(source target)] => ( is => 'ro', required => 1 );
@@ -24,15 +25,23 @@ sub _build_raw {
     (my $stats = $raw ) =~ s/^([^\n]*\0).*$/$1/s;
     $self->numstat($stats);
     $raw = substr($raw, length($stats));
-    return $raw;
+
+    # This needs to be a character string or the json encoder will mojibake it.
+    # It won't be an accurate (binary) representation of the patch,
+    # but nobody would be using this output for that purpose.
+    # Since the diff could include portions of files in multiple encodings
+    # try to guess the encoding and upgrade everything to UTF-8.
+    return Encoding::FixLatin::fix_latin($raw);
 }
 
 sub _build_structured {
     my $self = shift;
     my @structured;
     my $raw = $self->raw; # run the builder
+
     my @raw = split(/\n/, $raw);
     my @lines = split(/\0/, $self->numstat);
+
     while( my $line = shift @lines ) {
         my ($insertions, $deletions) = split(/\t/, $line);
         my $segment = "";
