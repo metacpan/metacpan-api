@@ -27,6 +27,15 @@ test_psgi app, sub {
     is( $res->code, 200, "code 200" );
     ok( $json = eval { decode_json( $res->content ) }, 'valid json' );
 
+    diffed_file_like($json,
+        'DOY/Moose-0.01',
+        'DOY/Moose-0.02',
+        'lib/Moose.pm' => <<DIFF,
+-our \$VERSION = '0.01';
++our \$VERSION = '0.02';
+DIFF
+    );
+
     diff_releases(
         $cb,
         'RWSTAUNER/Encoding-1.0',
@@ -65,6 +74,8 @@ sub diff_releases {
     while( my ($file, $re) = each %$files ){
         diffed_file_like($json, $r1, $r2, $file, $re);
     }
+
+    return $json;
 }
 
 sub diffed_file_like {
@@ -77,8 +88,8 @@ sub diffed_file_like {
         $diff = Encode::encode_utf8($diff)
             if utf8::is_utf8($diff);
 
-        if( $stat->{source} eq diffed_file_name($r1, $file) ||
-            $stat->{target} eq diffed_file_name($r2, $file)
+        if( diffed_file_name_eq($stat->{source}, $r1, $file) ||
+            diffed_file_name_eq($stat->{target}, $r2, $file)
         ){
             ++$found;
             my ($cmp, $desc) = ref($like) eq 'RegExp'
@@ -92,10 +103,10 @@ sub diffed_file_like {
     is $found, 1, "found one patch for $file";
 }
 
-sub diffed_file_name {
-    my ($dir, $file) = @_;
+sub diffed_file_name_eq {
+    my ($str, $dir, $file) = @_;
     my ($root, $dist) = split /\//, $dir;
     # $dist x 2: once for the extraction dir,
     # once b/c Module::Faker makes good tars that have a root dir
-    return qq{$root/$dist/$dist/$file};
+    return $str eq qq{$root/$dist/$dist/$file} || $str eq qq{$dist/$file};
 }
