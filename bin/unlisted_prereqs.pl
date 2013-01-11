@@ -8,6 +8,7 @@ use warnings;
 use Perl::PrereqScanner 1.014;
 use CPAN::Meta::Requirements;
 use File::Find::Rule::Perl;
+use List::Util qw(sum);
 use version 0.77;
 
 # TODO: use CPAN::Meta::Prereqs
@@ -86,3 +87,5 @@ delete $reqs->{runtime}{perl}
 use Data::Dumper;
 $Data::Dumper::Sortkeys = 1;
 print Data::Dumper->Dump([$reqs], ['requires']);
+
+exit sum map { scalar keys %{ $reqs->{$_} } } keys %$reqs;
