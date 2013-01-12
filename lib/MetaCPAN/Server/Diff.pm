@@ -48,7 +48,12 @@ sub _build_structured {
         my ($insertions, $deletions) = split(/\t/, $line);
         my $segment = "";
         while(my $diff = shift @raw) {
-            $segment .= Encoding::FixLatin::fix_latin($diff) . "\n";
+
+            # only run it through if non-ascii bytes are found
+            $diff = Encoding::FixLatin::fix_latin($diff)
+                if $diff =~ /[^\x00-\x7f]/;
+
+            $segment .= $diff . "\n";
             last if($raw[0] && $raw[0] =~ /^diff --git a\//m);
         }
         push(@structured, {
