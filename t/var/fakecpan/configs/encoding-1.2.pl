@@ -7,7 +7,6 @@
     "append" => [
       {
         "file"     => "lib/Encoding/UTF8.pm",
-        "encoding" => "utf-8",
         "content"  => "package Encoding::UTF8;\n\nuse utf8;\nmy \$heart = qq<\342\231\245>;\n",
       },
     ],

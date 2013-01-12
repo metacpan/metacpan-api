@@ -7,7 +7,6 @@
     "append" => [
       {
         "file"     => "lib/Encoding/CP1252.pm",
-        "encoding" => "cp1252",
         "content"  => "package Encoding::CP1252;\n\nsub bullet { qq<\x{95}> }\n",
       },
     ],
