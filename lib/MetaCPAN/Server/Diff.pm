@@ -25,14 +25,16 @@ sub _build_raw {
     (my $stats = $raw ) =~ s/^([^\n]*\0).*$/$1/s;
     $self->numstat($stats);
     $raw = substr($raw, length($stats));
-
-    # This needs to be a character string or the json encoder will mojibake it.
-    # It won't be an accurate (binary) representation of the patch,
-    # but nobody would be using this output for that purpose.
-    # Since the diff could include portions of files in multiple encodings
-    # try to guess the encoding and upgrade everything to UTF-8.
-    return Encoding::FixLatin::fix_latin($raw);
+    return $raw;
 }
+
+# The strings in this hash need to be character strings
+# or the json encoder will mojibake them.
+# Since the diff could include portions of files in multiple encodings
+# try to guess the encoding and upgrade everything to UTF-8.
+# It won't be an accurate (binary) representation of the patch
+# but that's not what this is used for.
+# If we desire such a thing we'd have to base64 encode it or something.
 
 sub _build_structured {
     my $self = shift;
@@ -46,7 +48,7 @@ sub _build_structured {
         my ($insertions, $deletions) = split(/\t/, $line);
         my $segment = "";
         while(my $diff = shift @raw) {
-            $segment .= "$diff\n";
+            $segment .= Encoding::FixLatin::fix_latin($diff) . "\n";
             last if($raw[0] && $raw[0] =~ /^diff --git a\//m);
         }
         push(@structured, {
