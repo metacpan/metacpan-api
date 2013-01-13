@@ -4,14 +4,12 @@ BEGIN { extends 'MetaCPAN::Server::Controller::File' }
 
 has '+type' => ( default => 'file' );
 
-sub index : Chained('/') : PathPart('module') : CaptureArgs(0) {
-}
-
-sub get : Chained('index') : PathPart('') : Args(1) {
-    my ( $self, $c, $module ) = @_;
-    $module = $c->model('CPAN::File')->find($module)
-        or $c->detach( '/not_found', [$@] );
-    $c->stash( $module->meta->get_data($module) );
+sub get : Path('') : Args(1) {
+    my ( $self, $c, $name ) = @_;
+    eval {
+        my $file = $self->model($c)->raw->find($name);
+        $c->stash( $file->{_source} || $file->{fields} );
+    } or $c->detach('/not_found', [$@]);
 }
 
 1;

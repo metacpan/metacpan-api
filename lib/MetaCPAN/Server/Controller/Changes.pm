@@ -20,7 +20,7 @@ sub get : Chained('index') : PathPart('') : Args(2) {
     );
 
     my $file = eval {
-        my $files = $c->model('CPAN::File')->inflate(0)->filter({
+        my $files = $c->model('CPAN::File')->raw->filter({
             and => [
                 { term => { release   => $release } },
                 { term => { author    => $author } },
@@ -35,10 +35,10 @@ sub get : Chained('index') : PathPart('') : Args(2) {
         })
         ->size(scalar @candidates)
         ->sort( [ { name => 'asc' } ] )->first->{_source};
-    } or $c->detach('/not_found');
+    } or $c->detach('/not_found', []);
 
     my $source = $c->model('Source')->path( @$file{qw(author release path)} )
-        or $c->detach('/not_found');
+        or $c->detach('/not_found', []);
     $file->{content} = eval { local $/; $source->openr->getline };
     $c->stash( $file );
 }
@@ -46,8 +46,8 @@ sub get : Chained('index') : PathPart('') : Args(2) {
 sub find : Chained('index') : PathPart('') : Args(1) {
     my ( $self, $c, $name ) = @_;
     my $release = eval {
-        $c->model('CPAN::Release')->inflate(0)->find($name)->{_source};
-    } or $c->detach('/not_found');
+        $c->model('CPAN::Release')->raw->find($name)->{_source};
+    } or $c->detach('/not_found', []);
 
     $c->forward( 'get', [ @$release{qw( author name )} ]);
 }

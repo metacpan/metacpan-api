@@ -11,7 +11,7 @@ sub get : Chained('index') : PathPart('') : Args {
     my ( $self, $c, $author, $release, @path ) = @_;
     my $path = join( '/', @path );
     my $file = $c->model('Source')->path( $author, $release, $path )
-        or $c->detach('/not_found');
+        or $c->detach('/not_found', []);
     if ( $file->is_dir ) {
         $path = "/source/$author/$release/$path";
         $path =~ s/\/$//;
@@ -33,7 +33,7 @@ sub get : Chained('index') : PathPart('') : Args {
 
 sub module : Chained('index') : PathPart('') : Args(1) {
     my ( $self, $c, $module ) = @_;
-    $module = $c->model('CPAN::File')->find($module) or $c->detach('/not_found');
+    $module = $c->model('CPAN::File')->find($module) or $c->detach('/not_found', []);
     $c->forward( 'get', [ map { $module->$_ } qw(author release path) ] );
 }
 

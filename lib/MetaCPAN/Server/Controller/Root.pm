@@ -13,7 +13,7 @@ sub not_found : Private {
     my ( $self, $c, @params ) = @_;
     my $message = join('/', @params);
     $c->clear_stash;
-    $c->stash( { message => "Not found: " . ($message || "No error...") } );
+    $c->stash( { code => 404, message => $message || "Not found" } );
     $c->response->status(404);
     $c->forward($c->view('JSON'));
 }

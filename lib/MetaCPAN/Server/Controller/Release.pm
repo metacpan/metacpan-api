@@ -12,28 +12,24 @@ __PACKAGE__->config(
     }
 );
 
-sub index : Chained('/') : PathPart('release') : CaptureArgs(0) {
-}
-
-sub find : Chained('index') : PathPart('') : Args(2) {
-    my ( $self, $c, $author, $name ) = @_;
-    eval {
-        $c->stash(
-            $c->model('CPAN::Release')->inflate(0)->get(
-                {   author => $author,
-                    name   => $name,
-                }
-                )->{_source}
-        );
-    } or $c->detach('/not_found');
-}
-
-sub get : Chained('index') : PathPart('') : Args(1) {
+sub find : Path('') : Args(1) {
     my ( $self, $c, $name ) = @_;
     eval {
-        $c->stash(
-            $c->model('CPAN::Release')->inflate(0)->find($name)->{_source} );
-    } or $c->detach('/not_found');
+        my $file = $self->model($c)->raw->find($name);
+        $c->stash( $file->{_source} || $file->{fields} );
+    } or $c->detach('/not_found', [$@]);
+}
+
+sub get : Part('') : Args(2) {
+    my ( $self, $c, $author, $name ) = @_;
+    eval {
+        my $file = $self->model($c)->raw->get(
+            {   author => $author,
+                name   => $name,
+            }
+        );
+        $c->stash( $file->{_source} || $file->{fields} );
+    } or $c->detach( '/not_found', [$@] );
 }
 
 1;

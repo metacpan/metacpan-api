@@ -3,10 +3,7 @@ use Moose;
 BEGIN { extends 'MetaCPAN::Server::Controller' }
 with 'MetaCPAN::Server::Role::JSONP';
 
-sub index : Chained('/') : PathPart('pod') : CaptureArgs(0) {
-}
-
-sub get : Chained('index') : PathPart('') : Args {
+sub find : Path('') {
     my ( $self, $c, $author, $release, @path ) = @_;
     $c->forward( '/source/get', [ $author, $release, @path ] );
     my $path = $c->stash->{path};
@@ -18,10 +15,10 @@ sub get : Chained('index') : PathPart('') : Args {
     $c->forward( $c->view('Pod') );
 }
 
-sub module : Chained('index') : PathPart('') : Args(1) {
+sub get : Path('') : Args(1) {
     my ( $self, $c, $module ) = @_;
-    $module = $c->model('CPAN::File')->find_pod($module) or $c->detach('/not_found');
-    $c->forward( 'get', [ map { $module->$_ } qw(author release path) ] );
+    $module = $c->model('CPAN::File')->find_pod($module) or $c->detach('/not_found', []);
+    $c->forward( 'find', [ map { $module->$_ } qw(author release path) ] );
 }
 
 1;

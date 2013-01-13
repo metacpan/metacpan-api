@@ -41,7 +41,7 @@ test_psgi app, sub {
                 'Content-type'
             );
         } elsif ( $v == 404 ) {
-            like( $res->content, qr/Not found: (\w+)/, "404 correct error");
+            like( $res->content, qr/Not found/, "404 correct error");
         }
 
         my $ct = $k =~ /Moose[.]pm$/ ? '&content-type=text/x-pod' : '';

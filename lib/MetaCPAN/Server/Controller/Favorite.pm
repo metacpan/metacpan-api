@@ -3,16 +3,16 @@ use Moose;
 BEGIN { extends 'MetaCPAN::Server::Controller' }
 with 'MetaCPAN::Server::Role::JSONP';
 
-sub index : Chained('/') : PathPart('favorite') : CaptureArgs(0) {
-}
-
-sub get : Chained('index') : PathPart('') : Args(2) {
+sub find : Path('') : Args(2) {
     my ( $self, $c, $user, $distribution ) = @_;
     eval {
-        $c->stash( $c->model('CPAN::Favorite')->inflate(0)
-                ->get( { user => $user, distribution => $distribution } )
-                ->{_source} );
-    } or $c->detach('/not_found');
+        my $favorite = $self->model($c)->raw->get(
+            {   user         => $user,
+                distribution => $distribution
+            }
+        );
+        $c->stash( $favorite->{_source} || $favorite->{fields} );
+    } or $c->detach( '/not_found', [$@] );
 }
 
-1;
+__PACKAGE__->meta->make_immutable;

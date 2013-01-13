@@ -28,7 +28,8 @@ test_psgi app, sub {
 
         next unless $res->code == 404;
 
-        like( $json->{message}, qr/^Not found: $message$/, '404 message as expected');
+        is( $json->{message}, "Not found", '404 message as expected');
+        is( $json->{code}, $code, 'code as expected');
     }
 };
 
