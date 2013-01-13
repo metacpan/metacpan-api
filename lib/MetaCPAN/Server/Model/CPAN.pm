@@ -15,6 +15,11 @@ sub _build_esx_model {
     MetaCPAN::Model->new( es => shift->servers );
 }
 
+sub type {
+    my $self = shift;
+    return $self->esx_model->index($self->index)->type(shift);
+}
+
 sub BUILD {
     my ( $self, $args ) = @_;
     my $index = $self->esx_model->index( $self->index );
