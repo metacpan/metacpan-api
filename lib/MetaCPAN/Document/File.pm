@@ -727,7 +727,7 @@ my @ROGUE_DISTRIBUTIONS
 
 sub find {
     my ( $self, $module ) = @_;
-    my @candidates = $self->filter(
+    my @candidates = $self->index->type("file")->filter(
         {   and => [
                 {   or => [
                         { term => { 'file.module.name'   => $module } },
@@ -754,25 +754,8 @@ sub find {
         } grep { !$_->documentation || $_->documentation eq $module }
         @candidates;
 
-    # REINDEX: after a full reindex, the rest of the sub can be replaced with
-    # return $file ? $file : shift @candidates;
-    return shift @candidates unless ($file);
-
-    ($module) = grep { $_->name eq $module } @{ $file->module };
-    return $file if ( $module->associated_pod );
-
-    # if there is a .pod file in the same release, we use that instead
-    if (my ($pod) = grep {
-                   $_->release eq $file->release
-                && $_->author  eq $file->author
-                && $_->is_pod_file
-        } @candidates
-        )
-    {
-        $module->associated_pod(
-            join( "/", map { $pod->$_ } qw(author release path) ) );
-    }
-    return $file;
+    $file ||= shift @candidates;
+    return $file ? $self->get($file->id) : undef;
 }
 
 sub find_pod {
