@@ -27,6 +27,14 @@ has relationships => (
     handles => { has_relationships => 'count' }
 );
 
+sub model {
+    my ($self, $c) = @_;
+    my $model = $c->model('CPAN')->type($self->type);
+    $model = $model->fields( [ map { split(/,/) } $c->req->param("fields") ] )
+        if $c->req->param("fields");
+    return $model;
+}
+
 sub mapping : Path('_mapping') {
     my ( $self, $c ) = @_;
     $c->stash(
@@ -37,7 +45,15 @@ sub mapping : Path('_mapping') {
     );
 }
 
-sub all : Chained('index') : PathPart('') : Args(0) :
+sub get : Path('') : Args(1) {
+    my ( $self, $c, $id ) = @_;
+    eval {
+        my $file = $self->model($c)->raw->get($id);
+        $c->stash( $file->{_source} || $file->{fields} );
+    } or $c->detach('/not_found', [$@]);
+}
+
+sub all : Path('') : Args(0) :
     ActionClass('Deserialize') {
     my ( $self, $c ) = @_;
     $c->req->params->{q} ||= '*' unless ( $c->req->data );
