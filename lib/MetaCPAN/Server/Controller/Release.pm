@@ -20,7 +20,7 @@ sub find : Path('') : Args(1) {
     } or $c->detach('/not_found', [$@]);
 }
 
-sub get : Part('') : Args(2) {
+sub get : Path('') : Args(2) {
     my ( $self, $c, $author, $name ) = @_;
     eval {
         my $file = $self->model($c)->raw->get(
