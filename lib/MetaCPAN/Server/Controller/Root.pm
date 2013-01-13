@@ -34,6 +34,12 @@ sub bad_request : Private {
     $c->forward($c->view('JSON'));
 }
 
+sub robots : Path("robots.txt") {
+    my ( $self, $c ) = @_;
+    $c->res->content_type("text/plain");
+    $c->res->body("User-agent: *\nDisallow: /\n");
+}
+
 sub end : ActionClass('RenderView') {
     my ( $self, $c ) = @_;
     if (   $c->controller->does('MetaCPAN::Server::Role::JSONP')
