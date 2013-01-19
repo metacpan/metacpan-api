@@ -2,6 +2,9 @@ package MetaCPAN::Server::Controller::Login::Google;
 
 use Moose;
 BEGIN { extends 'MetaCPAN::Server::Controller::Login' }
+use LWP::UserAgent;
+use HTTP::Request::Common;
+use JSON;
 
 has [qw( consumer_key consumer_secret )] => ( is => 'ro', required => 1 );
 
@@ -30,7 +33,7 @@ sub index : Path {
         my $extra_res = $ua->request(
             GET "https://accounts.google.com/oauth2/v1/tokeninfo?access_token=$token");
         my $extra = eval { decode_json($extra_res->content) } || {};
-        $self->update_user($c, google => $extra->{id}, $extra);
+        $self->update_user($c, google => $extra->{user_id}, $extra);
     }
     else {
         $c->res->redirect(
