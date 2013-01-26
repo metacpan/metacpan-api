@@ -13,7 +13,7 @@ sub index : Path {
     my $req = $c->req;
 
     if (my $code = $c->req->param->{code}) {
-        my $ua  = LWP::UserAgent->new
+        my $ua  = LWP::UserAgent->new;
         my $res = $ua->request(
             POST 'https://accounts.google.com/o/outh2/auth',
             [
