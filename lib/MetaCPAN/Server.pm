@@ -49,6 +49,10 @@ __PACKAGE__->config(
         consumer_key    => 'NP647X3WewESJVg19Qelxg',
         consumer_secret => 'MrLQXWHXJsGo9owGX49D6oLnyYoxCOvPoy9TZE5Q',
     },
+    'Controller::Login::Google' => {
+        consumer_key    => '265904441292-5k4rhagfcddsv4g5jfdk93eh8tugrp13.apps.googleusercontent.com',
+        consumer_secret => 'kd3nmULLpTIsR2P89SWCxE8D',
+    },
     'Plugin::Authentication' => {
         default => {
             credential => {
