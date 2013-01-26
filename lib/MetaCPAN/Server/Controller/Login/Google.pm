@@ -36,9 +36,14 @@ sub index : Path {
         $self->update_user($c, google => $extra->{user_id}, $extra);
     }
     else {
-        $c->res->redirect(
-            'https://accounts.google.com/o/oauth2/auth?client_id='
-                . $self->consumer_key );
+        my $url = URI->new('https://accounts.google.com/o/oauth2/auth');
+        $url->query_form(
+            client_id     => $self->consumer_key,
+            response_type => 'code',
+            redirect_uri  => $c->uri_for($self->action_for('index')),
+            scope         => 'https://www.googleapis.com/auth/userinfo.email',
+        );
+        $c->res->redirect($url);
     }
 }
 
