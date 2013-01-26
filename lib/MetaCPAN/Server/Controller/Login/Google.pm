@@ -25,7 +25,6 @@ sub index : Path {
             ]
         );
 
-        warn $token_res->as_string;
         my $token_info = eval { decode_json($token_res->content) } || {};
 
         $c->controller('OAuth2')->redirect($c, error => $token_info->{error})
@@ -37,7 +36,6 @@ sub index : Path {
 
         my $user_res = $ua->request(
             GET "https://www.googleapis.com/oauth2/v1/userinfo?access_token=$token");
-        warn $user_res->as_string;
         my $user = eval { decode_json($user_res->content) } || {};
         $self->update_user($c, google => $user->{id}, $user);
     }
