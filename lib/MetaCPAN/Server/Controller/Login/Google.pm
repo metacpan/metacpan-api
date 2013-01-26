@@ -12,28 +12,34 @@ sub index : Path {
     my ($self, $c) = @_;
     my $req = $c->req;
 
-    if (my $code = $c->req->param->{code}) {
+    if (my $code = $c->req->params->{code}) {
         my $ua  = LWP::UserAgent->new;
-        my $res = $ua->request(
-            POST 'https://accounts.google.com/o/outh2/auth',
+        my $token_res = $ua->request(
+            POST 'https://accounts.google.com/o/oauth2/token',
             [
+                code          => $code,
                 client_id     => $self->consumer_key,
                 client_secret => $self->consumer_secret,
                 redirect_uri  => $c->uri_for($self->action_for('index')),
-                code          => $code,
+                grant_type    => 'authorization_code',
             ]
         );
-        $c->controller('OAuth2')->redirect($c, error => $1)
-            if $res->content =~ /^error=(.*)$/;
-        (my $token = $res->content) =~ s/^access_token=//;
+
+        warn $token_res->as_string;
+        my $token_info = eval { decode_json($token_res->content) } || {};
+
+        $c->controller('OAuth2')->redirect($c, error => $token_info->{error})
+            if defined $token_info->{error};
+
+        my $token = $token_info->{access_token};
         $c->controller('OAuth2')->redirect($c, error => 'token')
             unless $token;
-        $token =~ s/&.*$//;
 
-        my $extra_res = $ua->request(
-            GET "https://accounts.google.com/oauth2/v1/tokeninfo?access_token=$token");
-        my $extra = eval { decode_json($extra_res->content) } || {};
-        $self->update_user($c, google => $extra->{user_id}, $extra);
+        my $user_res = $ua->request(
+            GET "https://www.googleapis.com/oauth2/v1/userinfo?access_token=$token");
+        warn $user_res->as_string;
+        my $user = eval { decode_json($user_res->content) } || {};
+        $self->update_user($c, google => $user->{id}, $user);
     }
     else {
         my $url = URI->new('https://accounts.google.com/o/oauth2/auth');
@@ -41,7 +47,7 @@ sub index : Path {
             client_id     => $self->consumer_key,
             response_type => 'code',
             redirect_uri  => $c->uri_for($self->action_for('index')),
-            scope         => 'https://www.googleapis.com/auth/userinfo.email',
+            scope         => 'https://www.googleapis.com/auth/userinfo.profile',
         );
         $c->res->redirect($url);
     }
