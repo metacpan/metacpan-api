@@ -23,25 +23,48 @@ test_psgi app, sub {
     my $cb = shift;
     for my $test (@tests) {
         my ($path, $code, $name, $content) = @{ $test };
-        ok( my $res = $cb->( GET $path), "GET $path" );
-        is( $res->code, $code, "code $code" );
-        is( $res->header('content-type'),
-            'application/json; charset=utf-8',
-            'Content-type'
-        );
-        ok( my $json = eval { decode_json( $res->content ) }, 'valid json' );
+
+        my $res  = get_ok($cb, $path, $code);
+        my $json = json_ok($res);
 
         next unless $res->code == 200;
-
-#        if ( $path eq '/distribution' ) {
-#            ok( $json->{hits}->{total}, 'got total count' );
-#        }
 
         is $json->{name}, $name, 'change log has expected name';
         like $json->{content},
             $content,
             'file content';
+
+        my @fields = qw(release name content);
+        $res = get_ok($cb, "$path?fields=" . join(',', @fields), 200);
+        $json = json_ok($res);
+
+        is_deeply [sort keys %$json], [sort @fields], 'only requested fields';
+        like $json->{content}, $content, 'content as expected';
+        is $json->{name}, $name, 'name as expected';
+
+        {
+            my $suffix = 'v?[0-9.]+'; # wrong, but good enough
+            my $prefix = ($path =~ m{([^/]+?)(-$suffix)?$})[0];
+            like $json->{release}, qr/^\Q$prefix\E-$suffix$/, 'release as expected';
+        }
     }
 };
 
 done_testing;
+
+sub get_ok {
+    my ($cb, $path, $code) = @_;
+    ok( my $res = $cb->( GET $path), "GET $path" );
+    is( $res->code, $code, "code $code" );
+    is( $res->header('content-type'),
+        'application/json; charset=utf-8',
+        'Content-type'
+    );
+    return $res;
+}
+
+sub json_ok {
+    my $res = shift;
+    ok( my $json = eval { decode_json( $res->content ) }, 'valid json' );
+    return $json;
+}

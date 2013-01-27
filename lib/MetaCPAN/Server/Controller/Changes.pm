@@ -5,6 +5,8 @@ with 'MetaCPAN::Server::Role::JSONP';
 
 # TODO: __PACKAGE__->config(relationships => ?)
 
+has '+type' => ( default => 'file' );
+
 sub index : Chained('/') : PathPart('changes') : CaptureArgs(0) {
 }
 
@@ -20,6 +22,7 @@ sub get : Chained('index') : PathPart('') : Args(2) {
     );
 
     my $file = eval {
+        # use $c->model b/c we can't let any filters apply here
         my $files = $c->model('CPAN::File')->raw->filter({
             and => [
                 { term => { release   => $release } },
@@ -40,6 +43,9 @@ sub get : Chained('index') : PathPart('') : Args(2) {
     my $source = $c->model('Source')->path( @$file{qw(author release path)} )
         or $c->detach('/not_found', []);
     $file->{content} = eval { local $/; $source->openr->getline };
+
+    $file = $self->apply_request_filter($c, $file);
+
     $c->stash( $file );
 }
 

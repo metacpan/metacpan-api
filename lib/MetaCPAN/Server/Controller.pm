@@ -27,6 +27,20 @@ has relationships => (
     handles => { has_relationships => 'count' }
 );
 
+# apply "filters" like \&model but for fabricated data
+sub apply_request_filter {
+    my ($self, $c, $data) = @_;
+
+    if( my $fields = $c->req->param("fields") ){
+        my $filtered = {};
+        my @fields = split /,/, $fields;
+        @$filtered{ @fields } = @$data{ @fields };
+        $data = $filtered;
+    }
+
+    return $data;
+}
+
 sub model {
     my ($self, $c) = @_;
     my $model = $c->model('CPAN')->type($self->type);
