@@ -64,6 +64,16 @@ while( my ($mscript, $re) = each %replacements ){
 
     is_deeply $cleaned, filtered_custom_score_hash(),
         'metacpan_script removed';
+
+    # try another hash structure
+    $query = { foo => { bar => [ { metacpan_script => $mscript, other => 'val' } ] } };
+
+    $cleaned = MetaCPAN::Server::QuerySanitizer->new(query => $query)->query;
+
+    like delete $cleaned->{foo}{bar}->[0]->{script},
+        $re, "$mscript script replaced";
+    is_deeply $cleaned, { foo => { bar => [ { other => 'val' } ] } },
+        'any hash structure accepts metacpan_script';
 }
 
 hash_key_rejected(script => { script => 'foobar' });

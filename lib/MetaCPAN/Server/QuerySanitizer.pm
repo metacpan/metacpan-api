@@ -27,29 +27,15 @@ sub _build_clean_query {
     my $search = $self->query
         or return undef;
 
-    _reject_hash_key($search, 'script');
-
-    # this is a pretty specific hack to allow metacpan-web to use some scripts
-    # while we work on providing endpoints to do it.
-    # NOTE: use exists to avoid autovivifying hash trees
-    if(
-        exists $search->{query} &&
-        exists $search->{query}->{filtered} &&
-        exists $search->{query}->{filtered}->{query}
-    ){
-        if( my $cs = $search->{query}{filtered}{query}{custom_score} ){
-            if( my $mscript = delete $cs->{metacpan_script} ){
-                $cs->{script} = $metacpan_scripts{ $mscript };
-            }
-        }
-    }
+    _scan_hash_tree($search);
 
     return $search;
 }
 
-sub _reject_hash_key {
-    my ($struct, $key) = @_;
-    # if we want a regexp we could do { $key = qr/^\Q$key\E$/ if !ref $key; }
+# if we want a regexp we could do { $key = qr/^\Q$key\E$/ if !ref $key; }
+my $key = 'script';
+sub _scan_hash_tree {
+    my ($struct) = @_;
 
     my $ref = ref($struct);
     if( $ref eq 'HASH' ){
@@ -59,12 +45,15 @@ sub _reject_hash_key {
                     message => qq[Parameter "$key" not allowed],
                 );
             }
-            _reject_hash_key($v, $key) if ref $v;
+            _scan_hash_tree($v) if ref $v;
+        }
+        if( my $mscript = delete $struct->{metacpan_script} ){
+            $struct->{script} = $metacpan_scripts{ $mscript };
         }
     }
     elsif( $ref eq 'ARRAY' ){
         foreach my $item ( @$struct ){
-            _reject_hash_key($item, $key) if ref($item);
+            _scan_hash_tree($item) if ref($item);
         }
     }
 }
