@@ -164,6 +164,7 @@ my %WriteMakefileArgs = (
     "Starman" => 0,
     "Test::More" => 0,
     "Time::Local" => 0,
+    "Throwable::Error" => 0,
     "Try::Tiny" => 0,
     "URI" => 0,
     "URI::Escape" => 0,

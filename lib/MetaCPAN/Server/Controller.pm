@@ -9,7 +9,7 @@ BEGIN { extends 'Catalyst::Controller'; }
 
 __PACKAGE__->config(
     default     => 'application/json',
-    map         => { 'application/json' => 'JSON' },
+    map         => { 'application/json' => 'MetaCPANSanitizedJSON' },
     action_args => {
         'search' =>
             { deserialize_http_methods => [qw(POST PUT OPTIONS DELETE GET)] }

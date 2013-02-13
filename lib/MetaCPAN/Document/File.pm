@@ -821,6 +821,7 @@ sub prefix {
                 query => {
                     custom_score => {
                         query => { bool => { should => $should } },
+                        #metacpan_script => 'prefer_shorter_module_names_100',
                         script =>
                             "_score - doc['documentation'].stringValue.length()/100"
                     },
