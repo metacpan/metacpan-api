@@ -41,19 +41,17 @@ test_psgi app, sub {
 
 
 my %replacements = (
-    'custom_score:metacpan_script:short_name100' => [
-        prefer_shorter_module_names_100 =>
+    prefer_shorter_module_names_100 =>
         qr#\Q_score - doc['documentation'].stringValue.length()/100\E#,
-    ],
 
-    'custom_score:metacpan_script:short_name400' => [
-        prefer_shorter_module_names_400 =>
+    prefer_shorter_module_names_400 =>
         qr#\Qif(documentation == empty)\E.+\Q.length()/400\E#s,
-    ],
+
+    score_version_numified =>
+        qr#\Qdoc['module.version_numified'].value\E#,
 );
 
-while( my ($desc, $test) = each %replacements ){
-    my ($mscript, $re) = @$test;
+while( my ($mscript, $re) = each %replacements ){
     my $query = filtered_custom_score_hash(metacpan_script => $mscript);
 
     my $sanitizer = MetaCPAN::Server::QuerySanitizer->new(
@@ -62,7 +60,7 @@ while( my ($desc, $test) = each %replacements ){
 
     my $cleaned = $sanitizer->query;
     like delete $cleaned->{query}{filtered}{query}{custom_score}{script},
-        $re, 'script replaced';
+        $re, "$mscript script replaced";
 
     is_deeply $cleaned, filtered_custom_score_hash(),
         'metacpan_script removed';

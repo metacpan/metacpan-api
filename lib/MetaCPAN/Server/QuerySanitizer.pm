@@ -19,6 +19,7 @@ my %metacpan_scripts = (
         }
         return _score - documentation.length()/400
     },
+    score_version_numified => q{doc['module.version_numified'].value},
 );
 
 sub _build_clean_query {
