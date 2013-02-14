@@ -8,7 +8,7 @@ has query => (
     trigger    => \&_build_clean_query,
 );
 
-my %metacpan_scripts = (
+our %metacpan_scripts = (
     prefer_shorter_module_names_100 => q{
         _score - doc['documentation'].stringValue.length()/100
     },

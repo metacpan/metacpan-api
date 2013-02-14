@@ -30,16 +30,50 @@ my %errors = (
 test_psgi app, sub {
     my $cb = shift;
     while( my ($desc, $search) = each %errors ){
-        $search = encode_json($search) if ref($search) eq 'HASH';
-
-        foreach my $req (
-            POST('/author/_search', Content => $search),
-            GET( uri('/author/_search', source => $search) ),
-        ){
+        test_all_methods($search, sub {
+            my ($req) = shift;
             test_bad_request($cb, $desc, $search, $req);
-        }
+        });
     }
+
+    local $MetaCPAN::Server::QuerySanitizer::metacpan_scripts{test_script_field} =
+        q{doc['author.pauseid'].stringValue.length() * 2};
+
+    test_all_methods(
+        {
+            query => { match_all => {} },
+            script_fields => {
+                pauselen2 => { metacpan_script => 'test_script_field' },
+            },
+            filter => { term => { pauseid => 'RWSTAUNER' } },
+        },
+        sub {
+            my ($req) = shift;
+
+            my $res = $cb->($req);
+            is $res->code, 200, $req->method . ' 200 OK'
+                or diag explain $res;
+
+            ok( my $json = eval { decode_json($res->content) }, 'got json' );
+
+            is_deeply $json->{hits}{hits}->[0]->{fields},
+                { pauselen2 => 18 }, 'script_fields via metacpan_script'
+                    or diag explain $json;
+        },
+    );
 };
+
+sub test_all_methods {
+    my ($search, $sub) = @_;
+    $search = encode_json($search) if ref($search) eq 'HASH';
+
+    foreach my $req (
+        POST('/author/_search', Content => $search),
+        GET( uri('/author/_search', source => $search) ),
+    ){
+        $sub->($req);
+    }
+}
 
 sub test_bad_request {
     my ($cb, $desc, $search, $req) = @_;
