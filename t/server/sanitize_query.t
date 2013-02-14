@@ -10,6 +10,11 @@ sub uri {
     return $uri->as_string;
 }
 
+sub like_if_defined {
+    my ($val, $exp, $desc) = @_;
+    defined($exp) ? like($val, $exp, $desc) : is($val, undef, $desc);
+}
+
 my $error_message = 'Parameter "script" not allowed';
 
 my %errors = (
@@ -108,6 +113,11 @@ my %replacements = (
 
     score_version_numified =>
         qr#\Qdoc['module.version_numified'].value\E#,
+
+    status_is_latest =>
+        qr#\Qdoc['status'].value == 'latest'\E#,
+
+    stupid_script_that_doesnt_exist => undef,
 );
 
 while( my ($mscript, $re) = each %replacements ){
@@ -118,7 +128,8 @@ while( my ($mscript, $re) = each %replacements ){
     );
 
     my $cleaned = $sanitizer->query;
-    like delete $cleaned->{query}{filtered}{query}{custom_score}{script},
+    like_if_defined
+        delete $cleaned->{query}{filtered}{query}{custom_score}{script},
         $re, "$mscript script replaced";
 
     is_deeply $cleaned, filtered_custom_score_hash(),
@@ -129,7 +140,8 @@ while( my ($mscript, $re) = each %replacements ){
 
     $cleaned = MetaCPAN::Server::QuerySanitizer->new(query => $query)->query;
 
-    like delete $cleaned->{foo}{bar}->[0]->{script},
+    like_if_defined
+        delete $cleaned->{foo}{bar}->[0]->{script},
         $re, "$mscript script replaced";
     is_deeply $cleaned, { foo => { bar => [ { other => 'val' } ] } },
         'any hash structure accepts metacpan_script';
