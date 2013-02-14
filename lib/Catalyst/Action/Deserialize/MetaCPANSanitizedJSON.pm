@@ -3,6 +3,7 @@ package Catalyst::Action::Deserialize::MetaCPANSanitizedJSON;
 use Moose;
 use namespace::autoclean;
 use Try::Tiny;
+use JSON ();
 use MetaCPAN::Server::QuerySanitizer ();
 
 extends 'Catalyst::Action::Deserialize::JSON';
@@ -21,6 +22,28 @@ around execute => sub {
                 $c->req->data(MetaCPAN::Server::QuerySanitizer->new(
                     query => $data,
                 )->query);
+            }
+        }
+
+        # there's probably a more appropriate place for this
+        # but it's the same concept and we can reuse the error handling
+        if( my $params = $c->req->query_parameters ){
+            # ES also accepts the content in the querystring
+            if( exists $params->{source} ){
+                if( my $source = delete $params->{source} ){
+                    # NOTE: merge $controller->{json_options} if we ever use it
+                    my $json = JSON->new->utf8;
+                    # if it decodes
+                    if( try { $source = $json->decode($source); } ){
+                        # clean it
+                        $source = MetaCPAN::Server::QuerySanitizer->new(
+                            query => $source,
+                        )->query;
+                        # update the $req
+                        $params->{source} = $json->encode($source);
+                        $c->req->query_parameters($params);
+                    }
+                }
             }
         }
     }

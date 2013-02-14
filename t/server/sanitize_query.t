@@ -1,7 +1,14 @@
 use strict;
 use warnings;
 use Test::More;
+use URI;
 use MetaCPAN::Server::Test;
+
+sub uri {
+    my $uri = URI->new(shift);
+    $uri->query_form({ @_ });
+    return $uri->as_string;
+}
 
 my $error_message = 'Parameter "script" not allowed';
 
@@ -25,9 +32,27 @@ test_psgi app, sub {
     while( my ($desc, $search) = each %errors ){
         $search = encode_json($search) if ref($search) eq 'HASH';
 
-        ok( my $res = $cb->(POST '/author/_search',
-                Content => $search,
-            ), "POST _search" );
+        foreach my $req (
+            POST('/author/_search', Content => $search),
+            GET( uri('/author/_search', source => $search) ),
+        ){
+            test_bad_request($cb, $desc, $search, $req);
+        }
+    }
+};
+
+sub test_bad_request {
+    my ($cb, $desc, $search, $req) = @_;
+    my $method = $req->method;
+    subtest "bad request for $method '$desc'" => sub {
+        if( $method eq 'GET' ){
+            like $req->uri, qr/\?source=%7B%22(query|filtered)%22%3A/, 'uri has json in querystring';
+        }
+        else {
+            like $req->content, qr/{"(query|filtered)":/, 'body is json'
+        }
+
+        ok( my $res = $cb->($req), "$method request" );
 
         is $res->code, 403, 'Not allowed';
 
@@ -36,7 +61,7 @@ test_psgi app, sub {
 
         is_deeply $json, { message => "$error_message" },
             "error returned for $desc";
-    }
+    };
 };
 
 
