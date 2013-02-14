@@ -25,9 +25,10 @@ around execute => sub {
             }
         }
 
+      foreach my $attr ( qw( query_parameters parameters ) ){
         # there's probably a more appropriate place for this
         # but it's the same concept and we can reuse the error handling
-        if( my $params = $c->req->query_parameters ){
+        if( my $params = $c->req->$attr ){
             # ES also accepts the content in the querystring
             if( exists $params->{source} ){
                 if( my $source = delete $params->{source} ){
@@ -41,11 +42,12 @@ around execute => sub {
                         )->query;
                         # update the $req
                         $params->{source} = $json->encode($source);
-                        $c->req->query_parameters($params);
+                        $c->req->$attr($params);
                     }
                 }
             }
         }
+      }
     }
     catch {
         my $e = $_[0];
