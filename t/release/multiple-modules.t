@@ -18,6 +18,11 @@ is( $release->name, 'Multiple-Modules-1.01', 'name ok' );
 
 is( $release->author, 'LOCAL', 'author ok' );
 
+is_deeply(
+    $release->provides,
+    ["Multiple::Modules","Multiple::Modules::A","Multiple::Modules::A2","Multiple::Modules::B"],
+    'provides ok' );
+
 # This test depends on files being indexed in the right order
 # which depends on the mtime of the files. Currently CPAN::Faker just
 # generates them all at once and so file reading can be effectively

@@ -93,7 +93,13 @@ and C<mtime>.
 
 B<Boolean>; Indicates whether this is the first ever release for this distribution.
 
+=head2 provides
+
+This is an ArrayRef of modules that are included in this release.
+
 =cut
+
+has provides => ( isa => 'ArrayRef[Str]', is => 'rw' );
 
 has id => ( is => 'ro', id => [qw(author name)] );
 has [qw(license version author archive)] => ( is => 'ro', required => 1 );

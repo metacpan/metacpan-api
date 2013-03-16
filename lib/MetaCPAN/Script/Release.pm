@@ -336,12 +336,16 @@ sub import_tarball {
     log_debug { "Indexing ", scalar @modules, " modules" };
     my $perms = $self->perms;
     my @release_unauthorized;
+    my @provides;
     foreach my $file (@modules) {
         $_->set_associated_pod( $file, \%associated_pod )
             for ( @{ $file->module } );
         $file->set_indexed($meta);
         push( @release_unauthorized, $file->set_authorized($perms) )
             if ( keys %$perms );
+        for(@{$file->module}) {
+            push(@provides, $_->name) if $_->indexed && $_->authorized;
+        }
         $file->clear_module if ( $file->is_pod_file );
         log_trace {"reindexing file $file->{path}"};
         $bulk->put($file);
@@ -350,6 +354,10 @@ sub import_tarball {
             $release->abstract($file->abstract);
             $release->put;
         }
+    }
+    if(@provides) {
+        $release->provides(\@provides);
+        $release->put;
     }
     $bulk->commit;
 
