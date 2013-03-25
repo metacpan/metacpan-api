@@ -857,4 +857,48 @@ sub prefix {
     );
 }
 
+=head2 history
+
+Find the history of a given module/documentation.
+
+=cut
+
+sub history {
+    my ($self, $type, $module, @path) = @_;
+    my $search = $type eq "module" 
+        ? $self->filter({
+            nested => {
+                path => "module",
+                query => {
+                    constant_score => {
+                        filter => { and => [
+                            {   term =>
+                                    { "module.authorized" => \1 }
+                            },
+                            {   term => { "module.indexed" => \1 }
+                            },
+                            {   term => { "module.name" => $module }
+                            },
+                        ] }
+                    }
+                }
+            }
+        })
+        : $type eq "file"
+        ? $self->filter({
+            and => [
+                { term => { "file.path" => join("/", @path) } },
+                { term => { "file.distribution" => $module } },
+            ]
+        })
+        : $self->filter({
+            and => [
+                { term => { "file.documentation" => $module } },
+                { term => { "file.indexed" => \1 } },
+                { term => { "file.authorized" => \1 } },
+            ]
+        });
+    return $search->sort([{ "file.date" => "desc"}]);
+}
+
 __PACKAGE__->meta->make_immutable;
