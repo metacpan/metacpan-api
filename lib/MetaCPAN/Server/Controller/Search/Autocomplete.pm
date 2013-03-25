@@ -7,7 +7,7 @@ has '+type' => ( default => 'file' );
 
 sub get : Local : Path('') : Args(0) {
     my ( $self, $c ) = @_;
-    my $data = $c->model('CPAN::File')->autocomplete($c->req->param("q"))->raw
+    my $data = $self->model($c)->autocomplete($c->req->param("q"))->raw
         ->fields( [qw(documentation release author distribution)] );
     $c->stash($data->all);
 }
