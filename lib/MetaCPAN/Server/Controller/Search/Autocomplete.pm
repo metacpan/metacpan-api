@@ -5,15 +5,10 @@ with 'MetaCPAN::Server::Role::JSONP';
 
 has '+type' => ( default => 'file' );
 
-sub get : Chained('/search/index') : PathPart('autocomplete') : Args(0) :
-    ActionClass('Deserialize') {
+sub get : Local : Path('') : Args(0) {
     my ( $self, $c ) = @_;
-    my $frac = join( ' ', $c->req->param('q') );
-    my $size = $c->req->params->{size};
-    $size = 20 unless(defined $size);
-    $c->detach('/not_allowed') unless($size =~ /^\d+$/ && $size >= 0 && $size <= 100);
-    my $data = $c->model('CPAN::File')->prefix($frac)->inflate(0)
-        ->fields( [qw(documentation release author distribution)] )->size($size);
+    my $data = $c->model('CPAN::File')->autocomplete($c->req->param("q"))->raw
+        ->fields( [qw(documentation release author distribution)] );
     $c->stash($data->all);
 }
 

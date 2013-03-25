@@ -901,4 +901,37 @@ sub history {
     return $search->sort([{ "file.date" => "desc"}]);
 }
 
+sub _not_rogue {
+    my @rogue_dists = map { { term => { 'file.distribution' => $_ } } } @ROGUE_DISTRIBUTIONS;
+    return { not => { filter => { or => \@rogue_dists } } };
+}
+
+sub autocomplete {
+    my ($self, @terms) = @_;
+    my $query = join(" ", @terms);
+    return $self unless $query;
+    $query =~ s/::/ /g;
+    my @query  = split( /\s+/, $query );
+    my $should = [
+        map {
+            { field     => { 'documentation.analyzed'  => "$_*" } },
+                { field => { 'documentation.camelcase' => "$_*" } }
+            } grep {$_} @query
+    ];
+    return $self->query({
+        custom_score => {
+            query => { bool => { should => $should } },
+            script => "_score - doc['documentation'].stringValue.length()/100",
+        }
+    })->filter({
+        and => [
+            $self->_not_rogue,
+            { exists => { field => 'documentation' } },
+            { term   => { 'file.indexed' => \1 } },
+            { term   => { 'file.authorized' => \1 } },
+            { term => { 'file.status'  => 'latest' } },
+        ]
+    });
+}
+
 __PACKAGE__->meta->make_immutable;
