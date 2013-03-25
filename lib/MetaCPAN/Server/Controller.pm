@@ -27,6 +27,8 @@ has relationships => (
     handles => { has_relationships => 'count' }
 );
 
+my $MAX_SIZE = 5000;
+
 # apply "filters" like \&model but for fabricated data
 sub apply_request_filter {
     my ($self, $c, $data) = @_;
@@ -46,6 +48,12 @@ sub model {
     my $model = $c->model('CPAN')->type($self->type);
     $model = $model->fields( [ map { split(/,/) } $c->req->param("fields") ] )
         if $c->req->param("fields");
+    if(my ($size) = $c->req->param("size")) {
+        $c->detach( '/bad_request',
+        [ "size parameter exceeds maximum of $MAX_SIZE", 416 ] )
+            if ( $size && $size > $MAX_SIZE );
+        $model = $model->size($size);
+    }
     return $model;
 }
 
@@ -83,8 +91,8 @@ sub search : Path('_search') : ActionClass('Deserialize') {
     {
         my $size = $params->{size} || ( $req->data || {} )->{size};
         $c->detach( '/bad_request',
-            [ 'size parameter exceeds maximum of 5000', 416 ] )
-            if ( $size && $size > 5000 );
+            [ "size parameter exceeds maximum of $MAX_SIZE", 416 ] )
+            if ( $size && $size > $MAX_SIZE );
     }
     delete $params->{callback};
     eval {
