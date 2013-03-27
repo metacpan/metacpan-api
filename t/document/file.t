@@ -202,7 +202,9 @@ hot stuff
 
 =over
 
-=item Foo
+=item *
+
+Foo
 
 =item *
 
@@ -216,7 +218,7 @@ END
                                        name         => 'Foo.pod',
                                      content_cb   => sub { \$content } );
     is($file->documentation, 'Foo', 'POD in __DATA__ section');
-    is($file->description, 'hot stuff Foo * Bar');
+    is($file->description, 'hot stuff * Foo * Bar');
 }
 
 done_testing;

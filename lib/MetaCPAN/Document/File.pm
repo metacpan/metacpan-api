@@ -9,6 +9,7 @@ use Plack::MIME;
 use List::MoreUtils qw(uniq);
 use MetaCPAN::Util;
 use MetaCPAN::Types qw(:all);
+use MetaCPAN::Document::Module;
 use MooseX::Types::Moose qw(ArrayRef);
 use Encode;
 use utf8;
