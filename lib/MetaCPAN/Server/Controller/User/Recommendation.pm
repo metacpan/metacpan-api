@@ -16,14 +16,18 @@ sub auto : Private {
 sub index : Path : ActionClass('REST') {
 }
 
-sub index_POST {
-    my ( $self, $c ) = @_;
+sub index_PUT {
+    my ( $self, $c, $module, $relation, $other_module ) = @_;
+
+    # TODO let's chain those suckers at some point
+    die unless $relation eq 'instead_of';
+
     my $pause    = $c->stash->{pause};
     my $req      = $c->req;
     my $recommendation = $c->model('CPAN::Recommendation')->put(
         {   user         => $c->user->id,
-            module       => $req->data->{module},
-            instead_of   => $req->data->{instead_of},
+            module       => $module,
+            $relation    => $other_module,
         },
         { refresh => 1 }
     );
