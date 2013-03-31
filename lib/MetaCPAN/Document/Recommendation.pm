@@ -7,10 +7,10 @@ use MetaCPAN::Util;
 
 has id => (
     is => 'ro',
-    id => [qw(user module instead_of)],
+    id => [qw(user module )],
 );
 
-has [qw(user module instead_of)] => (
+has [qw(user module alternative)] => (
     is       => 'ro',
     required => 1,
 );

@@ -8,8 +8,8 @@ sub find : Path('') : Args(4) {
     eval {
         my $recommendation = $self->model($c)->raw->get(
             {   user         => $user,
-                module => $module,
-                $relation => $other_module,
+                module       => $module,
+                alternative  => $other_module,
             }
         );
         $c->stash( $recommendation->{_source} || $recommendation->{fields} );
