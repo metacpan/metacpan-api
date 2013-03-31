@@ -20,13 +20,7 @@ sub auto : Private {
 
 
     if ( my $token = $c->req->params->{access_token} ) {
-my $user = $c->model('User::Account')->put(
-        { access_token => [ { client => 'testing', token => 'testing' } ] }
-    );
-$user->add_identity( { name => 'pause', key => 'MO' } );
-
-$user->put( { refresh => 1 } );
-        $user = $c->model('User::Account')->find_token($token);
+        my $user = $c->model('User::Account')->find_token($token);
         $c->authenticate( { user => $user } ) if ($user);
     }
     return $c->user_exists;
