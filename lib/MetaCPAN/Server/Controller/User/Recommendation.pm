@@ -24,6 +24,16 @@ sub index_PUT {
 
     my $pause    = $c->stash->{pause};
     my $req      = $c->req;
+
+    # user can only recommend one module over
+    # another one
+    my $old = $c->model('CPAN::Recommendation')->mget(
+        { user         => $c->user->id,
+            instead_of   => $other_module, }
+    );
+
+    $old->delete( { refresh => 1 } ) if $old;
+
     my $recommendation = $c->model('CPAN::Recommendation')->put(
         {   user         => $c->user->id,
             module       => $module,
