@@ -142,10 +142,10 @@ sub parse_tsv {
         $summary{ $row->{dist} } = {
             type   => 'rt',
             source => 'https://rt.cpan.org/Public/Dist/Display.html?Name=' . $row->{dist},
-            active => ( sum @$row{qw(new open stalled)} ),
-            closed => ( sum @$row{qw(resolved rejected)} ),
+            active => $row->{active},
+            closed => $row->{inactive},
             map { $_ => $row->{$_} + 0 }
-                grep { $_ ne "dist" }
+                grep { not /^(dist|active|inactive)$/ }
                 keys %$row,
         };
     }
