@@ -121,7 +121,7 @@ sub retrieve_rt_bugs {
 
     my $resp = $self->ua->request( GET $self->rt_summary_url );
 
-    log_error { $resp->reason } unless $resp->is_success;
+    log_error { $resp->status_line } unless $resp->is_success;
 
     return $self->parse_tsv( $resp->content );
 }
