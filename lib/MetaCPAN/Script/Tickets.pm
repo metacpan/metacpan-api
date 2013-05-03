@@ -121,30 +121,32 @@ sub retrieve_rt_bugs {
 
     my $resp = $self->ua->request( GET $self->rt_summary_url );
 
-    log_error { $resp->reason } unless $resp->is_success;
+    log_error { $resp->status_line } unless $resp->is_success;
 
     return $self->parse_tsv( $resp->content );
 }
 
 sub parse_tsv {
     my ( $self, $tsv ) = @_;
+    $tsv =~ s/^#\s*(dist\s.+)/$1/m; # uncomment the field spec for Parse::CSV
     $tsv =~ s/^#.*\n//mg;
 
     my $tsv_parser = Parse::CSV->new(
         handle   => IO::String->new($tsv),
-        sep_char => "\t"
+        sep_char => "\t",
+        names    => 1,
     );
 
     my %summary;
     while ( my $row = $tsv_parser->fetch ) {
-        my $i = 1;
-        $summary{ $row->[0] } = {
+        $summary{ $row->{dist} } = {
             type   => 'rt',
-            source => 'https://rt.cpan.org/Public/Dist/Display.html?Name=' . $row->[0],
-            active => ( sum @{$row}[ 1 .. 3 ] ),
-            closed => ( sum @{$row}[ 4 .. 5 ] ),
-            map { $_ => $row->[ $i++ ] + 0 }
-                qw(new open stalled resolved rejected),
+            source => 'https://rt.cpan.org/Public/Dist/Display.html?Name=' . $row->{dist},
+            active => $row->{active},
+            closed => $row->{inactive},
+            map { $_ => $row->{$_} + 0 }
+                grep { not /^(dist|active|inactive)$/ }
+                keys %$row,
         };
     }
 
