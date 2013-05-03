@@ -6,7 +6,7 @@ around [qw(content_type header)] => sub {
     my ($orig, $self) = (shift,shift);
     my $header = $self->$orig(@_);
     return unless($header);
-    return $header eq 'application/x-www-form-urlencoded' ? 'application/json' : $header;
+    return $header =~ /^application\/x-www-form-urlencoded/ ? 'application/json' : $header;
 };
 
 1;
