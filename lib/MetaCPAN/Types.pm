@@ -52,7 +52,7 @@ coerce Profile, from ArrayRef, via { [ map { ref $_ eq 'HASH' ? MetaCPAN::Docume
 coerce Profile, from HashRef, via { [ MetaCPAN::Document::Author::Profile->new($_) ] };
 
 subtype Tests, as Dict [ fail => Int, na => Int, pass => Int, unknown => Int ];
-subtype BugSummary, as Dict [ (map { $_ => Optional[Int]} qw(new open stalled resolved rejected active closed)), type => Str, source => Str ];
+subtype BugSummary, as Dict [ (map { $_ => Optional[Int]} qw(new open stalled patched resolved rejected active closed)), type => Str, source => Str ];
 
 subtype Resources,
   as Dict [
