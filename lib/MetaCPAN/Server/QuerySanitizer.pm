@@ -10,16 +10,21 @@ has query => (
 
 our %metacpan_scripts = (
     prefer_shorter_module_names_100 => q{
-        _score - doc['documentation'].stringValue.length()/100
+        _score - doc['documentation'].value.length()/100
     },
     prefer_shorter_module_names_400 => q{
-        documentation = doc['documentation'].stringValue;
+        documentation = doc['documentation'].value;
         if(documentation == empty) {
             documentation = 'xxxxxxxxxxxxxxxxxxxxxxxxx'
         }
         return _score - documentation.length()/400
     },
+
+    # NOTE: after upgrading to 0.90+ we should be able to sort
+    # on nested version numbers directly and not need this script
+    # (but we'll need to keep it for a while until clients have updated).
     score_version_numified => q{doc['module.version_numified'].value},
+
     status_is_latest => q{doc['status'].value == 'latest'},
 );
 

@@ -42,7 +42,7 @@ test_psgi app, sub {
     }
 
     local $MetaCPAN::Server::QuerySanitizer::metacpan_scripts{test_script_field} =
-        q{doc['author.pauseid'].stringValue.length() * 2};
+        q{doc['author.pauseid'].value.length() * 2};
 
     test_all_methods(
         {
@@ -106,7 +106,7 @@ sub test_bad_request {
 
 my %replacements = (
     prefer_shorter_module_names_100 =>
-        qr#\Q_score - doc['documentation'].stringValue.length()/100\E#,
+        qr#\Q_score - doc['documentation'].value.length()/100\E#,
 
     prefer_shorter_module_names_400 =>
         qr#\Qif(documentation == empty)\E.+\Q.length()/400\E#s,

@@ -808,6 +808,7 @@ sub find_module_names_provided_by {
     );
 }
 
+# TODO: figure out what uses this and write tests for it
 sub prefix {
     my ( $self, $prefix ) = @_;
     my @query = split( /\s+/, $prefix );
@@ -824,7 +825,7 @@ sub prefix {
                         query => { bool => { should => $should } },
                         #metacpan_script => 'prefer_shorter_module_names_100',
                         script =>
-                            "_score - doc['documentation'].stringValue.length()/100"
+                            "_score - doc['documentation'].value.length()/100"
                     },
                 },
                 filter => {
@@ -922,7 +923,7 @@ sub autocomplete {
     return $self->query({
         custom_score => {
             query => { bool => { should => $should } },
-            script => "_score - doc['documentation'].stringValue.length()/100",
+            script => "_score - doc['documentation'].value.length()/100",
         }
     })->filter({
         and => [
