@@ -1,0 +1,21 @@
+language: perl
+perl:
+  - "5.16"
+  - "5.14"
+  - "5.12"
+  - "5.10"
+
+notifications:
+  email:
+    recipients:
+      - olaf@wundersolutions.com
+    on_success: always
+    on_failure: always
+
+environment:
+  # we use a non-standard port to avoid trashing production
+  # but travis will have it running on the standard port.
+  - METACPAN_ES_TEST_PORT: 9200
+
+services:
+  - elasticsearch
