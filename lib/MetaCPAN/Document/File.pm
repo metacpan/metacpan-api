@@ -592,7 +592,7 @@ sub is_perl_file {
     return 1 if ( $self->mime eq "text/x-script.perl" );
     return 1
         if ( $self->name !~ /\./
-        && !grep { $self->name eq $_ } @NOT_PERL_FILES
+        && !(grep { $self->name eq $_ } @NOT_PERL_FILES)
         && !$self->binary
         && $self->stat->{size} < 2**17 );
     return 0;
