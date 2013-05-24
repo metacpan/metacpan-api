@@ -26,7 +26,7 @@
     },
     {
         "file": "SIGNATURE",
-        "content": "A Module::Signature file"
+        "content": "A Module::Signature file\n\nBEGIN\n\nAWELRKJ#RL#@JR@WEIFJDSfj9e0jfei\n=notpod\n\nEND\n"
     }]
   }
 }

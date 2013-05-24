@@ -53,6 +53,7 @@ $signature = $idx->type('file')->filter(
   }
 )->first;
 ok(!$signature, 'SIGNATURE is not perl code');
+
 $signature = $idx->type('file')->filter(
   {   and => [
       { term => { 'file.documentation' => 'SIGNATURE' } },
@@ -62,6 +63,18 @@ $signature = $idx->type('file')->filter(
   }
 )->first;
 ok(!$signature, 'SIGNATURE is not documentation');
+
+$signature = $idx->type('file')->filter(
+  {
+    and => [
+      { term   => { name => 'SIGNATURE' } },
+      # these came from metacpan-web/lib/MetaCPAN/Web/Model/API/Release.pm:sub modules
+      { exists => { field => 'file.pod.analyzed' } },
+      { term   => { 'file.indexed' => \1 } },
+    ]
+  }
+)->first;
+ok(!$signature, 'SIGNATURE is not pod');
 
 {
   my $files = $idx->type("file");
