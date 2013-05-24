@@ -1,5 +1,5 @@
 {
-    es => ':9900',
+    es => ':' . ($ENV{METACPAN_ES_TEST_PORT} ||= 9900),
     port => '5900',
     level => 'warn',
     cpan => 't/var/tmp/fakecpan',

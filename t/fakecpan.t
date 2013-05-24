@@ -16,9 +16,11 @@ use Path::Class qw(dir file);
 use File::Copy;
 use Config::General;
 
+my $ES_HOST_PORT = '127.0.0.1:' . ($ENV{METACPAN_ES_TEST_PORT} ||= 9900);
+
 ok( my $es = ElasticSearch->new(
         transport => 'httplite',
-        servers   => '127.0.0.1:9900',
+        servers   => $ES_HOST_PORT,
         # trace_calls => 1,
 ), 'got ElasticSearch object');
 
@@ -26,10 +28,10 @@ eval {
   $es->transport->refresh_servers;
 };
 
-ok(!$@, "Connected to the ElasticSearch test instance on 127.0.0.1:9900")
+ok(!$@, "Connected to the ElasticSearch test instance on $ES_HOST_PORT")
   or do {
     diag(<<EOF);
-Failed to connect to the ElasticSearch test instance on 127.0.0.1:9900.
+Failed to connect to the ElasticSearch test instance on $ES_HOST_PORT.
 Did you start one up? See https://github.com/CPAN-API/cpan-api/wiki/Installation
 for more information.
 EOF
@@ -38,6 +40,7 @@ EOF
 };
 
 
+# NOTE: Don't load MetaCPAN::Server::Test before doing this mapping
 
 my $config = MetaCPAN::Script::Runner->build_config;
 $config->{es} = $es;

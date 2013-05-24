@@ -12,6 +12,7 @@ use Test::More;
 use base 'Exporter';
 our @EXPORT = qw(
     POST GET DELETE
+    model
     test_psgi app
     encode_json decode_json
     try catch finally
@@ -37,6 +38,11 @@ ok( MetaCPAN::Server->model('User::Account')->put(
     'put bot user'
 );
 sub app {$app}
+
+require MetaCPAN::Model;
+sub model {
+    MetaCPAN::Model->new( es => ':' . ($ENV{METACPAN_ES_TEST_PORT} ||= 9900) );
+}
 
 1;
 

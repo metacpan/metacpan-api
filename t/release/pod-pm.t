@@ -2,9 +2,9 @@ use Test::More;
 use strict;
 use warnings;
 
-use MetaCPAN::Model;
+use MetaCPAN::Server::Test;
 
-my $model   = MetaCPAN::Model->new( es => ':9900' );
+my $model   = model();
 my $idx     = $model->index('cpan');
 
 ok(my $pod_pm = $idx->type('file')->find('Pod::Pm'), 'find Pod::Pm module');
