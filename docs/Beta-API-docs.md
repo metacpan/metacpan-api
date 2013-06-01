@@ -27,9 +27,10 @@ Available fields can be found by accessing the corresponding `_mapping` endpoint
 * [[/distribution/_mapping|http://api.metacpan.org/v0/distribution/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/distribution/_mapping]]
 * [[/favorite/_mapping|http://api.metacpan.org/v0/favorite/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/favorite/_mapping]]
 * [[/file/_mapping|http://api.metacpan.org/v0/file/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/file/_mapping]]
+* [[/module/_mapping|http://api.metacpan.org/v0/module/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/module/_mapping]]
 * [[/rating/_mapping|http://api.metacpan.org/v0/rating/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/rating/_mapping]]
 * [[/release/_mapping|http://api.metacpan.org/v0/release/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/release/_mapping]]
-* [[/module/_mapping|http://api.metacpan.org/v0/module/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/module/_mapping]]
+
 
 ## Field documentation
 
