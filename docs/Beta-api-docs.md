@@ -1,0 +1,1 @@
+The API docs are no longer in Beta and can be found [here](https://github.com/CPAN-API/cpan-api/wiki/API-docs).
