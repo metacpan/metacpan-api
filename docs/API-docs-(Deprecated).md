@@ -1,5 +1,7 @@
 **Please note that there is now documentation online for the [Beta API](Beta-API-docs).  We encourage you to use the Beta API wherever possible as the current API will be deprecated.**
 
+Please leave this page online for historical purposes, but don't refer to it for anything useful.
+
 The API itself is in its very early stages.  Everything will change, but here are some sample URLs to play with.
 
 * All URLs return JSON
