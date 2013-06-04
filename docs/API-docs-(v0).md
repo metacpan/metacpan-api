@@ -1,4 +1,6 @@
-# Beta API Docs
+# API Docs: v0
+
+There is now [a repository of examples](https://github.com/CPAN-API/metacpan-examples) you can play with to get up and running in a hurry.  Rather than editing this wiki page, please send pull requests for the metacpan-examples repository.  If you'd rather edit the wiki, please do, but sending the code pull requests is probably the most helpful way to approach this.
 
 _All of these URLs can be tested using tokuhirom's excellent [MetaCPAN Explorer](http://explorer.metacpan.org)_
 
