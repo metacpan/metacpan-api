@@ -2,7 +2,7 @@
 
 There is now [a repository of examples](https://github.com/CPAN-API/metacpan-examples) you can play with to get up and running in a hurry.  Rather than editing this wiki page, please send pull requests for the metacpan-examples repository.  If you'd rather edit the wiki, please do, but sending the code pull requests is probably the most helpful way to approach this.
 
-_All of these URLs can be tested using tokuhirom's excellent [MetaCPAN Explorer](http://explorer.metacpan.org)_
+_All of these URLs can be tested using [tokuhirom](https://metacpan.org/author/TOKUHIROM)'s excellent [MetaCPAN Explorer](http://explorer.metacpan.org)_
 
 To learn more about the ElasticSearch query DSL check out Clinton Gormley's [Terms of Endearment - ES Query DSL Explained] (http://www.slideshare.net/clintongormley/terms-of-endearment-the-elasticsearch-query-dsl-explained) slides.
 
