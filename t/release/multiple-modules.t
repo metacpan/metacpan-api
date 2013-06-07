@@ -19,8 +19,8 @@ is( $release->name, 'Multiple-Modules-1.01', 'name ok' );
 is( $release->author, 'LOCAL', 'author ok' );
 
 is_deeply(
-    $release->provides,
-    ["Multiple::Modules","Multiple::Modules::A","Multiple::Modules::A2","Multiple::Modules::B"],
+    [sort @{$release->provides}],
+    [sort "Multiple::Modules","Multiple::Modules::A","Multiple::Modules::A2","Multiple::Modules::B"],
     'provides ok' );
 
 # This test depends on files being indexed in the right order
