@@ -17,6 +17,10 @@ my @tests = (
         NEWS    => qr/^F\nR\nE\nE\nF\nO\nR\nM\n/, ],
     [ '/changes/NOEXISTY'        => 404 ],
     [ '/changes/NOAUTHOR/NODIST' => 404 ],
+    # NOTE: We need to use author/release because in these tests
+    # 'perl' doesn't get flagged as latest.
+    [ '/changes/RWSTAUNER/perl-1'       => 200,
+        'perldelta.pod' => qr/^=head1 NAME\n\nperldelta - changes for perl\n\n/m, ],
 );
 
 test_psgi app, sub {
