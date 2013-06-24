@@ -4,7 +4,6 @@ use Test::More;
 use MetaCPAN::Server::Test;
 
 my @tests = (
-    # TODO: w/ no arg?
     [ '/changes/File-Changes'           => 200,
         Changes => qr/^Revision history for Changes\n\n2\.0.+1\.0.+/sm, ],
     [ '/changes/LOCAL/File-Changes-2.0' => 200,
@@ -17,6 +16,8 @@ my @tests = (
         NEWS    => qr/^F\nR\nE\nE\nF\nO\nR\nM\n/, ],
     [ '/changes/NOEXISTY'        => 404 ],
     [ '/changes/NOAUTHOR/NODIST' => 404 ],
+    # Don't search for all files.
+    [ '/changes'                 => 404 ],
     # NOTE: We need to use author/release because in these tests
     # 'perl' doesn't get flagged as latest.
     [ '/changes/RWSTAUNER/perl-1'       => 200,

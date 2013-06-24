@@ -74,4 +74,9 @@ sub find : Chained('index') : PathPart('') : Args(1) {
     $c->forward( 'get', [ @$release{qw( author name )} ]);
 }
 
+sub all : Chained('index') : PathPart('') : Args(0) {
+    my ($self, $c) = @_;
+    $c->detach('not_found');
+}
+
 1;
