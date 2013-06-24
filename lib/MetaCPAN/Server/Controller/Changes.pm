@@ -27,12 +27,28 @@ sub get : Chained('index') : PathPart('') : Args(2) {
             and => [
                 { term => { release   => $release } },
                 { term => { author    => $author } },
-                { term => { level     => 0 } },
-                { term => { directory => \0 } },
-                {   or => [
-                        map { { term => { 'file.name' => $_ } } }
-                            @candidates
-                    ]
+                {
+                    or => [
+                        # if it's a perl release, get perldelta
+                        {
+                            and => [
+                                { term => { distribution => 'perl' } },
+                                { term => { 'file.name' => 'perldelta.pod' } },
+                            ]
+                        },
+                        # otherwise look for one of these candidates in the root
+                        {
+                            and => [
+                                { term => { level     => 0 } },
+                                { term => { directory => \0 } },
+                                {   or => [
+                                        map { { term => { 'file.name' => $_ } } }
+                                            @candidates
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
                 }
             ]
         })
