@@ -11,6 +11,10 @@
     {
         "file": "lib/CoreModule.pm",
         "content": "package CoreModule;\n1; \n\n=head1 NAME\n\nCoreModule - something in perl core\n\n"
+    },
+    {
+        "file": "Changes",
+        "content": "See perldelta.pod"
     } ]
   }
 }
