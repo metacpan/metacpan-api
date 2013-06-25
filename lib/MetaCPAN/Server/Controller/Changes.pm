@@ -52,8 +52,11 @@ sub get : Chained('index') : PathPart('') : Args(2) {
                 }
             ]
         })
-        ->size(scalar @candidates)
-        ->sort( [ { name => 'asc' } ] )->first->{_source};
+        ->size(1)
+        # HACK: Sort by level/desc to put pod/perldeta.pod first (if found)
+        # otherwise sort root files by name and select the first.
+        ->sort( [ { level => 'desc' }, { name => 'asc' } ] )
+        ->first->{_source};
     } or $c->detach('/not_found', []);
 
     my $source = $c->model('Source')->path( @$file{qw(author release path)} )
