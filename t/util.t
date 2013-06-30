@@ -13,6 +13,7 @@ is( MetaCPAN::Util::numify_version('0.20_8'),   0.208 );
 is( MetaCPAN::Util::numify_version('0.20_88'),  0.200088 );
 is( MetaCPAN::Util::numify_version('0.208_8'),  0.208008 );
 is( MetaCPAN::Util::numify_version('0.20_108'), 0.2000108 );
+is( MetaCPAN::Util::numify_version('v0.9_9'), 0.009009);
 
 lives_ok { is( version("2a"),      2 ) };
 lives_ok { is( version("V0.01"),   0.01 ) };
