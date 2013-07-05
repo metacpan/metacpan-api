@@ -1,9 +1,0 @@
-MAILTO=onken@netcubed.de
-SHELL=/bin/bash
-PATH=/home/metacpan/perl5/perlbrew/bin:/home/metacpan/perl5/perlbrew/perls/perl-5.14.0/bin:/usr/local/bin:/usr/bin:/bin:/usr/X11R6/bin
-
-# m h  dom mon dow   command
-0 * * * * metacpan $HOME/api.metacpan.org/bin/metacpan author
-0 * * * * metacpan $HOME/api.metacpan.org/bin/metacpan mirrors
-/5 * * * * metacpan $HOME/api.authorized/bin/metacpan authorized
-55 * * * * metacpan rsync -avz rsync://cpan-rsync.perl.org/CPAN/authors/id/ $HOME/CPAN/authors/id/ > /dev/null
