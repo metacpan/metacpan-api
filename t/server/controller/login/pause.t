@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use JSON qw( decode_json );
 use Test::More;
 use MetaCPAN::Server::Test;
 BEGIN { $ENV{EMAIL_SENDER_TRANSPORT} = 'Test' }
@@ -8,27 +9,37 @@ test_psgi app, sub {
     my $cb = shift;
 
     test_pause_auth($cb, 'RWSTAUNER', 'Trouble Maker');
+    test_pause_auth($cb, 'NEVERHEARDOFHIM',  "Who?", fail => 1);
 };
 
 done_testing;
 
-# TODO: test failure
 sub test_pause_auth {
-    my ($cb, $pause_id, $full_name) = @_;
+    my ($cb, $pause_id, $full_name, %args) = @_;
 
+  subtest "PAUSE login email for $pause_id $full_name" => sub {
     my $req = GET("/login/pause?id=$pause_id");
     my $res = $cb->($req);
     my $delivery = Email::Sender::Simple->default_transport->shift_deliveries;
     my $email = $delivery->{email};
 
-    is $res->code, 200, 'login pause start ok';
-    ok $email, 'sent email';
+    my $body = decode_json($res->content);
+    is $res->code, 200, 'GET ok';
+
+    if( $args{fail} ){
+        is($body->{error}, 'author_not_found', 'recognize nonexistent author');
+        return;
+    }
+
+    is $body->{success}, 'mail_sent', 'success';
+    ok $email, 'sent email'
+        or die explain $res;
 
     is $email->get_header('to'), "\L$pause_id\@cpan.org", 'To: cpan address';
     like $email->get_header('subject'), qr/\bmetacpan\s.+\sPAUSE\b/i,
         'subject mentions metacpan and pause';
 
-    like $email->get_body, qr/Hi $full_name,/,
+    like $email->get_body, qr/Hi \Q$full_name\E,/,
         'email body mentions verifying pause account';
 
     like $email->get_body, qr/verify.+\sPAUSE\b/,
@@ -39,4 +50,5 @@ sub test_pause_auth {
         'email body contains uri with code';
 
     # TODO: figure out what the oauth redirect is supposed to do and test it
-};
+  };
+}
