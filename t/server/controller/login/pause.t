@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use Test::More;
 use MetaCPAN::Server::Test;
-use Sub::Override;
+BEGIN { $ENV{EMAIL_SENDER_TRANSPORT} = 'Test' }
 
 test_psgi app, sub {
     my $cb = shift;
@@ -16,26 +16,25 @@ done_testing;
 sub test_pause_auth {
     my ($cb, $pause_id, $full_name) = @_;
 
-    my $email;
-    my $over = Sub::Override->new('Email::Sender::Simple::send' => sub { $email = $_[1]; });
-
     my $req = GET("/login/pause?id=$pause_id");
     my $res = $cb->($req);
+    my $delivery = Email::Sender::Simple->default_transport->shift_deliveries;
+    my $email = $delivery->{email};
 
     is $res->code, 200, 'login pause start ok';
     ok $email, 'sent email';
 
-    is $email->header('to'), "\L$pause_id\@cpan.org", 'To: cpan address';
-    like $email->header('subject'), qr/\bmetacpan\s.+\sPAUSE\b/i,
+    is $email->get_header('to'), "\L$pause_id\@cpan.org", 'To: cpan address';
+    like $email->get_header('subject'), qr/\bmetacpan\s.+\sPAUSE\b/i,
         'subject mentions metacpan and pause';
 
-    like $email->body, qr/Hi $full_name,/,
+    like $email->get_body, qr/Hi $full_name,/,
         'email body mentions verifying pause account';
 
-    like $email->body, qr/verify.+\sPAUSE\b/,
+    like $email->get_body, qr/verify.+\sPAUSE\b/,
         'email body mentions verifying pause account';
 
-    like $email->body,
+    like $email->get_body,
         qr!\shttp://${\ $req->uri->host }${\ $req->uri->path }\?code=\S!m,
         'email body contains uri with code';
 

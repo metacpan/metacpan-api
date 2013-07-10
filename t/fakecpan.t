@@ -15,6 +15,7 @@ use MetaCPAN::Script::Tickets;
 use Path::Class qw(dir file);
 use File::Copy;
 use Config::General;
+BEGIN { $ENV{EMAIL_SENDER_TRANSPORT} = 'Test' }
 
 my $ES_HOST_PORT = '127.0.0.1:' . ($ENV{METACPAN_ES_TEST_PORT} ||= 9900);
 
