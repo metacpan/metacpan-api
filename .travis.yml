@@ -17,5 +17,8 @@ env:
   # but travis will have it running on the standard port.
   - METACPAN_ES_TEST_PORT=9200
 
+before_script:
+  - "perl -i -pe 's/(servers :)9900/$1$ENV{METACPAN_ES_TEST_PORT}/' metacpan_server_testing.conf"
+
 services:
   - elasticsearch
