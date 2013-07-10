@@ -12,10 +12,10 @@ notifications:
     on_success: always
     on_failure: always
 
-environment:
+env:
   # we use a non-standard port to avoid trashing production
   # but travis will have it running on the standard port.
-  - METACPAN_ES_TEST_PORT: 9200
+  - METACPAN_ES_TEST_PORT=9200
 
 services:
   - elasticsearch
