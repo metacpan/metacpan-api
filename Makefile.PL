@@ -18,6 +18,7 @@ my %WriteMakefileArgs = (
     "Config::General" => 0,
     "ElasticSearch::TestServer" => 0,
     "File::Copy" => 0,
+    "Sub::Override" => 0,
     "Test::Aggregate::Nested" => "0.364",
     "Test::More" => "0.96",
     "Test::Most" => 0,
