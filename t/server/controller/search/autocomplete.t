@@ -22,7 +22,8 @@ test_psgi app, sub {
         Multiple::Modules::RDeps::A
         Multiple::Modules::RDeps::Deprecated
       )],
-      'results are sorted by module name length';
+      'results are sorted by module name length'
+        or diag explain $json;
   }
 };
 
