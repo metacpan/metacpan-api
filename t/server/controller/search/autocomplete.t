@@ -23,7 +23,7 @@ test_psgi app, sub {
         Multiple::Modules::RDeps::Deprecated
       )],
       'results are sorted by module name length'
-        or diag explain $json;
+        or diag(Test::More::explain($json));
   }
 };
 
