@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/CPAN-API/cpan-api.png?branch=master)](https://travis-ci.org/CPAN-API/cpan-api)
+
 A Web Service for the CPAN
 ==========================
 
