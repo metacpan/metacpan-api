@@ -38,6 +38,8 @@ sub test_pause_auth {
     ok $email, 'sent email'
         or die explain $res;
 
+    ok !is_utf8($email->get_body), 'body is octets (no wide characters)';
+
     is $email->get_header('to'), "\L$pause_id\@cpan.org", 'To: cpan address';
     like $email->get_header('subject'), qr/\bmetacpan\s.+\sPAUSE\b/i,
         'subject mentions metacpan and pause';
