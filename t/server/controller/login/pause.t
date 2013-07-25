@@ -44,8 +44,8 @@ sub test_pause_auth {
     like $email->get_header('subject'), qr/\bmetacpan\s.+\sPAUSE\b/i,
         'subject mentions metacpan and pause';
 
-    like $email->get_body, qr/Hi \Q$full_name\E,/,
-        'email body mentions verifying pause account';
+    like $email->get_body, qr/Hi \Q${\ _u($full_name) }\E,/,
+        'email body has user\'s name';
 
     like $email->get_body, qr/verify.+\sPAUSE\b/,
         'email body mentions verifying pause account';

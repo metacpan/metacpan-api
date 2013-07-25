@@ -7,6 +7,9 @@ use Email::Sender::Simple ();
 use Email::Simple         ();
 use CHI                   ();
 use Digest::SHA1          ();
+use Encode                ();
+use Try::Tiny;
+use namespace::autoclean;
 
 has cache => ( is => 'ro', builder => '_build_cache' );
 
@@ -46,15 +49,7 @@ sub index : Path {
                 Subject        => "Connect MetaCPAN with your PAUSE account",
                 'MIME-Version' => 1.0,
             ],
-            body => qq{Hi ${\$author->name},
-
-please click on the following link to verify your PAUSE account:
-
-$uri
-
-Cheers,
-MetaCPAN
-}
+            body => $self->email_body($author->name, $uri),
         );
         Email::Sender::Simple->send($email);
         $c->controller('OAuth2')->redirect( $c, success => "mail_sent" );
@@ -63,6 +58,32 @@ MetaCPAN
 
 sub generate_sid {
     Digest::SHA1::sha1_hex( rand() . $$ . {} . time );
+}
+
+sub email_body {
+    my ($self, $name, $uri) = @_;
+
+    my $body = <<EMAIL_BODY;
+Hi ${name},
+
+please click on the following link to verify your PAUSE account:
+
+$uri
+
+Cheers,
+MetaCPAN
+EMAIL_BODY
+
+    try {
+        $body = Encode::encode('UTF-8', $body,
+            Encode::FB_CROAK | Encode::LEAVE_SRC
+        );
+    }
+    catch {
+        warn $_[0];
+    };
+
+    return $body;
 }
 
 1;
