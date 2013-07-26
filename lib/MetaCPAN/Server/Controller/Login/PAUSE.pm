@@ -47,7 +47,7 @@ sub index : Path {
                 To             => $author->{email}->[0],
                 From           => 'noreply@metacpan.org',
                 Subject        => "Connect MetaCPAN with your PAUSE account",
-                'MIME-Version' => 1.0,
+                'MIME-Version' => '1.0',
             ],
             body => $self->email_body($author->name, $uri),
         );
