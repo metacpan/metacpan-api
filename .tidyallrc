@@ -1,0 +1,3 @@
+[PerlTidy]
+select = {lib,t}/**/*.{pl,pm,t,psgi}
+select = app.psgi
