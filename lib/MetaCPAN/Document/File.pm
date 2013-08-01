@@ -647,7 +647,7 @@ sub set_indexed {
     foreach my $mod ( @{ $self->module } ) {
         $mod->indexed(
               $meta->should_index_package( $mod->name )
-            ? $mod->hide_from_pause( ${ $self->content } )
+            ? $mod->hide_from_pause( ${ $self->content }, $self->name )
                     ? 0
                     : 1
             : 0

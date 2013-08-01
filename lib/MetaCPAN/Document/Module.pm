@@ -80,7 +80,8 @@ sub _build_version_numified {
 }
 
 sub hide_from_pause {
-    my ( $self, $content ) = @_;
+    my ( $self, $content, $file_name ) = @_;
+    return 0 if $file_name =~ m{\.pm\.PL\z};
     my $pkg = $self->name;
     return $content =~ /    # match a package declaration
       ^[\h\{;]*             # intro chars on a line

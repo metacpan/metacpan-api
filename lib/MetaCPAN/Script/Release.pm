@@ -20,6 +20,7 @@ use CPAN::DistnameInfo ();
 use File::Find         ();
 use File::stat         ();
 use MetaCPAN::Script::Latest;
+use Parse::PMFile;
 use File::Find::Rule;
 use Try::Tiny;
 use LWP::UserAgent;
@@ -221,6 +222,7 @@ sub import_tarball {
         dependency   => \@dependencies,
         metadata     => $meta,
     };
+
     delete $release->{abstract}
         if ( $release->{abstract} eq 'unknown'
         || $release->{abstract} eq 'null' );
@@ -307,30 +309,54 @@ sub import_tarball {
         }
     }
     else {
-        @files = grep { $_->name =~ /\.pm$/ } grep { $_->indexed } @files;
-        foreach my $file (@files) {
-            eval {
-                local $SIG{'ALRM'} = sub {
-                    log_error {"Call to Module::Metadata timed out "};
-                    die;
-                };
-                alarm(5);
-                my $info;
-                {
-                    local $SIG{__WARN__} = sub { };
-                    $info = Module::Metadata->new_from_file(
-                        $file->local_path );
+        @files = grep { $_->name =~ m{(?:\.pm|\.pm\.PL)\z} }
+            grep { $_->indexed } @files;
+        foreach my $file ( @files ) {
+
+            if ( $file->name =~ m{\.PL\z} ) {
+
+                my $parser = Parse::PMFile->new( $meta->as_struct );
+                my $info   = $parser->parse( $file->local_path );
+                next if !$info;
+
+                foreach my $module_name ( keys %{$info} ) {
+                    $file->add_module(
+                        {   name => $module_name,
+                            defined $info->{$module_name}->{version}
+                            ? ( version => $info->{$module_name}->{version} )
+                            : (),
+                        }
+                    );
                 }
-                $file->add_module(
-                    {   name => $_,
-                        defined $info->version($_)
-                        ? ( version => $info->version($_)->stringify )
-                        : ()
+                push @modules, $file;
+            }
+
+            else {
+
+                eval {
+                    local $SIG{'ALRM'} = sub {
+                        log_error {"Call to Module::Metadata timed out "};
+                        die;
+                    };
+                    alarm( 5 );
+                    my $info;
+                    {
+                        local $SIG{__WARN__} = sub { };
+                        $info = Module::Metadata->new_from_file(
+                            $file->local_path );
                     }
-                ) for ( grep { $_ ne 'main' } $info->packages_inside );
-                push( @modules, $file );
-                alarm(0);
-            };
+                    $file->add_module(
+                        {   name => $_,
+                            defined $info->version( $_ )
+                            ? ( version => $info->version( $_ )->stringify )
+                            : ()
+                        }
+                        )
+                        for ( grep { $_ ne 'main' } $info->packages_inside );
+                    push( @modules, $file );
+                    alarm( 0 );
+                };
+            }
         }
     }
     log_debug { "Indexing ", scalar @modules, " modules" };
