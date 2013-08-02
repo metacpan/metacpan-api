@@ -8,6 +8,7 @@ use MetaCPAN::Types qw(:all);
 use ElasticSearchX::Model::Document::Types qw(:all);
 use MooseX::Types::Path::Class qw(:all);
 use FindBin;
+use Path::Class ();
 use MetaCPAN::Model;
 
 has 'cpan' => (
@@ -91,7 +92,14 @@ sub _build_logger {
     foreach my $c (@$config) {
         my $layout = Log::Log4perl::Layout::PatternLayout->new( $c->{layout}
                 || "%d %p{1} %c: %m{chomp}%n" );
+
+        if( $c->{class} =~ /Appender::File$/ && $c->{filename} ){
+            # Create the log file's parent directory if necessary.
+            Path::Class::File->new($c->{filename})->parent->mkpath;
+        }
+
         my $app = Log::Log4perl::Appender->new( $c->{class}, %$c );
+
         $app->layout($layout);
         $log->add_appender($app);
     }
