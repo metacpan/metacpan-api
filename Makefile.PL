@@ -12,7 +12,7 @@ my %WriteMakefileArgs = (
   # modules required for testing
   BUILD_REQUIRES => {
     "App::Prove" => 0,
-    "CPAN::Faker" => 0,
+    "CPAN::Faker" => "0.009",
     "Module::Faker" => "0.010",
     "Module::Faker::Dist" => "0.010",
     "Config::General" => 0,
