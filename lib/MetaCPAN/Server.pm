@@ -78,9 +78,16 @@ __PACKAGE__->setup(
 
 my $app = __PACKAGE__->apply_default_middlewares(__PACKAGE__->psgi_app);
 
-Plack::Middleware::ServerStatus::Lite->wrap(
-   $app,
-   path       => '/server-status',
-   allow      => ['127.0.0.1'],
-   scoreboard => __PACKAGE__->path_to(qw(var tmp scoreboard)),
-);
+# Should this be `unless ( $ENV{HARNESS_ACTIVE} ) {` ?
+{
+    my $scoreboard = __PACKAGE__->path_to(qw(var tmp scoreboard));
+    # This may be a File object if it doesn't exist so change it, then make it.
+    Path::Class::Dir->new($scoreboard->stringify)->mkpath;
+
+    Plack::Middleware::ServerStatus::Lite->wrap(
+      $app,
+      path       => '/server-status',
+      allow      => ['127.0.0.1'],
+      scoreboard => $scoreboard,
+    );
+}
