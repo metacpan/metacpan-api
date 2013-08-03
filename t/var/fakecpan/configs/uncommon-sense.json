@@ -1,14 +1,16 @@
 {
   "name": "uncommon-sense",
   "abstract": "Distribution with .pm.PL file",
+  "version": "0.01",
+  "x_comment": "Module::Faker will create a lib/*.pm file to match the dist name (uncommon::sense) so we'll use a different package to test `.pm.PL`.",
   "X_Module_Faker": {
     "cpan_author": "MO",
     "append": [ {
         "file": "sense.pm.PL",
-        "content": "#! perl-000\n\nour $VERSION = '0.01';\n\n__DATA__\npackage uncommon::sense;"
+        "content": "#! perl-000\n\nour $VERSION = '4.56';\n\n__DATA__\npackage less::sense;"
     },{
         "file": "sense.pod",
-        "content": "\n\n=head1 NAME\n\nuncommon::sense - I'm special"
+        "content": "\n\n=head1 NAME\n\nless::sense - I'm special"
     }]
   }
 }
