@@ -3,6 +3,10 @@ use Moose;
 BEGIN { extends 'MetaCPAN::Server::Controller' }
 with 'MetaCPAN::Server::Role::JSONP';
 
+use Encode ();
+use Try::Tiny;
+use namespace::autoclean;
+
 # TODO: __PACKAGE__->config(relationships => ?)
 
 has '+type' => ( default => 'file' );
@@ -61,7 +65,20 @@ sub get : Chained('index') : PathPart('') : Args(2) {
 
     my $source = $c->model('Source')->path( @$file{qw(author release path)} )
         or $c->detach('/not_found', []);
-    $file->{content} = eval { local $/; $source->openr->getline };
+
+    $file->{content} = try {
+        local $/;
+        my $content = $source->openr->getline;
+
+        # Assume files are in UTF-8 (if not, do nothing)
+        # (see comments in metacpan-web/lib/MetaCPAN/Web/Model/API.pm).
+        try {
+            $content = Encode::decode('UTF-8', $content,
+                Encode::FB_CROAK | Encode::LEAVE_SRC);
+        };
+
+        $content;
+    };
 
     $file = $self->apply_request_filter($c, $file);
 
