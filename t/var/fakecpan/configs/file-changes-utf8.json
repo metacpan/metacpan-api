@@ -1,0 +1,12 @@
+{
+  "name": "File-Changes-UTF8",
+  "abstract": "A dist with a UTF-8 Changes file",
+  "version": "1.0",
+  "X_Module_Faker": {
+    "cpan_author": "RWSTAUNER",
+    "append": [ {
+        "file": "Changes",
+        "content": "1.0 2013-07-03T20:28:20Z\n  - 23E7 \u23e7 ELECTRICAL INTERSECTION\n"
+    } ]
+  }
+}

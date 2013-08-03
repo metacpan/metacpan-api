@@ -22,6 +22,8 @@ my @tests = (
     # 'perl' doesn't get flagged as latest.
     [ '/changes/RWSTAUNER/perl-1'       => 200,
         'perldelta.pod' => qr/^=head1 NAME\n\nperldelta - changes for perl\n\n/m, ],
+    [ '/changes/File-Changes-UTF8'       => 200,
+        'Changes' => qr/^  - 23E7 \x{23E7} ELECTRICAL INTERSECTION/m, ],
 );
 
 test_psgi app, sub {
