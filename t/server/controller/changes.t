@@ -24,6 +24,8 @@ my @tests = (
         'perldelta.pod' => qr/^=head1 NAME\n\nperldelta - changes for perl\n\n/m, ],
     [ '/changes/File-Changes-UTF8'       => 200,
         'Changes' => qr/^  - 23E7 \x{23E7} ELECTRICAL INTERSECTION/m, ],
+    [ '/changes/File-Changes-Latin1'     => 200,
+        'Changes' => qr/^  - \244 CURRENCY SIGN/m, ],
 );
 
 test_psgi app, sub {
