@@ -119,7 +119,7 @@ END
     is( $file->abstract,
 'An object containing information about how to get access to teh Moby databases, resources, etc. from the mobycentral.config file'
     );
-    is( $file->module->[0]->hide_from_pause(${$file->content}), 0, 'indexed' );
+    is( $file->module->[0]->hide_from_pause(${$file->content}, $file->name), 0, 'indexed' );
     is( $file->documentation, 'MOBY::Config.pm' );
     is( $file->level, 2);
 }

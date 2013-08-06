@@ -46,7 +46,7 @@ from the index.
 
 =head1 METHODS
 
-=head2 hide_from_pause( $content )
+=head2 hide_from_pause( $content, $file_name )
 
 Using this pragma, you can hide a module from the CPAN indexer:
 
