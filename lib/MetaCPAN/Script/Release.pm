@@ -345,14 +345,16 @@ sub import_tarball {
                         $info = Module::Metadata->new_from_file(
                             $file->local_path );
                     }
-                    $file->add_module(
-                        {   name => $_,
-                            defined $info->version( $_ )
-                            ? ( version => $info->version( $_ )->stringify )
-                            : ()
-                        }
-                        )
-                        for ( grep { $_ ne 'main' } $info->packages_inside );
+                    for my $pkg ( grep { $_ ne 'main' } $info->packages_inside ){
+                        my $version = $info->version( $pkg );
+                        $file->add_module({
+                            name => $pkg,
+                            defined $version
+                                # Stringify if it's an object (and don't die if it's not).
+                                ? ( version => $version . '' )
+                                : ()
+                        });
+                    }
                     push( @modules, $file );
                     alarm( 0 );
                 };
