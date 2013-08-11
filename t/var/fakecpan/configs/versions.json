@@ -1,0 +1,21 @@
+{
+  "name": "Versions",
+  "abstract": "Modules with different ways to specify versions",
+  "version": "1.01",
+  "X_Module_Faker": {
+    "cpan_author": "RWSTAUNER",
+    "append": [ {
+      "file": "lib/Versions/PkgVar.pm",
+      "content": "package Versions::PkgVar;\n{ $Versions::PkgVar::VERSION = 1.23; }\n1;"
+    },{
+      "file": "lib/Versions/Our.pm",
+      "content": "package Versions::Our;\nour $VERSION = 1.45;\n1;"
+    },{
+      "file": "lib/Versions/PkgNameVersion.pm",
+      "content": "package Versions::PkgNameVersion 1.67;\n1;"
+    },{
+      "file": "lib/Versions/PkgNameVersionBlock.pm",
+      "content": "package Versions::PkgNameVersionBlock 1.89 {\nuse 5;\n}\n1;"
+    }]
+  }
+}
