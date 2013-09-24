@@ -1,7 +1,7 @@
 use lib 't/lib';
 use Test::More 0.96 (); # require version for subtests but let Test::Most do the ->import()
 use Test::Most;
-use Test::Aggregate::Nested 0.366 (); # bug fix for exception handling
+use Test::Aggregate::Nested 0.371 (); # don't warn about Parse::PMFile's exit()
 use strict;
 use warnings;
 use CPAN::Faker;
