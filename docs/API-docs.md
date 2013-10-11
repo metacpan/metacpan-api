@@ -1,6 +1,8 @@
 # API Docs: v0
 
-There is now [a repository of examples](https://github.com/CPAN-API/metacpan-examples) you can play with to get up and running in a hurry.  Rather than editing this wiki page, please send pull requests for the metacpan-examples repository.  If you'd rather edit the wiki, please do, but sending the code pull requests is probably the most helpful way to approach this.
+For an introduction to the MetaCPAN API which requires no previous knowledge of MetaCPAN or ElasticSearch, see [the slides for "Abusing MetaCPAN for Fun and Profit"](http://www.slideshare.net/oalders/abusing-metacpan2013) or [watch the actual talk](http://www.youtube.com/watch?v=J8ymBuFlHQg).
+
+There is also [a repository of examples](https://github.com/CPAN-API/metacpan-examples) you can play with to get up and running in a hurry.  Rather than editing this wiki page, please send pull requests for the metacpan-examples repository.  If you'd rather edit the wiki, please do, but sending the code pull requests is probably the most helpful way to approach this.
 
 _All of these URLs can be tested using [TOKUHIROM](https://metacpan.org/author/TOKUHIROM)'s excellent [MetaCPAN Explorer](http://explorer.metacpan.org)_
 
