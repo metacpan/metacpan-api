@@ -15,7 +15,7 @@ has packages => ( is => 'ro', lazy_build => 1, traits => ['NoGetopt'], );
 
 sub _build_packages {
     return Parse::CPAN::Packages::Fast->new(
-        shift->cpan->file(qw(modules 02packages.details.txt.gz)) );
+        shift->cpan->file(qw(modules 02packages.details.txt.gz))->stringify );
 }
 
 sub run {
