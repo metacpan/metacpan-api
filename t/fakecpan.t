@@ -40,6 +40,7 @@ EOF
     BAIL_OUT("Test environment not set up properly");
 };
 
+Test::More::note(Test::More::explain({'ElasticSearch info' => $es->request}));
 
 # NOTE: Don't load MetaCPAN::Server::Test before doing this mapping
 
