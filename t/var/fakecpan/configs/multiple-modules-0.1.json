@@ -4,6 +4,7 @@
   "version": "0.1",
   "X_Module_Faker": {
     "cpan_author": "LOCAL",
+    "mtime": 1380808871,
     "append": [ {
         "file": "lib/Multiple/Modules.pm",
         "content": "package Multiple::Modules;\n\n=head1 NAME\n\nMultiple::Modules - abstract"
