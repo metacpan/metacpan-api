@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/CPAN-API/cpan-api.png?branch=master)](https://travis-ci.org/CPAN-API/cpan-api)
+[![Coverage Status](https://coveralls.io/repos/CPAN-API/cpan-api/badge.png)](https://coveralls.io/r/CPAN-API/cpan-api)
 
 A Web Service for the CPAN
 ==========================

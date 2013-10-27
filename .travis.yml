@@ -18,6 +18,12 @@ env:
   # but travis will have it running on the standard port.
   - METACPAN_ES_TEST_PORT=9200
 
+before_install:
+  - cpanm -n --mirror http://cpan.mirrors.travis-ci.org Devel::Cover::Report::Coveralls
+
+script:
+  - perl Makefile.PL && cover -test -report coveralls
+
 before_script:
   - "perl -i -pe 's/(servers :)9900/$1$ENV{METACPAN_ES_TEST_PORT}/' metacpan_server_testing.conf"
 
