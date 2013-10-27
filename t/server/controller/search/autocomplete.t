@@ -11,8 +11,10 @@ test_psgi app, sub {
     ok( my $res = $cb->( GET '/search/autocomplete?q=Multiple::Modu' ), 'GET' );
     ok( my $json = eval { decode_json( $res->content ) }, 'valid json' );
 
+    my $got = [ map { $_->{fields}{documentation} } @{ $json->{hits}{hits} } ];
+
     is_deeply
-      [ map { $_->{fields}{documentation} } @{ $json->{hits}{hits} } ],
+      $got,
       [qw(
         Multiple::Modules
         Multiple::Modules::A
@@ -23,7 +25,7 @@ test_psgi app, sub {
         Multiple::Modules::RDeps::Deprecated
       )],
       'results are sorted by module name length'
-        or diag(Test::More::explain($json));
+        or diag(Test::More::explain($got));
   }
 };
 
