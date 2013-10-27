@@ -66,10 +66,14 @@ is_deeply(
 
         foreach my $expmod ( @$expmods ){
             my $mod = shift @{ $file->module };
+            if( !$mod ){
+                ok(0, "module not found when expecting: $expmod->{name}");
+                next;
+            }
             is( $mod->name,    $expmod->{name},    'module name ok' );
             is( $mod->indexed, $expmod->{indexed}, 'module indexed (or not)' );
         }
-            
+
         is( scalar @{ $file->module }, 0, 'all mods tested' );
     }
 }
@@ -79,6 +83,7 @@ $release = $idx->type('release')->get(
         name   => 'Multiple-Modules-0.1'
     }
 );
+ok $release, 'got older version of release';
 ok $release->first, 'this version was first';
 
 ok(my $file = $idx->type('file')->filter(
@@ -90,10 +95,13 @@ ok(my $file = $idx->type('file')->filter(
 )->first, 'get Moose.pm');
 
 ok( my ($moose) = ( grep { $_->name eq 'Moose' } @{ $file->module } ),
-    'grep Moose module' );
+    'find Moose module in old release' )
+    or diag(Test::More::explain({file_module => $file->module}));
 
+$moose and
 ok( !$moose->authorized, 'Moose is not authorized' );
 
+$release and
 ok( !$release->authorized, 'release is not authorized' );
 
 done_testing;
