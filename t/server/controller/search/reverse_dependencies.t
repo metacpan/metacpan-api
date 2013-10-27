@@ -32,11 +32,12 @@ my %tests = (
 sub check_search_results {
     my ($name, $res, $code, $rdeps) = @_;
     ok( $res, $name );
-    is( $res->code, $code, "code $code" );
     is( $res->header('content-type'),
         'application/json; charset=utf-8',
         'Content-type'
     );
+    is( $res->code, $code, "code $code" )
+        or return;
     ok( my $json = eval { decode_json( $res->content ) }, 'valid json' );
     return unless $code == 200;
 
