@@ -19,7 +19,7 @@ env:
   - METACPAN_ES_TEST_PORT=9200
 
 before_install:
-  - cpanm -n --mirror http://cpan.mirrors.travis-ci.org Devel::Cover::Report::Coveralls
+  - cpanm -n Devel::Cover::Report::Coveralls
 
 script:
   - perl Makefile.PL && cover -test -report coveralls
