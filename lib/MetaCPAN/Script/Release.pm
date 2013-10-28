@@ -15,7 +15,7 @@ use CPAN::Meta         ();
 use DateTime           ();
 use List::Util         ();
 use List::MoreUtils    ();
-use Module::Metadata   ();
+use Module::Metadata 1.000012 (); # Improved package detection.
 use CPAN::DistnameInfo ();
 use File::Find         ();
 use File::stat         ();
