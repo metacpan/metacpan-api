@@ -2,6 +2,8 @@
   "name": "Multiple-Modules",
   "abstract": "A dist that provides multiple modules",
   "version": "0.1",
+  "x_provides_comment": "Empty provides: so that Module::Faker won't generate it and we can parse our own.",
+  "provides": {},
   "X_Module_Faker": {
     "cpan_author": "LOCAL",
     "mtime": 1380808871,
