@@ -209,7 +209,6 @@ sub import_tarball {
     log_debug { "Found ", scalar @dependencies, " dependencies" };
 
     my $release = DlogS_trace {"adding release $_"} +{
-        %{ $meta->as_struct },
         abstract     => MetaCPAN::Util::strip_pod( $meta->abstract ),
         name         => $name,
         author       => $author,
@@ -221,6 +220,9 @@ sub import_tarball {
         date         => $date,
         dependency   => \@dependencies,
         metadata     => $meta,
+        provides     => [],
+        (map { ($_ => $meta->$_) }
+            qw( license version resources )),
     };
 
     delete $release->{abstract}
@@ -256,6 +258,7 @@ sub import_tarball {
                 ? $fname =~ s/^(.*\/)?(.+?)\/?$/$2/
                 : $fname =~ s/.*\///;
             $fpath = "" if $relative !~ /\// && !$at->is_impolite;
+
             my $file = $file_set->new_document(
                 Dlog_trace {"adding file $_"} +{
                     metadata     => $meta,
@@ -297,6 +300,7 @@ sub import_tarball {
     if ( my %provides = %{ $meta->provides } ) {
         while ( my ( $module, $data ) = each %provides ) {
             my $path = $data->{file};
+            # FIXME: Could this match lib/Foo.pm and eg/lib/Foo.pm?
             my $file = List::Util::first { $_->path =~ /\Q$path\E$/ } @files;
             next unless $file;
             $file->add_module(
@@ -316,6 +320,8 @@ sub import_tarball {
             if ( $file->name =~ m{\.PL\z} ) {
 
                 my $parser = Parse::PMFile->new( $meta->as_struct );
+                # FIXME: Should there be a timeout on this
+                # (like there is below for Module::Metadata)?
                 my $info   = $parser->parse( $file->local_path );
                 next if !$info;
 
