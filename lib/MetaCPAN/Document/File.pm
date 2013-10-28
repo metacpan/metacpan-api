@@ -920,6 +920,8 @@ sub autocomplete {
                 { field => { 'documentation.camelcase' => "$_*" } }
             } grep {$_} @query
     ];
+    # TODO: custom_score is deprecated in 0.90.4 in favor of function_score.
+    # As of 2013-10-27 we are still using 0.20.2 in production.
     return $self->query({
         custom_score => {
             query => { bool => { should => $should } },
@@ -933,7 +935,7 @@ sub autocomplete {
             { term   => { 'file.authorized' => \1 } },
             { term => { 'file.status'  => 'latest' } },
         ]
-    });
+    })->sort(['_score', 'documentation']);
 }
 
 __PACKAGE__->meta->make_immutable;
