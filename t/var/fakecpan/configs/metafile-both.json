@@ -4,6 +4,7 @@
   "version": 1.1,
   "X_Module_Faker": {
     "cpan_author": "LOCAL",
+    "omitted_files": ["META.json"],
     "append": [ {
         "file": "lib/MetaFile/Both.pm",
         "content": "package MetaFile::Both;\n\n=head1 NAME\n\nMetaFile::Both - abstract"

@@ -4,7 +4,7 @@
   "version": 1.1,
   "X_Module_Faker": {
     "cpan_author": "LOCAL",
-    "omitted_files": [ "META.yml" ],
+    "omitted_files": [ "META.json", "META.yml" ],
     "append": [ {
         "file": "lib/MetaFile/JSON.pm",
         "content": "package MetaFile::JSON;\n\n=head1 NAME\n\nMetaFile::JSON - abstract"

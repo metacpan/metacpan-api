@@ -4,6 +4,7 @@
   "X_Module_Faker": {
     "cpan_author": "LOCAL",
     "mtime": 1381808871,
+    "omitted_files": ["META.json"],
     "append": [ {
         "file": "lib/Multiple/Modules.pm",
         "content": "package Multiple::Modules;\n\n=head1 NAME\n\nMultiple::Modules - abstract"

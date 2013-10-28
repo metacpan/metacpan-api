@@ -3,6 +3,7 @@
   "abstract": ".pm file with hidden package declaration and name section",
   "X_Module_Faker": {
     "cpan_author": "MO",
+    "omitted_files": ["META.json", "META.yml"],
     "append": [ {
         "file": "lib/Documentation/Hide.pm",
         "content": "\npackage\nDocumentation::Hide::Internal;\n\n=head1 NAME\n\nDocumentation::Hide::Internal - abstract\n"

@@ -4,6 +4,7 @@
   "version"  => "1.1",
   "X_Module_Faker" => {
     "cpan_author" => "RWSTAUNER",
+    "omitted_files" => ["META.json", "META.yml"],
     "append" => [
       {
         "file"     => "lib/Encoding/UTF8.pm",

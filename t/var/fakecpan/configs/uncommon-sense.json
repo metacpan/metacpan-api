@@ -5,6 +5,7 @@
   "x_comment": "Module::Faker will create a lib/*.pm file to match the dist name (uncommon::sense) so we'll use a different package to test `.pm.PL`.",
   "X_Module_Faker": {
     "cpan_author": "MO",
+    "omitted_files": ["META.json", "META.yml"],
     "append": [ {
         "file": "sense.pm.PL",
         "content": "#! perl-000\n\nour $VERSION = '4.56';\n\n__DATA__\npackage less::sense;"

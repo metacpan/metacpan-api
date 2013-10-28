@@ -3,6 +3,7 @@
   "abstract": "Distribution with malformed POD",
   "X_Module_Faker": {
     "cpan_author": "MO",
+    "omitted_files": ["META.json", "META.yml"],
     "append": [ {
         "file": "lib/BadPod.pm",
         "content": "\n\n=head1 NAME\n\nBadPod - Malformed POD\n\n=head SYNOPSIS\n\nThere is no C<more."
