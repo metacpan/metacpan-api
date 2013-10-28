@@ -1,0 +1,27 @@
+{
+  "name": "Meta-Provides",
+  "version": 1.01,
+  "X_Module_Faker": {
+    "cpan_author": "RWSTAUNER",
+    "append": [ {
+        "file": "lib/Meta/Provides.pm",
+        "content": "package Meta::Provides;\n\n=head1 NAME\n\nMeta::Provides - has provides key in meta"
+    },
+    {
+        "file": "lib/Meta/Provides/NotSpecified.pm",
+        "content": "package Meta::Provides::NotSpecified;\n\n=head1 NAME\n\nMeta::Provides::NotSpecified - not specified in provides section"
+    },
+    {
+        "file": "t/foo.t",
+        "content": "use Test::More;"
+    } ]
+  },
+  "generated_by": "hand",
+  "abstract": "",
+  "provides": {
+    "Meta::Provides": {
+      "file": "lib/Meta/Provides.pm",
+      "version": "0.321"
+    }
+  }
+}
