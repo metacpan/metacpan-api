@@ -4,8 +4,8 @@ use Test::Most;
 use Test::Aggregate::Nested 0.371 (); # don't warn about Parse::PMFile's exit()
 use strict;
 use warnings;
-use CPAN::Faker;
-use Module::Faker 0.010 (); # encoding fix for newer perls
+use CPAN::Faker 0.010;
+use Module::Faker 0.015 (); # Generates META.json.
 use ElasticSearch::TestServer;
 use MetaCPAN::Script::Runner;
 use MetaCPAN::Script::Mapping;
