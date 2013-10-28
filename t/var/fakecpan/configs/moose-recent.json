@@ -4,6 +4,7 @@
   "version": 0.02,
   "X_Module_Faker": {
     "cpan_author": "DOY",
+    "mtime": 1382574137,
     "append": [ {
         "file": "lib/Moose.pm",
         "content": "\n\n=head1 NAME\n\nMoose - abstract"
