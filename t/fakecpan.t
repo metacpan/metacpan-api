@@ -56,8 +56,12 @@ $config->{es} = $es;
     wait_for_es();
 }
 
-if (-e dir($config->{cpan})->absolute) {
-	ok(dir($config->{cpan})->rmtree, 'remove old fakepan');
+foreach my $test_dir ( $config->{cpan}, $config->{source_base} ) {
+    next unless $test_dir;
+    my $dir = dir($test_dir);
+    if (-e $dir->absolute) {
+        ok($dir->rmtree, "remove old test dir: $dir");
+    }
 }
 
 my $mod_faker = 'Module::Faker::Dist::WithPerl';
