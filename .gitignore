@@ -19,3 +19,6 @@ metacpan_server_local.conf
 # tidyall
 .tidyall.d
 perltidy.LOG
+
+# coverage
+cover_db/
