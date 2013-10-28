@@ -10,16 +10,27 @@ use MetaCPAN::Util   ();
 use Archive::Any     ();
 
 has cpan => ( is => 'ro', isa => Dir, coerce => 1, required => 1 );
+has base_dir => (
+    is         => 'ro',
+    isa        => Dir,
+    coerce     => 1,
+    required   => 1,
+);
 
 sub COMPONENT {
     my $self = shift;
     my ( $app, $config ) = @_;
-    $config = $self->merge_config_hashes( { cpan => $app->config->{cpan} },
-        $config );
+    $config = $self->merge_config_hashes(
+        {
+            cpan     => $app->config->{cpan},
+            base_dir => $app->config->{source_base} || $self->_default_base_dir,
+        },
+        $config
+    );
     return $self->SUPER::COMPONENT( $app, $config );
 }
 
-sub base_dir {
+sub _default_base_dir {
     return dir(qw(var tmp source));
 }
 

@@ -4,9 +4,10 @@ use Test::More;
 use Path::Class qw(file);
 use MetaCPAN::Server::Test;
 
-my $fh = file('var/tmp/source/DOY/Moose-0.02/Moose-0.02/binary.bin')->openw;
-print $fh "\x00" x 10;
-$fh->close;
+file(
+    MetaCPAN::Server->model('Source')->base_dir,
+    'DOY/Moose-0.02/Moose-0.02/binary.bin'
+)->openw->print("\x00" x 10);
 
 my %tests = (
 
