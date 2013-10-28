@@ -27,8 +27,15 @@ test_psgi app, sub {
             );
         }
         elsif ( $k =~ /MANIFEST/ ) {
-            my $manifest = "MANIFEST\nlib/Moose.pm\nMakefile.PL\n"
-                         . "META.yml\nt/00-nop.t";
+            # No EOL.
+            my $manifest = join("\n", qw(
+                MANIFEST
+                lib/Moose.pm
+                Makefile.PL
+                t/00-nop.t
+                META.json
+                META.yml
+            ));
             if( $k =~ /callback=foo/ ) {
                 ok( my( $function_args ) = $res->content =~ /^foo\((.*)\)/s, 'JSONP wrapper');
                 ok( my $jsdata = JSON->new->allow_nonref->decode( $function_args ), 'decode json' );
