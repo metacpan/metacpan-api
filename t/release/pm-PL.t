@@ -9,7 +9,7 @@ my $idx   = $model->index( 'cpan' );
 
 # Module::Faker will generate a regular pm for the main module.
 is( $idx->type( 'file' )->find( 'uncommon::sense' )->path,
-    'lib/uncommon/sense.pm' );
+    'lib/uncommon/sense.pm', 'find main module' );
 
 # This should be the .pm.PL file we specified.
 ok( my $pm = $idx->type( 'file' )->find( 'less::sense' ),
