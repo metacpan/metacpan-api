@@ -25,7 +25,9 @@ is( $pm->module->[0]->associated_pod,
 # Ensure that $VERSION really came from file and not dist.
 is( $pm->module->[0]->version, '4.56',
     'pm.PL module version is (correctly) different than main dist'
-);
+)
+    # TRAVIS 5.16
+    or diag(Test::More::explain($pm->meta->get_data($pm)));
 
 {
     # Verify all the files we expect to be contained in the release.
