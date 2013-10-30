@@ -83,15 +83,15 @@ sub hide_from_pause {
     my ( $self, $content, $file_name ) = @_;
     return 0 if defined($file_name) && $file_name =~ m{\.pm\.PL\z};
     my $pkg = $self->name;
+    # This regexp is *almost* the same as $PKG_REGEXP in Module::Metadata.
     return $content =~ /    # match a package declaration
       ^[\h\{;]*             # intro chars on a line
       package               # the word 'package'
       \h+                   # whitespace
       ($pkg)                # a package name
-      \h*                   # optional whitespace
-      (.+)?                 # optional version number
+      (\h+ v?[0-9._]+)?     # optional version number (preceded by whitespace)
       \h*                   # optional whitesapce
-      ;                     # semicolon line terminator
+      [;\{]                 # semicolon line terminator or block start
     /mx ? 0 : 1;
 }
 
