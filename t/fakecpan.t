@@ -85,6 +85,10 @@ ok($cpan->make_cpan, 'make fake cpan');
     close $fh;
 }
 
+# Help debug inconsistent parsing failures.
+require Parse::PMFile;
+local $Parse::PMFile::VERBOSE = $ENV{TEST_VERBOSE} ? 1 : 0;
+
 local @ARGV = ('release', $config->{cpan}, '--children', 0);
 ok(
     MetaCPAN::Script::Release->new_with_options($config)->run,
