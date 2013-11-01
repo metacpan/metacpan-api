@@ -4,6 +4,11 @@ use warnings;
 
 use MetaCPAN::Server::Test;
 
+# Work around an issue with JSON::XS v3 and the subsequent JSON.pm release.
+# (Test::More::is_deeply says: 1 != '1'.)
+use JSON;
+my $true = JSON::decode_json('{"bool": true}')->{bool};
+
 my $model   = model();
 my $idx     = $model->index('cpan');
 my $release = $idx->type('release')->get(
@@ -39,11 +44,11 @@ is( $release->version, '0.01', 'version ok' );
                 } @files
         ],
         [   {   documentation => 'catalyst',
-                indexed       => 1,
+                indexed       => $true,
                 mime          => 'text/x-script.perl'
             },
             {   documentation => 'starman',
-                indexed       => 1,
+                indexed       => $true,
                 mime          => 'text/x-script.perl'
             }
         ],
