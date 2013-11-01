@@ -4,10 +4,11 @@ use warnings;
 
 use MetaCPAN::Server::Test;
 
-# Work around an issue with JSON::XS v3 and the subsequent JSON.pm release.
-# (Test::More::is_deeply says: 1 != '1'.)
-use JSON;
+# Work around an issue with JSON::XS 3.0 and the accompanying JSON 2.9 release.
+# (Test::More::is_deeply with stringiying objects says 1 != '1'.)
 my $true = JSON::decode_json('{"bool": true}')->{bool};
+# This is stupid, but it works; JSON 2.61 overloaded eq, 2.9 stopped.
+$true = '1' if $true eq 'true';
 
 my $model   = model();
 my $idx     = $model->index('cpan');
