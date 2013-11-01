@@ -136,7 +136,7 @@ subtest 'Nested tests' => sub {
             t/script
             t/server
         )],
-        verbose => 2,
+        verbose => ($ENV{TEST_VERBOSE} ? 2 : 0),
     } );
 
     $tests->run;
