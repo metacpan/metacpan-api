@@ -162,6 +162,7 @@ my %WriteMakefileArgs = (
     "Pod::Text" => 0,
     "Regexp::Common" => 0,
     "Regexp::Common::time" => 0,
+    "Safe" => "2.35", # bug fixes (used by Parse::PMFile)
     "Starman" => 0,
     "Test::More" => 0,
     "Time::Local" => 0,
