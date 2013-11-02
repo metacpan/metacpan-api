@@ -6,6 +6,12 @@ perl:
   - "5.12"
   - "5.10"
 
+matrix:
+  allow_failures:
+    # As of 2013-11-02 there are a lot of dependencies
+    # that still fail their own test suites on 5.18.
+    - perl: "5.18"
+
 notifications:
   email:
     recipients:
