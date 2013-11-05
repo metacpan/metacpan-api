@@ -142,6 +142,10 @@ First 100 distributions which SZABGAB has given a ++:
 
 [[ http://api.metacpan.org/v0/favorite/_search?q=user:sWuxlxYeQBKoCQe1f-FQ_Q&size=100&fields=distribution]]
 
+The 100 most recent releases ( similar to https://metacpan.org/recent )
+
+[[ http://api.metacpan.org/v0/release/_search?q=status:latest&fields=name,status,date&sort=date:desc&size=100]]
+
 Number of ++'es that DOY's dists have received:
 
 [[http://api.metacpan.org/v0/favorite/_search?q=author:DOY&size=0]]
