@@ -33,7 +33,7 @@ my %WriteMakefileArgs = (
 
   # runtime dependencies
   PREREQ_PM => {
-    "Archive::Any" => 0,
+    "Archive::Any" => 0.0941,
     "Archive::Any::Plugin" => 0,
     "Archive::Tar" => 0,
     "CHI" => 0,
