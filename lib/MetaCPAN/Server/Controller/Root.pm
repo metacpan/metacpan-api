@@ -57,6 +57,17 @@ sub end : ActionClass('RenderView') {
         $c->res->content_type('text/javascript')
             if ( $c->req->params->{callback} );
     }
+
+    unless(
+        # Already have something set for fastly
+        $c->res->header('Surrogate-Control') ||
+        # We'll use Last-Modified for now
+        $c->res->header('Last-Modified')
+        ) {
+            # Make sure fastly doesn't cache anything by accident
+            $c->res->header('Surrogate-Control' => 0);
+    }
+
 }
 
 1;
