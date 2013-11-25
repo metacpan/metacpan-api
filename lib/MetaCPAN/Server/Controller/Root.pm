@@ -60,9 +60,7 @@ sub end : ActionClass('RenderView') {
 
     unless(
         # Already have something set for fastly
-        $c->res->header('Surrogate-Control') ||
-        # We'll use Last-Modified for now
-        $c->res->header('Last-Modified')
+        $c->res->header('Surrogate-Control')
         ) {
             # Make sure fastly doesn't cache anything by accident
             $c->res->header('Surrogate-Control' => 0);
