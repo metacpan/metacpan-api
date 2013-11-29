@@ -43,23 +43,20 @@ sub _build_abstract {
     my ( $documentation, $abstract );
     my $section = MetaCPAN::Util::extract_section( $text, 'NAME' );
     return undef unless ($section);
-    $section =~ s/^=\w+.*$//mg;
-    $section =~ s/X<.*?>//mg;
-    if ( $section =~ /^\s*(\S+)((\h+-+\h+(.+))|(\r?\n\h*\r?\n\h*(.+)))?/ms ) {
+    $section =~ s/^=(?!encoding\b)\w+.*$//mg;   # strip non-encoding commands
+    $section =~ s/^\h+//mg;
+    $section = MetaCPAN::Util::strip_pod( $section );
+    if ( $section =~ /^\s*(\S+)((\h+[\x{2013}\x{2014}-]+\h+(.+))|(\s+(.+)))?/ms ) {
         chomp( $abstract = $4 || $6 ) if ( $4 || $6 );
-        my $name = MetaCPAN::Util::strip_pod($1);
+        my $name = $1;
         $documentation = $name if ( $name =~ /^[\w\.:\-_']+$/ );
     }
     if ($abstract) {
-        $abstract =~ s/^=\w+.*$//xms;
-        $abstract =~ s{\r?\n\h*\r?\n\h*.*$}{}xms;
-        $abstract =~ s{\n}{ }gxms;
-        $abstract =~ s{\s+$}{}gxms;
-        $abstract =~ s{(\s)+}{$1}gxms;
-        $abstract = MetaCPAN::Util::strip_pod($abstract);
+        $abstract =~ s{\n.*$}{}xms;
+        $abstract =~ s{\n}{}gxms;
     }
     if ($documentation) {
-        $self->documentation( MetaCPAN::Util::strip_pod($documentation) );
+        $self->documentation( $documentation );
     }
     return $abstract;
 }
@@ -129,13 +126,8 @@ sub _build_description {
     my $section = MetaCPAN::Util::extract_section( ${ $self->content },
         'DESCRIPTION' );
     return undef unless ($section);
-    my $parser = Pod::Text->new;
-    my $text   = "";
-    $parser->output_string( \$text );
-    $parser->parse_string_document("=pod\n\n$section");
+    my $text = MetaCPAN::Util::strip_pod( $section );
     $text =~ s/\s+/ /g;
-    $text =~ s/^\s+//;
-    $text =~ s/\s+$//;
     return $text;
 }
 

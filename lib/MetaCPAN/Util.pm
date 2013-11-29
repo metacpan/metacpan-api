@@ -5,7 +5,7 @@ use warnings;
 use Digest::SHA1;
 use version;
 use Try::Tiny;
-use Encode;
+use Pod::Simple::Text 3.23;
 
 sub digest {
     my $digest = Digest::SHA1::sha1_base64(join("\0", grep { defined } @_));
@@ -43,24 +43,48 @@ sub author_dir {
 }
 
 
-# TODO: E<escape>
 sub strip_pod {
     my $pod = shift;
-    $pod =~ s/L<([^\/]*?)\/([^\/]*?)>/$2 in $1/g;
-    $pod =~ s/\w<(.*?)(\|.*?)?>/$1/g;
-    return $pod;
+
+    # Was encoding explicitly declared or inferred by POD parser?
+    my $have_encoding = $pod =~ /^=encoding/m;
+
+    my $parser = Pod::Simple::Text->new();
+    my $text   = "";
+    $parser->output_string( \$text );
+    $parser->no_whining( 1 );
+    {
+        local($Text::Wrap::columns) = 10_000;
+        $parser->parse_string_document("=pod\n\n$pod");
+    }
+    if($have_encoding  and  $text =~ /POD ERRORS.*unsupported encoding/s) {
+        $pod =~ s/^=encoding.*$//mg;
+        return strip_pod($pod);
+    }
+
+    # If encoding was not declared, replace "smart-quote" chars with ASCII
+    if(!$have_encoding) {
+        $text =~ tr/\x{91}\x{92}\x{93}\x{94}\x{96}\x{97}/''""\-\-/;
+    }
+
+    $text =~ s/\h+/ /g;
+    $text =~ s/^\s+//mg;
+    $text =~ s/\s+$//mg;
+
+    return $text;
 }
 
 sub extract_section {
     my ( $pod, $section ) = @_;
-    eval { $pod = Encode::decode_utf8($pod, Encode::FB_CROAK) };
+    my $encoding = $pod =~ /^(=encoding.*?\n)/m ? "$1\n" : '';
     return undef
       unless ( $pod =~ /^=head1 $section\b(.*?)(^((\=head1)|(\=cut)))/msi
         || $pod =~ /^=head1 $section\b(.*)/msi );
     my $out = $1;
     $out =~ s/^\s*//g;
     $out =~ s/\s*$//g;
-    return $out;
+    $out =~ s/^=encoding.*$//m;
+    return $encoding . $out;
 }
 
 
@@ -108,3 +132,14 @@ This function will digest the passed parameters to a 32 byte string and makes it
 It consists of the characters A-Z, a-z, 0-9, - and _.
 
 The digest is built using L<Digest::SHA1>.
+
+=head2 strip_pod
+
+Takes a string of POD source code (bytes) and returns a plain text rendering
+(which may include 'wide' characters).  If the source POD declares an encoding,
+it will be honoured where possible.
+
+The returned text will use single newlines as paragraph separators and all
+whitespace will be collapsed.
+
+=cut
