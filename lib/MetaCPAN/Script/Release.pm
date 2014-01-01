@@ -221,8 +221,12 @@ sub import_tarball {
         dependency   => \@dependencies,
         metadata     => $meta,
         provides     => [],
-        (map { ($_ => $meta->$_) }
-            qw( license version resources )),
+        # CPAN::Meta->license *must* be called in list context
+        # (and *may* return multiple strings).
+        license      => [ $meta->license ],
+        # Call in scalar context to make sure we only get one value (building a hash).
+        (map { ($_ => scalar $meta->$_) }
+            qw( version resources )),
     };
 
     delete $release->{abstract}
