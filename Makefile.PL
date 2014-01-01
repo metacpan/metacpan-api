@@ -21,6 +21,8 @@ my %WriteMakefileArgs = (
     "Test::Aggregate::Nested" => "0.371",
     "Test::More" => "0.96",
     "Test::Most" => 0,
+    "Test::Rountine" => "0.012",
+    "Test::Rountine::Util" => "0",
   },
 
   CONFIGURE_REQUIRES => {
