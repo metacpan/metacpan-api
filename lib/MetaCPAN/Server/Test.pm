@@ -20,7 +20,12 @@ our @EXPORT = qw(
 
 BEGIN { $ENV{METACPAN_SERVER_CONFIG_LOCAL_SUFFIX} = 'testing'; }
 
-$FindBin::RealBin .= '/some';
+{
+    no warnings 'once';
+    # XXX: Why do we do this?
+    $FindBin::RealBin .= '/some';
+}
+
 my $app = require MetaCPAN::Server;
 ok( my $user = MetaCPAN::Server->model('User::Account')->put(
         { access_token => [ { client => 'testing', token => 'testing' } ] }

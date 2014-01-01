@@ -14,6 +14,7 @@ test_psgi app, sub {
     for my $test (@tests) {
         my ($k, $v) = @{ $test };
         ok( my $res = $cb->( GET $k), "GET $k" );
+        # TRAVIS 5.18
         is( $res->code, $v, "code $v" );
         is( $res->header('content-type'),
             'application/json; charset=utf-8',
@@ -24,6 +25,7 @@ test_psgi app, sub {
             ok( $json->{hits}->{total}, 'got total count' );
         }
         elsif ( $v eq 200 ) {
+            # TRAVIS 5.18
             ok( $json->{name} eq 'Moose', 'Moose' );
         }
     }

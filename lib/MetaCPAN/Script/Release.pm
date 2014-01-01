@@ -126,6 +126,8 @@ sub run {
     $self->backpan_index if ( $self->detect_backpan );
     $self->perms;
     my @pid;
+
+    # FIXME: What is this supposed to do?  Don't do 'my' in a condition.
     my $cpan = $self->index if ( $self->skip );
     eval { DB::enable_profile() };
     while ( my $file = shift @files ) {
