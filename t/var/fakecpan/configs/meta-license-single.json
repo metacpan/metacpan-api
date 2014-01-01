@@ -1,0 +1,9 @@
+{
+  "name": "Meta-License-Single",
+  "abstract": "A dist with a single license",
+  "version": "1.0",
+  "license": [ "mit" ],
+  "X_Module_Faker": {
+    "cpan_author": "RWSTAUNER"
+  }
+}
