@@ -3,26 +3,26 @@ use strict;
 use warnings;
 
 use MetaCPAN::Server::Test;
+use lib 't/lib';
+use MetaCPAN::TestHelpers;
 
-my $model   = model();
-my $idx     = $model->index('cpan');
-my $release = $idx->type('release')->get({
-    author => 'RWSTAUNER',
-    name   => 'Meta-Provides-1.01'
-});
+test_release(
+    {
+        name       => 'Meta-Provides-1.01',
+        author     => 'RWSTAUNER',
+        abstract   => 'has provides key in meta',
+        authorized => \1,
+        first      => \1,
+        provides   => [
+            'Meta::Provides',
+        ],
+        status     => 'latest',
+        extra_tests => sub {
 
-is( $release->abstract, 'has provides key in meta', 'abstract set from module');
-is( $release->name, 'Meta-Provides-1.01', 'name ok' );
-is( $release->author, 'RWSTAUNER', 'author ok' );
-ok( $release->authorized, 'release is authorized' );
+    my ($self) = @_;
+    my $release = $self->data;
 
-is_deeply
-    [sort @{$release->provides}],
-    [sort qw( Meta::Provides )],
-    'provides matches meta key';
-
-{
-    my @files = $idx->type('file')->filter({
+    my @files = $self->index->type('file')->filter({
         and => [
             { term   => { 'author'  => $release->author } },
             { term   => { 'release' => $release->name } },
@@ -60,7 +60,7 @@ is_deeply
 
         foreach my $expmod ( @$expmods ){
             my $mod = shift @{ $file->module };
-            ok $mod, "module present (expecting $expmod)"
+            ok $mod, "module present (expecting $expmod->{name})"
                 or next;
             is( $mod->name,    $expmod->{name},    'module name ok' );
             is( $mod->indexed, $expmod->{indexed}, 'module indexed (or not)' );
@@ -68,6 +68,9 @@ is_deeply
 
         is( scalar @{ $file->module }, 0, 'all mods tested' );
     }
-}
+
+        },
+    },
+);
 
 done_testing;
