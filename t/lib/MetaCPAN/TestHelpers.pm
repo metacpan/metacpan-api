@@ -1,11 +1,19 @@
+use strict;
+use warnings;
+
 package # no_index
     MetaCPAN::TestHelpers;
+
+use Test::More;
+use Test::Routine::Util;
 
 use base 'Exporter';
 our @EXPORT = qw(
     multiline_diag hex_escape
+    run_tests
+    test_distribution
+    test_release
 );
-use Test::More;
 
 =head1 EXPORTS
 
@@ -35,6 +43,32 @@ sub hex_escape {
     my $s = shift;
     $s =~ s/([^a-zA-Z0-9[:punct:] \t\n])/sprintf("\\x{%x}", ord $1)/ge;
     $s;
+}
+
+sub test_distribution {
+    my ($name, $args, $desc) = @_;
+    run_tests(
+        $desc || "Distribution data for $name",
+        ['MetaCPAN::Tests::Distribution'],
+        { name => $name, %$args }
+    );
+}
+
+sub test_release {
+    my $release = {};
+    # If the first arg is a string, treat it like 'AUTHOR/Release-Name'.
+    if( !ref($_[0]) ){
+        my ($author, $name) = split /\//, shift;
+        $release = { name => $name, author => $author };
+    }
+
+    my ($args, $desc) = @_;
+    $args = { %$release, %$args };
+    run_tests(
+        $desc || "Release data for $args->{author}/$args->{name}",
+        ['MetaCPAN::Tests::Release'],
+        $args,
+    );
 }
 
 1;
