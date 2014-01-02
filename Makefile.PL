@@ -21,7 +21,8 @@ my %WriteMakefileArgs = (
     "Test::Aggregate::Nested" => "0.371",
     "Test::More" => "0.96",
     "Test::Most" => 0,
-    "Test::Rountine" => "0", # cpanm is currently having trouble when a version gets backpanned
+    "Test::Routine" => "0.012",
+    "Test::Routine::Util" => "0",
   },
 
   CONFIGURE_REQUIRES => {
