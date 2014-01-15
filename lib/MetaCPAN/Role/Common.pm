@@ -108,9 +108,10 @@ sub _build_logger {
         my $layout = Log::Log4perl::Layout::PatternLayout->new( $c->{layout}
                 || "%d %p{1} %c: %m{chomp}%n" );
 
-        if( $c->{class} =~ /Appender::File$/ && $c->{filename} ){
+        if ( $c->{class} =~ /Appender::File$/ && $c->{filename} ) {
+
             # Create the log file's parent directory if necessary.
-            Path::Class::File->new($c->{filename})->parent->mkpath;
+            Path::Class::File->new( $c->{filename} )->parent->mkpath;
         }
 
         my $app = Log::Log4perl::Appender->new( $c->{class}, %$c );
