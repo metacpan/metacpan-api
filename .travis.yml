@@ -18,6 +18,7 @@ notifications:
       - olaf@wundersolutions.com
     on_success: always
     on_failure: always
+  irc: "irc.perl.org#metacpan"
 
 env:
   # we use a non-standard port to avoid trashing production
