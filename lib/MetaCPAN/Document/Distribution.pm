@@ -26,7 +26,7 @@ sub set_first_release {
     return unless $release;
     return $release if $release->first;
     $release->first(1);
-    $release->update;
+    $release->put;
     return $release;
 }
 
