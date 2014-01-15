@@ -25,6 +25,13 @@ has github_issues => (
     default  => 'https://api.github.com/repos/%s/%s/issues?per_page=100',
 );
 
+has github_token => (
+    is       => 'ro',
+    required => 0,
+    lazy     => 1,
+    builder  => '_build_github_token',
+);
+
 has source => (
     is       => 'ro',
     required => 1,
@@ -39,12 +46,31 @@ has ua => (
 
 has pithub => (
     is      => 'ro',
-    default => sub { Pithub->new( per_page => 100, auto_pagination => 1 ) },
+    isa     => 'Pithub',
+    lazy    => 1,
+    builder => '_build_pithub',
 );
 
+sub _build_github_token {
+    my $self = shift;
+    exists $self->config->{github_token}
+        ? $self->config->{github_token}
+        : undef;
+}
+
+sub _build_pithub {
+    my $self = shift;
+    return Pithub->new(
+        per_page        => 100,
+        auto_pagination => 1,
+        ( $self->github_token ? ( token => $self->github_token ) : () )
+    );
+}
+
 sub run {
-    my ($self) = @_;
+    my $self = shift;
     my $bugs = {};
+
     foreach my $source ( @{ $self->source } ) {
         if ( $source eq 'github' ) {
             log_debug {"Fetching GitHub issues"};
