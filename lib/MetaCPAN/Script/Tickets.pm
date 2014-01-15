@@ -101,8 +101,9 @@ sub index_bug_summary {
 }
 
 sub retrieve_github_bugs {
-    my $self   = shift;
-    my $scroll = $self->index->type('release')->find_github_based->scroll;
+    my $self = shift;
+    my $scroll
+        = $self->index->type('release')->find_github_based->scroll('5m');
     log_debug { sprintf( "Found %s repos", $scroll->total ) };
     my $summary = {};
     while ( my $release = $scroll->next ) {
