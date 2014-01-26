@@ -20,6 +20,7 @@ notifications:
     on_failure: always
   irc: "irc.perl.org#metacpan-travis"
 
+
 env:
   # we use a non-standard port to avoid trashing production
   # but travis will have it running on the standard port.
@@ -27,12 +28,24 @@ env:
 
 before_install:
   - cpanm -n Devel::Cover::Report::Coveralls
+  - cpanm Carton
 
-script:
-  - perl Makefile.PL && cover -test -report coveralls
+install:
+  - carton install
+
 
 before_script:
   - "perl -i -pe 's/(servers :)9900/$1$ENV{METACPAN_ES_TEST_PORT}/' metacpan_server_testing.conf"
+
+script:
+  # Devel::Cover isn't in the cpanfile
+  # but if it's installed into the global dirs this should work.
+  # NOTE: No '-r' for prove; 't/fakecpan.t' does the recursion for us.
+  - HARNESS_PERL_SWITCHES=-MDevel::Cover carton exec prove -lv t
+
+after_success:
+  - cover -report coveralls
+
 
 services:
   - elasticsearch
