@@ -22,9 +22,11 @@ notifications:
 
 
 env:
-  # we use a non-standard port to avoid trashing production
-  # but travis will have it running on the standard port.
-  - METACPAN_ES_TEST_PORT=9200
+  global:
+    # We use a non-standard port to avoid trashing production
+    # but travis will have it running on the standard port.
+    - METACPAN_ES_TEST_PORT=9200
+
 
 before_install:
   - cpanm -n Devel::Cover::Report::Coveralls
