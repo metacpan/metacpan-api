@@ -39,7 +39,7 @@ Example: C<< id/P/PE/PERLER >>
 
 =head2 gravatar_url
 
-URL to the gravatar user picture. This URL is generated using the first email address supplied to L</email>.
+URL to the gravatar user picture. This URL is generated using PAUSEID@cpan.org.
 
 =head2 profile
 
