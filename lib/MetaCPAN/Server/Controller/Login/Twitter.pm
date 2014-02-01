@@ -29,8 +29,8 @@ sub index : Path {
 
         my ( $access_token, $access_token_secret, $user_id, $screen_name )
             = $nt->request_access_token( verifier => $code );
-        $c->controller('OAuth2')->redirect($c, error => 'token')
-            unless($access_token);
+        $c->controller('OAuth2')->redirect( $c, error => 'token' )
+            unless ($access_token);
         $self->update_user(
             $c,
             twitter => $user_id,
@@ -40,14 +40,15 @@ sub index : Path {
                 access_token_secret => $access_token_secret
             }
         );
-    } elsif($req->params->{denied}) {
-        $c->controller('OAuth2')->redirect($c, error => 'denied');
+    }
+    elsif ( $req->params->{denied} ) {
+        $c->controller('OAuth2')->redirect( $c, error => 'denied' );
     }
     else {
         my $nt  = $self->nt;
         my $url = $nt->get_authorization_url(
             callback => $c->uri_for( $self->action_for('index') ) );
-        my $res  = $c->res;
+        my $res = $c->res;
         $res->redirect($url);
         $res->cookies->{twitter_token}
             = { path => '/', value => $nt->request_token };

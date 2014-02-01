@@ -6,10 +6,9 @@ with 'CatalystX::Component::Traits';
 
 use MetaCPAN::Model;
 
-
 has esx_model => ( is => 'ro', lazy_build => 1, handles => ['es'] );
-has index => ( is => 'ro', default => 'cpan' );
-has servers => ( is => 'ro', default => ':9200' );
+has index     => ( is => 'ro', default    => 'cpan' );
+has servers   => ( is => 'ro', default    => ':9200' );
 
 sub _build_esx_model {
     MetaCPAN::Model->new( es => shift->servers );
@@ -17,7 +16,7 @@ sub _build_esx_model {
 
 sub type {
     my $self = shift;
-    return $self->esx_model->index($self->index)->type(shift);
+    return $self->esx_model->index( $self->index )->type(shift);
 }
 
 sub BUILD {

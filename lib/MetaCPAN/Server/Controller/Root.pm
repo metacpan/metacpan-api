@@ -11,11 +11,11 @@ sub default : Path {
 
 sub not_found : Private {
     my ( $self, $c, @params ) = @_;
-    my $message = join('/', @params);
+    my $message = join( '/', @params );
     $c->clear_stash;
     $c->stash( { code => 404, message => $message || "Not found" } );
     $c->response->status(404);
-    $c->forward($c->view('JSON'));
+    $c->forward( $c->view('JSON') );
 }
 
 sub not_allowed : Private {
@@ -23,15 +23,15 @@ sub not_allowed : Private {
     $c->clear_stash;
     $c->stash( { message => $message || 'Not allowed' } );
     $c->response->status(403);
-    $c->forward($c->view('JSON'));
+    $c->forward( $c->view('JSON') );
 }
 
 sub bad_request : Private {
     my ( $self, $c, $message, $code ) = @_;
     $c->clear_stash;
     $c->stash( { message => $message || 'Bad request' } );
-    $c->response->status($code || 400);
-    $c->forward($c->view('JSON'));
+    $c->response->status( $code || 400 );
+    $c->forward( $c->view('JSON') );
 }
 
 sub robots : Path("robots.txt") {
@@ -58,12 +58,13 @@ sub end : ActionClass('RenderView') {
             if ( $c->req->params->{callback} );
     }
 
-    unless(
+    unless (
         # Already have something set for fastly
         $c->res->header('Surrogate-Control')
-        ) {
-            # Make sure fastly doesn't cache anything by accident
-            $c->res->header('Surrogate-Control' => 'no-store');
+        )
+    {
+        # Make sure fastly doesn't cache anything by accident
+        $c->res->header( 'Surrogate-Control' => 'no-store' );
     }
 
 }

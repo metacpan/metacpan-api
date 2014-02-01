@@ -22,33 +22,34 @@ use Test::Builder::Tester;
 use lib 't/lib';
 use MetaCPAN::TestHelpers;
 
-sub chomped { chomp(my $s = $_[0]); $s }
+sub chomped { chomp( my $s = $_[0] ); $s }
+
 sub expect_output {
     my (%opts) = @_;
 
-    if( $opts{no_capture} ){
+    if ( $opts{no_capture} ) {
         diag("\nTEST OUTPUT {\n");
     }
     else {
-        test_out(chomped($opts{out}));
-        test_err(chomped($opts{err})) if $opts{err};
+        test_out( chomped( $opts{out} ) );
+        test_err( chomped( $opts{err} ) ) if $opts{err};
     }
 
     $opts{tests}->();
 
-    if( $opts{no_capture} ){
+    if ( $opts{no_capture} ) {
         diag("\n} TEST OUTPUT\n");
     }
     else {
         test_test(
-            map  { ($_ => $opts{$_}) }
-            grep { exists($opts{$_}) }
-                qw( title skip_out skip_err )
+            map { ( $_ => $opts{$_} ) }
+            grep { exists( $opts{$_} ) } qw( title skip_out skip_err )
         );
     }
 }
 
-expect_output(out => <<TESTS,
+expect_output(
+    out => <<TESTS,
     # Subtest: test_release helper
     ok 1 - Search successful
         # Subtest: extra_tests
@@ -79,11 +80,10 @@ TESTS
     tests => sub {
         test_release(
             'DOY/Moose-0.02',
-            {
-                abstract => 'A standard perl distribution',
+            {   abstract    => 'A standard perl distribution',
                 extra_tests => sub {
-                    ok(1, 'hooray');
-                    diag('for ' . $_[0]->data->distribution);
+                    ok( 1, 'hooray' );
+                    diag( 'for ' . $_[0]->data->distribution );
                 },
             },
             'test_release helper',
@@ -93,8 +93,8 @@ TESTS
     title => 'test_release',
 );
 
-
-expect_output(out => <<TESTS,
+expect_output(
+    out => <<TESTS,
     # Subtest: Distribution data for uncommon-sense
     ok 1 - Search successful
         # Subtest: extra_tests
@@ -114,22 +114,18 @@ not ok 1 - Distribution data for uncommon-sense
 TESTS
 
     tests => sub {
-        test_distribution(
-            'uncommon-sense',
-            {
-                bugs => {},
-            },
-        );
+        test_distribution( 'uncommon-sense', { bugs => {}, }, );
     },
 
     title => 'test_distribution with failures and default description',
+
     # The STDERR is a mess, and I don't really care;
     # just show me that tests can fail.
     skip_err => 1,
 );
 
-
-expect_output(out => <<TESTS,
+expect_output(
+    out => <<TESTS,
     # Subtest: not found
     not ok 1 - Search successful
     not ok 2 - Search failed; cannot proceed with test: extra_tests
@@ -141,11 +137,10 @@ TESTS
 
     tests => sub {
         test_release(
-            {
-                author => 'STINKYPETE',
-                name   => 'prospectus',
+            {   author      => 'STINKYPETE',
+                name        => 'prospectus',
                 extra_tests => sub {
-                    ok(1, 'hooray');
+                    ok( 1, 'hooray' );
                 },
             },
             'not found',
@@ -153,10 +148,10 @@ TESTS
     },
 
     title => 'fail search, skip remaining tests',
+
     # Again, STDERR is a big mess, just show that the search fails
     # and the rest of the tests don't attempt to run.
     skip_err => 1,
 );
-
 
 done_testing;

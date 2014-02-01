@@ -17,7 +17,7 @@ sub find : Path('') : Args(1) {
     eval {
         my $file = $self->model($c)->raw->find($name);
         $c->stash( $file->{_source} || $file->{fields} );
-    } or $c->detach('/not_found', [$@]);
+    } or $c->detach( '/not_found', [$@] );
 }
 
 sub get : Path('') : Args(2) {

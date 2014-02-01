@@ -83,6 +83,7 @@ sub hide_from_pause {
     my ( $self, $content, $file_name ) = @_;
     return 0 if defined($file_name) && $file_name =~ m{\.pm\.PL\z};
     my $pkg = $self->name;
+
     # This regexp is *almost* the same as $PKG_REGEXP in Module::Metadata.
     return $content =~ /    # match a package declaration
       ^[\h\{;]*             # intro chars on a line
@@ -108,11 +109,13 @@ L</associated_pod> is set to the path of the file, which contains the documentat
 sub set_associated_pod {
     my ( $self, $file, $associated_pod ) = @_;
     return unless ( my $files = $associated_pod->{ $self->name } );
-    my ($pod) =
-      ((grep { $_->name =~ /\.pod$/i } @$files),
-      (grep { $_->name =~ /\.pm$/i } @$files),
-      (grep { $_->name =~ /\.pl$/i } @$files), @$files);
-    $self->associated_pod( $pod );
+    my ($pod) = (
+        ( grep { $_->name =~ /\.pod$/i } @$files ),
+        ( grep { $_->name =~ /\.pm$/i } @$files ),
+        ( grep { $_->name =~ /\.pl$/i } @$files ),
+        @$files
+    );
+    $self->associated_pod($pod);
     return $pod;
 }
 

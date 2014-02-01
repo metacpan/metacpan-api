@@ -13,17 +13,18 @@ sub diff_releases : Chained('index') : PathPart('release') : Args(4) {
     my $path2 = $c->model('Source')->path( $path[2], $path[3] );
 
     my $diff = MetaCPAN::Server::Diff->new(
-        source   => $path1,
-        target   => $path2,
-        git      => $c->config->{git},
+        source => $path1,
+        target => $path2,
+        git    => $c->config->{git},
+
         # use same dir prefix as source and target
         relative => $c->model('Source')->base_dir,
     );
 
     my $ct = eval { $c->req->preferred_content_type };
-    if($ct && $ct eq 'text/plain') {
+    if ( $ct && $ct eq 'text/plain' ) {
         $c->res->content_type('text/plain');
-        $c->res->body($diff->raw);
+        $c->res->body( $diff->raw );
         $c->detach;
     }
 
@@ -59,8 +60,7 @@ sub file : Chained('index') : PathPart('file') : Args(2) {
         or $c->detach('/not_found');
 
     my $diff = MetaCPAN::Server::Diff->new(
-        relative =>
-            $c->model('Source')->base_dir,
+        relative => $c->model('Source')->base_dir,
         source =>
             $c->model('Source')->path( @$source{qw(author release path)} ),
         target =>

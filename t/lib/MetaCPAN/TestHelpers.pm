@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-package # no_index
+package    # no_index
     MetaCPAN::TestHelpers;
 
 use Test::More;
@@ -27,7 +27,7 @@ Passes strings through L</hex_escape>.
 =cut
 
 sub multiline_diag {
-    while( my ($name, $str) = splice(@_, 0, 2) ){
+    while ( my ( $name, $str ) = splice( @_, 0, 2 ) ) {
         $str =~ s/^/ |/mg;
         diag "$name:\n" . hex_escape($str) . "\n";
     }
@@ -46,7 +46,7 @@ sub hex_escape {
 }
 
 sub test_distribution {
-    my ($name, $args, $desc) = @_;
+    my ( $name, $args, $desc ) = @_;
     run_tests(
         $desc || "Distribution data for $name",
         ['MetaCPAN::Tests::Distribution'],
@@ -56,19 +56,17 @@ sub test_distribution {
 
 sub test_release {
     my $release = {};
+
     # If the first arg is a string, treat it like 'AUTHOR/Release-Name'.
-    if( !ref($_[0]) ){
-        my ($author, $name) = split /\//, shift;
+    if ( !ref( $_[0] ) ) {
+        my ( $author, $name ) = split /\//, shift;
         $release = { name => $name, author => $author };
     }
 
-    my ($args, $desc) = @_;
+    my ( $args, $desc ) = @_;
     $args = { %$release, %$args };
-    run_tests(
-        $desc || "Release data for $args->{author}/$args->{name}",
-        ['MetaCPAN::Tests::Release'],
-        $args,
-    );
+    run_tests( $desc || "Release data for $args->{author}/$args->{name}",
+        ['MetaCPAN::Tests::Release'], $args, );
 }
 
 1;

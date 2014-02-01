@@ -45,6 +45,7 @@ sub _build_abstract {
     return undef unless ($section);
     $section =~ s/^=\w+.*$//mg;
     $section =~ s/X<.*?>//mg;
+
     if ( $section =~ /^\s*(\S+)((\h+-+\h+(.+))|(\r?\n\h*\r?\n\h*(.+)))?/ms ) {
         chomp( $abstract = $4 || $6 ) if ( $4 || $6 );
         my $name = MetaCPAN::Util::strip_pod($1);
@@ -592,7 +593,7 @@ sub is_perl_file {
     return 1 if ( $self->mime eq "text/x-script.perl" );
     return 1
         if ( $self->name !~ /\./
-        && !(grep { $self->name eq $_ } @NOT_PERL_FILES)
+        && !( grep { $self->name eq $_ } @NOT_PERL_FILES )
         && !$self->binary
         && $self->stat->{size} < 2**17 );
     return 0;
@@ -756,7 +757,7 @@ sub find {
         @candidates;
 
     $file ||= shift @candidates;
-    return $file ? $self->get($file->id) : undef;
+    return $file ? $self->get( $file->id ) : undef;
 }
 
 sub find_pod {
@@ -816,13 +817,14 @@ sub prefix {
         map {
             { field     => { 'documentation.analyzed'  => "$_*" } },
                 { field => { 'documentation.camelcase' => "$_*" } }
-            } grep {$_} @query
+        } grep {$_} @query
     ];
     return $self->query(
         {   filtered => {
                 query => {
                     custom_score => {
                         query => { bool => { should => $should } },
+
                         #metacpan_script => 'prefer_shorter_module_names_100',
                         script =>
                             "_score - doc['documentation'].value.length()/100"
@@ -866,76 +868,80 @@ Find the history of a given module/documentation.
 =cut
 
 sub history {
-    my ($self, $type, $module, @path) = @_;
-    my $search = $type eq "module" 
-        ? $self->filter({
-            nested => {
-                path => "module",
+    my ( $self, $type, $module, @path ) = @_;
+    my $search
+        = $type eq "module" ? $self->filter(
+        {   nested => {
+                path  => "module",
                 query => {
                     constant_score => {
-                        filter => { and => [
-                            {   term =>
-                                    { "module.authorized" => \1 }
-                            },
-                            {   term => { "module.indexed" => \1 }
-                            },
-                            {   term => { "module.name" => $module }
-                            },
-                        ] }
+                        filter => {
+                            and => [
+                                { term => { "module.authorized" => \1 } },
+                                { term => { "module.indexed"    => \1 } },
+                                { term => { "module.name" => $module } },
+                            ]
+                        }
                     }
                 }
             }
-        })
-        : $type eq "file"
-        ? $self->filter({
-            and => [
-                { term => { "file.path" => join("/", @path) } },
+        }
+        )
+        : $type eq "file" ? $self->filter(
+        {   and => [
+                { term => { "file.path"         => join( "/", @path ) } },
                 { term => { "file.distribution" => $module } },
             ]
-        })
-        : $self->filter({
-            and => [
+        }
+        )
+        : $self->filter(
+        {   and => [
                 { term => { "file.documentation" => $module } },
-                { term => { "file.indexed" => \1 } },
-                { term => { "file.authorized" => \1 } },
+                { term => { "file.indexed"       => \1 } },
+                { term => { "file.authorized"    => \1 } },
             ]
-        });
-    return $search->sort([{ "file.date" => "desc"}]);
+        }
+        );
+    return $search->sort( [ { "file.date" => "desc" } ] );
 }
 
 sub _not_rogue {
-    my @rogue_dists = map { { term => { 'file.distribution' => $_ } } } @ROGUE_DISTRIBUTIONS;
+    my @rogue_dists = map { { term => { 'file.distribution' => $_ } } }
+        @ROGUE_DISTRIBUTIONS;
     return { not => { filter => { or => \@rogue_dists } } };
 }
 
 sub autocomplete {
-    my ($self, @terms) = @_;
-    my $query = join(" ", @terms);
+    my ( $self, @terms ) = @_;
+    my $query = join( " ", @terms );
     return $self unless $query;
     $query =~ s/::/ /g;
-    my @query  = split( /\s+/, $query );
+    my @query = split( /\s+/, $query );
     my $should = [
         map {
             { field     => { 'documentation.analyzed'  => "$_*" } },
                 { field => { 'documentation.camelcase' => "$_*" } }
-            } grep {$_} @query
+        } grep {$_} @query
     ];
+
     # TODO: custom_score is deprecated in 0.90.4 in favor of function_score.
     # As of 2013-10-27 we are still using 0.20.2 in production.
-    return $self->query({
-        custom_score => {
-            query => { bool => { should => $should } },
-            script => "_score - doc['documentation'].value.length()/100",
+    return $self->query(
+        {   custom_score => {
+                query => { bool => { should => $should } },
+                script => "_score - doc['documentation'].value.length()/100",
+            }
         }
-    })->filter({
-        and => [
-            $self->_not_rogue,
-            { exists => { field => 'documentation' } },
-            { term   => { 'file.indexed' => \1 } },
-            { term   => { 'file.authorized' => \1 } },
-            { term => { 'file.status'  => 'latest' } },
-        ]
-    })->sort(['_score', 'documentation']);
+        )->filter(
+        {   and => [
+                $self->_not_rogue,
+                { exists => { field             => 'documentation' } },
+                { term   => { 'file.indexed'    => \1 } },
+                { term   => { 'file.authorized' => \1 } },
+                { term   => { 'file.status'     => 'latest' } },
+            ]
+        }
+        )->sort( [ '_score', 'documentation' ] );
 }
 
 __PACKAGE__->meta->make_immutable;

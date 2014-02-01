@@ -163,7 +163,7 @@ sub reindex {
                     index => $self->index->name,
                     type  => 'file',
                     id    => $row->{_id},
-                    data => { %$source, status => $status }
+                    data  => { %$source, status => $status }
                 }
             }
         ) unless ( $self->dry_run );

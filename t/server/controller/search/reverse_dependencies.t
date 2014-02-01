@@ -10,27 +10,28 @@ my %tests = (
     # just dist name
     '/search/reverse_dependencies/Multiple-Modules' => [
         200,
-        [ qw( Multiple-Modules-RDeps-0.11 ) ],
-        [ qw( Multiple-Modules-RDeps-2.03 Multiple-Modules-RDeps-A-2.03 ) ],
+        [qw( Multiple-Modules-RDeps-0.11 )],
+        [qw( Multiple-Modules-RDeps-2.03 Multiple-Modules-RDeps-A-2.03 )],
     ],
 
     # author/name-version
     '/search/reverse_dependencies/LOCAL/Multiple-Modules-1.01' => [
         200,
-        [ qw( Multiple-Modules-RDeps-0.11 ) ],
-        [ qw( Multiple-Modules-RDeps-2.03 Multiple-Modules-RDeps-A-2.03 ) ],
+        [qw( Multiple-Modules-RDeps-0.11 )],
+        [qw( Multiple-Modules-RDeps-2.03 Multiple-Modules-RDeps-A-2.03 )],
     ],
 
     # older author/name-version with different modules
     '/search/reverse_dependencies/LOCAL/Multiple-Modules-0.1' => [
         200,
-        [ qw( Multiple-Modules-RDeps-0.11 ) ],
-        [ qw( Multiple-Modules-RDeps-2.03 Multiple-Modules-RDeps-Deprecated-0.01 ) ],
+        [qw( Multiple-Modules-RDeps-0.11 )],
+        [   qw( Multiple-Modules-RDeps-2.03 Multiple-Modules-RDeps-Deprecated-0.01 )
+        ],
     ],
 );
 
 sub check_search_results {
-    my ($name, $res, $code, $rdeps) = @_;
+    my ( $name, $res, $code, $rdeps ) = @_;
     ok( $res, $name );
     is( $res->header('content-type'),
         'application/json; charset=utf-8',
@@ -44,7 +45,8 @@ sub check_search_results {
     $json = $json->{hits}{hits} if $json->{hits};
     is scalar @$json, @$rdeps, 'got expected number of releases';
     is_deeply
-        [ sort map { join '-', @{$_->{_source}}{qw(distribution version)} } @$json ],
+        [ sort map { join '-', @{ $_->{_source} }{qw(distribution version)} }
+            @$json ],
         $rdeps,
         'got expected releases';
 }
@@ -57,21 +59,25 @@ test_psgi app, sub {
         my ( $code, $rdep_old, $rdep_latest ) = @$v;
 
         # all results
-        check_search_results("GET $k"  => $cb->(GET $k
-        ), $code, [sort(@$rdep_old, @$rdep_latest)]);
+        check_search_results(
+            "GET $k" => $cb->( GET $k ),
+            $code, [ sort( @$rdep_old, @$rdep_latest ) ]
+        );
 
         # only releases marked as latest
-        check_search_results("POST $k" => $cb->(POST $k,
-            Content => encode_json(
-                { query => { match_all => {} },
-                    filter => {
-                        term => {
-                            'release.status' => 'latest'
-                        },
-                    },
-                }
-            )
-        ), $code, [sort(@$rdep_latest)]);
+        check_search_results(
+            "POST $k" => $cb->(
+                POST $k,
+                Content => encode_json(
+                    {   query => { match_all => {} },
+                        filter =>
+                            { term => { 'release.status' => 'latest' }, },
+                    }
+                )
+            ),
+            $code,
+            [ sort(@$rdep_latest) ]
+        );
     }
 
     # test passing additional ES parameters

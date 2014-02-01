@@ -30,10 +30,11 @@ has module => (
 );
 
 has max_errors => (
-    is            => 'ro',
-    isa           => 'Int',
-    default       => 0,
-    documentation => 'the maximum number of errors to encounter before stopping',
+    is      => 'ro',
+    isa     => 'Int',
+    default => 0,
+    documentation =>
+        'the maximum number of errors to encounter before stopping',
 );
 
 has errors_only => (
@@ -58,120 +59,164 @@ sub run {
 
 sub check_modules {
     my $self = shift;
-    my (undef, @args) = @{$self->extra_argv};
-    my $packages_file = catfile($self->cpan, 'modules', '02packages.details.txt');
-    my $target        = $self->module;
-    my $es            = $self->es;
+    my ( undef, @args ) = @{ $self->extra_argv };
+    my $packages_file
+        = catfile( $self->cpan, 'modules', '02packages.details.txt' );
+    my $target = $self->module;
+    my $es     = $self->es;
     my $packages_fh;
 
-    if (-e $packages_file) {
-        open($packages_fh, '<', $packages_file)
-          or die "Could not open packages file $packages_file: $!";
-    } else {
+    if ( -e $packages_file ) {
+        open( $packages_fh, '<', $packages_file )
+            or die "Could not open packages file $packages_file: $!";
+    }
+    else {
         die "Can't find 02packages.details.txt ";
     }
 
     my $modules_start = 0;
-    while (my $line = <$packages_fh>) {
+    while ( my $line = <$packages_fh> ) {
         last if $self->max_errors && $self->error_count >= $self->max_errors;
         chomp($line);
         if ($modules_start) {
-            my ($pkg, $ver, $dist) = split(/\s+/, $line);
+            my ( $pkg, $ver, $dist ) = split( /\s+/, $line );
             my @releases;
 
             # we only care about packages if we aren't searching for a
             # particular module or if it matches
-            if (!$target || $pkg eq $target) {
-                # look up this module in ElasticSearch and see what we have on it
+            if ( !$target || $pkg eq $target ) {
+
+             # look up this module in ElasticSearch and see what we have on it
                 my $results = $es->search(
-                    index  => $self->index->name,
-                    type   => 'file',
-                    size   => 100,                  # shouldn't get more than this
+                    index => $self->index->name,
+                    type  => 'file',
+                    size  => 100,               # shouldn't get more than this
                     fields => [
                         qw(name release author distribution version authorized indexed maturity date)
                     ],
-                    query  => {match_all => {}},
+                    query  => { match_all => {} },
                     filter => {
                         and => [
-                            {term => {'module.name' => $pkg}},
-                            {term => {'authorized'  => 'true'}},
-                            {term => {'maturity'    => 'released'}},
+                            { term => { 'module.name' => $pkg } },
+                            { term => { 'authorized'  => 'true' } },
+                            { term => { 'maturity'    => 'released' } },
                         ],
                     },
                 );
-                my @files = @{$results->{hits}->{hits}};
+                my @files = @{ $results->{hits}->{hits} };
 
                 # now find the first latest releases for these files
                 foreach my $file (@files) {
                     my $release_results = $es->search(
-                        index  => $self->index->name,
-                        type   => 'release',
-                        size   => 1,
-                        fields => [qw(name status authorized version id date)],
-                        query  => {match_all => {}},
+                        index => $self->index->name,
+                        type  => 'release',
+                        size  => 1,
+                        fields =>
+                            [qw(name status authorized version id date)],
+                        query  => { match_all => {} },
                         filter => {
                             and => [
-                                {term => {'name'   => $file->{fields}->{release}}},
-                                {term => {'status' => 'latest'}},
+                                {   term => {
+                                        'name' => $file->{fields}->{release}
+                                    }
+                                },
+                                { term => { 'status' => 'latest' } },
                             ],
                         },
                     );
 
-                    if ($release_results->{hits}->{hits}->[0]) {
-                        push(@releases, $release_results->{hits}->{hits}->[0]);
+                    if ( $release_results->{hits}->{hits}->[0] ) {
+                        push( @releases,
+                            $release_results->{hits}->{hits}->[0] );
                     }
                 }
 
-                # if we didn't find the latest release, then look at all of the releases
-                # so we can find out what might be wrong
-                if (!@releases) {
+      # if we didn't find the latest release, then look at all of the releases
+      # so we can find out what might be wrong
+                if ( !@releases ) {
                     foreach my $file (@files) {
                         my $release_results = $es->search(
-                            index  => $self->index->name,
-                            type   => 'release',
-                            size   => 1,
-                            fields => [qw(name status authorized version id date)],
-                            query  => {match_all => {}},
-                            filter => {and => [{term => {'name' => $file->{fields}->{release}}}]},
+                            index => $self->index->name,
+                            type  => 'release',
+                            size  => 1,
+                            fields =>
+                                [qw(name status authorized version id date)],
+                            query  => { match_all => {} },
+                            filter => {
+                                and => [
+                                    {   term => {
+                                            'name' =>
+                                                $file->{fields}->{release}
+                                        }
+                                    }
+                                ]
+                            },
                         );
 
-                        push(@releases, @{$release_results->{hits}->{hits}});
+                        push( @releases,
+                            @{ $release_results->{hits}->{hits} } );
                     }
                 }
 
                 # if we found the releases tell them about it
                 if (@releases) {
-                    if (@releases == 1 && $releases[0]->{fields}->{status} eq 'latest') {
-                        log_info { "Found latest release $releases[0]->{fields}->{name} for $pkg" }
-                        unless $self->errors_only;
-                    } else {
-                        log_error { "Could not find latest release for $pkg" };
-                        foreach my $rel (@releases) {
-                            log_warn { "  Found release $rel->{fields}->{name}" };
-                            log_warn { "    STATUS    : $rel->{fields}->{status}" };
-                            log_warn { "    AUTORIZED : $rel->{fields}->{authorized}" };
-                            log_warn { "    DATE      : $rel->{fields}->{date}" };
+                    if (   @releases == 1
+                        && $releases[0]->{fields}->{status} eq 'latest' )
+                    {
+                        log_info {
+                            "Found latest release $releases[0]->{fields}->{name} for $pkg"
                         }
-                        $self->error_count($self->error_count + 1);
+                        unless $self->errors_only;
                     }
-                } elsif (@files) {
-                    log_error { "Module $pkg doesn't have any releases in ElasticSearch!" };
+                    else {
+                        log_error {"Could not find latest release for $pkg"};
+                        foreach my $rel (@releases) {
+                            log_warn {
+                                "  Found release $rel->{fields}->{name}"
+                            };
+                            log_warn {
+                                "    STATUS    : $rel->{fields}->{status}"
+                            };
+                            log_warn {
+                                "    AUTORIZED : $rel->{fields}->{authorized}"
+                            };
+                            log_warn {
+                                "    DATE      : $rel->{fields}->{date}"
+                            };
+                        }
+                        $self->error_count( $self->error_count + 1 );
+                    }
+                }
+                elsif (@files) {
+                    log_error {
+                        "Module $pkg doesn't have any releases in ElasticSearch!"
+                    };
                     foreach my $file (@files) {
-                        log_warn { "  Found file $file->{fields}->{name}" };
-                        log_warn { "    RELEASE    : $file->{fields}->{release}" };
-                        log_warn { "    AUTHOR     : $file->{fields}->{author}" };
-                        log_warn { "    AUTHORIZED : $file->{fields}->{authorized}" };
-                        log_warn { "    DATE       : $file->{fields}->{date}" };
+                        log_warn {"  Found file $file->{fields}->{name}"};
+                        log_warn {
+                            "    RELEASE    : $file->{fields}->{release}"
+                        };
+                        log_warn {
+                            "    AUTHOR     : $file->{fields}->{author}"
+                        };
+                        log_warn {
+                            "    AUTHORIZED : $file->{fields}->{authorized}"
+                        };
+                        log_warn {"    DATE       : $file->{fields}->{date}"};
                     }
-                    $self->error_count($self->error_count + 1);
-                } else {
-                    log_error { "Module $pkg [$dist] doesn't not appear in ElasticSearch!" };
-                    $self->error_count($self->error_count + 1);
+                    $self->error_count( $self->error_count + 1 );
+                }
+                else {
+                    log_error {
+                        "Module $pkg [$dist] doesn't not appear in ElasticSearch!"
+                    };
+                    $self->error_count( $self->error_count + 1 );
                 }
                 last if $self->module;
             }
 
-        } elsif (!length $line) {
+        }
+        elsif ( !length $line ) {
             $modules_start = 1;
         }
     }

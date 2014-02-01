@@ -4,11 +4,13 @@ use Moose;
 BEGIN { extends 'Catalyst::Controller::REST' }
 
 sub auto : Private {
-    my ($self, $c) = @_;
-    unless($c->user->looks_human) {
-        $self->status_forbidden($c, message => 'please complete the turing test');
+    my ( $self, $c ) = @_;
+    unless ( $c->user->looks_human ) {
+        $self->status_forbidden( $c,
+            message => 'please complete the turing test' );
         return 0;
-    } else {
+    }
+    else {
         return 1;
     }
 }
@@ -32,8 +34,9 @@ sub index_POST {
     $self->status_created(
         $c,
         location => $c->uri_for(
-            join( '/',
-                '/favorite', $favorite->user, $favorite->distribution )
+            join(
+                '/', '/favorite', $favorite->user, $favorite->distribution
+            )
         ),
         entity => $favorite->meta->get_data($favorite)
     );

@@ -10,12 +10,12 @@ BEGIN {
 }
 
 use Path::Class qw(file dir);
-use File::Temp         ();
-use CPAN::Meta         ();
-use DateTime           ();
-use List::Util         ();
-use List::MoreUtils    ();
-use Module::Metadata 1.000012 (); # Improved package detection.
+use File::Temp      ();
+use CPAN::Meta      ();
+use DateTime        ();
+use List::Util      ();
+use List::MoreUtils ();
+use Module::Metadata 1.000012 ();    # Improved package detection.
 use CPAN::DistnameInfo ();
 use File::Find         ();
 use File::stat         ();
@@ -85,7 +85,7 @@ sub run {
                 @files,
                 map { $_->{file} } sort { $a->{mtime} <=> $b->{mtime} } map {
                     +{ file => $_, mtime => File::stat::stat($_)->mtime }
-                    } $find->in($_)
+                } $find->in($_)
             );
         }
         elsif ( -f $_ ) {
@@ -181,9 +181,10 @@ sub import_tarball {
     my $at = Archive::Any->new($tarball);
     my $tmpdir = dir( File::Temp::tempdir( CLEANUP => 0 ) );
 
-    log_error { "$tarball is being impolite" } if $at->is_impolite;
+    log_error {"$tarball is being impolite"} if $at->is_impolite;
+
     # TODO: add release to the index with status => 'broken' and move along
-    log_error { "$tarball is being naughty" }  if $at->is_naughty;
+    log_error {"$tarball is being naughty"} if $at->is_naughty;
 
     log_debug {"Extracting archive to filesystem"};
     $at->extract($tmpdir);
@@ -223,12 +224,13 @@ sub import_tarball {
         dependency   => \@dependencies,
         metadata     => $meta,
         provides     => [],
+
         # CPAN::Meta->license *must* be called in list context
         # (and *may* return multiple strings).
-        license      => [ $meta->license ],
-        # Call in scalar context to make sure we only get one value (building a hash).
-        (map { ($_ => scalar $meta->$_) }
-            qw( version resources )),
+        license => [ $meta->license ],
+
+# Call in scalar context to make sure we only get one value (building a hash).
+        ( map { ( $_ => scalar $meta->$_ ) } qw( version resources ) ),
     };
 
     delete $release->{abstract}
@@ -238,7 +240,10 @@ sub import_tarball {
     $release = $cpan->type('release')->put( $release, { refresh => 1 } );
 
     # create will die if the document already exists
-    eval { $cpan->type('distribution')->put({ name => $d->dist }, { create => 1 }) };
+    eval {
+        $cpan->type('distribution')
+            ->put( { name => $d->dist }, { create => 1 } );
+    };
 
     my @files;
     my @list = $at->files;
@@ -297,15 +302,18 @@ sub import_tarball {
     # build module -> pod file mapping
     # $file->clear_documentation to force a rebuild
     my %associated_pod;
-    for(grep { $_->indexed && $_->documentation } @files) {
+    for ( grep { $_->indexed && $_->documentation } @files ) {
         my $documentation = $_->clear_documentation;
-        $associated_pod{$documentation} = [ @{$associated_pod{$documentation} || []}, $_ ];
+        $associated_pod{$documentation}
+            = [ @{ $associated_pod{$documentation} || [] }, $_ ];
     }
+
     # find modules
     my @modules;
     if ( my %provides = %{ $meta->provides } ) {
         while ( my ( $module, $data ) = each %provides ) {
             my $path = $data->{file};
+
             # FIXME: Could this match lib/Foo.pm and eg/lib/Foo.pm?
             my $file = List::Util::first { $_->path =~ /\Q$path\E$/ } @files;
             next unless $file;
@@ -321,14 +329,15 @@ sub import_tarball {
     else {
         @files = grep { $_->name =~ m{(?:\.pm|\.pm\.PL)\z} }
             grep { $_->indexed } @files;
-        foreach my $file ( @files ) {
+        foreach my $file (@files) {
 
             if ( $file->name =~ m{\.PL\z} ) {
 
                 my $parser = Parse::PMFile->new( $meta->as_struct );
+
                 # FIXME: Should there be a timeout on this
                 # (like there is below for Module::Metadata)?
-                my $info   = $parser->parse( $file->local_path );
+                my $info = $parser->parse( $file->local_path );
                 next if !$info;
 
                 foreach my $module_name ( keys %{$info} ) {
@@ -350,25 +359,29 @@ sub import_tarball {
                         log_error {"Call to Module::Metadata timed out "};
                         die;
                     };
-                    alarm( 5 );
+                    alarm(5);
                     my $info;
                     {
                         local $SIG{__WARN__} = sub { };
                         $info = Module::Metadata->new_from_file(
                             $file->local_path );
                     }
-                    for my $pkg ( grep { $_ ne 'main' } $info->packages_inside ){
-                        my $version = $info->version( $pkg );
-                        $file->add_module({
-                            name => $pkg,
-                            defined $version
-                                # Stringify if it's an object (and don't die if it's not).
+                    for my $pkg ( grep { $_ ne 'main' }
+                        $info->packages_inside )
+                    {
+                        my $version = $info->version($pkg);
+                        $file->add_module(
+                            {   name => $pkg,
+                                defined $version
+
+                    # Stringify if it's an object (and don't die if it's not).
                                 ? ( version => $version . '' )
                                 : ()
-                        });
+                            }
+                        );
                     }
                     push( @modules, $file );
-                    alarm( 0 );
+                    alarm(0);
                 };
             }
         }
@@ -383,20 +396,20 @@ sub import_tarball {
         $file->set_indexed($meta);
         push( @release_unauthorized, $file->set_authorized($perms) )
             if ( keys %$perms );
-        for(@{$file->module}) {
-            push(@provides, $_->name) if $_->indexed && $_->authorized;
+        for ( @{ $file->module } ) {
+            push( @provides, $_->name ) if $_->indexed && $_->authorized;
         }
         $file->clear_module if ( $file->is_pod_file );
         log_trace {"reindexing file $file->{path}"};
         $bulk->put($file);
-        if(!$release->has_abstract && $file->abstract) {
-            (my $module = $release->distribution) =~ s/-/::/g;
-            $release->abstract($file->abstract);
+        if ( !$release->has_abstract && $file->abstract ) {
+            ( my $module = $release->distribution ) =~ s/-/::/g;
+            $release->abstract( $file->abstract );
             $release->put;
         }
     }
-    if(@provides) {
-        $release->provides(\@provides);
+    if (@provides) {
+        $release->provides( \@provides );
         $release->put;
     }
     $bulk->commit;

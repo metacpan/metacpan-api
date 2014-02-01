@@ -9,7 +9,7 @@ use Plack::Middleware::ServerStatus::Lite;
 use FindBin;
 use lib "$FindBin::RealBin/../";
 
-has api => ( is => 'ro' );
+has api      => ( is      => 'ro' );
 has '+stash' => ( clearer => 'clear_stash' );
 
 __PACKAGE__->apply_request_class_roles(
@@ -50,7 +50,8 @@ __PACKAGE__->config(
         consumer_secret => 'MrLQXWHXJsGo9owGX49D6oLnyYoxCOvPoy9TZE5Q',
     },
     'Controller::Login::Google' => {
-        consumer_key    => '265904441292-5k4rhagfcddsv4g5jfdk93eh8tugrp13.apps.googleusercontent.com',
+        consumer_key =>
+            '265904441292-5k4rhagfcddsv4g5jfdk93eh8tugrp13.apps.googleusercontent.com',
         consumer_secret => 'kd3nmULLpTIsR2P89SWCxE8D',
     },
     'Plugin::Authentication' => {
@@ -76,18 +77,19 @@ __PACKAGE__->setup(
         )
 );
 
-my $app = __PACKAGE__->apply_default_middlewares(__PACKAGE__->psgi_app);
+my $app = __PACKAGE__->apply_default_middlewares( __PACKAGE__->psgi_app );
 
 # Should this be `unless ( $ENV{HARNESS_ACTIVE} ) {` ?
 {
     my $scoreboard = __PACKAGE__->path_to(qw(var tmp scoreboard));
-    # This may be a File object if it doesn't exist so change it, then make it.
-    Path::Class::Dir->new($scoreboard->stringify)->mkpath;
+
+   # This may be a File object if it doesn't exist so change it, then make it.
+    Path::Class::Dir->new( $scoreboard->stringify )->mkpath;
 
     Plack::Middleware::ServerStatus::Lite->wrap(
-      $app,
-      path       => '/server-status',
-      allow      => ['127.0.0.1'],
-      scoreboard => $scoreboard,
+        $app,
+        path       => '/server-status',
+        allow      => ['127.0.0.1'],
+        scoreboard => $scoreboard,
     );
 }

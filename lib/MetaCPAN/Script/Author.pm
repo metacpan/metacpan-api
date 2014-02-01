@@ -48,7 +48,7 @@ sub index_authors {
         map {
             $_->{pauseid} =>
                 DateTime::Format::ISO8601->parse_datetime( $_->{updated} )
-            } map { $_->{_source} } @{ $dates->{hits}->{hits} }
+        } map { $_->{_source} } @{ $dates->{hits}->{hits} }
     };
 
     my $bulk = $self->model->bulk( size => 500 );

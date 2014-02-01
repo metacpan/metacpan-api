@@ -36,9 +36,9 @@ sub index_perlmongers {
         );
 
         #push @updates, \%update;
-        my $result = $self->es->index( %update );
+        my $result = $self->es->index(%update);
         push @results, $result;
-        say dump( $result );
+        say dump($result);
     }
 
     say dump( \@results );
@@ -53,18 +53,18 @@ sub get_pm_groups {
 
     my $self = shift;
     my $mech = WWW::Mechanize::Cached->new;
-    $mech->get( 'http://www.pm.org/groups/perl_mongers.xml' );
+    $mech->get('http://www.pm.org/groups/perl_mongers.xml');
 
     my $xml    = XMLin( $mech->content );
     my @groups = ();
     my %groups = %{ $xml->{group} };
-    
+
     foreach my $pm_name ( sort keys %groups ) {
-        
+
         my $group = $groups{$pm_name};
         my $date  = delete $group->{date};
-        
-        if ( $date ) {
+
+        if ($date) {
             my $date_key   = $date->{type} . '_date';
             my $date_value = $date->{content};
             if ( $date_value =~ m{\A(\d\d\d\d)(\d\d)(\d\d)\z} ) {
@@ -72,13 +72,13 @@ sub get_pm_groups {
             }
             $group->{$date_key} = $date_value;
         }
-        
+
         my $id = delete $group->{id};
         $group->{pm_id} = $id;
-        
+
         $pm_name =~ s{[\s\-]}{}gxms;
-        $group->{name}  = $pm_name;
-        
+        $group->{name} = $pm_name;
+
         push @groups, $group;
     }
 

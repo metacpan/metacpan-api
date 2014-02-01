@@ -98,8 +98,9 @@ test_psgi app, sub {
         $doy, 'same result as direct get' );
 
     {
-        ok( my $res = $cb->( GET '/author/_search?q=*&size=99999' ), "GET size=99999" );
-        is( $res->code, 416, 'bad request');
+        ok( my $res = $cb->( GET '/author/_search?q=*&size=99999' ),
+            "GET size=99999" );
+        is( $res->code, 416, 'bad request' );
     }
 
 };

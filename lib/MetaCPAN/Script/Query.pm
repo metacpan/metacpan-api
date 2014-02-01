@@ -8,25 +8,28 @@ use Data::DPath qw(dpath);
 use YAML::Syck qw(Dump);
 use JSON::XS;
 
-$YAML::Syck::SortKeys = $YAML::Syck::Headless = $YAML::Syck::ImplicitTyping = $YAML::Syck::UseCode = 1;
+$YAML::Syck::SortKeys = $YAML::Syck::Headless = $YAML::Syck::ImplicitTyping
+    = $YAML::Syck::UseCode = 1;
 
 has X => ( is => 'ro', default => 'GET', documentation => 'request method' );
-has d => ( is => 'ro', isa => 'Str', documentation => 'request body' );
+has d => ( is => 'ro', isa     => 'Str', documentation => 'request body' );
 
 sub run {
     my $self = shift;
-    my (undef, $cmd, $path) = @{ $self->extra_argv };
+    my ( undef, $cmd, $path ) = @{ $self->extra_argv };
     $path ||= '/';
-    my $es = $self->es;
-    my $json = $es->transport->send_request($self->remote, {
-        method => $self->X,
-        cmd => $cmd,
-        $self->d ? ( data => $self->d) : ()
-    });
-    my @results = dpath($path)->match(decode_json($json));
-    (my $dump = Dump(@results)) =~ s/\!\!perl\/scalar:JSON::XS::Boolean //g;
+    my $es   = $self->es;
+    my $json = $es->transport->send_request(
+        $self->remote,
+        {   method => $self->X,
+            cmd    => $cmd,
+            $self->d ? ( data => $self->d ) : ()
+        }
+    );
+    my @results = dpath($path)->match( decode_json($json) );
+    ( my $dump = Dump(@results) ) =~ s/\!\!perl\/scalar:JSON::XS::Boolean //g;
     print $dump;
-    
+
 }
 
 __PACKAGE__->meta->make_immutable;

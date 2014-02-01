@@ -92,7 +92,7 @@ sub get_recent_modules {
         for ( my $i = 0; $i < @{ $data->{name} }; $i++ ) {
             next
                 unless ( $data->{indexed}->[$i] eq "true"
-                && $data->{authorized}->[$i]  eq "true");
+                && $data->{authorized}->[$i] eq "true" );
             $result->{ $data->{name}->[$i] } = $file->{fields}->{release};
         }
     }

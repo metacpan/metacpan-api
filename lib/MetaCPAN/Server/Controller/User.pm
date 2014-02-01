@@ -57,7 +57,7 @@ sub identity_DELETE {
 sub profile : Local : ActionClass('REST') {
     my ( $self, $c ) = @_;
     my ($pause) = $c->user->get_identities('pause');
-    unless($pause) {
+    unless ($pause) {
         $self->status_not_found( $c, message => 'Profile doesn\'t exist' );
         $c->detach;
     }

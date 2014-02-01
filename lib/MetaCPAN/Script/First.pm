@@ -34,29 +34,30 @@ Only set the L<MetaCPAN::Document::Release/first> property for releases of this 
 =cut
 
 has distribution => (
-	is => "rw",
-	isa => "Str",
-	documentation => "set the 'first' for only this distribution",
+    is            => "rw",
+    isa           => "Str",
+    documentation => "set the 'first' for only this distribution",
 );
 
 sub run {
-	my $self = shift;
-	my $distributions = $self->index->type("distribution");
-	$distributions = $distributions->filter({
-		term => { name => $self->distribution }
-	}) if $self->distribution;
-	$distributions = $distributions->size(500)->scroll;
-	log_info { "processing " . $distributions->total . " distributions" };
-	while(my $distribution = $distributions->next) {
-		my $release = $distribution->set_first_release;
-		$release
-			? log_debug {
-				"@{[ $release->name ]} by @{[ $release->author ]} was first"
-			}
-			: log_warn {
-				"no release found for distribution @{[$distribution->name]}"
-			};
-	}
+    my $self          = shift;
+    my $distributions = $self->index->type("distribution");
+    $distributions
+        = $distributions->filter(
+        { term => { name => $self->distribution } } )
+        if $self->distribution;
+    $distributions = $distributions->size(500)->scroll;
+    log_info { "processing " . $distributions->total . " distributions" };
+    while ( my $distribution = $distributions->next ) {
+        my $release = $distribution->set_first_release;
+        $release
+            ? log_debug {
+            "@{[ $release->name ]} by @{[ $release->author ]} was first";
+        }
+            : log_warn {
+            "no release found for distribution @{[$distribution->name]}";
+            };
+    }
 }
 
 1;

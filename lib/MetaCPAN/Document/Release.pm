@@ -120,7 +120,8 @@ has resources => (
     type            => 'nested',
     include_in_root => 1,
 );
-has abstract => ( is => 'rw', index => 'analyzed', predicate => 'has_abstract' );
+has abstract =>
+    ( is => 'rw', index => 'analyzed', predicate => 'has_abstract' );
 has dependency => (
     required        => 0,
     is              => 'rw',
@@ -141,7 +142,13 @@ has first => (
     lazy     => 1,
     builder  => '_build_first'
 );
-has metadata => ( coerce => 1, is => 'ro', isa => 'HashRef', dynamic => 1, source_only => 1 );
+has metadata => (
+    coerce      => 1,
+    is          => 'ro',
+    isa         => 'HashRef',
+    dynamic     => 1,
+    source_only => 1
+);
 
 sub _build_version_numified {
     return MetaCPAN::Util::numify_version( shift->version );
@@ -157,18 +164,22 @@ sub _build_download_url {
 
 sub _build_first {
     my $self = shift;
-    $self->index->type('release')
-        ->filter(
-        {
-            and => [
+    $self->index->type('release')->filter(
+        {   and => [
                 { term => { 'release.distribution' => $self->distribution } },
-                { range => { 'release.version_numified' => { 'lt' => $self->version_numified } } },
-                # REINDEX: after a full reindex, the above line is to replaced with:
-                # { term => { 'release.first' => \1 } },
-                # currently, the "first" property is not computed on all releases
-                # since this feature has not been around when last reindexed
+                {   range => {
+                        'release.version_numified' =>
+                            { 'lt' => $self->version_numified }
+                    }
+                },
+
+          # REINDEX: after a full reindex, the above line is to replaced with:
+          # { term => { 'release.first' => \1 } },
+          # currently, the "first" property is not computed on all releases
+          # since this feature has not been around when last reindexed
             ]
-        } )->count
+        }
+        )->count
         ? 0
         : 1;
 }
@@ -214,6 +225,7 @@ sub predecessor {
 
 sub find_github_based {
     my $or = [
+
 #        { prefix => { "resources.homepage"       => 'http://github.com/' } },
 #        { prefix => { "resources.homepage"       => 'https://github.com/' } },
 #        { prefix => { "resources.repository.web" => 'http://github.com/' } },
@@ -224,10 +236,9 @@ sub find_github_based {
         { prefix => { "resources.bugtracker.web" => 'http://github.com/' } },
         { prefix => { "resources.bugtracker.web" => 'https://github.com/' } },
     ];
-    shift#->fields([qw(resources)])
-    ->filter(
-        { and => [ { term => { status => 'latest' } }, { or => $or } ] }
-    );
+    shift    #->fields([qw(resources)])
+        ->filter(
+        { and => [ { term => { status => 'latest' } }, { or => $or } ] } );
 }
 
 __PACKAGE__->meta->make_immutable;

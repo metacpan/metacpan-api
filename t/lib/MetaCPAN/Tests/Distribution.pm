@@ -7,9 +7,10 @@ with qw(
     MetaCPAN::Tests::Model
 );
 
-sub _build_type { 'distribution' }
+sub _build_type {'distribution'}
+
 sub _build_search {
-    return [get => $_[0]->name];
+    return [ get => $_[0]->name ];
 }
 
 my @attrs = qw(
@@ -17,14 +18,14 @@ my @attrs = qw(
 );
 
 has [@attrs] => (
-    is         => 'ro',
-    isa        => 'Str',
+    is  => 'ro',
+    isa => 'Str',
 );
 
 test info => sub {
     my ($self) = @_;
 
-    foreach my $attr ( @attrs ){
+    foreach my $attr (@attrs) {
         is $self->data->$attr, $self->$attr, $attr;
     }
 };

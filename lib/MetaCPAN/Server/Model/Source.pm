@@ -11,19 +11,19 @@ use Archive::Any     ();
 
 has cpan => ( is => 'ro', isa => Dir, coerce => 1, required => 1 );
 has base_dir => (
-    is         => 'ro',
-    isa        => Dir,
-    coerce     => 1,
-    required   => 1,
+    is       => 'ro',
+    isa      => Dir,
+    coerce   => 1,
+    required => 1,
 );
 
 sub COMPONENT {
     my $self = shift;
     my ( $app, $config ) = @_;
     $config = $self->merge_config_hashes(
-        {
-            cpan     => $app->config->{cpan},
-            base_dir => $app->config->{source_base} || $self->_default_base_dir,
+        {   cpan     => $app->config->{cpan},
+            base_dir => $app->config->{source_base}
+                || $self->_default_base_dir,
         },
         $config
     );
@@ -65,8 +65,8 @@ sub path {
 sub find_file {
     my ( $self, $dir, $file ) = @_;
     my ($source) = glob "$dir/*/$file";    # file can be in any subdirectory
-    ($source) ||= glob "$dir/$file";    # file can be in any subdirectory
-    return undef unless($source && -e $source);
+    ($source) ||= glob "$dir/$file";       # file can be in any subdirectory
+    return undef unless ( $source && -e $source );
     return -d $source ? dir($source) : file($source);
 }
 

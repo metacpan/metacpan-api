@@ -6,8 +6,7 @@ use LWP::UserAgent;
 use HTTP::Request::Common;
 use JSON;
 
-has [qw(consumer_key consumer_secret)] =>
-    ( is => 'ro', required => 1 );
+has [qw(consumer_key consumer_secret)] => ( is => 'ro', required => 1 );
 
 sub index : Path {
     my ( $self, $c ) = @_;
@@ -16,16 +15,16 @@ sub index : Path {
         my $res = $ua->request(
             POST 'https://github.com/login/oauth/access_token',
             [   client_id     => $self->consumer_key,
-                redirect_uri  => $c->uri_for($self->action_for('index')),
+                redirect_uri  => $c->uri_for( $self->action_for('index') ),
                 client_secret => $self->consumer_secret,
                 code          => $code,
             ]
         );
-        $c->controller('OAuth2')->redirect($c, error => $1)
+        $c->controller('OAuth2')->redirect( $c, error => $1 )
             if ( $res->content =~ /^error=(.*)$/ );
         ( my $token = $res->content ) =~ s/^access_token=//;
-        $c->controller('OAuth2')->redirect($c, error => 'token')
-            unless($token);
+        $c->controller('OAuth2')->redirect( $c, error => 'token' )
+            unless ($token);
         $token =~ s/&.*$//;
         my $extra_res = $ua->request(
             GET "https://api.github.com/user?access_token=$token" );

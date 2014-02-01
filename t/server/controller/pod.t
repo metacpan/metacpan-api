@@ -7,7 +7,7 @@ use MetaCPAN::Server::Test;
 file(
     MetaCPAN::Server->model('Source')->base_dir,
     'DOY/Moose-0.02/Moose-0.02/binary.bin'
-)->openw->print("\x00" x 10);
+)->openw->print( "\x00" x 10 );
 
 my %tests = (
 
@@ -31,9 +31,10 @@ test_psgi app, sub {
             : 'application/json; charset=utf-8',
             'Content-type'
         );
-        if($k eq '/pod/Pod::Pm') {
+        if ( $k eq '/pod/Pod::Pm' ) {
             like( $res->content, qr/Pod::Pm - abstract/, 'NAME section' );
-        } elsif ( $v == 200 ) {
+        }
+        elsif ( $v == 200 ) {
             like( $res->content, qr/Moose - abstract/, 'NAME section' );
             ok( $res = $cb->( GET "$k?content-type=text/plain" ),
                 "GET plain" );
@@ -41,25 +42,34 @@ test_psgi app, sub {
                 'text/plain; charset=UTF-8',
                 'Content-type'
             );
-        } elsif ( $v == 404 ) {
-            like( $res->content, qr/Not found/, "404 correct error");
+        }
+        elsif ( $v == 404 ) {
+            like( $res->content, qr/Not found/, "404 correct error" );
         }
 
         my $ct = $k =~ /Moose[.]pm$/ ? '&content-type=text/x-pod' : '';
-        ok( $res = $cb->( GET "$k?callback=foo$ct"), "GET $k with callback" );
+        ok( $res = $cb->( GET "$k?callback=foo$ct" ),
+            "GET $k with callback" );
         is( $res->code, $v, "code $v" );
         is( $res->header('content-type'),
             'text/javascript; charset=UTF-8',
             'Content-type'
         );
-        ok( my( $function_args ) = $res->content =~ /^foo\((.*)\)/s, 'callback included');
-        ok( my $jsdata = JSON->new->allow_nonref->decode( $function_args ), 'decode json' );
+        ok( my ($function_args) = $res->content =~ /^foo\((.*)\)/s,
+            'callback included' );
+        ok( my $jsdata = JSON->new->allow_nonref->decode($function_args),
+            'decode json' );
         if ( $v eq 200 ) {
-            if($ct) {
+
+            if ($ct) {
                 like( $jsdata, qr{=head1 NAME}, 'POD body was JSON encoded' );
             }
             else {
-                like( $jsdata, qr{<h1 id="NAME">NAME</h1>}, 'HTML body was JSON encoded' );
+                like(
+                    $jsdata,
+                    qr{<h1 id="NAME">NAME</h1>},
+                    'HTML body was JSON encoded'
+                );
             }
         }
         else {
@@ -75,17 +85,19 @@ test_psgi app, sub {
     my $path = '/pod/BadPod';
     ok( $res = $cb->( GET $path), "GET $path" );
     is( $res->code, 200, "code 200" );
-    unlike( $res->content, qr/<div[^>]*id="pod-errors"/, 'no POD errors section' );
+    unlike( $res->content, qr/<div[^>]*id="pod-errors"/,
+        'no POD errors section' );
 
     $path = '/pod/BadPod?show_errors=1';
     ok( $res = $cb->( GET $path), "GET $path" );
     is( $res->code, 200, "code 200" );
-    like( $res->content, qr/<div[^>]*id="pod-errors"/, 'got POD errors section' );
+    like( $res->content, qr/<div[^>]*id="pod-errors"/,
+        'got POD errors section' );
 
     my @err = $res->content =~ m{<dd.*?>(.*?)</dd>}sg;
-    is( scalar(@err), 2, "two parse errors listed ");
+    is( scalar(@err), 2, "two parse errors listed " );
     like( $err[0], qr/=head\b/, "first error mentions =head" );
-    like( $err[1], qr/C&lt;/, "first error mentions C< ... >" );
+    like( $err[1], qr/C&lt;/,   "first error mentions C< ... >" );
 };
 
 done_testing;

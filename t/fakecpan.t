@@ -1,11 +1,13 @@
 use lib 't/lib';
-use Test::More 0.96 (); # require version for subtests but let Test::Most do the ->import()
+use Test::More 0.96 ()
+    ;    # require version for subtests but let Test::Most do the ->import()
 use Test::Most;
-use Test::Aggregate::Nested 0.371 (); # don't warn about Parse::PMFile's exit()
+use Test::Aggregate::Nested 0.371 ()
+    ;    # don't warn about Parse::PMFile's exit()
 use strict;
 use warnings;
 use CPAN::Faker 0.010;
-use Module::Faker 0.015 (); # Generates META.json.
+use Module::Faker 0.015 ();    # Generates META.json.
 use ElasticSearch::TestServer;
 use MetaCPAN::Script::Runner;
 use MetaCPAN::Script::Mapping;
@@ -17,20 +19,21 @@ use File::Copy;
 use Config::General;
 BEGIN { $ENV{EMAIL_SENDER_TRANSPORT} = 'Test' }
 
-my $ES_HOST_PORT = '127.0.0.1:' . ($ENV{METACPAN_ES_TEST_PORT} ||= 9900);
+my $ES_HOST_PORT = '127.0.0.1:' . ( $ENV{METACPAN_ES_TEST_PORT} ||= 9900 );
 
 ok( my $es = ElasticSearch->new(
         transport => 'httplite',
         servers   => $ES_HOST_PORT,
+
         # trace_calls => 1,
-), 'got ElasticSearch object');
+    ),
+    'got ElasticSearch object'
+);
 
-eval {
-  $es->transport->refresh_servers;
-};
+eval { $es->transport->refresh_servers; };
 
-ok(!$@, "Connected to the ElasticSearch test instance on $ES_HOST_PORT")
-  or do {
+ok( !$@, "Connected to the ElasticSearch test instance on $ES_HOST_PORT" )
+    or do {
     diag(<<EOF);
 Failed to connect to the ElasticSearch test instance on $ES_HOST_PORT.
 Did you start one up? See https://github.com/CPAN-API/cpan-api/wiki/Installation
@@ -38,9 +41,10 @@ for more information.
 EOF
 
     BAIL_OUT("Test environment not set up properly");
-};
+    };
 
-Test::More::note(Test::More::explain({'ElasticSearch info' => $es->request}));
+Test::More::note(
+    Test::More::explain( { 'ElasticSearch info' => $es->request } ) );
 
 # NOTE: Don't load MetaCPAN::Server::Test before doing this mapping
 
@@ -49,36 +53,35 @@ $config->{es} = $es;
 
 {
     local @ARGV = qw(mapping --delete);
-    ok(
-        MetaCPAN::Script::Mapping->new_with_options($config)->run,
-        'put mapping'
-    );
+    ok( MetaCPAN::Script::Mapping->new_with_options($config)->run,
+        'put mapping' );
     wait_for_es();
 }
 
 foreach my $test_dir ( $config->{cpan}, $config->{source_base} ) {
     next unless $test_dir;
     my $dir = dir($test_dir);
-    if (-e $dir->absolute) {
-        ok($dir->rmtree, "remove old test dir: $dir");
+    if ( -e $dir->absolute ) {
+        ok( $dir->rmtree, "remove old test dir: $dir" );
     }
 }
 
 my $mod_faker = 'Module::Faker::Dist::WithPerl';
 eval "require $mod_faker" or die $@;
 
-my $cpan = CPAN::Faker->new({
-  source => 't/var/fakecpan/configs',
-  dest   => $config->{cpan},
-  dist_class => $mod_faker,
-});
+my $cpan = CPAN::Faker->new(
+    {   source     => 't/var/fakecpan/configs',
+        dest       => $config->{cpan},
+        dist_class => $mod_faker,
+    }
+);
 
-ok($cpan->make_cpan, 'make fake cpan');
+ok( $cpan->make_cpan, 'make fake cpan' );
 
 # do some changes to 06perms.txt
 {
-    my $perms_file = dir($config->{cpan})->file(qw(modules 06perms.txt));
-    my $perms = $perms_file->slurp;
+    my $perms_file = dir( $config->{cpan} )->file(qw(modules 06perms.txt));
+    my $perms      = $perms_file->slurp;
     $perms =~ s/^Some,LOCAL,f$/Some,MO,f/m;
     my $fh = $perms_file->openw;
     print $fh $perms;
@@ -89,32 +92,32 @@ ok($cpan->make_cpan, 'make fake cpan');
 require Parse::PMFile;
 local $Parse::PMFile::VERBOSE = $ENV{TEST_VERBOSE} ? 1 : 0;
 
-local @ARGV = ('release', $config->{cpan}, '--children', 0);
-ok(
-    MetaCPAN::Script::Release->new_with_options($config)->run,
-    'index fakecpan'
-);
+local @ARGV = ( 'release', $config->{cpan}, '--children', 0 );
+ok( MetaCPAN::Script::Release->new_with_options($config)->run,
+    'index fakecpan' );
 
 local @ARGV = ('latest');
-ok(
-    MetaCPAN::Script::Latest->new_with_options($config)->run,
-    'latest'
-);
+ok( MetaCPAN::Script::Latest->new_with_options($config)->run, 'latest' );
 
-copy(file(qw(t var fakecpan 00whois.xml)),file($config->{cpan}, qw(authors 00whois.xml)));
-copy(file(qw(t var fakecpan author-1.0.json)),file($config->{cpan}, qw(authors id M MO MO author-1.0.json)));
-copy(file(qw(t var fakecpan bugs.tsv)),file($config->{cpan}, qw(bugs.tsv)));
-local @ARGV = ('author', '--cpan', $config->{cpan});
-ok(
-    MetaCPAN::Script::Author->new_with_options($config)->run,
-    'index authors'
+copy( file(qw(t var fakecpan 00whois.xml)),
+    file( $config->{cpan}, qw(authors 00whois.xml) ) );
+copy( file(qw(t var fakecpan author-1.0.json)),
+    file( $config->{cpan}, qw(authors id M MO MO author-1.0.json) ) );
+copy(
+    file(qw(t var fakecpan bugs.tsv)),
+    file( $config->{cpan}, qw(bugs.tsv) )
 );
+local @ARGV = ( 'author', '--cpan', $config->{cpan} );
+ok( MetaCPAN::Script::Author->new_with_options($config)->run,
+    'index authors' );
 
 ok( MetaCPAN::Script::Tickets->new_with_options(
         {   %$config,
             rt_summary_url => "file://"
                 . file( $config->{cpan}, 'bugs.tsv' )->absolute,
-            github_issues => "file://" . dir(qw(t var fakecpan github))->absolute . '/%s/%s.json?per_page=100',
+            github_issues => "file://"
+                . dir(qw(t var fakecpan github))->absolute
+                . '/%s/%s.json?per_page=100',
         }
         )->run,
     'tickets'
@@ -132,16 +135,20 @@ sub wait_for_es {
 }
 
 subtest 'Nested tests' => sub {
-    my $tests = Test::Aggregate::Nested->new( {
-        # should we do a glob to get these (and strip out t/var)?
-        dirs    => [qw(
-            t/document
-            t/release
-            t/script
-            t/server
-        )],
-        verbose => ($ENV{TEST_VERBOSE} ? 2 : 0),
-    } );
+    my $tests = Test::Aggregate::Nested->new(
+        {
+            # should we do a glob to get these (and strip out t/var)?
+            dirs => [
+                qw(
+                    t/document
+                    t/release
+                    t/script
+                    t/server
+                    )
+            ],
+            verbose => ( $ENV{TEST_VERBOSE} ? 2 : 0 ),
+        }
+    );
 
     $tests->run;
 };

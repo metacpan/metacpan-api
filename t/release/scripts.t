@@ -7,6 +7,7 @@ use MetaCPAN::Server::Test;
 # Work around an issue with JSON::XS 3.0 and the accompanying JSON 2.9 release.
 # (Test::More::is_deeply with stringiying objects says 1 != '1'.)
 my $true = JSON::decode_json('{"bool": true}')->{bool};
+
 # This is stupid, but it works; JSON 2.61 overloaded eq, 2.9 stopped.
 $true = '1' if $true eq 'true';
 
@@ -42,7 +43,7 @@ is( $release->version, '0.01', 'version ok' );
                     indexed       => $_->indexed,
                     mime          => $_->mime
                 }
-                } @files
+            } @files
         ],
         [   {   documentation => 'catalyst',
                 indexed       => $true,

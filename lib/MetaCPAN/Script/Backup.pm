@@ -97,7 +97,7 @@ sub run_restore {
         }
     }
     $es->bulk_index( \@bulk );
-    log_info { "done"};
+    log_info {"done"};
 
 }
 

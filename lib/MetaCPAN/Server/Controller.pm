@@ -31,12 +31,12 @@ my $MAX_SIZE = 5000;
 
 # apply "filters" like \&model but for fabricated data
 sub apply_request_filter {
-    my ($self, $c, $data) = @_;
+    my ( $self, $c, $data ) = @_;
 
-    if( my $fields = $c->req->param("fields") ){
+    if ( my $fields = $c->req->param("fields") ) {
         my $filtered = {};
         my @fields = split /,/, $fields;
-        @$filtered{ @fields } = @$data{ @fields };
+        @$filtered{@fields} = @$data{@fields};
         $data = $filtered;
     }
 
@@ -44,13 +44,13 @@ sub apply_request_filter {
 }
 
 sub model {
-    my ($self, $c) = @_;
-    my $model = $c->model('CPAN')->type($self->type);
+    my ( $self, $c ) = @_;
+    my $model = $c->model('CPAN')->type( $self->type );
     $model = $model->fields( [ map { split(/,/) } $c->req->param("fields") ] )
         if $c->req->param("fields");
-    if(my ($size) = $c->req->param("size")) {
+    if ( my ($size) = $c->req->param("size") ) {
         $c->detach( '/bad_request',
-        [ "size parameter exceeds maximum of $MAX_SIZE", 416 ] )
+            [ "size parameter exceeds maximum of $MAX_SIZE", 416 ] )
             if ( $size && $size > $MAX_SIZE );
         $model = $model->size($size);
     }
@@ -72,11 +72,10 @@ sub get : Path('') : Args(1) {
     eval {
         my $file = $self->model($c)->raw->get($id);
         $c->stash( $file->{_source} || $file->{fields} );
-    } or $c->detach('/not_found', [$@]);
+    } or $c->detach( '/not_found', [$@] );
 }
 
-sub all : Path('') : Args(0) :
-    ActionClass('Deserialize') {
+sub all : Path('') : Args(0) : ActionClass('Deserialize') {
     my ( $self, $c ) = @_;
     $c->req->params->{q} ||= '*' unless ( $c->req->data );
     $c->forward('search');
@@ -147,8 +146,8 @@ sub join : ActionClass('Deserialize') {
             : $filter;
         my $foreign = eval {
             $c->model("CPAN::$type")->query( $filtered->{query} )
-                ->filter( $filtered->{filter} )->size(1000)->raw->all
-            } or do { $self->internal_error( $c, $@ ) };
+                ->filter( $filtered->{filter} )->size(1000)->raw->all;
+        } or do { $self->internal_error( $c, $@ ) };
         $c->detach(
             "/not_allowed",
             [   "The number of joined documents exceeded the allowed number of 1000 documents by "

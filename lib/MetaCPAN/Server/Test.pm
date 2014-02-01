@@ -22,6 +22,7 @@ BEGIN { $ENV{METACPAN_SERVER_CONFIG_LOCAL_SUFFIX} = 'testing'; }
 
 {
     no warnings 'once';
+
     # XXX: Why do we do this?
     $FindBin::RealBin .= '/some';
 }
@@ -45,8 +46,10 @@ ok( MetaCPAN::Server->model('User::Account')->put(
 sub app {$app}
 
 require MetaCPAN::Model;
+
 sub model {
-    MetaCPAN::Model->new( es => ':' . ($ENV{METACPAN_ES_TEST_PORT} ||= 9900) );
+    MetaCPAN::Model->new(
+        es => ':' . ( $ENV{METACPAN_ES_TEST_PORT} ||= 9900 ) );
 }
 
 1;

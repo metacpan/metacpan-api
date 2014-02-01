@@ -40,12 +40,10 @@ even more
 
 END
 
-    my $file =
-      MetaCPAN::Document::File->new( %stub,
-                                     content      => \$content );
+    my $file = MetaCPAN::Document::File->new( %stub, content => \$content );
 
-    is( $file->abstract, 'mymodule1 abstract' );
-    is($file->documentation, 'MyModule' );
+    is( $file->abstract,      'mymodule1 abstract' );
+    is( $file->documentation, 'MyModule' );
     is_deeply( $file->pod_lines, [ [ 3, 12 ], [ 18, 6 ] ] );
     is( $file->sloc, 3 );
     is( $file->slop, 11 );
@@ -59,13 +57,11 @@ MyModule
 
 END
 
-    my $file =
-      MetaCPAN::Document::File->new( %stub,
-                                     content      => \$content );
+    my $file = MetaCPAN::Document::File->new( %stub, content => \$content );
 
-    is( $file->abstract, undef );
-    is( $file->slop, 2 );
-    is( $file->documentation, 'MyModule');
+    is( $file->abstract,      undef );
+    is( $file->slop,          2 );
+    is( $file->documentation, 'MyModule' );
 }
 {
     my $content = <<'END';
@@ -81,11 +77,9 @@ Version 0.5.0
 
 END
 
-    my $file =
-      MetaCPAN::Document::File->new( %stub,
-                                     content      => \$content );
+    my $file = MetaCPAN::Document::File->new( %stub, content => \$content );
 
-    is( $file->abstract, 'a command line tool' );
+    is( $file->abstract,      'a command line tool' );
     is( $file->documentation, 'Script' );
 }
 {
@@ -110,18 +104,22 @@ package MOBY::Config;
 
 END
 
-    my $file =
-      MetaCPAN::Document::File->new( %stub,
-                                     path         => 't/bar/bat.t',
-                                     module       => { name => 'MOBY::Config' },
-                                     content_cb   => sub { \$content } );
+    my $file = MetaCPAN::Document::File->new(
+        %stub,
+        path       => 't/bar/bat.t',
+        module     => { name => 'MOBY::Config' },
+        content_cb => sub { \$content }
+    );
 
     is( $file->abstract,
-'An object containing information about how to get access to teh Moby databases, resources, etc. from the mobycentral.config file'
+        'An object containing information about how to get access to teh Moby databases, resources, etc. from the mobycentral.config file'
     );
-    is( $file->module->[0]->hide_from_pause(${$file->content}, $file->name), 0, 'indexed' );
+    is( $file->module->[0]
+            ->hide_from_pause( ${ $file->content }, $file->name ),
+        0, 'indexed'
+    );
     is( $file->documentation, 'MOBY::Config.pm' );
-    is( $file->level, 2);
+    is( $file->level,         2 );
 }
 
 {
@@ -154,17 +152,19 @@ AS-specific methods for Number::Phone
 
 1;
 END
-    my $file =
-      MetaCPAN::Document::File->new( %stub,
-                                     module => [{ name => 'Number::Phone::NANP::ASS', version => 1.1 }],
-                                     content_cb   => sub { \$content } );
-    is( $file->sloc, 8, '8 lines of code' );
-    is( $file->slop, 4, '4 lines of pod' );
+    my $file = MetaCPAN::Document::File->new(
+        %stub,
+        module => [ { name => 'Number::Phone::NANP::ASS', version => 1.1 } ],
+        content_cb => sub { \$content }
+    );
+    is( $file->sloc,                                   8, '8 lines of code' );
+    is( $file->slop,                                   4, '4 lines of pod' );
     is( $file->module->[0]->hide_from_pause($content), 1, 'not indexed' );
-    is( $file->abstract, 'AS-specific methods for Number::Phone' );
+    is( $file->abstract,      'AS-specific methods for Number::Phone' );
     is( $file->documentation, 'Number::Phone::NANP::AS' );
     is_deeply( $file->pod_lines, [ [ 18, 7 ] ], 'correct pod_lines' );
-    is( $file->module->[0]->version_numified, 1.1, 'numified version has been calculated');
+    is( $file->module->[0]->version_numified,
+        1.1, 'numified version has been calculated' );
 }
 
 {
@@ -177,13 +177,15 @@ package # hide the package from PAUSE
 C<Perl6Attribute> -- An example attribute metaclass for Perl 6 style attributes
 
 END
-    my $file =
-      MetaCPAN::Document::File->new( %stub,
-                                     name         => 'Perl6Attribute.pod',
-                                     module => [{ name => 'main', version => 1.1 }],
-                                     content_cb   => sub { \$content } );
-    is($file->documentation, 'Perl6Attribute');
-    is($file->abstract, 'An example attribute metaclass for Perl 6 style attributes');
+    my $file = MetaCPAN::Document::File->new(
+        %stub,
+        name   => 'Perl6Attribute.pod',
+        module => [ { name => 'main', version => 1.1 } ],
+        content_cb => sub { \$content }
+    );
+    is( $file->documentation, 'Perl6Attribute' );
+    is( $file->abstract,
+        'An example attribute metaclass for Perl 6 style attributes' );
 }
 
 {
@@ -213,12 +215,13 @@ Bar
 =back
 
 END
-    my $file =
-      MetaCPAN::Document::File->new( %stub,
-                                       name         => 'Foo.pod',
-                                     content_cb   => sub { \$content } );
-    is($file->documentation, 'Foo', 'POD in __DATA__ section');
-    is($file->description, 'hot stuff * Foo * Bar');
+    my $file = MetaCPAN::Document::File->new(
+        %stub,
+        name       => 'Foo.pod',
+        content_cb => sub { \$content }
+    );
+    is( $file->documentation, 'Foo', 'POD in __DATA__ section' );
+    is( $file->description, 'hot stuff * Foo * Bar' );
 }
 
 done_testing;

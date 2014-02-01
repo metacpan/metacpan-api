@@ -8,14 +8,16 @@ my @tests = (
     [ '/release/No-Dist-Here'           => 404, qr{No-Dist-Here} ],
     [ '/changes/LOCAL/File-Changes-2.0' => 200 ],
     [ '/changes/LOCAL/File-Changes-2'   => 404, qr{LOCAL/File-Changes-2} ],
-    [ '/file/LOCAL/File-Changes-2.0/Changes'   => 200 ],
-    [ '/file/LOCAL/File-Changes-2.0/NoChanges' => 404, qr{LOCAL/File-Changes-2\.0/NoChanges} ],
+    [ '/file/LOCAL/File-Changes-2.0/Changes' => 200 ],
+    [   '/file/LOCAL/File-Changes-2.0/NoChanges' => 404,
+        qr{LOCAL/File-Changes-2\.0/NoChanges}
+    ],
 );
 
 test_psgi app, sub {
     my $cb = shift;
     for my $test (@tests) {
-        my ($path, $code, $message) = @{ $test };
+        my ( $path, $code, $message ) = @{$test};
         ok( my $res = $cb->( GET $path), "GET $path" );
         is( $res->code, $code, "code $code" );
 
@@ -28,8 +30,8 @@ test_psgi app, sub {
 
         next unless $res->code == 404;
 
-        is( $json->{message}, "Not found", '404 message as expected');
-        is( $json->{code}, $code, 'code as expected');
+        is( $json->{message}, "Not found", '404 message as expected' );
+        is( $json->{code},    $code,       'code as expected' );
     }
 };
 

@@ -5,16 +5,21 @@ with 'MooseX::Getopt';
 use Log::Contextual qw( :log );
 with 'MetaCPAN::Role::Common';
 
-has delete => ( is => 'ro', isa => 'Bool', default => 0, documentation => 'delete index if it exists already' );
+has delete => (
+    is            => 'ro',
+    isa           => 'Bool',
+    default       => 0,
+    documentation => 'delete index if it exists already'
+);
 
 sub run {
     my $self = shift;
-    log_info { "Putting mapping to ElasticSearch server" };
+    log_info {"Putting mapping to ElasticSearch server"};
     $self->model->deploy( delete => $self->delete );
 }
 
 sub map_perlmongers {
-    my ($self, $es) = @_;
+    my ( $self, $es ) = @_;
     return $es->put_mapping(
         index      => ['cpan'],
         type       => 'perlmongers',
@@ -72,7 +77,5 @@ sub map_perlmongers {
     );
 
 }
-
-
 
 __PACKAGE__->meta->make_immutable;

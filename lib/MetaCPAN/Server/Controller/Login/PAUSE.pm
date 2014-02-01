@@ -49,7 +49,7 @@ sub index : Path {
                 Subject        => "Connect MetaCPAN with your PAUSE account",
                 'MIME-Version' => '1.0',
             ],
-            body => $self->email_body($author->name, $uri),
+            body => $self->email_body( $author->name, $uri ),
         );
         Email::Sender::Simple->send($email);
         $c->controller('OAuth2')->redirect( $c, success => "mail_sent" );
@@ -61,7 +61,7 @@ sub generate_sid {
 }
 
 sub email_body {
-    my ($self, $name, $uri) = @_;
+    my ( $self, $name, $uri ) = @_;
 
     my $body = <<EMAIL_BODY;
 Hi ${name},
@@ -75,9 +75,8 @@ MetaCPAN
 EMAIL_BODY
 
     try {
-        $body = Encode::encode('UTF-8', $body,
-            Encode::FB_CROAK | Encode::LEAVE_SRC
-        );
+        $body = Encode::encode( 'UTF-8', $body,
+            Encode::FB_CROAK | Encode::LEAVE_SRC );
     }
     catch {
         warn $_[0];
