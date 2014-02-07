@@ -51,7 +51,7 @@ sub index_authors {
         } map { $_->{_source} } @{ $dates->{hits}->{hits} }
     };
 
-    my $bulk = $self->model->bulk( size => 500 );
+    my $bulk = $self->model->bulk( size => 100 );
 
     while ( my ( $pauseid, $data ) = each %$authors ) {
         my ( $name, $email, $homepage, $asciiname )
