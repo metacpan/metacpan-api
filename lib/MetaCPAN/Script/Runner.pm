@@ -1,7 +1,7 @@
 package MetaCPAN::Script::Runner;
 use strict;
 use warnings;
-use Class::MOP;
+use Module::Runtime ();
 use Config::JFDI;
 use FindBin;
 use IO::Interactive qw(is_interactive);
@@ -14,7 +14,7 @@ sub run {
         = map { ( my $key = $_ ) =~ s/^MetaCPAN::Script:://; lc($key) => $_ }
         plugins;
     die "Usage: metacpan [command] [args]" unless ($class);
-    Class::MOP::load_class( $plugins{$class} );
+    Module::Runtime::require_module( $plugins{$class} );
 
     my $config = build_config();
     my $obj    = $plugins{$class}->new_with_options($config);
