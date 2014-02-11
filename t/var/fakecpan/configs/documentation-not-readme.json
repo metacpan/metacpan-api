@@ -1,0 +1,14 @@
+{
+  "name": "Documentation-Not-Readme",
+  "abstract": "A dist with a README.pod that should *not* be considered the main module documentation.",
+  "X_Module_Faker": {
+    "cpan_author": "RWSTAUNER",
+    "append": [ {
+        "file": "README.pod",
+        "content": "=head1 NAME\n\nDocumentation::Not::Readme - this is not it\n"
+    }, {
+        "file": "lib/Documentation/Not/Readme.pm",
+        "content": "=head1 NAME\n\nDocumentation::Not::Readme - the real abstract\n"
+    } ]
+  }
+}

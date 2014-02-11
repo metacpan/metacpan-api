@@ -106,14 +106,43 @@ L</associated_pod> is set to the path of the file, which contains the documentat
 
 =cut
 
+my %_pod_score = (
+    pod => 50,
+    pm  => 40,
+    pl  => 30,
+);
+
 sub set_associated_pod {
+
+    # FIXME: Why is $file passed if it isn't used?
     my ( $self, $file, $associated_pod ) = @_;
     return unless ( my $files = $associated_pod->{ $self->name } );
     my ($pod) = (
-        ( grep { $_->name =~ /\.pod$/i } @$files ),
-        ( grep { $_->name =~ /\.pm$/i } @$files ),
-        ( grep { $_->name =~ /\.pl$/i } @$files ),
-        @$files
+        #<<<
+        # TODO: adjust score if all files are in root?
+        map  { $_->[1] }
+        sort { $b->[0] <=> $a->[0] }    # desc
+        map  {
+            [ (
+                # README.pod in root should rarely if ever be chosen.
+                # Typically it's there for github or something and it's usually
+                # a duplicate of the main module pod (though sometimes it falls
+                # out of sync (which makes it even worse)).
+                $_->path =~ /^README\.pod$/i ? -10 :
+
+                # Sort files by extension: Foo.pod > Foo.pm > foo.pl.
+                $_->name =~ /\.(pod|pm|pl)/i ? $_pod_score{$1} :
+
+                # Otherwise score unknown (near the bottom).
+                -1
+
+                # If that isn't sufficient we will probably need to
+                # actually compare the filename to the module name.
+            ),
+            $_ ]
+         }
+         @$files
+         #>>>
     );
     $self->associated_pod($pod);
     return $pod;
