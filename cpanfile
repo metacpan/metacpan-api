@@ -151,7 +151,7 @@ test_requires 'Config::General';
 test_requires 'ElasticSearch::TestServer';
 test_requires 'File::Copy';
 test_requires 'Test::Aggregate::Nested', '0.371';
-test_requires 'Test::More', '0.96';
+test_requires 'Test::More', '0.99';
 test_requires 'Test::Most';
 test_requires 'Test::Routine', '0.012';
 test_requires 'Test::Routine::Util', '0';
