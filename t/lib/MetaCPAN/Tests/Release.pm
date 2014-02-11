@@ -50,6 +50,47 @@ has version_numified => (
     default => sub { 'version'->parse( shift->version )->numify + 0 }
 );
 
+has files => (
+    is      => 'ro',
+    isa     => 'ArrayRef',
+    lazy    => 1,
+    builder => '_build_files',
+);
+
+sub _build_files {
+    my ($self) = @_;
+    return $self->_filter_files();
+}
+
+has modules => (
+    is      => 'ro',
+    isa     => 'ArrayRef',
+    lazy    => 1,
+    builder => '_build_modules',
+);
+
+sub _build_modules {
+    my ($self) = @_;
+    return $self->_filter_files(
+        [ { exists => { field => 'file.module.name' } }, ] );
+}
+
+sub _filter_files {
+    my ( $self, $add_filters ) = @_;
+    my $release = $self->data;
+    return [
+        $self->index->type('file')->filter(
+            {
+                and => [
+                    { term => { 'file.author'  => $release->author } },
+                    { term => { 'file.release' => $release->name } },
+                    @{ $add_filters || [] },
+                ],
+            }
+        )->all
+    ];
+}
+
 has status => (
     is      => 'ro',
     isa     => 'Str',
