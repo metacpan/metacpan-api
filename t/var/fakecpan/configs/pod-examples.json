@@ -1,0 +1,12 @@
+{
+  "name": "Pod-Examples",
+  "abstract": "Various examples of pod usage",
+  "version": "99",
+  "X_Module_Faker": {
+    "cpan_author": "RWSTAUNER",
+    "append": [ {
+        "file": "lib/Pod/Examples/Spacial.pod",
+        "content": "=head1  NAME\n\nPod::Examples::Spacial\n\n=head1 DESCRIPTION\n\nAn extra space between 'head1' and 'NAME'\n"
+    }]
+  }
+}

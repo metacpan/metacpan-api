@@ -59,7 +59,7 @@ has files => (
 
 sub _build_files {
     my ($self) = @_;
-    return $self->_filter_files();
+    return $self->filter_files();
 }
 
 has modules => (
@@ -71,12 +71,16 @@ has modules => (
 
 sub _build_modules {
     my ($self) = @_;
-    return $self->_filter_files(
+    return $self->filter_files(
         [ { exists => { field => 'file.module.name' } }, ] );
 }
 
-sub _filter_files {
+sub filter_files {
     my ( $self, $add_filters ) = @_;
+
+    $add_filters = [$add_filters]
+        if $add_filters && ref($add_filters) ne 'ARRAY';
+
     my $release = $self->data;
     return [
         $self->index->type('file')->filter(
