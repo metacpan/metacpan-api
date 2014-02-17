@@ -9,7 +9,7 @@ use Try::Tiny;
 use Encode;
 
 sub digest {
-    my $digest = Digest::SHA1::sha1_base64(join("\0", grep { defined } @_));
+    my $digest = Digest::SHA1::sha1_base64( join( "\0", grep {defined} @_ ) );
     $digest =~ tr/[+\/]/-_/;
     return $digest;
 }
@@ -17,21 +17,19 @@ sub digest {
 sub numify_version {
     my $version = shift;
     use warnings FATAL => 'numeric';
-    eval {
-        $version = version->parse( $version )->numify+0;
-    } or do {
+    eval { $version = version->parse($version)->numify + 0; } or do {
         $version = fix_version($version);
-        $version = eval { version->parse( $version || 0 )->numify+0 };
+        $version = eval { version->parse( $version || 0 )->numify + 0 };
     };
     return $version;
 }
 
 sub fix_version {
     my $version = shift;
-    return undef unless(defined $version);
-    if($version =~ /^v/) {
-        eval { $version = eval(version->parse( $version )->numify) };
-        return $version+0 unless($@);
+    return undef unless ( defined $version );
+    if ( $version =~ /^v/ ) {
+        eval { $version = eval( version->parse($version)->numify ) };
+        return $version + 0 unless ($@);
     }
     $version =~ s/[^\d\._]//g;
     $version =~ s/_/00/g;
@@ -40,13 +38,12 @@ sub fix_version {
 
 sub author_dir {
     my $pauseid = shift;
-    my $dir = 'id/'
-      . sprintf( "%s/%s/%s",
-                 substr( $pauseid, 0, 1 ),
-                 substr( $pauseid, 0, 2 ), $pauseid );
+    my $dir     = 'id/'
+        . sprintf( "%s/%s/%s",
+        substr( $pauseid, 0, 1 ),
+        substr( $pauseid, 0, 2 ), $pauseid );
     return $dir;
 }
-
 
 # TODO: E<escape>
 sub strip_pod {
@@ -58,9 +55,9 @@ sub strip_pod {
 
 sub extract_section {
     my ( $pod, $section ) = @_;
-    eval { $pod = Encode::decode_utf8($pod, Encode::FB_CROAK) };
+    eval { $pod = Encode::decode_utf8( $pod, Encode::FB_CROAK ) };
     return undef
-      unless ( $pod =~ /^=head1\s+$section\b(.*?)(^((\=head1)|(\=cut)))/msi
+        unless ( $pod =~ /^=head1\s+$section\b(.*?)(^((\=head1)|(\=cut)))/msi
         || $pod =~ /^=head1\s+$section\b(.*)/msi );
     my $out = $1;
     $out =~ s/^\s*//g;
@@ -68,36 +65,38 @@ sub extract_section {
     return $out;
 }
 
-
 sub pod_lines {
     my $content = shift;
-    return [] unless($content);
+    return [] unless ($content);
     my @lines = split( "\n", $content );
     my @return;
     my $count  = 1;
     my $length = 0;
     my $start  = 0;
-    my $slop = 0;
+    my $slop   = 0;
     foreach my $line (@lines) {
+
         if ( $line =~ /\A=cut/ ) {
             $length++;
             $slop++;
-            push( @return, [ $start-1, $length ] )
-              if ( $start && $length );
+            push( @return, [ $start - 1, $length ] )
+                if ( $start && $length );
             $start = $length = 0;
-        } elsif ( $line =~ /\A=[a-zA-Z]/ && !$length ) {
+        }
+        elsif ( $line =~ /\A=[a-zA-Z]/ && !$length ) {
             $start = $count;
-        } elsif( $line =~ /\A\s*__DATA__/) {
+        }
+        elsif ( $line =~ /\A\s*__DATA__/ ) {
             last;
         }
         if ($start) {
             $length++;
-            $slop++ if( $line =~ /\S/ );
+            $slop++ if ( $line =~ /\S/ );
         }
         $count++;
     }
-    push( @return, [ $start-1, $length ] )
-      if ( $start && $length );
+    push( @return, [ $start - 1, $length ] )
+        if ( $start && $length );
     return \@return, $slop;
 }
 
