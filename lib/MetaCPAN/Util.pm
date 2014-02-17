@@ -1,4 +1,5 @@
 package MetaCPAN::Util;
+
 # ABSTRACT: Helper functions for MetaCPAN
 use strict;
 use warnings;
@@ -59,8 +60,8 @@ sub extract_section {
     my ( $pod, $section ) = @_;
     eval { $pod = Encode::decode_utf8($pod, Encode::FB_CROAK) };
     return undef
-      unless ( $pod =~ /^=head1 $section\b(.*?)(^((\=head1)|(\=cut)))/msi
-        || $pod =~ /^=head1 $section\b(.*)/msi );
+      unless ( $pod =~ /^=head1\s+$section\b(.*?)(^((\=head1)|(\=cut)))/msi
+        || $pod =~ /^=head1\s+$section\b(.*)/msi );
     my $out = $1;
     $out =~ s/^\s*//g;
     $out =~ s/\s*$//g;
