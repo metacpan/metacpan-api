@@ -1,17 +1,39 @@
 package MetaCPAN::Server::Controller::Scroll;
 use Moose;
+use Try::Tiny;
+use namespace::autoclean;
+
 BEGIN { extends 'MetaCPAN::Server::Controller' }
 with 'MetaCPAN::Server::Role::JSONP';
 
-sub index : Path('/_search/scroll') {
-    my ( $self, $c ) = @_;
+sub index : Path('/_search/scroll') : Args {
+    my ( $self, $c, $scroll_id ) = @_;
     my $req = $c->req;
+
+    # There must be a better way to do this.
+    if ( !defined($scroll_id) ) {
+        try {
+            $scroll_id = do { local $/; $req->body->getline() };
+        }
+        catch {
+            print STDERR $_[0];
+        };
+
+        $scroll_id = ''
+            unless defined $scroll_id;
+    }
+
     my $res = eval {
         $c->model('CPAN')->es->transport->request(
-            {   method => $req->method,
+            {
+                method => $req->method,
                 qs     => $req->parameters,
-                cmd    => '/_search/scroll',
-                data   => $req->data
+
+                # We could alternatively append "/$scroll_id" to the cmd.
+                cmd => '/_search/scroll',
+
+                # Pass reference to scalar as a non-ref will throw an error.
+                data => \$scroll_id,
             }
         );
     } or do { $self->internal_error( $c, $@ ); };
