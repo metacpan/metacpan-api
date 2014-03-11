@@ -1,8 +1,9 @@
 use strict;
 use warnings;
-use Test::More;
-use Path::Class qw(file);
+
 use MetaCPAN::Server::Test;
+use Path::Class qw(file);
+use Test::More;
 
 file(
     MetaCPAN::Server->model('Source')->base_dir,

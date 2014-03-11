@@ -1,26 +1,45 @@
 package MetaCPAN::Document::Rating;
-use Moose;
-use ElasticSearchX::Model::Document;
-use ElasticSearchX::Model::Document::Types qw(:all);
-use MooseX::Types::Structured qw(Dict Tuple Optional);
-use MooseX::Types::Moose qw(Int Num Bool Str ArrayRef HashRef Undef);
 
-has details => ( is => 'ro', isa => Dict [ documentation => Str ] );
-has rating =>
-    ( required => 1, is => 'ro', isa => Num, builder => '_build_rating' );
-has [qw(distribution release author user)] =>
-    ( required => 1, is => 'ro', isa => Str );
+use strict;
+use warnings;
+
+use Moose;
+use ElasticSearchX::Model::Document::Types qw(:all);
+use ElasticSearchX::Model::Document;
+
+use MooseX::Types::Moose qw(Int Num Bool Str ArrayRef HashRef Undef);
+use MooseX::Types::Structured qw(Dict Tuple Optional);
+
+has details => (
+    is  => 'ro',
+    isa => Dict [ documentation => Str ],
+);
+
+has rating => (
+    required => 1,
+    is       => 'ro',
+    isa      => Num,
+    builder  => '_build_rating',
+);
+
+has [qw(distribution release author user)] => (
+    required => 1,
+    is       => 'ro',
+    isa      => Str,
+);
+
 has date => (
     required => 1,
     is       => 'ro',
     isa      => 'DateTime',
-    default  => sub { DateTime->now }
+    default  => sub { DateTime->now },
 );
+
 has helpful => (
     required => 1,
     is       => 'ro',
     isa      => ArrayRef [ Dict [ user => Str, value => Bool ] ],
-    default => sub { [] }
+    default => sub { [] },
 );
 
 sub _build_rating {
@@ -33,3 +52,4 @@ sub _build_rating {
 }
 
 __PACKAGE__->meta->make_immutable;
+1;

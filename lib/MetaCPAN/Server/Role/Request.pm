@@ -1,5 +1,8 @@
 package MetaCPAN::Server::Role::Request;
 
+use strict;
+use warnings;
+
 use Moose::Role;
 
 around [qw(content_type header)] => sub {

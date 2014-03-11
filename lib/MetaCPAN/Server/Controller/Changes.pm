@@ -1,11 +1,16 @@
 package MetaCPAN::Server::Controller::Changes;
-use Moose;
-BEGIN { extends 'MetaCPAN::Server::Controller' }
-with 'MetaCPAN::Server::Role::JSONP';
+
+use strict;
+use warnings;
+use namespace::autoclean;
 
 use Encode ();
+use Moose;
 use Try::Tiny;
-use namespace::autoclean;
+
+BEGIN { extends 'MetaCPAN::Server::Controller' }
+
+with 'MetaCPAN::Server::Role::JSONP';
 
 # TODO: __PACKAGE__->config(relationships => ?)
 

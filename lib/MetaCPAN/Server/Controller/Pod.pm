@@ -1,6 +1,12 @@
 package MetaCPAN::Server::Controller::Pod;
+
+use strict;
+use warnings;
+
 use Moose;
+
 BEGIN { extends 'MetaCPAN::Server::Controller' }
+
 with 'MetaCPAN::Server::Role::JSONP';
 
 sub find : Path('') {

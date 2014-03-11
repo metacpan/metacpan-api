@@ -1,10 +1,12 @@
 use strict;
 use warnings;
 use utf8;
+
 use Encode qw( encode is_utf8 FB_CROAK LEAVE_SRC );
 use JSON qw( decode_json );
-use Test::More;
 use MetaCPAN::Server::Test;
+use Test::More;
+
 BEGIN { $ENV{EMAIL_SENDER_TRANSPORT} = 'Test' }
 
 test_psgi app, sub {

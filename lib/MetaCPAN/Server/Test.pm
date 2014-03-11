@@ -1,14 +1,14 @@
 package MetaCPAN::Server::Test;
 
-# ABSTRACT: Test class for MetaCPAN::Web
-
 use strict;
 use warnings;
-use Plack::Test;
+
 use HTTP::Request::Common qw(POST GET DELETE);
 use JSON::XS;
-use Try::Tiny;
+use Plack::Test;
 use Test::More;
+use Try::Tiny;
+
 use base 'Exporter';
 our @EXPORT = qw(
     POST GET DELETE
@@ -53,6 +53,10 @@ sub model {
 }
 
 1;
+
+=pod
+
+# ABSTRACT: Test class for MetaCPAN::Web
 
 =head1 ENVIRONMENTAL VARIABLES
 

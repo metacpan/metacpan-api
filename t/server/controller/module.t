@@ -1,8 +1,8 @@
-
 use strict;
 use warnings;
-use Test::More;
+
 use MetaCPAN::Server::Test;
+use Test::More;
 
 my %tests = (
     '/module'                                 => 200,
@@ -32,8 +32,8 @@ test_psgi app, sub {
         if ( $v =~ /fields/ ) {
             is_deeply(
                 $json,
-                { documentation => "Moose", name => "Moose.pm" },
-                "controller proxies field query parameter to ES"
+                { documentation => 'Moose', name => 'Moose.pm' },
+                'controller proxies field query parameter to ES'
             );
         }
     }

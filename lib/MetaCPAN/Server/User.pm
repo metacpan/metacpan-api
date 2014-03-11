@@ -1,9 +1,16 @@
 package MetaCPAN::Server::User;
 
+use strict;
+use warnings;
+
 use Moose;
+
 extends 'Catalyst::Authentication::User';
 
-has obj => ( is => 'rw', isa => 'MetaCPAN::Model::User::Account' );
+has obj => (
+    is  => 'rw',
+    isa => 'MetaCPAN::Model::User::Account',
+);
 
 sub get_object { shift->obj }
 
@@ -37,3 +44,4 @@ sub data {
 }
 
 __PACKAGE__->meta->make_immutable( inline_constructor => 0 );
+1;

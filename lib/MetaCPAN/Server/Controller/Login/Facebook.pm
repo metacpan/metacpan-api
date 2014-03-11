@@ -1,10 +1,17 @@
 package MetaCPAN::Server::Controller::Login::Facebook;
 
-use Moose;
-BEGIN { extends 'MetaCPAN::Server::Controller::Login' }
-use Facebook::Graph;
+use strict;
+use warnings;
 
-has [qw(consumer_key consumer_secret)] => ( is => 'ro', required => 1 );
+use Facebook::Graph;
+use Moose;
+
+BEGIN { extends 'MetaCPAN::Server::Controller::Login' }
+
+has [qw(consumer_key consumer_secret)] => (
+    is       => 'ro',
+    required => 1,
+);
 
 sub index : Path {
     my ( $self, $c ) = @_;

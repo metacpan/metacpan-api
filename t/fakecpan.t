@@ -1,22 +1,27 @@
+
+use strict;
+use warnings;
+
 use lib 't/lib';
+
 use Test::More 0.96 ()
     ;    # require version for subtests but let Test::Most do the ->import()
 use Test::Most;
 use Test::Aggregate::Nested 0.371 ()
     ;    # don't warn about Parse::PMFile's exit()
-use strict;
-use warnings;
+
 use CPAN::Faker 0.010;
-use Module::Faker 0.015 ();    # Generates META.json.
+use Config::General;
 use ElasticSearch::TestServer;
-use MetaCPAN::Script::Runner;
+use File::Copy;
+use MetaCPAN::Script::Author;
 use MetaCPAN::Script::Mapping;
 use MetaCPAN::Script::Release;
-use MetaCPAN::Script::Author;
+use MetaCPAN::Script::Runner;
 use MetaCPAN::Script::Tickets;
+use Module::Faker 0.015 ();    # Generates META.json.
 use Path::Class qw(dir file);
-use File::Copy;
-use Config::General;
+
 BEGIN { $ENV{EMAIL_SENDER_TRANSPORT} = 'Test' }
 
 my $ES_HOST_PORT = '127.0.0.1:' . ( $ENV{METACPAN_ES_TEST_PORT} ||= 9900 );
@@ -40,7 +45,7 @@ Did you start one up? See https://github.com/CPAN-API/cpan-api/wiki/Installation
 for more information.
 EOF
 
-    BAIL_OUT("Test environment not set up properly");
+    BAIL_OUT('Test environment not set up properly');
     };
 
 Test::More::note(

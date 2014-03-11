@@ -1,12 +1,14 @@
 package MetaCPAN::Util;
 
 # ABSTRACT: Helper functions for MetaCPAN
+
 use strict;
 use warnings;
-use Digest::SHA1;
 use version;
-use Try::Tiny;
+
+use Digest::SHA1;
 use Encode;
+use Try::Tiny;
 
 sub digest {
     my $digest = Digest::SHA1::sha1_base64( join( "\0", grep {defined} @_ ) );

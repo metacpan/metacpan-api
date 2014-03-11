@@ -1,8 +1,12 @@
 package MetaCPAN::Server::View::JSON;
-use Moose;
-extends 'Catalyst::View::JSON';
+
+use strict;
+use warnings;
 
 use JSON::XS;
+use Moose;
+
+extends 'Catalyst::View::JSON';
 
 no warnings 'redefine';
 

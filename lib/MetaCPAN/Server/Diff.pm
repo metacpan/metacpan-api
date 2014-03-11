@@ -1,15 +1,39 @@
 package MetaCPAN::Server::Diff;
 
-use Moose;
-use IPC::Run3;
-use Encoding::FixLatin ();
+use strict;
+use warnings;
 
-has git => ( is => 'ro', required => 1 );
-has [qw(source target)] => ( is => 'ro', required => 1 );
-has raw => ( is => 'ro', lazy_build => 1 );
-has structured => ( is => 'ro', isa => 'ArrayRef', lazy_build => 1 );
+use Encoding::FixLatin ();
+use IPC::Run3;
+use Moose;
+
+has git => (
+    is       => 'ro',
+    required => 1,
+);
+
+has [qw(source target)] => (
+    is       => 'ro',
+    required => 1,
+);
+
+has raw => (
+    is         => 'ro',
+    lazy_build => 1,
+);
+
+has structured => (
+    is         => 'ro',
+    isa        => 'ArrayRef',
+    lazy_build => 1,
+);
+
 has numstat => ( is => 'rw' );
-has relative => ( is => 'ro', required => 1 );
+
+has relative => (
+    is       => 'ro',
+    required => 1,
+);
 
 # NOTE: Found this in the git(1) change log (cd676a513672eeb9663c6d4de276a1c860a4b879):
 #  > [--relative] is inherently incompatible with --no-index, which is a

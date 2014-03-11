@@ -1,19 +1,14 @@
 package MetaCPAN::Script::Check;
 
-use Moose;
-with 'MooseX::Getopt';
-use Log::Contextual qw( :log );
-with 'MetaCPAN::Role::Common';
-use File::Spec::Functions qw(catfile);
+use strict;
+use warnings;
+
 use ElasticSearch;
+use File::Spec::Functions qw(catfile);
+use Log::Contextual qw( :log );
+use Moose;
 
-=head1 SYNOPSIS
-
-Performs checks on the MetaCPAN data store to make sure an
-author/module/distribution has been indexed correctly and has the
-appropriate information.
-
-=cut
+with 'MetaCPAN::Role::Common', 'MooseX::Getopt';
 
 has modules => (
     is            => 'ro',
@@ -71,7 +66,7 @@ sub check_modules {
             or die "Could not open packages file $packages_file: $!";
     }
     else {
-        die "Can't find 02packages.details.txt ";
+        die q{Can't find 02packages.details.txt};
     }
 
     my $modules_start = 0;
@@ -131,8 +126,8 @@ sub check_modules {
                     }
                 }
 
-      # if we didn't find the latest release, then look at all of the releases
-      # so we can find out what might be wrong
+                # if we didn't find the latest release, then look at all of the
+                # releases so we can find out what might be wrong
                 if ( !@releases ) {
                     foreach my $file (@files) {
                         my $release_results = $es->search(
@@ -222,7 +217,16 @@ sub check_modules {
     }
 }
 
+__PACKAGE__->meta->make_immutable;
 1;
+
+=pod
+
+=head1 SYNOPSIS
+
+Performs checks on the MetaCPAN data store to make sure an
+author/module/distribution has been indexed correctly and has the
+appropriate information.
 
 =head2 check_modules
 

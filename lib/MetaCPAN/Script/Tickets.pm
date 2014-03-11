@@ -1,17 +1,20 @@
 package MetaCPAN::Script::Tickets;
 
-use Moose;
-use Log::Contextual qw( :log :dlog );
-use List::MoreUtils qw(uniq);
-use List::Util qw(sum);
-use LWP::UserAgent;
-use Parse::CSV;
-use HTTP::Request::Common;
-use IO::String;
-use Pithub;
+use strict;
+use warnings;
 use namespace::autoclean;
 
-with 'MooseX::Getopt', 'MetaCPAN::Role::Common';
+use HTTP::Request::Common;
+use IO::String;
+use LWP::UserAgent;
+use List::MoreUtils qw(uniq);
+use List::Util qw(sum);
+use Log::Contextual qw( :log :dlog );
+use Moose;
+use Parse::CSV;
+use Pithub;
+
+with 'MetaCPAN::Role::Common','MooseX::Getopt';
 
 has rt_summary_url => (
     is       => 'ro',
@@ -73,11 +76,11 @@ sub run {
 
     foreach my $source ( @{ $self->source } ) {
         if ( $source eq 'github' ) {
-            log_debug {"Fetching GitHub issues"};
+            log_debug {'Fetching GitHub issues'};
             $bugs = { %$bugs, %{ $self->retrieve_github_bugs } };
         }
         elsif ( $source eq 'rt' ) {
-            log_debug {"Fetching RT bugs"};
+            log_debug {'Fetching RT bugs'};
             $bugs = { %$bugs, %{ $self->retrieve_rt_bugs } };
         }
     }

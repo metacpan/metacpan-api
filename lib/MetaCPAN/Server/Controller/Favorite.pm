@@ -1,6 +1,12 @@
 package MetaCPAN::Server::Controller::Favorite;
+
+use strict;
+use warnings;
+
 use Moose;
+
 BEGIN { extends 'MetaCPAN::Server::Controller' }
+
 with 'MetaCPAN::Server::Role::JSONP';
 
 sub find : Path('') : Args(2) {
@@ -16,3 +22,4 @@ sub find : Path('') : Args(2) {
 }
 
 __PACKAGE__->meta->make_immutable;
+1;

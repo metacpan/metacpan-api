@@ -1,6 +1,11 @@
 package MetaCPAN::Document::Release;
+
+use strict;
+use warnings;
+
 use Moose;
 use ElasticSearchX::Model::Document;
+
 use MetaCPAN::Document::Author;
 use MetaCPAN::Types qw(:all);
 use MetaCPAN::Util;
@@ -99,19 +104,46 @@ This is an ArrayRef of modules that are included in this release.
 
 =cut
 
-has provides => ( isa => 'ArrayRef[Str]', is => 'rw' );
+has provides => (
+    isa => 'ArrayRef[Str]',
+    is  => 'rw',
+);
 
-has id => ( is => 'ro', id => [qw(author name)] );
-has [qw(license version author archive)] => ( is => 'ro', required => 1 );
-has date         => ( is => 'ro', required => 1, isa        => 'DateTime' );
-has download_url => ( is => 'ro', required => 1, lazy_build => 1 );
+has id => (
+    is => 'ro',
+    id => [qw(author name)],
+);
+
+has [qw(license version author archive)] => (
+    is       => 'ro',
+    required => 1,
+);
+
+has date => (
+    is       => 'ro',
+    required => 1,
+    isa      => 'DateTime,'
+);
+
+has download_url => (
+    is         => 'ro',
+    required   => 1,
+    lazy_build => 1,
+);
+
 has [qw(distribution name)] => (
     is       => 'ro',
     required => 1,
     analyzer => [qw(standard camelcase lowercase)],
 );
-has version_numified =>
-    ( is => 'ro', required => 1, isa => 'Num', lazy_build => 1 );
+
+has version_numified => (
+    is         => 'ro',
+    required   => 1,
+    isa        => 'Num',
+    lazy_build => 1,
+);
+
 has resources => (
     is              => 'ro',
     isa             => Resources,
@@ -120,8 +152,13 @@ has resources => (
     type            => 'nested',
     include_in_root => 1,
 );
-has abstract =>
-    ( is => 'rw', index => 'analyzed', predicate => 'has_abstract' );
+
+has abstract => (
+    is        => 'rw',
+    index     => 'analyzed',
+    predicate => 'has_abstract',
+);
+
 has dependency => (
     required        => 0,
     is              => 'rw',
@@ -130,24 +167,52 @@ has dependency => (
     type            => 'nested',
     include_in_root => 1,
 );
-has status   => ( is => 'rw', required => 1, default => 'cpan' );
-has maturity => ( is => 'ro', required => 1, default => 'released' );
-has stat  => ( is => 'ro', isa => Stat,  dynamic => 1 );
-has tests => ( is => 'ro', isa => Tests, dynamic => 1 );
-has authorized => ( is => 'rw', required => 1, isa => 'Bool', default => 1 );
+
+has status => (
+    is       => 'rw',
+    required => 1,
+    default  => 'cpan',
+);
+
+has maturity => (
+    is       => 'ro',
+    required => 1,
+    default  => 'released',
+);
+
+has stat => (
+    is      => 'ro',
+    isa     => Stat,
+    dynamic => 1,
+);
+
+has tests => (
+    is      => 'ro',
+    isa     => Tests,
+    dynamic => 1,
+);
+
+has authorized => (
+    is       => 'rw',
+    required => 1,
+    isa      => 'Bool',
+    default  => 1,
+);
+
 has first => (
     is       => 'rw',
     required => 1,
     isa      => 'Bool',
     lazy     => 1,
-    builder  => '_build_first'
+    builder  => '_build_first',
 );
+
 has metadata => (
     coerce      => 1,
     is          => 'ro',
     isa         => 'HashRef',
     dynamic     => 1,
-    source_only => 1
+    source_only => 1,
 );
 
 sub _build_version_numified {
@@ -187,6 +252,10 @@ sub _build_first {
 __PACKAGE__->meta->make_immutable;
 
 package MetaCPAN::Document::Release::Set;
+
+use strict;
+use warnings;
+
 use Moose;
 extends 'ElasticSearchX::Model::Document::Set';
 
@@ -242,3 +311,4 @@ sub find_github_based {
 }
 
 __PACKAGE__->meta->make_immutable;
+1;

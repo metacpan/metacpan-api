@@ -1,7 +1,8 @@
 use strict;
 use warnings;
-use Test::More;
+
 use MetaCPAN::Server::Test;
+use Test::More;
 
 my %tests = (
     '/author'            => 200,
@@ -59,7 +60,7 @@ test_psgi app, sub {
                 }
             )
         ),
-        "POST /author/DOY?join=release with query body"
+        'POST /author/DOY?join=release with query body';
     );
     ok( $json = eval { decode_json( $res->content ) }, 'valid json' );
     is( @{ $json->{release}->{hits}->{hits} }, 1, 'joined 1 release' );
@@ -90,7 +91,7 @@ test_psgi app, sub {
                 }
             )
         ),
-        "POST /author/_search?join=release with query body"
+        'POST /author/_search?join=release with query body'
     );
     ok( $json = eval { decode_json( $res->content ) }, 'valid json' );
     is( @{ $json->{hits}->{hits} }, 1, "1 hit" );
@@ -99,7 +100,7 @@ test_psgi app, sub {
 
     {
         ok( my $res = $cb->( GET '/author/_search?q=*&size=99999' ),
-            "GET size=99999" );
+            'GET size=99999' );
         is( $res->code, 416, 'bad request' );
     }
 

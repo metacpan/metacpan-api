@@ -1,5 +1,10 @@
 package MetaCPAN::Server::Controller::Module;
+
+use strict;
+use warnings;
+
 use Moose;
+
 BEGIN { extends 'MetaCPAN::Server::Controller::File' }
 
 has '+type' => ( default => 'file' );

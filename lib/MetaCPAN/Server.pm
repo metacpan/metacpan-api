@@ -1,13 +1,17 @@
 package MetaCPAN::Server;
 
-use Moose;
-extends 'Catalyst';
+use strict;
+use warnings;
+
 use CatalystX::RoleApplicator;
+use FindBin;
+use Moose;
 use Plack::Middleware::ReverseProxy;
 use Plack::Middleware::ServerStatus::Lite;
 
-use FindBin;
 use lib "$FindBin::RealBin/../";
+
+extends 'Catalyst';
 
 has api      => ( is      => 'ro' );
 has '+stash' => ( clearer => 'clear_stash' );

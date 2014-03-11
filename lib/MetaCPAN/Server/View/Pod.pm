@@ -1,13 +1,16 @@
 package MetaCPAN::Server::View::Pod;
 
-use Moose;
-extends 'Catalyst::View';
+use strict;
+use warnings;
 
+use IO::String;
 use MetaCPAN::Pod::XHTML;
+use Moose;
+use Pod::Markdown;
 use Pod::POM;
 use Pod::Text;
-use Pod::Markdown;
-use IO::String;
+
+extends 'Catalyst::View';
 
 sub process {
     my ( $self, $c ) = @_;

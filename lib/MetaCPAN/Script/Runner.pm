@@ -1,12 +1,14 @@
 package MetaCPAN::Script::Runner;
+
 use strict;
 use warnings;
-use Module::Runtime ();
+
 use Config::JFDI;
 use FindBin;
-use IO::Interactive qw(is_interactive);
 use Hash::Merge::Simple qw(merge);
+use IO::Interactive qw(is_interactive);
 use Module::Pluggable search_path => ['MetaCPAN::Script'];
+use Module::Runtime ();
 
 sub run {
     my ( $class, @actions ) = @ARGV;

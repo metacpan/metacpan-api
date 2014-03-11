@@ -1,7 +1,13 @@
 package MetaCPAN::Server::Controller::Diff;
-use Moose;
+
+use strict;
+use warnings;
+
 use MetaCPAN::Server::Diff;
+use Moose;
+
 BEGIN { extends 'MetaCPAN::Server::Controller' }
+
 with 'MetaCPAN::Server::Role::JSONP';
 
 sub index : Chained('/') : PathPart('diff') : CaptureArgs(0) {

@@ -1,6 +1,10 @@
 package MetaCPAN::Pod::XHTML;
 
+use strict;
+use warnings;
+
 use Moose;
+
 extends 'Pod::Simple::XHTML';
 
 sub perldoc_url_prefix {
@@ -89,6 +93,7 @@ sub _emit_custom_errata {
     $self->emit;
 }
 
+__PACKAGE__->meta->make_immutable(inline_constructor => 0);
 1;
 
 =pod

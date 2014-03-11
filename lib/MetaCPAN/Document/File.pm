@@ -1,18 +1,22 @@
 package MetaCPAN::Document::File;
+
+use strict;
+use warnings;
+use utf8;
+
 use Moose;
 use ElasticSearchX::Model::Document;
 
-use URI::Escape ();
-use MetaCPAN::Pod::XHTML;
-use Pod::Text;
-use Plack::MIME;
-use List::MoreUtils qw(uniq);
-use MetaCPAN::Util;
-use MetaCPAN::Types qw(:all);
-use MetaCPAN::Document::Module;
-use MooseX::Types::Moose qw(ArrayRef);
 use Encode;
-use utf8;
+use List::MoreUtils qw(uniq);
+use MetaCPAN::Document::Module;
+use MetaCPAN::Pod::XHTML;
+use MetaCPAN::Types qw(:all);
+use MetaCPAN::Util;
+use MooseX::Types::Moose qw(ArrayRef);
+use Plack::MIME;
+use Pod::Text;
+use URI::Escape ();
 
 Plack::MIME->add_type( ".t"   => "text/x-script.perl" );
 Plack::MIME->add_type( ".pod" => "text/x-pod" );
@@ -945,3 +949,4 @@ sub autocomplete {
 }
 
 __PACKAGE__->meta->make_immutable;
+1;

@@ -1,73 +1,85 @@
 package MetaCPAN::Script::Release;
-use Moose;
-with 'MooseX::Getopt';
-with 'MetaCPAN::Role::Common';
-use Log::Contextual qw( :log :dlog );
-use PerlIO::gzip;
+
+use strict;
+use warnings;
 
 BEGIN {
     $ENV{PERL_JSON_BACKEND} = 'JSON::XS';
 }
 
-use Path::Class qw(file dir);
-use File::Temp      ();
-use CPAN::Meta      ();
-use DateTime        ();
-use List::Util      ();
-use List::MoreUtils ();
-use Module::Metadata 1.000012 ();    # Improved package detection.
 use CPAN::DistnameInfo ();
+use CPAN::Meta         ();
+use DateTime           ();
 use File::Find         ();
-use File::stat         ();
-use MetaCPAN::Script::Latest;
-use Parse::PMFile;
 use File::Find::Rule;
-use Try::Tiny;
+use File::Temp ();
+use File::stat ();
 use LWP::UserAgent;
+use List::MoreUtils ();
+use List::Util      ();
+use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Document::Author;
+use MetaCPAN::Script::Latest;
+use Module::Metadata 1.000012 ();    # Improved package detection.
+use Moose;
+use Parse::PMFile;
+use Path::Class qw(file dir);
+use PerlIO::gzip;
+use Try::Tiny;
+
+with 'MetaCPAN::Role::Common', 'MooseX::Getopt';
 
 has latest => (
     is            => 'ro',
     isa           => 'Bool',
     default       => 0,
-    documentation => 'run \'latest\' script after each release'
+    documentation => q{run 'latest' script after each release},
 );
+
 has age => (
     is            => 'ro',
     isa           => 'Int',
-    documentation => 'index releases no older than x hours (undef)'
+    documentation => 'index releases no older than x hours (undef)',
 );
+
 has children => (
     is            => 'ro',
     isa           => 'Int',
     default       => 2,
-    documentation => 'number of worker processes (2)'
+    documentation => 'number of worker processes (2)',
 );
+
 has skip => (
     is            => 'ro',
     isa           => 'Bool',
     default       => 0,
-    documentation => 'skip already indexed modules (0)'
+    documentation => 'skip already indexed modules (0)',
 );
+
 has status => (
     is            => 'ro',
     isa           => 'Str',
     default       => 'cpan',
-    documentation => "status of the indexed releases (cpan)"
+    documentation => 'status of the indexed releases (cpan)',
 );
+
 has detect_backpan => (
     is            => 'ro',
     isa           => 'Bool',
     default       => 0,
-    documentation => 'enable when indexing from a backpan'
+    documentation => 'enable when indexing from a backpan',
 );
-has backpan_index => ( is => 'ro', lazy_build => 1 );
+
+has backpan_index => (
+    is         => 'ro',
+    lazy_build => 1,
+);
 
 has perms => (
     is         => 'ro',
     isa        => 'HashRef',
     lazy_build => 1,
-    traits     => ['NoGetopt']
+    traits     => ['NoGetopt'],
 );
 
 sub run {
@@ -102,7 +114,7 @@ sub run {
             my $ua = LWP::UserAgent->new(
                 parse_head => 0,
                 env_proxy  => 1,
-                agent      => "metacpan",
+                agent      => 'metacpan',
                 timeout    => 30,
             );
             $file->dir->mkpath;
@@ -205,11 +217,11 @@ sub import_tarball {
 
     $meta = $self->load_meta_file($tmpdir) || $meta;
 
-    log_debug {"Gathering dependencies"};
+    log_debug {'Gathering dependencies'};
 
     my @dependencies = $self->dependencies($meta);
 
-    log_debug { "Found ", scalar @dependencies, " dependencies" };
+    log_debug { 'Found ', scalar @dependencies, " dependencies" };
 
     my $release = DlogS_trace {"adding release $_"} +{
         abstract     => MetaCPAN::Util::strip_pod( $meta->abstract ),
@@ -247,7 +259,7 @@ sub import_tarball {
 
     my @files;
     my @list = $at->files;
-    log_debug { "Indexing ", scalar @files, " files" };
+    log_debug { 'Indexing ', scalar @files, " files" };
     my $file_set = $cpan->type('file');
     my $bulk = $cpan->bulk( size => 10 );
 
@@ -297,7 +309,7 @@ sub import_tarball {
     );
     $bulk->commit;
 
-    log_debug {"Gathering modules"};
+    log_debug {'Gathering modules'};
 
     # build module -> pod file mapping
     # $file->clear_documentation to force a rebuild
@@ -356,7 +368,7 @@ sub import_tarball {
 
                 eval {
                     local $SIG{'ALRM'} = sub {
-                        log_error {"Call to Module::Metadata timed out "};
+                        log_error {'Call to Module::Metadata timed out '};
                         die;
                     };
                     alarm(5);
@@ -386,7 +398,7 @@ sub import_tarball {
             }
         }
     }
-    log_debug { "Indexing ", scalar @modules, " modules" };
+    log_debug { 'Indexing ', scalar @modules, ' modules' };
     my $perms = $self->perms;
     my @release_unauthorized;
     my @provides;
@@ -563,6 +575,7 @@ sub _build_perms {
     return \%authors;
 }
 
+__PACKAGE__->meta->make_immutable;
 1;
 
 __END__
@@ -589,3 +602,5 @@ If an url is specified the file is downloaded to C<var/tmp/http/>. This folder i
 cleaned up since L<MetaCPAN::Plack::Source> depends on it to extract the source of
 a file. If the tarball cannot be find in the cpan mirror, it tries the temporary
 folder. After a rsync this folder can be purged.
+
+=cut

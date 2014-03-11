@@ -1,5 +1,8 @@
 package MetaCPAN::Server::QuerySanitizer;
 
+use strict;
+use warnings;
+
 use Moose;
 
 has query => (

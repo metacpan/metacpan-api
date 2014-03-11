@@ -1,9 +1,13 @@
 package MetaCPAN::Server::Controller::Login;
 
-use Moose;
-BEGIN { extends 'Catalyst::Controller' }
+use strict;
+use warnings;
+
 use Facebook::Graph;
 use JSON;
+use Moose;
+
+BEGIN { extends 'Catalyst::Controller' }
 
 sub auto : Private {
     my ( $self, $c ) = @_;

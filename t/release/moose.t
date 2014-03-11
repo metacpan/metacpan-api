@@ -1,8 +1,8 @@
-use Test::More;
 use strict;
 use warnings;
 
 use MetaCPAN::Server::Test;
+use Test::More;
 
 my $model = model();
 my $idx   = $model->index('cpan');

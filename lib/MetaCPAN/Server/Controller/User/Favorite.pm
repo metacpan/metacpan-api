@@ -1,6 +1,10 @@
 package MetaCPAN::Server::Controller::User::Favorite;
 
+use strict;
+use warnings;
+
 use Moose;
+
 BEGIN { extends 'Catalyst::Controller::REST' }
 
 sub auto : Private {

@@ -1,17 +1,33 @@
 package MetaCPAN::Script::Latest;
 
+use strict;
+use warnings;
+
+use Log::Contextual qw( :log );
 use Moose;
 use MooseX::Aliases;
-with 'MooseX::Getopt';
-use Log::Contextual qw( :log );
-with 'MetaCPAN::Role::Common';
 use Parse::CPAN::Packages::Fast;
-use Time::Local;
 use Regexp::Common qw(time);
+use Time::Local;
 
-has dry_run => ( is => 'ro', isa => 'Bool', default => 0 );
-has distribution => ( is => 'ro', isa => 'Str' );
-has packages => ( is => 'ro', lazy_build => 1, traits => ['NoGetopt'], );
+with 'MetaCPAN::Role::Common', 'MooseX::Getopt';
+
+has dry_run => (
+    is      => 'ro',
+    isa     => 'Bool',
+    default => 0,
+);
+
+has distribution => (
+    is  => 'ro',
+    isa => 'Str',
+);
+
+has packages => (
+    is         => 'ro',
+    lazy_build => 1,
+    traits     => ['NoGetopt'],
+);
 
 sub _build_packages {
     return Parse::CPAN::Packages::Fast->new(
@@ -21,8 +37,11 @@ sub _build_packages {
 sub run {
     my $self    = shift;
     my $modules = $self->index->type('file');
-    log_info {"Dry run: updates will not be written to ES"}
-    if ( $self->dry_run );
+
+    if ( $self->dry_run ) {
+        log_info {'Dry run: updates will not be written to ES'};
+    }
+
     my $p = $self->packages;
     $self->index->refresh;
 
@@ -37,6 +56,7 @@ sub run {
     }
 
     return if ( !@filter && $self->distribution );
+
     my $scroll = $modules->filter(
         {   and => [
                 @filter
@@ -65,7 +85,7 @@ sub run {
         )->size(10000)->raw->scroll('1h');
 
     my ( %downgrade, %upgrade );
-    log_debug { "Found " . $scroll->total . " modules" };
+    log_debug { 'Found ' . $scroll->total . ' modules' };
 
     my $i = 0;
     while ( my $file = $scroll->next ) {
@@ -186,6 +206,7 @@ sub compare_dates {
 }
 
 __PACKAGE__->meta->make_immutable;
+1;
 
 __END__
 
@@ -194,7 +215,7 @@ __END__
  # bin/metacpan latest
 
  # bin/metacpan latest --dry_run
- 
+
 =head1 DESCRIPTION
 
 After importing releases from cpan, this script will set the status

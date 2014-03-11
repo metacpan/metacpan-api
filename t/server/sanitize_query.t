@@ -1,8 +1,9 @@
 use strict;
 use warnings;
+
+use MetaCPAN::Server::Test;
 use Test::More;
 use URI;
-use MetaCPAN::Server::Test;
 
 sub uri {
     my $uri = URI->new(shift);

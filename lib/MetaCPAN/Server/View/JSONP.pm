@@ -1,7 +1,12 @@
 package MetaCPAN::Server::View::JSONP;
-use Moose;
+
+use strict;
+use warnings;
+
 use Encode qw(decode_utf8);
 use JSON ();
+use Moose;
+
 extends 'Catalyst::View';
 
 sub process {

@@ -1,8 +1,11 @@
 package MetaCPAN::Script::Restart;
 
+use strict;
+use warnings;
+
 use Moose;
-with 'MooseX::Getopt';
-with 'MetaCPAN::Role::Common';
+
+with 'MetaCPAN::Role::Common', 'MooseX::Getopt';
 
 sub run {
     shift->es->restart(
@@ -13,9 +16,12 @@ sub run {
 }
 
 __PACKAGE__->meta->make_immutable;
+1;
 
 __END__
 
 =head1 SYNOPSIS
 
  # bin/metacpan restart
+
+=cut

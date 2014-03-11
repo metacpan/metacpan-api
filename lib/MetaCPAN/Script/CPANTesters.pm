@@ -1,15 +1,18 @@
 package MetaCPAN::Script::CPANTesters;
 
-use Moose;
-with 'MooseX::Getopt';
-use Log::Contextual qw( :log :dlog );
-with 'MetaCPAN::Role::Common';
+use strict;
+use warnings;
+
+use DBI ();
 use File::Spec::Functions qw(catfile);
 use File::Temp qw(tempdir);
 use File::stat qw(stat);
-use LWP::UserAgent ();
 use IO::Uncompress::Bunzip2 qw(bunzip2);
-use DBI ();
+use LWP::UserAgent ();
+use Log::Contextual qw( :log :dlog );
+use Moose;
+
+with 'MetaCPAN::Role::Common', 'MooseX::Getopt';
 
 has db => (
     is      => 'ro',
@@ -50,23 +53,23 @@ sub index_reports {
     while ( my $release = $scroll->next ) {
         my $data = $release->{_source};
         $releases{
-            join( "-",
+            join( '-',
                 grep {defined} $data->{distribution},
                 $data->{version} )
             }
             = $data;
     }
 
-    log_info { "Opening database file at " . $db };
-    my $dbh = DBI->connect( "dbi:SQLite:dbname=" . $db );
+    log_info { 'Opening database file at ' . $db };
+    my $dbh = DBI->connect( 'dbi:SQLite:dbname=' . $db );
     my $sth;
-    $sth = $dbh->prepare("SELECT * FROM release");
+    $sth = $dbh->prepare('SELECT * FROM release');
 
     $sth->execute;
     my @bulk;
 
     while ( my $data = $sth->fetchrow_hashref ) {
-        my $release = join( "-", $data->{dist}, $data->{version} );
+        my $release = join( '-', $data->{dist}, $data->{version} );
         next unless ( $release = $releases{$release} );
         my $bulk = 0;
         for (qw(fail pass na unknown)) {
@@ -79,7 +82,7 @@ sub index_reports {
         $self->bulk( \@bulk ) if ( @bulk > 100 );
     }
     $self->bulk( \@bulk );
-    log_info {"done"};
+    log_info {'done'};
 }
 
 sub bulk {
@@ -101,6 +104,7 @@ sub bulk {
     $self->es->bulk( \@bulk );
 }
 
+__PACKAGE__->meta->make_immutable;
 1;
 
 =pod
@@ -108,7 +112,7 @@ sub bulk {
 =head1 SYNOPSIS
 
  $ bin/metacpan cpantesters
- 
+
 =head1 DESCRIPTION
 
 Index CPAN Testers test results.

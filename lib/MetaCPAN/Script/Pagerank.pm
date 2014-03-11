@@ -1,10 +1,13 @@
 package MetaCPAN::Script::Pagerank;
 
-use Moose;
-with 'MooseX::Getopt';
-use Log::Contextual qw( :log );
-with 'MetaCPAN::Role::Common';
+use strict;
+use warnings;
+
 use Graph::Centrality::Pagerank;
+use Log::Contextual qw( :log );
+use Moose;
+
+with 'MetaCPAN::Role::Common', 'MooseX::Getopt';
 
 sub run {
     my $self = shift;
@@ -12,7 +15,9 @@ sub run {
     my $pr   = Graph::Centrality::Pagerank->new();
     my @edges;
     my $modules = $self->get_recent_modules;
-    log_info {"Loading dependencies ..."};
+
+    log_info {'Loading dependencies ...'};
+
     my $scroll = $es->scrolled_search(
         index => $self->index->name,
         type  => 'release',
@@ -32,6 +37,7 @@ sub run {
         scroll => '5m',
         size   => 1000,
     );
+
     log_info { $scroll->total, " recent releases found with dependencies" };
 
     my $i = 0;
@@ -99,4 +105,5 @@ sub get_recent_modules {
     return $result;
 }
 
+__PACKAGE__->meta->make_immutable;
 1;

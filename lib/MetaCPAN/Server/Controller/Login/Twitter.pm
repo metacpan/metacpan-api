@@ -1,13 +1,20 @@
 package MetaCPAN::Server::Controller::Login::Twitter;
 
-use Moose;
-BEGIN { extends 'MetaCPAN::Server::Controller::Login' }
-use LWP::UserAgent;
-use HTTP::Request::Common;
-use Net::Twitter;
-use JSON;
+use strict;
+use warnings;
 
-has [qw(consumer_key consumer_secret)] => ( is => 'ro', required => 1 );
+use HTTP::Request::Common;
+use JSON;
+use LWP::UserAgent;
+use Moose;
+use Net::Twitter;
+
+BEGIN { extends 'MetaCPAN::Server::Controller::Login' }
+
+has [qw(consumer_key consumer_secret)] => (
+    is       => 'ro',
+    required => 1,
+);
 
 sub nt {
     my $self = shift;

@@ -1,15 +1,18 @@
 package MetaCPAN::Script::Mapping;
 
-use Moose;
-with 'MooseX::Getopt';
+use strict;
+use warnings;
+
 use Log::Contextual qw( :log );
-with 'MetaCPAN::Role::Common';
+use Moose;
+
+with 'MetaCPAN::Role::Common', 'MooseX::Getopt';
 
 has delete => (
     is            => 'ro',
     isa           => 'Bool',
     default       => 0,
-    documentation => 'delete index if it exists already'
+    documentation => 'delete index if it exists already',
 );
 
 sub run {
@@ -79,3 +82,4 @@ sub map_perlmongers {
 }
 
 __PACKAGE__->meta->make_immutable;
+1;
