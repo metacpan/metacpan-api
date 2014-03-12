@@ -232,7 +232,7 @@ sub import_tarball {
         maturity     => $d->maturity,
         stat         => $stat,
         status       => $self->detect_status( $author, $archive ),
-        date         => $date,
+        date         => $date . q{},
         dependency   => \@dependencies,
         metadata     => $meta,
         provides     => [],
