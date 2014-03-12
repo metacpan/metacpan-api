@@ -8,7 +8,6 @@ use version;
 
 use Digest::SHA1;
 use Encode;
-use Try::Tiny;
 
 sub digest {
     my $digest = Digest::SHA1::sha1_base64( join( "\0", grep {defined} @_ ) );
