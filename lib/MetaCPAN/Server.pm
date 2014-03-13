@@ -68,7 +68,6 @@ __PACKAGE__->setup(
     qw(
         Static::Simple
         ConfigLoader
-        Unicode::Encoding
         Session
         Session::Store::ElasticSearch
         Session::State::Cookie
