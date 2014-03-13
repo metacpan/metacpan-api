@@ -1,11 +1,12 @@
 package MetaCPAN::Util;
 
 # ABSTRACT: Helper functions for MetaCPAN
+
 use strict;
 use warnings;
-use Digest::SHA1;
 use version;
-use Try::Tiny;
+
+use Digest::SHA1;
 use Encode;
 
 sub digest {

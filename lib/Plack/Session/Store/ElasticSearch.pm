@@ -1,9 +1,11 @@
 package Plack::Session::Store::ElasticSearch;
+
 use strict;
 use warnings;
-use base 'Plack::Session::Store';
-use List::MoreUtils qw();
 
+use base 'Plack::Session::Store';
+
+use List::MoreUtils qw();
 use Plack::Util::Accessor qw(es index type property);
 
 sub new {

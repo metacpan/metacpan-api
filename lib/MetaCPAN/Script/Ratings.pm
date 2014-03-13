@@ -1,13 +1,16 @@
 package MetaCPAN::Script::Ratings;
 
-use Moose;
-with 'MooseX::Getopt';
-use Log::Contextual qw( :log :dlog );
-with 'MetaCPAN::Role::Common';
-use JSON           ();
-use Parse::CSV     ();
-use LWP::UserAgent ();
+use strict;
+use warnings;
+
 use Digest::MD5    ();
+use JSON           ();
+use LWP::UserAgent ();
+use Log::Contextual qw( :log :dlog );
+use Moose;
+use Parse::CSV     ();
+
+with 'MetaCPAN::Role::Common', 'MooseX::Getopt';
 
 has ratings => (
     is      => 'ro',
@@ -17,13 +20,15 @@ has ratings => (
 sub run {
     my $self = shift;
     my $ua   = LWP::UserAgent->new;
-    log_info { "Downloading " . $self->ratings };
+
+    log_info { 'Downloading ' . $self->ratings };
+
     my @path   = qw( var tmp ratings.csv );
     my $target = $self->home->file(@path);
     my $md5    = -e $target ? $self->digest($target) : 0;
     my $res    = $ua->mirror( $self->ratings, $target );
     if ( $md5 eq $self->digest($target) ) {
-        log_info {"No changes to ratings.csv"};
+        log_info {'No changes to ratings.csv'};
         return;
     }
 
@@ -33,7 +38,8 @@ sub run {
     );
 
     my $type = $self->index->type('rating');
-    log_debug {"Deleting old CPANRatings"};
+    log_debug {'Deleting old CPANRatings'};
+
     $type->filter( { term => { user => 'CPANRatings' } } )->delete;
     my $bulk  = $self->index->bulk( size => 500 );
     my $index = $self->index->name;
@@ -48,6 +54,7 @@ sub run {
             user         => 'CPANRatings',
             date         => $date,
         };
+
         for ( my $i = 0; $i < $rating->{review_count}; $i++ ) {
             $bulk->put(
                 {   index => $index,
@@ -59,7 +66,7 @@ sub run {
     }
     $bulk->commit;
     $self->index->refresh;
-    log_info {"done"};
+    log_info {'done'};
 }
 
 sub digest {
@@ -70,6 +77,7 @@ sub digest {
     return $digest;
 }
 
+__PACKAGE__->meta->make_immutable;
 1;
 
 =pod

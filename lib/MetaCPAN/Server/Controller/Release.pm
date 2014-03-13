@@ -1,6 +1,12 @@
 package MetaCPAN::Server::Controller::Release;
+
+use strict;
+use warnings;
+
 use Moose;
+
 BEGIN { extends 'MetaCPAN::Server::Controller' }
+
 with 'MetaCPAN::Server::Role::JSONP';
 
 __PACKAGE__->config(

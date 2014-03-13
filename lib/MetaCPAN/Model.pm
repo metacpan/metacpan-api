@@ -1,9 +1,22 @@
 package MetaCPAN::Model;
+
+use strict;
+use warnings;
+
+# load order important
 use Moose;
 use ElasticSearchX::Model;
 
-analyzer lowercase => ( tokenizer => 'keyword',  filter   => 'lowercase' );
-analyzer fulltext  => ( type      => 'snowball', language => 'English' );
+analyzer lowercase => (
+    tokenizer => 'keyword',
+    filter    => 'lowercase',
+);
+
+analyzer fulltext => (
+    type     => 'snowball',
+    language => 'English',
+);
+
 tokenizer camelcase => (
     type => 'pattern',
     pattern =>
@@ -24,5 +37,6 @@ index cpan => (
 index user => ( namespace => 'MetaCPAN::Model::User' );
 
 __PACKAGE__->meta->make_immutable;
+1;
 
 __END__

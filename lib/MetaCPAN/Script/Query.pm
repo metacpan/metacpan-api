@@ -1,18 +1,30 @@
 package MetaCPAN::Script::Query;
 
+use strict;
+use warnings;
+
+use Data::DPath qw(dpath);
+use JSON::XS;
 use Moose;
 use MooseX::Aliases;
-with 'MooseX::Getopt';
-with 'MetaCPAN::Role::Common';
-use Data::DPath qw(dpath);
 use YAML::Syck qw(Dump);
-use JSON::XS;
+
+with 'MetaCPAN::Role::Common', 'MooseX::Getopt';
 
 $YAML::Syck::SortKeys = $YAML::Syck::Headless = $YAML::Syck::ImplicitTyping
     = $YAML::Syck::UseCode = 1;
 
-has X => ( is => 'ro', default => 'GET', documentation => 'request method' );
-has d => ( is => 'ro', isa     => 'Str', documentation => 'request body' );
+has X => (
+    is            => 'ro',
+    default       => 'GET',
+    documentation => 'request method',
+);
+
+has d => (
+    is            => 'ro',
+    isa           => 'Str',
+    documentation => 'request body',
+);
 
 sub run {
     my $self = shift;
@@ -33,6 +45,7 @@ sub run {
 }
 
 __PACKAGE__->meta->make_immutable;
+1;
 
 __END__
 
@@ -41,9 +54,9 @@ __END__
  # bin/metacpan query /_status //store_size
  # bin/metacpan query /cpan/module/_search \
     -d '{"query":{"wildcard":{"name":"Path*"}}}' /hits/total
- # bin/metacpan query /cpan/author/_search \ 
+ # bin/metacpan query /cpan/author/_search \
     -d '{"query":{"field":{"cats":"*"}}}' //cats
- 
+
  # You guys should seriously clean up your directory:
  # bin/metacpan query /cpan/release/_search \
     -d '{"query":{"match_all":{}},"facets":{"stat1":{"terms":{"script_field":"_source.author + \"/\" + _source.distribution"}}}}}' //terms

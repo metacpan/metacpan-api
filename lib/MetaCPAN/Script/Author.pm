@@ -1,18 +1,20 @@
 package MetaCPAN::Script::Author;
 
-use Moose;
-with 'MooseX::Getopt';
-use Log::Contextual qw( :log );
-with 'MetaCPAN::Role::Common';
-use Email::Valid ();
-use File::stat   ();
-use JSON::XS     ();
-use URI          ();
-use Encode       ();
-use XML::Simple qw(XMLin);
-use DateTime::Format::ISO8601 ();
+use strict;
+use warnings;
 
+use Moose;
+with 'MooseX::Getopt', 'MetaCPAN::Role::Common';
+
+use DateTime::Format::ISO8601 ();
+use Email::Valid              ();
+use Encode                    ();
+use File::stat                ();
+use JSON::XS                  ();
+use Log::Contextual qw( :log );
 use MetaCPAN::Document::Author;
+use URI ();
+use XML::Simple qw(XMLin);
 
 =head1 SYNOPSIS
 
@@ -20,10 +22,11 @@ Loads author info into db. Requires the presence of a local CPAN/minicpan.
 
 =cut
 
-has 'author_fh' => (
+has author_fh => (
     is      => 'rw',
     traits  => ['NoGetopt'],
-    default => sub { shift->cpan . "/authors/00whois.xml" }
+    lazy    => 1,
+    default => sub { shift->cpan . '/authors/00whois.xml' },
 );
 
 sub run {
@@ -126,6 +129,7 @@ sub author_config {
     }
 }
 
+__PACKAGE__->meta->make_immutable;
 1;
 
 =pod

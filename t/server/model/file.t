@@ -1,7 +1,9 @@
 use strict;
 use warnings;
-use Test::More;
+
 use MetaCPAN::Server ();
+use Test::More;
+
 my $c = 'MetaCPAN::Server';
 
 foreach my $test (

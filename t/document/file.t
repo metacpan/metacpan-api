@@ -1,8 +1,9 @@
-use Test::More;
 use strict;
 use warnings;
 
 use MetaCPAN::Document::File;
+use Test::More;
+
 my %stub = (
     author       => 'Foo',
     path         => 'bar',
@@ -68,11 +69,11 @@ END
 #!/bin/perl
 
 =head1 NAME
- 
+
 Script - a command line tool
- 
+
 =head1 VERSION
- 
+
 Version 0.5.0
 
 END
@@ -90,7 +91,7 @@ END
 
 =for html foobar
 
- MOBY::Config.pm - An object B<containing> information about how to get access to teh Moby databases, resources, etc. from the 
+ MOBY::Config.pm - An object B<containing> information about how to get access to teh Moby databases, resources, etc. from the
 mobycentral.config file
 
 =cut

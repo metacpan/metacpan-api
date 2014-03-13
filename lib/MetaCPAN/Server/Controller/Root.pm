@@ -1,5 +1,10 @@
 package MetaCPAN::Server::Controller::Root;
+
+use strict;
+use warnings;
+
 use Moose;
+
 BEGIN { extends 'MetaCPAN::Server::Controller' }
 
 __PACKAGE__->config( namespace => '' );

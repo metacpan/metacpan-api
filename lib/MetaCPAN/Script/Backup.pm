@@ -1,37 +1,40 @@
 package MetaCPAN::Script::Backup;
 
-use Moose;
-with 'MooseX::Getopt';
-use Log::Contextual qw( :log :dlog );
-with 'MetaCPAN::Role::Common';
-use MooseX::Types::Path::Class qw(:all);
+use strict;
+use warnings;
+
+use DateTime;
 use IO::Zlib ();
 use JSON::XS;
-use DateTime;
+use Log::Contextual qw( :log :dlog );
+use Moose;
+use MooseX::Types::Path::Class qw(:all);
+
+with 'MetaCPAN::Role::Common', 'MooseX::Getopt';
 
 has type => (
     is            => 'ro',
     isa           => 'Str',
-    documentation => 'ES type do backup, optional'
+    documentation => 'ES type do backup, optional',
 );
 
 has size => (
     is            => 'ro',
     isa           => 'Int',
     default       => 1000,
-    documentation => 'Size of documents to fetch at once, defaults to 1000'
+    documentation => 'Size of documents to fetch at once, defaults to 1000',
 );
 
 has purge => (
     is            => 'ro',
     isa           => 'Bool',
-    documentation => 'Purge old backups'
+    documentation => 'Purge old backups',
 );
 
 has dry_run => (
     is            => 'ro',
     isa           => 'Bool',
-    documentation => 'Don\'t actually purge old backups'
+    documentation => q{Don't actually purge old backups},
 );
 
 has restore => (
@@ -68,7 +71,7 @@ sub run {
         print $fh encode_json($result), $/;
     }
     close $fh;
-    log_info {"done"};
+    log_info {'done'};
 }
 
 sub run_restore {
@@ -97,7 +100,7 @@ sub run_restore {
         }
     }
     $es->bulk_index( \@bulk );
-    log_info {"done"};
+    log_info {'done'};
 
 }
 
@@ -127,6 +130,7 @@ sub run_purge {
     );
 }
 
+__PACKAGE__->meta->make_immutable;
 1;
 
 __END__
@@ -138,9 +142,9 @@ MetaCPAN::Script::Backup - Backup indices and types
 =head1 SYNOPSIS
 
  $ bin/metacpan backup --index user --type account
- 
+
  $ bin/metacpan backup --purge
- 
+
 =head1 DESCRIPTION
 
 Creates C<.json.gz> files in C<var/backup>. These files contain

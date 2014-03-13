@@ -1,14 +1,30 @@
 package MetaCPAN::Server::Model::CPAN;
 
-use Moose;
-extends 'Catalyst::Model';
-with 'CatalystX::Component::Traits';
+use strict;
+use warnings;
 
 use MetaCPAN::Model;
+use Moose;
 
-has esx_model => ( is => 'ro', lazy_build => 1, handles => ['es'] );
-has index     => ( is => 'ro', default    => 'cpan' );
-has servers   => ( is => 'ro', default    => ':9200' );
+extends 'Catalyst::Model';
+
+with 'CatalystX::Component::Traits';
+
+has esx_model => (
+    is         => 'ro',
+    lazy_build => 1,
+    handles    => ['es'],
+);
+
+has index => (
+    is      => 'ro',
+    default => 'cpan',
+);
+
+has servers => (
+    is      => 'ro',
+    default => ':9200',
+);
 
 sub _build_esx_model {
     MetaCPAN::Model->new( es => shift->servers );

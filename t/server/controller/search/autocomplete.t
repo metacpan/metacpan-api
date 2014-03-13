@@ -1,7 +1,8 @@
 use strict;
 use warnings;
-use Test::More;
+
 use MetaCPAN::Server::Test;
+use Test::More;
 
 test_psgi app, sub {
     my $cb = shift;

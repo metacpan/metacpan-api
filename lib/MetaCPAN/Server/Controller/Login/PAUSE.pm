@@ -1,17 +1,24 @@
 package MetaCPAN::Server::Controller::Login::PAUSE;
 
-use Moose;
-BEGIN { extends 'MetaCPAN::Server::Controller::Login' }
-use JSON;
-use Email::Sender::Simple ();
-use Email::Simple         ();
-use CHI                   ();
-use Digest::SHA1          ();
-use Encode                ();
-use Try::Tiny;
+use strict;
+use warnings;
 use namespace::autoclean;
 
-has cache => ( is => 'ro', builder => '_build_cache' );
+use CHI                   ();
+use Digest::SHA1          ();
+use Email::Sender::Simple ();
+use Email::Simple         ();
+use Encode                ();
+use JSON;
+use Moose;
+use Try::Tiny;
+
+BEGIN { extends 'MetaCPAN::Server::Controller::Login' }
+
+has cache => (
+    is      => 'ro',
+    builder => '_build_cache',
+);
 
 sub _build_cache {
     CHI->new(

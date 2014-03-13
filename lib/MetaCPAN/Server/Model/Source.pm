@@ -1,16 +1,25 @@
 package MetaCPAN::Server::Model::Source;
 
-use Moose;
-extends 'Catalyst::Model';
+use strict;
+use warnings;
 
-use MooseX::Types::Path::Class qw(:all);
-use Path::Class qw(file dir);
+use Archive::Any     ();
 use File::Find::Rule ();
 use MetaCPAN::Util   ();
-use Archive::Any     ();
+use Moose;
+use MooseX::Types::Path::Class qw(:all);
+use Path::Class qw(file dir);
 
-has cpan => ( is => 'ro', isa => Dir, coerce => 1, required => 1 );
+extends 'Catalyst::Model';
+
 has base_dir => (
+    is       => 'ro',
+    isa      => Dir,
+    coerce   => 1,
+    required => 1,
+);
+
+has cpan => (
     is       => 'ro',
     isa      => Dir,
     coerce   => 1,

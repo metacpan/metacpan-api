@@ -1,8 +1,9 @@
-use Test::More;
 use strict;
 use warnings;
 
 use MetaCPAN::Server::Test;
+use Test::More;
+
 use lib 't/lib';
 use MetaCPAN::TestHelpers;
 

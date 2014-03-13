@@ -1,14 +1,15 @@
 use strict;
 use warnings;
-use Test::More;
-use MetaCPAN::Script::Runner;
-use MetaCPAN::Script::Release;
-use FindBin;
-use File::Temp qw( tempdir );
-use File::Spec::Functions qw( catfile );
-use Archive::Any;
 
-my $authordir = "t/var/tmp/fakecpan/authors/id/L/LO/LOCAL";
+use Archive::Any;
+use File::Spec::Functions qw( catfile );
+use File::Temp qw( tempdir );
+use FindBin;
+use MetaCPAN::Script::Release;
+use MetaCPAN::Script::Runner;
+use Test::More;
+
+my $authordir = 't/var/tmp/fakecpan/authors/id/L/LO/LOCAL';
 
 my $config = do {
 
@@ -30,7 +31,7 @@ foreach my $test (
     my ( $name, $genby, $files ) = @$test;
 
     my $path = "$authordir/$name.$ext";
-    die "You need to build your fakepan (with t/fakepan.t) first"
+    die 'You need to build your fakepan (with t/fakepan.t) first'
         unless -e $path;
 
     my $archive = Archive::Any->new($path);

@@ -1,9 +1,13 @@
 package MetaCPAN::Server::Controller;
-use Moose;
+
+use strict;
+use warnings;
 use namespace::autoclean;
+
 use JSON;
 use List::MoreUtils ();
 use Moose::Util     ();
+use Moose;
 
 BEGIN { extends 'Catalyst::Controller'; }
 
@@ -16,15 +20,18 @@ __PACKAGE__->config(
     }
 );
 
-has type =>
-    ( is => 'ro', lazy => 1, default => sub { shift->action_namespace } );
+has type => (
+    is      => 'ro',
+    lazy    => 1,
+    default => sub { shift->action_namespace },
+);
 
 has relationships => (
     is      => 'ro',
     isa     => 'HashRef',
     default => sub { {} },
     traits  => ['Hash'],
-    handles => { has_relationships => 'count' }
+    handles => { has_relationships => 'count' },
 );
 
 my $MAX_SIZE = 5000;
@@ -215,6 +222,7 @@ sub end : Private {
 }
 
 __PACKAGE__->meta->make_immutable;
+1;
 
 __END__
 
@@ -260,3 +268,5 @@ the request body).
 
 B<The number of documents that can be joined is limited to 1000 per
 relationship for now.>
+
+=cut

@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+
 use Test::More 0.88;
 use Test::Builder::Tester;
 
@@ -20,6 +21,7 @@ use Test::Builder::Tester;
 
 #use MetaCPAN::Server::Test;
 use lib 't/lib';
+
 use MetaCPAN::TestHelpers;
 
 sub chomped { chomp( my $s = $_[0] ); $s }

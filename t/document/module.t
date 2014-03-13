@@ -1,8 +1,8 @@
 use strict;
 use warnings;
-use Test::More;
 
 use MetaCPAN::Document::Module;
+use Test::More;
 
 subtest hide_from_pause => sub {
     foreach my $test (

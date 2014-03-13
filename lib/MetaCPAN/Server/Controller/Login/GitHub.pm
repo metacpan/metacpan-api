@@ -1,12 +1,19 @@
 package MetaCPAN::Server::Controller::Login::GitHub;
 
-use Moose;
-BEGIN { extends 'MetaCPAN::Server::Controller::Login' }
-use LWP::UserAgent;
+use strict;
+use warnings;
+
 use HTTP::Request::Common;
 use JSON;
+use LWP::UserAgent;
+use Moose;
 
-has [qw(consumer_key consumer_secret)] => ( is => 'ro', required => 1 );
+BEGIN { extends 'MetaCPAN::Server::Controller::Login' }
+
+has [qw(consumer_key consumer_secret)] => (
+    is       => 'ro',
+    required => 1,
+);
 
 sub index : Path {
     my ( $self, $c ) = @_;

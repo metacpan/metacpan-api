@@ -1,8 +1,8 @@
-use Test::More;
 use strict;
 use warnings;
 
 use MetaCPAN::Server::Test;
+use Test::More;
 
 # Work around an issue with JSON::XS 3.0 and the accompanying JSON 2.9 release.
 # (Test::More::is_deeply with stringiying objects says 1 != '1'.)

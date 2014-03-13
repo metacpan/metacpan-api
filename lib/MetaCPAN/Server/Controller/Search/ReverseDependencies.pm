@@ -1,6 +1,12 @@
 package MetaCPAN::Server::Controller::Search::ReverseDependencies;
+
+use strict;
+use warnings;
+
 use Moose;
+
 BEGIN { extends 'MetaCPAN::Server::Controller' }
+
 with 'MetaCPAN::Server::Role::JSONP';
 
 has '+type' => ( default => 'release' );

@@ -1,12 +1,15 @@
 package MetaCPAN::Script::Mirrors;
 
-use Moose;
-with 'MooseX::Getopt';
-use Log::Contextual qw( :log :dlog );
-with 'MetaCPAN::Role::Common';
-use MetaCPAN::Document::Mirror;
+use strict;
+use warnings;
+
 use JSON ();
 use LWP::UserAgent;
+use Log::Contextual qw( :log :dlog );
+use MetaCPAN::Document::Mirror;
+use Moose;
+
+with 'MetaCPAN::Role::Common', 'MooseX::Getopt';
 
 sub run {
     my $self = shift;
@@ -17,7 +20,8 @@ sub run {
 sub index_mirrors {
     my $self = shift;
     my $ua   = LWP::UserAgent->new;
-    log_info { "Getting mirrors.json file from " . $self->cpan };
+    log_info { 'Getting mirrors.json file from ' . $self->cpan };
+
     my $json    = $self->cpan->file( 'indices', 'mirrors.json' )->slurp;
     my $type    = $self->index->type('mirror');
     my $mirrors = JSON::XS::decode_json($json);
@@ -31,9 +35,10 @@ sub index_mirrors {
             }
         );
     }
-    log_info {"done"};
+    log_info {'done'};
 }
 
+__PACKAGE__->meta->make_immutable;
 1;
 
 =pod

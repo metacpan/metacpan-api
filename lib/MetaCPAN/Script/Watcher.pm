@@ -1,20 +1,27 @@
 package MetaCPAN::Script::Watcher;
 
-use Moose;
-with 'MooseX::Getopt';
-with 'MetaCPAN::Role::Common';
-use Log::Contextual qw( :log );
-use CPAN::DistnameInfo;
-use MetaCPAN::Util;
+use strict;
+use warnings;
 
+use CPAN::DistnameInfo;
 use JSON::XS;
+use Log::Contextual qw( :log );
+use MetaCPAN::Util;
+use Moose;
+
+with 'MetaCPAN::Role::Common', 'MooseX::Getopt';
 
 has backpan => (
     is            => 'ro',
     isa           => 'Bool',
     documentation => 'update deleted tarballs only',
 );
-has dry_run => ( is => 'ro', isa => 'Bool', default => 0 );
+
+has dry_run => (
+    is      => 'ro',
+    isa     => 'Bool',
+    default => 0,
+);
 
 my $fails  = 0;
 my $latest = 0;
@@ -240,7 +247,10 @@ sub reindex_release {
 
 }
 
+__PACKAGE__->meta->make_immutable;
 1;
+
+=pod
 
 =head1 SYNOPSIS
 
@@ -261,3 +271,5 @@ From that point on, it will look in the RECENT files for new deletions
 and process them.
 
 L<http://friendfeed.com/cpan>
+
+=cut

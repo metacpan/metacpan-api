@@ -1,10 +1,13 @@
 use strict;
 use warnings;
-use Test::More;
-use MetaCPAN::Server::Test;
-use lib 't/lib';
-use MetaCPAN::TestHelpers;
+
 use Encode;
+use MetaCPAN::Server::Test;
+use Test::More;
+
+use lib 't/lib';
+
+use MetaCPAN::TestHelpers;
 
 test_psgi app, sub {
     my $cb = shift;

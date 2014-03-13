@@ -1,8 +1,8 @@
-use Test::More;
 use strict;
 use warnings;
 
 use MetaCPAN::Document::Author;
+use Test::More;
 
 my @errors = MetaCPAN::Document::Author->validate(
     { perlmongers => { name => 'foo.pm' } } );

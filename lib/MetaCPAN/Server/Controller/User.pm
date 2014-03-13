@@ -1,13 +1,17 @@
 package MetaCPAN::Server::Controller::User;
 
-use Moose;
-BEGIN { extends 'Catalyst::Controller::REST' }
+use strict;
+use warnings;
+
 use DateTime;
+use Moose;
+
+BEGIN { extends 'Catalyst::Controller::REST' }
 
 __PACKAGE__->config(
     json_options => { relaxed => 1, allow_nonref => 1 },
     default      => 'text/html',
-    map => { 'text/html' => [qw(View JSON)] }
+    map => { 'text/html' => [qw(View JSON)] },
 );
 
 sub auto : Private {

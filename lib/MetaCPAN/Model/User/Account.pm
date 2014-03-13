@@ -1,11 +1,16 @@
 package MetaCPAN::Model::User::Account;
+
+use strict;
+use warnings;
+
 use Moose;
 use ElasticSearchX::Model::Document;
+
 use MetaCPAN::Model::User::Identity;
-use MetaCPAN::Util;
-use MooseX::Types::Structured qw(Dict);
-use MooseX::Types::Moose qw(Str ArrayRef);
 use MetaCPAN::Types qw(:all);
+use MetaCPAN::Util;
+use MooseX::Types::Moose qw(Str ArrayRef);
+use MooseX::Types::Structured qw(Dict);
 
 =head1 PROPERTIES
 
@@ -203,3 +208,4 @@ sub find_token {
 }
 
 __PACKAGE__->meta->make_immutable;
+1;

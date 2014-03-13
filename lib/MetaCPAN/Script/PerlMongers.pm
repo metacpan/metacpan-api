@@ -1,23 +1,17 @@
 package MetaCPAN::Script::PerlMongers;
 
-use Moose;
+use strict;
+use warnings;
 use feature 'say';
 
 use Data::Dump qw( dump );
-use XML::Simple;
-use WWW::Mechanize;
+use Find::Lib '../lib';
+use Moose;
 use WWW::Mechanize::Cached;
+use WWW::Mechanize;
+use XML::Simple;
 
 with 'MetaCPAN::Role::Common';
-
-=head1 SYNOPSIS
-
-Loads author info into db. Requires the presence of a local CPAN/minicpan.
-
-=cut
-
-use Data::Dump qw( dump );
-use Find::Lib '../lib';
 
 sub index_perlmongers {
 
@@ -85,7 +79,7 @@ sub get_pm_groups {
     return \@groups;
 
 }
-
+__PACKAGE__->meta->make_immutable;
 1;
 
 =pod
@@ -93,6 +87,7 @@ sub get_pm_groups {
 =head1 SYNOPSIS
 
 Parse out PerlMonger Group info and add it to /cpan/perlmongers
+
 
 =head2 get_pm_groups
 
@@ -106,3 +101,5 @@ Adds/updates all PerlMongers groups to ElasticSearch.
 =head1 SOURCE
 
 L<http://www.pm.org/groups/perl_mongers.xml>
+
+=cut

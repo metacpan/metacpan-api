@@ -1,8 +1,16 @@
 package MetaCPAN::Types;
-use ElasticSearch;
-use MooseX::Getopt::OptionTypeMap;
-use JSON;
+
+use strict;
+use warnings;
+
 use CPAN::Meta;
+use ElasticSearch;
+use ElasticSearchX::Model::Document::Types qw(:all);
+use JSON;
+use MooseX::Getopt::OptionTypeMap;
+use MooseX::Types::Common::String qw(NonEmptySimpleStr);
+use MooseX::Types::Moose qw/Int Num Str ArrayRef HashRef Item Undef/;
+use MooseX::Types::Structured qw(Dict Tuple Optional);
 
 use MooseX::Types -declare => [
     qw(
@@ -23,10 +31,6 @@ use MooseX::Types -declare => [
         )
 ];
 
-use MooseX::Types::Structured qw(Dict Tuple Optional);
-use MooseX::Types::Moose qw/Int Num Str ArrayRef HashRef Item Undef/;
-use ElasticSearchX::Model::Document::Types qw(:all);
-use MooseX::Types::Common::String qw(NonEmptySimpleStr);
 
 subtype PerlMongers,
     as ArrayRef [ Dict [ url => Optional [Str], name => NonEmptySimpleStr ] ];
@@ -82,6 +86,7 @@ coerce Profile, from HashRef,
 
 subtype Tests,
     as Dict [ fail => Int, na => Int, pass => Int, unknown => Int ];
+
 subtype BugSummary,
     as Dict [
     (   map { $_ => Optional [Int] }
@@ -115,8 +120,8 @@ coerce Resources, from HashRef, via {
     };
 };
 
-class_type "CPAN::Meta";
-coerce HashRef, from "CPAN::Meta", via {
+class_type 'CPAN::Meta';
+coerce HashRef, from 'CPAN::Meta', via {
     my $struct = eval { $_->as_struct( { version => 2 } ); };
     return $struct ? $struct : $_->as_struct;
 };

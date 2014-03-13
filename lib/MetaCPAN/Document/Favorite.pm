@@ -1,8 +1,13 @@
 package MetaCPAN::Document::Favorite;
+
+use strict;
+use warnings;
+
 use Moose;
 use ElasticSearchX::Model::Document;
-use MetaCPAN::Types qw(:all);
+
 use DateTime;
+use MetaCPAN::Types qw(:all);
 use MetaCPAN::Util;
 
 has id => (

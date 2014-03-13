@@ -1,15 +1,18 @@
 package MetaCPAN::Role::Common;
 
-use Moose::Role;
+use strict;
+use warnings;
+
 use ElasticSearch;
+use ElasticSearchX::Model::Document::Types qw(:all);
+use FindBin;
 use Log::Contextual qw( set_logger :dlog );
 use Log::Log4perl ':easy';
-use MetaCPAN::Types qw(:all);
-use ElasticSearchX::Model::Document::Types qw(:all);
-use MooseX::Types::Path::Class qw(:all);
-use FindBin;
-use Path::Class ();
 use MetaCPAN::Model;
+use MetaCPAN::Types qw(:all);
+use Moose::Role;
+use MooseX::Types::Path::Class qw(:all);
+use Path::Class ();
 
 has 'cpan' => (
     is         => 'rw',
@@ -17,7 +20,7 @@ has 'cpan' => (
     lazy_build => 1,
     coerce     => 1,
     documentation =>
-        'Location of a local CPAN mirror, looks for $ENV{MINICPAN} and ~/CPAN'
+        'Location of a local CPAN mirror, looks for $ENV{MINICPAN} and ~/CPAN',
 );
 
 has level => (
@@ -25,7 +28,7 @@ has level => (
     isa           => 'Str',
     required      => 1,
     trigger       => \&set_level,
-    documentation => 'Log level'
+    documentation => 'Log level',
 );
 
 has es => (
@@ -33,7 +36,7 @@ has es => (
     is            => 'ro',
     required      => 1,
     coerce        => 1,
-    documentation => 'ElasticSearch http connection string'
+    documentation => 'ElasticSearch http connection string',
 );
 
 has model => ( lazy_build => 1, is => 'ro', traits => ['NoGetopt'] );
@@ -43,14 +46,14 @@ has index => (
     is            => 'ro',
     isa           => 'Str',
     default       => 'cpan',
-    documentation => 'Index to use, defaults to "cpan"'
+    documentation => 'Index to use, defaults to "cpan"',
 );
 
 has port => (
     isa           => 'Int',
     is            => 'ro',
     required      => 1,
-    documentation => 'Port for the proxy, defaults to 5000'
+    documentation => 'Port for the proxy, defaults to 5000',
 );
 
 has logger => (
@@ -59,7 +62,7 @@ has logger => (
     isa       => Logger,
     coerce    => 1,
     predicate => 'has_logger',
-    traits    => ['NoGetopt']
+    traits    => ['NoGetopt'],
 );
 
 has home => (

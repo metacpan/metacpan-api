@@ -1,5 +1,8 @@
 package Captcha::Mock;
 
+use strict;
+use warnings;
+
 sub check_answer {
     return { is_valid => $_[4], error => 'error' };
 }
@@ -9,10 +12,12 @@ sub new {
 }
 
 package main;
+
 use strict;
 use warnings;
-use Test::More;
+
 use MetaCPAN::Server::Test;
+use Test::More;
 
 test_psgi app, sub {
     my $cb = shift;

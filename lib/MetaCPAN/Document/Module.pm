@@ -1,8 +1,13 @@
 package MetaCPAN::Document::Module;
+
+use strict;
+use warnings;
+
 use Moose;
 use ElasticSearchX::Model::Document;
-use MetaCPAN::Util;
+
 use MetaCPAN::Types qw(AssociatedPod);
+use MetaCPAN::Util;
 
 =head1 SYNOPSIS
 
@@ -64,14 +69,36 @@ has name => (
     index    => 'analyzed',
     analyzer => [qw(standard camelcase lowercase)],
 );
+
 has version => ( is => 'ro' );
-has version_numified =>
-    ( is => 'ro', isa => 'Num', lazy_build => 1, required => 1 );
-has indexed    => ( is => 'rw', required => 1, isa => 'Bool', default => 0 );
-has authorized => ( is => 'rw', required => 1, isa => 'Bool', default => 1 );
+
+has version_numified => (
+    is         => 'ro',
+    isa        => 'Num',
+    lazy_build => 1,
+    required   => 1,
+);
+
+has indexed => (
+    is       => 'rw',
+    required => 1,
+    isa      => 'Bool',
+    default  => 0,
+);
+
+has authorized => (
+    is       => 'rw',
+    required => 1,
+    isa      => 'Bool',
+    default  => 1,
+);
 
 # REINDEX: make 'ro' once a full reindex has been done
-has associated_pod => ( isa => AssociatedPod, required => 0, is => 'rw' );
+has associated_pod => (
+    isa      => AssociatedPod,
+    required => 0,
+    is       => 'rw',
+);
 
 sub _build_version_numified {
     my $self = shift;
@@ -149,3 +176,4 @@ sub set_associated_pod {
 }
 
 __PACKAGE__->meta->make_immutable;
+1;

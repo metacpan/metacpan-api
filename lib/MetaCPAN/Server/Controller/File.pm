@@ -1,8 +1,14 @@
 package MetaCPAN::Server::Controller::File;
-use Moose;
+
+use strict;
+use warnings;
+
 use ElasticSearchX::Model::Util;
+use Moose;
+
 BEGIN { extends 'MetaCPAN::Server::Controller' }
-with "MetaCPAN::Server::Role::JSONP";
+
+with 'MetaCPAN::Server::Role::JSONP';
 
 __PACKAGE__->config(
     relationships => {
