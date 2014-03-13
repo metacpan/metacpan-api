@@ -60,7 +60,7 @@ test_psgi app, sub {
                 }
             )
         ),
-        'POST /author/DOY?join=release with query body';
+        'POST /author/DOY?join=release with query body',
     );
     ok( $json = eval { decode_json( $res->content ) }, 'valid json' );
     is( @{ $json->{release}->{hits}->{hits} }, 1, 'joined 1 release' );
