@@ -112,7 +112,7 @@ copy(
     file(qw(t var fakecpan bugs.tsv)),
     file( $config->{cpan}, qw(bugs.tsv) )
 );
-local @ARGV = ( 'author', '--cpan', $config->{cpan} );
+local @ARGV = ('author');
 ok( MetaCPAN::Script::Author->new_with_options($config)->run,
     'index authors' );
 
