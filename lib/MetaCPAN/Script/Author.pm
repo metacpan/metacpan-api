@@ -25,6 +25,7 @@ Loads author info into db. Requires the presence of a local CPAN/minicpan.
 has author_fh => (
     is      => 'rw',
     traits  => ['NoGetopt'],
+    lazy    => 1,
     default => sub { shift->cpan . '/authors/00whois.xml' },
 );
 
