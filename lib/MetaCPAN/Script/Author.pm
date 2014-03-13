@@ -7,13 +7,13 @@ use Moose;
 with 'MooseX::Getopt', 'MetaCPAN::Role::Common';
 
 use DateTime::Format::ISO8601 ();
-use Email::Valid ();
-use Encode       ();
-use File::stat   ();
-use JSON::XS     ();
+use Email::Valid              ();
+use Encode                    ();
+use File::stat                ();
+use JSON::XS                  ();
 use Log::Contextual qw( :log );
 use MetaCPAN::Document::Author;
-use URI          ();
+use URI ();
 use XML::Simple qw(XMLin);
 
 =head1 SYNOPSIS
