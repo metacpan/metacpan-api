@@ -123,7 +123,6 @@ requires 'Regexp::Common';
 requires 'Regexp::Common::time';
 requires 'Safe', '2.35', # bug fixes (used by Parse::PMFile)
 requires 'Starman';
-requires 'Test::More';
 requires 'Time::Local';
 requires 'Throwable::Error';
 requires 'Try::Tiny';
