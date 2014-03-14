@@ -129,8 +129,10 @@ after add_identity => sub {
         $self->clear_looks_human;
         my $profile = $self->index->model->index('cpan')->type('author')
             ->get( $identity->{key} );
-        $profile->user( $self->id ) if ($profile);
-        $profile->put;
+        if ($profile) {
+            $profile->user( $self->id );
+            $profile->put;
+        }
     }
 };
 
@@ -172,7 +174,8 @@ Find an account based on its identity.
 sub find {
     my ( $self, $p ) = @_;
     return $self->filter(
-        {   and => [
+        {
+            and => [
                 { term => { 'account.identity.name' => $p->{name} } },
                 { term => { 'account.identity.key'  => $p->{key} } }
             ]
