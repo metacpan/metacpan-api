@@ -51,7 +51,7 @@ sub _build_abstract {
     # an abstract and name based on filename
     if( !$section && $self->path =~ /\.pod$/ ) {
         $section = $self->path;
-        $section =~ s{^lib/}{};
+        $section =~ s{^(lib|pod|docs)/}{};
         $section =~ s{\.pod$}{};
         $section =~ s{/}{::}g;
     }

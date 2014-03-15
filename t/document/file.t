@@ -115,7 +115,8 @@ END
     is( $file->abstract,
         'An object containing information about how to get access to teh Moby databases, resources, etc. from the mobycentral.config file'
     );
-    is( $file->module->[0]
+    is(
+        $file->module->[0]
             ->hide_from_pause( ${ $file->content }, $file->name ),
         0, 'indexed'
     );
@@ -223,6 +224,45 @@ END
     );
     is( $file->documentation, 'Foo', 'POD in __DATA__ section' );
     is( $file->description, 'hot stuff * Foo * Bar' );
+}
+
+{
+    my $content = <<'END';
+package Foo::Bar::Baz;
+
+=head1 DESCRIPTION
+
+hot stuff
+
+=over
+
+=item *
+
+Foo
+
+=item *
+
+Bar
+
+=back
+
+END
+
+    foreach my $folder ( 'pod', 'lib', 'docs' ) {
+        my $file = MetaCPAN::Document::File->new(
+            author       => 'Foo',
+            content_cb   => sub { \$content },
+            distribution => 'Foo',
+            name         => 'Baz.pod',
+            path         => $folder . '/Foo/Bar/Baz.pod',
+            release      => 'release',
+        );
+        is( $file->documentation, 'Foo::Bar::Baz',
+                  'Fakes a name when no name section exists in '
+                . $folder
+                . ' folder' );
+        is( $file->abstract, undef, 'abstract undef when NAME is missing' );
+    }
 }
 
 done_testing;
