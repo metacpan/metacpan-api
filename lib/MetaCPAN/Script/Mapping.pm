@@ -448,6 +448,21 @@ sub deploy_mapping {
     1;
 }
 
+sub _prompt {
+    my ( $self, $msg ) = @_;
+
+    if (is_interactive) {
+        print colored( ['bold red'], "*** Warning ***: $msg" ), "\n";
+        my $answer = prompt
+            'Are you sure you want to do this (type "YES" to confirm) ? ';
+        if ( $answer ne 'YES' ) {
+            print "bye.\n";
+            exit 0;
+        }
+        print "alright then...\n";
+    }
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
 
