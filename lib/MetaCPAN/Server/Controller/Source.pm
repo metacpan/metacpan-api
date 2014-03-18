@@ -5,6 +5,7 @@ use warnings;
 
 use Moose;
 use Plack::App::Directory;
+use Plack::MIME;
 
 BEGIN { extends 'MetaCPAN::Server::Controller' }
 
@@ -32,7 +33,7 @@ sub get : Chained('index') : PathPart('') : Args {
     }
     else {
         $c->stash->{path} = $file;
-        $c->res->content_type('text/plain');
+        $c->res->content_type(Plack::MIME->mime_type($file) || 'text/plain');
         $c->res->body( $file->openr );
     }
 }
