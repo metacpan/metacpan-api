@@ -22,7 +22,7 @@ test_psgi app, sub {
         if ( $k eq '/source/Moose' ) {
             like( $res->content, qr/package Moose/, 'Moose source' );
             is( $res->header('content-type'),
-                'text/x-script.perl-module; charset=UTF-8',
+                'text/plain; charset=UTF-8',
                 'Content-type'
             );
         }
