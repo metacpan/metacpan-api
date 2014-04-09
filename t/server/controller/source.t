@@ -25,6 +25,11 @@ test_psgi app, sub {
                 'text/plain; charset=UTF-8',
                 'Content-type'
             );
+            is( $res->header('X-Content-Type'),
+                'x-script.perl-module; charset=UTF-8',
+                'X-Content-Type'
+            );
+
         }
         elsif ( $k =~ /MANIFEST/ ) {
 
