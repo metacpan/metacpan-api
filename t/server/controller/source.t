@@ -21,15 +21,13 @@ test_psgi app, sub {
         is( $res->code, $v, "code $v" );
         if ( $k eq '/source/Moose' ) {
             like( $res->content, qr/package Moose/, 'Moose source' );
-            is( $res->header('content-type'),
+            is(
+                $res->header('content-type'),
                 'text/plain; charset=UTF-8',
                 'Content-type'
             );
             is( $res->header('X-Content-Type'),
-                'x-script.perl-module; charset=UTF-8',
-                'X-Content-Type'
-            );
-
+                'text/x-script.perl-module', 'X-Content-Type' );
         }
         elsif ( $k =~ /MANIFEST/ ) {
 
