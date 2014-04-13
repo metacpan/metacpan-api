@@ -26,8 +26,13 @@ test_psgi app, sub {
                 'text/plain; charset=UTF-8',
                 'Content-type'
             );
+            # Used for fastly on st.aticpan.org
             is( $res->header('X-Content-Type'),
                 'text/x-script.perl-module', 'X-Content-Type' );
+
+            is( $res->header('Surrogate-Control'),
+                'max-age=86400', 'Surrogate-Control' );
+
         }
         elsif ( $k =~ /MANIFEST/ ) {
 
