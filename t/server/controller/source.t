@@ -21,10 +21,18 @@ test_psgi app, sub {
         is( $res->code, $v, "code $v" );
         if ( $k eq '/source/Moose' ) {
             like( $res->content, qr/package Moose/, 'Moose source' );
-            is( $res->header('content-type'),
+            is(
+                $res->header('content-type'),
                 'text/plain; charset=UTF-8',
                 'Content-type'
             );
+            # Used for fastly on st.aticpan.org
+            is( $res->header('X-Content-Type'),
+                'text/x-script.perl-module', 'X-Content-Type' );
+
+            is( $res->header('Surrogate-Control'),
+                'max-age=86400', 'Surrogate-Control' );
+
         }
         elsif ( $k =~ /MANIFEST/ ) {
 

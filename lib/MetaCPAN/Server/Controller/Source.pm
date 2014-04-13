@@ -5,6 +5,7 @@ use warnings;
 
 use Moose;
 use Plack::App::Directory;
+use Plack::MIME;
 
 BEGIN { extends 'MetaCPAN::Server::Controller' }
 
@@ -32,6 +33,12 @@ sub get : Chained('index') : PathPart('') : Args {
     }
     else {
         $c->stash->{path} = $file;
+        # Tell fastly to cache for a day (for st.aticpan.org,
+        # api.metacpan.org does not go through fastly)
+        my $max_age_seconds = 60 * 60 * 24;
+        $c->res->header('Surrogate-Control' => "max-age=${max_age_seconds}");
+        # Add X-Content-Type header, for fastly to rewrite on st.aticpan.org
+        $c->res->header( 'X-Content-Type' => Plack::MIME->mime_type($file) || 'text/plain' );
         $c->res->content_type('text/plain');
         $c->res->body( $file->openr );
     }
