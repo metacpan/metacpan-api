@@ -122,7 +122,7 @@ has [qw(license version author archive)] => (
 has date => (
     is       => 'ro',
     required => 1,
-    isa      => 'DateTime,'
+    isa      => 'DateTime',
 );
 
 has download_url => (
