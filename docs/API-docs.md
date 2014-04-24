@@ -51,10 +51,6 @@ Performing a search without any constraints is an easy way to get sample data
 * [[/rating/_search|http://api.metacpan.org/v0/rating/_search]]
 * [[/release/_search|http://api.metacpan.org/v0/release/_search]]
 
-## GET convenience URLs
-
-You should be able to run most POST queries, but very few GET urls are currently exposed. However, these convenience endpoints can get you started.  You should note that they behave differently than the POST queries in that they will return to you the latest version of a module or dist and they remove a lot of the verbose ElasticSearch data which wraps results.
-
 ## Joins
 
 ElasticSearch itself doesn't support joining data across multiple types. The API server can, however, handle a `join` query parameter if the underlying type was set up accordingly. Browse [[https://github.com/CPAN-API/cpan-api/blob/master/lib/MetaCPAN/Server/Controller/]] to see all join conditions. Here are some examples.
@@ -90,6 +86,10 @@ curl -XPOST http://api.metacpan.org/v0/author/PERLER?join=release -d '
 Simply add a `callback` query parameter with the name of your callback, and you'll get a JSONP response.
 
 * [[/favorite?q=distribution:Moose&callback=cb|http://api.metacpan.org/favorite?q=distribution:Moose&callback=cb]]
+
+## GET convenience URLs
+
+You should be able to run most POST queries, but very few GET urls are currently exposed. However, these convenience endpoints can get you started.  You should note that they behave differently than the POST queries in that they will return to you the latest version of a module or dist and they remove a lot of the verbose ElasticSearch data which wraps results.
 
 ### `/distribution/{distribution}`
 
