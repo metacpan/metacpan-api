@@ -67,7 +67,7 @@ test_psgi app, sub {
                 'got json' );
 
             is_deeply $json->{hits}{hits}->[0]->{fields},
-                { pauselen2 => 18 }, 'script_fields via metacpan_script'
+                { pauselen2 => [18] }, 'script_fields via metacpan_script'
                 or diag explain $json;
         },
     );
