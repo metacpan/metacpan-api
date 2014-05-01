@@ -386,8 +386,10 @@ sub import_tarball {
                             {   name => $pkg,
                                 defined $version
 
-                    # Stringify if it's an object (and don't die if it's not).
-                                ? ( version => $version . '' )
+                    # Stringify if it's aversion object, otherwise fall back to stupid stringification
+                    # Changes in Module::Metadata were causing inconsistencies in the return value,
+                    # we are just trying to survive.
+                                ? ( version => ref $version eq "version" ? $version->stringify : ($version . '') )
                                 : ()
                             }
                         );
