@@ -94,7 +94,7 @@ sub search : Path('_search') : ActionClass('Deserialize') {
 
     # shallow copy
     my $params = { %{ $req->params } };
-    delete $params->{$_} for qw(type index body);
+    delete $params->{$_} for qw(type index body join);
     {
         my $size = $params->{size} || ( $req->data || {} )->{size};
         $c->detach( '/bad_request',

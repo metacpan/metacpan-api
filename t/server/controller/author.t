@@ -23,7 +23,7 @@ test_psgi app, sub {
         ok( my $json = eval { decode_json( $res->content ) }, 'valid json' );
         ok( $json->{pauseid} eq 'MO', 'pauseid is MO' )
             if ( $k eq '/author/MO' );
-        ok( ref $json->{author} eq 'HASH', '_mapping' )
+        ok( ref $json->{cpan_v1}{mappings}{author} eq 'HASH', '_mapping' )
             if ( $k eq '/author/_mapping' );
     }
 
