@@ -11,8 +11,8 @@ test_release(
     {   name        => 'Meta-Provides-1.01',
         author      => 'RWSTAUNER',
         abstract    => 'has provides key in meta',
-        authorized  => \1,
-        first       => \1,
+        authorized  => 1,
+        first       => 1,
         provides    => [ 'Meta::Provides', ],
         status      => 'latest',
         extra_tests => sub {
