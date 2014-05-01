@@ -52,7 +52,7 @@ sub store_session_data {
             index   => $self->_session_es_index,
             type    => $self->_session_es_type,
             id      => $sid,
-            data    => $session,
+            body    => $session,
             refresh => 1,
         );
     }
