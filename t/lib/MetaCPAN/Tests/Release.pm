@@ -124,7 +124,7 @@ test release => sub {
     my ($self) = @_;
 
     foreach my $attr (@attrs) {
-        is $self->$attr, $self->data->$attr, "release $attr";
+        is $self->data->$attr, $self->$attr, "release $attr";
     }
 };
 
