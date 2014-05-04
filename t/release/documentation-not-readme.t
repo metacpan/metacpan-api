@@ -16,7 +16,7 @@ test_release(
 
 sub test_modules {
     my ($self) = @_;
-    my @files = @{ $self->modules };
+    my @files = @{ $self->module_files };
     is( @files, 1, 'includes one file with modules' );
     my $file = shift @files;
     is( @{ $file->module }, 1, 'file contains one module' );

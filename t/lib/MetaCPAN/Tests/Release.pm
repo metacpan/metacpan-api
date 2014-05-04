@@ -62,14 +62,14 @@ sub _build_files {
     return $self->filter_files();
 }
 
-has modules => (
+has module_files => (
     is      => 'ro',
     isa     => 'ArrayRef',
     lazy    => 1,
-    builder => '_build_modules',
+    builder => '_build_module_files',
 );
 
-sub _build_modules {
+sub _build_module_files {
     my ($self) = @_;
     return $self->filter_files(
         [ { exists => { field => 'file.module.name' } }, ] );
