@@ -91,7 +91,7 @@ sub filter_files {
                     @{ $add_filters || [] },
                 ],
             }
-        )->all
+        )->size(100)->all
     ];
 }
 
