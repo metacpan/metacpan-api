@@ -111,14 +111,17 @@ sub hide_from_pause {
     return 0 if defined($file_name) && $file_name =~ m{\.pm\.PL\z};
     my $pkg = $self->name;
 
-    # This regexp is *almost* the same as $PKG_REGEXP in Module::Metadata.
+# This regexp is *almost* the same as $PKG_REGEXP in Module::Metadata.
+# [s] We change `\s` to `\h` because we want to verify that it's on one line.
+# [p] We replace $PKG_NAME_REGEXP with the specific package we're looking for.
+# [v] Simplify the optional whitespace/version group ($V_NUM_REGEXP).
     return $content =~ /    # match a package declaration
-      ^[\h\{;]*             # intro chars on a line
+      ^[\h\{;]*             # intro chars on a line [s]
       package               # the word 'package'
-      \h+                   # whitespace
-      ($pkg)                # a package name
-      (\h+ v?[0-9._]+)?     # optional version number (preceded by whitespace)
-      \h*                   # optional whitesapce
+      \h+                   # whitespace [s]
+      (\Q$pkg\E)            # a package name [p]
+      (\h+ v?[0-9._]+)?     # optional version number (preceded by whitespace) [v]
+      \h*                   # optional whitesapce [s]
       [;\{]                 # semicolon line terminator or block start
     /mx ? 0 : 1;
 }
