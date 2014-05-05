@@ -259,7 +259,7 @@ sub import_tarball {
 
     my @files;
     my @list = $at->files;
-    log_debug { 'Indexing ', scalar @files, " files" };
+    log_debug { 'Indexing ', scalar @list, " files" };
     my $file_set = $cpan->type('file');
     my $bulk = $cpan->bulk( size => 10 );
 
