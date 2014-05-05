@@ -92,7 +92,7 @@ requires 'MooseX::Getopt';
 requires 'MooseX::Getopt::OptionTypeMap';
 requires 'MooseX::Types';
 requires 'MooseX::Types::Common::String';
-requires 'MooseX::Types::ElasticSearch', '0.0.2';
+requires 'MooseX::Types::ElasticSearch', '= 0.0.2';
 requires 'MooseX::Types::Moose';
 requires 'MooseX::Types::Path::Class';
 requires 'MooseX::Types::Structured';
