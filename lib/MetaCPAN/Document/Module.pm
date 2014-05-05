@@ -108,17 +108,24 @@ sub _build_version_numified {
     return MetaCPAN::Util::numify_version( $self->version );
 }
 
+my $bom
+    = qr/(?:\x00\x00\xfe\xff|\xff\xfe\x00\x00|\xfe\xff|\xff\xfe|\xef\xbb\xbf)/;
+
 sub hide_from_pause {
     my ( $self, $content, $file_name ) = @_;
     return 0 if defined($file_name) && $file_name =~ m{\.pm\.PL\z};
     my $pkg = $self->name;
 
 # This regexp is *almost* the same as $PKG_REGEXP in Module::Metadata.
+# [b] We need to allow/ignore a possible BOM since we read in binary mode.
+# Module::Metadata, for example, checks for a BOM and then sets the encoding.
 # [s] We change `\s` to `\h` because we want to verify that it's on one line.
 # [p] We replace $PKG_NAME_REGEXP with the specific package we're looking for.
 # [v] Simplify the optional whitespace/version group ($V_NUM_REGEXP).
     return $content =~ /    # match a package declaration
-      ^[\h\{;]*             # intro chars on a line [s]
+      ^                     # start of line
+       (?:\A$bom)?          # possible BOM at the start of the file [b]
+       [\h\{;]*             # intro chars on a line [s]
       package               # the word 'package'
       \h+                   # whitespace [s]
       (\Q$pkg\E)            # a package name [p]

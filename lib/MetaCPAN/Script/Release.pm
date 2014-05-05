@@ -301,6 +301,9 @@ sub import_tarball {
                     status       => $release->status,
                     indexed      => $meta->should_index_file($fpath) ? 1 : 0,
                     binary       => -B $child,
+
+                    # XXX: Should we be using a file mode or checking encoding
+                    # (like Module::Metadata's BOM handling, for instance)?
                     content_cb => sub { \( scalar $child->slurp ) },
                 }
             );
