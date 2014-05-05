@@ -29,6 +29,10 @@ env:
 
 
 before_install:
+  # We need to run a pre-1.0 instance of ES until we update everything.
+  - wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.90.13.deb
+  - sudo dpkg -i elasticsearch-0.90.13.deb
+
   - cpanm -n Devel::Cover::Report::Coveralls
   - cpanm Carton
 
@@ -37,6 +41,8 @@ install:
 
 
 before_script:
+  # Show status info for ES to verify that it's working, what version, etc.
+  - "curl http://localhost:${METACPAN_ES_TEST_PORT}/"
   - "perl -i -pe 's/(servers :)9900/$1$ENV{METACPAN_ES_TEST_PORT}/' metacpan_server_testing.conf"
 
 script:
