@@ -23,6 +23,9 @@ subtest hide_from_pause => sub {
         [ 'Pkg::SemiColons' => '; package Pkg::SemiColons; $var' ],
         [ 'Pkg::InABlock'   => '{ package Pkg::InABlock; $var }' ],
 
+        # This doesn't work as a BOM can only appear at the start of a file.
+        #[ 'Pkg::AfterABOM'  => "\xef\xbb\xbfpackage Pkg::AfterABOM" ],
+
         [ 'No::JustVar' => qq["\n\$package No::JustVar;\n"] ],
 
         # This shouldn't match, but there's only so much we can do...
@@ -44,7 +47,8 @@ subtest hide_from_pause => sub {
                 skip( 'Perl 5.14 needed for package block compilation', 1 )
                     if $] < 5.014;
                 ## no critic
-                ok eval "sub { no strict; $content }", "code compiles";
+                ok eval "sub { no strict; $content }", "code compiles"
+                    or diag $@;
             }
 
             my ($hidden) = ( $name =~ /^No::/ ? 1 : 0 );
