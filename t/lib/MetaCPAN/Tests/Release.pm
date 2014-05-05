@@ -95,6 +95,12 @@ sub filter_files {
     ];
 }
 
+has modules => (
+    is      => 'ro',
+    isa     => 'HashRef',
+    default => sub { +{} },
+);
+
 has status => (
     is      => 'ro',
     isa     => 'Str',
@@ -125,6 +131,19 @@ test release => sub {
 
     foreach my $attr (@attrs) {
         is $self->data->$attr, $self->$attr, "release $attr";
+    }
+
+    my %module_files = map { ( $_->path => $_ ) } @{ $self->files };
+    foreach my $path ( sort keys %{ $self->modules } ) {
+    SKIP: {
+            my $got = $module_files{$path}
+                or skip "File '$path' not found in release", 1;
+
+     # We may need to sort modules by name, I'm not sure if order is reliable.
+            is_deeply $got->module,
+                $self->modules->{$path}, "File '$path' has expected modules"
+                or diag Test::More::explain( $got->module );
+        }
     }
 };
 

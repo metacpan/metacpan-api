@@ -72,7 +72,8 @@ expect_output(
         ok 5 - release status
         ok 6 - release archive
         ok 7 - release name
-        1..7
+        ok 8 - File 'lib/Moose.pm' has expected modules
+        1..8
     ok 4 - release
     1..4
 ok 1 - test_release helper
@@ -82,11 +83,24 @@ TESTS
     tests => sub {
         test_release(
             'DOY/Moose-0.02',
-            {   abstract    => 'A standard perl distribution',
+            {
+                abstract    => 'A standard perl distribution',
                 extra_tests => sub {
                     ok( 1, 'hooray' );
                     diag( 'for ' . $_[0]->data->distribution );
                 },
+                modules => {
+                    'lib/Moose.pm' => [
+                        {
+                            name             => 'Moose',
+                            indexed          => \1,
+                            authorized       => \1,
+                            version          => '0.02',
+                            version_numified => 0.02,
+                            associated_pod   => 'DOY/Moose-0.02/lib/Moose.pm',
+                        },
+                    ],
+                }
             },
             'test_release helper',
         );
@@ -139,7 +153,8 @@ TESTS
 
     tests => sub {
         test_release(
-            {   author      => 'STINKYPETE',
+            {
+                author      => 'STINKYPETE',
                 name        => 'prospectus',
                 extra_tests => sub {
                     ok( 1, 'hooray' );
