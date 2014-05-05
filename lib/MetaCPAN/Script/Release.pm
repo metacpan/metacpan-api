@@ -147,7 +147,8 @@ sub run {
         if ( $self->skip ) {
             my $d     = CPAN::DistnameInfo->new($file);
             my $count = $cpan->type('release')->filter(
-                {   and => [
+                {
+                    and => [
                         { term => { archive => $d->filename } },
                         { term => { author  => $d->cpanid } },
                     ]
@@ -204,7 +205,8 @@ sub import_tarball {
     my $date    = DateTime->from_epoch( epoch => $tarball->stat->mtime );
     my $version = MetaCPAN::Util::fix_version( $d->version );
     my $meta    = CPAN::Meta->new(
-        {   version => $version || 0,
+        {
+            version => $version || 0,
             license => 'unknown',
             name    => $d->dist,
             no_index =>
@@ -330,7 +332,8 @@ sub import_tarball {
             my $file = List::Util::first { $_->path =~ /\Q$path\E$/ } @files;
             next unless $file;
             $file->add_module(
-                {   name    => $module,
+                {
+                    name    => $module,
                     version => $data->{version},
                     indexed => 1,
                 }
@@ -354,7 +357,8 @@ sub import_tarball {
 
                 foreach my $module_name ( keys %{$info} ) {
                     $file->add_module(
-                        {   name => $module_name,
+                        {
+                            name => $module_name,
                             defined $info->{$module_name}->{version}
                             ? ( version => $info->{$module_name}->{version} )
                             : (),
@@ -383,13 +387,18 @@ sub import_tarball {
                     {
                         my $version = $info->version($pkg);
                         $file->add_module(
-                            {   name => $pkg,
+                            {
+                                name => $pkg,
                                 defined $version
 
-                    # Stringify if it's aversion object, otherwise fall back to stupid stringification
-                    # Changes in Module::Metadata were causing inconsistencies in the return value,
-                    # we are just trying to survive.
-                                ? ( version => ref $version eq "version" ? $version->stringify : ($version . '') )
+# Stringify if it's a version object, otherwise fall back to stupid stringification
+# Changes in Module::Metadata were causing inconsistencies in the return value,
+# we are just trying to survive.
+                                ? (
+                                    version => ref $version eq "version"
+                                    ? $version->stringify
+                                    : ( $version . '' )
+                                    )
                                 : ()
                             }
                         );

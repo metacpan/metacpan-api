@@ -11,10 +11,12 @@ use MetaCPAN::Util;
 
 =head1 SYNOPSIS
 
-MetaCPAN::Document::Module->new(
-                                 { name             => "Some::Module",
-                                   version          => "1.1.1"
-                                 } );
+    MetaCPAN::Document::Module->new(
+        {
+            name    => "Some::Module",
+            version => "1.1.1"
+        }
+    );
 
 
 =head1 PROPERTIES
