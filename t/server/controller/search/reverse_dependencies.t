@@ -49,7 +49,8 @@ sub check_search_results {
     is scalar @$json, @$rdeps, 'got expected number of releases';
     is_deeply [
         sort map { join '-', @{ $_->{_source} }{qw(distribution version)} }
-            @$json ],
+            @$json
+        ],
         $rdeps,
         'got expected releases';
 }
