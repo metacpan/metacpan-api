@@ -21,10 +21,12 @@ use Test::More;
 
 test_psgi app, sub {
     my $cb = shift;
-    ok( my $res = $cb->(
+    ok(
+        my $res = $cb->(
             POST '/user/turing?access_token=bot',
             Content => encode_json(
-                {   challenge => "foo",
+                {
+                    challenge => "foo",
                     answer    => 0
                 }
             )
@@ -33,10 +35,12 @@ test_psgi app, sub {
     );
     is( $res->code, 400, "bad request" );
 
-    ok( $res = $cb->(
+    ok(
+        $res = $cb->(
             POST '/user/turing?access_token=bot',
             Content => encode_json(
-                {   challenge => "foo",
+                {
+                    challenge => "foo",
                     answer    => 1,
                 }
             )

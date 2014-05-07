@@ -45,7 +45,8 @@ foreach my $test (
         "correct meta spec version for $name";
 
     foreach my $file (@$files) {
-        ok( -e catfile( $tmpdir, $name, $file ),
+        ok(
+            -e catfile( $tmpdir, $name, $file ),
             "meta file $file exists in $name"
         );
     }

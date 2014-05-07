@@ -68,7 +68,8 @@ sub _emit_custom_errata {
     my @errors = map {
         my $line  = $_;
         my $error = $self->{'errata'}->{$line};
-        (   $tag->( 'dt', "Around line $line:" ),
+        (
+            $tag->( 'dt', "Around line $line:" ),
             $tag->( 'dd', map { $tag->( 'p', $_ ) } @$error ),
         );
     } sort { $a <=> $b } keys %{ $self->{'errata'} };
@@ -93,7 +94,7 @@ sub _emit_custom_errata {
     $self->emit;
 }
 
-__PACKAGE__->meta->make_immutable(inline_constructor => 0);
+__PACKAGE__->meta->make_immutable( inline_constructor => 0 );
 1;
 
 =pod

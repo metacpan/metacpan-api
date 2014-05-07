@@ -111,7 +111,8 @@ sub check_modules {
                         query  => { match_all => {} },
                         filter => {
                             and => [
-                                {   term => {
+                                {
+                                    term => {
                                         'name' => $file->{fields}->{release}
                                     }
                                 },
@@ -126,8 +127,8 @@ sub check_modules {
                     }
                 }
 
-                # if we didn't find the latest release, then look at all of the
-                # releases so we can find out what might be wrong
+               # if we didn't find the latest release, then look at all of the
+               # releases so we can find out what might be wrong
                 if ( !@releases ) {
                     foreach my $file (@files) {
                         my $release_results = $es->search(
@@ -139,7 +140,8 @@ sub check_modules {
                             query  => { match_all => {} },
                             filter => {
                                 and => [
-                                    {   term => {
+                                    {
+                                        term => {
                                             'name' =>
                                                 $file->{fields}->{release}
                                         }
@@ -159,7 +161,7 @@ sub check_modules {
                         && $releases[0]->{fields}->{status} eq 'latest' )
                     {
                         log_info {
-                            "Found latest release $releases[0]->{fields}->{name} for $pkg"
+                            "Found latest release $releases[0]->{fields}->{name} for $pkg";
                         }
                         unless $self->errors_only;
                     }
@@ -167,16 +169,16 @@ sub check_modules {
                         log_error {"Could not find latest release for $pkg"};
                         foreach my $rel (@releases) {
                             log_warn {
-                                "  Found release $rel->{fields}->{name}"
+                                "  Found release $rel->{fields}->{name}";
                             };
                             log_warn {
-                                "    STATUS    : $rel->{fields}->{status}"
+                                "    STATUS    : $rel->{fields}->{status}";
                             };
                             log_warn {
-                                "    AUTORIZED : $rel->{fields}->{authorized}"
+                                "    AUTORIZED : $rel->{fields}->{authorized}";
                             };
                             log_warn {
-                                "    DATE      : $rel->{fields}->{date}"
+                                "    DATE      : $rel->{fields}->{date}";
                             };
                         }
                         $self->error_count( $self->error_count + 1 );
@@ -184,18 +186,18 @@ sub check_modules {
                 }
                 elsif (@files) {
                     log_error {
-                        "Module $pkg doesn't have any releases in ElasticSearch!"
+                        "Module $pkg doesn't have any releases in ElasticSearch!";
                     };
                     foreach my $file (@files) {
                         log_warn {"  Found file $file->{fields}->{name}"};
                         log_warn {
-                            "    RELEASE    : $file->{fields}->{release}"
+                            "    RELEASE    : $file->{fields}->{release}";
                         };
                         log_warn {
-                            "    AUTHOR     : $file->{fields}->{author}"
+                            "    AUTHOR     : $file->{fields}->{author}";
                         };
                         log_warn {
-                            "    AUTHORIZED : $file->{fields}->{authorized}"
+                            "    AUTHORIZED : $file->{fields}->{authorized}";
                         };
                         log_warn {"    DATE       : $file->{fields}->{date}"};
                     }
@@ -203,7 +205,7 @@ sub check_modules {
                 }
                 else {
                     log_error {
-                        "Module $pkg [$dist] doesn't not appear in ElasticSearch!"
+                        "Module $pkg [$dist] doesn't not appear in ElasticSearch!";
                     };
                     $self->error_count( $self->error_count + 1 );
                 }

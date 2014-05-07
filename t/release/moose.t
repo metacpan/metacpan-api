@@ -14,7 +14,8 @@ map { $first++ } grep { $_->first } @moose;
 
 is( $first, 1, 'only one moose is first' );
 
-ok( my $faq
+ok(
+    my $faq
         = $idx->type('file')
         ->filter( { term => { 'file.documentation' => 'Moose::FAQ' } } )
         ->first,
@@ -27,7 +28,8 @@ ok( $faq->indexed, 'is indexed' );
 
 ok( !$faq->binary, 'is not binary' );
 
-ok( my $binary
+ok(
+    my $binary
         = $idx->type('file')->filter( { term => { 'file.name' => 't' } } )
         ->first,
     'get a t/ directory'
@@ -35,7 +37,8 @@ ok( my $binary
 
 ok( $binary->binary, 'is binary' );
 
-ok( my $ppport
+ok(
+    my $ppport
         = $idx->type('file')
         ->filter( { term => { 'file.documentation' => 'ppport.h' } } )->first,
     'get ppport.h'
@@ -51,7 +54,8 @@ is( $moose->module->[0]->associated_pod, "DOY/Moose-0.02/lib/Moose.pm" );
 
 my $signature;
 $signature = $idx->type('file')->filter(
-    {   and => [
+    {
+        and => [
             { term => { mime => 'text/x-script.perl' } },
             { term => { name => 'SIGNATURE' } }
         ]
@@ -60,7 +64,8 @@ $signature = $idx->type('file')->filter(
 ok( !$signature, 'SIGNATURE is not perl code' );
 
 $signature = $idx->type('file')->filter(
-    {   and => [
+    {
+        and => [
             { term => { 'file.documentation' => 'SIGNATURE' } },
             { term => { mime                 => 'text/x-script.perl' } },
             { term => { name                 => 'SIGNATURE' } }
@@ -70,7 +75,8 @@ $signature = $idx->type('file')->filter(
 ok( !$signature, 'SIGNATURE is not documentation' );
 
 $signature = $idx->type('file')->filter(
-    {   and => [
+    {
+        and => [
             { term => { name => 'SIGNATURE' } },
 
 # these came from metacpan-web/lib/MetaCPAN/Web/Model/API/Release.pm:sub modules

@@ -16,7 +16,8 @@ test_psgi app, sub {
     while ( my ( $k, $v ) = each %tests ) {
         ok( my $res = $cb->( GET $k), "GET $k" );
         is( $res->code, $v, "code $v" );
-        is( $res->header('content-type'),
+        is(
+            $res->header('content-type'),
             'application/json; charset=utf-8',
             'Content-type'
         );
@@ -28,13 +29,15 @@ test_psgi app, sub {
     }
 
     ok( my $res = $cb->( GET '/author/MO?callback=jsonp' ), "GET jsonp" );
-    is( $res->header('content-type'),
+    is(
+        $res->header('content-type'),
         'text/javascript; charset=UTF-8',
         'Content-type'
     );
     like( $res->content, qr/^jsonp\(.*\);$/ms, 'includes jsonp callback' );
 
-    ok( $res = $cb->(
+    ok(
+        $res = $cb->(
             POST '/author/_search',
 
             #'Content-type' => 'application/json',
@@ -50,10 +53,12 @@ test_psgi app, sub {
     ok( $json = eval { decode_json( $res->content ) }, 'valid json' );
     is( @{ $json->{release}->{hits}->{hits} }, 2, 'joined 2 releases' );
 
-    ok( $res = $cb->(
+    ok(
+        $res = $cb->(
             POST '/author/DOY?join=release',
             Content => encode_json(
-                {   query => {
+                {
+                    query => {
                         constant_score =>
                             { filter => { term => { status => 'latest' } } }
                     }
@@ -68,19 +73,23 @@ test_psgi app, sub {
         'latest', '1 release has status latest' );
     my $doy = $json;
 
-    ok( $res = $cb->(
+    ok(
+        $res = $cb->(
             POST '/author/_search?join=release',
             Content => encode_json(
-                {   query => {
+                {
+                    query => {
                         constant_score => {
                             filter => {
                                 bool => {
                                     should => [
-                                        {   term => {
+                                        {
+                                            term => {
                                                 'release.status' => 'latest'
                                             }
                                         },
-                                        {   term =>
+                                        {
+                                            term =>
                                                 { 'author.pauseid' => 'DOY' }
                                         }
                                     ]

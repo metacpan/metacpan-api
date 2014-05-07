@@ -58,9 +58,11 @@ sub run {
     return if ( !@filter && $self->distribution );
 
     my $scroll = $modules->filter(
-        {   and => [
+        {
+            and => [
                 @filter
-                ? { or => [
+                ? {
+                    or => [
                         map { { term => { 'file.module.name' => $_ } } }
                             @filter
                     ]
@@ -70,7 +72,8 @@ sub run {
                 { term   => { 'file.module.indexed' => \1 } },
                 { term   => { 'file.maturity'       => 'released' } },
                 { not => { filter => { term => { status => 'backpan' } } } },
-                {   not => {
+                {
+                    not => {
                         filter =>
                             { term => { 'file.distribution' => 'perl' } }
                     }
@@ -78,7 +81,8 @@ sub run {
             ]
         }
         )->fields(
-        [   'file.module.name', 'file.author',
+        [
+            'file.module.name', 'file.author',
             'file.release',     'file.distribution',
             'file.date',        'file.status',
         ]
@@ -135,7 +139,8 @@ sub reindex {
     my $es = $self->es;
 
     my $release = $self->index->type('release')->get(
-        {   author => $source->{author},
+        {
+            author => $source->{author},
             name   => $source->{release},
         }
     );
@@ -148,7 +153,8 @@ sub reindex {
     $release->put unless ( $self->dry_run );
 
     my $scroll = $es->scrolled_search(
-        {   index       => $self->index->name,
+        {
+            index       => $self->index->name,
             type        => 'file',
             scroll      => '5m',
             size        => 1000,
@@ -158,10 +164,12 @@ sub reindex {
                     query  => { match_all => {} },
                     filter => {
                         and => [
-                            {   term =>
+                            {
+                                term =>
                                     { 'file.release' => $source->{release} }
                             },
-                            {   term => { 'file.author' => $source->{author} }
+                            {
+                                term => { 'file.author' => $source->{author} }
                             }
                         ]
                     }
@@ -179,7 +187,8 @@ sub reindex {
         };
         push(
             @bulk,
-            {   index => {
+            {
+                index => {
                     index => $self->index->name,
                     type  => 'file',
                     id    => $row->{_id},

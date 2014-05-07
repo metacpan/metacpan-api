@@ -87,7 +87,8 @@ sub run_restore {
         my $parent = $obj->{fields}->{_parent};
         push(
             @bulk,
-            {   id => $obj->{_id},
+            {
+                id => $obj->{_id},
                 $parent ? ( parent => $parent ) : (),
                 index => $obj->{_index},
                 type  => $obj->{_type},

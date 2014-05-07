@@ -7,7 +7,8 @@ use Test::More;
 my $model   = model();
 my $idx     = $model->index('cpan');
 my $release = $idx->type('release')->get(
-    {   author => 'MO',
+    {
+        author => 'MO',
         name   => 'Documentation-Hide-0.01'
     }
 );
@@ -20,7 +21,8 @@ ok( $release->first, 'Release is first' );
 
 {
     my @files = $idx->type('file')->filter(
-        {   and => [
+        {
+            and => [
                 { term   => { 'file.author'  => $release->author } },
                 { term   => { 'file.release' => $release->name } },
                 { exists => { field          => 'file.module.name' } },
@@ -38,7 +40,8 @@ ok( $release->first, 'Release is first' );
 
 {
     my @files = $idx->type('file')->filter(
-        {   and => [
+        {
+            and => [
                 { term   => { author  => $release->author } },
                 { term   => { release => $release->name } },
                 { exists => { field   => 'file.documentation' } }

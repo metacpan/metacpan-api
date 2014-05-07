@@ -28,7 +28,8 @@ BEGIN { $ENV{METACPAN_SERVER_CONFIG_LOCAL_SUFFIX} = 'testing'; }
 }
 
 my $app = require MetaCPAN::Server;
-ok( my $user = MetaCPAN::Server->model('User::Account')->put(
+ok(
+    my $user = MetaCPAN::Server->model('User::Account')->put(
         { access_token => [ { client => 'testing', token => 'testing' } ] }
     ),
     'prepare user'
@@ -37,7 +38,8 @@ ok( $user->add_identity( { name => 'pause', key => 'MO' } ),
     'add pause identity' );
 ok( $user->put( { refresh => 1 } ), 'put user' );
 
-ok( MetaCPAN::Server->model('User::Account')->put(
+ok(
+    MetaCPAN::Server->model('User::Account')->put(
         { access_token => [ { client => 'testing', token => 'bot' } ] },
         { refresh      => 1 }
     ),

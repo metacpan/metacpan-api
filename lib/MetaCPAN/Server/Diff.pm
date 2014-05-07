@@ -46,7 +46,8 @@ sub _build_raw {
     my $self = shift;
     my $raw  = "";
     run3(
-        [   $self->git,
+        [
+            $self->git,
             qw(diff --no-renames -z --no-index -u --no-color --numstat),
             "--relative=" . $self->relative,
             $self->source,
@@ -91,7 +92,8 @@ sub _build_structured {
         }
         push(
             @structured,
-            {   source     => shift @lines,
+            {
+                source     => shift @lines,
                 target     => shift @lines,
                 insertions => $insertions,
                 deletions  => $deletions,

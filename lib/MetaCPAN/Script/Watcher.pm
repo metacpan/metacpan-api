@@ -95,7 +95,8 @@ sub changes {
 sub backpan_changes {
     my $self   = shift;
     my $scroll = $self->es->scrolled_search(
-        {   size   => 1000,
+        {
+            size   => 1000,
             scroll => '1m',
             index  => $self->index->name,
             type   => 'release',
@@ -135,7 +136,8 @@ sub latest_release {
 sub skip {
     my ( $self, $author, $archive ) = @_;
     return $self->index->type('release')->filter(
-        {   and => [
+        {
+            and => [
                 { term => { status  => 'backpan' } },
                 { term => { archive => $archive } },
                 { term => { author  => $author } },
@@ -172,7 +174,8 @@ sub reindex_release {
     my ( $self, $release ) = @_;
     my $info = CPAN::DistnameInfo->new( $release->{path} );
     $release = $self->index->type('release')->filter(
-        {   and => [
+        {
+            and => [
                 { term => { author  => $info->cpanid } },
                 { term => { archive => $info->filename } },
             ]
@@ -183,7 +186,8 @@ sub reindex_release {
 
     my $es     = $self->es;
     my $scroll = $es->scrolled_search(
-        {   index       => $self->index->name,
+        {
+            index       => $self->index->name,
             type        => 'file',
             scroll      => '1m',
             size        => 1000,
@@ -194,12 +198,14 @@ sub reindex_release {
                     query  => { match_all => {} },
                     filter => {
                         and => [
-                            {   term => {
+                            {
+                                term => {
                                     'file.release' =>
                                         $release->{_source}->{name}
                                 }
                             },
-                            {   term => {
+                            {
+                                term => {
                                     'file.author' =>
                                         $release->{_source}->{author}
                                 }
@@ -217,7 +223,8 @@ sub reindex_release {
         my $source = $row->{_source};
         push(
             @bulk,
-            {   index => {
+            {
+                index => {
                     index => $self->index->name,
                     type  => 'file',
                     id    => $row->{_id},
@@ -235,7 +242,8 @@ sub reindex_release {
     }
     push(
         @bulk,
-        {   index => {
+        {
+            index => {
                 index => $self->index->name,
                 type  => 'release',
                 id    => $release->{_id},

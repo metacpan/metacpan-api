@@ -137,7 +137,8 @@ sub validate {
         if ( $attr->is_required && !exists $data->{ $attr->name } ) {
             push(
                 @result,
-                {   field   => $attr->name,
+                {
+                    field   => $attr->name,
                     message => $attr->name . ' is required'
                 }
             );

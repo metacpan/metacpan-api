@@ -30,7 +30,8 @@ sub index_mirrors {
             = { lon => $mirror->{longitude}, lat => $mirror->{latitude} };
         Dlog_trace {"Indexing $_"} $mirror;
         $type->put(
-            {   map { $_ => $mirror->{$_} }
+            {
+                map { $_ => $mirror->{$_} }
                 grep { defined $mirror->{$_} } keys %$mirror
             }
         );

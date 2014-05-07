@@ -49,7 +49,7 @@ sub _build_abstract {
 
     # if it's a POD file without a name section, let's try to generate
     # an abstract and name based on filename
-    if( !$section && $self->path =~ /\.pod$/ ) {
+    if ( !$section && $self->path =~ /\.pod$/ ) {
         $section = $self->path;
         $section =~ s{^(lib|pod|docs)/}{};
         $section =~ s{\.pod$}{};
@@ -744,21 +744,25 @@ my @ROGUE_DISTRIBUTIONS
 sub find {
     my ( $self, $module ) = @_;
     my @candidates = $self->index->type("file")->filter(
-        {   and => [
-                {   or => [
+        {
+            and => [
+                {
+                    or => [
                         { term => { 'file.module.name'   => $module } },
                         { term => { 'file.documentation' => $module } },
                     ]
                 },
                 { term => { 'file.indexed' => \1, } },
                 { term => { status         => 'latest', } },
-                {   not =>
+                {
+                    not =>
                         { filter => { term => { 'file.authorized' => \0 } } }
                 },
             ]
         }
         )->sort(
-        [   { 'date' => { order => "desc" } },
+        [
+            { 'date' => { order => "desc" } },
             'mime',
             { 'stat.mtime' => { order => 'desc' } }
         ]
@@ -784,7 +788,8 @@ sub find_pod {
     if ( $module && ( my $pod = $module->associated_pod ) ) {
         my ( $author, $release, @path ) = split( /\//, $pod );
         return $self->get(
-            {   author  => $author,
+            {
+                author  => $author,
                 release => $release,
                 path    => join( "/", @path ),
             }
@@ -801,7 +806,8 @@ sub find_pod {
 sub find_provided_by {
     my ( $self, $release ) = @_;
     return $self->filter(
-        {   and => [
+        {
+            and => [
                 { term => { 'release' => $release->{name} } },
                 { term => { 'author'  => $release->{author} } },
                 { term => { 'file.module.authorized' => 1 } },
@@ -834,7 +840,8 @@ sub prefix {
         } grep {$_} @query
     ];
     return $self->query(
-        {   filtered => {
+        {
+            filtered => {
                 query => {
                     custom_score => {
                         query => { bool => { should => $should } },
@@ -846,11 +853,13 @@ sub prefix {
                 },
                 filter => {
                     and => [
-                        {   not => {
+                        {
+                            not => {
                                 filter => {
                                     or => [
                                         map {
-                                            +{  term => {
+                                            +{
+                                                term => {
                                                     'file.distribution' => $_
                                                 }
                                                 }
@@ -863,7 +872,8 @@ sub prefix {
                         { exists => { field          => 'documentation' } },
                         { term   => { 'file.indexed' => \1 } },
                         { term   => { 'file.status'  => 'latest' } },
-                        {   not => {
+                        {
+                            not => {
                                 filter =>
                                     { term => { 'file.authorized' => \0 } }
                             }
@@ -885,7 +895,8 @@ sub history {
     my ( $self, $type, $module, @path ) = @_;
     my $search
         = $type eq "module" ? $self->filter(
-        {   nested => {
+        {
+            nested => {
                 path  => "module",
                 query => {
                     constant_score => {
@@ -902,14 +913,16 @@ sub history {
         }
         )
         : $type eq "file" ? $self->filter(
-        {   and => [
+        {
+            and => [
                 { term => { "file.path"         => join( "/", @path ) } },
                 { term => { "file.distribution" => $module } },
             ]
         }
         )
         : $self->filter(
-        {   and => [
+        {
+            and => [
                 { term => { "file.documentation" => $module } },
                 { term => { "file.indexed"       => \1 } },
                 { term => { "file.authorized"    => \1 } },
@@ -941,13 +954,15 @@ sub autocomplete {
     # TODO: custom_score is deprecated in 0.90.4 in favor of function_score.
     # As of 2013-10-27 we are still using 0.20.2 in production.
     return $self->query(
-        {   custom_score => {
+        {
+            custom_score => {
                 query => { bool => { should => $should } },
                 script => "_score - doc['documentation'].value.length()/100",
             }
         }
         )->filter(
-        {   and => [
+        {
+            and => [
                 $self->_not_rogue,
                 { exists => { field             => 'documentation' } },
                 { term   => { 'file.indexed'    => \1 } },

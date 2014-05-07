@@ -26,7 +26,8 @@ test_psgi app, sub {
     while ( my ( $k, $v ) = each %tests ) {
         ok( my $res = $cb->( GET $k), "GET $k" );
         is( $res->code, $v, "code $v" );
-        is( $res->header('content-type'),
+        is(
+            $res->header('content-type'),
             $v == 200
             ? 'text/html; charset=UTF-8'
             : 'application/json; charset=utf-8',
@@ -39,7 +40,8 @@ test_psgi app, sub {
             like( $res->content, qr/Moose - abstract/, 'NAME section' );
             ok( $res = $cb->( GET "$k?content-type=text/plain" ),
                 "GET plain" );
-            is( $res->header('content-type'),
+            is(
+                $res->header('content-type'),
                 'text/plain; charset=UTF-8',
                 'Content-type'
             );
@@ -52,7 +54,8 @@ test_psgi app, sub {
         ok( $res = $cb->( GET "$k?callback=foo$ct" ),
             "GET $k with callback" );
         is( $res->code, $v, "code $v" );
-        is( $res->header('content-type'),
+        is(
+            $res->header('content-type'),
             'text/javascript; charset=UTF-8',
             'Content-type'
         );

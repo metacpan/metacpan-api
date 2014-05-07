@@ -9,7 +9,8 @@ use MetaCPAN::TestHelpers;
 
 test_distribution(
     'Moose',
-    {   bugs => {
+    {
+        bugs => {
             type => 'rt',
             source =>
                 'https://rt.cpan.org/Public/Dist/Display.html?Name=Moose',

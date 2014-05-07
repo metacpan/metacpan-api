@@ -10,7 +10,8 @@ my @tests = (
     [ '/changes/LOCAL/File-Changes-2.0' => 200 ],
     [ '/changes/LOCAL/File-Changes-2'   => 404, qr{LOCAL/File-Changes-2} ],
     [ '/file/LOCAL/File-Changes-2.0/Changes' => 200 ],
-    [   '/file/LOCAL/File-Changes-2.0/NoChanges' => 404,
+    [
+        '/file/LOCAL/File-Changes-2.0/NoChanges' => 404,
         qr{LOCAL/File-Changes-2\.0/NoChanges}
     ],
 );
@@ -23,7 +24,8 @@ test_psgi app, sub {
         is( $res->code, $code, "code $code" );
 
         # 404 should still be json
-        is( $res->header('content-type'),
+        is(
+            $res->header('content-type'),
             'application/json; charset=utf-8',
             'Content-type'
         );

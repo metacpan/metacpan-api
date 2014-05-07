@@ -7,7 +7,8 @@ use Test::More;
 my $model   = model();
 my $idx     = $model->index('cpan');
 my $release = $idx->type('release')->get(
-    {   author => 'LOCAL',
+    {
+        author => 'LOCAL',
         name   => 'Prefer-Meta-JSON-1.1'
     }
 );
@@ -22,7 +23,8 @@ is( $release->metadata->{"meta-spec"}{version}, 2, "meta_spec version is 2" );
 
 {
     my @files = $idx->type('file')->filter(
-        {   and => [
+        {
+            and => [
                 { term   => { 'file.author'  => $release->author } },
                 { term   => { 'file.release' => $release->name } },
                 { exists => { field          => 'file.module.name' } },

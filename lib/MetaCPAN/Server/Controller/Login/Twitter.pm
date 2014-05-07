@@ -41,7 +41,8 @@ sub index : Path {
         $self->update_user(
             $c,
             twitter => $user_id,
-            {   id                  => $user_id,
+            {
+                id                  => $user_id,
                 name                => $screen_name,
                 access_token        => $access_token,
                 access_token_secret => $access_token_secret

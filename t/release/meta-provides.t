@@ -8,7 +8,8 @@ use lib 't/lib';
 use MetaCPAN::TestHelpers;
 
 test_release(
-    {   name        => 'Meta-Provides-1.01',
+    {
+        name        => 'Meta-Provides-1.01',
         author      => 'RWSTAUNER',
         abstract    => 'has provides key in meta',
         authorized  => \1,
@@ -21,7 +22,8 @@ test_release(
             my $release = $self->data;
 
             my @files = $self->index->type('file')->filter(
-                {   and => [
+                {
+                    and => [
                         { term   => { 'author'    => $release->author } },
                         { term   => { 'release'   => $release->name } },
                         { term   => { 'directory' => \0 } },
@@ -42,7 +44,8 @@ test_release(
             }
 
             foreach my $test (
-                [   'Provides.pm', 'Meta::Provides',
+                [
+                    'Provides.pm', 'Meta::Provides',
                     [ { name => 'Meta::Provides', indexed => 1 }, ]
                 ],
                 )
@@ -56,7 +59,8 @@ test_release(
                 is( $file->name,          $basename, 'file name' );
                 is( $file->documentation, $doc,      'documentation ok' );
 
-                is( scalar @{ $file->module },
+                is(
+                    scalar @{ $file->module },
                     scalar @$expmods,
                     'correct number of modules'
                 );

@@ -172,7 +172,8 @@ Find an account based on its identity.
 sub find {
     my ( $self, $p ) = @_;
     return $self->filter(
-        {   and => [
+        {
+            and => [
                 { term => { 'account.identity.name' => $p->{name} } },
                 { term => { 'account.identity.key'  => $p->{key} } }
             ]

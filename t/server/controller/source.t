@@ -26,6 +26,7 @@ test_psgi app, sub {
                 'text/plain; charset=UTF-8',
                 'Content-type'
             );
+
             # Used for fastly on st.aticpan.org
             is( $res->header('X-Content-Type'),
                 'text/x-script.perl-module', 'X-Content-Type' );
@@ -50,26 +51,30 @@ test_psgi app, sub {
             if ( $k =~ /callback=foo/ ) {
                 ok( my ($function_args) = $res->content =~ /^foo\((.*)\)/s,
                     'JSONP wrapper' );
-                ok( my $jsdata
+                ok(
+                    my $jsdata
                         = JSON->new->allow_nonref->decode($function_args),
                     'decode json'
                 );
                 is( $jsdata, $manifest, 'JSONP-wrapped manifest' );
-                is( $res->header('content-type'),
+                is(
+                    $res->header('content-type'),
                     'text/javascript; charset=UTF-8',
                     'Content-type'
                 );
             }
             else {
                 is( $res->content, $manifest, 'Plain text manifest' );
-                is( $res->header('content-type'),
+                is(
+                    $res->header('content-type'),
                     'text/plain; charset=UTF-8',
                     'Content-type'
                 );
             }
         }
         elsif ( $k eq '/source/DOY/Moose-0.01/Changes' ) {
-            is( $res->header('content-type'),
+            is(
+                $res->header('content-type'),
                 'text/plain; charset=UTF-8',
                 'Content-type'
             );
@@ -80,13 +85,15 @@ test_psgi app, sub {
             );
         }
         elsif ( $k eq '/source/DOY/Moose-0.01/Changes?callback=foo' ) {
-            is( $res->header('content-type'),
+            is(
+                $res->header('content-type'),
                 'text/javascript; charset=UTF-8',
                 'Content-type'
             );
             ok( my ($function_args) = $res->content =~ /^foo\((.*)\)/s,
                 'JSONP wrapper' );
-            ok( my $jsdata = JSON->new->allow_nonref->decode($function_args),
+            ok(
+                my $jsdata = JSON->new->allow_nonref->decode($function_args),
                 'decode json'
             );
             like(
@@ -97,14 +104,16 @@ test_psgi app, sub {
         }
         elsif ( $v eq 200 ) {
             like( $res->content, qr/Index of/, 'Index of' );
-            is( $res->header('content-type'),
+            is(
+                $res->header('content-type'),
                 'text/html; charset=UTF-8',
                 'Content-type'
             );
 
         }
         else {
-            is( $res->header('content-type'),
+            is(
+                $res->header('content-type'),
                 'application/json; charset=utf-8',
                 'Content-type'
             );

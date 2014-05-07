@@ -18,7 +18,8 @@ test_psgi app, sub {
 
         # TRAVIS 5.18
         is( $res->code, $v, "code $v" );
-        is( $res->header('content-type'),
+        is(
+            $res->header('content-type'),
             'application/json; charset=utf-8',
             'Content-type'
         );

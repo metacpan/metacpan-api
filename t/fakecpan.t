@@ -26,7 +26,8 @@ BEGIN { $ENV{EMAIL_SENDER_TRANSPORT} = 'Test' }
 
 my $ES_HOST_PORT = '127.0.0.1:' . ( $ENV{METACPAN_ES_TEST_PORT} ||= 9900 );
 
-ok( my $es = ElasticSearch->new(
+ok(
+    my $es = ElasticSearch->new(
         transport => 'httplite',
         servers   => $ES_HOST_PORT,
 
@@ -75,7 +76,8 @@ my $mod_faker = 'Module::Faker::Dist::WithPerl';
 eval "require $mod_faker" or die $@;
 
 my $cpan = CPAN::Faker->new(
-    {   source     => 't/var/fakecpan/configs',
+    {
+        source     => 't/var/fakecpan/configs',
         dest       => $config->{cpan},
         dist_class => $mod_faker,
     }
@@ -116,8 +118,10 @@ local @ARGV = ('author');
 ok( MetaCPAN::Script::Author->new_with_options($config)->run,
     'index authors' );
 
-ok( MetaCPAN::Script::Tickets->new_with_options(
-        {   %$config,
+ok(
+    MetaCPAN::Script::Tickets->new_with_options(
+        {
+            %$config,
             rt_summary_url => "file://"
                 . file( $config->{cpan}, 'bugs.tsv' )->absolute,
             github_issues => "file://"

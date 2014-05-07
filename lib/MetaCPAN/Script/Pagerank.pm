@@ -26,7 +26,8 @@ sub run {
                 query  => { match_all => {} },
                 filter => {
                     and => [
-                        {   term =>
+                        {
+                            term =>
                                 { 'release.dependency.phase' => 'runtime' }
                         },
                         { term => { status => 'latest' } },

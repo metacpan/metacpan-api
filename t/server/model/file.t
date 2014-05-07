@@ -7,20 +7,25 @@ use Test::More;
 my $c = 'MetaCPAN::Server';
 
 foreach my $test (
-    [   LOCAL => 'Multiple-Modules-0.1',
+    [
+        LOCAL => 'Multiple-Modules-0.1',
         [qw( Multiple::Modules Multiple::Modules::Deprecated )],
         []
     ],
-    [   LOCAL => 'Multiple-Modules-1.01',
-        [   qw( Multiple::Modules Multiple::Modules::A Multiple::Modules::A2 Multiple::Modules::B )
+    [
+        LOCAL => 'Multiple-Modules-1.01',
+        [
+            qw( Multiple::Modules Multiple::Modules::A Multiple::Modules::A2 Multiple::Modules::B )
         ],
         [qw( Multiple::Modules::B::Secret )]
     ],
-    [   LOCAL => 'Multiple-Modules-RDeps-2.03',
+    [
+        LOCAL => 'Multiple-Modules-RDeps-2.03',
         [qw( Multiple::Modules::RDeps )],
         []
     ],
-    [   LOCAL => 'Multiple-Modules-RDeps-A-2.03',
+    [
+        LOCAL => 'Multiple-Modules-RDeps-A-2.03',
         [qw( Multiple::Modules::RDeps::A )],
         []
     ],
@@ -39,10 +44,10 @@ foreach my $test (
         [ sort( @$indexed, @$extra ) ],
         'got all included modules';
 
-    is_deeply
-        [
+    is_deeply [
         sort $c->model('CPAN::File')
-            ->raw->find_module_names_provided_by($find) ],
+            ->raw->find_module_names_provided_by($find)
+        ],
         [ sort @$indexed ],
         'got only the module names expected';
 }

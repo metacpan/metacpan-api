@@ -17,7 +17,8 @@ sub get : Chained('/search/index') : PathPart('reverse_dependencies') :
 
     my @modules = eval {
         $c->model('CPAN::File')->find_module_names_provided_by(
-            {   author => $author,
+            {
+                author => $author,
                 name   => $release,
             }
         );

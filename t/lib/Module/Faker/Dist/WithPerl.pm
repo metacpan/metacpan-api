@@ -12,7 +12,7 @@ around append_for => sub {
         # $orig normally expects utf-8 (yaml, json, etc)
         # but the reason for this subclass is to allow other encodings
         map {
-            utf8::is_utf8( $_->{content} )
+                  utf8::is_utf8( $_->{content} )
                 ? encode_utf8( $_->{content} )
                 : $_->{content}
             }

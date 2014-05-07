@@ -31,7 +31,8 @@ sub find : Path('') {
     my ( $self, $c, $author, $release, @path ) = @_;
     eval {
         my $file = $self->model($c)->raw->get(
-            {   author  => $author,
+            {
+                author  => $author,
                 release => $release,
                 path    => join( '/', @path )
             }

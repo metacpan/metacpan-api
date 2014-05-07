@@ -13,7 +13,8 @@ sub find : Path('') : Args(2) {
     my ( $self, $c, $user, $distribution ) = @_;
     eval {
         my $favorite = $self->model($c)->raw->get(
-            {   user         => $user,
+            {
+                user         => $user,
                 distribution => $distribution
             }
         );

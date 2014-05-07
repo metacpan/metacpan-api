@@ -92,7 +92,8 @@ sub bulk {
     while ( my $data = shift @$bulk ) {
         push(
             @bulk,
-            {   index => {
+            {
+                index => {
                     index => $index,
                     id    => $data->{id},
                     type  => 'release',

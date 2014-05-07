@@ -27,7 +27,8 @@ sub index_POST {
     my $pause    = $c->stash->{pause};
     my $req      = $c->req;
     my $favorite = $c->model('CPAN::Favorite')->put(
-        {   user         => $c->user->id,
+        {
+            user         => $c->user->id,
             author       => $req->data->{author},
             release      => $req->data->{release},
             distribution => $req->data->{distribution},

@@ -35,7 +35,8 @@ sub diff_releases : Chained('index') : PathPart('release') : Args(4) {
     }
 
     $c->stash(
-        {   source     => join( '/', $path[0], $path[1] ),
+        {
+            source     => join( '/', $path[0], $path[1] ),
             target     => join( '/', $path[2], $path[3] ),
             statistics => $diff->structured,
         }
@@ -75,7 +76,8 @@ sub file : Chained('index') : PathPart('file') : Args(2) {
     );
 
     $c->stash(
-        {   source => join( '/', @$source{qw(author release path)} ),
+        {
+            source => join( '/', @$source{qw(author release path)} ),
             target => join( '/', @$target{qw(author release path)} ),
             statistics => $diff->structured,
             diff       => $diff->raw,

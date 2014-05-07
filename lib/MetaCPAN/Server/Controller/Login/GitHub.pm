@@ -21,7 +21,8 @@ sub index : Path {
         my $ua  = LWP::UserAgent->new;
         my $res = $ua->request(
             POST 'https://github.com/login/oauth/access_token',
-            [   client_id     => $self->consumer_key,
+            [
+                client_id     => $self->consumer_key,
                 redirect_uri  => $c->uri_for( $self->action_for('index') ),
                 client_secret => $self->consumer_secret,
                 code          => $code,

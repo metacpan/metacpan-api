@@ -11,10 +11,12 @@ test_psgi app, sub {
     is( $user->code, 200, 'code 200' );
     ok( $user = decode_json( $user->content ), 'decode json' );
 
-    ok( my $res = $cb->(
+    ok(
+        my $res = $cb->(
             POST '/user/favorite?access_token=testing',
             Content => encode_json(
-                {   distribution => 'Moose',
+                {
+                    distribution => 'Moose',
                     release      => 'Moose-1.10',
                     author       => 'DOY'
                 }
@@ -39,10 +41,12 @@ test_psgi app, sub {
     is( $user->code, 200, 'code 200' );
     ok( $user = decode_json( $user->content ), 'decode json' );
     ok( !$user->{looks_human}, 'user looks like a bot' );
-    ok( $res = $cb->(
+    ok(
+        $res = $cb->(
             POST '/user/favorite?access_token=bot',
             Content => encode_json(
-                {   distribution => 'Moose',
+                {
+                    distribution => 'Moose',
                     release      => 'Moose-1.10',
                     author       => 'DOY'
                 }

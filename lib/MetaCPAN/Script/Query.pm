@@ -33,7 +33,8 @@ sub run {
     my $es   = $self->es;
     my $json = $es->transport->send_request(
         $self->remote,
-        {   method => $self->X,
+        {
+            method => $self->X,
             cmd    => $cmd,
             $self->d ? ( data => $self->d ) : ()
         }

@@ -30,7 +30,8 @@ sub get : Path('') : Args(2) {
     my ( $self, $c, $author, $name ) = @_;
     eval {
         my $file = $self->model($c)->raw->get(
-            {   author => $author,
+            {
+                author => $author,
                 name   => $name,
             }
         );

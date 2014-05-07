@@ -17,7 +17,8 @@ ok( my $pm = $idx->type('file')->find('less::sense'),
 
 is( $pm->name, 'sense.pm.PL', 'name is correct' );
 
-is( $pm->module->[0]->associated_pod,
+is(
+    $pm->module->[0]->associated_pod,
     'MO/uncommon-sense-0.01/sense.pod',
     'has associated pod file'
 );
@@ -39,7 +40,8 @@ is( $pm->module->[0]->version,
 
     is_deeply(
         [ sort grep {/\.(pm|pod|pm\.PL)$/} map { $_->{path} } @$files ],
-        [   sort qw(
+        [
+            sort qw(
                 lib/uncommon/sense.pm
                 sense.pod
                 sense.pm.PL
@@ -54,7 +56,8 @@ is( $pm->module->[0]->version,
         is $res->code, 200, '200 OK';
         chomp( my $content = $res->content );
 
-        is( $content,
+        is(
+            $content,
             "#! perl-000\n\nour \$VERSION = '4.56';\n\n__DATA__\npackage less::sense;",
             ".pm.PL file unmodified",
         );

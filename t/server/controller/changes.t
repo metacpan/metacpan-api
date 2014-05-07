@@ -5,19 +5,24 @@ use MetaCPAN::Server::Test;
 use Test::More;
 
 my @tests = (
-    [   '/changes/File-Changes' => 200,
+    [
+        '/changes/File-Changes' => 200,
         Changes => qr/^Revision history for Changes\n\n2\.0.+1\.0.+/sm,
     ],
-    [   '/changes/LOCAL/File-Changes-2.0' => 200,
+    [
+        '/changes/LOCAL/File-Changes-2.0' => 200,
         Changes => qr/^Revision history for Changes\n\n2\.0.+1\.0.+/sm,
     ],
-    [   '/changes/LOCAL/File-Changes-1.0' => 200,
+    [
+        '/changes/LOCAL/File-Changes-1.0' => 200,
         Changes => qr/^Revision history for Changes\n\n1\.0.+/sm,
     ],
-    [   '/changes/File-Changes-News' => 200,
+    [
+        '/changes/File-Changes-News' => 200,
         NEWS                         => qr/^F\nR\nE\nE\nF\nO\nR\nM\n/,
     ],
-    [   '/changes/LOCAL/File-Changes-News-11.22' => 200,
+    [
+        '/changes/LOCAL/File-Changes-News-11.22' => 200,
         NEWS => qr/^F\nR\nE\nE\nF\nO\nR\nM\n/,
     ],
     [ '/changes/NOEXISTY'        => 404 ],
@@ -28,14 +33,17 @@ my @tests = (
 
     # NOTE: We need to use author/release because in these tests
     # 'perl' doesn't get flagged as latest.
-    [   '/changes/RWSTAUNER/perl-1' => 200,
+    [
+        '/changes/RWSTAUNER/perl-1' => 200,
         'perldelta.pod' =>
             qr/^=head1 NAME\n\nperldelta - changes for perl\n\n/m,
     ],
-    [   '/changes/File-Changes-UTF8' => 200,
+    [
+        '/changes/File-Changes-UTF8' => 200,
         'Changes' => qr/^  - 23E7 \x{23E7} ELECTRICAL INTERSECTION/m,
     ],
-    [   '/changes/File-Changes-Latin1' => 200,
+    [
+        '/changes/File-Changes-Latin1' => 200,
         'Changes'                      => qr/^  - \244 CURRENCY SIGN/m,
     ],
 );
@@ -77,7 +85,8 @@ sub get_ok {
     my ( $cb, $path, $code ) = @_;
     ok( my $res = $cb->( GET $path), "GET $path" );
     is( $res->code, $code, "code $code" );
-    is( $res->header('content-type'),
+    is(
+        $res->header('content-type'),
         'application/json; charset=utf-8',
         'Content-type'
     );

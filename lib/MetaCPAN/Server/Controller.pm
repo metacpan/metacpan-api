@@ -104,7 +104,8 @@ sub search : Path('_search') : ActionClass('Deserialize') {
     eval {
         $c->stash(
             $c->model('CPAN')->es->request(
-                {   method => $req->method,
+                {
+                    method => $req->method,
                     qs     => $params,
                     cmd    => join( '/',
                         '',          $c->model('CPAN')->index,
@@ -128,7 +129,8 @@ sub join : ActionClass('Deserialize') {
         :                 { query => { match_all => {} } };
     $c->detach(
         "/not_allowed",
-        [   "unknown join type, valid values are "
+        [
+            "unknown join type, valid values are "
                 . Moose::Util::english_list( keys %$joins )
         ]
     ) if ( scalar grep { !$joins->{$_} } @req_joins );
@@ -157,7 +159,8 @@ sub join : ActionClass('Deserialize') {
         } or do { $self->internal_error( $c, $@ ) };
         $c->detach(
             "/not_allowed",
-            [   "The number of joined documents exceeded the allowed number of 1000 documents by "
+            [
+                "The number of joined documents exceeded the allowed number of 1000 documents by "
                     . ( $foreign->{hits}->{total} - 1000 )
                     . ". Please reduce the number of documents or apply additional filters."
             ]

@@ -34,15 +34,19 @@ sub get : Chained('index') : PathPart('') : Args(2) {
 
         # use $c->model b/c we can't let any filters apply here
         my $files = $c->model('CPAN::File')->raw->filter(
-            {   and => [
+            {
+                and => [
                     { term => { release => $release } },
                     { term => { author  => $author } },
-                    {   or => [
+                    {
+                        or => [
 
                             # if it's a perl release, get perldelta
-                            {   and => [
+                            {
+                                and => [
                                     { term => { distribution => 'perl' } },
-                                    {   term => {
+                                    {
+                                        term => {
                                             'file.name' => 'perldelta.pod'
                                         }
                                     },
@@ -50,10 +54,12 @@ sub get : Chained('index') : PathPart('') : Args(2) {
                             },
 
                       # otherwise look for one of these candidates in the root
-                            {   and => [
+                            {
+                                and => [
                                     { term => { level     => 0 } },
                                     { term => { directory => \0 } },
-                                    {   or => [
+                                    {
+                                        or => [
                                             map {
                                                 { term =>
                                                         { 'file.name' => $_ }

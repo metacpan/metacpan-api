@@ -14,7 +14,8 @@ $true = '1' if $true eq 'true';
 my $model   = model();
 my $idx     = $model->index('cpan');
 my $release = $idx->type('release')->get(
-    {   author => 'MO',
+    {
+        author => 'MO',
         name   => 'Scripts-0.01'
     }
 );
@@ -27,7 +28,8 @@ is( $release->version, '0.01', 'version ok' );
 
 {
     my @files = $idx->type('file')->filter(
-        {   and => [
+        {
+            and => [
                 { term => { mime         => 'text/x-script.perl' } },
                 { term => { distribution => 'Scripts' } }
             ]
@@ -38,18 +40,23 @@ is( $release->version, '0.01', 'version ok' );
         grep { $_->has_documentation } @files;
     is( @files, 2, 'two with documentation' );
     is_deeply(
-        [   map {
-                {   documentation => $_->documentation,
+        [
+            map {
+                {
+                    documentation => $_->documentation,
                     indexed       => $_->indexed,
                     mime          => $_->mime
                 }
             } @files
         ],
-        [   {   documentation => 'catalyst',
+        [
+            {
+                documentation => 'catalyst',
                 indexed       => $true,
                 mime          => 'text/x-script.perl'
             },
-            {   documentation => 'starman',
+            {
+                documentation => 'starman',
                 indexed       => $true,
                 mime          => 'text/x-script.perl'
             }

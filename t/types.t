@@ -5,7 +5,8 @@ use MetaCPAN::Types qw(:all);
 
 is_deeply(
     Resources->coerce(
-        {   license    => ['http://dev.perl.org/licenses/'],
+        {
+            license    => ['http://dev.perl.org/licenses/'],
             homepage   => 'http://sourceforge.net/projects/module-build',
             bugtracker => {
                 web    => 'http://github.com/dagolden/cpan-meta-spec/issues',
@@ -19,7 +20,8 @@ is_deeply(
             x_twitter => 'http://twitter.com/cpan_linked/',
         }
     ),
-    {   license    => ['http://dev.perl.org/licenses/'],
+    {
+        license    => ['http://dev.perl.org/licenses/'],
         homepage   => 'http://sourceforge.net/projects/module-build',
         bugtracker => {
             web    => 'http://github.com/dagolden/cpan-meta-spec/issues',
@@ -34,9 +36,11 @@ is_deeply(
     'coerce CPAN::Meta::Spec example'
 );
 
-ok( Resources->check(
+ok(
+    Resources->check(
         Resources->coerce(
-            {   license    => ['http://dev.perl.org/licenses/'],
+            {
+                license    => ['http://dev.perl.org/licenses/'],
                 homepage   => 'http://sourceforge.net/projects/module-build',
                 bugtracker => {
                     web => 'http://github.com/dagolden/cpan-meta-spec/issues',
@@ -56,26 +60,32 @@ ok( Resources->check(
 
 is_deeply(
     Resources->coerce(
-        {   license  => ['http://dev.perl.org/licenses/'],
+        {
+            license  => ['http://dev.perl.org/licenses/'],
             homepage => 'http://sourceforge.net/projects/module-build',
         }
     ),
-    {   homepage => 'http://sourceforge.net/projects/module-build',
+    {
+        homepage => 'http://sourceforge.net/projects/module-build',
         license  => ['http://dev.perl.org/licenses/'],
     },
     'coerce sparse resources'
 );
 
-ok( Resources->check(
-        {   license  => ['http://dev.perl.org/licenses/'],
+ok(
+    Resources->check(
+        {
+            license  => ['http://dev.perl.org/licenses/'],
             homepage => 'http://sourceforge.net/projects/module-build',
         }
     ),
     'check sparse resources'
 );
 
-ok( Resources->check(
-        {   bugtracker => {
+ok(
+    Resources->check(
+        {
+            bugtracker => {
                 web =>
                     "https://github.com/AlexBio/Dist-Zilla-Plugin-GitHub/issues"
             },

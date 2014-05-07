@@ -30,7 +30,8 @@ sub COMPONENT {
     my $self = shift;
     my ( $app, $config ) = @_;
     $config = $self->merge_config_hashes(
-        {   cpan     => $app->config->{cpan},
+        {
+            cpan     => $app->config->{cpan},
             base_dir => $app->config->{source_base}
                 || $self->_default_base_dir,
         },

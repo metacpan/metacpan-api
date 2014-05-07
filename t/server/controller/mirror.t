@@ -15,7 +15,8 @@ test_psgi app, sub {
     while ( my ( $k, $v ) = each %tests ) {
         ok( my $res = $cb->( GET $k), "GET $k" );
         is( $res->code, $v, "code $v" );
-        is( $res->header('content-type'),
+        is(
+            $res->header('content-type'),
             'application/json; charset=utf-8',
             'Content-type'
         );

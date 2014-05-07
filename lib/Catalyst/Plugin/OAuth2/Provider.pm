@@ -36,7 +36,8 @@ sub COMPONENT {
 sub authorize : Local {
     my ( $self, $c ) = @_;
     my $params = $c->req->query_parameters;
-    if ($params->{choice}
+    if (
+        $params->{choice}
         && (  !$c->user_exists
             || $c->user_exists
             && !$c->user->has_identity( $params->{choice} ) )

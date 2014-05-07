@@ -230,9 +230,11 @@ sub _build_download_url {
 sub _build_first {
     my $self = shift;
     $self->index->type('release')->filter(
-        {   and => [
+        {
+            and => [
                 { term => { 'release.distribution' => $self->distribution } },
-                {   range => {
+                {
+                    range => {
                         'release.version_numified' =>
                             { 'lt' => $self->version_numified }
                     }
@@ -262,7 +264,8 @@ extends 'ElasticSearchX::Model::Document::Set';
 sub find_depending_on {
     my ( $self, $modules ) = @_;
     return $self->filter(
-        {   or => [
+        {
+            or => [
                 map { { term => { 'release.dependency.module' => $_ } } }
                     @$modules
             ]
@@ -273,7 +276,8 @@ sub find_depending_on {
 sub find {
     my ( $self, $name ) = @_;
     return $self->filter(
-        {   and => [
+        {
+            and => [
                 { term => { 'release.distribution' => $name } },
                 { term => { status                 => 'latest' } }
             ]
@@ -284,7 +288,8 @@ sub find {
 sub predecessor {
     my ( $self, $name ) = @_;
     return $self->filter(
-        {   and => [
+        {
+            and => [
                 { term => { 'release.distribution' => $name } },
                 { not => { filter => { term => { status => 'latest' } } } },
             ]

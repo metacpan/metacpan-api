@@ -8,7 +8,7 @@ use JSON           ();
 use LWP::UserAgent ();
 use Log::Contextual qw( :log :dlog );
 use Moose;
-use Parse::CSV     ();
+use Parse::CSV ();
 
 with 'MetaCPAN::Role::Common', 'MooseX::Getopt';
 
@@ -57,7 +57,8 @@ sub run {
 
         for ( my $i = 0; $i < $rating->{review_count}; $i++ ) {
             $bulk->put(
-                {   index => $index,
+                {
+                    index => $index,
                     type  => 'rating',
                     data  => Dlog_trace {$_} $data,
                 }

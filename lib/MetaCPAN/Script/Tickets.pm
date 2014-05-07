@@ -14,7 +14,7 @@ use Moose;
 use Parse::CSV;
 use Pithub;
 
-with 'MetaCPAN::Role::Common','MooseX::Getopt';
+with 'MetaCPAN::Role::Common', 'MooseX::Getopt';
 
 has rt_summary_url => (
     is       => 'ro',

@@ -31,7 +31,6 @@ use MooseX::Types -declare => [
         )
 ];
 
-
 subtype PerlMongers,
     as ArrayRef [ Dict [ url => Optional [Str], name => NonEmptySimpleStr ] ];
 coerce PerlMongers, from HashRef, via { [$_] };
@@ -40,8 +39,13 @@ subtype Blog, as ArrayRef [ Dict [ url => NonEmptySimpleStr, feed => Str ] ];
 coerce Blog, from HashRef, via { [$_] };
 
 subtype Stat,
-    as Dict [ mode => Int, uid => Int, gid => Int, size => Int,
-    mtime => Int ];
+    as Dict [
+    mode  => Int,
+    uid   => Int,
+    gid   => Int,
+    size  => Int,
+    mtime => Int
+    ];
 
 subtype Module, as ArrayRef [ Type ['MetaCPAN::Document::Module'] ];
 coerce Module, from ArrayRef, via {
@@ -52,8 +56,11 @@ coerce Module, from HashRef, via { [ MetaCPAN::Document::Module->new($_) ] };
 
 subtype Identity, as ArrayRef [ Type ['MetaCPAN::Model::User::Identity'] ];
 coerce Identity, from ArrayRef, via {
-    [   map {
-            ref $_ eq 'HASH' ? MetaCPAN::Model::User::Identity->new($_) : $_
+    [
+        map {
+            ref $_ eq 'HASH'
+                ? MetaCPAN::Model::User::Identity->new($_)
+                : $_
         } @$_
     ];
 };
@@ -62,7 +69,8 @@ coerce Identity, from HashRef,
 
 subtype Dependency, as ArrayRef [ Type ['MetaCPAN::Document::Dependency'] ];
 coerce Dependency, from ArrayRef, via {
-    [   map {
+    [
+        map {
             ref $_ eq 'HASH'
                 ? MetaCPAN::Document::Dependency->new($_)
                 : $_
@@ -74,7 +82,8 @@ coerce Dependency, from HashRef,
 
 subtype Profile, as ArrayRef [ Type ['MetaCPAN::Document::Author::Profile'] ];
 coerce Profile, from ArrayRef, via {
-    [   map {
+    [
+        map {
             ref $_ eq 'HASH'
                 ? MetaCPAN::Document::Author::Profile->new($_)
                 : $_
@@ -89,7 +98,8 @@ subtype Tests,
 
 subtype BugSummary,
     as Dict [
-    (   map { $_ => Optional [Int] }
+    (
+        map { $_ => Optional [Int] }
             qw(new open stalled patched resolved rejected active closed)
     ),
     type   => Str,

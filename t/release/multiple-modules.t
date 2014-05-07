@@ -7,7 +7,8 @@ use Test::More;
 my $model   = model();
 my $idx     = $model->index('cpan');
 my $release = $idx->type('release')->get(
-    {   author => 'LOCAL',
+    {
+        author => 'LOCAL',
         name   => 'Multiple-Modules-1.01'
     }
 );
@@ -20,7 +21,8 @@ is( $release->author, 'LOCAL', 'author ok' );
 
 is_deeply(
     [ sort @{ $release->provides } ],
-    [   sort "Multiple::Modules", "Multiple::Modules::A",
+    [
+        sort "Multiple::Modules", "Multiple::Modules::A",
         "Multiple::Modules::A2",  "Multiple::Modules::B"
     ],
     'provides ok'
@@ -32,7 +34,8 @@ ok( !$release->first, 'Release is not first' );
 
 {
     my @files = $idx->type('file')->filter(
-        {   and => [
+        {
+            and => [
                 { term   => { 'file.author'  => $release->author } },
                 { term   => { 'file.release' => $release->name } },
                 { exists => { field          => 'file.module.name' } },
@@ -44,21 +47,26 @@ ok( !$release->first, 'Release is not first' );
     @files = sort { $a->{name} cmp $b->{name} } @files;
 
     foreach my $test (
-        [   'A.pm',
+        [
+            'A.pm',
             'Multiple::Modules::A',
-            [   { name => 'Multiple::Modules::A',  indexed => 1 },
+            [
+                { name => 'Multiple::Modules::A',  indexed => 1 },
                 { name => 'Multiple::Modules::A2', indexed => 1 },
             ]
         ],
-        [   'B.pm',
+        [
+            'B.pm',
             'Multiple::Modules::B',
-            [   { name => 'Multiple::Modules::B', indexed => 1 },
+            [
+                { name => 'Multiple::Modules::B', indexed => 1 },
 
                 #{name => 'Multiple::Modules::_B2', indexed => 0}, # hidden
                 { name => 'Multiple::Modules::B::Secret', indexed => 0 },
             ]
         ],
-        [   'Modules.pm',
+        [
+            'Modules.pm',
             'Multiple::Modules',
             [ { name => 'Multiple::Modules', indexed => 1 }, ]
         ],
@@ -70,7 +78,8 @@ ok( !$release->first, 'Release is not first' );
         is( $file->name,          $basename, 'file name' );
         is( $file->documentation, $doc,      'documentation ok' );
 
-        is( scalar @{ $file->module },
+        is(
+            scalar @{ $file->module },
             scalar @$expmods,
             'correct number of modules'
         );
@@ -91,15 +100,18 @@ ok( !$release->first, 'Release is not first' );
 }
 
 $release = $idx->type('release')->get(
-    {   author => 'LOCAL',
+    {
+        author => 'LOCAL',
         name   => 'Multiple-Modules-0.1'
     }
 );
 ok $release, 'got older version of release';
 ok $release->first, 'this version was first';
 
-ok( my $file = $idx->type('file')->filter(
-        {   and => [
+ok(
+    my $file = $idx->type('file')->filter(
+        {
+            and => [
                 { term => { release       => 'Multiple-Modules-0.1' } },
                 { term => { documentation => 'Moose' } }
             ]

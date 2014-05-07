@@ -26,7 +26,8 @@ test_psgi app, sub {
     ok( my $json2 = eval { decode_json( $res->content ) }, 'valid json' );
     is_deeply( $json, $json2, 'json matches with previous run' );
 
-    ok( $res = $cb->(
+    ok(
+        $res = $cb->(
             GET
                 '/diff/file/8yTixXQGpkbPsMBXKvDoJV4Qkg8/dPgxn7qq0wm1l_UO1aIMyQWFJPw'
         ),
@@ -49,7 +50,8 @@ DIFF
         $cb,
         'RWSTAUNER/Encoding-1.0',
         'RWSTAUNER/Encoding-1.1',
-        {   'lib/Encoding/CP1252.pm' => <<DIFF,
+        {
+            'lib/Encoding/CP1252.pm' => <<DIFF,
 -sub bullet { qq<\xe2\x80\xa2> }
 +sub bullet { qq<\xe2\x80\xa2-\xc3\xb7> }
 DIFF
@@ -60,7 +62,8 @@ DIFF
         $cb,
         'RWSTAUNER/Encoding-1.1',
         'RWSTAUNER/Encoding-1.2',
-        {   'lib/Encoding/UTF8.pm' => <<DIFF,
+        {
+            'lib/Encoding/UTF8.pm' => <<DIFF,
 -my \$heart = qq<\342\235\244>;
 +my \$heart = qq<\342\231\245>;
 DIFF

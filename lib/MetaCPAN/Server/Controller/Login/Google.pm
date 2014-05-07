@@ -23,7 +23,8 @@ sub index : Path {
         my $ua        = LWP::UserAgent->new;
         my $token_res = $ua->request(
             POST 'https://accounts.google.com/o/oauth2/token',
-            [   code          => $code,
+            [
+                code          => $code,
                 client_id     => $self->consumer_key,
                 client_secret => $self->consumer_secret,
                 redirect_uri  => $c->uri_for( $self->action_for('index') ),

@@ -26,7 +26,8 @@ my %tests = (
     '/search/reverse_dependencies/LOCAL/Multiple-Modules-0.1' => [
         200,
         [qw( Multiple-Modules-RDeps-0.11 )],
-        [   qw( Multiple-Modules-RDeps-2.03 Multiple-Modules-RDeps-Deprecated-0.01 )
+        [
+            qw( Multiple-Modules-RDeps-2.03 Multiple-Modules-RDeps-Deprecated-0.01 )
         ],
     ],
 );
@@ -34,7 +35,8 @@ my %tests = (
 sub check_search_results {
     my ( $name, $res, $code, $rdeps ) = @_;
     ok( $res, $name );
-    is( $res->header('content-type'),
+    is(
+        $res->header('content-type'),
         'application/json; charset=utf-8',
         'Content-type'
     );
@@ -45,8 +47,8 @@ sub check_search_results {
 
     $json = $json->{hits}{hits} if $json->{hits};
     is scalar @$json, @$rdeps, 'got expected number of releases';
-    is_deeply
-        [ sort map { join '-', @{ $_->{_source} }{qw(distribution version)} }
+    is_deeply [
+        sort map { join '-', @{ $_->{_source} }{qw(distribution version)} }
             @$json ],
         $rdeps,
         'got expected releases';
@@ -70,7 +72,8 @@ test_psgi app, sub {
             "POST $k" => $cb->(
                 POST $k,
                 Content => encode_json(
-                    {   query => { match_all => {} },
+                    {
+                        query => { match_all => {} },
                         filter =>
                             { term => { 'release.status' => 'latest' }, },
                     }
@@ -83,7 +86,8 @@ test_psgi app, sub {
 
     # test passing additional ES parameters
     {
-        ok( my $res = $cb->(
+        ok(
+            my $res = $cb->(
                 POST "/search/reverse_dependencies/Multiple-Modules",
                 Content => encode_json(
                     { query => { match_all => {} }, size => 1 }
@@ -98,11 +102,13 @@ test_psgi app, sub {
 
     # test appending filters
     {
-        ok( my $res = $cb->(
+        ok(
+            my $res = $cb->(
                 POST
                     "/search/reverse_dependencies/Multiple-Modules?fields=release.distribution",
                 Content => encode_json(
-                    {   query  => { match_all => {} },
+                    {
+                        query  => { match_all => {} },
                         filter => {
                             term => {
                                 'release.distribution' =>

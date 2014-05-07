@@ -68,5 +68,3 @@ Only set the L<MetaCPAN::Document::Release/first> property for releases of this 
 
 =cut
 
-
-
