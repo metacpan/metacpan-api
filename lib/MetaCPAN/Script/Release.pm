@@ -385,7 +385,10 @@ sub import_tarball {
                         $info = Module::Metadata->new_from_file(
                             $file->local_path );
                     }
-                    for my $pkg ( grep { $_ ne 'main' }
+
+          # Ignore packages that people cannot claim.
+          # https://github.com/andk/pause/blob/master/lib/PAUSE/pmfile.pm#L236
+                    for my $pkg ( grep { $_ ne 'main' && $_ ne 'DB' }
                         $info->packages_inside )
                     {
                         my $version = $info->version($pkg);
@@ -420,8 +423,11 @@ sub import_tarball {
         $_->set_associated_pod( $file, \%associated_pod )
             for ( @{ $file->module } );
         $file->set_indexed($meta);
+
+     # NOTE: "The method returns a list of unauthorized, but indexed modules."
         push( @release_unauthorized, $file->set_authorized($perms) )
             if ( keys %$perms );
+
         for ( @{ $file->module } ) {
             push( @provides, $_->name ) if $_->indexed && $_->authorized;
         }
