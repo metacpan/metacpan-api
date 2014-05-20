@@ -63,7 +63,7 @@ sub run {
         release => qw(--level debug --detect_backpan),
         @{ $self->sources }
     );
-    $self->script( latest => $self->distribution );
+    $self->script( latest => '--distribution', $self->distribution );
 }
 
 sub confirm {
