@@ -139,8 +139,10 @@ sub file2mod {
 
 sub _build_cpan {
     my $self = shift;
-    my @dirs
-        = ( "$ENV{'HOME'}/CPAN", "$ENV{'HOME'}/minicpan", $ENV{'MINICPAN'} );
+    my @dirs = (
+        $ENV{MINICPAN},    '/home/metacpan/CPAN',
+        "$ENV{HOME}/CPAN", "$ENV{HOME}/minicpan"
+    );
     foreach my $dir ( grep {defined} @dirs ) {
         return $dir if -d $dir;
     }
