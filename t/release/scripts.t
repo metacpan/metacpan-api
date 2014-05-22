@@ -4,13 +4,6 @@ use warnings;
 use MetaCPAN::Server::Test;
 use Test::More;
 
-# Work around an issue with JSON::XS 3.0 and the accompanying JSON 2.9 release.
-# (Test::More::is_deeply with stringiying objects says 1 != '1'.)
-my $true = JSON::decode_json('{"bool": true}')->{bool};
-
-# This is stupid, but it works; JSON 2.61 overloaded eq, 2.9 stopped.
-$true = '1' if $true eq 'true';
-
 my $model   = model();
 my $idx     = $model->index('cpan');
 my $release = $idx->type('release')->get(
@@ -52,12 +45,12 @@ is( $release->version, '0.01', 'version ok' );
         [
             {
                 documentation => 'catalyst',
-                indexed       => $true,
+                indexed       => \1,
                 mime          => 'text/x-script.perl'
             },
             {
                 documentation => 'starman',
-                indexed       => $true,
+                indexed       => \1,
                 mime          => 'text/x-script.perl'
             }
         ],
