@@ -12,7 +12,7 @@ The query syntax is explained on ElasticSearch's [reference page](http://www.ela
 
 ## Being polite
 
-Currently, the only rules around using the API are to "be polite". We have enforced an upper limit of a size of 5000 on search requests.  If you need to fetch more than 5000 items, you should look at using the scrolling API.  Search this page for "scroll" to get an example using Search::Elasticsearch.pm or see the [ElasticSearch scroll docs](http://www.elasticsearch.org/guide/reference/api/search/scroll.html) if you are connecting in some other way.  
+Currently, the only rules around using the API are to "be polite". We have enforced an upper limit of a size of 5000 on search requests.  If you need to fetch more than 5000 items, you should look at using the scrolling API.  Search this page for "scroll" to get an example using [Search::Elasticsearch](https://metacpan.org/pod/Search::Elasticsearch) or see the [Elasticsearch scroll docs](http://www.elasticsearch.org/guide/reference/api/search/scroll.html) if you are connecting in some other way.
 
 You can certainly scroll if you are fetching less than 5000 items.  You might want to do this if you are expecting a large data set, but will still need to run many requests to get all of the required data.
 
@@ -163,28 +163,31 @@ Last 50 dists to get a ++:
 Perhaps the easiest way to get started using MetaCPAN is with [MetaCPAN::Client](https://metacpan.org/pod/MetaCPAN::Client).  
 
 ```perl
+use MetaCPAN::Client ();
 my $mcpan  = MetaCPAN::Client->new();
 my $author = $mcpan->author('XSAWYERX');
-my $dist   = $mcpan->release( distribution => 'MetaCPAN-API' );
+my $dist   = $mcpan->release('MetaCPAN-API');
 ```
 
-## Querying the API with Search::Elasticsearch.pm
+## Querying the API with Search::Elasticsearch
 
-The API server at api.metacpan.org is a wrapper around an Search::Elasticsearch instance. It adds support for the convenient GET URLs, handles authentication and does some access control. Therefore you can use the powerful API of [Search::Elasticsearch.pm](https://metacpan.org/pod/Search::Elasticsearch) to query MetaCPAN:
+The API server at api.metacpan.org is a wrapper around an [Elasticsearch](http://elasticsearch.org) instance. It adds support for the convenient GET URLs, handles authentication and does some access control. Therefore you can use the powerful API of [Search::Elasticsearch](https://metacpan.org/pod/Search::Elasticsearch) to query MetaCPAN.
+
+**NOTE**: The `cxn_pool => 'Static::NoPing'` is important because of the HTTP proxy we have in front of Elasticsearch.
 
 ```perl
 use Search::Elasticsearch;
 
 my $es =  Search::Elasticsearch->new(
-    cxn_pool   => 'Sniff',
+    cxn_pool   => 'Static::NoPing',
     nodes      => 'api.metacpan.org'
 );
 
 my $scroller = $es->scroll_helper(
-    search_type => "scan",
-    scroll      => "5m",
-    index       => "v0",
-    type        => "author",
+    search_type => 'scan',
+    scroll      => '5m',
+    index       => 'v0',
+    type        => 'release',
     size        => 100,
     body => {
         query => {
@@ -194,7 +197,8 @@ my $scroller = $es->scroll_helper(
 );
 
 while ( my $result = $scroller->next ) {
-    print $result->{_source}->{author}, $/;
+    print $result->{_source}->{author}, '/',
+          $result->{_source}->{name}, $/;
 }
 ```
 
