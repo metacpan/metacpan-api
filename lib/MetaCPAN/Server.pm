@@ -82,6 +82,14 @@ __PACKAGE__->setup(
 
 my $app = __PACKAGE__->apply_default_middlewares( __PACKAGE__->psgi_app );
 
+# Using an ES client against the API requires an index (/v0).
+# In production nginx handles this.
+if ( $ENV{PLACK_ENV} && $ENV{PLACK_ENV} eq 'development' ) {
+    require Plack::Middleware::Rewrite;
+    $app = Plack::Middleware::Rewrite->wrap( $app,
+        rules => sub {s{^/?v\d+/}{}} );
+}
+
 # Should this be `unless ( $ENV{HARNESS_ACTIVE} ) {` ?
 {
     my $scoreboard = __PACKAGE__->path_to(qw(var tmp scoreboard));
