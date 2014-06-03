@@ -5,7 +5,7 @@ requires 'Archive::Any::Plugin';
 requires 'Archive::Tar';
 requires 'CHI';
 requires 'CPAN::DistnameInfo';
-requires 'CPAN::Meta';
+requires 'CPAN::Meta', '2.141170'; # Avoid issues with List::Util dep under carton install.
 requires 'CPAN::Meta::Requirements';
 requires 'Captcha::reCAPTCHA', '0.94';
 requires 'Catalyst', '5.90011';
