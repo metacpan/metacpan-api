@@ -82,7 +82,7 @@ requires 'Log::Log4perl::Appender::ScreenColoredLevels';
 requires 'Module::Metadata', '1.000022';
 requires 'Module::Pluggable';
 requires 'Module::Runtime';
-requires 'Moose';
+requires 'Moose', ' == 2.0802'; # Pin to older version to avoid deprecation warning on enum that we can't escape b/c we're pinned to an old version of MX-Types-ES.
 requires 'Moose::Role';
 requires 'Moose::Util';
 requires 'MooseX::Aliases';
@@ -92,7 +92,7 @@ requires 'MooseX::Getopt';
 requires 'MooseX::Getopt::OptionTypeMap';
 requires 'MooseX::Types';
 requires 'MooseX::Types::Common::String';
-requires 'MooseX::Types::ElasticSearch', ' == 0.0.2';
+requires 'MooseX::Types::ElasticSearch', ' == 0.0.2'; # Newer versions use the other ES module which we can't upgrade to yet b/c of ESX-Model.
 requires 'MooseX::Types::Moose';
 requires 'MooseX::Types::Path::Class';
 requires 'MooseX::Types::Structured';
