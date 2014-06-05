@@ -6,6 +6,8 @@
 *.kpf
 *.komodoproject
 *.sqlite*
+/var/logs/
+/var/run/
 /var/tmp/
 /var/log/metacpan.*
 /t/var/tmp/

@@ -1,4 +1,5 @@
 [PerlTidy]
 select = {lib,t}/**/*.{pl,pm,t,psgi}
+select = bin/daemon-control.pl
 select = app.psgi
 ignore = t/var/**/*
