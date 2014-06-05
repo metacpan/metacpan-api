@@ -10,7 +10,8 @@ use Sys::Hostname qw( hostname );
 
 my $name    = 'metacpan-api';
 my $user    = 'metacpan';
-my $home    = '/home/metacpan/api.metacpan.org';
+my $root    = '/home/metacpan';
+my $home    = "$root/api.metacpan.org";
 my $carton  = '/usr/local/perlbrew/perls/perl-5.16.2/bin/carton';
 my $workers = 10;
 
@@ -37,7 +38,7 @@ my $args = {
     directory    => $home,
     fork         => 2,
     group        => $user,
-    init_config  => "$home/.metacpanrc",
+    init_config  => "$root/.metacpanrc",
     lsb_desc     => "Starts $name",
     lsb_sdesc    => "Starts $name",
     name         => $name,
