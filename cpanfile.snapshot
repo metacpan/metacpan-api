@@ -5950,6 +5950,24 @@ DISTRIBUTIONS
       Test::More 0
       parent 0
       perl 5.008001
+  Plack-Middleware-Rewrite-1.008
+    pathname: A/AR/ARISTOTLE/Plack-Middleware-Rewrite-1.008.tar.gz
+    provides:
+      Plack::Middleware::Rewrite 1.008
+    requirements:
+      ExtUtils::MakeMaker 6.30
+      HTTP::Request::Common 0
+      Plack 0.9942
+      Plack::Builder 0
+      Plack::Middleware 0
+      Plack::Request 0
+      Plack::Test 0
+      Plack::Util 0
+      Plack::Util::Accessor 0
+      Test::More 0
+      parent 0
+      strict 0
+      warnings 0
   Plack-Middleware-ServerStatus-Lite-0.33
     pathname: K/KA/KAZEBURO/Plack-Middleware-ServerStatus-Lite-0.33.tar.gz
     provides:

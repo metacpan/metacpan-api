@@ -158,3 +158,4 @@ test_requires 'Test::Routine', '0.012';
 test_requires 'Test::Routine::Util', '0';
 
 author_requires 'Code::TidyAll';
+author_requires 'Plack::Middleware::Rewrite';
