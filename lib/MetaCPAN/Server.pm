@@ -4,12 +4,9 @@ use strict;
 use warnings;
 
 use CatalystX::RoleApplicator;
-use FindBin;
 use Moose;
 use Plack::Middleware::ReverseProxy;
 use Plack::Middleware::ServerStatus::Lite;
-
-use lib "$FindBin::RealBin/../";
 
 extends 'Catalyst';
 
