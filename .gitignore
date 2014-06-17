@@ -6,10 +6,7 @@
 *.kpf
 *.komodoproject
 *.sqlite*
-/var/logs/
-/var/run/
-/var/tmp/
-/var/log/metacpan.*
+/var
 /t/var/tmp/
 /etc/metacpan_local.pl
 metacpan_server_local.conf
