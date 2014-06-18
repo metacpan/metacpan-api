@@ -16,14 +16,14 @@ my %dirs = (
     pid => "$home/var/run",
     log => "$home/var/log",
 );
-my $carton  = '/usr/local/perlbrew/perls/perl-5.16.2/bin/carton';
-my $workers = 10;
+my $carton    = '/usr/local/perlbrew/perls/perl-5.16.2/bin/carton';
+my $workers   = 10;
 my $plack_env = 'production';
 
 # If running in the development vm change the user to avoid permission problems.
 if ( -d '/vagrant' ) {
-    $user    = 'vagrant';
-    $workers = 3;
+    $user      = 'vagrant';
+    $workers   = 3;
     $plack_env = 'development';
 }
 
