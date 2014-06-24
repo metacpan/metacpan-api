@@ -5,13 +5,13 @@ use warnings;
 use namespace::autoclean;
 
 use CHI                   ();
-use Digest::SHA1          ();
 use Email::Sender::Simple ();
 use Email::Simple         ();
 use Encode                ();
 use JSON;
 use Moose;
 use Try::Tiny;
+use MetaCPAN::Util;
 
 BEGIN { extends 'MetaCPAN::Server::Controller::Login' }
 
@@ -44,7 +44,7 @@ sub index : Path {
         my $author = $c->model('CPAN::Author')->get( uc($id) );
         $c->controller('OAuth2')->redirect( $c, error => "author_not_found" )
             unless ($author);
-        my $code = $self->generate_sid;
+        my $code = MetaCPAN::Util::generate_sid;
         $self->cache->set( $code, $author->pauseid, 86400 );
         my $uri = $c->request->uri->clone;
         $uri->query("code=$code");
@@ -61,10 +61,6 @@ sub index : Path {
         Email::Sender::Simple->send($email);
         $c->controller('OAuth2')->redirect( $c, success => "mail_sent" );
     }
-}
-
-sub generate_sid {
-    Digest::SHA1::sha1_hex( rand() . $$ . {} . time );
 }
 
 sub email_body {
