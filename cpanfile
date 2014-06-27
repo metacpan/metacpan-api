@@ -109,6 +109,7 @@ requires 'Plack::App::Directory';
 requires 'Plack::MIME';
 requires 'Plack::Middleware::Header';
 requires 'Plack::Middleware::ReverseProxy';
+requires 'Plack::Middleware::Rewrite';
 requires 'Plack::Middleware::ServerStatus::Lite';
 requires 'Plack::Middleware::Session';
 requires 'Plack::Session::Store';
