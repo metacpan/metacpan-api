@@ -16,9 +16,9 @@ test_psgi app, sub {
             POST '/user/stargazer?access_token=testing',
             Content => encode_json(
                 {
-                    module	 => 'Moose::Cookbook',
-                    release      => 'Moose-2.1209',
-                    author       => 'DOY'
+                    module  => 'Moose::Cookbook',
+                    release => 'Moose-2.1209',
+                    author  => 'DOY'
                 }
             )
         ),
@@ -30,8 +30,12 @@ test_psgi app, sub {
     is( $res->code, 200, 'found' );
     my $json = decode_json( $res->content );
     is( $json->{user}, $user->{id}, 'user is ' . $user->{id} );
-    ok( $res = $cb->( DELETE "/user/stargazer/Moose::Cookbook?access_token=testing" ),
-        "DELETE /user/stargazer/MO/Moose::Cookbook" );
+    ok(
+        $res = $cb->(
+            DELETE "/user/stargazer/Moose::Cookbook?access_token=testing"
+        ),
+        "DELETE /user/stargazer/MO/Moose::Cookbook"
+    );
     is( $res->code, 200, 'status ok' );
     ok( $res = $cb->( GET "$location?access_token=testing" ),
         "GET $location" );
@@ -46,9 +50,9 @@ test_psgi app, sub {
             POST '/user/stargazer?access_token=bot',
             Content => encode_json(
                 {
-                    module => 'Moose::Cookbook',
-                    release      => 'Moose-2.1209',
-                    author       => 'DOY'
+                    module  => 'Moose::Cookbook',
+                    release => 'Moose-2.1209',
+                    author  => 'DOY'
                 }
             )
         ),
