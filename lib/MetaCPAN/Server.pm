@@ -3,6 +3,8 @@ package MetaCPAN::Server;
 use strict;
 use warnings;
 
+## no critic (Modules::RequireEndWithOne)
+
 use CatalystX::RoleApplicator;
 use Moose;
 use Plack::Middleware::ReverseProxy;
@@ -34,7 +36,9 @@ __PACKAGE__->config(
             }
         }
     },
+    ## no critic  ValuesAndExpressions::ProhibitMagicNumbers
     'Plugin::Session' => { expires => 2**30 },
+    ## use critic
 
     # those are for development only. The actual keys are set in
     # metacpan_server_local.conf
@@ -101,3 +105,4 @@ if ( $ENV{PLACK_ENV} && $ENV{PLACK_ENV} eq 'development' ) {
         scoreboard => $scoreboard,
     );
 }
+

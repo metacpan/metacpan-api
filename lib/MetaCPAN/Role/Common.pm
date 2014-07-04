@@ -167,6 +167,8 @@ before run => sub {
 
 1;
 
+__END__
+
 =pod
 
 =head1 SYNOPSIS

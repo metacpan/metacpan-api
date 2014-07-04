@@ -96,7 +96,7 @@ sub pod_lines {
         }
         $count++;
     }
-    push( @return, [ $start - 1, $length ] )
+    push @return, [ $start - 1, $length ]
         if ( $start && $length );
     return \@return, $slop;
 }
