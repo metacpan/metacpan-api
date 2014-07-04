@@ -913,10 +913,10 @@ DISTRIBUTIONS
       Time::HiRes 0
       XSLoader 0
       perl 5.008
-  Clone-0.36
-    pathname: G/GA/GARU/Clone-0.36.tar.gz
+  Clone-0.37
+    pathname: G/GA/GARU/Clone-0.37.tar.gz
     provides:
-      Clone 0.36
+      Clone 0.37
     requirements:
       ExtUtils::MakeMaker 0
       Test::More 0
@@ -1072,13 +1072,13 @@ DISTRIBUTIONS
       Module::Build 0.38
       URI::Escape 0
       perl 5.008005
-  DBD-SQLite-1.40
-    pathname: I/IS/ISHIGAKI/DBD-SQLite-1.40.tar.gz
+  DBD-SQLite-1.42
+    pathname: I/IS/ISHIGAKI/DBD-SQLite-1.42.tar.gz
     provides:
-      DBD::SQLite 1.40
-      DBD::SQLite::_WriteOnceHash 1.40
-      DBD::SQLite::db 1.40
-      DBD::SQLite::dr 1.40
+      DBD::SQLite 1.42
+      DBD::SQLite::_WriteOnceHash 1.42
+      DBD::SQLite::db 1.42
+      DBD::SQLite::dr 1.42
     requirements:
       DBI 1.57
       ExtUtils::MakeMaker 6.48
@@ -1299,16 +1299,16 @@ DISTRIBUTIONS
       Task::Weaken 0
       Tie::ToObject 0.01
       namespace::clean 0.19
-  DateTime-1.08
-    pathname: D/DR/DROLSKY/DateTime-1.08.tar.gz
+  DateTime-1.10
+    pathname: D/DR/DROLSKY/DateTime-1.10.tar.gz
     provides:
-      DateTime 1.08
-      DateTime::Duration 1.08
-      DateTime::Helpers 1.08
-      DateTime::Infinite 1.08
-      DateTime::Infinite::Future 1.08
-      DateTime::Infinite::Past 1.08
-      DateTime::LeapSecond 1.08
+      DateTime 1.10
+      DateTime::Duration 1.10
+      DateTime::Helpers 1.10
+      DateTime::Infinite 1.10
+      DateTime::Infinite::Future 1.10
+      DateTime::Infinite::Past 1.10
+      DateTime::LeapSecond 1.10
       inc::MyModuleBuild undef
     requirements:
       Carp 0
@@ -1329,6 +1329,7 @@ DISTRIBUTIONS
       strict 0
       vars 0
       warnings 0
+      warnings::register 0
   DateTime-Format-Builder-0.81
     pathname: D/DR/DROLSKY/DateTime-Format-Builder-0.81.tar.gz
     provides:
@@ -2423,10 +2424,10 @@ DISTRIBUTIONS
       base 0
       strict 0
       warnings 0
-  EV-4.16
-    pathname: M/ML/MLEHMANN/EV-4.16.tar.gz
+  EV-4.17
+    pathname: M/ML/MLEHMANN/EV-4.17.tar.gz
     provides:
-      EV 4.16
+      EV 4.17
       EV::MakeMaker undef
     requirements:
       ExtUtils::MakeMaker 0
@@ -3416,13 +3417,6 @@ DISTRIBUTIONS
       Hash::MultiValue 0.15
     requirements:
       ExtUtils::MakeMaker 6.30
-  Hijk-0.13
-    pathname: G/GU/GUGOD/Hijk-0.13.tar.gz
-    provides:
-      Hijk 0.13
-    requirements:
-      CPAN::Meta 0
-      ExtUtils::MakeMaker 6.36
   Hook-LexWrap-0.24
     pathname: C/CH/CHORNY/Hook-LexWrap-0.24.tar.gz
     provides:
@@ -3660,24 +3654,6 @@ DISTRIBUTIONS
       Log::Any::Test 0.15
     requirements:
       ExtUtils::MakeMaker 6.30
-      Test::More 0
-  Log-Any-Adapter-0.11
-    pathname: J/JS/JSWARTZ/Log-Any-Adapter-0.11.tar.gz
-    provides:
-      Log::Any::Adapter 0.11
-      Log::Any::Adapter::Base 0.11
-      Log::Any::Adapter::File 0.11
-      Log::Any::Adapter::Stderr 0.11
-      Log::Any::Adapter::Stdout 0.11
-      Log::Any::Manager 0.11
-    requirements:
-      Capture::Tiny 0.12
-      Carp 0
-      Devel::GlobalDestruction 0
-      ExtUtils::MakeMaker 6.30
-      Guard 0
-      IO::File 0
-      Log::Any 0
       Test::More 0
   Log-Contextual-0.006003
     pathname: F/FR/FREW/Log-Contextual-0.006003.tar.gz
@@ -5245,10 +5221,10 @@ DISTRIBUTIONS
       Scalar::Util 1.18
       Test::More 0.42
       perl 5.00503
-  Params-Validate-1.08
-    pathname: D/DR/DROLSKY/Params-Validate-1.08.tar.gz
+  Params-Validate-1.10
+    pathname: D/DR/DROLSKY/Params-Validate-1.10.tar.gz
     provides:
-      Attribute::Params::Validate 1.08
+      Attribute::Params::Validate 1.10
       Bar undef
       Baz undef
       Foo undef
@@ -5258,10 +5234,10 @@ DISTRIBUTIONS
       PVTests::Regex undef
       PVTests::Standard undef
       PVTests::With undef
-      Params::Validate 1.08
-      Params::Validate::Constants 1.08
-      Params::Validate::PP 1.08
-      Params::Validate::XS 1.08
+      Params::Validate 1.10
+      Params::Validate::Constants 1.10
+      Params::Validate::PP 1.10
+      Params::Validate::XS 1.10
       Quux undef
       Testing::X undef
       Yadda undef
@@ -6251,92 +6227,6 @@ DISTRIBUTIONS
       Exporter 5.57
       ExtUtils::MakeMaker 0
       Scalar::Util 0
-  Search-Elasticsearch-1.12
-    pathname: D/DR/DRTECH/Search-Elasticsearch-1.12.tar.gz
-    provides:
-      MockCxn undef
-      Search::Elasticsearch 1.12
-      Search::Elasticsearch::Bulk 1.12
-      Search::Elasticsearch::Client::0_90::Direct 1.12
-      Search::Elasticsearch::Client::0_90::Direct::Cluster 1.12
-      Search::Elasticsearch::Client::0_90::Direct::Indices 1.12
-      Search::Elasticsearch::Client::Direct 1.12
-      Search::Elasticsearch::Client::Direct::Cat 1.12
-      Search::Elasticsearch::Client::Direct::Cluster 1.12
-      Search::Elasticsearch::Client::Direct::Indices 1.12
-      Search::Elasticsearch::Client::Direct::Nodes 1.12
-      Search::Elasticsearch::Client::Direct::Snapshot 1.12
-      Search::Elasticsearch::Cxn::Factory 1.12
-      Search::Elasticsearch::Cxn::HTTPTiny 1.12
-      Search::Elasticsearch::Cxn::Hijk 1.12
-      Search::Elasticsearch::Cxn::LWP 1.12
-      Search::Elasticsearch::CxnPool::Sniff 1.12
-      Search::Elasticsearch::CxnPool::Static 1.12
-      Search::Elasticsearch::CxnPool::Static::NoPing 1.12
-      Search::Elasticsearch::Error 1.12
-      Search::Elasticsearch::Logger::LogAny 1.12
-      Search::Elasticsearch::Role::API 1.12
-      Search::Elasticsearch::Role::API::0_90 1.12
-      Search::Elasticsearch::Role::Bulk 1.12
-      Search::Elasticsearch::Role::Client 1.12
-      Search::Elasticsearch::Role::Client::Direct 1.12
-      Search::Elasticsearch::Role::Cxn 1.12
-      Search::Elasticsearch::Role::Cxn::HTTP 1.12
-      Search::Elasticsearch::Role::CxnPool 1.12
-      Search::Elasticsearch::Role::CxnPool::Sniff 1.12
-      Search::Elasticsearch::Role::CxnPool::Static 1.12
-      Search::Elasticsearch::Role::CxnPool::Static::NoPing 1.12
-      Search::Elasticsearch::Role::Is_Sync 1.12
-      Search::Elasticsearch::Role::Logger 1.12
-      Search::Elasticsearch::Role::Scroll 1.12
-      Search::Elasticsearch::Role::Serializer 1.12
-      Search::Elasticsearch::Role::Serializer::JSON 1.12
-      Search::Elasticsearch::Role::Transport 1.12
-      Search::Elasticsearch::Scroll 1.12
-      Search::Elasticsearch::Serializer::JSON 1.12
-      Search::Elasticsearch::Serializer::JSON::Cpanel 1.12
-      Search::Elasticsearch::Serializer::JSON::PP 1.12
-      Search::Elasticsearch::Serializer::JSON::XS 1.12
-      Search::Elasticsearch::TestServer 1.12
-      Search::Elasticsearch::Transport 1.12
-      Search::Elasticsearch::Util 1.12
-      Search::Elasticsearch::Util::API::Path 1.12
-      Search::Elasticsearch::Util::API::QS 1.12
-    requirements:
-      Any::URI::Escape 0
-      Data::Dumper 0
-      Encode 0
-      ExtUtils::MakeMaker 6.30
-      File::Temp 0
-      HTTP::Headers 0
-      HTTP::Request 0
-      HTTP::Tiny 0.043
-      Hijk 0.12
-      IO::Select 0
-      IO::Socket 0
-      IO::Socket::SSL 0
-      IO::Uncompress::Inflate 0
-      JSON::MaybeXS 1.002002
-      JSON::PP 0
-      LWP::UserAgent 0
-      List::Util 0
-      Log::Any 0
-      Log::Any::Adapter 0
-      MIME::Base64 0
-      Module::Runtime 0
-      Moo 1.003
-      Moo::Role 0
-      POSIX 0
-      Scalar::Util 0
-      Sub::Exporter 0
-      Test::More 0.98
-      Time::HiRes 0
-      Try::Tiny 0
-      URI 0
-      namespace::clean 0
-      overload 0
-      strict 0
-      warnings 0
   Sort-Versions-1.5
     pathname: E/ED/EDAVIS/Sort-Versions-1.5.tar.gz
     provides:
@@ -6641,26 +6531,6 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Test::Builder 0.12
       Test::Builder::Tester 1.04
-  Test-MockObject-1.20140408
-    pathname: C/CH/CHROMATIC/Test-MockObject-1.20140408.tar.gz
-    provides:
-      Test::MockObject 1.20140408
-      Test::MockObject::Extends 1.20140408
-    requirements:
-      CGI 0
-      Carp 0
-      Devel::Peek 0
-      ExtUtils::MakeMaker 6.30
-      Scalar::Util 0
-      Test::Builder 0
-      Test::Exception 0.31
-      Test::More 0.98
-      Test::Warn 0.23
-      UNIVERSAL::can 1.20110617
-      UNIVERSAL::isa 1.20110614
-      constant 0
-      strict 0
-      warnings 0
   Test-Most-0.33
     pathname: O/OV/OVID/Test-Most-0.33.tar.gz
     provides:
@@ -6701,6 +6571,20 @@ DISTRIBUTIONS
       Test::Builder::Tester 1.02
       Test::More 0.42
       overload 0
+  Test-Perl-Critic-1.02
+    pathname: T/TH/THALJEF/Test-Perl-Critic-1.02.tar.gz
+    provides:
+      Test::Perl::Critic 1.02
+    requirements:
+      Carp 0
+      English 0
+      Perl::Critic 1.105
+      Perl::Critic::Utils 1.105
+      Perl::Critic::Violation 1.105
+      Test::Builder 0
+      Test::More 0
+      strict 0
+      warnings 0
   Test-Pod-1.48
     pathname: D/DW/DWHEELER/Test-Pod-1.48.tar.gz
     provides:
@@ -7136,33 +7020,6 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       common::sense 0
-  UNIVERSAL-can-1.20140328
-    pathname: C/CH/CHROMATIC/UNIVERSAL-can-1.20140328.tar.gz
-    provides:
-      Test::SmallWarn undef
-      UNIVERSAL::can 1.20140328
-    requirements:
-      ExtUtils::MakeMaker 6.30
-      Scalar::Util 0
-      strict 0
-      vars 0
-      warnings 0
-      warnings::register 0
-  UNIVERSAL-isa-1.20120726
-    pathname: C/CH/CHROMATIC/UNIVERSAL-isa-1.20120726.tar.gz
-    provides:
-      UNIVERSAL::isa 1.20120726
-    requirements:
-      CGI 0
-      ExtUtils::MakeMaker 6.30
-      Scalar::Util 0
-      Test::More 0
-      UNIVERSAL 0
-      overload 0
-      strict 0
-      vars 0
-      warnings 0
-      warnings::register 0
   UNIVERSAL-require-0.17
     pathname: N/NE/NEILB/UNIVERSAL-require-0.17.tar.gz
     provides:
@@ -7444,10 +7301,10 @@ DISTRIBUTIONS
       Lexical::SealRequireHints 0
       Test::More 0.88
       XSLoader 0
-  common-sense-3.72
-    pathname: M/ML/MLEHMANN/common-sense-3.72.tar.gz
+  common-sense-3.73
+    pathname: M/ML/MLEHMANN/common-sense-3.73.tar.gz
     provides:
-      common::sense 3.72
+      common::sense 3.73
     requirements:
       ExtUtils::MakeMaker 0
   indirect-0.31
