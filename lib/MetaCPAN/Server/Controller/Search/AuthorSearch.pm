@@ -16,7 +16,7 @@ sub get : Local : Path('') : Args(0) {
     my $model = $self->model($c);
     $model = $model->fields( [qw(name pauseid gravatar_url)] )
         unless $model->fields;
-    my $data = $model->authorsearch( $c->req->param("q") )->raw;
+    my $data = $model->authorsearch( $c->req->param('q') )->raw;
     $c->stash( $data->all );
 }
 

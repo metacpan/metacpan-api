@@ -159,13 +159,14 @@ sub validate {
 
 sub authorsearch {
     my ( $self, @terms ) = @_;
-    my $query = join( " ", @terms );
+    my $empty = q{ };
+    my $query = join( $empty, @terms );
     return $self unless $query;
     return $self->query(
         {
             custom_score => {
                 query => { bool => { should => $query } },
-                script => "_score - doc['name'].value.length()/100",
+                script => '_score - doc[\'name\'].value.length()/100',
             }
         }
         )->filter(
