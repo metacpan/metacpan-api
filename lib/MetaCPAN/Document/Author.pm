@@ -157,6 +157,24 @@ sub validate {
     return @result;
 }
 
+sub authorsearch {
+    my ( $self, @terms ) = @_;
+    my $query = join( " ", @terms );
+    return $self unless $query;
+    return $self->query(
+        {
+            custom_score => {
+                query => { bool => { should => $query } },
+                script => "_score - doc['name'].value.length()/100",
+            }
+        }
+        )->filter(
+        {
+            and => [ $self->_not_rogue, { exists => { field => 'name' } } ]
+        }
+        )->sort( [ '_score', 'name' ] );
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;
