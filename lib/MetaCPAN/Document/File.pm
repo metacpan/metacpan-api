@@ -933,17 +933,21 @@ sub autocomplete {
     my @query = split( /\s+/, $query );
     my $should = [
         map {
-            { field     => { 'documentation.analyzed'  => "$_*" } },
-                { field => { 'documentation.camelcase' => "$_*" } }
-        } grep {$_} @query
+            { simple_query_string => {
+                fields => ['documentation.analyzed', 'documentation.camelcase'],
+                query => "$_*"
+            }
+        } } grep {$_} @query
     ];
 
     # TODO: custom_score is deprecated in 0.90.4 in favor of function_score.
     # As of 2013-10-27 we are still using 0.20.2 in production.
     return $self->query(
-        {   custom_score => {
+        {   function_score => {
                 query => { bool => { should => $should } },
-                script => "_score - doc['documentation'].value.length()/100",
+                script_score => {
+                    script => "_score - doc['documentation'].value.length()/100",
+                }
             }
         }
         )->filter(

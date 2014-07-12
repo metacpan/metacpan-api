@@ -13,7 +13,7 @@ test_psgi app, sub {
             'GET' );
         ok( my $json = eval { decode_json( $res->content ) }, 'valid json' );
 
-        my $got = [ map { $_->{fields}{documentation} }
+        my $got = [ map { @{$_->{fields}{documentation}} }
                 @{ $json->{hits}{hits} } ];
 
         is_deeply $got, [

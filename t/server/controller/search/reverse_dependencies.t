@@ -116,7 +116,7 @@ test_psgi app, sub {
         );
         ok( my $json = eval { decode_json( $res->content ) }, 'valid json' );
         is( $json->{hits}->{total}, 1, 'total is 1' );
-        is( $json->{hits}->{hits}->[0]->{fields}->{distribution},
+        is( $json->{hits}->{hits}->[0]->{fields}->{distribution}->[0],
             'Multiple-Modules-RDeps-A', 'filter worked' );
     }
 };
