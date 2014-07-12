@@ -23,7 +23,7 @@ sub process {
     if ( $content_type ne 'application/json' ) {
         $body = JSON->new->allow_nonref->ascii->encode($body);
     }
-    $c->res->body("$cb($body);");
+    $c->res->body("/**/$cb($body);");
     return 1;
 }
 

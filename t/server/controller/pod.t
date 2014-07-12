@@ -59,7 +59,7 @@ test_psgi app, sub {
             'text/javascript; charset=UTF-8',
             'Content-type'
         );
-        ok( my ($function_args) = $res->content =~ /^foo\((.*)\)/s,
+        ok( my ($function_args) = $res->content =~ /^\/\*\*\/foo\((.*)\)/s,
             'callback included' );
         ok( my $jsdata = JSON->new->allow_nonref->decode($function_args),
             'decode json' );
