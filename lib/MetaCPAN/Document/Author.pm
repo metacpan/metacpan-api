@@ -10,6 +10,7 @@ use ElasticSearchX::Model::Document;
 
 # load order not important
 use Gravatar::URL ();
+use MetaCPAN::Document::Author::Set;
 use MetaCPAN::Types qw(:all);
 use MetaCPAN::Util;
 use MooseX::Types::Common::String qw(NonEmptySimpleStr);
@@ -157,23 +158,11 @@ sub validate {
     return @result;
 }
 
-sub authorsearch {
+sub search_for_author {
     my ( $self, @terms ) = @_;
-    my $empty = q{ };
-    my $query = join( $empty, @terms );
+    my $query = join( q{}, @terms );
     return $self unless $query;
-    return $self->query(
-        {
-            custom_score => {
-                query => { bool => { should => $query } },
-                script => '_score - doc[\'name\'].value.length()/100',
-            }
-        }
-        )->filter(
-        {
-            and => [ $self->_not_rogue, { exists => { field => 'name' } } ]
-        }
-        )->sort( [ '_score', 'name' ] );
+    $self->MetaCPAN::Document::Author::Set->authorsearch($query);
 }
 
 __PACKAGE__->meta->make_immutable;
