@@ -39,7 +39,7 @@ sub index_POST {
     $self->status_created(
         $c,
         location => $c->uri_for(
-            join( '/', '/stargazer', $star->user, $star->module )
+            join( q{/}, '/stargazer', $star->user, $star->module )
         ),
         entity => $star->meta->get_data($star)
     );
