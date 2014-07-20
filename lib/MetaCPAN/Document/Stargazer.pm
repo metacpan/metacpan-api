@@ -8,7 +8,6 @@ use ElasticSearchX::Model::Document;
 
 use DateTime;
 use MetaCPAN::Types qw(:all);
-use MetaCPAN::Util;
 
 has id => (
     is => 'ro',

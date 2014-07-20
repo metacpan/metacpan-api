@@ -18,7 +18,7 @@ test_psgi app, sub {
                 {
                     module  => 'Moose::Cookbook',
                     release => 'Moose-2.1209',
-                    author  => 'DOY'
+                    author  => 'DOY',
                 }
             )
         ),
@@ -52,7 +52,7 @@ test_psgi app, sub {
                 {
                     module  => 'Moose::Cookbook',
                     release => 'Moose-2.1209',
-                    author  => 'DOY'
+                    author  => 'DOY',
                 }
             )
         ),

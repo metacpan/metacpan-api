@@ -14,9 +14,7 @@ sub auto : Private {
             message => 'please complete the turing test' );
         return 0;
     }
-    else {
-        return 1;
-    }
+    return 1;
 }
 
 sub index : Path : ActionClass('REST') {
@@ -24,9 +22,8 @@ sub index : Path : ActionClass('REST') {
 
 sub index_POST {
     my ( $self, $c ) = @_;
-    my $pause = $c->stash->{pause};
-    my $req   = $c->req;
-    my $star  = $c->model('CPAN::Stargazer')->put(
+    my $req  = $c->req;
+    my $star = $c->model('CPAN::Stargazer')->put(
         {
             user    => $c->user->id,
             author  => $req->data->{author},

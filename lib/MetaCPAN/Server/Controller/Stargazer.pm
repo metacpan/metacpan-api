@@ -15,7 +15,7 @@ sub find : Path('') : Args(2) {
         my $stargazer = $self->model($c)->raw->get(
             {
                 user   => $user,
-                module => $module
+                module => $module,
             }
         );
         $c->stash( $stargazer->{_source} || $stargazer->{fields} );
