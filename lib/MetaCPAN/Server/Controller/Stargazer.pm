@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Moose;
+use Try::Tiny;
 
 BEGIN { extends 'MetaCPAN::Server::Controller' }
 
@@ -11,7 +12,8 @@ with 'MetaCPAN::Server::Role::JSONP';
 
 sub find : Path('') : Args(2) {
     my ( $self, $c, $user, $module ) = @_;
-    eval {
+    try {
+
         my $stargazer = $self->model($c)->raw->get(
             {
                 user   => $user,
@@ -19,7 +21,10 @@ sub find : Path('') : Args(2) {
             }
         );
         $c->stash( $stargazer->{_source} || $stargazer->{fields} );
-    } or $c->detach( '/not_found', [$@] );
+    }
+    catch {
+        $c->detach( '/not_found', [$@] );
+    };
 }
 
 __PACKAGE__->meta->make_immutable;
