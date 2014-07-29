@@ -13,7 +13,6 @@ with 'MetaCPAN::Server::Role::JSONP';
 sub find : Path('') : Args(2) {
     my ( $self, $c, $user, $module ) = @_;
     try {
-
         my $stargazer = $self->model($c)->raw->get(
             {
                 user   => $user,
@@ -23,7 +22,7 @@ sub find : Path('') : Args(2) {
         $c->stash( $stargazer->{_source} || $stargazer->{fields} );
     }
     catch {
-        $c->detach( '/not_found', [$@] );
+        $c->detach( '/not_found', [$_] );
     };
 }
 

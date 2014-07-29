@@ -1,4 +1,4 @@
-package MetaCPAN::Server::Role::MapStarring;
+package MetaCPAN::Server::Role::Starring;
 
 use strict;
 use warnings;
@@ -10,11 +10,10 @@ sub index_POST {
     my $req  = $c->req;
     my $star = $c->model('CPAN::Stargazer')->put(
         {
-            user    => $c->user->id,
             author  => $req->data->{author},
-            release => $req->data->{release},
             module  => $req->data->{module},
-            author  => $req->data->{author},
+            release => $req->data->{release},
+            user    => $c->user->id,
         },
         { refresh => 1 }
     );

@@ -7,7 +7,7 @@ use Moose;
 
 BEGIN { extends 'Catalyst::Controller::REST' }
 
-with 'MetaCPAN::Server::Role::MapStarring';
+with 'MetaCPAN::Server::Role::Starring';
 
 sub auto : Private {
     my ( $self, $c ) = @_;

@@ -5,13 +5,13 @@ use warnings;
 
 use Moose;
 use ElasticSearchX::Model::Document;
-
 use DateTime;
 use MetaCPAN::Types qw(:all);
 
 has id => (
-    is => 'ro',
-    id => [qw(user module)],
+    is  => 'ro',
+    id  => [qw(user module)],
+    isa => 'NonEmptySimpleStr',
 );
 
 has [qw(author release user module)] => (
