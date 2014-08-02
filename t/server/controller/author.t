@@ -34,7 +34,8 @@ test_psgi app, sub {
         'text/javascript; charset=UTF-8',
         'Content-type'
     );
-    like( $res->content, qr/^\/\*\*\/jsonp\(.*\);$/ms, 'includes jsonp callback' );
+    like( $res->content, qr/^\/\*\*\/jsonp\(.*\);$/ms,
+        'includes jsonp callback' );
 
     ok(
         $res = $cb->(
