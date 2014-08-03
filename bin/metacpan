@@ -15,8 +15,6 @@
 use strict;
 use warnings;
 use FindBin;
-# Hack to use carton's local::lib.
-use lib "$FindBin::RealBin/../local/lib/perl5";
 use lib "$FindBin::RealBin/../lib";
 use MetaCPAN::Script::Runner;
 
