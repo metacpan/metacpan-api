@@ -9,18 +9,32 @@ dependency.
 
 ```sh
 curl -XPOST api.metacpan.org/v0/release/_search -d '{
-  "query": {
-    "match_all": {}
-  },
-  "size": 5000,
-  "fields": [ "distribution" ],
-  "filter": {
-    "and": [
-      { "term": { "release.dependency.module": "MooseX::NonMoose" } },
-      { "term": {"release.maturity": "released"} },
-      { "term": {"release.status": "latest"} }
-    ]
-  }
+   "query": {
+      "match_all": {}
+   },
+   "size": 5000,
+   "fields": [
+      "distribution"
+   ],
+   "filter": {
+      "and": [
+         {
+            "term": {
+               "release.dependency.module": "MooseX::NonMoose"
+            }
+         },
+         {
+            "term": {
+               "release.maturity": "released"
+            }
+         },
+         {
+            "term": {
+               "release.status": "latest"
+            }
+         }
+      ]
+   }
 }'
 ```
 
@@ -34,13 +48,17 @@ curl 'api.metacpan.org/v0/release/_search?source=%7B%22query%22%3A%7B%22match_al
 
 ```sh
 curl -XPOST api.metacpan.org/v0/file/_search -d '{
-  "query": { "match_all": {} },
-  "facets": { 
-    "size": {
-      "statistical": {
-        "field": "stat.size"
-  } } },
-  "size":0
+   "query": {
+      "match_all": {}
+   },
+   "facets": {
+      "size": {
+         "statistical": {
+            "field": "stat.size"
+         }
+      }
+   },
+   "size": 0
 }'
 ```
 
@@ -48,16 +66,22 @@ curl -XPOST api.metacpan.org/v0/file/_search -d '{
 
 ```sh
 curl -XPOST api.metacpan.org/v0/release/_search?size=100 -d '{
-  "query": {
-    "match_all": {},
-    "range" : {
-        "release.date" : {
-            "from" : "2010-06-05T00:00:00",
-            "to" : "2011-06-05T00:00:00"
-        }
-    }
-  },
-  "fields": ["release.license", "release.name", "release.distribution", "release.date", "release.version_numified"]
+   "query": {
+      "match_all": {},
+      "range": {
+         "release.date": {
+            "from": "2010-06-05T00:00:00",
+            "to": "2011-06-05T00:00:00"
+         }
+      }
+   },
+   "fields": [
+      "release.license",
+      "release.name",
+      "release.distribution",
+      "release.date",
+      "release.version_numified"
+   ]
 }'
 ```
 
@@ -65,17 +89,17 @@ curl -XPOST api.metacpan.org/v0/release/_search?size=100 -d '{
 
 ```sh
 curl -XPOST api.metacpan.org/v0/release/_search -d '{
-    "query": {
-        "match_all": {}
-    },
-    "facets": {
-        "license": {
-            "terms": {
-                "field": "release.license"
-            }
-        }
-    },
-    "size": 0
+   "query": {
+      "match_all": {}
+   },
+   "facets": {
+      "license": {
+         "terms": {
+            "field": "release.license"
+         }
+      }
+   },
+   "size": 0
 }'
 ```
 
@@ -83,15 +107,27 @@ curl -XPOST api.metacpan.org/v0/release/_search -d '{
 
 ```sh
 curl -XPOST api.metacpan.org/v0/file/_search -d '{
-  "query": { "filtered":{"query":{"match_all":{}},"filter":{"term":{"level":0}}}
+   "query": {
+      "filtered": {
+         "query": {
+            "match_all": {}
+         },
+         "filter": {
+            "term": {
+               "level": 0
+            }
+         }
+      }
    },
-  "facets": { 
-    "license": {
-      "terms": {
-        "size":100,
-        "field":"file.name"
-  } } },
-  "size":0
+   "facets": {
+      "license": {
+         "terms": {
+            "size": 100,
+            "field": "file.name"
+         }
+      }
+   },
+   "size": 0
 }'
 ```
 
@@ -99,14 +135,30 @@ curl -XPOST api.metacpan.org/v0/file/_search -d '{
 
 ```sh
 curl -XPOST api.metacpan.org/v0/file/_search -d '{
-  "query": { "filtered":{
-      "query":{"match_all":{}},
-      "filter":{"and":[
-          {"term":{"file.module.name":"DBI::Profile"}},
-          {"term":{"file.module.version":"2.014123"}}
-      ]}
-  }},
-  "fields":["release"]
+   "query": {
+      "filtered": {
+         "query": {
+            "match_all": {}
+         },
+         "filter": {
+            "and": [
+               {
+                  "term": {
+                     "file.module.name": "DBI::Profile"
+                  }
+               },
+               {
+                  "term": {
+                     "file.module.version": "2.014123"
+                  }
+               }
+            ]
+         }
+      }
+   },
+   "fields": [
+      "release"
+   ]
 }'
 ```
 [example](http://explorer.metacpan.org/?url=%2Ffile&content=%7B%22query%22%3A%7B%22filtered%22%3A%7B%22query%22%3A%7B%22match_all%22%3A%7B%7D%7D%2C%22filter%22%3A%7B%22and%22%3A%5B%7B%22term%22%3A%7B%22file.module.name%22%3A%22DBI%3A%3AProfile%22%7D%7D%2C%7B%22term%22%3A%7B%22file.module.version%22%3A%222.014123%22%7D%7D%5D%7D%7D%7D%2C%22fields%22%3A%5B%22release%22%5D%7D)
@@ -131,15 +183,18 @@ curl -XPOST api.metacpan.org/v0/author/_search -d '{
 
 ```sh
 curl -XPOST api.metacpan.org/v0/favorite/_search -d '{
-  "query": { "match_all": {}
-   },
-  "facets": { 
+  "query": {
+    "match_all": {}
+  },
+  "facets": {
     "leaderboard": {
       "terms": {
-        "field":"distribution",
-        "size" : 100
-  } } },
-  "size":0
+        "field": "distribution",
+        "size": 100
+      }
+    }
+  },
+  "size": 0
 }'
 ```
 
@@ -147,27 +202,33 @@ curl -XPOST api.metacpan.org/v0/favorite/_search -d '{
 
 ```sh
 curl -XPOST api.metacpan.org/v0/release/_search -d '{
-    "query": {
-        "match_all": {}
-    },
-    "facets": {
-        "author": {
-            "terms": {
-                "field": "author",
-                "size": 100
-            }
-        }
-    },
-    "size": 0
+  "query": {
+    "match_all": {}
+  },
+  "facets": {
+    "author": {
+      "terms": {
+        "field": "author",
+        "size": 100
+      }
+    }
+  },
+  "size": 0
 }'
 ```
 
 ### Search for a release by name
 
 ```sh
-curl -XPOST api.metacpan.org/v0/release/_search -d '{ 
-  "query" : { "match_all" : {  } },
-  "filter" : { "term" : { "release.name" : "YAML-Syck-1.07_01" } }
+curl -XPOST api.metacpan.org/v0/release/_search -d '{
+  "query": {
+    "match_all": {}
+  },
+  "filter": {
+    "term": {
+      "release.name": "YAML-Syck-1.07_01"
+    }
+  }
 }'
 
 ```
@@ -178,14 +239,25 @@ Note that "size" should be the number of distributions you are looking for.
 ```sh
 lynx --dump --post_data http://api.metacpan.org/v0/release/_search <<EOL 
 {
-    "query" : { "terms" : { "release.distribution" : [
+  "query": {
+    "terms": {
+      "release.distribution": [
         "Mojolicious",
         "MetaCPAN-API",
         "DBIx-Class"
-    ] } },
-    "filter" : { "term" : { "release.status" : "latest" } },
-    "fields" : [ "distribution", "version" ],
-    "size"   : 3
+      ]
+    }
+  },
+  "filter": {
+    "term": {
+      "release.status": "latest"
+    }
+  },
+  "fields": [
+    "distribution",
+    "version"
+  ],
+  "size": 3
 }
 EOL
 ```
@@ -197,10 +269,25 @@ curl -XPOST api.metacpan.org/v0/file/_search -d '{
     "match_all": {}
   },
   "size": 1000,
-  "fields": [ "name", "status", "directory", "path", "distribution" ],
+  "fields": [
+    "name",
+    "status",
+    "directory",
+    "path",
+    "distribution"
+  ],
   "filter": {
     "and": [
-      { "term": { "directory": false } }, { "term" : { "path" : "" } }
+      {
+        "term": {
+          "directory": false
+        }
+      },
+      {
+        "term": {
+          "path": ""
+        }
+      }          
     ]
   }
 }'
@@ -213,46 +300,88 @@ curl -XPOST api.metacpan.org/v0/release/_search -d '{
     "match_all": {}
   },
   "size": 10,
-  "fields": [ "release.name", "release.resources.bugtracker.mailto" ],
+  "fields": [
+    "release.name",
+    "release.resources.bugtracker.mailto"
+  ],
   "filter": {
     "and": [
-      { "term": {"release.maturity": "released"} },
-      { "term": {"release.status": "latest"} },
-      {  "exists" : { "field" : "release.resources.bugtracker.mailto" } },
-      {  "missing" : { "field" : "release.resources.bugtracker.web" } }
+      {
+        "term": {
+          "release.maturity": "released"
+        }
+      },
+      {
+        "term": {
+          "release.status": "latest"
+        }
+      },
+      {
+        "exists": {
+          "field": "release.resources.bugtracker.mailto"
+        }
+      },
+      {
+        "missing": {
+          "field": "release.resources.bugtracker.web"
+        }
+      }
     ]
   }
 }'
 ```
 
 ### List distributions for which we have a bugtracker URL
+
 ```sh
 curl -XPOST api.metacpan.org/v0/distribution/_search -d '{
-  "query": {
-    "match_all": {}
-  },
-  "size": 1000,
-  "filter": {
-    "exists" : { "field" : "distribution.bugs.source" }
-  }
+   "query": {
+      "match_all": {}
+   },
+   "size": 1000,
+   "filter": {
+      "exists": {
+         "field": "distribution.bugs.source"
+      }
+   }
 }'
 ```
 
 ### Search the current PDL documentation for the string `axisvals`
 ```sh
 curl -XPOST api.metacpan.org/v0/file/_search -d '{
-    "query" : { "filtered" : {
-      "query" : { 
-        "query_string" : { 
-          "query" : "axisvals", 
-          "fields" : [ "pod.analyzed", "module.name" ] }
+  "query": {
+    "filtered": {
+      "query": {
+        "query_string": {
+          "query": "axisvals",
+          "fields": [
+            "pod.analyzed",
+            "module.name"
+          ]
+        }
       },
-      "filter" : { "and" : [
-        { "term" : { "distribution" : "PDL" } },
-        { "term" : { "status" : "latest" } }
-      ]}
-    }},
-    "fields" : [ "documentation", "abstract", "module" ],
-    "size" : 20
-  }'
+      "filter": {
+        "and": [
+          {
+            "term": {
+              "distribution": "PDL"
+            }
+          },
+          {
+            "term": {
+              "status": "latest"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "fields": [
+    "documentation",
+    "abstract",
+    "module"
+  ],
+  "size": 20
+}'
 ``` 
