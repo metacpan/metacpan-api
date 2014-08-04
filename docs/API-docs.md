@@ -20,7 +20,7 @@ Be aware that when you scroll, your docs will come back unsorted, as noted in th
 
 ## Identifying Yourself
 
-Part of being polite is letting us know who you are and how to reach you.  This is not mandatory, but please do consider adding your app to the [API-Consumers](.../API-Consumers) page.
+Part of being polite is letting us know who you are and how to reach you.  This is not mandatory, but please do consider adding your app to the [API-Consumers](https://github.com/CPAN-API/cpan-api/wiki/API-Consumers) page.
 
 ## Available fields
 
@@ -86,3 +86,13 @@ curl -XPOST http://api.metacpan.org/v0/author/PERLER?join=release -d '
 Simply add a `callback` query parameter with the name of your callback, and you'll get a JSONP response.
 
 * [/favorite?q=distribution:Moose&callback=cb](http://api.metacpan.org/favorite?q=distribution:Moose&callback=cb)
+
+## How to use CPAN API
+
+Here are methods which can be used to query the API:
+
+* [GET](/docs/query-api-using-GET-method.md)
+* [POST](/docs/query-api-using-POST-method.md)
+* [GET with URI-encoded](/docs/query-api-using-GET-with-uri-encoded.md)
+* [MetaCPAN::Client](/docs/query-api-using-metacpan-client.md)
+* [Search::Elasticsearch](/docs/query-api-using-search-elasticsearch.md)
