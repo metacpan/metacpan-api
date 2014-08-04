@@ -100,12 +100,24 @@ sub run {
             = ref $data->{'module.name'}
             ? @{ $data->{'module.name'} }
             : $data->{'module.name'};
+
+       # Convert module name into Parse::CPAN::Packages::Fast::Package object.
         @modules = grep {defined} map {
             eval { $p->package($_) }
         } @modules;
+
         foreach my $module (@modules) {
+
+           # Get P:C:P:F:Distribution (CPAN::DistnameInfo) object for package.
             my $dist = $module->distribution;
-            if (   $dist->distvname eq $data->{release}
+
+            # If this version of the module is the one listed in 02packages...
+
+            # NOTE: CPAN::DistnameInfo doesn't parse some weird uploads
+            # (like /\.pm\.gz$/) so distvname might not be present.
+            # I assume cpanid always will be.
+            if (   defined( $dist->distvname )
+                && $dist->distvname eq $data->{release}
                 && $dist->cpanid eq $data->{author} )
             {
                 my $upgrade = $upgrade{ $data->{distribution} };
