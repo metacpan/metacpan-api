@@ -58,9 +58,8 @@ version could not be parsed.
 
 Valid values are C<latest>, C<cpan>, and C<backpan>. The most recent upload
 of a distribution is tagged as C<latest> as long as it's not a developer
-release, unless there are only developer releases. Everything else is
-tagged C<cpan>. Once a release is deleted from PAUSE it is tagged as
-C<backpan>.
+release. Everything else is tagged C<cpan>. Once a release is deleted from
+PAUSE it is tagged as C<backpan>.
 
 =head2 maturity
 
