@@ -26,7 +26,7 @@ Installing Your Own MetaCPAN:
 ---------------------------------------
 
 If you want to run MetaCPAN locally, we encourage you to start with a VM: [Metacpan Developer VM](https://github.com/CPAN-API/metacpan-developer)
-However, you may still find some info on this page to be of use when troubleshooting your VM.
+However, you may still find some info here:
 
 ## Troubleshooting ElasticSearch
 
