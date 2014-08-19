@@ -221,7 +221,7 @@ sub _build_version_numified {
 sub _build_download_url {
     my $self = shift;
     return
-          'http://cpan.metacpan.org/authors/'
+          'https://cpan.metacpan.org/authors/'
         . MetaCPAN::Document::Author::_build_dir( $self->author ) . '/'
         . $self->archive;
 }
