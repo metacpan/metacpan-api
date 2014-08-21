@@ -16,7 +16,7 @@ use File::Temp ();
 use File::stat ();
 use LWP::UserAgent;
 use List::MoreUtils ();
-use List::Util      ();
+use List::Util qw( first );
 use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Document::Author;
 use MetaCPAN::Script::Latest;
@@ -327,12 +327,14 @@ sub import_tarball {
 
     # find modules
     my @modules;
+
     if ( my %provides = %{ $meta->provides } ) {
         while ( my ( $module, $data ) = each %provides ) {
             my $path = $data->{file};
 
             # FIXME: Could this match lib/Foo.pm and eg/lib/Foo.pm?
-            my $file = List::Util::first { $_->path =~ /\Q$path\E$/ } @files;
+            my $file
+                = first { $_->indexed && $_->path =~ /\Q$path\E$/ } @files;
             next unless $file;
             $file->add_module(
                 {
