@@ -10,7 +10,7 @@ CPAN modules.
 REST API
 --------
 
-MetaCPAN is based on ElasticSearch, so it provides a RESTful interface as well
+MetaCPAN is based on Elasticsearch, so it provides a RESTful interface as well
 as the option to create complex queries. [The
 wiki](https://github.com/CPAN-API/cpan-api/wiki/API-docs) provides a good
 starting point for REST access to MetaCPAN.
@@ -28,32 +28,33 @@ Installing Your Own MetaCPAN:
 If you want to run MetaCPAN locally, we encourage you to start with a VM: [Metacpan Developer VM](https://github.com/CPAN-API/metacpan-developer)
 However, you may still find some info here:
 
-## Troubleshooting ElasticSearch
+## Troubleshooting Elasticsearch
 
-You can start ElasticSearch (ES) manually if you need to troubleshoot.
+You can restart Elasticsearch (ES) manually if you need to troubleshoot.
 ```sh
-cd /opt/elasticsearch-0.20.2
-sudo bin/elasticsearch
+sudo service elasticsearch restart
 ```
-If you are unable to access [[http://localhost:9200]] (give it a few seconds) you should kill the elasticsearch process and run it in foreground to see the debug output
+If you are unable to access [[http://localhost:9200]] (give it a few seconds) you should kill the Elasticsearch process and run it in foreground to see the debug output
 ```sh
 sudo service elasticsearch stop
+cd /opt/elasticsearch
 sudo bin/elasticsearch -f
 ```
-If you get a "Can't start up: not enough memory" error when trying to start ElasticSearch, you likely need to update your JRE.  On Ubuntu:
+If you get a "Can't start up: not enough memory" error when trying to start Elasticsearch, you likely need to update your JRE.  On Ubuntu:
 ```sh
 # fixes "not enough memory" errors
 sudo apt-get install openjdk-6-jre
 ```
-(Note: If you intend to try indexing a full mini-cpan, you may find that ElasticSearch wants to use more open filehandles than your system allows by default. [This script](https://gist.github.com/3230962) can be used to start ES with the appropriate ulimit adjustment).
+(Note: If you intend to try indexing a full MiniCPAN, you may find that Elasticsearch wants to use more open filehandles than your system allows by default. [This script](https://gist.github.com/3230962) can be used to start ES with the appropriate ulimit adjustment).
 
 ## Run the test suite
 
-The test suite accesses ElasticSearch on port 9900.
-The developer vm should have a dedicated test instance running in the background already,
+The test suite accesses Elasticsearch on port 9900.
+The developer VM should have a dedicated test instance running in the background already,
 but if you want to run it manually:
 ```sh
-bin/elasticsearch -f -Des.http.port=9900 -Des.cluster.name=testing
+cd /opt/elasticsearch
+sudo bin/elasticsearch -f -Des.http.port=9900 -Des.cluster.name=testing
 ```
 Then run the test suite:
 ```sh
@@ -65,7 +66,7 @@ The test suite has to pass all tests.
 ## Create the ElasticSearch Index
 
 ```sh
-./bin/metacpan mapping --delete
+./bin/carton-exec bin/metacpan mapping --delete
 ```
 
 `--delete` will drop all indices first to clear the index from test data.
@@ -73,23 +74,23 @@ The test suite has to pass all tests.
 ## Begin Indexing Your Modules
 
 ```sh
-./bin/metacpan release /path/to/cpan/authors/id/
+./bin/carton-exec bin/metacpan release /path/to/cpan/authors/id/
 ```
 You should note that you can index either your CPAN mirror or a minicpan mirror.  You can even index just parts of a mirror:
 ```sh
-./bin/metacpan release /path/to/cpan/authors/id/{A,B}
+./bin/carton-exec bin/metacpan release /path/to/cpan/authors/id/{A,B}
 ```
 
 ## Tag the Latest Releases
 
 ```sh
-./bin/metacpan latest --cpan /path/to/cpan/
+./bin/carton-exec bin/metacpan latest --cpan /path/to/cpan/
 ```
 
 ## Index Author Data
 
 ```sh
-./bin/metacpan author --cpan /path/to/cpan/
+./bin/carton-exec bin/metacpan author --cpan /path/to/cpan/
 ```
 Note that minicpan doesn't provide the 00whois.xml file which is used to generate the index; you will have to download it manually (it is in the authors/ directory) in order to index authors.
 
@@ -101,20 +102,15 @@ It also doesn't include author.json files, so that data will also be missing unl
 
 Start API server on port 5000
 ```sh
-./bin/carton exec plackup -p 5000 -r
+./bin/carton-exec plackup -p 5000 -r
 ```
-This will start a single-threaded test server. If you need extra performance, use `starman` instead.
+This will start a single-threaded test server. If you need extra performance, use `Starman` instead.
 
 ## Notes
 
 For a full list of options:
 ```sh
-./bin/metacpan release --help
-```
-
-EV may seem to take forever to install because the test suite hangs, so you may have to install it without first running the test suite:
-```sh
-cpanm --notest EV
+./bin/carton-exec bin/metacpan release --help
 ```
 
 Contributing:
