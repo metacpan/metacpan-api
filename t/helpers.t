@@ -72,10 +72,14 @@ expect_output(
         ok 5 - release status
         ok 6 - release archive
         ok 7 - release name
-        ok 8 - File 'lib/Moose.pm' has expected modules
-        1..8
+        1..7
     ok 4 - release
-    1..4
+        # Subtest: modules in release files
+        ok 1 - File 'lib/Moose.pm' has expected modules
+        ok 2 - all module files tested
+        1..2
+    ok 5 - modules in release files
+    1..5
 ok 1 - test_release helper
 TESTS
     err => '        # for Moose',
@@ -147,7 +151,8 @@ expect_output(
     not ok 2 - Search failed; cannot proceed with test: extra_tests
     not ok 3 - Search failed; cannot proceed with test: expected_attributes
     not ok 4 - Search failed; cannot proceed with test: release
-    1..4
+    not ok 5 - Search failed; cannot proceed with test: modules in release files
+    1..5
 not ok 1 - not found
 TESTS
 

@@ -132,19 +132,31 @@ test release => sub {
     foreach my $attr (@attrs) {
         is $self->data->$attr, $self->$attr, "release $attr";
     }
+};
 
-    my %module_files = map { ( $_->path => $_ ) } @{ $self->files };
+test 'modules in release files' => sub {
+    my ($self) = @_;
+
+    plan skip_all => 'No modules specified for testing'
+        unless scalar keys %{ $self->modules };
+
+    my %module_files = map { ( $_->path => $_ ) } @{ $self->module_files };
+
     foreach my $path ( sort keys %{ $self->modules } ) {
-    SKIP: {
-            my $got = $module_files{$path}
-                or skip "File '$path' not found in release", 1;
+        my $desc = "File '$path' has expected modules";
+        if ( my $got = delete $module_files{$path} ) {
 
      # We may need to sort modules by name, I'm not sure if order is reliable.
-            is_deeply $got->module,
-                $self->modules->{$path}, "File '$path' has expected modules"
+            is_deeply $got->module, $self->modules->{$path}, $desc
                 or diag Test::More::explain( $got->module );
         }
+        else {
+            ok( 0, $desc );
+        }
     }
+
+    is( scalar keys %module_files, 0, 'all module files tested' )
+        or diag join ' ', 'Untested files:', keys %module_files;
 };
 
 1;
