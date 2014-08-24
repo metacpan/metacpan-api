@@ -85,7 +85,7 @@ has _expectations => (
     init_arg  => '_expect',
 );
 
-test expected_attributes => sub {
+test 'expected model attributes' => sub {
     my ($self) = @_;
     my $exp    = $self->_expectations;
     my $data   = $self->data;

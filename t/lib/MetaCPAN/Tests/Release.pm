@@ -126,7 +126,7 @@ has name => (
 
 push @attrs, qw( version_numified status archive name );
 
-test release => sub {
+test 'release attributes' => sub {
     my ($self) = @_;
 
     foreach my $attr (@attrs) {

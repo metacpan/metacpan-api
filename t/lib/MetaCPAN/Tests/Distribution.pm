@@ -22,7 +22,7 @@ has [@attrs] => (
     isa => 'Str',
 );
 
-test info => sub {
+test 'distribution attributes' => sub {
     my ($self) = @_;
 
     foreach my $attr (@attrs) {

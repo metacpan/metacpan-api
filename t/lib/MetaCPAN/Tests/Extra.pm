@@ -9,7 +9,7 @@ has _extra_tests => (
     predicate => 'has_extra_tests',
 );
 
-test extra_tests => sub {
+test 'extra tests' => sub {
     my ($self) = @_;
 
     plan skip_all => 'No extra tests defined'

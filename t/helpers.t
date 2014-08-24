@@ -54,17 +54,17 @@ expect_output(
     out => <<TESTS,
     # Subtest: test_release helper
     ok 1 - Search successful
-        # Subtest: extra_tests
+        # Subtest: extra tests
         ok 1 - hooray
         1..1
-    ok 2 - extra_tests
-        # Subtest: expected_attributes
+    ok 2 - extra tests
+        # Subtest: expected model attributes
         ok 1 - abstract
         ok 2 - author
         ok 3 - name
         1..3
-    ok 3 - expected_attributes
-        # Subtest: release
+    ok 3 - expected model attributes
+        # Subtest: release attributes
         ok 1 - release author
         ok 2 - release distribution
         ok 3 - release version
@@ -73,7 +73,7 @@ expect_output(
         ok 6 - release archive
         ok 7 - release name
         1..7
-    ok 4 - release
+    ok 4 - release attributes
         # Subtest: modules in release files
         ok 1 - File 'lib/Moose.pm' has expected modules
         ok 2 - all module files tested
@@ -117,18 +117,18 @@ expect_output(
     out => <<TESTS,
     # Subtest: Distribution data for uncommon-sense
     ok 1 - Search successful
-        # Subtest: extra_tests
+        # Subtest: extra tests
         1..0 # SKIP No extra tests defined
     ok 2 # skip No extra tests defined
-        # Subtest: expected_attributes
+        # Subtest: expected model attributes
         not ok 1 - bugs
         ok 2 - name
         1..2
-    not ok 3 - expected_attributes
-        # Subtest: info
+    not ok 3 - expected model attributes
+        # Subtest: distribution attributes
         ok 1 - name
         1..1
-    ok 4 - info
+    ok 4 - distribution attributes
     1..4
 not ok 1 - Distribution data for uncommon-sense
 TESTS
@@ -148,9 +148,9 @@ expect_output(
     out => <<TESTS,
     # Subtest: not found
     not ok 1 - Search successful
-    not ok 2 - Search failed; cannot proceed with test: extra_tests
-    not ok 3 - Search failed; cannot proceed with test: expected_attributes
-    not ok 4 - Search failed; cannot proceed with test: release
+    not ok 2 - Search failed; cannot proceed with test: extra tests
+    not ok 3 - Search failed; cannot proceed with test: expected model attributes
+    not ok 4 - Search failed; cannot proceed with test: release attributes
     not ok 5 - Search failed; cannot proceed with test: modules in release files
     1..5
 not ok 1 - not found
