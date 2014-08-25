@@ -11,6 +11,6 @@ my $tmp_dir = dir('var/tmp');
 unless ( -d $tmp_dir ) {
     $tmp_dir->mkpath();
 }
-ok( -d $tmp_dir, "var/tmp exists for testing" );
+ok( -d $tmp_dir, 'var/tmp exists for testing' );
 
 done_testing();
