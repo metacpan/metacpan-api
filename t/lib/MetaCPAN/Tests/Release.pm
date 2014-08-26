@@ -140,15 +140,16 @@ test 'modules in release files' => sub {
     plan skip_all => 'No modules specified for testing'
         unless scalar keys %{ $self->modules };
 
-    my %module_files = map { ( $_->path => $_ ) } @{ $self->module_files };
+    my %module_files
+        = map { ( $_->path => $_->module ) } @{ $self->module_files };
 
     foreach my $path ( sort keys %{ $self->modules } ) {
         my $desc = "File '$path' has expected modules";
         if ( my $got = delete $module_files{$path} ) {
 
      # We may need to sort modules by name, I'm not sure if order is reliable.
-            is_deeply $got->module, $self->modules->{$path}, $desc
-                or diag Test::More::explain( $got->module );
+            is_deeply $got, $self->modules->{$path}, $desc
+                or diag Test::More::explain($got);
         }
         else {
             ok( 0, $desc );
@@ -156,7 +157,7 @@ test 'modules in release files' => sub {
     }
 
     is( scalar keys %module_files, 0, 'all module files tested' )
-        or diag join ' ', 'Untested files:', keys %module_files;
+        or diag Test::More::explain \%module_files;
 };
 
 1;
