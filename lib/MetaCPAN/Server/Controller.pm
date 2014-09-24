@@ -79,7 +79,7 @@ sub get : Path('') : Args(1) {
     eval {
         my $file = $self->model($c)->raw->get($id);
         $c->stash( $file->{_source} || $file->{fields} );
-    } or $c->detach( '/not_found', [$@] );
+    } or $c->detach( '/fields_not_found', [$@] );
 }
 
 sub all : Path('') : Args(0) : ActionClass('Deserialize') {
@@ -201,6 +201,12 @@ sub not_found : Private {
     my ( $self, $c ) = @_;
     $c->res->code(404);
     $c->stash( { message => 'Not found' } );
+}
+
+sub fields_not_found : Private {
+    my ( $self, $c ) = @_;
+    $c->res->code(200);
+    $c->stash( { message => 'The requested fields do not exist' } );
 }
 
 sub internal_error {
