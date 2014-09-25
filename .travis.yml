@@ -37,7 +37,7 @@ before_install:
   - cpanm -n Carton
 
 install:
-  - carton install --deployment
+  - carton install
 
 
 before_script:
