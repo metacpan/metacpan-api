@@ -17,24 +17,29 @@ sub digest {
 
 sub numify_version {
     my $version = shift;
-    use warnings FATAL => 'numeric';
-    eval { $version = version->parse($version)->numify + 0; } or do {
-        $version = fix_version($version);
-        $version = eval { version->parse( $version || 0 )->numify + 0 };
-    };
+    $version = fix_version($version);
+    $version =~ s/_//g;
+    if ( $version =~ s/^v//i || $version =~ tr/.// > 1 ) {
+        my @parts = split /\./, $version;
+        my $n = shift @parts;
+        $version
+            = sprintf( join( '.', '%s', ( '%03s' x @parts ) ), $n, @parts );
+    }
+    $version += 0;
     return $version;
 }
 
 sub fix_version {
     my $version = shift;
-    return undef unless ( defined $version );
-    if ( $version =~ /^v/ ) {
-        eval { $version = eval( version->parse($version)->numify ) };
-        return $version + 0 unless ($@);
-    }
-    $version =~ s/[^\d\._]//g;
-    $version =~ s/_/00/g;
-    return $version;
+    return 0 unless defined $version;
+    my $v = ( $version =~ s/^v//i );
+    $version =~ s/[^\d\._].*//;
+    $version =~ s/\.[._]+/./;
+    $version =~ s/[._]*_[._]*/_/g;
+    $version =~ s/\.{2,}/./g;
+    $v ||= $version =~ tr/.// > 1;
+    $version ||= 0;
+    return ( ( $v ? 'v' : '' ) . $version );
 }
 
 sub author_dir {
