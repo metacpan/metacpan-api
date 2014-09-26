@@ -36,6 +36,10 @@ before_install:
   - cpanm -n Devel::Cover::Report::Coveralls
   - cpanm -n Carton
 
+  # Carton refuses to update Safe.pm to the version specified in the cpanfile and the
+  # version that's core in 5.16 is too old (it fails to work with Devel::Cover).
+  - cpanm -n Safe@2.35
+
 install:
   - carton install
 
