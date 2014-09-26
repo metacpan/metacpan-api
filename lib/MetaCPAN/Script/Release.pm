@@ -327,7 +327,8 @@ sub import_tarball {
     my @modules;
 
     if ( my %provides = %{ $meta->provides } ) {
-        while ( my ( $module, $data ) = each %provides ) {
+        foreach my $module ( sort keys %provides ) {
+            my $data = $provides{$module};
             my $path = $data->{file};
 
            # Obey no_index and take the shortest path if multiple files match.
