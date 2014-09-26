@@ -76,10 +76,14 @@ sub mapping : Path('_mapping') {
 
 sub get : Path('') : Args(1) {
     my ( $self, $c, $id ) = @_;
-    eval {
-        my $file = $self->model($c)->raw->get($id);
-        $c->stash( $file->{_source} || $file->{fields} );
-    } or $c->detach( '/fields_not_found', [$@] );
+    my $file = $self->model($c)->raw->get($id);
+    if ( !defined $file ) {
+        $c->detach( '/not_found', ["Not found"] );
+    }
+    else {
+        eval { $c->stash( $file->{_source} || $file->{fields} ); }
+            or $c->detach( '/fields_not_found', [$@] );
+    }
 }
 
 sub all : Path('') : Args(0) : ActionClass('Deserialize') {
@@ -206,7 +210,7 @@ sub not_found : Private {
 sub fields_not_found : Private {
     my ( $self, $c ) = @_;
     $c->res->code(200);
-    $c->stash( { message => 'The requested fields do not exist' } );
+    $c->stash( { message => 'The requested field(s) could not be found' } );
 }
 
 sub internal_error {
