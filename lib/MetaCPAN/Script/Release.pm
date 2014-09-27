@@ -597,6 +597,11 @@ sub _build_perms {
     return \%authors;
 }
 
+$SIG{__WARN__} = sub {
+    my $msg = shift;
+    warn $msg unless $msg =~ m{Invalid header block at offset unknown at};
+};
+
 __PACKAGE__->meta->make_immutable;
 1;
 
