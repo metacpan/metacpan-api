@@ -7010,6 +7010,21 @@ DISTRIBUTIONS
       constant 0
       strict 0
       warnings 0
+  Twiggy-0.1024
+    pathname: M/MI/MIYAGAWA/Twiggy-0.1024.tar.gz
+    provides:
+      AnyEvent::Server::PSGI undef
+      Plack::Handler::Twiggy undef
+      Twiggy 0.1024
+      Twiggy::Server undef
+      Twiggy::Server::SS undef
+      Twiggy::Writer undef
+    requirements:
+      AnyEvent 0
+      ExtUtils::MakeMaker 6.30
+      HTTP::Status 0
+      Plack 0.99
+      Try::Tiny 0
   Types-Serialiser-1.0
     pathname: M/ML/MLEHMANN/Types-Serialiser-1.0.tar.gz
     provides:

@@ -106,6 +106,7 @@ requires 'Path::Class::File';
 requires 'PerlIO::gzip';
 requires 'Pithub';
 requires 'Plack::App::Directory';
+requires 'Plack::Handler::Twiggy';
 requires 'Plack::MIME';
 requires 'Plack::Middleware::Header';
 requires 'Plack::Middleware::ReverseProxy';
