@@ -20,23 +20,31 @@ __PACKAGE__->config(
 
 sub find : Path('') : Args(1) {
     my ( $self, $c, $name ) = @_;
-    eval {
-        my $file = $self->model($c)->raw->find($name);
-        $c->stash( $file->{_source} || $file->{fields} );
-    } or $c->detach( '/not_found', [$@] );
+    my $file = $self->model($c)->raw->find($name);
+    if ( !defined $file ) {
+        $c->detach( '/not_found', [$@] );
+    }
+    else {
+        eval { $c->stash( $file->{_source} || $file->{fields} ); }
+            or $c->detach( '/fields_not_found', [$@] );
+    }
 }
 
 sub get : Path('') : Args(2) {
     my ( $self, $c, $author, $name ) = @_;
-    eval {
-        my $file = $self->model($c)->raw->get(
-            {
-                author => $author,
-                name   => $name,
-            }
-        );
-        $c->stash( $file->{_source} || $file->{fields} );
-    } or $c->detach( '/not_found', [$@] );
+    my $file = $self->model($c)->raw->get(
+        {
+            author => $author,
+            name   => $name,
+        }
+    );
+    if ( !defined $file ) {
+        $c->detach( '/not_found', [$@] );
+    }
+    else {
+        eval { $c->stash( $file->{_source} || $file->{fields} ); }
+            or $c->detach( '/fields_not_found', [$@] );
+    }
 }
 
 1;
