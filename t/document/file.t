@@ -13,6 +13,24 @@ my %stub = (
 );
 
 {
+    my %paths = (
+        't/whomp'         => 1,
+        'foo/t/bar'       => 1,
+        'cuppa/t'         => 1,
+        'foo/bart/shorts' => 0,
+        'tit/mouse'       => 0,
+        'say/wat'         => 0,
+    );
+
+    foreach my $path ( keys %paths ) {
+        my $file = MetaCPAN::Document::File->new( %stub, path => $path );
+        my $bool = $paths{$path} ? 'is' : 'is not';
+        is( $file->in_test_directory(),
+            $paths{$path}, "$path $bool in a test directory" );
+    }
+}
+
+{
     my $content = <<'END';
 package Foo;
 use strict;

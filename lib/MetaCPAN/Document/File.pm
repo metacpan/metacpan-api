@@ -623,6 +623,17 @@ sub is_pod_file {
     shift->name =~ /\.pod$/i;
 }
 
+=head2 in_test_directory
+
+Returns true if the file is below a t directory.
+
+=cut
+
+sub in_test_directory {
+    my $self = shift;
+    return ( $self->path =~ /(^|\/)t($|\/)/ ? 1 : 0 );
+}
+
 =head2 add_module
 
 Requires at least one parameter which can be either a HashRef or
