@@ -143,6 +143,18 @@ END
 }
 
 {
+    my $file = MetaCPAN::Document::File->new(
+        %stub,
+        path   => 'foo/t/locker',
+        module => { name => 'BAR::Locker' }
+    );
+
+    $file->set_indexed( CPAN::Meta->new( { name => 'null', version => 0 } ) );
+    is( $file->module->[0]->indexed,
+        0, 'Module in test directory is not indexed' );
+}
+
+{
     my $content = <<'END';
 package
   Number::Phone::NANP::ASS;

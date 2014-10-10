@@ -670,6 +670,15 @@ does not include any modules, the L</indexed> property is true.
 
 sub set_indexed {
     my ( $self, $meta ) = @_;
+
+    if ( $self->in_test_directory() ) {
+        foreach my $mod ( @{ $self->module } ) {
+            $mod->indexed(0);
+        }
+        $self->indexed(0);
+        return;
+    }
+
     foreach my $mod ( @{ $self->module } ) {
         $mod->indexed(
               $meta->should_index_package( $mod->name )
