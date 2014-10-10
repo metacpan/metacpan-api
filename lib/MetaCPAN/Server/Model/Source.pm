@@ -46,7 +46,7 @@ sub _default_base_dir {
 
 sub path {
     my ( $self, $pauseid, $distvname, $file ) = @_;
-    $file ||= "";
+    $file ||= q{};
     my $base       = $self->base_dir;
     my $source_dir = dir( $base, $pauseid, $distvname );
     my $source     = $self->find_file( $source_dir, $file );
@@ -80,4 +80,5 @@ sub find_file {
     return -d $source ? dir($source) : file($source);
 }
 
+__PACKAGE__->meta->make_immutable;
 1;

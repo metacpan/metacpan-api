@@ -9,7 +9,7 @@ use ElasticSearchX::Model::Document::Types qw(:all);
 use JSON;
 use MooseX::Getopt::OptionTypeMap;
 use MooseX::Types::Common::String qw(NonEmptySimpleStr);
-use MooseX::Types::Moose qw/Int Num Str ArrayRef HashRef Item Undef/;
+use MooseX::Types::Moose qw( ArrayRef Bool HashRef Item Int Num Str Undef );
 use MooseX::Types::Structured qw(Dict Tuple Optional);
 
 use MooseX::Types -declare => [

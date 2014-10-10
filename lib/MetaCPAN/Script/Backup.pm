@@ -7,6 +7,7 @@ use DateTime;
 use IO::Zlib ();
 use JSON::XS;
 use Log::Contextual qw( :log :dlog );
+use MetaCPAN::Types qw( Bool Int Str );
 use Moose;
 use MooseX::Types::Path::Class qw(:all);
 
@@ -14,26 +15,26 @@ with 'MetaCPAN::Role::Common', 'MooseX::Getopt';
 
 has type => (
     is            => 'ro',
-    isa           => 'Str',
+    isa           => Str,
     documentation => 'ES type do backup, optional',
 );
 
 has size => (
     is            => 'ro',
-    isa           => 'Int',
+    isa           => Int,
     default       => 1000,
     documentation => 'Size of documents to fetch at once, defaults to 1000',
 );
 
 has purge => (
     is            => 'ro',
-    isa           => 'Bool',
+    isa           => Bool,
     documentation => 'Purge old backups',
 );
 
 has dry_run => (
     is            => 'ro',
-    isa           => 'Bool',
+    isa           => Bool,
     documentation => q{Don't actually purge old backups},
 );
 
