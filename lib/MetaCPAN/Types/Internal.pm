@@ -153,5 +153,4 @@ inflate 'ScalarRef', via { \$_ };
 deflate AssociatedPod, via { ref $_ ? $_->full_path : $_ };
 no MooseX::Attribute::Deflator;
 
-
 1;
