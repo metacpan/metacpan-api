@@ -90,6 +90,7 @@ requires 'MooseX::Aliases';
 requires 'MooseX::Attribute::Deflator', '2.1.5';
 requires 'MooseX::ChainedAccessors';
 requires 'MooseX::Getopt';
+requires 'MooseX::Getopt::Dashes';
 requires 'MooseX::Getopt::OptionTypeMap';
 requires 'MooseX::Types';
 requires 'MooseX::Types::Common::String';

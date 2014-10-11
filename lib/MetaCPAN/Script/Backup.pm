@@ -11,7 +11,7 @@ use MetaCPAN::Types qw( Bool Int Str );
 use Moose;
 use MooseX::Types::Path::Class qw(:all);
 
-with 'MetaCPAN::Role::Common', 'MooseX::Getopt';
+with 'MetaCPAN::Role::Common', 'MooseX::Getopt::Dashes';
 
 has type => (
     is            => 'ro',
@@ -117,7 +117,7 @@ sub run_restore {
 sub run_purge {
     my $self = shift;
 
-    my $now  = DateTime->now;
+    my $now = DateTime->now;
     $self->home->subdir(qw(var backup))->recurse(
         callback => sub {
             my $file = shift;
