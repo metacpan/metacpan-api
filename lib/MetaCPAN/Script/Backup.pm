@@ -2,7 +2,9 @@ package MetaCPAN::Script::Backup;
 
 use strict;
 use warnings;
+use feature qw( state );
 
+use Data::Printer;
 use DateTime;
 use IO::Zlib ();
 use JSON::XS;
@@ -10,8 +12,17 @@ use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Types qw( Bool Int Str );
 use Moose;
 use MooseX::Types::Path::Class qw(:all);
+use Try::Tiny;
 
 with 'MetaCPAN::Role::Common', 'MooseX::Getopt::Dashes';
+
+has batch_size => (
+    is      => 'ro',
+    isa     => Int,
+    default => 100,
+    documentation =>
+        'Number of documents to restore in one batch, defaults to 100',
+);
 
 has type => (
     is            => 'ro',
@@ -90,10 +101,18 @@ sub run_restore {
 
     my @bulk;
     my $es = $self->es;
-    my $fh = IO::Zlib->new( $self->restore->stringify, "rb" );
+    my $fh = IO::Zlib->new( $self->restore->stringify, 'rb' );
 
     while ( my $line = $fh->readline ) {
-        my $obj    = decode_json($line);
+        state $line_count = 0;
+        ++$line_count;
+        my $obj;
+
+        try { $obj = decode_json($line) }
+        catch {
+            log_warn {"cannot decode JSON: $line --- $_"};
+        };
+
         my $parent = $obj->{fields}->{_parent};
         push(
             @bulk,
@@ -105,8 +124,26 @@ sub run_restore {
                 data  => $obj->{_source},
             }
         );
-        if ( @bulk > 100 ) {
-            $es->bulk_index( \@bulk );
+
+        if ( @bulk >= $self->batch_size ) {
+            log_info { 'line count: ' . $line_count };
+            try {
+                $es->bulk_index( \@bulk );
+            }
+            catch {
+                # try docs individually to find the problem doc(s)
+                log_warn {"failed to bulk index $_"};
+                foreach my $document (@bulk) {
+                    try {
+                        $es->bulk_index( [$document] );
+                    }
+                    catch {
+                        log_warn {
+                            "failed to index document: $_" . p $document;
+                        };
+                    };
+                }
+            };
             @bulk = ();
         }
     }
