@@ -97,6 +97,7 @@ requires 'MooseX::Types::ElasticSearch', ' == 0.0.2'; # Newer versions use the o
 requires 'MooseX::Types::Moose';
 requires 'MooseX::Types::Path::Class';
 requires 'MooseX::Types::Structured';
+requires 'MooseX::Types::URI';
 requires 'Mozilla::CA';
 requires 'Net::Twitter';
 requires 'Parse::CPAN::Packages::Fast', '0.04';
