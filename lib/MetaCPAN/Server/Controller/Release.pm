@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Moose;
+use Try::Tiny;
 
 BEGIN { extends 'MetaCPAN::Server::Controller' }
 
@@ -22,12 +23,11 @@ sub find : Path('') : Args(1) {
     my ( $self, $c, $name ) = @_;
     my $file = $self->model($c)->raw->find($name);
     if ( !defined $file ) {
-        $c->detach( '/not_found', [$@] );
+        $c->detach( '/not_found', [] );
     }
-    else {
-        eval { $c->stash( $file->{_source} || $file->{fields} ); }
-            or $c->detach( '/fields_not_found', [$@] );
-    }
+    try { $c->stash( $file->{_source} || $file->{fields} ) }
+        or $c->detach( '/not_found',
+        ['The requested field(s) could not be found'] );
 }
 
 sub get : Path('') : Args(2) {
@@ -39,12 +39,11 @@ sub get : Path('') : Args(2) {
         }
     );
     if ( !defined $file ) {
-        $c->detach( '/not_found', [$@] );
+        $c->detach( '/not_found', [] );
     }
-    else {
-        eval { $c->stash( $file->{_source} || $file->{fields} ); }
-            or $c->detach( '/fields_not_found', [$@] );
-    }
+    try { $c->stash( $file->{_source} || $file->{fields} ) }
+        or $c->detach( '/not_found',
+        ['The requested field(s) could not be found'] );
 }
 
 1;

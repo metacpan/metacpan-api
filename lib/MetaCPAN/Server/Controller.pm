@@ -8,6 +8,7 @@ use JSON;
 use List::MoreUtils ();
 use Moose::Util     ();
 use Moose;
+use Try::Tiny;
 
 BEGIN { extends 'Catalyst::Controller'; }
 
@@ -78,12 +79,11 @@ sub get : Path('') : Args(1) {
     my ( $self, $c, $id ) = @_;
     my $file = $self->model($c)->raw->get($id);
     if ( !defined $file ) {
-        $c->detach( '/not_found', ["Not found"] );
+        $c->detach( '/not_found', ['Not found'] );
     }
-    else {
-        eval { $c->stash( $file->{_source} || $file->{fields} ); }
-            or $c->detach( '/fields_not_found', [$@] );
-    }
+    try { $c->stash( $file->{_source} || $file->{fields} ) }
+        or $c->detach( '/not_found',
+        ['The requested field(s) could not be found'] );
 }
 
 sub all : Path('') : Args(0) : ActionClass('Deserialize') {
@@ -205,12 +205,6 @@ sub not_found : Private {
     my ( $self, $c ) = @_;
     $c->res->code(404);
     $c->stash( { message => 'Not found' } );
-}
-
-sub fields_not_found : Private {
-    my ( $self, $c ) = @_;
-    $c->res->code(200);
-    $c->stash( { message => 'The requested field(s) could not be found' } );
 }
 
 sub internal_error {
