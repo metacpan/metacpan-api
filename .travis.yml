@@ -22,6 +22,9 @@ env:
     # We use a non-standard port to avoid trashing production
     # but travis will have it running on the standard port.
     - METACPAN_ES_TEST_PORT=9200
+    # Carton --deployment only works on the same version of perl
+    # that the snapshot was built from.
+    - DEPLOYMENT_PERL_VERSION=5.18
 
 
 before_install:
@@ -38,7 +41,7 @@ before_install:
   - cpanm -n Safe@2.35
 
 install:
-  - carton install
+  - 'carton install `test "${TRAVIS_PERL_VERSION}" = "${DEPLOYMENT_PERL_VERSION}" && echo " --deployment"`'
 
 
 before_script:
