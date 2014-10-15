@@ -16,3 +16,6 @@ charset     = utf-8
 # I'd like to enable this, but we should fix all the files first to avoid diff noise.
 #trim_trailing_whitespace = true
 insert_final_newline     = true
+
+[.travis.yml]
+indent_size = 2
