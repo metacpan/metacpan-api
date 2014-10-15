@@ -103,7 +103,7 @@ requires 'Mozilla::CA';
 requires 'Net::Twitter';
 requires 'Parse::CPAN::Packages::Fast', '0.04';
 requires 'Parse::CSV';
-requires 'Parse::PMFile', '0.05';
+requires 'Parse::PMFile', '0.29';
 requires 'Path::Class';
 requires 'Path::Class::File';
 requires 'PerlIO::gzip';
