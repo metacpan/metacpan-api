@@ -25,7 +25,7 @@ my %stub = (
     foreach my $path ( keys %paths ) {
         my $file = MetaCPAN::Document::File->new( %stub, path => $path );
         my $bool = $paths{$path} ? 'is' : 'is not';
-        is( $file->in_test_directory(),
+        is( $file->is_in_test_directory(),
             $paths{$path}, "$path $bool in a test directory" );
     }
 }

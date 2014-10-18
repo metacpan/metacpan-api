@@ -623,13 +623,13 @@ sub is_pod_file {
     shift->name =~ /\.pod$/i;
 }
 
-=head2 in_test_directory
+=head2 is_in_test_directory
 
 Returns true if the file is below a t directory.
 
 =cut
 
-sub in_test_directory {
+sub is_in_test_directory {
     my $self = shift;
     return ( $self->path =~ /(^|\/)t($|\/)/ ? 1 : 0 );
 }
@@ -671,7 +671,7 @@ does not include any modules, the L</indexed> property is true.
 sub set_indexed {
     my ( $self, $meta ) = @_;
 
-    if ( $self->in_test_directory() ) {
+    if ( $self->is_in_test_directory() ) {
         foreach my $mod ( @{ $self->module } ) {
             $mod->indexed(0);
         }
