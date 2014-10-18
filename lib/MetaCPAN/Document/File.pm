@@ -8,7 +8,7 @@ use Moose;
 use ElasticSearchX::Model::Document;
 
 use Encode;
-use List::MoreUtils qw(uniq);
+use List::MoreUtils qw(any uniq);
 use MetaCPAN::Document::Module;
 use MetaCPAN::Pod::XHTML;
 use MetaCPAN::Types qw(:all);
@@ -631,7 +631,8 @@ Returns true if the file is below a t directory.
 
 sub is_in_test_directory {
     my $self = shift;
-    return ( $self->path =~ /(^|\/)t($|\/)/ ? 1 : 0 );
+    my @parts = split m{/}, $self->path;
+    return ( any { $_ eq 't' } @parts ) ? 1 : 0;
 }
 
 =head2 add_module
