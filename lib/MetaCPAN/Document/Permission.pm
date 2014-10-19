@@ -1,13 +1,14 @@
-package MetaCPAN::Document::Permissions;
+package MetaCPAN::Document::Permission;
 
 use strict;
 use warnings;
 
 use Moose;
+
 use ElasticSearchX::Model::Document;
 use MooseX::StrictConstructor;
 
-has name => (
+has module => (
     is       => 'ro',
     isa      => 'Str',
     required => 1,
