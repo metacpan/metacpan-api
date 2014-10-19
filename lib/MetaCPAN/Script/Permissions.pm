@@ -40,6 +40,8 @@ sub index_permissions {
         $bulk->put( $type->new_document($put) );
     }
 
+    $bulk->commit;
+
     $self->index->refresh;
     log_info {'done'};
 }
