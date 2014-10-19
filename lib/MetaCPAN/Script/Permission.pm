@@ -1,4 +1,4 @@
-package MetaCPAN::Script::Permissions;
+package MetaCPAN::Script::Permission;
 
 use strict;
 use warnings;
@@ -9,7 +9,7 @@ with 'MooseX::Getopt', 'MetaCPAN::Role::Common';
 use Log::Contextual qw( :log );
 use PAUSE::Permissions;
 
-use MetaCPAN::Document::Permissions;
+use MetaCPAN::Document::Permission;
 
 =head1 SYNOPSIS
 
@@ -55,7 +55,7 @@ __PACKAGE__->meta->make_immutable;
 
 Parse out CPAN author permissions.
 
-    my $perms = MetaCPAN::Script::Permissions->new;
+    my $perms = MetaCPAN::Script::Permission->new;
     my $result = $perms->index_permissions;
 
 =head2 index_authors
