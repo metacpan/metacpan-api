@@ -1,4 +1,4 @@
-package MetaCPAN::Server::Controller::Permissions;
+package MetaCPAN::Server::Controller::Permission;
 
 use strict;
 use warnings;
