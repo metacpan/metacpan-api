@@ -9,7 +9,7 @@ with 'MooseX::Getopt', 'MetaCPAN::Role::Common';
 use Log::Contextual qw( :log );
 use PAUSE::Permissions;
 
-#use MetaCPAN::Document::Permissions;
+use MetaCPAN::Document::Permissions;
 
 =head1 SYNOPSIS
 
@@ -44,7 +44,7 @@ sub index_permissions {
     log_info {'done'};
 }
 
-#__PACKAGE__->meta->make_immutable;
+__PACKAGE__->meta->make_immutable;
 1;
 
 =pod
