@@ -632,7 +632,7 @@ Returns true if the file is below a t directory.
 sub is_in_test_directory {
     my $self = shift;
     my @parts = split m{/}, $self->path;
-    return ( any { $_ eq 't' } @parts ) ? 1 : 0;
+    return any { $_ eq 't' } @parts;
 }
 
 =head2 add_module

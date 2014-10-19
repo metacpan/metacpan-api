@@ -17,9 +17,9 @@ my %stub = (
         't/whomp'         => 1,
         'foo/t/bar'       => 1,
         'cuppa/t'         => 1,
-        'foo/bart/shorts' => 0,
-        'tit/mouse'       => 0,
-        'say/wat'         => 0,
+        'foo/bart/shorts' => q{},
+        'tit/mouse'       => q{},
+        'say/wat'         => q{},
     );
 
     foreach my $path ( keys %paths ) {
