@@ -8,7 +8,6 @@ use JSON;
 use List::MoreUtils ();
 use Moose::Util     ();
 use Moose;
-use Try::Tiny;
 
 BEGIN { extends 'Catalyst::Controller'; }
 
@@ -81,8 +80,8 @@ sub get : Path('') : Args(1) {
     if ( !defined $file ) {
         $c->detach( '/not_found', ['Not found'] );
     }
-    try { $c->stash( $file->{_source} || $file->{fields} ) }
-        or $c->detach( '/not_found',
+    $c->stash( $file->{_source} || $file->{fields} )
+        || $c->detach( '/not_found',
         ['The requested field(s) could not be found'] );
 }
 
