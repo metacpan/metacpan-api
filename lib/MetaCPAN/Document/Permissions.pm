@@ -5,7 +5,6 @@ use warnings;
 
 use Moose;
 use ElasticSearchX::Model::Document;
-use MetaCPAN::Util;
 use MooseX::StrictConstructor;
 
 has name => (
