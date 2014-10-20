@@ -13,6 +13,23 @@ my %stub = (
 );
 
 {
+    my @test_paths     = qw( t/whomp foo/t/bar cuppa/t );
+    my @non_test_paths = qw( foo/bart/shorts tit/mouse say/wat );
+
+    foreach my $path (@test_paths) {
+        my $file = MetaCPAN::Document::File->new( %stub, path => $path );
+        my $msg = "$path is in a test directory";
+        ok( $file->is_in_test_directory(), $msg );
+    }
+
+    foreach my $path (@non_test_paths) {
+        my $file = MetaCPAN::Document::File->new( %stub, path => $path );
+        my $msg = "$path is not in a test directory";
+        ok( !$file->is_in_test_directory(), $msg );
+    }
+}
+
+{
     my $content = <<'END';
 package Foo;
 use strict;
@@ -122,6 +139,18 @@ END
     );
     is( $file->documentation, 'MOBY::Config.pm' );
     is( $file->level,         2 );
+}
+
+{
+    my $file = MetaCPAN::Document::File->new(
+        %stub,
+        path   => 'foo/t/locker',
+        module => { name => 'BAR::Locker' }
+    );
+
+    $file->set_indexed( CPAN::Meta->new( { name => 'null', version => 0 } ) );
+    is( $file->module->[0]->indexed,
+        0, 'Module in test directory is not indexed' );
 }
 
 {

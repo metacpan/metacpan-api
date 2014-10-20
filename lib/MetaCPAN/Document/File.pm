@@ -8,7 +8,7 @@ use Moose;
 use ElasticSearchX::Model::Document;
 
 use Encode;
-use List::MoreUtils qw(uniq);
+use List::MoreUtils qw(any uniq);
 use MetaCPAN::Document::Module;
 use MetaCPAN::Pod::XHTML;
 use MetaCPAN::Types qw(:all);
@@ -623,6 +623,18 @@ sub is_pod_file {
     shift->name =~ /\.pod$/i;
 }
 
+=head2 is_in_test_directory
+
+Returns true if the file is below a t directory.
+
+=cut
+
+sub is_in_test_directory {
+    my $self = shift;
+    my @parts = split m{/}, $self->path;
+    return any { $_ eq 't' } @parts;
+}
+
 =head2 add_module
 
 Requires at least one parameter which can be either a HashRef or
@@ -659,6 +671,15 @@ does not include any modules, the L</indexed> property is true.
 
 sub set_indexed {
     my ( $self, $meta ) = @_;
+
+    if ( $self->is_in_test_directory() ) {
+        foreach my $mod ( @{ $self->module } ) {
+            $mod->indexed(0);
+        }
+        $self->indexed(0);
+        return;
+    }
+
     foreach my $mod ( @{ $self->module } ) {
         $mod->indexed(
               $meta->should_index_package( $mod->name )
