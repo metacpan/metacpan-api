@@ -13,20 +13,19 @@ my %stub = (
 );
 
 {
-    my %paths = (
-        't/whomp'         => 1,
-        'foo/t/bar'       => 1,
-        'cuppa/t'         => 1,
-        'foo/bart/shorts' => q{},
-        'tit/mouse'       => q{},
-        'say/wat'         => q{},
-    );
+    my @test_paths     = qw( t/whomp foo/t/bar cuppa/t );
+    my @non_test_paths = qw( foo/bart/shorts tit/mouse say/wat );
 
-    foreach my $path ( keys %paths ) {
+    foreach my $path (@test_paths) {
         my $file = MetaCPAN::Document::File->new( %stub, path => $path );
-        my $bool = $paths{$path} ? 'is' : 'is not';
-        is( $file->is_in_test_directory(),
-            $paths{$path}, "$path $bool in a test directory" );
+        my $msg = "$path is in a test directory";
+        ok( $file->is_in_test_directory(), $msg );
+    }
+
+    foreach my $path (@non_test_paths) {
+        my $file = MetaCPAN::Document::File->new( %stub, path => $path );
+        my $msg = "$path is not in a test directory";
+        ok( !$file->is_in_test_directory(), $msg );
     }
 }
 
