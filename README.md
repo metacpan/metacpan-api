@@ -124,6 +124,7 @@ IRC
 ---
 
 You can find us at #metacpan on irc.perl.org
+Access it via web interface: https://chat.mibbit.com/?channel=%23metacpan&server=irc.perl.org
 
 IRC logs can be found here:
 [http://irclog.perlgeek.de/metacpan/today](http://irclog.perlgeek.de/metacpan/today)
