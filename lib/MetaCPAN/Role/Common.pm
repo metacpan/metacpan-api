@@ -126,7 +126,6 @@ sub _build_logger {
 }
 
 sub file2mod {
-
     my $self = shift;
     my $name = shift;
 
