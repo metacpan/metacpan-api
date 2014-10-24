@@ -1214,13 +1214,19 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Pod::Text 2.08
       Pod::Usage 1.33
-  DBD-SQLite-1.42
-    pathname: I/IS/ISHIGAKI/DBD-SQLite-1.42.tar.gz
+  DBD-SQLite-1.44
+    pathname: I/IS/ISHIGAKI/DBD-SQLite-1.44.tar.gz
     provides:
-      DBD::SQLite 1.42
-      DBD::SQLite::_WriteOnceHash 1.42
-      DBD::SQLite::db 1.42
-      DBD::SQLite::dr 1.42
+      DBD::SQLite 1.44
+      DBD::SQLite::VirtualTable 1.44
+      DBD::SQLite::VirtualTable::Cursor 1.44
+      DBD::SQLite::VirtualTable::FileContent undef
+      DBD::SQLite::VirtualTable::FileContent::Cursor undef
+      DBD::SQLite::VirtualTable::PerlData undef
+      DBD::SQLite::VirtualTable::PerlData::Cursor undef
+      DBD::SQLite::_WriteOnceHash 1.44
+      DBD::SQLite::db 1.44
+      DBD::SQLite::dr 1.44
     requirements:
       DBI 1.57
       ExtUtils::MakeMaker 6.48

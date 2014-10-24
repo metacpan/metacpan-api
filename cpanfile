@@ -31,7 +31,7 @@ requires 'CatalystX::RoleApplicator';
 requires 'Config::JFDI';
 requires 'Cwd';
 requires 'Data::Printer';
-requires 'DBD::SQLite', '1.33';
+requires 'DBD::SQLite', '>=1.44';
 requires 'DBI', '1.616';
 requires 'Data::DPath';
 requires 'Data::Dump';
