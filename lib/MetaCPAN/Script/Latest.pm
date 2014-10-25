@@ -55,7 +55,7 @@ sub run {
             push( @filter, $package )
                 if ( $dist && $dist eq $distribution );
         }
-        log_info { "$distribution consists of " . @filter . " modules" };
+        log_info { "$distribution consists of " . @filter . ' modules' };
     }
 
     return if ( !@filter && $self->distribution );
@@ -95,6 +95,7 @@ sub run {
     log_debug { 'Found ' . $scroll->total . ' modules' };
 
     my $i = 0;
+
     # For each file...
     while ( my $file = $scroll->next ) {
         $i++;
@@ -142,6 +143,7 @@ sub run {
     }
 
     while ( my ( $dist, $data ) = each %upgrade ) {
+
         # Don't reindex if already marked as latest.
         # This just means that it hasn't changed (query includes 'latest').
         next if ( $data->{status} eq 'latest' );
@@ -150,6 +152,7 @@ sub run {
     }
 
     while ( my ( $release, $data ) = each %downgrade ) {
+
         # Don't downgrade if this release version is also marked as latest.
         # This could happen if a module is moved to a new dist
         # but the old dist remains (with other packages).
@@ -179,8 +182,8 @@ sub reindex {
 
     $release->status($status);
     log_info {
-        $status eq 'latest' ? "Upgrading " : "Downgrading ",
-            "release ", $release->name || '';
+        $status eq 'latest' ? 'Upgrading ' : 'Downgrading ',
+            'release ', $release->name || q[];
     };
     $release->put unless ( $self->dry_run );
 
@@ -215,9 +218,10 @@ sub reindex {
     while ( my $row = $scroll->next ) {
         my $source = $row->{_source};
         log_trace {
-            $status eq 'latest' ? "Upgrading " : "Downgrading ",
-                "file ", $source->{name} || '';
+            $status eq 'latest' ? 'Upgrading ' : 'Downgrading ',
+                'file ', $source->{name} || q[];
         };
+
         # Use bulk update to overwrite the status for X files at a time.
         push(
             @bulk,
