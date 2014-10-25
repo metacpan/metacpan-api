@@ -10,6 +10,7 @@ __PACKAGE__->provide_types_from(
         MooseX::Types::Common::Numeric
         MooseX::Types::Common::String
         MooseX::Types::Moose
+        MooseX::Types::Path::Class
         MooseX::Types::Structured
         MooseX::Types::URI
         MetaCPAN::Types::Internal
