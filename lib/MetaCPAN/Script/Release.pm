@@ -18,6 +18,7 @@ use LWP::UserAgent;
 use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Document::Author;
 use MetaCPAN::Script::Latest;
+use MetaCPAN::Types qw( Dir );
 use Module::Metadata 1.000012 ();    # Improved package detection.
 use Moose;
 use Parse::PMFile;
@@ -78,6 +79,13 @@ has perms => (
     isa        => 'HashRef',
     lazy_build => 1,
     traits     => ['NoGetopt'],
+);
+
+has base_dir => (
+    is      => 'ro',
+    isa     => Dir,
+    coerce  => 1,
+    default => '/tmp',
 );
 
 sub run {
@@ -190,7 +198,7 @@ sub import_tarball {
     # load Archive::Any in the child due to bugs in MMagic and MIME::Types
     require Archive::Any;
     my $at = Archive::Any->new($tarball);
-    my $tmpdir = dir( File::Temp::tempdir( CLEANUP => 0 ) );
+    my $tmpdir = dir( File::Temp::tempdir( CLEANUP => 0, DIR => $self->base_dir ) );
 
     log_error {"$tarball is being impolite"} if $at->is_impolite;
 
