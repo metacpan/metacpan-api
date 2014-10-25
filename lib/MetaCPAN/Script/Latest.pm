@@ -45,6 +45,9 @@ sub run {
     my $p = $self->packages;
     $self->index->refresh;
 
+    # If a distribution name is passed get all the package names
+    # from 02packages that match that distribution so we can limit
+    # the ES query to just those modules.
     my @filter;
     if ( my $distribution = $self->distribution ) {
         foreach my $package ( $p->packages ) {
@@ -92,6 +95,7 @@ sub run {
     log_debug { 'Found ' . $scroll->total . ' modules' };
 
     my $i = 0;
+    # For each file...
     while ( my $file = $scroll->next ) {
         $i++;
         log_debug { "$i of " . $scroll->total } unless ( $i % 1000 );
@@ -106,12 +110,13 @@ sub run {
             eval { $p->package($_) }
         } @modules;
 
+        # For each of the packages in this file...
         foreach my $module (@modules) {
 
            # Get P:C:P:F:Distribution (CPAN::DistnameInfo) object for package.
             my $dist = $module->distribution;
 
-            # If this version of the module is the one listed in 02packages...
+            # If 02packages has the same author/release for this package...
 
             # NOTE: CPAN::DistnameInfo doesn't parse some weird uploads
             # (like /\.pm\.gz$/) so distvname might not be present.
@@ -121,6 +126,9 @@ sub run {
                 && $dist->cpanid eq $data->{author} )
             {
                 my $upgrade = $upgrade{ $data->{distribution} };
+
+                # If multiple versions of a dist appear in 02packages
+                # only mark the most recent upload as latest.
                 next
                     if ( $upgrade
                     && $self->compare_dates( $upgrade->{date}, $data->{date} )
@@ -132,24 +140,36 @@ sub run {
             }
         }
     }
+
     while ( my ( $dist, $data ) = each %upgrade ) {
+        # Don't reindex if already marked as latest.
+        # This just means that it hasn't changed (query includes 'latest').
         next if ( $data->{status} eq 'latest' );
+
         $self->reindex( $data, 'latest' );
     }
+
     while ( my ( $release, $data ) = each %downgrade ) {
+        # Don't downgrade if this release version is also marked as latest.
+        # This could happen if a module is moved to a new dist
+        # but the old dist remains (with other packages).
+        # This could also include bug fixes in our indexer, PAUSE, etc.
         next
             if ( $upgrade{ $data->{distribution} }
             && $upgrade{ $data->{distribution} }->{release} eq
             $data->{release} );
+
         $self->reindex( $data, 'cpan' );
     }
     $self->index->refresh;
 }
 
+# Update the status for the release and all the files.
 sub reindex {
     my ( $self, $source, $status ) = @_;
     my $es = $self->es;
 
+    # Update the status on the release.
     my $release = $self->index->type('release')->get(
         {
             author => $source->{author},
@@ -164,6 +184,7 @@ sub reindex {
     };
     $release->put unless ( $self->dry_run );
 
+    # Get all the files for the release.
     my $scroll = $es->scrolled_search(
         {
             index       => $self->index->name,
@@ -197,6 +218,7 @@ sub reindex {
             $status eq 'latest' ? "Upgrading " : "Downgrading ",
                 "file ", $source->{name} || '';
         };
+        # Use bulk update to overwrite the status for X files at a time.
         push(
             @bulk,
             {
