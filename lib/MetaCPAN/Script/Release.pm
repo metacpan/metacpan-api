@@ -198,7 +198,8 @@ sub import_tarball {
     # load Archive::Any in the child due to bugs in MMagic and MIME::Types
     require Archive::Any;
     my $at = Archive::Any->new($tarball);
-    my $tmpdir = dir( File::Temp::tempdir( CLEANUP => 0, DIR => $self->base_dir ) );
+    my $tmpdir
+        = dir( File::Temp::tempdir( CLEANUP => 0, DIR => $self->base_dir ) );
 
     log_error {"$tarball is being impolite"} if $at->is_impolite;
 
