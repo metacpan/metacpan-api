@@ -14,6 +14,13 @@ sub default : Path {
     $c->forward('/not_found');
 }
 
+# The parent class has a sub with this signature but expects a namespace
+# and an es type... since this controller doesn't have those, just overwrite.
+sub get : Path('') : Args(1) {
+    my ( $self, $c ) = @_;
+    $c->forward( '/not_found', [] );
+}
+
 sub not_found : Private {
     my ( $self, $c, @params ) = @_;
     my $message = join( '/', @params );
