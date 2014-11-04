@@ -157,10 +157,15 @@ sub remote {
 sub run { }
 before run => sub {
     my $self = shift;
+
+    # NOTE: This makes the test suite print "mapping" regardless of which
+    # script class is actually running (the category only gets set once)
+    # but Log::Contextual gets mad if you call set_logger more than once.
     unless ($MetaCPAN::Role::Common::log) {
         $MetaCPAN::Role::Common::log = $self->logger;
         set_logger $self->logger;
     }
+
     Dlog_debug {"Connected to $_"} $self->remote;
 };
 
