@@ -9,9 +9,10 @@ BEGIN { extends 'MetaCPAN::Server::Controller' }
 
 __PACKAGE__->config( namespace => '' );
 
+# This will catch anything that isn't matched by another route.
 sub default : Path {
     my ( $self, $c ) = @_;
-    $c->forward('/not_found');
+    $c->forward( '/not_found', [] );
 }
 
 # The parent class has a sub with this signature but expects a namespace
