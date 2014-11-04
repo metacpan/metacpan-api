@@ -15,6 +15,7 @@ my @tests = (
         qr{LOCAL/File-Changes-2\.0/NoChanges}
     ],
     [ '/root.file' => 404 ],
+    [ '/fakedoctype/andaction'                 => 404 ],
 );
 
 test_psgi app, sub {
