@@ -168,21 +168,6 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 6.30
       IO::Zlib 0
       UNIVERSAL::require 0
-  Archive-Extract-0.72
-    pathname: B/BI/BINGOS/Archive-Extract-0.72.tar.gz
-    provides:
-      Archive::Extract 0.72
-    requirements:
-      ExtUtils::MakeMaker 0
-      File::Basename 0
-      File::Path 0
-      File::Spec 0.82
-      IPC::Cmd 0.64
-      Locale::Maketext::Simple 0
-      Module::Load::Conditional 0.04
-      Params::Check 0.07
-      Test::More 0
-      if 0
   Archive-Zip-1.37
     pathname: P/PH/PHRED/Archive-Zip-1.37.tar.gz
     provides:
@@ -428,6 +413,17 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 6.30
       Module::Metadata 0
       strict 0
+      warnings 0
+  CPAN-Meta-Requirements-2.125
+    pathname: D/DA/DAGOLDEN/CPAN-Meta-Requirements-2.125.tar.gz
+    provides:
+      CPAN::Meta::Requirements 2.125
+    requirements:
+      Carp 0
+      ExtUtils::MakeMaker 6.17
+      Scalar::Util 0
+      strict 0
+      version 0.77
       warnings 0
   CPAN-Meta-YAML-0.012
     pathname: D/DA/DAGOLDEN/CPAN-Meta-YAML-0.012.tar.gz
@@ -1214,6 +1210,40 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Pod::Text 2.08
       Pod::Usage 1.33
+  Crypt-DH-GMP-0.00012
+    pathname: D/DM/DMAKI/Crypt-DH-GMP-0.00012.tar.gz
+    provides:
+      Crypt::DH::GMP 0.00012
+      Crypt::DH::GMP::Compat undef
+    requirements:
+      Devel::CheckLib 0.4
+      Devel::PPPort 3.19
+      ExtUtils::MakeMaker 6.59
+      ExtUtils::ParseXS 3.18
+      Test::More 0
+      Test::Requires 0
+      XSLoader 0.02
+      perl 5.0080001
+  Crypt-SSLeay-0.72
+    pathname: N/NA/NANIS/Crypt-SSLeay-0.72.tar.gz
+    provides:
+      Crypt::SSLeay 0.72
+      Crypt::SSLeay::CTX undef
+      Crypt::SSLeay::Conn undef
+      Crypt::SSLeay::Err undef
+      Crypt::SSLeay::MainContext undef
+      Crypt::SSLeay::Version undef
+      Crypt::SSLeay::X509 undef
+      Net::SSL 2.86
+    requirements:
+      ExtUtils::CBuilder 0.280205
+      ExtUtils::MakeMaker 0
+      Getopt::Long 0
+      LWP::Protocol::https 6.02
+      MIME::Base64 0
+      Path::Class 0.26
+      Try::Tiny 0.19
+      perl 5.006
   DBD-SQLite-1.44
     pathname: I/IS/ISHIGAKI/DBD-SQLite-1.44.tar.gz
     provides:
@@ -2625,6 +2655,18 @@ DISTRIBUTIONS
       Test::Requires 0
       parent 0
       perl 5.008001
+  Devel-CheckLib-1.01
+    pathname: M/MA/MATTN/Devel-CheckLib-1.01.tar.gz
+    provides:
+      Devel::CheckLib 1.01
+    requirements:
+      Exporter 0
+      ExtUtils::MakeMaker 0
+      File::Spec 0
+      File::Temp 0.16
+      IO::CaptureOutput 1.0801
+      Test::More 0.62
+      perl 5.00405
   Devel-GlobalDestruction-0.12
     pathname: H/HA/HAARG/Devel-GlobalDestruction-0.12.tar.gz
     provides:
@@ -2952,6 +2994,41 @@ DISTRIBUTIONS
       Scalar::Util 0
       Test::More 0
       perl 5.006
+  Encode-2.62
+    pathname: D/DA/DANKOGAI/Encode-2.62.tar.gz
+    provides:
+      Encode 2.62
+      Encode::Alias 2.18
+      Encode::Byte 2.04
+      Encode::CJKConstants 2.02
+      Encode::CN 2.03
+      Encode::CN::HZ 2.07
+      Encode::Config 2.05
+      Encode::EBCDIC 2.02
+      Encode::Encoder 2.03
+      Encode::Encoding 2.07
+      Encode::GSM0338 2.05
+      Encode::Guess 2.06
+      Encode::Internal 2.62
+      Encode::JP 2.04
+      Encode::JP::H2Z 2.02
+      Encode::JP::JIS7 2.05
+      Encode::KR 2.03
+      Encode::KR::2022_KR 2.03
+      Encode::MIME::Header 2.15
+      Encode::MIME::Header::ISO_2022_JP 1.04
+      Encode::MIME::Name 1.01
+      Encode::Symbol 2.02
+      Encode::TW 2.03
+      Encode::UTF_EBCDIC 2.62
+      Encode::Unicode 2.09
+      Encode::Unicode::UTF7 2.08
+      Encode::utf8 2.62
+      encoding 2.12
+    requirements:
+      Exporter 5.57
+      ExtUtils::MakeMaker 0
+      parent 0.221
   Encode-Locale-1.03
     pathname: G/GA/GAAS/Encode-Locale-1.03.tar.gz
     provides:
@@ -3718,6 +3795,20 @@ DISTRIBUTIONS
       Cwd 0
       ExtUtils::MakeMaker 6.30
       Scalar::Util 0
+  IO-CaptureOutput-1.1103
+    pathname: D/DA/DAGOLDEN/IO-CaptureOutput-1.1103.tar.gz
+    provides:
+      IO::CaptureOutput 1.1103
+    requirements:
+      Carp 0
+      Exporter 0
+      ExtUtils::MakeMaker 6.17
+      File::Basename 0
+      File::Temp 0.16
+      Symbol 0
+      strict 0
+      vars 0
+      warnings 0
   IO-HTML-1.00
     pathname: C/CJ/CJM/IO-HTML-1.00.tar.gz
     provides:
@@ -3857,6 +3948,15 @@ DISTRIBUTIONS
       File::Temp 0
       JSON::PP 2.27202
       perl 5.006
+  JSON-PP-2.27203
+    pathname: M/MA/MAKAMAKA/JSON-PP-2.27203.tar.gz
+    provides:
+      JSON::PP 2.27203
+      JSON::PP::Boolean 2.27203
+      JSON::PP::IncrParser 2.27203
+    requirements:
+      ExtUtils::MakeMaker 0
+      Test::More 0
   JSON-XS-3.01
     pathname: M/ML/MLEHMANN/JSON-XS-3.01.tar.gz
     provides:
@@ -3884,6 +3984,50 @@ DISTRIBUTIONS
       Mozilla::CA 20110101
       Net::HTTPS 6
       perl 5.008001
+  LWP-UserAgent-Paranoid-0.95
+    pathname: T/TS/TSIBLEY/LWP-UserAgent-Paranoid-0.95.tar.gz
+    provides:
+      LWP::UserAgent::Paranoid 0.95
+      LWP::UserAgent::Paranoid::Test undef
+    requirements:
+      ExtUtils::MakeMaker 6.36
+      HTTP::Server::PSGI 0
+      LWP::UserAgent 0
+      LWPx::ParanoidHandler 0
+      Net::DNS::Paranoid 0
+      Scalar::Util 0
+      Test::Requires 0
+      Test::TCP 0
+      Time::HiRes 1.9716
+  LWPx-ParanoidAgent-1.10
+    pathname: S/SA/SAXJAZMAN/lwp/LWPx-ParanoidAgent-1.10.tar.gz
+    provides:
+      LWPx::ParanoidAgent 1.10
+      LWPx::Protocol::http_paranoid undef
+      LWPx::Protocol::http_paranoid::Socket undef
+      LWPx::Protocol::http_paranoid::SocketMethods undef
+      LWPx::Protocol::https_paranoid undef
+      LWPx::Protocol::https_paranoid::Socket undef
+    requirements:
+      ExtUtils::MakeMaker 0
+      LWP::UserAgent 0
+      Net::DNS 0
+      Net::SSL 2.85
+      Time::HiRes 0
+  LWPx-ParanoidHandler-0.07
+    pathname: T/TO/TOKUHIROM/LWPx-ParanoidHandler-0.07.tar.gz
+    provides:
+      LWPx::ParanoidHandler 0.07
+    requirements:
+      CPAN::Meta 0
+      CPAN::Meta::Prereqs 0
+      Exporter 0
+      ExtUtils::CBuilder 0
+      LWP 6
+      Module::Build 0.38
+      Net::DNS::Paranoid 0.07
+      parent 0
+      perl 5.008008
   Lexical-SealRequireHints-0.007
     pathname: Z/ZE/ZEFRAM/Lexical-SealRequireHints-0.007.tar.gz
     provides:
@@ -4627,6 +4771,41 @@ DISTRIBUTIONS
       MooseX::Types::Structured 0
       Test::More 0.88
       Try::Tiny 0
+  MooseX-ClassAttribute-0.27
+    pathname: D/DR/DROLSKY/MooseX-ClassAttribute-0.27.tar.gz
+    provides:
+      Child undef
+      Delegatee undef
+      HasClassAttribute undef
+      MooseX::ClassAttribute 0.27
+      MooseX::ClassAttribute::Meta::Role::Attribute 0.27
+      MooseX::ClassAttribute::Trait::Application 0.27
+      MooseX::ClassAttribute::Trait::Application::ToClass 0.27
+      MooseX::ClassAttribute::Trait::Application::ToRole 0.27
+      MooseX::ClassAttribute::Trait::Attribute 0.27
+      MooseX::ClassAttribute::Trait::Class 0.27
+      MooseX::ClassAttribute::Trait::Mixin::HasClassAttributes 0.27
+      MooseX::ClassAttribute::Trait::Role 0.27
+      MooseX::ClassAttribute::Trait::Role::Composite 0.27
+      SharedTests undef
+    requirements:
+      ExtUtils::MakeMaker 6.30
+      List::MoreUtils 0
+      Moose 2.00
+      Moose::Exporter 0
+      Moose::Meta::Role::Attribute 0
+      Moose::Role 0
+      Moose::Util 0
+      Moose::Util::MetaRole 0
+      Scalar::Util 0
+      Test::Fatal 0
+      Test::More 0.88
+      Test::Requires 0.05
+      namespace::autoclean 0.11
+      namespace::clean 0.20
+      strict 0
+      vars 0
+      warnings 0
   MooseX-Emulate-Class-Accessor-Fast-0.00903
     pathname: F/FL/FLORA/MooseX-Emulate-Class-Accessor-Fast-0.00903.tar.gz
     provides:
@@ -4745,25 +4924,6 @@ DISTRIBUTIONS
       aliased 0
       namespace::autoclean 0.12
       namespace::clean 0
-  MooseX-StrictConstructor-0.19
-    pathname: D/DR/DROLSKY/MooseX-StrictConstructor-0.19.tar.gz
-    provides:
-      MooseX::StrictConstructor 0.19
-      MooseX::StrictConstructor::Trait::Class 0.19
-      MooseX::StrictConstructor::Trait::Method::Constructor 0.19
-    requirements:
-      B 0
-      ExtUtils::MakeMaker 6.30
-      Moose 0.94
-      Moose::Exporter 0
-      Moose::Role 0
-      Moose::Util::MetaRole 0
-      Test::Fatal 0
-      Test::Moose 0
-      Test::More 0.88
-      namespace::autoclean 0
-      strict 0
-      warnings 0
   MooseX-Traits-Pluggable-0.12
     pathname: R/RK/RKITOVER/MooseX-Traits-Pluggable-0.12.tar.gz
     provides:
@@ -5026,6 +5186,17 @@ DISTRIBUTIONS
       MIME::Base64 2.11
       Test::More 0.52
       perl 5.00404
+  Net-DNS-Paranoid-0.07
+    pathname: T/TO/TOKUHIROM/Net-DNS-Paranoid-0.07.tar.gz
+    provides:
+      Net::DNS::Paranoid 0.07
+    requirements:
+      Class::Accessor::Lite 0.05
+      Module::Build 0.38
+      Net::DNS 0.68
+      Test::More 0.98
+      parent 0
+      perl 5.008008
   Net-HTTP-6.06
     pathname: G/GA/GAAS/Net-HTTP-6.06.tar.gz
     provides:
@@ -5078,6 +5249,65 @@ DISTRIBUTIONS
       Test::More 0.66
       Test::Warn 0.21
       URI::Escape 3.28
+  Net-OpenID-Common-1.18
+    pathname: W/WR/WROG/Net-OpenID-Common-1.18.tar.gz
+    provides:
+      Net::OpenID::Common 1.18
+      Net::OpenID::Extension 1.18
+      Net::OpenID::Extension::SimpleRegistration 1.18
+      Net::OpenID::Extension::SimpleRegistration::Request 1.18
+      Net::OpenID::Extension::SimpleRegistration::Response 1.18
+      Net::OpenID::ExtensionMessage 1.18
+      Net::OpenID::IndirectMessage 1.18
+      Net::OpenID::URIFetch 1.18
+      Net::OpenID::URIFetch::Response 1.18
+      Net::OpenID::Yadis 1.18
+      Net::OpenID::Yadis::Service 1.18
+      OpenID::util 1.18
+    requirements:
+      Crypt::DH::GMP 0.00011
+      Encode 0
+      ExtUtils::MakeMaker 6.30
+      HTML::Parser 3.40
+      HTTP::Headers::Util 0
+      HTTP::Request 0
+      HTTP::Status 0
+      MIME::Base64 0
+      Math::BigInt 0
+      Test::More 0
+      Time::Local 0
+      XML::Simple 0
+  Net-OpenID-Consumer-1.15
+    pathname: W/WR/WROG/Net-OpenID-Consumer-1.15.tar.gz
+    provides:
+      FakeFetch undef
+      Net::OpenID::Association 1.15
+      Net::OpenID::ClaimedIdentity 1.15
+      Net::OpenID::Consumer 1.15
+      Net::OpenID::VerifiedIdentity 1.15
+    requirements:
+      Digest::SHA 0
+      ExtUtils::MakeMaker 6.30
+      HTTP::Request 0
+      JSON 0
+      LWP::UserAgent 0
+      MIME::Base64 0
+      Net::OpenID::Common 1.18
+      Storable 0
+      Test::More 0
+      Time::Local 0
+      URI 0
+  Net-OpenID-Server-1.09
+    pathname: R/RO/ROBN/Net-OpenID-Server-1.09.tar.gz
+    provides:
+      Net::OpenID::Server 1.09
+    requirements:
+      Digest::SHA 0
+      ExtUtils::MakeMaker 6.31
+      MIME::Base64 0
+      Net::OpenID::Common 1.11
+      Test::More 0
+      URI 0
   Net-SSLeay-1.63
     pathname: M/MI/MIKEM/Net-SSLeay-1.63.tar.gz
     provides:
@@ -5207,26 +5437,6 @@ DISTRIBUTIONS
       Test::Trap 0
       overload 0
       parent 0
-  PAUSE-Permissions-0.10
-    pathname: N/NE/NEILB/PAUSE-Permissions-0.10.tar.gz
-    provides:
-      PAUSE::Permissions 0.10
-      PAUSE::Permissions::Entry 0.10
-      PAUSE::Permissions::EntryIterator 0.10
-      PAUSE::Permissions::Module 0.10
-      PAUSE::Permissions::ModuleIterator 0.10
-    requirements:
-      Carp 0
-      ExtUtils::MakeMaker 0
-      File::HomeDir 0
-      File::Spec::Functions 0
-      HTTP::Date 0
-      HTTP::Tiny 0
-      Moo 0
-      autodie 0
-      feature 0
-      strict 0
-      warnings 0
   POSIX-strftime-Compiler-0.31
     pathname: K/KA/KAZEBURO/POSIX-strftime-Compiler-0.31.tar.gz
     provides:
@@ -5625,12 +5835,11 @@ DISTRIBUTIONS
       Parse::PMFile 0.29
     requirements:
       Dumpvalue 0
+      ExtUtils::MakeMaker 0
       ExtUtils::MakeMaker::CPANfile 0.06
       File::Spec 0
-      File::Temp 0.19
       JSON::PP 2.00
       Safe 0
-      Test::More 0.88
       version 0.83
   Path-Class-0.33
     pathname: K/KW/KWILLIAMS/Path-Class-0.33.tar.gz
@@ -5666,7 +5875,7 @@ DISTRIBUTIONS
       Carp 0
       Class::Tiny 0.010
       ExtUtils::MakeMaker 6.30
-      Path::IsDev 0
+      Path::IsDev v0.2.2
       Path::IsDev::Object 0
       Path::Tiny 0.038
       Scalar::Util 0
@@ -5741,6 +5950,25 @@ DISTRIBUTIONS
       overload 0
       strict 0
       warnings 0
+  PathTools-3.47
+    pathname: S/SM/SMUELLER/PathTools-3.47.tar.gz
+    provides:
+      Cwd 3.47
+      File::Spec 3.47
+      File::Spec::Cygwin 3.47
+      File::Spec::Epoc 3.47
+      File::Spec::Functions 3.47
+      File::Spec::Mac 3.47
+      File::Spec::OS2 3.47
+      File::Spec::Unix 3.47
+      File::Spec::VMS 3.47
+      File::Spec::Win32 3.47
+    requirements:
+      Carp 0
+      ExtUtils::MakeMaker 0
+      File::Basename 0
+      Scalar::Util 0
+      Test 0
   Perl-Critic-1.121
     pathname: T/TH/THALJEF/Perl-Critic-1.121.tar.gz
     provides:
@@ -6373,6 +6601,54 @@ DISTRIBUTIONS
       Text::Wrap 2001.0929
       parent 0
       perl 5.006
+  Pod-Simple-3.28
+    pathname: D/DW/DWHEELER/Pod-Simple-3.28.tar.gz
+    provides:
+      Pod::Simple 3.28
+      Pod::Simple::BlackBox 3.28
+      Pod::Simple::Checker 3.28
+      Pod::Simple::Debug 3.28
+      Pod::Simple::DumpAsText 3.28
+      Pod::Simple::DumpAsXML 3.28
+      Pod::Simple::HTML 3.28
+      Pod::Simple::HTMLBatch 3.28
+      Pod::Simple::HTMLLegacy 5.01
+      Pod::Simple::LinkSection 3.28
+      Pod::Simple::Methody 3.28
+      Pod::Simple::Progress 3.28
+      Pod::Simple::PullParser 3.28
+      Pod::Simple::PullParserEndToken 3.28
+      Pod::Simple::PullParserStartToken 3.28
+      Pod::Simple::PullParserTextToken 3.28
+      Pod::Simple::PullParserToken 3.28
+      Pod::Simple::RTF 3.28
+      Pod::Simple::Search 3.28
+      Pod::Simple::SimpleTree 3.28
+      Pod::Simple::Text 3.28
+      Pod::Simple::TextContent 3.28
+      Pod::Simple::TiedOutFH 3.28
+      Pod::Simple::Transcode 3.28
+      Pod::Simple::TranscodeDumb 3.28
+      Pod::Simple::TranscodeSmart 3.28
+      Pod::Simple::XHTML 3.28
+      Pod::Simple::XMLOutStream 3.28
+    requirements:
+      Carp 0
+      Config 0
+      Cwd 0
+      ExtUtils::MakeMaker 0
+      File::Basename 0
+      File::Find 0
+      File::Spec 0
+      Pod::Escapes 1.04
+      Symbol 0
+      Test 1.25
+      Test::More 0
+      Text::Wrap 98.112902
+      constant 0
+      integer 0
+      overload 0
+      strict 0
   Pod-Spell-1.15
     pathname: X/XE/XENO/Pod-Spell-1.15.tar.gz
     provides:
@@ -6494,6 +6770,12 @@ DISTRIBUTIONS
       Test::More 0.88
       Test::Warn 0
       perl 5.006
+  Safe-2.35
+    pathname: R/RG/RGARCIA/Safe-2.35.tar.gz
+    provides:
+      Safe 2.35
+    requirements:
+      ExtUtils::MakeMaker 0
   Safe-Isa-1.000004
     pathname: E/ET/ETHER/Safe-Isa-1.000004.tar.gz
     provides:
@@ -6770,6 +7052,17 @@ DISTRIBUTIONS
       Try::Tiny 0.07
       strict 0
       warnings 0
+  Test-HTTP-Server-Simple-0.11
+    pathname: A/AL/ALEXMV/Test-HTTP-Server-Simple-0.11.tar.gz
+    provides:
+      Test::HTTP::Server::Simple 0.11
+    requirements:
+      ExtUtils::MakeMaker 0
+      HTTP::Server::Simple 0
+      NEXT 0
+      Test::Builder 0
+      Test::Builder::Tester 1.04
+      Test::More 0
   Test-Harness-3.30
     pathname: L/LE/LEONT/Test-Harness-3.30.tar.gz
     provides:
@@ -6871,6 +7164,29 @@ DISTRIBUTIONS
       Test::Builder::Tester 1.02
       Test::More 0.42
       overload 0
+  Test-OpenID-Consumer-0.01
+    pathname: J/JE/JESSE/Test-OpenID-Consumer-0.01.tar.gz
+    provides:
+      Test::OpenID::Consumer 0.01
+    requirements:
+      Cache::FileCache 0
+      ExtUtils::MakeMaker 0
+      HTTP::Server::Simple 0
+      LWPx::ParanoidAgent 0
+      Net::OpenID::Consumer 0
+      Test::Builder 0
+      Test::HTTP::Server::Simple 0
+  Test-OpenID-Server-0.02
+    pathname: J/JE/JESSE/Test-OpenID-Server-0.02.tar.gz
+    provides:
+      Test::OpenID::Server 0.02
+    requirements:
+      ExtUtils::MakeMaker 0
+      HTTP::Server::Simple 0
+      Net::OpenID::Server 0
+      Test::HTTP::Server::Simple 0
+      Test::OpenID::Consumer 0
+      Test::WWW::Mechanize 0
   Test-Perl-Critic-1.02
     pathname: T/TH/THALJEF/Test-Perl-Critic-1.02.tar.gz
     provides:
@@ -7748,3 +8064,17 @@ DISTRIBUTIONS
       bareword::filehandles 0
       indirect 0
       multidimensional 0
+  version-0.9908
+    pathname: J/JP/JPEACOCK/version-0.9908.tar.gz
+    provides:
+      charstar 0.9908
+      version 0.9908
+      version::regex 0.9908
+      version::vpp 0.9908
+      version::vxs 0.9908
+    requirements:
+      ExtUtils::MakeMaker 6.17
+      File::Temp 0.13
+      Test::More 0.45
+      parent 0.221
+      perl 5.006002
