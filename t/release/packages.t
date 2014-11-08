@@ -42,19 +42,10 @@ test_release(
             ],
         },
         extra_tests => sub {
-
-            # I couldn't get the Source model to work outside the app (I got
-            # "No handler available for type 'application/octet-stream'",
-            # strangely), so just do the http request.
-            test_psgi app, sub {
-                my $cb = shift;
-                my $content
-                    = $cb->(
-                    GET '/source/RWSTAUNER/Packages-1.103/lib/Packages/BOM.pm'
-                    )->content;
-                like $content, qr/\A\xef\xbb\xbfpackage Packages::BOM;\n/,
-                    'Packages::BOM module starts with UTF-8 BOM';
-            };
+            my $self    = shift;
+            my $content = $self->file_content('lib/Packages/BOM.pm');
+            like $content, qr/\A\xef\xbb\xbfpackage Packages::BOM;\n/,
+                'Packages::BOM module starts with UTF-8 BOM';
         },
     },
     'Test Packages release and its modules',

@@ -40,14 +40,7 @@ test_release(
 
             ok $self->data->authorized, 'dist is authorized';
 
-            my $content;
-            test_psgi app, sub {
-                my $cb = shift;
-                $content
-                    = $cb->( GET
-                        '/source/RWSTAUNER/Packages-Unclaimable-2/lib/Packages/Unclaimable.pm'
-                    )->content;
-            };
+            my $content = $self->file_content('lib/Packages/Unclaimable.pm');
 
             my $mm
                 = Module::Metadata->new_from_handle(

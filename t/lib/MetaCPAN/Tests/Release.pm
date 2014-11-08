@@ -1,6 +1,7 @@
 package MetaCPAN::Tests::Release;
 use Test::Routine;
 use Test::More;
+use HTTP::Request::Common;
 use version;
 
 with qw(
@@ -60,6 +61,23 @@ has files => (
 sub _build_files {
     my ($self) = @_;
     return $self->filter_files();
+}
+
+sub file_content {
+    my ( $self, $file ) = @_;
+
+    # Accept a file object (from es) or just a string path.
+    my $path = ref $file ? $file->{path} : $file;
+
+    # I couldn't get the Source model to work outside the app (I got
+    # "No handler available for type 'application/octet-stream'",
+    # strangely), so just do the http request.
+    return $self->psgi_app(
+        sub {
+            shift->( GET "/source/$self->{author}/$self->{name}/$path" )
+                ->content;
+        }
+    );
 }
 
 has module_files => (
