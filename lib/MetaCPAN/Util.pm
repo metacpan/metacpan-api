@@ -76,11 +76,14 @@ sub pod_lines {
     return [] unless ($content);
     my @lines = split( "\n", $content );
     my @return;
-    my $count  = 1;
     my $length = 0;
     my $start  = 0;
     my $slop   = 0;
-    foreach my $line (@lines) {
+
+    # Use c-style for loop to avoid copying all the strings.
+    my $num_lines = scalar @lines;
+    for ( my $i = 0; $i < $num_lines; ++$i ) {
+        my $line = $lines[$i];
 
         if ( $line =~ /\A=cut/ ) {
             $length++;
@@ -90,16 +93,20 @@ sub pod_lines {
             $start = $length = 0;
         }
         elsif ( $line =~ /\A=[a-zA-Z]/ && !$length ) {
-            $start = $count;
+
+            # Re-use iterator as line number.
+            $start = $i + 1;
         }
+
         if ($start) {
             $length++;
             $slop++ if ( $line =~ /\S/ );
         }
-        $count++;
     }
+
     push @return, [ $start - 1, $length ]
         if ( $start && $length );
+
     return \@return, $slop;
 }
 
