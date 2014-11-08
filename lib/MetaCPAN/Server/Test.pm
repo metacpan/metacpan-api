@@ -20,17 +20,7 @@ our @EXPORT = qw(
 
 BEGIN { $ENV{METACPAN_SERVER_CONFIG_LOCAL_SUFFIX} = 'testing'; }
 
-{
-    no warnings 'once';
-
-    # XXX: Why do we do this?
-    $FindBin::RealBin .= '/some';
-}
-
-my $app = require MetaCPAN::Server;
-
-subtest 'prepare server test data' => sub {
-
+sub _prepare_user_test_data {
     ok(
         my $user = MetaCPAN::Server->model('User::Account')->put(
             {
@@ -52,9 +42,37 @@ subtest 'prepare server test data' => sub {
         'put bot user'
     );
 
-};
+}
 
-sub app {$app}
+# Begin the load-order dance.
+
+my $app;
+
+sub _load_app {
+
+    # Delay loading.
+    $app ||= require MetaCPAN::Server;
+}
+
+my $did_user_data;
+
+sub prepare_user_test_data {
+
+    # Only needed once.
+    return if $did_user_data++;
+
+    _load_app();
+
+    subtest 'prepare user test data' => \&_prepare_user_test_data;
+}
+
+sub app {
+
+    # Make sure this is done before the app is used.
+    prepare_user_test_data();
+
+    return $app;
+}
 
 require MetaCPAN::Model;
 

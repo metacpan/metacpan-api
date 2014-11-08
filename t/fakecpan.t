@@ -19,6 +19,8 @@ use MetaCPAN::Script::Mapping;
 use MetaCPAN::Script::Release;
 use MetaCPAN::Script::Runner;
 use MetaCPAN::Script::Tickets;
+use MetaCPAN::Server::Test;
+
 use Module::Faker 0.015 ();    # Generates META.json.
 use Path::Class qw(dir file);
 
@@ -51,8 +53,6 @@ EOF
 
 Test::More::note(
     Test::More::explain( { 'ElasticSearch info' => $es->request } ) );
-
-# NOTE: Don't load MetaCPAN::Server::Test before doing this mapping
 
 my $config = MetaCPAN::Script::Runner->build_config;
 $config->{es} = $es;

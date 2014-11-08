@@ -3,7 +3,8 @@ use Test::Routine;
 use Test::More;
 use Try::Tiny;
 
-use MetaCPAN::Model;
+use MetaCPAN::Server::Test ();
+
 with qw(
     MetaCPAN::Tests::Extra
 );
@@ -43,8 +44,7 @@ has _model => (
 );
 
 sub _build__model {
-    MetaCPAN::Model->new(
-        es => ':' . ( $ENV{METACPAN_ES_TEST_PORT} ||= 9900 ) );
+    return MetaCPAN::Server::Test::model();
 }
 
 has index => (
