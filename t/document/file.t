@@ -29,6 +29,14 @@ my %stub = (
     }
 }
 
+sub test_attributes {
+    my ( $obj, $att ) = @_;
+    local $Test::Builder::Level = $Test::Builder::Level + 1;
+    foreach my $key ( sort keys %$att ) {
+        is_deeply $obj->$key, $att->{$key}, $key;
+    }
+}
+
 subtest 'basic' => sub {
     my $content = <<'END';
 package Foo;
@@ -79,8 +87,13 @@ END
     my $file = MetaCPAN::Document::File->new( %stub, content => \$content );
 
     is( $file->abstract,      undef );
-    is( $file->slop,          2 );
     is( $file->documentation, 'MyModule' );
+    test_attributes $file,
+        {
+        sloc      => 0,
+        slop      => 2,
+        pod_lines => [ [ 1, 3 ] ],
+        };
 };
 
 subtest 'script' => sub {
@@ -101,6 +114,12 @@ END
 
     is( $file->abstract,      'a command line tool' );
     is( $file->documentation, 'Script' );
+    test_attributes $file,
+        {
+        sloc      => 0,
+        slop      => 4,
+        pod_lines => [ [ 2, 7 ] ],
+        };
 };
 
 subtest 'test script' => sub {
@@ -142,6 +161,12 @@ END
     );
     is( $file->documentation, 'MOBY::Config.pm' );
     is( $file->level,         2 );
+    test_attributes $file,
+        {
+        sloc      => 1,
+        slop      => 7,
+        pod_lines => [ [ 2, 8 ], [ 12, 3 ] ],
+        };
 };
 
 subtest 'module below .../t/' => sub {
@@ -220,13 +245,22 @@ END
     is( $file->documentation, 'Perl6Attribute' );
     is( $file->abstract,
         'An example attribute metaclass for Perl 6 style attributes' );
+    test_attributes $file,
+        {
+        sloc      => 2,
+        slop      => 2,
+        pod_lines => [ [ 3, 3 ], ],
+        };
 };
 
 subtest 'pod after __DATA__' => sub {
+
     my $content = <<'END';
 package Foo;
 
 __DATA__
+
+some data
 
 =head1 NAME
 
@@ -256,6 +290,13 @@ END
     );
     is( $file->documentation, 'Foo', 'POD in __DATA__ section' );
     is( $file->description, 'hot stuff * Foo * Bar' );
+
+    test_attributes $file,
+        {
+        sloc      => 1,
+        slop      => 10,
+        pod_lines => [ [ 6, 19 ], ],
+        };
 };
 
 subtest 'no pod name, various folders' => sub {
@@ -294,6 +335,13 @@ END
                 . $folder
                 . ' folder' );
         is( $file->abstract, undef, 'abstract undef when NAME is missing' );
+
+        test_attributes $file,
+            {
+            sloc      => 1,
+            slop      => 8,
+            pod_lines => [ [ 2, 15 ], ],
+            };
     }
 };
 
