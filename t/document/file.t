@@ -345,4 +345,47 @@ END
     }
 };
 
+# https://metacpan.org/source/SMUELLER/SelfLoader-1.20/lib/SelfLoader.pm
+subtest 'pod with verbatim __DATA__' => sub {
+    my $content = <<'END';
+package Yo;
+
+sub name { 42 }
+
+=head1 Something
+
+some paragraph ..
+
+Fully qualified subroutine names are also supported. For example,
+
+   __DATA__
+   sub foo::bar {23}
+   package baz;
+   sub dob {32}
+
+will all be loaded correctly by the B<SelfLoader>, and the B<SelfLoader>
+will ensure that the packages 'foo' and 'baz' correctly have the
+B<SelfLoader> C<AUTOLOAD> method when the data after C<__DATA__> is first
+parsed.
+
+=cut
+
+"code after pod";
+
+END
+
+    my $file = MetaCPAN::Document::File->new(
+        %stub,
+        name       => 'Yo.pm',
+        content_cb => sub { \$content }
+    );
+
+    test_attributes $file,
+        {
+        sloc      => 3,
+        slop      => 12,
+        pod_lines => [ [ 4, 17 ], ],
+        };
+};
+
 done_testing;
