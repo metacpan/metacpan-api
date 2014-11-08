@@ -29,7 +29,7 @@ my %stub = (
     }
 }
 
-{
+subtest 'basic' => sub {
     my $content = <<'END';
 package Foo;
 use strict;
@@ -65,8 +65,9 @@ END
     is_deeply( $file->pod_lines, [ [ 3, 12 ], [ 18, 6 ] ] );
     is( $file->sloc, 3 );
     is( $file->slop, 11 );
-}
-{
+};
+
+subtest 'just pod' => sub {
     my $content = <<'END';
 
 =head1 NAME
@@ -80,8 +81,9 @@ END
     is( $file->abstract,      undef );
     is( $file->slop,          2 );
     is( $file->documentation, 'MyModule' );
-}
-{
+};
+
+subtest 'script' => sub {
     my $content = <<'END';
 #!/bin/perl
 
@@ -99,8 +101,9 @@ END
 
     is( $file->abstract,      'a command line tool' );
     is( $file->documentation, 'Script' );
-}
-{
+};
+
+subtest 'test script' => sub {
     my $content = <<'END';
 #$Id: Config.pm,v 1.5 2008/09/02 13:14:18 kawas Exp $
 
@@ -139,9 +142,9 @@ END
     );
     is( $file->documentation, 'MOBY::Config.pm' );
     is( $file->level,         2 );
-}
+};
 
-{
+subtest 'module below .../t/' => sub {
     my $file = MetaCPAN::Document::File->new(
         %stub,
         path   => 'foo/t/locker',
@@ -151,9 +154,9 @@ END
     $file->set_indexed( CPAN::Meta->new( { name => 'null', version => 0 } ) );
     is( $file->module->[0]->indexed,
         0, 'Module in test directory is not indexed' );
-}
+};
 
-{
+subtest 'pod name/package mismatch' => sub {
     my $content = <<'END';
 package
   Number::Phone::NANP::ASS;
@@ -196,9 +199,9 @@ END
     is_deeply( $file->pod_lines, [ [ 18, 7 ] ], 'correct pod_lines' );
     is( $file->module->[0]->version_numified,
         1.1, 'numified version has been calculated' );
-}
+};
 
-{
+subtest 'hidden package' => sub {
     my $content = <<'END';
 package # hide the package from PAUSE
     Perl6Attribute;
@@ -217,9 +220,9 @@ END
     is( $file->documentation, 'Perl6Attribute' );
     is( $file->abstract,
         'An example attribute metaclass for Perl 6 style attributes' );
-}
+};
 
-{
+subtest 'pod after __DATA__' => sub {
     my $content = <<'END';
 package Foo;
 
@@ -253,9 +256,9 @@ END
     );
     is( $file->documentation, 'Foo', 'POD in __DATA__ section' );
     is( $file->description, 'hot stuff * Foo * Bar' );
-}
+};
 
-{
+subtest 'no pod name, various folders' => sub {
     my $content = <<'END';
 package Foo::Bar::Baz;
 
@@ -292,6 +295,6 @@ END
                 . ' folder' );
         is( $file->abstract, undef, 'abstract undef when NAME is missing' );
     }
-}
+};
 
 done_testing;
