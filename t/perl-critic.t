@@ -59,17 +59,12 @@ my %skip = map { ( $_ => 1 ) } qw(
     lib/MetaCPAN/Server/Model/CPAN.pm
     lib/MetaCPAN/Server/Model/Source.pm
     lib/MetaCPAN/Server/QuerySanitizer.pm
-    lib/MetaCPAN/Server/Test.pm
     lib/MetaCPAN/Server/View/JSON.pm
     lib/MetaCPAN/Server/View/Pod.pm
     lib/MetaCPAN/Util.pm
     lib/Plack/Session/Store/ElasticSearch.pm
     t/document/module.t
     t/fakecpan.t
-    t/lib/MetaCPAN/Tests/Distribution.pm
-    t/lib/MetaCPAN/Tests/Extra.pm
-    t/lib/MetaCPAN/Tests/Model.pm
-    t/lib/MetaCPAN/Tests/Release.pm
     t/release/moose.t
     t/release/multiple-modules.t
     t/release/pm-PL.t

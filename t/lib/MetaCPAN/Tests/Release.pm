@@ -48,7 +48,7 @@ has version_numified => (
     is      => 'ro',
     isa     => 'Str',
     lazy    => 1,
-    default => sub { 'version'->parse( shift->version )->numify + 0 }
+    default => sub { 'version'->parse( shift->version )->numify + 0 },
 );
 
 has files => (
@@ -129,7 +129,7 @@ has archive => (
     is      => 'ro',
     isa     => 'Str',
     lazy    => 1,
-    default => sub { shift->name . '.tar.gz' }
+    default => sub { shift->name . '.tar.gz' },
 );
 
 has name => (
@@ -138,7 +138,7 @@ has name => (
     lazy    => 1,
     default => sub {
         my ($self) = @_;
-        $self->distribution . '-' . $self->version;
+        $self->distribution . q[-] . $self->version;
     },
 );
 

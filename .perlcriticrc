@@ -15,6 +15,9 @@ verbose = 11
 [CodeLayout::RequireTrailingCommas]
 severity = 5
 
+[TestingAndDebugging::RequireUseStrict]
+equivalent_modules = Test::Routine
+
 [ValuesAndExpressions::ProhibitEmptyQuotes]
 severity = 5
 

@@ -78,7 +78,7 @@ require MetaCPAN::Model;
 
 sub model {
     MetaCPAN::Model->new(
-        es => ':' . ( $ENV{METACPAN_ES_TEST_PORT} ||= 9900 ) );
+        es => q[:] . ( $ENV{METACPAN_ES_TEST_PORT} ||= 9900 ) );
 }
 
 1;
