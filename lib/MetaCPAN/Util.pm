@@ -92,9 +92,6 @@ sub pod_lines {
         elsif ( $line =~ /\A=[a-zA-Z]/ && !$length ) {
             $start = $count;
         }
-        elsif ( $line =~ /\A\s*__DATA__/ ) {
-            last;
-        }
         if ($start) {
             $length++;
             $slop++ if ( $line =~ /\S/ );
