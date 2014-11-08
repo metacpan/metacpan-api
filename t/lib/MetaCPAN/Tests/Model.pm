@@ -7,6 +7,7 @@ use MetaCPAN::Server::Test ();
 
 with qw(
     MetaCPAN::Tests::Extra
+    MetaCPAN::Tests::PSGI
 );
 
 around BUILDARGS => sub {
