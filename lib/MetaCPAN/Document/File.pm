@@ -383,19 +383,23 @@ has sloc => (
     lazy_build => 1,
 );
 
-# Copied from Perl::Metrics2::Plugin::Core
+# Metrics from Perl::Metrics2::Plugin::Core.
 sub _build_sloc {
     my $self = shift;
     return 0 unless ( $self->is_perl_file );
+
     my @content = split( "\n", ${ $self->content } );
     my $pods = 0;
+
+    # Use pod_lines data to remove pod content from string.
     map {
         splice( @content, $_->[0], $_->[1], map {''} 1 .. $_->[1] )
     } @{ $self->pod_lines };
+
     my $sloc = 0;
     while (@content) {
         my $line = shift @content;
-        last if ( $line =~ /^\s*__END__/s );
+        last if ( $line =~ /^\s*__(DATA|END)__/s );
         $sloc++ if ( $line !~ /^\s*#/ && $line =~ /\S/ );
     }
     return $sloc;
@@ -514,8 +518,8 @@ These attributes are not stored.
 
 =head2 content
 
-The content of the file. It is built by calling L</content_cb> and
-stripping the C<DATA> section for performance reasons.
+A scalar reference to the content of the file.
+Built by calling L</content_cb>.
 
 =cut
 
@@ -528,25 +532,11 @@ has content => (
 );
 
 sub _build_content {
-    my $self    = shift;
-    my @content = split( "\n", ${ $self->content_cb->() } || '' );
-    my $content = "";
-    my $in_data = 0;    # skip DATA section
-    while (@content) {
-        my $line = shift @content;
-        if ( $line =~ /^\s*__END__\s*$/ ) {
-            $in_data = 0;
-        }
-        elsif ( $line =~ /^\s*__DATA__\s*$/ ) {
-            $in_data++;
-        }
-        elsif ( $in_data && $line =~ /^=head1/ ) {
-            $in_data = 0;
-        }
-        next if ($in_data);
-        $content .= $line . "\n";
-    }
-    return \$content;
+    my $self = shift;
+
+    # NOTE: We used to remove the __DATA__ section "for performance reasons"
+    # however removing lines from the content will throw off pod_lines.
+    return $self->content_cb->();
 }
 
 =head2 content_cb
