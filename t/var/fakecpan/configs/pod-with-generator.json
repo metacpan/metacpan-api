@@ -1,0 +1,22 @@
+{
+  "name": "Pod-With-Generator",
+  "version": "1",
+  "abstract": "Pod file with generator in dist",
+  "provides": {
+    "Pod::With::Generator": {
+      "file": "lib/Pod/With/Generator.pm",
+      "version": "1"
+    }
+  },
+  "X_Module_Faker": {
+    "cpan_author": "BORISNAT",
+    "append": [ {
+        "file": "lib/Pod/With/Generator.pm",
+        "content": "# Module::Faker should prepend 3 lines above this\n\n=head1 NAME\n\nPod::With::Generator - this pod is generated\n\n=head1 Truth\n\nbut this is the real one!\n\n=cut\n"
+    },
+    {
+        "file": "config/doc_gen.pm",
+        "content": "# i generate the pods.\n\nset <<DOC;\n#\npackage Pod::With::Generator;\n\n=head1 NAME\n\nPod::With::Generator - not the real abstract\n\n=head1 Stuff\n#\nDOC\n"
+    } ]
+  }
+}

@@ -87,6 +87,14 @@ subtest set_associated_pod => sub {
         'Squirrel::Face', [qw( narf.pl README.pod )],
         'narf.pl', 'prefer .pl to README.pod',
     );
+
+    # This goes along with the Pod::With::Generator tests.
+    # Since file order is not reliable (there) we can't get a reliable failure
+    # so test here so that we can ensure the order.
+    test_associated_pod(
+        'Foo::Bar', [qw( a/b.pm x/Foo/Bar.pm lib/Foo/Bar.pm )],
+        'lib/Foo/Bar.pm', 'prefer lib/ with matching name to other files',
+    );
 };
 
 {
