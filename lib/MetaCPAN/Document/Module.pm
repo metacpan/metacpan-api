@@ -156,6 +156,9 @@ sub set_associated_pod {
     # FIXME: Why is $file passed if it isn't used?
     my ( $self, $file, $associated_pod ) = @_;
     return unless ( my $files = $associated_pod->{ $self->name } );
+
+    ( my $mod_path = $self->name ) =~ s{::}{/}g;
+
     my ($pod) = (
         #<<<
         # TODO: adjust score if all files are in root?
@@ -168,6 +171,11 @@ sub set_associated_pod {
                 # a duplicate of the main module pod (though sometimes it falls
                 # out of sync (which makes it even worse)).
                 $_->path =~ /^README\.pod$/i ? -10 :
+
+                # If the name of the package matches the name of the file,
+                $_->path =~ m!(^lib/)?\b${mod_path}.(pod|pm)$! ?
+                    # Score pod over pm, and boost (most points for 'lib' dir).
+                    ($1 ? 50 : 25) + $_pod_score{$2} :
 
                 # Sort files by extension: Foo.pod > Foo.pm > foo.pl.
                 $_->name =~ /\.(pod|pm|pl)/i ? $_pod_score{$1} :
