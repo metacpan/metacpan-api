@@ -182,9 +182,6 @@ sub set_associated_pod {
 
                 # Otherwise score unknown (near the bottom).
                 -1
-
-                # If that isn't sufficient we will probably need to
-                # actually compare the filename to the module name.
             ),
             $_ ]
          }
