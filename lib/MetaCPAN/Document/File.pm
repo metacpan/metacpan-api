@@ -81,8 +81,10 @@ sub _build_abstract {
 
 =head2 id
 
-Unique identifier of the release. Consists of the L</author>'s pauseid and
-the release L</name>. See L<ElasticSearchX::Model::Util/digest>.
+Unique identifier of the release.
+Consists of the L</author>'s pauseid, the release L</name>,
+and the file path.
+See L<ElasticSearchX::Model::Util/digest>.
 
 =cut
 
