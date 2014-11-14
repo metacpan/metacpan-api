@@ -13,6 +13,7 @@ with 'MetaCPAN::Server::Role::JSONP';
 sub index : Chained('/') : PathPart('diff') : CaptureArgs(0) {
 }
 
+# Diff two specific releases (/author/release/author/release).
 sub diff_releases : Chained('index') : PathPart('release') : Args(4) {
     my ( $self, $c, @path ) = @_;
     my $path1 = $c->model('Source')->path( $path[0], $path[1] );
@@ -43,6 +44,7 @@ sub diff_releases : Chained('index') : PathPart('release') : Args(4) {
     );
 }
 
+# Only one distribution name specified: Diff latest with previous release.
 sub release : Chained('index') : PathPart('release') : Args(1) {
     my ( $self, $c, $name ) = @_;
     my $release = eval {
@@ -57,6 +59,7 @@ sub release : Chained('index') : PathPart('release') : Args(1) {
         [ @$with{qw(author name)}, @$release{qw(author name)} ] );
 }
 
+# Diff two files (also works with directories).
 sub file : Chained('index') : PathPart('file') : Args(2) {
     my ( $self, $c, $source, $target ) = @_;
     $source

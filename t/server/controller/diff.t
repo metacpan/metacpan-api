@@ -11,7 +11,7 @@ use MetaCPAN::TestHelpers;
 
 test_psgi app, sub {
     my $cb = shift;
-    ok( my $res = $cb->( GET '/diff/release/Moose' ), "GET /diff/Moose" );
+    ok( my $res = $cb->( GET '/diff/release/Moose' ), 'GET /diff/dist' );
     is( $res->code, 200, "code 200" );
     ok( my $json = eval { decode_json( $res->content ) }, 'valid json' );
 
@@ -21,7 +21,7 @@ test_psgi app, sub {
     );
 
     ok( $res = $cb->( GET '/diff/release/DOY/Moose-0.01/DOY/Moose-0.02/' ),
-        "GET /diff/Moose/DOY..." );
+        'GET /diff/author/release/author/release' );
     is( $res->code, 200, "code 200" );
     ok( my $json2 = eval { decode_json( $res->content ) }, 'valid json' );
     is_deeply( $json, $json2, 'json matches with previous run' );
