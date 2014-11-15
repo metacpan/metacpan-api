@@ -62,26 +62,26 @@ sub release : Chained('index') : PathPart('release') : Args(1) {
 # Diff two files (also works with directories).
 sub file : Chained('index') : PathPart('file') : Args(2) {
     my ( $self, $c, $source, $target ) = @_;
-    $source
-        = eval { $c->model('CPAN::File')->inflate(0)->get($source)->{_source}; }
-        or $c->detach('/not_found');
-    $target
-        = eval { $c->model('CPAN::File')->inflate(0)->get($target)->{_source}; }
-        or $c->detach('/not_found');
+
+    my ( $source_args, $target_args )
+        = map { [ @$_{qw(author release path)} ] }
+        map {
+        my $file = $_;
+        eval { $c->model('CPAN::File')->inflate(0)->get($file)->{_source}; }
+            or $c->detach('/not_found');
+        } ( $source, $target );
 
     my $diff = MetaCPAN::Server::Diff->new(
         relative => $c->model('Source')->base_dir,
-        source =>
-            $c->model('Source')->path( @$source{qw(author release path)} ),
-        target =>
-            $c->model('Source')->path( @$target{qw(author release path)} ),
-        git => $c->config->{git}
+        source   => $c->model('Source')->path(@$source_args),
+        target   => $c->model('Source')->path(@$target_args),
+        git      => $c->config->{git}
     );
 
     $c->stash(
         {
-            source => join( '/', @$source{qw(author release path)} ),
-            target => join( '/', @$target{qw(author release path)} ),
+            source     => join( q[/], @$source_args ),
+            target     => join( q[/], @$target_args ),
             statistics => $diff->structured,
             diff       => $diff->raw,
         }
