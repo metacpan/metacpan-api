@@ -9,32 +9,35 @@ use lib 't/lib';
 
 use MetaCPAN::TestHelpers;
 
+sub get_json_ok {
+    my ( $cb, $url, $desc ) = @_;
+    ok( my $res = $cb->( GET $url ), $desc || "GET $url" );
+    is( $res->code, 200, 'code 200' );
+    return decode_json_ok($res);
+}
+
 test_psgi app, sub {
     my $cb = shift;
-    ok( my $res = $cb->( GET '/diff/release/Moose' ), 'GET /diff/dist' );
-    is( $res->code, 200, "code 200" );
-    ok( my $json = eval { decode_json( $res->content ) }, 'valid json' );
+    my $json = get_json_ok( $cb, '/diff/release/Moose', 'GET /diff/dist' );
 
     diffed_file_like( $json, 'DOY/Moose-0.01', 'DOY/Moose-0.02',
         'Changes' =>
             qq|-2012-01-01  0.01  First release - codename 'M\xc3\xbcnchen'\n|,
     );
 
-    ok( $res = $cb->( GET '/diff/release/DOY/Moose-0.01/DOY/Moose-0.02/' ),
-        'GET /diff/author/release/author/release' );
-    is( $res->code, 200, "code 200" );
-    ok( my $json2 = eval { decode_json( $res->content ) }, 'valid json' );
+    my $json2 = get_json_ok(
+        $cb,
+        '/diff/release/DOY/Moose-0.01/DOY/Moose-0.02/',
+        'GET /diff/author/release/author/release'
+    );
+
     is_deeply( $json, $json2, 'json matches with previous run' );
 
-    ok(
-        $res = $cb->(
-            GET
-                '/diff/file/8yTixXQGpkbPsMBXKvDoJV4Qkg8/dPgxn7qq0wm1l_UO1aIMyQWFJPw'
-        ),
+    $json = get_json_ok(
+        $cb,
+        '/diff/file/8yTixXQGpkbPsMBXKvDoJV4Qkg8/dPgxn7qq0wm1l_UO1aIMyQWFJPw',
         'GET diff Moose.pm'
     );
-    is( $res->code, 200, "code 200" );
-    ok( $json = eval { decode_json( $res->content ) }, 'valid json' );
 
     diffed_file_like(
         $json,
@@ -44,6 +47,7 @@ test_psgi app, sub {
 -our \$VERSION = '0.01';
 +our \$VERSION = '0.02';
 DIFF
+        { type => 'file' },
     );
 
     diff_releases(
@@ -75,11 +79,17 @@ done_testing;
 
 sub diff_releases {
     my ( $cb, $r1, $r2, $files ) = @_;
+    my $url = "/diff/release/$r1/$r2";
+    subtest $url, sub {
+        do_release_diff( $cb, $url, $r1, $r2, $files );
+    };
+}
+
+sub do_release_diff {
+    my ( $cb, $url, $r1, $r2, $files ) = @_;
     $files ||= {};
 
-    my $res = $cb->( GET "/diff/release/$r1/$r2" );
-    is( $res->code, 200, '200 OK' );
-    ok( my $json = try { decode_json( $res->content ) }, 'valid json' );
+    my $json = get_json_ok( $cb, $url );
 
     while ( my ( $file, $re ) = each %$files ) {
         diffed_file_like( $json, $r1, $r2, $file, $re );
@@ -89,7 +99,19 @@ sub diff_releases {
 }
 
 sub diffed_file_like {
-    my ( $json, $r1, $r2, $file, $like ) = @_;
+    my ( $json, $r1, $r2, $file, $like, $opts ) = @_;
+    $opts ||= {};
+    $opts->{type} ||= 'dir';
+
+    my %pairs = ( source => $r1, target => $r2 );
+    while ( my ( $which, $dir ) = each %pairs ) {
+
+        # For release (dir) diff, source/target will be release (dir).
+        # For file diff they will start with dir but have the file on the end.
+        is $json->{$which},
+            ( $dir . ( $opts->{type} eq 'file' ? "/$file" : q[] ) ),
+            "diff $which";
+    }
 
     my $found = 0;
     foreach my $stat ( @{ $json->{statistics} } ) {
