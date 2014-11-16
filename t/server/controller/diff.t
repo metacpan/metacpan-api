@@ -9,34 +9,63 @@ use lib 't/lib';
 
 use MetaCPAN::TestHelpers;
 
-sub get_json_ok {
+sub get_ok {
     my ( $cb, $url, $desc ) = @_;
     ok( my $res = $cb->( GET $url ), $desc || "GET $url" );
     is( $res->code, 200, 'code 200' );
-    return decode_json_ok($res);
+    return $res;
+}
+
+sub get_json_ok {
+    return decode_json_ok( get_ok(@_) );
 }
 
 test_psgi app, sub {
     my $cb = shift;
-    my $json = get_json_ok( $cb, '/diff/release/Moose', 'GET /diff/dist' );
+
+    my $dist_url = '/diff/release/Moose';
+    my $json = get_json_ok( $cb, $dist_url, 'GET /diff/dist' );
 
     diffed_file_like( $json, 'DOY/Moose-0.01', 'DOY/Moose-0.02',
         'Changes' =>
             qq|-2012-01-01  0.01  First release - codename 'M\xc3\xbcnchen'\n|,
     );
 
-    my $json2 = get_json_ok(
+    my $plain = plain_text_diff_ok(
         $cb,
-        '/diff/release/DOY/Moose-0.01/DOY/Moose-0.02/',
-        'GET /diff/author/release/author/release'
+        plain_text_url($dist_url),
+        'plain text dist diff',
+    );
+
+    like(
+        $plain,
+
+        # Encoding will be mangled, so relax the test slightly.
+        qr|^-2012-01-01  0.01  First release - codename '.+?'$|m,
+        'found expected diff test on whole line'
+    );
+
+    my $release_url = '/diff/release/DOY/Moose-0.01/DOY/Moose-0.02/';
+    my $json2       = get_json_ok( $cb, $release_url,
+        'GET /diff/author/release/author/release' );
+
+    my $plain2 = plain_text_diff_ok(
+        $cb,
+        plain_text_url($release_url),
+        'plain text release diff',
     );
 
     is_deeply( $json, $json2, 'json matches with previous run' );
+    is $plain, $plain2, 'plain text diffs are the same';
 
-    $json = get_json_ok(
+    my $file_url
+        = '/diff/file/8yTixXQGpkbPsMBXKvDoJV4Qkg8/dPgxn7qq0wm1l_UO1aIMyQWFJPw';
+    $json = get_json_ok( $cb, $file_url, 'GET diff Moose.pm' );
+
+    $plain = plain_text_diff_ok(
         $cb,
-        '/diff/file/8yTixXQGpkbPsMBXKvDoJV4Qkg8/dPgxn7qq0wm1l_UO1aIMyQWFJPw',
-        'GET diff Moose.pm'
+        plain_text_url($file_url),
+        'plain text file url'
     );
 
     diffed_file_like(
@@ -49,6 +78,12 @@ test_psgi app, sub {
 DIFF
         { type => 'file' },
     );
+
+    foreach my $chars ( [ q[-], 1 ], [ q[+], 2 ] ) {
+        like $plain,
+            qr/^\Q$chars->[0]\Eour \$VERSION = '0.0\Q$chars->[1]\E';$/m,
+            'diff has insert and delete on whole lines';
+    }
 
     diff_releases(
         $cb,
@@ -147,4 +182,14 @@ sub diffed_file_name_eq {
     # $dist x 2: once for the extraction dir,
     # once b/c Module::Faker makes good tars that have a root dir
     return $str eq qq{$root/$dist/$dist/$file};
+}
+
+sub plain_text_url {
+    return $_[0] . '?content-type=text/plain';
+}
+
+sub plain_text_diff_ok {
+    my $plain = get_ok(@_)->content;
+    like $plain, qr|\Adiff|, 'plain text format is not json';
+    return $plain;
 }
