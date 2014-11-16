@@ -44,12 +44,12 @@ has relative => (
 
 sub _build_raw {
     my $self = shift;
-    my $raw  = "";
+    my $raw  = q[];
     run3(
         [
             $self->git,
             qw(diff --no-renames -z --no-index -u --no-color --numstat),
-            "--relative=" . $self->relative,
+            '--relative=' . $self->relative,
             $self->source,
             $self->target
         ],
@@ -80,7 +80,7 @@ sub _build_structured {
 
     while ( my $line = shift @lines ) {
         my ( $insertions, $deletions ) = split( /\t/, $line );
-        my $segment = "";
+        my $segment = q[];
         while ( my $diff = shift @raw ) {
 
             # only run it through if non-ascii bytes are found

@@ -34,7 +34,7 @@ our %metacpan_scripts = (
 sub _build_clean_query {
     my ($self) = @_;
     my $search = $self->query
-        or return undef;
+        or return;
 
     _scan_hash_tree($search);
 

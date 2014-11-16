@@ -46,7 +46,6 @@ my %skip = map { ( $_ => 1 ) } qw(
     lib/MetaCPAN/Script/Watcher.pm
     lib/MetaCPAN/Server/Controller.pm
     lib/MetaCPAN/Server/Controller/Changes.pm
-    lib/MetaCPAN/Server/Controller/Diff.pm
     lib/MetaCPAN/Server/Controller/File.pm
     lib/MetaCPAN/Server/Controller/Login.pm
     lib/MetaCPAN/Server/Controller/Login/PAUSE.pm
@@ -55,10 +54,8 @@ my %skip = map { ( $_ => 1 ) } qw(
     lib/MetaCPAN/Server/Controller/Search/Autocomplete.pm
     lib/MetaCPAN/Server/Controller/Source.pm
     lib/MetaCPAN/Server/Controller/User/Favorite.pm
-    lib/MetaCPAN/Server/Diff.pm
     lib/MetaCPAN/Server/Model/CPAN.pm
     lib/MetaCPAN/Server/Model/Source.pm
-    lib/MetaCPAN/Server/QuerySanitizer.pm
     lib/MetaCPAN/Server/View/JSON.pm
     lib/MetaCPAN/Server/View/Pod.pm
     lib/MetaCPAN/Util.pm
