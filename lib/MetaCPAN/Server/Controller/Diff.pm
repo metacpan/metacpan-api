@@ -5,6 +5,8 @@ use warnings;
 
 use MetaCPAN::Server::Diff;
 use Moose;
+use Try::Tiny;
+use namespace::autoclean;
 
 BEGIN { extends 'MetaCPAN::Server::Controller' }
 
@@ -16,47 +18,29 @@ sub index : Chained('/') : PathPart('diff') : CaptureArgs(0) {
 # Diff two specific releases (/author/release/author/release).
 sub diff_releases : Chained('index') : PathPart('release') : Args(4) {
     my ( $self, $c, @path ) = @_;
-    my $path1 = $c->model('Source')->path( $path[0], $path[1] );
-    my $path2 = $c->model('Source')->path( $path[2], $path[3] );
 
-    my $diff = MetaCPAN::Server::Diff->new(
-        source => $path1,
-        target => $path2,
-        git    => $c->config->{git},
-
-        # use same dir prefix as source and target
-        relative => $c->model('Source')->base_dir,
-    );
-
-    my $ct = eval { $c->req->preferred_content_type };
-    if ( $ct && $ct eq 'text/plain' ) {
-        $c->res->content_type('text/plain');
-        $c->res->body( $diff->raw );
-        $c->detach;
-    }
-
-    $c->stash(
-        {
-            source     => join( '/', $path[0], $path[1] ),
-            target     => join( '/', $path[2], $path[3] ),
-            statistics => $diff->structured,
-        }
-    );
+    # Use author/release as top dirs for diff.
+    $self->_do_diff( $c, [ $path[0], $path[1] ], [ $path[2], $path[3] ] );
 }
 
 # Only one distribution name specified: Diff latest with previous release.
 sub release : Chained('index') : PathPart('release') : Args(1) {
     my ( $self, $c, $name ) = @_;
-    my $release = eval {
-        $c->model('CPAN::Release')->inflate(0)->find($name)->{_source};
+
+    my ( $latest, $previous );
+    try {
+        $latest
+            = $c->model('CPAN::Release')->inflate(0)->find($name)->{_source};
+        $previous
+            = $c->model('CPAN::Release')->inflate(0)->predecessor($name)
+            ->{_source};
     }
-        or $c->detach('/not_found');
-    my $with = eval {
-        $c->model('CPAN::Release')->inflate(0)->predecessor($name)->{_source};
-    }
-        or $c->detach('/not_found');
-    $c->forward( 'diff_releases',
-        [ @$with{qw(author name)}, @$release{qw(author name)} ] );
+    catch {
+        $c->detach('/not_found');
+    };
+
+    $self->_do_diff( $c,
+        ( map { [ @$_{qw(author name)} ] } $previous, $latest ) );
 }
 
 # Diff two files (also works with directories).
@@ -67,23 +51,41 @@ sub file : Chained('index') : PathPart('file') : Args(2) {
         = map { [ @$_{qw(author release path)} ] }
         map {
         my $file = $_;
-        eval { $c->model('CPAN::File')->inflate(0)->get($file)->{_source}; }
+        try { $c->model('CPAN::File')->inflate(0)->get($file)->{_source}; }
             or $c->detach('/not_found');
         } ( $source, $target );
 
+    $self->_do_diff( $c, $source_args, $target_args, 1 );
+}
+
+sub _do_diff {
+    my ( $self, $c, $source, $target, $include_raw ) = @_;
+
     my $diff = MetaCPAN::Server::Diff->new(
+        source => $c->model('Source')->path(@$source),
+        target => $c->model('Source')->path(@$target),
+
+        # use same dir prefix as source and target
         relative => $c->model('Source')->base_dir,
-        source   => $c->model('Source')->path(@$source_args),
-        target   => $c->model('Source')->path(@$target_args),
         git      => $c->config->{git}
     );
 
+    # As of Catalyst::TraitFor::Request::REST 1.17 this method will error
+    # if request contains no content-type hints (undef not a Str).
+    my $ct = try { $c->req->preferred_content_type };
+
+    if ( $ct && $ct eq 'text/plain' ) {
+        $c->res->content_type('text/plain');
+        $c->res->body( $diff->raw );
+        $c->detach;
+    }
+
     $c->stash(
         {
-            source     => join( q[/], @$source_args ),
-            target     => join( q[/], @$target_args ),
+            source     => join( q[/], @$source ),
+            target     => join( q[/], @$target ),
             statistics => $diff->structured,
-            diff       => $diff->raw,
+            $include_raw ? ( diff => $diff->raw ) : (),
         }
     );
 }
