@@ -12,7 +12,7 @@ my %tests = (
     '/module/Moose?fields=documentation,name' => 200,
     '/module/DOESNEXIST'                      => 404,
     '/module/DOES/Not/Exist.pm'               => 404,
-    '/module/DOY/Moose-0.01/lib/Moose.pm'     => 200
+    '/module/DOY/Moose-0.01/lib/Moose.pm'     => 200,
 );
 
 test_psgi app, sub {

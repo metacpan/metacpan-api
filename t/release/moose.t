@@ -50,7 +50,7 @@ ok( my $moose = $idx->type('file')->find('Moose'), 'find Moose module' );
 
 is( $moose->name, 'Moose.pm', 'defined in Moose.pm' );
 
-is( $moose->module->[0]->associated_pod, "DOY/Moose-0.02/lib/Moose.pm" );
+is( $moose->module->[0]->associated_pod, 'DOY/Moose-0.02/lib/Moose.pm' );
 
 my $signature;
 $signature = $idx->type('file')->filter(
@@ -88,14 +88,14 @@ $signature = $idx->type('file')->filter(
 ok( !$signature, 'SIGNATURE is not pod' );
 
 {
-    my $files  = $idx->type("file");
-    my $module = $files->history( module => "Moose" )->raw->all;
-    my $file   = $files->history( file => "Moose", "lib/Moose.pm" )->raw->all;
+    my $files  = $idx->type('file');
+    my $module = $files->history( module => 'Moose' )->raw->all;
+    my $file   = $files->history( file => 'Moose', 'lib/Moose.pm' )->raw->all;
     is_deeply( $module->{hits}, $file->{hits},
-        "history of Moose and lib/Moose.pm match" );
-    is( $module->{hits}->{total}, 2, "two hits" );
-    my $pod = $files->history( documentation => "Moose::FAQ" )->raw->all;
-    is( $pod->{hits}->{total}, 1, "one hit" );
+        'history of Moose and lib/Moose.pm match' );
+    is( $module->{hits}->{total}, 2, 'two hits' );
+    my $pod = $files->history( documentation => 'Moose::FAQ' )->raw->all;
+    is( $pod->{hits}->{total}, 1, 'one hit' );
 }
 
 done_testing;

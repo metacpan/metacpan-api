@@ -50,7 +50,7 @@ sub check_search_results {
     $json = $json->{hits}{hits} if $json->{hits};
     is scalar @$json, @$rdeps, 'got expected number of releases';
     is_deeply [
-        sort map { join '-', @{ $_->{_source} }{qw(distribution version)} }
+        sort map { join q[-], @{ $_->{_source} }{qw(distribution version)} }
             @$json
         ],
         $rdeps,
@@ -91,12 +91,12 @@ test_psgi app, sub {
     {
         ok(
             my $res = $cb->(
-                POST "/search/reverse_dependencies/Multiple-Modules",
+                POST '/search/reverse_dependencies/Multiple-Modules',
                 Content => encode_json(
                     { query => { match_all => {} }, size => 1 }
                 )
             ),
-            "POST"
+            'POST'
         );
         my $json = decode_json_ok($res);
         is( $json->{hits}->{total},            3, 'total is 3' );
@@ -108,7 +108,7 @@ test_psgi app, sub {
         ok(
             my $res = $cb->(
                 POST
-                    "/search/reverse_dependencies/Multiple-Modules?fields=release.distribution",
+                    '/search/reverse_dependencies/Multiple-Modules?fields=release.distribution',
                 Content => encode_json(
                     {
                         query  => { match_all => {} },
@@ -121,7 +121,7 @@ test_psgi app, sub {
                     }
                 )
             ),
-            "POST"
+            'POST'
         );
         my $json = decode_json_ok($res);
         is( $json->{hits}->{total}, 1, 'total is 1' );

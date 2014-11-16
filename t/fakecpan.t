@@ -4,11 +4,12 @@ use warnings;
 
 use lib 't/lib';
 
-use Test::More 0.96 ()
-    ;    # require version for subtests but let Test::Most do the ->import()
+# Require version for subtests but let Test::Most do the ->import()
+use Test::More 0.96 ();
 use Test::Most;
-use Test::Aggregate::Nested 0.371 ()
-    ;    # don't warn about Parse::PMFile's exit()
+
+# Don't warn about Parse::PMFile's exit()
+use Test::Aggregate::Nested 0.371 ();
 
 use CPAN::Faker 0.010;
 use Config::General;
@@ -73,7 +74,7 @@ foreach my $test_dir ( $config->{cpan}, $config->{source_base} ) {
 }
 
 my $mod_faker = 'Module::Faker::Dist::WithPerl';
-eval "require $mod_faker" or die $@;
+eval "require $mod_faker" or die $@;    ## no critic (StringyEval)
 
 my $cpan = CPAN::Faker->new(
     {
@@ -122,9 +123,9 @@ ok(
     MetaCPAN::Script::Tickets->new_with_options(
         {
             %$config,
-            rt_summary_url => "file://"
+            rt_summary_url => 'file://'
                 . file( $config->{cpan}, 'bugs.tsv' )->absolute,
-            github_issues => "file://"
+            github_issues => 'file://'
                 . dir(qw(t var fakecpan github))->absolute
                 . '/%s/%s.json?per_page=100',
         }

@@ -87,15 +87,15 @@ ok(
         {
             bugtracker => {
                 web =>
-                    "https://github.com/AlexBio/Dist-Zilla-Plugin-GitHub/issues"
+                    'https://github.com/AlexBio/Dist-Zilla-Plugin-GitHub/issues'
             },
             homepage =>
-                "http://search.cpan.org/dist/Dist-Zilla-Plugin-GitHub/",
+                'http://search.cpan.org/dist/Dist-Zilla-Plugin-GitHub/',
             repository => {
-                type => "git",
+                type => 'git',
                 url =>
-                    "git://github.com/AlexBio/Dist-Zilla-Plugin-GitHub.git",
-                web => "https://github.com/AlexBio/Dist-Zilla-Plugin-GitHub"
+                    'git://github.com/AlexBio/Dist-Zilla-Plugin-GitHub.git',
+                web => 'https://github.com/AlexBio/Dist-Zilla-Plugin-GitHub'
             }
         }
     ),

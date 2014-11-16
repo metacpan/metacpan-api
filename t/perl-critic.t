@@ -63,27 +63,6 @@ my %skip = map { ( $_ => 1 ) } qw(
     lib/MetaCPAN/Server/View/Pod.pm
     lib/MetaCPAN/Util.pm
     lib/Plack/Session/Store/ElasticSearch.pm
-    t/document/module.t
-    t/fakecpan.t
-    t/release/moose.t
-    t/release/multiple-modules.t
-    t/release/pm-PL.t
-    t/release/prefer-meta-json.t
-    t/server/controller/author.t
-    t/server/controller/changes.t
-    t/server/controller/diff.t
-    t/server/controller/file.t
-    t/server/controller/login/pause.t
-    t/server/controller/module.t
-    t/server/controller/pod.t
-    t/server/controller/scroll.t
-    t/server/controller/search/reverse_dependencies.t
-    t/server/controller/user/favorite.t
-    t/server/controller/user/turing.t
-    t/server/not_found.t
-    t/server/sanitize_query.t
-    t/types.t
-    t/util.t
 );
 
 my @files = grep { !$skip{$_} }

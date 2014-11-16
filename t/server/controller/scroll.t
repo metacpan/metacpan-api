@@ -34,21 +34,21 @@ sub scroll_start {
 }
 
 sub scroll_url_param {
-    my $scroll_id = shift || '';
+    my $scroll_id = shift || q[];
     return GET "/_search/scroll/$scroll_id?scroll=5m";
 }
 
 sub scroll_post_body {
-    my $scroll_id = shift || '';
+    my $scroll_id = shift || q[];
 
     # Use text/plain to avoid Catalyst trying to process the body.
-    return POST "/_search/scroll?scroll=5m",
+    return POST '/_search/scroll?scroll=5m',
         Content_type => 'text/plain',
         Content      => $scroll_id;
 }
 
 sub scroll_query_string {
-    my $scroll_id = shift || '';
+    my $scroll_id = shift || q[];
     return GET "/_search/scroll/?scroll_id=$scroll_id&scroll=5m";
 }
 

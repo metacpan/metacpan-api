@@ -1,4 +1,5 @@
-package Captcha::Mock;
+package    ## no critic (Package)
+    Captcha::Mock;
 
 use strict;
 use warnings;
@@ -28,28 +29,28 @@ test_psgi app, sub {
             POST '/user/turing?access_token=bot',
             Content => encode_json(
                 {
-                    challenge => "foo",
+                    challenge => 'foo',
                     answer    => 0
                 }
             )
         ),
         'post challenge'
     );
-    is( $res->code, 400, "bad request" );
+    is( $res->code, 400, 'bad request' );
 
     ok(
         $res = $cb->(
             POST '/user/turing?access_token=bot',
             Content => encode_json(
                 {
-                    challenge => "foo",
+                    challenge => 'foo',
                     answer    => 1,
                 }
             )
         ),
         'post challenge'
     );
-    is( $res->code, 200, "successful request" );
+    is( $res->code, 200, 'successful request' );
     my $user = decode_json_ok($res);
     ok( $user->{looks_human},    'looks human' );
     ok( $user->{passed_captcha}, 'passed captcha' );

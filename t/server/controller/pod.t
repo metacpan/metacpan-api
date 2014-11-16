@@ -39,7 +39,7 @@ test_psgi app, sub {
         elsif ( $v == 200 ) {
             like( $res->content, qr/Moose - abstract/, 'NAME section' );
             ok( $res = $cb->( GET "$k?content-type=text/plain" ),
-                "GET plain" );
+                'GET plain' );
             is(
                 $res->header('content-type'),
                 'text/plain; charset=UTF-8',
@@ -47,10 +47,10 @@ test_psgi app, sub {
             );
         }
         elsif ( $v == 404 ) {
-            like( $res->content, qr/Not found/, "404 correct error" );
+            like( $res->content, qr/Not found/, '404 correct error' );
         }
 
-        my $ct = $k =~ /Moose[.]pm$/ ? '&content-type=text/x-pod' : '';
+        my $ct = $k =~ /Moose[.]pm$/ ? '&content-type=text/x-pod' : q[];
         ok( $res = $cb->( GET "$k?callback=foo$ct" ),
             "GET $k with callback" );
         is( $res->code, $v, "code $v" );
@@ -88,20 +88,20 @@ test_psgi app, sub {
     my $res;
     my $path = '/pod/BadPod';
     ok( $res = $cb->( GET $path), "GET $path" );
-    is( $res->code, 200, "code 200" );
+    is( $res->code, 200, 'code 200' );
     unlike( $res->content, qr/<div[^>]*id="pod-errors"/,
         'no POD errors section' );
 
     $path = '/pod/BadPod?show_errors=1';
     ok( $res = $cb->( GET $path), "GET $path" );
-    is( $res->code, 200, "code 200" );
+    is( $res->code, 200, 'code 200' );
     like( $res->content, qr/<div[^>]*id="pod-errors"/,
         'got POD errors section' );
 
     my @err = $res->content =~ m{<dd.*?>(.*?)</dd>}sg;
-    is( scalar(@err), 2, "two parse errors listed " );
-    like( $err[0], qr/=head\b/, "first error mentions =head" );
-    like( $err[1], qr/C&lt;/,   "first error mentions C< ... >" );
+    is( scalar(@err), 2, 'two parse errors listed ' );
+    like( $err[0], qr/=head\b/, 'first error mentions =head' );
+    like( $err[1], qr/C&lt;/,   'first error mentions C< ... >' );
 };
 
 done_testing;

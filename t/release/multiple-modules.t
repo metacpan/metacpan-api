@@ -22,8 +22,8 @@ is( $release->author, 'LOCAL', 'author ok' );
 is_deeply(
     [ sort @{ $release->provides } ],
     [
-        sort "Multiple::Modules", "Multiple::Modules::A",
-        "Multiple::Modules::A2",  "Multiple::Modules::B"
+        sort 'Multiple::Modules', 'Multiple::Modules::A',
+        'Multiple::Modules::A2',  'Multiple::Modules::B'
     ],
     'provides ok'
 );

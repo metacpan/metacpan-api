@@ -10,7 +10,7 @@ my %tests = (
     '/author'            => 200,
     '/author/MO'         => 200,
     '/author/DOESNEXIST' => 404,
-    '/author/_mapping'   => 200
+    '/author/_mapping'   => 200,
 );
 
 test_psgi app, sub {
@@ -30,7 +30,7 @@ test_psgi app, sub {
             if ( $k eq '/author/_mapping' );
     }
 
-    ok( my $res = $cb->( GET '/author/MO?callback=jsonp' ), "GET jsonp" );
+    ok( my $res = $cb->( GET '/author/MO?callback=jsonp' ), 'GET jsonp' );
     is(
         $res->header('content-type'),
         'text/javascript; charset=UTF-8',
@@ -46,13 +46,13 @@ test_psgi app, sub {
             #'Content-type' => 'application/json',
             Content => '{"query":{"match_all":{}},"size":0}'
         ),
-        "POST _search"
+        'POST _search'
     );
     my $json = decode_json_ok($res);
     is( @{ $json->{hits}->{hits} }, 0, '0 results' );
 
     ok( $res = $cb->( GET '/author/DOY?join=release' ),
-        "GET /author/DOY?join=release" );
+        'GET /author/DOY?join=release' );
     $json = decode_json_ok($res);
     is( @{ $json->{release}->{hits}->{hits} }, 2, 'joined 2 releases' );
 
@@ -106,7 +106,7 @@ test_psgi app, sub {
         'POST /author/_search?join=release with query body'
     );
     $json = decode_json_ok($res);
-    is( @{ $json->{hits}->{hits} }, 1, "1 hit" );
+    is( @{ $json->{hits}->{hits} }, 1, '1 hit' );
     is_deeply( $json->{hits}->{hits}->[0]->{_source},
         $doy, 'same result as direct get' );
 

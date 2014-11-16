@@ -59,7 +59,7 @@ is( $pm->module->[0]->version,
         is(
             $content,
             "#! perl-000\n\nour \$VERSION = '4.56';\n\n__DATA__\npackage less::sense;",
-            ".pm.PL file unmodified",
+            '.pm.PL file unmodified',
         );
     };
 }

@@ -29,7 +29,7 @@ my %errors = (
             query => {
                 custom_score => {
                     query  => { who => 'cares' },
-                    script => "anything",
+                    script => 'anything',
                 },
             },
             filter => { dont => 'care' },

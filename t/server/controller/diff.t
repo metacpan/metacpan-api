@@ -31,7 +31,7 @@ test_psgi app, sub {
             GET
                 '/diff/file/8yTixXQGpkbPsMBXKvDoJV4Qkg8/dPgxn7qq0wm1l_UO1aIMyQWFJPw'
         ),
-        "GET diff Moose.pm"
+        'GET diff Moose.pm'
     );
     is( $res->code, 200, "code 200" );
     ok( $json = eval { decode_json( $res->content ) }, 'valid json' );

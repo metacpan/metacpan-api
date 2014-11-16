@@ -24,16 +24,16 @@ test_psgi app, sub {
                 }
             )
         ),
-        "POST favorite"
+        'POST favorite'
     );
     is( $res->code, 201, 'status created' );
-    ok( my $location = $res->header('location'), "location header set" );
+    ok( my $location = $res->header('location'), 'location header set' );
     ok( $res = $cb->( GET $location ), "GET $location" );
     is( $res->code, 200, 'found' );
     my $json = decode_json_ok($res);
     is( $json->{user}, $user->{id}, 'user is ' . $user->{id} );
-    ok( $res = $cb->( DELETE "/user/favorite/Moose?access_token=testing" ),
-        "DELETE /user/favorite/MO/Moose" );
+    ok( $res = $cb->( DELETE '/user/favorite/Moose?access_token=testing' ),
+        'DELETE /user/favorite/MO/Moose' );
     is( $res->code, 200, 'status ok' );
     ok( $res = $cb->( GET "$location?access_token=testing" ),
         "GET $location" );
@@ -54,7 +54,7 @@ test_psgi app, sub {
                 }
             )
         ),
-        "POST favorite"
+        'POST favorite'
     );
     decode_json_ok($res);
     is( $res->code, 403, 'forbidden' );

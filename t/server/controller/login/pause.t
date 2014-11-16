@@ -14,8 +14,8 @@ test_psgi app, sub {
     my $cb = shift;
 
     test_pause_auth( $cb, 'RWSTAUNER',       'Trouble Maker' );
-    test_pause_auth( $cb, 'NEVERHEARDOFHIM', "Who?", fail => 1 );
-    test_pause_auth( $cb, 'BORISNAT',        "Лось и Белка" );
+    test_pause_auth( $cb, 'NEVERHEARDOFHIM', 'Who?', fail => 1 );
+    test_pause_auth( $cb, 'BORISNAT',        'Лось и Белка' );
 };
 
 done_testing;
@@ -70,5 +70,6 @@ sub test_pause_auth {
 
 sub _u {
     my $s = $_[0];
+    ## no critic (Bitwise)
     return is_utf8($s) ? encode( 'UTF-8', $s, FB_CROAK | LEAVE_SRC ) : $s;
 }

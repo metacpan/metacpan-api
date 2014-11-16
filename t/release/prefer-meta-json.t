@@ -18,8 +18,8 @@ is( $release->distribution, 'Prefer-Meta-JSON',     'distribution ok' );
 is( $release->author,       'LOCAL',                'author ok' );
 ok( $release->first, 'Release is first' );
 
-is( ref $release->metadata, "HASH", "comes with metadata in a hashref" );
-is( $release->metadata->{"meta-spec"}{version}, 2, "meta_spec version is 2" );
+is( ref $release->metadata, 'HASH', 'comes with metadata in a hashref' );
+is( $release->metadata->{'meta-spec'}{version}, 2, 'meta_spec version is 2' );
 
 {
     my @files = $idx->type('file')->filter(

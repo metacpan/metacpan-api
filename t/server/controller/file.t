@@ -11,7 +11,7 @@ my %tests = (
     '/file/8yTixXQGpkbPsMBXKvDoJV4Qkg8' => 200,
     '/file/DOESNEXIST'                  => 404,
     '/file/DOES/Not/Exist.pm'           => 404,
-    '/file/DOY/Moose-0.01/lib/Moose.pm' => 200
+    '/file/DOY/Moose-0.01/lib/Moose.pm' => 200,
 );
 
 test_psgi app, sub {

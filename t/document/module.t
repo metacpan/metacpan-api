@@ -33,7 +33,7 @@ subtest hide_from_pause => sub {
         [ 'Pkg::InsideStr' => qq["\n  package Pkg::InsideStr;\n"] ],
 
         [ 'No::Comment'    => qq[# package No::Comment;\n] ],
-        [ 'No::Different'  => qq[package No::Different::Pkg;] ],
+        [ 'No::Different'  => q[package No::Different::Pkg;] ],
         [ 'No::PkgWithNum' => qq["\npackage No::PkgWithNumv2.3;\n"] ],
         [ 'No::CrazyChars' => qq["\npackage No::CrazyChars\[0\];\n"] ],
         )
