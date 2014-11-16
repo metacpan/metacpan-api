@@ -1,7 +1,9 @@
 use strict;
 use warnings;
 
+use lib 't/lib';
 use MetaCPAN::Server::Test;
+use MetaCPAN::TestHelpers;
 use Test::More;
 
 test_psgi app, sub {
@@ -11,7 +13,7 @@ test_psgi app, sub {
     {
         ok( my $res = $cb->( GET '/search/autocomplete?q=Multiple::Modu' ),
             'GET' );
-        ok( my $json = eval { decode_json( $res->content ) }, 'valid json' );
+        my $json = decode_json_ok($res);
 
         my $got = [ map { $_->{fields}{documentation} }
                 @{ $json->{hits}{hits} } ];

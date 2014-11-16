@@ -1,7 +1,9 @@
 use strict;
 use warnings;
 
+use lib 't/lib';
 use MetaCPAN::Server::Test;
+use MetaCPAN::TestHelpers;
 use Test::More;
 
 test_psgi app, sub {
@@ -58,7 +60,7 @@ sub req_json {
     is( $res->code, $code, "HTTP $code" )
         or diag Test::More::explain($res);
 
-    ok( my $json = eval { decode_json( $res->content ) }, 'valid json' );
+    my $json = decode_json_ok($res);
     return $json;
 }
 

@@ -1,7 +1,9 @@
 use strict;
 use warnings;
 
+use lib 't/lib';
 use MetaCPAN::Server::Test;
+use MetaCPAN::TestHelpers;
 use Test::More;
 
 my %tests = (
@@ -20,7 +22,7 @@ test_psgi app, sub {
             'application/json; charset=utf-8',
             'Content-type'
         );
-        ok( my $json = eval { decode_json( $res->content ) }, 'valid json' );
+        my $json = decode_json_ok($res);
     }
 };
 

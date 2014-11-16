@@ -4,12 +4,19 @@ use warnings;
 package    # no_index
     MetaCPAN::TestHelpers;
 
+use JSON;
+use Try::Tiny;
 use Test::More;
 use Test::Routine::Util;
 
 use base 'Exporter';
 our @EXPORT = qw(
+    try catch finally
+
     multiline_diag hex_escape
+    encode_json
+    decode_json_ok
+
     run_tests
     test_distribution
     test_release
@@ -43,6 +50,14 @@ sub hex_escape {
     my $s = shift;
     $s =~ s/([^a-zA-Z0-9[:punct:] \t\n])/sprintf("\\x{%x}", ord $1)/ge;
     $s;
+}
+
+sub decode_json_ok {
+    my ($json) = @_;
+    $json = $json->content
+        if try { $json->isa('HTTP::Response') };
+    ok( my $obj = try { decode_json($json) }, 'valid json' );
+    return $obj;
 }
 
 sub test_distribution {

@@ -1,7 +1,10 @@
 use strict;
 use warnings;
 
+use lib 't/lib';
+
 use MetaCPAN::Server::Test;
+use MetaCPAN::TestHelpers;
 use Test::More;
 use URI;
 
@@ -64,8 +67,7 @@ test_psgi app, sub {
             is $res->code, 200, $req->method . ' 200 OK'
                 or diag explain $res;
 
-            ok( my $json = eval { decode_json( $res->content ) },
-                'got json' );
+            my $json = decode_json_ok($res);
 
             is_deeply $json->{hits}{hits}->[0]->{fields},
                 { pauselen2 => 18 }, 'script_fields via metacpan_script'
@@ -103,7 +105,7 @@ sub test_bad_request {
 
         is $res->code, 403, 'Not allowed';
 
-        ok( my $json = eval { decode_json( $res->content ) }, 'valid json' )
+        my $json = decode_json_ok($res)
             or diag explain $res;
 
         is_deeply $json, { message => "$error_message" },

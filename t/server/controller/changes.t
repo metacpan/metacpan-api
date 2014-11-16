@@ -1,7 +1,9 @@
 use strict;
 use warnings;
 
+use lib 't/lib';
 use MetaCPAN::Server::Test;
+use MetaCPAN::TestHelpers;
 use Test::More;
 
 my @tests = (
@@ -54,7 +56,7 @@ test_psgi app, sub {
         my ( $path, $code, $name, $content ) = @{$test};
 
         my $res = get_ok( $cb, $path, $code );
-        my $json = json_ok($res);
+        my $json = decode_json_ok($res);
 
         next unless $res->code == 200;
 
@@ -63,7 +65,7 @@ test_psgi app, sub {
 
         my @fields = qw(release name content);
         $res = get_ok( $cb, "$path?fields=" . join( ',', @fields ), 200 );
-        $json = json_ok($res);
+        $json = decode_json_ok($res);
 
         is_deeply [ sort keys %$json ], [ sort @fields ],
             'only requested fields';
@@ -91,10 +93,4 @@ sub get_ok {
         'Content-type'
     );
     return $res;
-}
-
-sub json_ok {
-    my $res = shift;
-    ok( my $json = eval { decode_json( $res->content ) }, 'valid json' );
-    return $json;
 }

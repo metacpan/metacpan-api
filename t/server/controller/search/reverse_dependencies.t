@@ -1,7 +1,9 @@
 use strict;
 use warnings;
 
+use lib 't/lib';
 use MetaCPAN::Server::Test;
+use MetaCPAN::TestHelpers;
 use Test::More;
 
 my %tests = (
@@ -42,7 +44,7 @@ sub check_search_results {
     );
     is( $res->code, $code, "code $code" )
         or return;
-    ok( my $json = eval { decode_json( $res->content ) }, 'valid json' );
+    my $json = decode_json_ok($res);
     return unless $code == 200;
 
     $json = $json->{hits}{hits} if $json->{hits};
@@ -96,7 +98,7 @@ test_psgi app, sub {
             ),
             "POST"
         );
-        ok( my $json = eval { decode_json( $res->content ) }, 'valid json' );
+        my $json = decode_json_ok($res);
         is( $json->{hits}->{total},            3, 'total is 3' );
         is( scalar @{ $json->{hits}->{hits} }, 1, 'only 1 received' );
     }
@@ -121,7 +123,7 @@ test_psgi app, sub {
             ),
             "POST"
         );
-        ok( my $json = eval { decode_json( $res->content ) }, 'valid json' );
+        my $json = decode_json_ok($res);
         is( $json->{hits}->{total}, 1, 'total is 1' );
         is( $json->{hits}->{hits}->[0]->{fields}->{distribution},
             'Multiple-Modules-RDeps-A', 'filter worked' );

@@ -1,7 +1,9 @@
 use strict;
 use warnings;
 
+use lib 't/lib';
 use MetaCPAN::Server::Test;
+use MetaCPAN::TestHelpers;
 use Test::More;
 
 my %tests = (
@@ -21,7 +23,7 @@ test_psgi app, sub {
             'application/json; charset=utf-8',
             'Content-type'
         );
-        ok( my $json = eval { decode_json( $res->content ) }, 'valid json' );
+        my $json = decode_json_ok($res);
         ok( $json->{pauseid} eq 'MO', 'pauseid is MO' )
             if ( $k eq '/author/MO' );
         ok( ref $json->{author} eq 'HASH', '_mapping' )
@@ -46,12 +48,12 @@ test_psgi app, sub {
         ),
         "POST _search"
     );
-    ok( my $json = eval { decode_json( $res->content ) }, 'valid json' );
+    my $json = decode_json_ok($res);
     is( @{ $json->{hits}->{hits} }, 0, '0 results' );
 
     ok( $res = $cb->( GET '/author/DOY?join=release' ),
         "GET /author/DOY?join=release" );
-    ok( $json = eval { decode_json( $res->content ) }, 'valid json' );
+    $json = decode_json_ok($res);
     is( @{ $json->{release}->{hits}->{hits} }, 2, 'joined 2 releases' );
 
     ok(
@@ -68,7 +70,7 @@ test_psgi app, sub {
         ),
         'POST /author/DOY?join=release with query body',
     );
-    ok( $json = eval { decode_json( $res->content ) }, 'valid json' );
+    $json = decode_json_ok($res);
     is( @{ $json->{release}->{hits}->{hits} }, 1, 'joined 1 release' );
     is( $json->{release}->{hits}->{hits}->[0]->{_source}->{status},
         'latest', '1 release has status latest' );
@@ -103,7 +105,7 @@ test_psgi app, sub {
         ),
         'POST /author/_search?join=release with query body'
     );
-    ok( $json = eval { decode_json( $res->content ) }, 'valid json' );
+    $json = decode_json_ok($res);
     is( @{ $json->{hits}->{hits} }, 1, "1 hit" );
     is_deeply( $json->{hits}->{hits}->[0]->{_source},
         $doy, 'same result as direct get' );

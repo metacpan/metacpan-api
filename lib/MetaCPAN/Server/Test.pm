@@ -4,18 +4,14 @@ use strict;
 use warnings;
 
 use HTTP::Request::Common qw(POST GET DELETE);
-use JSON::XS;
 use Plack::Test;
 use Test::More 0.96;
-use Try::Tiny;
 
 use base 'Exporter';
 our @EXPORT = qw(
     POST GET DELETE
     model
     test_psgi app
-    encode_json decode_json
-    try catch finally
 );
 
 BEGIN { $ENV{METACPAN_SERVER_CONFIG_LOCAL_SUFFIX} = 'testing'; }

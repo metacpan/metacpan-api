@@ -2,9 +2,10 @@ use strict;
 use warnings;
 use utf8;
 
+use lib 't/lib';
 use Encode qw( encode is_utf8 FB_CROAK LEAVE_SRC );
-use JSON qw( decode_json );
 use MetaCPAN::Server::Test;
+use MetaCPAN::TestHelpers;
 use Test::More;
 
 BEGIN { $ENV{EMAIL_SENDER_TRANSPORT} = 'Test' }
@@ -29,7 +30,7 @@ sub test_pause_auth {
             = Email::Sender::Simple->default_transport->shift_deliveries;
         my $email = $delivery->{email};
 
-        my $body = decode_json( $res->content );
+        my $body = decode_json_ok($res);
         is $res->code, 200, 'GET ok';
 
         if ( $args{fail} ) {
