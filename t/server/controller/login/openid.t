@@ -20,6 +20,14 @@ with qw(
 my $openid_server = Test::OpenID::Server->new;
 my $url           = $openid_server->started_ok('start server');
 
+sub fix_localhost_uri {
+    my $uri = shift;
+
+    # The dev vm make it localhost, but on travis it becomes `.localdomain`.
+    $uri =~ s{^(\w+://localhost)\.localdomain([:/])}{$1$2};
+    $uri;
+}
+
 test authorization => sub {
     my $self = shift;
 
@@ -34,7 +42,7 @@ test authorization => sub {
     ok( $self->request( GET '/login/openid?' . $uri_params->query ),
         'login with test URL' );
 
-    like $self->redirect_uri,
+    like fix_localhost_uri( $self->redirect_uri ),
         qr{\Q$url\E/openid.server}, 'get correct OpenID server url';
 
     $self->follow_redirect;
