@@ -168,6 +168,21 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 6.30
       IO::Zlib 0
       UNIVERSAL::require 0
+  Archive-Extract-0.72
+    pathname: B/BI/BINGOS/Archive-Extract-0.72.tar.gz
+    provides:
+      Archive::Extract 0.72
+    requirements:
+      ExtUtils::MakeMaker 0
+      File::Basename 0
+      File::Path 0
+      File::Spec 0.82
+      IPC::Cmd 0.64
+      Locale::Maketext::Simple 0
+      Module::Load::Conditional 0.04
+      Params::Check 0.07
+      Test::More 0
+      if 0
   Archive-Zip-1.37
     pathname: P/PH/PHRED/Archive-Zip-1.37.tar.gz
     provides:
@@ -413,17 +428,6 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 6.30
       Module::Metadata 0
       strict 0
-      warnings 0
-  CPAN-Meta-Requirements-2.125
-    pathname: D/DA/DAGOLDEN/CPAN-Meta-Requirements-2.125.tar.gz
-    provides:
-      CPAN::Meta::Requirements 2.125
-    requirements:
-      Carp 0
-      ExtUtils::MakeMaker 6.17
-      Scalar::Util 0
-      strict 0
-      version 0.77
       warnings 0
   CPAN-Meta-YAML-0.012
     pathname: D/DA/DAGOLDEN/CPAN-Meta-YAML-0.012.tar.gz
@@ -2991,44 +2995,10 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       Mail::Address 0
+      Net::DNS 0
       Scalar::Util 0
       Test::More 0
       perl 5.006
-  Encode-2.62
-    pathname: D/DA/DANKOGAI/Encode-2.62.tar.gz
-    provides:
-      Encode 2.62
-      Encode::Alias 2.18
-      Encode::Byte 2.04
-      Encode::CJKConstants 2.02
-      Encode::CN 2.03
-      Encode::CN::HZ 2.07
-      Encode::Config 2.05
-      Encode::EBCDIC 2.02
-      Encode::Encoder 2.03
-      Encode::Encoding 2.07
-      Encode::GSM0338 2.05
-      Encode::Guess 2.06
-      Encode::Internal 2.62
-      Encode::JP 2.04
-      Encode::JP::H2Z 2.02
-      Encode::JP::JIS7 2.05
-      Encode::KR 2.03
-      Encode::KR::2022_KR 2.03
-      Encode::MIME::Header 2.15
-      Encode::MIME::Header::ISO_2022_JP 1.04
-      Encode::MIME::Name 1.01
-      Encode::Symbol 2.02
-      Encode::TW 2.03
-      Encode::UTF_EBCDIC 2.62
-      Encode::Unicode 2.09
-      Encode::Unicode::UTF7 2.08
-      Encode::utf8 2.62
-      encoding 2.12
-    requirements:
-      Exporter 5.57
-      ExtUtils::MakeMaker 0
-      parent 0.221
   Encode-Locale-1.03
     pathname: G/GA/GAAS/Encode-Locale-1.03.tar.gz
     provides:
@@ -3948,15 +3918,6 @@ DISTRIBUTIONS
       File::Temp 0
       JSON::PP 2.27202
       perl 5.006
-  JSON-PP-2.27203
-    pathname: M/MA/MAKAMAKA/JSON-PP-2.27203.tar.gz
-    provides:
-      JSON::PP 2.27203
-      JSON::PP::Boolean 2.27203
-      JSON::PP::IncrParser 2.27203
-    requirements:
-      ExtUtils::MakeMaker 0
-      Test::More 0
   JSON-XS-3.01
     pathname: M/ML/MLEHMANN/JSON-XS-3.01.tar.gz
     provides:
@@ -5835,11 +5796,12 @@ DISTRIBUTIONS
       Parse::PMFile 0.29
     requirements:
       Dumpvalue 0
-      ExtUtils::MakeMaker 0
       ExtUtils::MakeMaker::CPANfile 0.06
       File::Spec 0
+      File::Temp 0.19
       JSON::PP 2.00
       Safe 0
+      Test::More 0.88
       version 0.83
   Path-Class-0.33
     pathname: K/KW/KWILLIAMS/Path-Class-0.33.tar.gz
@@ -5875,7 +5837,7 @@ DISTRIBUTIONS
       Carp 0
       Class::Tiny 0.010
       ExtUtils::MakeMaker 6.30
-      Path::IsDev v0.2.2
+      Path::IsDev 0
       Path::IsDev::Object 0
       Path::Tiny 0.038
       Scalar::Util 0
@@ -5950,25 +5912,6 @@ DISTRIBUTIONS
       overload 0
       strict 0
       warnings 0
-  PathTools-3.47
-    pathname: S/SM/SMUELLER/PathTools-3.47.tar.gz
-    provides:
-      Cwd 3.47
-      File::Spec 3.47
-      File::Spec::Cygwin 3.47
-      File::Spec::Epoc 3.47
-      File::Spec::Functions 3.47
-      File::Spec::Mac 3.47
-      File::Spec::OS2 3.47
-      File::Spec::Unix 3.47
-      File::Spec::VMS 3.47
-      File::Spec::Win32 3.47
-    requirements:
-      Carp 0
-      ExtUtils::MakeMaker 0
-      File::Basename 0
-      Scalar::Util 0
-      Test 0
   Perl-Critic-1.121
     pathname: T/TH/THALJEF/Perl-Critic-1.121.tar.gz
     provides:
@@ -6601,54 +6544,6 @@ DISTRIBUTIONS
       Text::Wrap 2001.0929
       parent 0
       perl 5.006
-  Pod-Simple-3.28
-    pathname: D/DW/DWHEELER/Pod-Simple-3.28.tar.gz
-    provides:
-      Pod::Simple 3.28
-      Pod::Simple::BlackBox 3.28
-      Pod::Simple::Checker 3.28
-      Pod::Simple::Debug 3.28
-      Pod::Simple::DumpAsText 3.28
-      Pod::Simple::DumpAsXML 3.28
-      Pod::Simple::HTML 3.28
-      Pod::Simple::HTMLBatch 3.28
-      Pod::Simple::HTMLLegacy 5.01
-      Pod::Simple::LinkSection 3.28
-      Pod::Simple::Methody 3.28
-      Pod::Simple::Progress 3.28
-      Pod::Simple::PullParser 3.28
-      Pod::Simple::PullParserEndToken 3.28
-      Pod::Simple::PullParserStartToken 3.28
-      Pod::Simple::PullParserTextToken 3.28
-      Pod::Simple::PullParserToken 3.28
-      Pod::Simple::RTF 3.28
-      Pod::Simple::Search 3.28
-      Pod::Simple::SimpleTree 3.28
-      Pod::Simple::Text 3.28
-      Pod::Simple::TextContent 3.28
-      Pod::Simple::TiedOutFH 3.28
-      Pod::Simple::Transcode 3.28
-      Pod::Simple::TranscodeDumb 3.28
-      Pod::Simple::TranscodeSmart 3.28
-      Pod::Simple::XHTML 3.28
-      Pod::Simple::XMLOutStream 3.28
-    requirements:
-      Carp 0
-      Config 0
-      Cwd 0
-      ExtUtils::MakeMaker 0
-      File::Basename 0
-      File::Find 0
-      File::Spec 0
-      Pod::Escapes 1.04
-      Symbol 0
-      Test 1.25
-      Test::More 0
-      Text::Wrap 98.112902
-      constant 0
-      integer 0
-      overload 0
-      strict 0
   Pod-Spell-1.15
     pathname: X/XE/XENO/Pod-Spell-1.15.tar.gz
     provides:
@@ -6770,12 +6665,6 @@ DISTRIBUTIONS
       Test::More 0.88
       Test::Warn 0
       perl 5.006
-  Safe-2.35
-    pathname: R/RG/RGARCIA/Safe-2.35.tar.gz
-    provides:
-      Safe 2.35
-    requirements:
-      ExtUtils::MakeMaker 0
   Safe-Isa-1.000004
     pathname: E/ET/ETHER/Safe-Isa-1.000004.tar.gz
     provides:
@@ -8064,17 +7953,3 @@ DISTRIBUTIONS
       bareword::filehandles 0
       indirect 0
       multidimensional 0
-  version-0.9908
-    pathname: J/JP/JPEACOCK/version-0.9908.tar.gz
-    provides:
-      charstar 0.9908
-      version 0.9908
-      version::regex 0.9908
-      version::vpp 0.9908
-      version::vxs 0.9908
-    requirements:
-      ExtUtils::MakeMaker 6.17
-      File::Temp 0.13
-      Test::More 0.45
-      parent 0.221
-      perl 5.006002
