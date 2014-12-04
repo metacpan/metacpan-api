@@ -15,6 +15,10 @@ sub digest {
     return $digest;
 }
 
+sub generate_sid {
+    Digest::SHA1::sha1_hex( rand() . $$ . {} . time );
+}
+
 sub numify_version {
     my $version = shift;
     $version = fix_version($version);

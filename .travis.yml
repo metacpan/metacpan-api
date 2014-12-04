@@ -35,6 +35,7 @@ before_install:
 
   - cpanm -n Devel::Cover::Report::Coveralls
   - cpanm -n Carton
+  - sudo apt-get install libgmp-dev
 
   # Carton refuses to update Safe.pm to the version specified in the cpanfile and the
   # version that's core in 5.16 is too old (it fails to work with Devel::Cover).
@@ -42,7 +43,6 @@ before_install:
 
 install:
   - 'carton install `test "${TRAVIS_PERL_VERSION}" = "${DEPLOYMENT_PERL_VERSION}" && echo " --deployment"`'
-
 
 before_script:
   # Show status info for ES to verify that it's working, what version, etc.
