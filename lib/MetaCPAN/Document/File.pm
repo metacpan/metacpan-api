@@ -615,16 +615,21 @@ sub is_pod_file {
     shift->name =~ /\.pod$/i;
 }
 
-=head2 is_in_test_directory
+=head2 is_in_excluded_directory
 
-Returns true if the file is below a t directory.
+Returns true if the file is below an excluded directory.
 
 =cut
 
-sub is_in_test_directory {
-    my $self = shift;
-    my @parts = split m{/}, $self->path;
-    return any { $_ eq 't' } @parts;
+sub is_in_excluded_directory {
+    my $self     = shift;
+    my @excluded = qw[t inc local];
+    my @parts    = split m{/}, $self->path;
+    return any {
+        my $part = $_;
+        any { $_ eq $part } @excluded;
+    }
+    @parts;
 }
 
 =head2 add_module
@@ -664,7 +669,7 @@ does not include any modules, the L</indexed> property is true.
 sub set_indexed {
     my ( $self, $meta ) = @_;
 
-    if ( $self->is_in_test_directory() ) {
+    if ( $self->is_in_excluded_directory() ) {
         foreach my $mod ( @{ $self->module } ) {
             $mod->indexed(0);
         }
