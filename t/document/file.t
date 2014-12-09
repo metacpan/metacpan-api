@@ -13,19 +13,32 @@ my %stub = (
 );
 
 {
-    my @test_paths     = qw( t/whomp foo/t/bar cuppa/t );
-    my @non_test_paths = qw( foo/bart/shorts tit/mouse say/wat );
+    my @excluded_paths = qw(
+        t/whomp
+        foo/t/bar
+        cuppa/t
+        conv/inc/ing
+        buy/local/beer
+    );
 
-    foreach my $path (@test_paths) {
+    my @non_excluded_paths = qw(
+        foo/bart/shorts
+        tit/mouse
+        say/wat
+        wince/inducing/module
+        not/locally/made
+    );
+
+    foreach my $path (@excluded_paths) {
         my $file = MetaCPAN::Document::File->new( %stub, path => $path );
-        my $msg = "$path is in a test directory";
-        ok( $file->is_in_test_directory(), $msg );
+        my $msg = "$path is in an excluded directory";
+        ok( $file->is_in_excluded_directory(), $msg );
     }
 
-    foreach my $path (@non_test_paths) {
+    foreach my $path (@non_excluded_paths) {
         my $file = MetaCPAN::Document::File->new( %stub, path => $path );
-        my $msg = "$path is not in a test directory";
-        ok( !$file->is_in_test_directory(), $msg );
+        my $msg = "$path is not in an excluded directory";
+        ok( !$file->is_in_excluded_directory(), $msg );
     }
 }
 
