@@ -988,7 +988,7 @@ sub autocomplete {
                 { term   => { 'file.status'     => 'latest' } },
             ]
         }
-        )->sort( [ '_score', 'documentation' ] );
+        )->sort( [ 'documentation', '_score' ] );
 }
 
 __PACKAGE__->meta->make_immutable;
