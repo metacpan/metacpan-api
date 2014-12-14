@@ -349,13 +349,16 @@ sub _build_pod {
     # want in our pod text.
 
     $content =~ s/
-        ^=[a-zA-Z][a-zA-Z0-9]* # looks like pod
+        # Pod::Simple::parse_string_document() "supports \r, \n ,\r\n"...
+        (\A|\r|\r\n|\n)        # beginning of line
+
+        =[a-zA-Z][a-zA-Z0-9]*  # looks like pod
         (?!                    # but followed by something that isn't pod:
               [a-zA-Z0-9]      # more pod chars (the star won't be greedy enough)
             | \s               # whitespace ("=head1 NAME\n")
             | $                # end of line ("=item\n"
         )
-    //mgx;
+    //gx;
 
     my $text = "";
     $parser->output_string( \$text );

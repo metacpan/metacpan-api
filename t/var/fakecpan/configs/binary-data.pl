@@ -32,7 +32,8 @@ BORK\0\0
 not pod
 \0
 
-=he\x50\x00\x7b
+=he\x50\x00\x7b;\x{0d}=Ddhé\x{01}UÕÌ
+
 EOF
     },
     {
