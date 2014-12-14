@@ -2,6 +2,7 @@ package MetaCPAN::Tests::Release;
 use Test::Routine;
 use Test::More;
 use HTTP::Request::Common;
+use List::Util ();
 use version;
 
 with qw(
@@ -78,6 +79,13 @@ sub file_content {
                 ->content;
         }
     );
+}
+
+sub file_by_path {
+    my ( $self, $path ) = @_;
+    my $file = List::Util::first { $_->path eq $path } @{ $self->files };
+    ok $file, "found file '$path'";
+    return $file;
 }
 
 has module_files => (
