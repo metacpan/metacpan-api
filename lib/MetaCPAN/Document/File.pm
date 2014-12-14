@@ -337,6 +337,9 @@ sub _build_pod {
     return \'' unless ( $self->is_perl_file );
     my $parser = Pod::Text->new( sentence => 0, width => 78 );
 
+    # We don't need to index pod errors.
+    $parser->no_errata_section(1);
+
     my $text = "";
     $parser->output_string( \$text );
     $parser->parse_string_document( ${ $self->content } );
