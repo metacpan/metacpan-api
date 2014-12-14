@@ -345,26 +345,39 @@ sub _build_pod {
 
     # The pod parser is very liberal and will "start" a pod document when it
     # sees /^=[a-zA-Z]/ even though it might be binary like /^=F\0?\{/.
-    # So strip out any lines that might match but are not lines we'd actually
-    # want in our pod text.
+    # So munge any lines that might match but are not usual pod directives
+    # that people would use (we don't need to index non-regular pod).
+    # Also see the test and comments in t/document/file.t for how
+    # bizarre constructs are handled.
 
     $content =~ s/
         # Pod::Simple::parse_string_document() "supports \r, \n ,\r\n"...
-        (\A|\r|\r\n|\n)        # beginning of line
+        (?:
+            \A|\r|\r\n|\n)     # beginning of line
+        \K                     # (keep those characters)
 
+        (
         =[a-zA-Z][a-zA-Z0-9]*  # looks like pod
         (?!                    # but followed by something that isn't pod:
               [a-zA-Z0-9]      # more pod chars (the star won't be greedy enough)
-            | \s               # whitespace ("=head1 NAME\n")
-            | $                # end of line ("=item\n"
+            | \s               # whitespace ("=head1 NAME\n", "=item\n")
+            | \Z               # end of line or end of doc
         )
-    //gx;
+        )
+
+    # Prefix (to hide from Pod parser) instead of removing.
+    /\0$1/gx;
 
     my $text = "";
     $parser->output_string( \$text );
     $parser->parse_string_document($content);
     $text =~ s/\s+/ /g;
     $text =~ s/ \z//;
+
+    # Remove any markers we put in the text.
+    # Should we remove other non-regular bytes that may come from the source?
+    $text =~ s/\0//g;
+
     return \$text;
 }
 

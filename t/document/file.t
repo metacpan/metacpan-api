@@ -433,4 +433,75 @@ END
         };
 };
 
+subtest 'pod intermixed with non-pod gibberish' => sub {
+
+    # This is totally made up in an attempt to see how we handle gibberish.
+    # The decisions of the handling are open to discussion.
+
+    my $badpod = <<BADPOD;
+some\r=nonpod=ahem
+
+=moreC<=notpod>
+
+=head1[but no space]
+BADPOD
+
+    my $content = <<END;
+package Yo;
+
+print <<OUTSIDE_OF_POD;
+
+$badpod
+
+OUTSIDE_OF_POD
+
+=head1 Start-Pod
+
+$badpod
+
+last-word.
+
+=cut
+
+"code after pod";
+
+END
+
+    my $file = MetaCPAN::Document::File->new(
+        %stub,
+        name       => 'Yo.pm',
+        content_cb => sub { \$content }
+    );
+
+    test_attributes $file, {
+        sloc      => 7,
+        slop      => 6,
+        pod_lines => [ [ 13, 12 ], ],
+
+# What *should* this parse to?
+# * No pod before "Start-Pod".
+# * The /^some/ line starts with "some" so the whole line is just text.
+# ** Pod::Simple will catch the /\r=[a-z]/ and treat it as a directive:
+# *** We probably don't want to remove the line start chars (/\r?\n?/)
+#     (or we'll throw off lines/blanks/etc...).
+# *** If we keep the "\r" but remove the fake directive,
+#     the "\r" will touch the "=ahem" and the pod document will *start*
+#     and we'll get lots of text before the pod should start.
+# *** So keep everything but mark them so Pod::Simple will skip them.
+# ** The "\r" will count as "\s" and get squeezed into a single space.
+# * So if /^=moreC/ is kept the <notpod> will retain the C.
+# * When Pod::Simple sees /^head1\[/ it will start the pod document but
+#   it won't be a heading, it will just be text (along with everything after)
+#   which obviously was not the intention of the author.  So as long as
+#   the author made a mistake and needs to fix pod:
+# ** In the code, if we hide the "invalid" pod then we won't get the whole rest
+#    of the file being erroneously treated as pod.
+# ** Inside the pod, if we left it alone, Pod::Simple would just dump it as
+#    text.  If we mark it, the same thing will happen.
+
+        pod =>
+            q{Start-Pod some =nonpod=ahem =more"=notpod" =head1[but no space] last-word.},
+    };
+};
+
 done_testing;
