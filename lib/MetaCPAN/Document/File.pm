@@ -341,6 +341,7 @@ sub _build_pod {
     $parser->output_string( \$text );
     $parser->parse_string_document( ${ $self->content } );
     $text =~ s/\s+/ /g;
+    $text =~ s/ \z//;
     return \$text;
 }
 
