@@ -188,13 +188,17 @@ END
     );
     is( $file->documentation, 'MOBY::Config.pm' );
     is( $file->level,         2 );
-    test_attributes $file,
-        {
+    test_attributes $file, {
         sloc      => 1,
         slop      => 7,
         pod_lines => [ [ 2, 8 ], [ 12, 3 ] ],
-        pod       => q[NAME MOBY::Config.pm - An object B<containing> information about how to get access to teh Moby databases, resources, etc. from the mobycentral.config file USAGE],
-        };
+
+   # I don't know the original intent of the pod but here are my observations:
+   # * The `=for html` region has nothing in it.
+   # * Podchecker considers it erroneous to have verbatim in the NAME section.
+        pod =>
+            q[NAME MOBY::Config.pm - An object B<containing> information about how to get access to teh Moby databases, resources, etc. from the mobycentral.config file USAGE],
+    };
 };
 
 subtest 'module below .../t/' => sub {
