@@ -96,7 +96,9 @@ sub pod_lines {
                 if ( $start && $length );
             $start = $length = 0;
         }
-        elsif ( $line =~ /\A=[a-zA-Z]/ && !$length ) {
+
+      # Match lines that actually look like valid pod: "=pod\n" or "=pod x\n".
+        elsif ( $line =~ /^=[a-zA-Z][a-zA-Z0-9]*(?:\s+|$)/ && !$length ) {
 
             # Re-use iterator as line number.
             $start = $i + 1;

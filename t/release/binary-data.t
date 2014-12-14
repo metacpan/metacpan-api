@@ -5,7 +5,6 @@ use warnings;
 use lib 't/lib';
 use MetaCPAN::TestHelpers;
 
-local $TODO = "don't treat binary as pod";
 test_release(
     {
         name       => 'Binary-Data-0.01',

@@ -335,14 +335,31 @@ has pod => (
 sub _build_pod {
     my $self = shift;
     return \'' unless ( $self->is_perl_file );
+
     my $parser = Pod::Text->new( sentence => 0, width => 78 );
 
     # We don't need to index pod errors.
     $parser->no_errata_section(1);
 
+    my $content = ${ $self->content };
+
+    # The pod parser is very liberal and will "start" a pod document when it
+    # sees /^=[a-zA-Z]/ even though it might be binary like /^=F\0?\{/.
+    # So strip out any lines that might match but are not lines we'd actually
+    # want in our pod text.
+
+    $content =~ s/
+        ^=[a-zA-Z][a-zA-Z0-9]* # looks like pod
+        (?!                    # but followed by something that isn't pod:
+              [a-zA-Z0-9]      # more pod chars (the star won't be greedy enough)
+            | \s               # whitespace ("=head1 NAME\n")
+            | $                # end of line ("=item\n"
+        )
+    //mgx;
+
     my $text = "";
     $parser->output_string( \$text );
-    $parser->parse_string_document( ${ $self->content } );
+    $parser->parse_string_document($content);
     $text =~ s/\s+/ /g;
     $text =~ s/ \z//;
     return \$text;
