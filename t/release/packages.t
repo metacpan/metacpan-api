@@ -43,9 +43,15 @@ test_release(
         },
         extra_tests => sub {
             my $self    = shift;
-            my $content = $self->file_content('lib/Packages/BOM.pm');
+            my $path    = 'lib/Packages/BOM.pm';
+            my $content = $self->file_content($path);
             like $content, qr/\A\xef\xbb\xbfpackage Packages::BOM;\n/,
                 'Packages::BOM module starts with UTF-8 BOM';
+
+            my $file = $self->file_by_path($path);
+            is ${ $file->pod },
+                q[NAME Packages::BOM - package in a file with a BOM],
+                'pod text';
         },
     },
     'Test Packages release and its modules',

@@ -36,6 +36,9 @@ ok( $release->first, 'Release is first' );
 
     is( $indexed->name,       'Documentation::Hide', 'module name ok' );
     is( $file->documentation, 'Documentation::Hide', 'documentation ok' );
+
+    is ${ $file->pod },
+        q[NAME Documentation::Hide::Internal - abstract], 'pod text';
 }
 
 {

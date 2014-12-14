@@ -52,6 +52,10 @@ sub test_assoc_pod {
     unlike $pod_file, $gen_text, 'pod does not have generator comment';
     like $generator,  $gen_text, 'generator has comment';
 
+    is ${ $mod->pod },
+        q[NAME Pod::With::Generator - this pod is generated Truth but this is the real one!],
+        'pod text';
+
 }
 
 done_testing;

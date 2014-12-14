@@ -28,6 +28,12 @@ sub test_files {
         1,
         'parsed =head1\x20\x20NAME'
     );
+
+    is(
+        ${ $pod_files->[0]->pod },
+        q[NAME Pod::Examples::Spacial DESCRIPTION An extra space between 'head1' and 'NAME'],
+        'pod text'
+    );
 }
 
 done_testing;

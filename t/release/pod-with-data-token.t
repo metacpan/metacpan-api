@@ -60,6 +60,10 @@ sub test_content {
     like $content,
         qr!\n__DATA__\n\ndata is here\n\n__END__\n\nTHE END IS NEAR\n\n\n=pod\n\nthis is pod!,
         'actual __DATA__ and __END__ tokens in tact (with closing pod)';
+
+    is ${ $mod->pod },
+        q[NAME Pod::With::Data::Token - yo SYNOPSIS use warnings; print <DATA>; __DATA__ More text DESCRIPTION data handle inside pod is pod but not data __DATA__ see? EVEN MOAR not much, though this is pod to a pod reader but DATA to perl],
+        'pod text';
 }
 
 done_testing;

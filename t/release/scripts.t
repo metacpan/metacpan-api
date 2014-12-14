@@ -56,6 +56,12 @@ is( $release->version, '0.01', 'version ok' );
         ],
         'what is to be expected'
     );
+
+    foreach my $file (@files) {
+        like ${ $file->pod },
+            qr/\ANAME (catalyst|starman) - starter\z/,
+            $file->path . ' pod text';
+    }
 }
 
 done_testing;
