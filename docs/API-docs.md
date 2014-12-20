@@ -20,51 +20,51 @@ Be aware that when you scroll, your docs will come back unsorted, as noted in th
 
 ## Identifying Yourself
 
-Part of being polite is letting us know who you are and how to reach you.  This is not mandatory, but please do consider adding your app to the [[API-Consumers]] page.
+Part of being polite is letting us know who you are and how to reach you.  This is not mandatory, but please do consider adding your app to the [API-Consumers](https://github.com/CPAN-API/cpan-api/wiki/API-Consumers) page.
 
 ## Available fields
 
 Available fields can be found by accessing the corresponding `_mapping` endpoint.
 
 
-* [[/author/_mapping|http://api.metacpan.org/v0/author/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/author/_mapping]]
-* [[/distribution/_mapping|http://api.metacpan.org/v0/distribution/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/distribution/_mapping]]
-* [[/favorite/_mapping|http://api.metacpan.org/v0/favorite/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/favorite/_mapping]]
-* [[/file/_mapping|http://api.metacpan.org/v0/file/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/file/_mapping]]
-* [[/module/_mapping|http://api.metacpan.org/v0/module/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/module/_mapping]]
-* [[/rating/_mapping|http://api.metacpan.org/v0/rating/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/rating/_mapping]]
-* [[/release/_mapping|http://api.metacpan.org/v0/release/_mapping]] - [[explore|http://explorer.metacpan.org/?url=/release/_mapping]]
+* [/author/_mapping](http://api.metacpan.org/v0/author/_mapping) - [explore](http://explorer.metacpan.org/?url=/author/_mapping)
+* [/distribution/_mapping](http://api.metacpan.org/v0/distribution/_mapping) - [explore](http://explorer.metacpan.org/?url=/distribution/_mapping)
+* [/favorite/_mapping](http://api.metacpan.org/v0/favorite/_mapping) - [explore](http://explorer.metacpan.org/?url=/favorite/_mapping)
+* [/file/_mapping](http://api.metacpan.org/v0/file/_mapping) - [explore](http://explorer.metacpan.org/?url=/file/_mapping)
+* [/module/_mapping](http://api.metacpan.org/v0/module/_mapping) - [explore](http://explorer.metacpan.org/?url=/module/_mapping)
+* [/rating/_mapping](http://api.metacpan.org/v0/rating/_mapping) - [explore](http://explorer.metacpan.org/?url=/rating/_mapping)
+* [/release/_mapping](http://api.metacpan.org/v0/release/_mapping) - [explore](http://explorer.metacpan.org/?url=/release/_mapping)
 
 
 ## Field documentation
 
-Fields are documented in the API codebase: [[https://github.com/CPAN-API/cpan-api/tree/master/lib/MetaCPAN/Document]]  Check the Pod for discussion of what the various fields represent.  Be sure to have a look at [[https://github.com/CPAN-API/cpan-api/blob/master/lib/MetaCPAN/Document/File.pm]] in particular as results for /module are really a thin wrapper around the `file` type.
+Fields are documented in the API codebase: https://github.com/CPAN-API/cpan-api/tree/master/lib/MetaCPAN/Document  Check the Pod for discussion of what the various fields represent.  Be sure to have a look at https://github.com/CPAN-API/cpan-api/blob/master/lib/MetaCPAN/Document/File.pm in particular as results for /module are really a thin wrapper around the `file` type.
 
 ## Search without constraints
 
 Performing a search without any constraints is an easy way to get sample data
 
-* [[/author/_search|http://api.metacpan.org/v0/author/_search]]
-* [[/distribution/_search|http://api.metacpan.org/v0/distribution/_search]]
-* [[/favorite/_search|http://api.metacpan.org/v0/favorite/_search]]
-* [[/file/_search|http://api.metacpan.org/v0/file/_search]]
-* [[/rating/_search|http://api.metacpan.org/v0/rating/_search]]
-* [[/release/_search|http://api.metacpan.org/v0/release/_search]]
+* [/author/_search](http://api.metacpan.org/v0/author/_search)
+* [/distribution/_search](http://api.metacpan.org/v0/distribution/_search)
+* [/favorite/_search](http://api.metacpan.org/v0/favorite/_search)
+* [/file/_search](http://api.metacpan.org/v0/file/_search)
+* [/rating/_search](http://api.metacpan.org/v0/rating/_search)
+* [/release/_search](http://api.metacpan.org/v0/release/_search)
 
 ## Joins
 
-ElasticSearch itself doesn't support joining data across multiple types. The API server can, however, handle a `join` query parameter if the underlying type was set up accordingly. Browse [[https://github.com/CPAN-API/cpan-api/blob/master/lib/MetaCPAN/Server/Controller/]] to see all join conditions. Here are some examples.
+ElasticSearch itself doesn't support joining data across multiple types. The API server can, however, handle a `join` query parameter if the underlying type was set up accordingly. Browse https://github.com/CPAN-API/cpan-api/blob/master/lib/MetaCPAN/Server/Controller/ to see all join conditions. Here are some examples.
 
 Joins on documents:
 
-* [[/author/PERLER?join=favorite|http://api.metacpan.org/v0/author/PERLER?join=favorite]]
-* [[/author/PERLER?join=favorite&join=release|http://api.metacpan.org/v0/author/PERLER?join=favorite&join=release]]
-* [[/release/Moose?join=author|http://api.metacpan.org/v0/release/Moose?join=author]]
-* [[/module/Moose?join=release|http://api.metacpan.org/v0/module/Moose?join=release]]
+* [/author/PERLER?join=favorite](http://api.metacpan.org/v0/author/PERLER?join=favorite)
+* [/author/PERLER?join=favorite&join=release](http://api.metacpan.org/v0/author/PERLER?join=favorite&join=release)
+* [/release/Moose?join=author](http://api.metacpan.org/v0/release/Moose?join=author)
+* [/module/Moose?join=release](http://api.metacpan.org/v0/module/Moose?join=release)
 
 Joins on search results is work in progress.
 
-Restricting the joined results can be done by using the [[boolean "should"|http://www.elasticsearch.org/guide/reference/query-dsl/bool-query.html]] occurrence type:
+Restricting the joined results can be done by using the [boolean "should"](http://www.elasticsearch.org/guide/reference/query-dsl/bool-query.html) occurrence type:
 
 ```sh
 curl -XPOST http://api.metacpan.org/v0/author/PERLER?join=release -d '
@@ -85,7 +85,7 @@ curl -XPOST http://api.metacpan.org/v0/author/PERLER?join=release -d '
 
 Simply add a `callback` query parameter with the name of your callback, and you'll get a JSONP response.
 
-* [[/favorite?q=distribution:Moose&callback=cb|http://api.metacpan.org/favorite?q=distribution:Moose&callback=cb]]
+* [/favorite?q=distribution:Moose&callback=cb](http://api.metacpan.org/favorite?q=distribution:Moose&callback=cb)
 
 ## GET convenience URLs
 
@@ -93,27 +93,27 @@ You should be able to run most POST queries, but very few GET urls are currently
 
 ### `/distribution/{distribution}`
 
-The `/distribution` endpoint accepts the name of a `distribution` (e.g. [[/distribution/Moose|http://api.metacpan.org/v0/distribution/Moose]]), which returns information about the distribution which is not specific to a version (like RT bug counts).
+The `/distribution` endpoint accepts the name of a `distribution` (e.g. [/distribution/Moose](http://api.metacpan.org/v0/distribution/Moose)), which returns information about the distribution which is not specific to a version (like RT bug counts).
 
 ### `/release/{distribution}`
 
 ### `/release/{author}/{release}`
 
-The `/release` endpoint accepts either the name of a `distribution` (e.g. [[/release/Moose|http://api.metacpan.org/v0/release/Moose]]), which returns the most recent release of the distribution. Or provide the full path which consists of its `author` and the name of the `release` (e.g. [[/release/DOY/Moose-2.0001|http://api.metacpan.org/v0/release/DOY/Moose-2.0001]]).
+The `/release` endpoint accepts either the name of a `distribution` (e.g. [/release/Moose](http://api.metacpan.org/v0/release/Moose)), which returns the most recent release of the distribution. Or provide the full path which consists of its `author` and the name of the `release` (e.g. [/release/DOY/Moose-2.0001](http://api.metacpan.org/v0/release/DOY/Moose-2.0001)).
 
 ### `/author/{author}`
 
-`author` refers to the pauseid of the author. It must be uppercased (e.g. [[/author/DOY|http://api.metacpan.org/v0/author/DOY]]).
+`author` refers to the pauseid of the author. It must be uppercased (e.g. [/author/DOY](http://api.metacpan.org/v0/author/DOY)).
 
 ### `/module/{module}`
 
-Returns the corresponding `file` of the latest version of the `module`. Considering that Moose-2.0001 is the latest release, the result of [[/module/Moose|http://api.metacpan.org/v0/module/Moose]] is the same as [[/file/DOY/Moose-2.0001/lib/Moose.pm|http://api.metacpan.org/v0/file/DOY/Moose-2.0001/lib/Moose.pm]].
+Returns the corresponding `file` of the latest version of the `module`. Considering that Moose-2.0001 is the latest release, the result of [/module/Moose](http://api.metacpan.org/v0/module/Moose) is the same as [/file/DOY/Moose-2.0001/lib/Moose.pm](http://api.metacpan.org/v0/file/DOY/Moose-2.0001/lib/Moose.pm).
 
 ### `/pod/{module}`
 
 ### `/pod/{author}/{release}/{path}`
 
-Returns the POD of the given module. You can change the output format by either passing a `content-type` query parameter (e.g. [[/pod/Moose?content-type=text/plain|http://api.metacpan.org/v0/pod/Moose?content-type=text/plain]] or by adding an `Accept` header to the HTTP request. Valid content types are:
+Returns the POD of the given module. You can change the output format by either passing a `content-type` query parameter (e.g. [/pod/Moose?content-type=text/plain](http://api.metacpan.org/v0/pod/Moose?content-type=text/plain) or by adding an `Accept` header to the HTTP request. Valid content types are:
 
 * text/html (default)
 * text/plain
@@ -124,7 +124,7 @@ Returns the POD of the given module. You can change the output format by either 
 
 Names of latest releases by OALDERS:
 
-[[http://api.metacpan.org/v0/release/_search?q=author:OALDERS%20AND%20status:latest&fields=name,status&size=100]]
+http://api.metacpan.org/v0/release/_search?q=author:OALDERS%20AND%20status:latest&fields=name,status&size=100
 
 All CPAN Authors:
 
@@ -132,31 +132,31 @@ All CPAN Authors:
 
 All CPAN Authors Who Have Provided Twitter IDs:
 
-[[http://api.metacpan.org/v0/author/_search?pretty=true&q=author.profile.name:twitter]]
+http://api.metacpan.org/v0/author/_search?pretty=true&q=author.profile.name:twitter
 
 All CPAN Authors Who Have Updated MetaCPAN Profiles:
 
-[[http://api.metacpan.org/v0/author/_search?q=updated:*&sort=updated:desc]]
+http://api.metacpan.org/v0/author/_search?q=updated:*&sort=updated:desc
 
 First 100 distributions which SZABGAB has given a ++:
 
-[[ http://api.metacpan.org/v0/favorite/_search?q=user:sWuxlxYeQBKoCQe1f-FQ_Q&size=100&fields=distribution]]
+ http://api.metacpan.org/v0/favorite/_search?q=user:sWuxlxYeQBKoCQe1f-FQ_Q&size=100&fields=distribution
 
 The 100 most recent releases ( similar to https://metacpan.org/recent )
 
-[[ http://api.metacpan.org/v0/release/_search?q=status:latest&fields=name,status,date&sort=date:desc&size=100]]
+ http://api.metacpan.org/v0/release/_search?q=status:latest&fields=name,status,date&sort=date:desc&size=100
 
 Number of ++'es that DOY's dists have received:
 
-[[http://api.metacpan.org/v0/favorite/_search?q=author:DOY&size=0]]
+http://api.metacpan.org/v0/favorite/_search?q=author:DOY&size=0
 
 List of users who have ++'ed DOY's dists and the dists they have ++'ed:
 
-[[http://api.metacpan.org/v0/favorite/_search?q=author:DOY&fields=user,distribution]]
+http://api.metacpan.org/v0/favorite/_search?q=author:DOY&fields=user,distribution
 
 Last 50 dists to get a ++:
 
-[[http://api.metacpan.org/v0/favorite/_search?size=50&fields=author,user,release,date&sort=date:desc]]
+http://api.metacpan.org/v0/favorite/_search?size=50&fields=author,user,release,date&sort=date:desc
 
 ## Querying the API with MetaCPAN::Client
 
