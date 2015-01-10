@@ -127,6 +127,8 @@ has modules => (
     default => sub { +{} },
 );
 
+# The default status for a release is 'cpan'
+# but many test dists only have one version so 'latest' is more likely.
 has status => (
     is      => 'ro',
     isa     => 'Str',

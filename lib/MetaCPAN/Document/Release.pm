@@ -167,6 +167,9 @@ has dependency => (
     include_in_root => 1,
 );
 
+# The initial state for a release is 'cpan'.
+# The indexer scripts will upgrade it to 'latest' if it's the version in
+# 02packages or downgrade it to 'backpan' if it gets deleted.
 has status => (
     is       => 'rw',
     required => 1,
