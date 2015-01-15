@@ -88,6 +88,21 @@ has base_dir => (
     default => '/tmp',
 );
 
+my @always_no_index_dirs = (
+
+    # Always ignore the same dirs as PAUSE (lib/PAUSE/dist.pm):
+    ## skip "t" - libraries in ./t are test libraries!
+    ## skip "xt" - libraries in ./xt are author test libraries!
+    ## skip "inc" - libraries in ./inc are usually install libraries
+    ## skip "local" - somebody shipped his carton setup!
+    ## skip 'perl5" - somebody shipped her local::lib!
+    ## skip 'fatlib' - somebody shipped their fatpack lib!
+    qw( t xt inc local perl5 fatlib ),
+
+    # and add a few more
+    qw( example blib examples eg ),
+);
+
 sub run {
     my $self = shift;
     my ( undef, @args ) = @{ $self->extra_argv };
@@ -216,8 +231,7 @@ sub import_tarball {
             version => $version || 0,
             license => 'unknown',
             name    => $d->dist,
-            no_index =>
-                { directory => [qw(t xt inc example blib examples eg)] }
+            no_index => { directory => [@always_no_index_dirs] },
         }
     );
 
@@ -506,10 +520,8 @@ sub load_meta_file {
             }
         }
         if ($last) {
-            push(
-                @{ $last->{no_index}->{directory} },
-                qw(t xt inc example blib examples eg)
-            );
+            push( @{ $last->{no_index}->{directory} },
+                @always_no_index_dirs );
             return $last;
         }
     }
