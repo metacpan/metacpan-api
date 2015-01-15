@@ -2995,7 +2995,6 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       Mail::Address 0
-      Net::DNS 0
       Scalar::Util 0
       Test::More 0
       perl 5.006
@@ -6544,6 +6543,53 @@ DISTRIBUTIONS
       Text::Wrap 2001.0929
       parent 0
       perl 5.006
+  Pod-Simple-3.29
+    pathname: D/DW/DWHEELER/Pod-Simple-3.29.tar.gz
+    provides:
+      Pod::Simple 3.29
+      Pod::Simple::BlackBox 3.29
+      Pod::Simple::Checker 3.29
+      Pod::Simple::Debug 3.29
+      Pod::Simple::DumpAsText 3.29
+      Pod::Simple::DumpAsXML 3.29
+      Pod::Simple::HTML 3.29
+      Pod::Simple::HTMLBatch 3.29
+      Pod::Simple::HTMLLegacy 5.01
+      Pod::Simple::LinkSection 3.29
+      Pod::Simple::Methody 3.29
+      Pod::Simple::Progress 3.29
+      Pod::Simple::PullParser 3.29
+      Pod::Simple::PullParserEndToken 3.29
+      Pod::Simple::PullParserStartToken 3.29
+      Pod::Simple::PullParserTextToken 3.29
+      Pod::Simple::PullParserToken 3.29
+      Pod::Simple::RTF 3.29
+      Pod::Simple::Search 3.29
+      Pod::Simple::SimpleTree 3.29
+      Pod::Simple::Text 3.29
+      Pod::Simple::TextContent 3.29
+      Pod::Simple::TiedOutFH 3.29
+      Pod::Simple::Transcode 3.29
+      Pod::Simple::TranscodeDumb 3.29
+      Pod::Simple::TranscodeSmart 3.29
+      Pod::Simple::XHTML 3.29
+      Pod::Simple::XMLOutStream 3.29
+    requirements:
+      Carp 0
+      Config 0
+      Cwd 0
+      ExtUtils::MakeMaker 0
+      File::Basename 0
+      File::Find 0
+      File::Spec 0
+      Pod::Escapes 1.04
+      Symbol 0
+      Test 1.25
+      Test::More 0
+      Text::Wrap 98.112902
+      integer 0
+      overload 0
+      strict 0
   Pod-Spell-1.15
     pathname: X/XE/XENO/Pod-Spell-1.15.tar.gz
     provides:
