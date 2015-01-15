@@ -45,6 +45,13 @@ has sources => (
     lazy_build => 1,
 );
 
+has prompt => (
+    is            => 'ro',
+    isa           => 'Bool',
+    default       => 1,
+    documentation => q{Prompt for confirmation (default true)},
+);
+
 sub _build_sources {
     my ($self) = @_;
     return [ map { $_->download_url } @{ $self->releases } ];
@@ -73,8 +80,13 @@ sub confirm {
         if !@{ $self->releases };
 
     print "Reindexing ${\ $self->distribution }\n",
-        ( map {"  $_\n"} @{ $self->sources } ),
-        "Continue? (y/n): ";
+        ( map {"  $_\n"} @{ $self->sources } );
+
+    if ( !$self->prompt ) {
+        return;
+    }
+
+    print 'Continue? (y/n): ';
 
     my $confirmation = <STDIN>;
 
