@@ -504,4 +504,37 @@ END
     };
 };
 
+subtest 'pod parsing errors are not fatal' => sub {
+
+    my $content = <<POD;
+package Foo;
+use strict;
+
+=head1 NAME
+
+Foo - mymodule1 abstract
+POD
+
+    local *Pod::Text::parse_string_document = sub {
+        die "# [fake pod error]\n";
+    };
+
+    my $file = MetaCPAN::Document::File->new(
+        %stub,
+        name       => 'Yo.pm',
+        content_cb => sub { \$content }
+    );
+
+    test_attributes $file, {
+        description   => undef,    # no DESCRIPTION pod
+        documentation => undef,    # no pod
+
+        # line counts are separate from the pod parser
+        sloc      => 2,
+        slop      => 2,
+        pod_lines => [ [ 3, 3 ], ],
+        pod       => q[],
+    };
+};
+
 done_testing;

@@ -16,6 +16,7 @@ use MetaCPAN::Util;
 use MooseX::Types::Moose qw(ArrayRef);
 use Plack::MIME;
 use Pod::Text;
+use Try::Tiny;
 use URI::Escape ();
 
 Plack::MIME->add_type( ".t"   => "text/x-script.perl" );
@@ -149,7 +150,14 @@ sub _build_description {
     my $parser = Pod::Text->new;
     my $text   = "";
     $parser->output_string( \$text );
-    $parser->parse_string_document("=pod\n\n$section");
+
+    try {
+        $parser->parse_string_document("=pod\n\n$section");
+    }
+    catch {
+        warn $_[0];
+    };
+
     $text =~ s/\s+/ /g;
     $text =~ s/^\s+//;
     $text =~ s/\s+$//;
@@ -370,7 +378,14 @@ sub _build_pod {
 
     my $text = "";
     $parser->output_string( \$text );
-    $parser->parse_string_document($content);
+
+    try {
+        $parser->parse_string_document($content);
+    }
+    catch {
+        warn $_[0];
+    };
+
     $text =~ s/\s+/ /g;
     $text =~ s/ \z//;
 
