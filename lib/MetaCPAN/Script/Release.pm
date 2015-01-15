@@ -466,7 +466,7 @@ sub import_tarball {
         }
     }
     if (@provides) {
-        $release->provides( \@provides );
+        $release->provides( [ sort @provides ] );
         $release->put;
     }
     $bulk->commit;
