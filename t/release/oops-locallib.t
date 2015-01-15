@@ -11,7 +11,7 @@ test_release(
         author     => 'BORISNAT',
         authorized => \1,
         first      => \1,
-        provides   => [ 'Oops::LocalLib', 'Fruits', ],
+        provides   => [ 'Fruits', 'Oops::LocalLib', ],
         modules    => {
             'lib/Oops/LocalLib.pm' => [
                 {
