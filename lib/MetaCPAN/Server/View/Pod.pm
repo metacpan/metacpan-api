@@ -18,6 +18,10 @@ sub process {
     my ( $body, $content_type );
     my $accept = eval { $c->req->preferred_content_type } || 'text/html';
     my $show_errors = $c->req->params->{show_errors};
+
+    # This could default to a config var (feature flag).
+    my $x_codes = $c->req->params->{x_codes};
+
     if ( $accept eq 'text/plain' ) {
         $body         = $self->build_pod_txt($content);
         $content_type = 'text/plain';
@@ -31,7 +35,7 @@ sub process {
         $content_type = 'text/plain';
     }
     else {
-        $body = $self->build_pod_html( $content, $show_errors );
+        $body = $self->build_pod_html( $content, $show_errors, $x_codes );
         $content_type = 'text/html';
     }
     $c->res->content_type($content_type);
@@ -48,13 +52,14 @@ sub build_pod_markdown {
 }
 
 sub build_pod_html {
-    my ( $self, $source, $show_errors ) = @_;
+    my ( $self, $source, $show_errors, $x_codes ) = @_;
     my $parser = MetaCPAN::Pod::XHTML->new();
     $parser->index(1);
     $parser->html_header('');
     $parser->html_footer('');
     $parser->perldoc_url_prefix('');
     $parser->no_errata_section( !$show_errors );
+    $parser->nix_X_codes( !$x_codes );
     my $html = "";
     $parser->output_string( \$html );
     $parser->parse_string_document($source);

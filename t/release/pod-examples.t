@@ -44,11 +44,16 @@ sub test_pod_examples {
     };
 
     # NOTE: This may change.
-    # qr{<h1 id="DESCRIPTION">DESCRIPTION <a id="desc"></a></h1>},
     $pod_like->(
         'text/html',
         qr{<h1 id="DESCRIPTION">DESCRIPTION </h1>},
         'X codes are ignored in html'
+    );
+
+    $pod_like->(
+        'text/html&x_codes=1',    # hack
+        qr{<h1 id="DESCRIPTION">DESCRIPTION <a id="desc"></a></h1>},
+        'X codes are included when requested'
     );
 
     $pod_like->(

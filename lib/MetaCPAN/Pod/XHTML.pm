@@ -3,9 +3,28 @@ package MetaCPAN::Pod::XHTML;
 use strict;
 use warnings;
 
-use Moose;
+# Keep the coding style of Pod::Simple for consistency and performance.
 
-extends 'Pod::Simple::XHTML';
+use parent 'Pod::Simple::XHTML';
+
+sub start_X {
+    $_[0]{_in_X_} = 1;
+}
+
+sub end_X {
+    $_[0]{_in_X_} = 0;
+    $_[0]{'scratch'}
+        .= '<a id="' . $_[0]->idify( $_[0]{_last_X_} ) . '"></a>';
+}
+
+sub handle_text {
+    if ( $_[0]{_in_X_} ) {
+        $_[0]{_last_X_} = $_[1];
+    }
+    else {
+        $_[0]->SUPER::handle_text( $_[1] );
+    }
+}
 
 sub perldoc_url_prefix {
     'https://metacpan.org/pod/';
@@ -94,7 +113,6 @@ sub _emit_custom_errata {
     $self->emit;
 }
 
-__PACKAGE__->meta->make_immutable( inline_constructor => 0 );
 1;
 
 =pod
@@ -104,4 +122,3 @@ __PACKAGE__->meta->make_immutable( inline_constructor => 0 );
 Set perldoc domain to C<metacpan.org>.
 
 =cut
-
