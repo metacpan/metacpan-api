@@ -127,6 +127,18 @@ has modules => (
     default => sub { +{} },
 );
 
+sub pod {
+    my ( $self, $path, $type ) = @_;
+    my $query = $type ? "?content-type=$type" : q[];
+    return $self->psgi_app(
+        sub {
+            shift->(
+                GET "/pod/$self->{author}/$self->{name}/${path}${query}" )
+                ->content;
+        }
+    );
+}
+
 # The default status for a release is 'cpan'
 # but many test dists only have one version so 'latest' is more likely.
 has status => (
