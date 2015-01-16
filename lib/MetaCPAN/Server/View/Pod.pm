@@ -19,8 +19,8 @@ sub process {
     my $accept = eval { $c->req->preferred_content_type } || 'text/html';
     my $show_errors = $c->req->params->{show_errors};
 
-    # This could default to a config var (feature flag).
     my $x_codes = $c->req->params->{x_codes};
+    $x_codes = $c->config->{pod_html_x_codes} unless defined $x_codes;
 
     if ( $accept eq 'text/plain' ) {
         $body         = $self->build_pod_txt($content);

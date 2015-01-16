@@ -45,7 +45,7 @@ sub test_pod_examples {
 
     # NOTE: This may change.
     $pod_like->(
-        'text/html',
+        'text/html&x_codes=0',    # hack
         qr{<h1 id="DESCRIPTION">DESCRIPTION </h1>},
         'X codes are ignored in html'
     );
