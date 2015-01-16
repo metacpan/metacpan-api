@@ -3,7 +3,6 @@ package MetaCPAN::Server::View::Pod;
 use strict;
 use warnings;
 
-use IO::String;
 use MetaCPAN::Pod::XHTML;
 use Moose;
 use Pod::Markdown;
@@ -40,10 +39,12 @@ sub process {
 }
 
 sub build_pod_markdown {
-    my $self   = shift;
+    my ( $self, $source ) = @_;
     my $parser = Pod::Markdown->new;
-    $parser->parse_from_filehandle( IO::String->new(shift) );
-    return $parser->as_markdown;
+    my $mkdn   = q[];
+    $parser->output_string( \$mkdn );
+    $parser->parse_string_document($source);
+    return $mkdn;
 }
 
 sub build_pod_html {
