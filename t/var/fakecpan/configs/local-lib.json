@@ -1,0 +1,13 @@
+{
+  "name": "local-lib",
+  "version": "0.01",
+  "abstract": "undef (no meta files)",
+  "X_Module_Faker": {
+    "cpan_author": "BORISNAT",
+    "omitted_files": ["META.json", "META.yml"],
+    "append": [ {
+        "file": "lib/local/lib.pm",
+        "content": "# Module::Faker\n=head1 NAME\n\nlocal::lib - Legitimate module\n"
+    } ]
+  }
+}

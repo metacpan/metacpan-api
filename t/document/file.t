@@ -12,36 +12,6 @@ my %stub = (
     name         => 'module.pm',
 );
 
-{
-    my @excluded_paths = qw(
-        t/whomp
-        foo/t/bar
-        cuppa/t
-        conv/inc/ing
-        buy/local/beer
-    );
-
-    my @non_excluded_paths = qw(
-        foo/bart/shorts
-        tit/mouse
-        say/wat
-        wince/inducing/module
-        not/locally/made
-    );
-
-    foreach my $path (@excluded_paths) {
-        my $file = MetaCPAN::Document::File->new( %stub, path => $path );
-        my $msg = "$path is in an excluded directory";
-        ok( $file->is_in_excluded_directory(), $msg );
-    }
-
-    foreach my $path (@non_excluded_paths) {
-        my $file = MetaCPAN::Document::File->new( %stub, path => $path );
-        my $msg = "$path is not in an excluded directory";
-        ok( !$file->is_in_excluded_directory(), $msg );
-    }
-}
-
 sub test_attributes {
     my ( $obj, $att ) = @_;
     local $Test::Builder::Level = $Test::Builder::Level + 1;
