@@ -95,6 +95,7 @@ requires 'MooseX::ClassAttribute';
 requires 'MooseX::Getopt';
 requires 'MooseX::Getopt::Dashes';
 requires 'MooseX::Getopt::OptionTypeMap';
+requires 'MooseX::StrictConstructor';
 requires 'MooseX::Types';
 requires 'MooseX::Types::Common::String';
 requires 'MooseX::Types::ElasticSearch', ' == 0.0.2'; # Newer versions use the other ES module which we can't upgrade to yet b/c of ESX-Model.

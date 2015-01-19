@@ -18,11 +18,13 @@ use LWP::UserAgent;
 use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Document::Author;
 use MetaCPAN::Script::Latest;
+use MetaCPAN::Model::Tarball;
 use MetaCPAN::Types qw( Dir );
 use Module::Metadata 1.000012 ();    # Improved package detection.
 use Moose;
 use Parse::PMFile;
 use Path::Class qw(file dir);
+use PAUSE::Permissions;
 use PerlIO::gzip;
 use Try::Tiny;
 
@@ -201,41 +203,27 @@ sub run {
 }
 
 sub import_tarball {
-    my ( $self, $tarball ) = @_;
-    my $cpan = $self->index;
+    my $self         = shift;
+    my $tarball_path = Path::Class::File->new(shift);
 
-    $tarball = Path::Class::File->new($tarball);
-    my $d = CPAN::DistnameInfo->new($tarball);
+    my $cpan = $self->index;
+    my $d    = CPAN::DistnameInfo->new($tarball_path);
     my ( $author, $archive, $name )
         = ( $d->cpanid, $d->filename, $d->distvname );
-    log_info {"Processing $tarball"};
-
-    # load Archive::Any in the child due to bugs in MMagic and MIME::Types
-    require Archive::Any;
-    my $at = Archive::Any->new($tarball);
     my $tmpdir
         = dir( File::Temp::tempdir( CLEANUP => 0, DIR => $self->base_dir ) );
-
-    log_error {"$tarball is being impolite"} if $at->is_impolite;
-
-    # TODO: add release to the index with status => 'broken' and move along
-    log_error {"$tarball is being naughty"} if $at->is_naughty;
-
-    log_debug {"Extracting archive to filesystem"};
-    $at->extract($tmpdir);
-
-    my $date    = DateTime->from_epoch( epoch => $tarball->stat->mtime );
+    my $date    = DateTime->from_epoch( epoch => $tarball_path->stat->mtime );
     my $version = MetaCPAN::Util::fix_version( $d->version );
     my $meta    = CPAN::Meta->new(
         {
-            version => $version || 0,
-            license => 'unknown',
-            name    => $d->dist,
+            license  => 'unknown',
+            name     => $d->dist,
             no_index => { directory => [@always_no_index_dirs] },
+            version  => $version || 0,
         }
     );
 
-    my $st = $tarball->stat;
+    my $st = $tarball_path->stat;
     my $stat = { map { $_ => $st->$_ } qw(mode uid gid size mtime) };
 
     $meta = $self->load_meta_file($tmpdir) || $meta;
@@ -248,21 +236,21 @@ sub import_tarball {
 
     my $release = DlogS_trace {"adding release $_"} +{
         abstract     => MetaCPAN::Util::strip_pod( $meta->abstract ),
-        name         => $name,
-        author       => $author,
-        distribution => $d->dist,
         archive      => $archive,
-        maturity     => $d->maturity,
-        stat         => $stat,
-        status       => $self->detect_status( $author, $archive ),
+        author       => $author,
         date         => $date . q{},
         dependency   => \@dependencies,
-        metadata     => $meta,
-        provides     => [],
+        distribution => $d->dist,
 
         # CPAN::Meta->license *must* be called in list context
         # (and *may* return multiple strings).
-        license => [ $meta->license ],
+        license  => [ $meta->license ],
+        maturity => $d->maturity,
+        metadata => $meta,
+        name     => $name,
+        provides => [],
+        stat     => $stat,
+        status   => $self->detect_status( $author, $archive ),
 
 # Call in scalar context to make sure we only get one value (building a hash).
         ( map { ( $_ => scalar $meta->$_ ) } qw( version resources ) ),
@@ -280,60 +268,24 @@ sub import_tarball {
             ->put( { name => $d->dist }, { create => 1 } );
     };
 
-    my @files;
-    my @list = $at->files;
-    log_debug { 'Indexing ', scalar @list, " files" };
-    my $file_set = $cpan->type('file');
     my $bulk = $cpan->bulk( size => 10 );
 
-    File::Find::find(
-        sub {
-            my $child
-                = -d $File::Find::name
-                ? dir($File::Find::name)
-                : file($File::Find::name);
-            my $relative = $child->relative($tmpdir);
-            my $stat     = do {
-                my $s = $child->stat;
-                +{ map { $_ => $s->$_ } qw(mode uid gid size mtime) };
-            };
-            return if ( $relative eq '.' );
-            ( my $fpath = "$relative" ) =~ s/^.*?\///;
-            my $fname = $fpath;
-            $child->is_dir
-                ? $fname =~ s/^(.*\/)?(.+?)\/?$/$2/
-                : $fname =~ s/.*\///;
-            $fpath = "" if $relative !~ /\// && !$at->is_impolite;
-
-            my $file = $file_set->new_document(
-                Dlog_trace {"adding file $_"} +{
-                    metadata     => $meta,
-                    name         => $fname,
-                    directory    => $child->is_dir,
-                    release      => $name,
-                    date         => $date,
-                    distribution => $d->dist,
-                    author       => $author,
-                    local_path   => $child,
-                    path         => $fpath,
-                    version      => $d->version,
-                    stat         => $stat,
-                    maturity     => $d->maturity,
-                    status       => $release->status,
-                    indexed      => $meta->should_index_file($fpath) ? 1 : 0,
-                    binary       => -B $child,
-
-                    # XXX: Should we be using a file mode or checking encoding
-                    # (like Module::Metadata's BOM handling, for instance)?
-                    content_cb => sub { \( scalar $child->slurp ) },
-                }
-            );
-            $bulk->put($file);
-            push( @files, $file );
-        },
-        $tmpdir
+    my $tarball = MetaCPAN::Model::Tarball->new(
+        author       => $author,
+        bulk         => $bulk,
+        date         => $date,
+        distribution => $d->dist,
+        index        => $cpan,
+        maturity     => $d->maturity,
+        metadata     => $meta,
+        name         => $name,
+        status       => $release->status,
+        tarball      => $tarball_path,
+        tmpdir       => $tmpdir,
+        version      => $d->version,
     );
-    $bulk->commit;
+
+    my @files = $tarball->get_files();
 
     log_debug {'Gathering modules'};
 
