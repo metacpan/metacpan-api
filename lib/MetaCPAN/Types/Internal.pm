@@ -122,12 +122,22 @@ subtype Resources,
     ];
 
 coerce Resources, from HashRef, via {
-    my $r = $_;
-    return {
-        map { $_ => $r->{$_} }
-            grep { defined $r->{$_} }
-            qw(license homepage bugtracker repository)
-    };
+    my $r         = $_;
+    my $resources = {};
+    for my $field (qw(license homepage bugtracker repository)) {
+        my $val = $r->{$field};
+        if ( !defined $val ) {
+            next;
+        }
+        elsif ( !ref $val ) {
+        }
+        elsif ( ref $val eq 'HASH' ) {
+            $val = {%$val};
+            delete @{$val}{ grep /^x_/, keys %$val };
+        }
+        $resources->{$field} = $val;
+    }
+    return $resources;
 };
 
 class_type 'CPAN::Meta';
