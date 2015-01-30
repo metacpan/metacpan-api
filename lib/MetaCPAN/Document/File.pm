@@ -687,6 +687,10 @@ Expects a C<$meta> parameter which is an instance of L<CPAN::Meta>.
 
 For each package (L</module>) in the file and based on L<CPAN::Meta/should_index_package>
 it is decided, whether the module should have a true L</indexed> attribute.
+If there are any packages with leading underscores, the module gets a false 
+L</indexed> attribute, because PAUSE doesn't allow this kind of name for packages
+(https://github.com/andk/pause/blob/master/lib/PAUSE/pmfile.pm#L249).
+
 If L<CPAN::Meta/should_index_package> returns true but the package declaration
 uses the I<hide from PAUSE> hack, the L</indexed> property is set to false.
 
@@ -705,6 +709,10 @@ sub set_indexed {
     my ( $self, $meta ) = @_;
 
     foreach my $mod ( @{ $self->module } ) {
+        if ( $mod->name !~ /^[A-Za-z]/ ) {
+            $mod->indexed(0);
+            next;
+        }
         $mod->indexed(
               $meta->should_index_package( $mod->name )
             ? $mod->hide_from_pause( ${ $self->content }, $self->name )

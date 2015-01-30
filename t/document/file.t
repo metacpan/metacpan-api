@@ -207,6 +207,11 @@ END
     };
 };
 
+subtest 'Packages starting with underscore are not indexed' => sub {
+    my $file = new_file_doc( module => { name => '_Package::Foo' } );
+    is( $file->module->[0]->indexed, 0, 'Package is not indexed' );
+};
+
 subtest 'pod name/package mismatch' => sub {
     my $content = <<'END';
 package
