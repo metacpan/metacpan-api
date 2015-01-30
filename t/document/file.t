@@ -4,13 +4,44 @@ use warnings;
 use MetaCPAN::Document::File;
 use Test::More;
 
-my %stub = (
-    author       => 'Foo',
-    path         => 'bar',
-    release      => 'release',
-    distribution => 'foo',
-    name         => 'module.pm',
-);
+sub cpan_meta {
+    CPAN::Meta->new(
+        {
+            name    => 'who-cares',
+            version => 0,
+        }
+    );
+}
+
+sub new_file_doc {
+    my %args = @_;
+
+    my $mods = $args{module};
+    $mods = [$mods] unless ref($mods) eq 'ARRAY';
+
+    my $pkg_template = <<'PKG';
+package %s;
+our $VERSION = 1;
+PKG
+
+    my $file = MetaCPAN::Document::File->new(
+        author       => 'CPANER',
+        path         => 'some/path',
+        release      => 'Some-Release-1',
+        distribution => 'Some-Release',
+        name         => 'SomeModule.pm',
+
+        # Passing in "content" will override
+        # but defaulting to package statements will help avoid buggy tests.
+        content_cb => sub {
+            \( join "\n", map { sprintf $pkg_template, $_->{name} } @$mods );
+        },
+
+        %args,
+    );
+    $file->set_indexed( cpan_meta() );
+    return $file;
+}
 
 sub test_attributes {
     my ( $obj, $att ) = @_;
@@ -25,6 +56,12 @@ sub test_attributes {
         is_deeply $got, $att->{$key}, $key;
     }
 }
+
+subtest 'helper' => sub {
+    my $file = new_file_doc( module => { name => 'Foo::Bar' }, );
+
+    is $file->module->[0]->indexed, 1, 'Regular package name indexed';
+};
 
 subtest 'basic' => sub {
     my $content = <<'END';
@@ -55,7 +92,7 @@ even more
 
 END
 
-    my $file = MetaCPAN::Document::File->new( %stub, content => \$content );
+    my $file = new_file_doc( content => \$content );
 
     is( $file->abstract,      'mymodule1 abstract' );
     is( $file->documentation, 'MyModule' );
@@ -79,7 +116,7 @@ MyModule
 
 END
 
-    my $file = MetaCPAN::Document::File->new( %stub, content => \$content );
+    my $file = new_file_doc( content => \$content );
 
     is( $file->abstract,      undef );
     is( $file->documentation, 'MyModule' );
@@ -106,7 +143,7 @@ Version 0.5.0
 
 END
 
-    my $file = MetaCPAN::Document::File->new( %stub, content => \$content );
+    my $file = new_file_doc( content => \$content );
 
     is( $file->abstract,      'a command line tool' );
     is( $file->documentation, 'Script' );
@@ -141,8 +178,7 @@ package MOBY::Config;
 
 END
 
-    my $file = MetaCPAN::Document::File->new(
-        %stub,
+    my $file = new_file_doc(
         path       => 't/bar/bat.t',
         module     => { name => 'MOBY::Config' },
         content_cb => sub { \$content }
@@ -172,8 +208,7 @@ END
 };
 
 subtest 'module below .../t/' => sub {
-    my $file = MetaCPAN::Document::File->new(
-        %stub,
+    my $file = new_file_doc(
         path   => 'foo/t/locker',
         module => { name => 'BAR::Locker' }
     );
@@ -213,8 +248,7 @@ AS-specific methods for Number::Phone
 
 1;
 END
-    my $file = MetaCPAN::Document::File->new(
-        %stub,
+    my $file = new_file_doc(
         module => [ { name => 'Number::Phone::NANP::ASS', version => 1.1 } ],
         content_cb => sub { \$content }
     );
@@ -244,8 +278,7 @@ package # hide the package from PAUSE
 C<Perl6Attribute> -- An example attribute metaclass for Perl 6 style attributes
 
 END
-    my $file = MetaCPAN::Document::File->new(
-        %stub,
+    my $file = new_file_doc(
         name   => 'Perl6Attribute.pod',
         module => [ { name => 'main', version => 1.1 } ],
         content_cb => sub { \$content }
@@ -293,8 +326,7 @@ Bar
 =back
 
 END
-    my $file = MetaCPAN::Document::File->new(
-        %stub,
+    my $file = new_file_doc(
         name       => 'Foo.pod',
         content_cb => sub { \$content }
     );
@@ -387,8 +419,7 @@ parsed.
 
 END
 
-    my $file = MetaCPAN::Document::File->new(
-        %stub,
+    my $file = new_file_doc(
         name       => 'Yo.pm',
         content_cb => sub { \$content }
     );
@@ -437,8 +468,7 @@ last-word.
 
 END
 
-    my $file = MetaCPAN::Document::File->new(
-        %stub,
+    my $file = new_file_doc(
         name       => 'Yo.pm',
         content_cb => sub { \$content }
     );
@@ -489,8 +519,7 @@ POD
         die "# [fake pod error]\n";
     };
 
-    my $file = MetaCPAN::Document::File->new(
-        %stub,
+    my $file = new_file_doc(
         name       => 'Yo.pm',
         content_cb => sub { \$content }
     );
