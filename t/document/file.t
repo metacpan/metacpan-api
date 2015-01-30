@@ -207,17 +207,6 @@ END
     };
 };
 
-subtest 'module below .../t/' => sub {
-    my $file = new_file_doc(
-        path   => 'foo/t/locker',
-        module => { name => 'BAR::Locker' }
-    );
-
-    $file->set_indexed( CPAN::Meta->new( { name => 'null', version => 0 } ) );
-    is( $file->module->[0]->indexed,
-        0, 'Module in test directory is not indexed' );
-};
-
 subtest 'pod name/package mismatch' => sub {
     my $content = <<'END';
 package
