@@ -305,6 +305,7 @@ sub import_tarball {
                 : $fname =~ s/.*\///;
             $fpath = "" if $relative !~ /\// && !$at->is_impolite;
 
+            log_debug { "processing $fpath" };
             my $file = $file_set->new_document(
                 Dlog_trace {"adding file $_"} +{
                     metadata     => $meta,
