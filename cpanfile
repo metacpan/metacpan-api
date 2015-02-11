@@ -55,6 +55,7 @@ requires 'File::Basename';
 requires 'File::Find';
 requires 'File::Find::Rule';
 requires 'File::Find::Rule::Perl';
+requires 'File::pushd';
 requires 'File::Spec';
 requires 'File::Spec::Functions';
 requires 'File::Temp';
@@ -134,6 +135,7 @@ requires 'Regexp::Common';
 requires 'Regexp::Common::time';
 requires 'Safe', '2.35'; # bug fixes (used by Parse::PMFile)
 requires 'Starman';
+requires 'Test::RequiresInternet';
 requires 'Time::Local';
 requires 'Throwable::Error';
 requires 'Try::Tiny';

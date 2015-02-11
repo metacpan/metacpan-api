@@ -200,6 +200,21 @@ sub run {
     $self->index->refresh;
 }
 
+sub _is_broken_file {
+    my $self = shift;
+    my $file = shift;
+
+    # the file is a pipe or the file doesn't exist
+    return 1 if ( -p $file || !-e $file );
+
+    # the file is a broken symbolic link
+    if ( -l $file ) {
+        my $syml = readlink $file;
+        return 1 if ( !-e $syml && !-l $syml );
+    }
+    return 0;
+}
+
 sub import_tarball {
     my ( $self, $tarball ) = @_;
     my $cpan = $self->index;
@@ -292,6 +307,7 @@ sub import_tarball {
                 = -d $File::Find::name
                 ? dir($File::Find::name)
                 : file($File::Find::name);
+            return if $self->_is_broken_file($File::Find::name);
             my $relative = $child->relative($tmpdir);
             my $stat     = do {
                 my $s = $child->stat;

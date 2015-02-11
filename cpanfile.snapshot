@@ -3367,6 +3367,21 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 6.59
       Test::More 0.96
       perl 5.008008
+  File-pushd-1.009
+    pathname: D/DA/DAGOLDEN/File-pushd-1.009.tar.gz
+    provides:
+      File::pushd 1.009
+    requirements:
+      Carp 0
+      Cwd 0
+      Exporter 0
+      ExtUtils::MakeMaker 6.17
+      File::Path 0
+      File::Spec 0
+      File::Temp 0
+      overload 0
+      strict 0
+      warnings 0
   Filesys-Notify-Simple-0.12
     pathname: M/MI/MIYAGAWA/Filesys-Notify-Simple-0.12.tar.gz
     provides:
@@ -7174,6 +7189,15 @@ DISTRIBUTIONS
       Test::Builder::Module 0
       Test::More 0.61
       perl 5.008_001
+  Test-RequiresInternet-0.04
+    pathname: M/MA/MALLEN/Test-RequiresInternet-0.04.tar.gz
+    provides:
+      Test::RequiresInternet 0.04
+    requirements:
+      ExtUtils::MakeMaker 0
+      Socket 0
+      strict 0
+      warnings 0
   Test-Routine-0.018
     pathname: R/RJ/RJBS/Test-Routine-0.018.tar.gz
     provides:
