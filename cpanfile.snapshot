@@ -5416,6 +5416,27 @@ DISTRIBUTIONS
       Test::Trap 0
       overload 0
       parent 0
+  PAUSE-Permissions-0.11
+    pathname: N/NE/NEILB/PAUSE-Permissions-0.11.tar.gz
+    provides:
+      PAUSE::Permissions 0.11
+      PAUSE::Permissions::Entry 0.11
+      PAUSE::Permissions::EntryIterator 0.11
+      PAUSE::Permissions::Module 0.11
+      PAUSE::Permissions::ModuleIterator 0.11
+    requirements:
+      Carp 0
+      ExtUtils::MakeMaker 0
+      File::HomeDir 0
+      File::Spec::Functions 0
+      HTTP::Date 0
+      HTTP::Tiny 0
+      Moo 0
+      autodie 0
+      feature 0
+      perl 5.010000
+      strict 0
+      warnings 0
   POSIX-strftime-Compiler-0.31
     pathname: K/KA/KAZEBURO/POSIX-strftime-Compiler-0.31.tar.gz
     provides:
@@ -7193,6 +7214,15 @@ DISTRIBUTIONS
       Test::Builder::Module 0
       Test::More 0.61
       perl 5.008_001
+  Test-RequiresInternet-0.04
+    pathname: M/MA/MALLEN/Test-RequiresInternet-0.04.tar.gz
+    provides:
+      Test::RequiresInternet 0.04
+    requirements:
+      ExtUtils::MakeMaker 0
+      Socket 0
+      strict 0
+      warnings 0
   Test-Routine-0.018
     pathname: R/RJ/RJBS/Test-Routine-0.018.tar.gz
     provides:

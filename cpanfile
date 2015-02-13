@@ -107,6 +107,7 @@ requires 'Mozilla::CA';
 requires 'Net::DNS::Paranoid';
 requires 'Net::OpenID::Consumer';
 requires 'Net::Twitter';
+requires 'PAUSE::Permissions';
 requires 'Parse::CPAN::Packages::Fast', '0.04';
 requires 'Parse::CSV';
 requires 'Parse::PMFile', '0.29';
@@ -168,6 +169,7 @@ test_requires 'Test::More', '0.99';
 test_requires 'Test::Most';
 test_requires 'Test::OpenID::Server';
 test_requires 'Test::Perl::Critic';
+test_requires 'Test::RequiresInternet';
 test_requires 'Test::Routine', '0.012';
 test_requires 'Test::Routine::Util', '0';
 
