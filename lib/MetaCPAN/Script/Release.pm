@@ -214,7 +214,23 @@ sub import_tarball {
         = dir( File::Temp::tempdir( CLEANUP => 0, DIR => $self->base_dir ) );
     my $date    = DateTime->from_epoch( epoch => $tarball_path->stat->mtime );
     my $version = MetaCPAN::Util::fix_version( $d->version );
-    my $meta    = CPAN::Meta->new(
+    my $bulk    = $cpan->bulk( size => 10 );
+
+    my $tarball = MetaCPAN::Model::Tarball->new(
+        author       => $author,
+        bulk         => $bulk,
+        date         => $date,
+        distribution => $d->dist,
+        index        => $cpan,
+        maturity     => $d->maturity,
+        name         => $name,
+        status       => $self->detect_status( $author, $archive ),
+        tarball      => $tarball_path,
+        tmpdir       => $tmpdir,
+        version      => $d->version,
+    );
+
+    my $meta = CPAN::Meta->new(
         {
             license  => 'unknown',
             name     => $d->dist,
@@ -226,7 +242,10 @@ sub import_tarball {
     my $st = $tarball_path->stat;
     my $stat = { map { $_ => $st->$_ } qw(mode uid gid size mtime) };
 
+    $tarball->extract;    # so $tmpdir is populated
     $meta = $self->load_meta_file($tmpdir) || $meta;
+
+    $tarball->metadata($meta);
 
     log_debug {'Gathering dependencies'};
 
@@ -250,7 +269,7 @@ sub import_tarball {
         name     => $name,
         provides => [],
         stat     => $stat,
-        status   => $self->detect_status( $author, $archive ),
+        status   => $tarball->status,
 
 # Call in scalar context to make sure we only get one value (building a hash).
         ( map { ( $_ => scalar $meta->$_ ) } qw( version resources ) ),
@@ -267,23 +286,6 @@ sub import_tarball {
         $cpan->type('distribution')
             ->put( { name => $d->dist }, { create => 1 } );
     };
-
-    my $bulk = $cpan->bulk( size => 10 );
-
-    my $tarball = MetaCPAN::Model::Tarball->new(
-        author       => $author,
-        bulk         => $bulk,
-        date         => $date,
-        distribution => $d->dist,
-        index        => $cpan,
-        maturity     => $d->maturity,
-        metadata     => $meta,
-        name         => $name,
-        status       => $release->status,
-        tarball      => $tarball_path,
-        tmpdir       => $tmpdir,
-        version      => $d->version,
-    );
 
     my @files = $tarball->get_files();
 
