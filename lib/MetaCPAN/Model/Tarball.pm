@@ -11,6 +11,13 @@ use Moose;
 use MooseX::StrictConstructor;
 use Path::Class qw(file dir);
 
+has archive => (
+    is      => 'rw',
+    isa     => 'Archive::Any',
+    lazy    => 1,
+    builder => '_build_archive',
+);
+
 has tarball => (
     is       => 'rw',
     isa      => File,
@@ -72,8 +79,9 @@ has tmpdir => (
 
 has bulk => ( is => 'rw', );
 
-sub _build_files {
+sub _build_archive {
     my $self = shift;
+
     log_info { 'Processing ', $self->tarball };
 
     my $archive = Archive::Any->new( $self->tarball );
@@ -82,11 +90,16 @@ sub _build_files {
 
     log_error {"$self->tarball is being naughty"} if $archive->is_naughty;
 
-    log_debug {'Extracting archive to filesystem'};
-    $archive->extract( $self->tmpdir );
+    return $archive;
+}
+
+sub _build_files {
+    my $self = shift;
+
+    $self->extract;
 
     my @files;
-    log_debug { 'Indexing ', scalar $archive->files, ' files' };
+    log_debug { 'Indexing ', scalar $self->archive->files, ' files' };
     my $file_set = $self->index->type('file');
 
     File::Find::find(
@@ -107,7 +120,7 @@ sub _build_files {
             $child->is_dir
                 ? $filename =~ s/^(.*\/)?(.+?)\/?$/$2/
                 : $filename =~ s/.*\///;
-            $fpath = q{} if $relative !~ /\// && !$archive->is_impolite;
+            $fpath = q{} if $relative !~ /\// && !$self->archive->is_impolite;
 
             my $file = $file_set->new_document(
                 Dlog_trace {"adding file $_"} +{
@@ -141,6 +154,15 @@ sub _build_files {
     $self->bulk->commit;
 
     return \@files;
+}
+
+sub extract {
+    my $self = shift;
+
+    log_debug {'Extracting archive to filesystem'};
+    $self->archive->extract( $self->tmpdir );
+
+    return;
 }
 
 sub _is_broken_file {
