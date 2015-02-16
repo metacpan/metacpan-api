@@ -6,7 +6,7 @@ use warnings;
 use BackPAN::Index;
 use Moose;
 
-with 'MetaCPAN::Role::Common', 'MooseX::Getopt::Dashes';
+with 'MetaCPAN::Role::Script', 'MooseX::Getopt::Dashes';
 
 sub run {
     my $self = shift;

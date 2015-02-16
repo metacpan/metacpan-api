@@ -14,7 +14,7 @@ use Moose;
 use MooseX::Types::Path::Class qw(:all);
 use Try::Tiny;
 
-with 'MetaCPAN::Role::Common', 'MooseX::Getopt::Dashes';
+with 'MetaCPAN::Role::Script', 'MooseX::Getopt::Dashes';
 
 has batch_size => (
     is      => 'ro',

@@ -1,4 +1,4 @@
-package MetaCPAN::Role::Common;
+package MetaCPAN::Role::Script;
 
 use strict;
 use warnings;
@@ -161,8 +161,8 @@ before run => sub {
     # NOTE: This makes the test suite print "mapping" regardless of which
     # script class is actually running (the category only gets set once)
     # but Log::Contextual gets mad if you call set_logger more than once.
-    unless ($MetaCPAN::Role::Common::log) {
-        $MetaCPAN::Role::Common::log = $self->logger;
+    unless ($MetaCPAN::Role::Script::log) {
+        $MetaCPAN::Role::Script::log = $self->logger;
         set_logger $self->logger;
     }
 

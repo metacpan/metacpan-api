@@ -6,7 +6,7 @@ use warnings;
 use Log::Contextual qw( :log );
 use Moose;
 
-with 'MetaCPAN::Role::Common', 'MooseX::Getopt';
+with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
 has distribution => (
     is            => 'rw',
