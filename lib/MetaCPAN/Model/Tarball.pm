@@ -11,6 +11,8 @@ use Moose;
 use MooseX::StrictConstructor;
 use Path::Class qw(file dir);
 
+with 'MetaCPAN::Role::Logger';
+
 has archive => (
     is      => 'rw',
     isa     => 'Archive::Any',
@@ -73,8 +75,9 @@ has status => (
 );
 
 has tmpdir => (
-    is  => 'rw',
-    isa => Dir,
+    is     => 'rw',
+    isa    => Dir,
+    coerce => 1,
 );
 
 has bulk => ( is => 'rw', );

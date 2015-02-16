@@ -222,6 +222,8 @@ sub import_tarball {
         date         => $date,
         distribution => $d->dist,
         index        => $cpan,
+        level        => $self->level,
+        logger       => $self->logger,
         maturity     => $d->maturity,
         name         => $name,
         status       => $self->detect_status( $author, $archive ),
