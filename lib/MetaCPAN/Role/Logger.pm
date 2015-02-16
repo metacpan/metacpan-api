@@ -1,7 +1,9 @@
 package MetaCPAN::Role::Logger;
 
+use v5.10;
 use Moose::Role;
 use MetaCPAN::Types qw(:all);
+use Log::Contextual qw( set_logger );
 use Log::Log4perl ':easy';
 use Path::Class ();
 
@@ -26,6 +28,22 @@ sub set_level {
     my $self = shift;
     $self->logger->level(
         Log::Log4perl::Level::to_priority( uc( $self->level ) ) );
+}
+
+# NOTE: This makes the test suite print "mapping" regardless of which
+# script class is actually running (the category only gets set once)
+# but Log::Contextual gets mad if you call set_logger more than once.
+sub set_logger_once {
+    state $logger_set = 0;
+    return if $logger_set;
+
+    my $self = shift;
+
+    set_logger $self->logger;
+
+    $logger_set = 1;
+
+    return;
 }
 
 # XXX NOT A MOOSE BUILDER

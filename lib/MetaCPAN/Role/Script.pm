@@ -6,7 +6,7 @@ use warnings;
 use ElasticSearch;
 use ElasticSearchX::Model::Document::Types qw(:all);
 use FindBin;
-use Log::Contextual qw( set_logger :dlog );
+use Log::Contextual qw( :dlog );
 use MetaCPAN::Model;
 use MetaCPAN::Types qw(:all);
 use Moose::Role;
@@ -113,13 +113,7 @@ sub run { }
 before run => sub {
     my $self = shift;
 
-    # NOTE: This makes the test suite print "mapping" regardless of which
-    # script class is actually running (the category only gets set once)
-    # but Log::Contextual gets mad if you call set_logger more than once.
-    unless ($MetaCPAN::Role::Script::log) {
-        $MetaCPAN::Role::Script::log = $self->logger;
-        set_logger $self->logger;
-    }
+    $self->set_logger_once;
 
     Dlog_debug {"Connected to $_"} $self->remote;
 };
