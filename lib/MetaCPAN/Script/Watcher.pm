@@ -9,7 +9,7 @@ use Log::Contextual qw( :log );
 use MetaCPAN::Util;
 use Moose;
 
-with 'MetaCPAN::Role::Common', 'MooseX::Getopt';
+with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
 has backpan => (
     is            => 'ro',

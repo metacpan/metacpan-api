@@ -1,4 +1,4 @@
-package MetaCPAN::Role::Common;
+package MetaCPAN::Role::Script;
 
 use strict;
 use warnings;
@@ -6,13 +6,13 @@ use warnings;
 use ElasticSearch;
 use ElasticSearchX::Model::Document::Types qw(:all);
 use FindBin;
-use Log::Contextual qw( set_logger :dlog );
-use Log::Log4perl ':easy';
+use Log::Contextual qw( :dlog );
 use MetaCPAN::Model;
 use MetaCPAN::Types qw(:all);
 use Moose::Role;
 use MooseX::Types::Path::Class qw(:all);
-use Path::Class ();
+
+with 'MetaCPAN::Role::Logger';
 
 has 'cpan' => (
     is         => 'rw',
@@ -21,14 +21,6 @@ has 'cpan' => (
     coerce     => 1,
     documentation =>
         'Location of a local CPAN mirror, looks for $ENV{MINICPAN} and ~/CPAN',
-);
-
-has level => (
-    is            => 'ro',
-    isa           => 'Str',
-    required      => 1,
-    trigger       => \&set_level,
-    documentation => 'Log level',
 );
 
 has es => (
@@ -54,15 +46,6 @@ has port => (
     is            => 'ro',
     required      => 1,
     documentation => 'Port for the proxy, defaults to 5000',
-);
-
-has logger => (
-    is        => 'ro',
-    required  => 1,
-    isa       => Logger,
-    coerce    => 1,
-    predicate => 'has_logger',
-    traits    => ['NoGetopt'],
 );
 
 has home => (
@@ -92,37 +75,9 @@ sub index {
     return $self->model->index( $self->_index );
 }
 
-sub set_level {
-    my $self = shift;
-    $self->logger->level(
-        Log::Log4perl::Level::to_priority( uc( $self->level ) ) );
-}
-
 sub _build_model {
     my $self = shift;
     return MetaCPAN::Model->new( es => $self->es );
-}
-
-# NOT A MOOSE BUILDER
-sub _build_logger {
-    my ($config) = @_;
-    my $log = Log::Log4perl->get_logger( $ARGV[0] );
-    foreach my $c (@$config) {
-        my $layout = Log::Log4perl::Layout::PatternLayout->new( $c->{layout}
-                || "%d %p{1} %c: %m{chomp}%n" );
-
-        if ( $c->{class} =~ /Appender::File$/ && $c->{filename} ) {
-
-            # Create the log file's parent directory if necessary.
-            Path::Class::File->new( $c->{filename} )->parent->mkpath;
-        }
-
-        my $app = Log::Log4perl::Appender->new( $c->{class}, %$c );
-
-        $app->layout($layout);
-        $log->add_appender($app);
-    }
-    return $log;
 }
 
 sub file2mod {
@@ -158,13 +113,7 @@ sub run { }
 before run => sub {
     my $self = shift;
 
-    # NOTE: This makes the test suite print "mapping" regardless of which
-    # script class is actually running (the category only gets set once)
-    # but Log::Contextual gets mad if you call set_logger more than once.
-    unless ($MetaCPAN::Role::Common::log) {
-        $MetaCPAN::Role::Common::log = $self->logger;
-        set_logger $self->logger;
-    }
+    $self->set_logger_once;
 
     Dlog_debug {"Connected to $_"} $self->remote;
 };

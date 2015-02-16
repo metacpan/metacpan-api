@@ -8,7 +8,7 @@ use File::Spec::Functions qw(catfile);
 use Log::Contextual qw( :log );
 use Moose;
 
-with 'MetaCPAN::Role::Common', 'MooseX::Getopt';
+with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
 has modules => (
     is            => 'ro',

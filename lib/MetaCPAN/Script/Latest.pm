@@ -10,7 +10,7 @@ use Parse::CPAN::Packages::Fast;
 use Regexp::Common qw(time);
 use Time::Local;
 
-with 'MetaCPAN::Role::Common', 'MooseX::Getopt';
+with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
 has dry_run => (
     is      => 'ro',

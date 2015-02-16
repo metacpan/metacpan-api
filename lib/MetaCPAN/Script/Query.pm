@@ -9,7 +9,7 @@ use Moose;
 use MooseX::Aliases;
 use YAML::Syck qw(Dump);
 
-with 'MetaCPAN::Role::Common', 'MooseX::Getopt';
+with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
 $YAML::Syck::SortKeys = $YAML::Syck::Headless = $YAML::Syck::ImplicitTyping
     = $YAML::Syck::UseCode = 1;

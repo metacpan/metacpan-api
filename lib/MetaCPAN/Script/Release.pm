@@ -28,7 +28,7 @@ use PAUSE::Permissions;
 use PerlIO::gzip;
 use Try::Tiny;
 
-with 'MetaCPAN::Role::Common', 'MooseX::Getopt';
+with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
 has latest => (
     is            => 'ro',
