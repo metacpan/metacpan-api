@@ -53,7 +53,7 @@ sub _build_logger {
     my $log = Log::Log4perl->get_logger( $ARGV[0] );
     foreach my $c (@$config) {
         my $layout = Log::Log4perl::Layout::PatternLayout->new( $c->{layout}
-                || "%d %p{1} %c: %m{chomp}%n" );
+                || '%d %p{1} %c: %m{chomp}%n' );
 
         if ( $c->{class} =~ /Appender::File$/ && $c->{filename} ) {
 

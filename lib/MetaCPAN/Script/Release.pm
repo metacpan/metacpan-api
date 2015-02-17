@@ -24,7 +24,6 @@ use Module::Metadata 1.000012 ();    # Improved package detection.
 use Moose;
 use Parse::PMFile;
 use Path::Class qw(file dir);
-use PAUSE::Permissions;
 use PerlIO::gzip;
 use Try::Tiny;
 

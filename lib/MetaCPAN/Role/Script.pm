@@ -65,7 +65,7 @@ has config => (
 sub _build_config {
     my $self = shift;
     return Config::JFDI->new(
-        name => "metacpan_server",
+        name => 'metacpan_server',
         path => "$FindBin::RealBin/..",
     )->get;
 }
@@ -95,7 +95,7 @@ sub _build_cpan {
     my $self = shift;
     my @dirs = (
         $ENV{MINICPAN},    '/home/metacpan/CPAN',
-        "$ENV{HOME}/CPAN", "$ENV{HOME}/minicpan"
+        "$ENV{HOME}/CPAN", "$ENV{HOME}/minicpan",
     );
     foreach my $dir ( grep {defined} @dirs ) {
         return $dir if -d $dir;

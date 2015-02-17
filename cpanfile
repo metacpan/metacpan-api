@@ -107,7 +107,6 @@ requires 'Mozilla::CA';
 requires 'Net::DNS::Paranoid';
 requires 'Net::OpenID::Consumer';
 requires 'Net::Twitter';
-requires 'PAUSE::Permissions';
 requires 'Parse::CPAN::Packages::Fast', '0.04';
 requires 'Parse::CSV';
 requires 'Parse::PMFile', '0.29';
