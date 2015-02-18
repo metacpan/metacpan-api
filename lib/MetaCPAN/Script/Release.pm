@@ -82,13 +82,6 @@ has perms => (
     traits     => ['NoGetopt'],
 );
 
-has base_dir => (
-    is      => 'ro',
-    isa     => Dir,
-    coerce  => 1,
-    default => '/tmp',
-);
-
 my @always_no_index_dirs = (
 
     # Always ignore the same dirs as PAUSE (lib/PAUSE/dist.pm):
@@ -209,8 +202,6 @@ sub import_tarball {
     my $d    = CPAN::DistnameInfo->new($tarball_path);
     my ( $author, $archive, $name )
         = ( $d->cpanid, $d->filename, $d->distvname );
-    my $tmpdir
-        = dir( File::Temp::tempdir( CLEANUP => 0, DIR => $self->base_dir ) );
     my $date    = DateTime->from_epoch( epoch => $tarball_path->stat->mtime );
     my $version = MetaCPAN::Util::fix_version( $d->version );
     my $bulk    = $cpan->bulk( size => 10 );
@@ -227,7 +218,6 @@ sub import_tarball {
         name         => $name,
         status       => $self->detect_status( $author, $archive ),
         tarball      => $tarball_path,
-        tmpdir       => $tmpdir,
         version      => $d->version,
     );
 
@@ -243,8 +233,8 @@ sub import_tarball {
     my $st = $tarball_path->stat;
     my $stat = { map { $_ => $st->$_ } qw(mode uid gid size mtime) };
 
-    $tarball->extract;    # so $tmpdir is populated
-    $meta = $self->load_meta_file($tmpdir) || $meta;
+    my $extract_dir = $tarball->extract;
+    $meta = $self->load_meta_file($extract_dir) || $meta;
 
     $tarball->metadata($meta);
 
@@ -436,8 +426,6 @@ sub import_tarball {
         $release->authorized(0);
         $release->put;
     }
-
-    $tmpdir->rmtree;
 
     if ( $self->latest ) {
         local @ARGV = ( qw(latest --distribution), $release->distribution );

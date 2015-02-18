@@ -19,7 +19,6 @@ my $config = do {
 my $url
     = 'https://cpan.metacpan.org/authors/id/D/DC/DCANTRELL/Acme-Pony-1.1.2.tar.gz';
 my $archive_file = File::Temp->new;
-my $tempdir      = File::Temp->newdir;
 getstore $url, $archive_file->filename;
 ok -s $archive_file->filename;
 
@@ -27,7 +26,6 @@ my $tarball = MetaCPAN::Model::Tarball->new(
     logger  => $config->{logger},
     level   => $config->{level},
     tarball => $archive_file->filename,
-    tmpdir  => $tempdir->dirname,
 );
 $tarball->set_logger_once;
 

@@ -1,11 +1,11 @@
 package MetaCPAN::Model::Tarball;
 
-use Archive::Any;
 use CPAN::DistnameInfo ();
 use DateTime           ();
 use DDP;
 use File::stat ();
 use Log::Contextual qw( :log :dlog );
+use MetaCPAN::Model::Archive;
 use MetaCPAN::Types qw(ArrayRef Dir File HashRef Str);
 use Moose;
 use MooseX::StrictConstructor;
@@ -14,8 +14,8 @@ use Path::Class qw(file dir);
 with 'MetaCPAN::Role::Logger';
 
 has archive => (
-    is      => 'rw',
-    isa     => 'Archive::Any',
+    is      => 'ro',
+    isa     => 'MetaCPAN::Model::Archive',
     lazy    => 1,
     builder => '_build_archive',
 );
@@ -74,12 +74,6 @@ has status => (
     isa => Str,
 );
 
-has tmpdir => (
-    is     => 'rw',
-    isa    => Dir,
-    coerce => 1,
-);
-
 has bulk => ( is => 'rw', );
 
 sub _build_archive {
@@ -87,7 +81,7 @@ sub _build_archive {
 
     log_info { 'Processing ', $self->tarball };
 
-    my $archive = Archive::Any->new( $self->tarball );
+    my $archive = MetaCPAN::Model::Archive->new( archive => $self->tarball );
 
     log_error {"$self->tarball is being impolite"} if $archive->is_impolite;
 
@@ -99,12 +93,11 @@ sub _build_archive {
 sub _build_files {
     my $self = shift;
 
-    $self->extract;
-
     my @files;
-    log_debug { 'Indexing ', scalar $self->archive->files, ' files' };
+    log_debug { 'Indexing ', scalar @{ $self->archive->files }, ' files' };
     my $file_set = $self->index->type('file');
 
+    my $extract_dir = $self->extract;
     File::Find::find(
         sub {
             my $child
@@ -112,7 +105,7 @@ sub _build_files {
                 ? dir($File::Find::name)
                 : file($File::Find::name);
             return if $self->_is_broken_file($File::Find::name);
-            my $relative = $child->relative( $self->tmpdir );
+            my $relative = $child->relative($extract_dir);
             my $stat     = do {
                 my $s = $child->stat;
                 +{ map { $_ => $s->$_ } qw(mode uid gid size mtime) };
@@ -151,7 +144,7 @@ sub _build_files {
             $self->bulk->put($file);
             push( @files, $file );
         },
-        $self->tmpdir
+        $extract_dir
     );
 
     $self->bulk->commit;
@@ -163,9 +156,7 @@ sub extract {
     my $self = shift;
 
     log_debug {'Extracting archive to filesystem'};
-    $self->archive->extract( $self->tmpdir );
-
-    return;
+    return $self->archive->extract;
 }
 
 sub _is_broken_file {
