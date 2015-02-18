@@ -1,0 +1,33 @@
+{
+    "name": "Prereqs-Basic",
+    "abstract": "A perl module with prereqs",
+    "version": 0.01,
+    "prereqs": {
+        "build": {
+            "requires": {
+                "For::Build::Requires1": 2.45
+            }
+        },
+        "configure": {
+            "requires": {
+                "For::Configure::Requires1": 72
+            }
+        },
+        "runtime": {
+            "requires": {
+                "For::Runtime::Requires1": 0,
+                "For::Runtime::Requires2": 1.23
+            },
+            "recommends": {
+                "For::Runtime::Recommends1": 0
+            }
+        }
+    },
+    "X_Module_Faker": {
+        "cpan_author": "MSCHWERN",
+        "append": [{
+            "file": "lib/Prereqs/Basic.pm",
+            "content": "package Prereqs::Basic; 1;"
+        }]
+    }
+}

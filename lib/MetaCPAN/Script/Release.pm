@@ -206,19 +206,15 @@ sub import_archive {
     my $st = $archive_path->stat;
     my $stat = { map { $_ => $st->$_ } qw(mode uid gid size mtime) };
 
-    log_debug {'Gathering dependencies'};
-
     my $meta         = $release_model->metadata;
-    my @dependencies = $self->dependencies($meta);
-
-    log_debug { 'Found ', scalar @dependencies, " dependencies" };
+    my $dependencies = $release_model->dependencies;
 
     my $release = DlogS_trace {"adding release $_"} +{
         abstract     => MetaCPAN::Util::strip_pod( $meta->abstract ),
         archive      => $archive,
         author       => $author,
         date         => $date . q{},
-        dependency   => \@dependencies,
+        dependency   => $dependencies,
         distribution => $d->dist,
 
         # CPAN::Meta->license *must* be called in list context
@@ -400,29 +396,6 @@ sub import_archive {
         local @ARGV = ( qw(latest --distribution), $release->distribution );
         MetaCPAN::Script::Runner->run;
     }
-}
-
-sub dependencies {
-    my ( $self, $meta ) = @_;
-    my @dependencies;
-    if ( my $prereqs = $meta->prereqs ) {
-        while ( my ( $phase, $data ) = each %$prereqs ) {
-            while ( my ( $relationship, $v ) = each %$data ) {
-                while ( my ( $module, $version ) = each %$v ) {
-                    push(
-                        @dependencies,
-                        Dlog_trace {"adding dependency $_"} +{
-                            phase        => $phase,
-                            relationship => $relationship,
-                            module       => $module,
-                            version      => $version,
-                        }
-                    );
-                }
-            }
-        }
-    }
-    return @dependencies;
 }
 
 sub _build_backpan_index {

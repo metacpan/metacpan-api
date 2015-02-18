@@ -23,6 +23,12 @@ has archive => (
     builder => '_build_archive',
 );
 
+has dependencies => (
+    is         => 'ro',
+    isa        => 'ArrayRef',
+    lazy_build => 1
+);
+
 has file => (
     is       => 'rw',
     isa      => File,
@@ -96,6 +102,36 @@ sub _build_archive {
     log_error {"$self->file is being naughty"} if $archive->is_naughty;
 
     return $archive;
+}
+
+sub _build_dependencies {
+    my $self = shift;
+    my $meta = $self->metadata;
+
+    log_debug {'Gathering dependencies'};
+
+    my @dependencies;
+    if ( my $prereqs = $meta->prereqs ) {
+        while ( my ( $phase, $data ) = each %$prereqs ) {
+            while ( my ( $relationship, $v ) = each %$data ) {
+                while ( my ( $module, $version ) = each %$v ) {
+                    push(
+                        @dependencies,
+                        Dlog_trace {"adding dependency $_"} +{
+                            phase        => $phase,
+                            relationship => $relationship,
+                            module       => $module,
+                            version      => $version,
+                        }
+                    );
+                }
+            }
+        }
+    }
+
+    log_debug { 'Found ', scalar @dependencies, " dependencies" };
+
+    return \@dependencies;
 }
 
 sub _build_files {
