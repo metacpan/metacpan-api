@@ -26,7 +26,7 @@ has archive => (
 has dependencies => (
     is         => 'ro',
     isa        => 'ArrayRef',
-    lazy_build => 1
+    lazy_build => 1,
 );
 
 has file => (
@@ -129,7 +129,7 @@ sub _build_dependencies {
         }
     }
 
-    log_debug { 'Found ', scalar @dependencies, " dependencies" };
+    log_debug { 'Found ', scalar @dependencies, ' dependencies' };
 
     return \@dependencies;
 }

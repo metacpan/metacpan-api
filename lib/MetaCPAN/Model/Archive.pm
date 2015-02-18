@@ -63,9 +63,9 @@ has _extractor => (
     lazy     => 1,
     default  => sub {
         my $self = shift;
-        croak $self->file . " does not exist" unless -e $self->file;
+        croak $self->file . ' does not exist' unless -e $self->file;
         return Archive::Any->new( $self->file );
-    }
+    },
 );
 
 # Holding the File::Temp::Dir object here is necessary to keep it
@@ -78,7 +78,7 @@ has _tempdir => (
     lazy     => 1,
     default  => sub {
         return File::Temp->newdir;
-    }
+    },
 );
 
 has extract_dir => (
@@ -89,7 +89,7 @@ has extract_dir => (
     default => sub {
         my $self = shift;
         return Path::Class::Dir->new( $self->_tempdir );
-    }
+    },
 );
 
 has _has_extracted => (
@@ -118,7 +118,7 @@ has files => (
     default  => sub {
         my $self = shift;
         return [ $self->_extractor->files ];
-    }
+    },
 );
 
 =head3 extract

@@ -13,7 +13,7 @@ subtest 'missing required arguments' => sub {
 };
 
 subtest 'file does not exist' => sub {
-    my $file = "hlaglhalghalghj.blah";
+    my $file = 'hlaglhalghalghj.blah';
     my $archive = $CLASS->new( file => $file );
 
     throws_ok { $archive->files } qr{^$file does not exist};
@@ -88,13 +88,13 @@ subtest 'set extract dir' => sub {
 
         my $dir = $archive->extract_dir;
 
-        isa_ok $dir, "Path::Class::Dir";
+        isa_ok $dir, 'Path::Class::Dir';
         is $dir,     $temp;
         is $archive->extract, $temp;
         ok -s $dir->file('Some-1.00-TRIAL/META.json');
     }
 
-    ok -e $temp, "Path::Class doesn't cleanup directories it was handed";
+    ok -e $temp, q[Path::Class doesn't cleanup directories it was handed];
 };
 
 done_testing;

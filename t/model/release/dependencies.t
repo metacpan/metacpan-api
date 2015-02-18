@@ -13,7 +13,7 @@ my $config = do {
     MetaCPAN::Script::Runner->build_config;
 };
 
-subtest "basic dependencies" => sub {
+subtest 'basic dependencies' => sub {
     my $file
         = 't/var/tmp/fakecpan/authors/id/M/MS/MSCHWERN/Prereqs-Basic-0.01.tar.gz';
 
@@ -29,33 +29,33 @@ subtest "basic dependencies" => sub {
     cmp_bag $dependencies,
         [
         {
-            phase        => "build",
-            relationship => "requires",
-            module       => "For::Build::Requires1",
+            phase        => 'build',
+            relationship => 'requires',
+            module       => 'For::Build::Requires1',
             version      => 2.45
         },
         {
-            phase        => "configure",
-            relationship => "requires",
-            module       => "For::Configure::Requires1",
+            phase        => 'configure',
+            relationship => 'requires',
+            module       => 'For::Configure::Requires1',
             version      => 72
         },
         {
-            phase        => "runtime",
-            relationship => "requires",
-            module       => "For::Runtime::Requires1",
+            phase        => 'runtime',
+            relationship => 'requires',
+            module       => 'For::Runtime::Requires1',
             version      => 0
         },
         {
-            phase        => "runtime",
-            relationship => "requires",
-            module       => "For::Runtime::Requires2",
+            phase        => 'runtime',
+            relationship => 'requires',
+            module       => 'For::Runtime::Requires2',
             version      => 1.23
         },
         {
-            phase        => "runtime",
-            relationship => "recommends",
-            module       => "For::Runtime::Recommends1",
+            phase        => 'runtime',
+            relationship => 'recommends',
+            module       => 'For::Runtime::Recommends1',
             version      => 0
         }
         ];
