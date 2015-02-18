@@ -9,9 +9,7 @@ BEGIN {
 
 use CPAN::DistnameInfo ();
 use DateTime           ();
-use File::Find         ();
 use File::Find::Rule;
-use File::Temp ();
 use File::stat ();
 use LWP::UserAgent;
 use Log::Contextual qw( :log :dlog );

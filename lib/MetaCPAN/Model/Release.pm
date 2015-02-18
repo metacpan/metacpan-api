@@ -1,10 +1,10 @@
 package MetaCPAN::Model::Release;
 
 use v5.10;
-use CPAN::DistnameInfo ();
-use CPAN::Meta         ();
-use DateTime           ();
+use CPAN::Meta ();
+use DateTime   ();
 use DDP;
+use File::Find ();
 use File::stat ();
 use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Model::Archive;
