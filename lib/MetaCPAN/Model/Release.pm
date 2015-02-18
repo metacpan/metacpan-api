@@ -1,4 +1,4 @@
-package MetaCPAN::Model::Tarball;
+package MetaCPAN::Model::Release;
 
 use CPAN::DistnameInfo ();
 use DateTime           ();

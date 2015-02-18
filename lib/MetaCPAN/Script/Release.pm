@@ -18,7 +18,7 @@ use LWP::UserAgent;
 use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Document::Author;
 use MetaCPAN::Script::Latest;
-use MetaCPAN::Model::Tarball;
+use MetaCPAN::Model::Release;
 use MetaCPAN::Types qw( Dir );
 use Module::Metadata 1.000012 ();    # Improved package detection.
 use Moose;
@@ -206,7 +206,7 @@ sub import_tarball {
     my $version = MetaCPAN::Util::fix_version( $d->version );
     my $bulk    = $cpan->bulk( size => 10 );
 
-    my $tarball = MetaCPAN::Model::Tarball->new(
+    my $tarball = MetaCPAN::Model::Release->new(
         author       => $author,
         bulk         => $bulk,
         date         => $date,
