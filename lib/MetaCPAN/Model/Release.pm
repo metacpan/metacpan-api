@@ -1,6 +1,8 @@
 package MetaCPAN::Model::Release;
 
+use v5.10;
 use CPAN::DistnameInfo ();
+use CPAN::Meta         ();
 use DateTime           ();
 use DDP;
 use File::stat ();
@@ -10,6 +12,7 @@ use MetaCPAN::Types qw(ArrayRef Dir File HashRef Str);
 use Moose;
 use MooseX::StrictConstructor;
 use Path::Class ();
+use Try::Tiny;
 
 with 'MetaCPAN::Role::Logger';
 
@@ -52,7 +55,12 @@ has name => (
     isa => Str,
 );
 
-has metadata => ( is => 'rw', );
+has metadata => (
+    is      => 'rw',
+    isa     => 'CPAN::Meta',
+    lazy    => 1,
+    builder => '_build_metadata',
+);
 
 has distribution => (
     is  => 'rw',
@@ -150,6 +158,78 @@ sub _build_files {
     $self->bulk->commit;
 
     return \@files;
+}
+
+my @always_no_index_dirs = (
+
+    # Always ignore the same dirs as PAUSE (lib/PAUSE/dist.pm):
+    ## skip "t" - libraries in ./t are test libraries!
+    ## skip "xt" - libraries in ./xt are author test libraries!
+    ## skip "inc" - libraries in ./inc are usually install libraries
+    ## skip "local" - somebody shipped his carton setup!
+    ## skip 'perl5" - somebody shipped her local::lib!
+    ## skip 'fatlib' - somebody shipped their fatpack lib!
+    qw( t xt inc local perl5 fatlib ),
+
+    # and add a few more
+    qw( example blib examples eg ),
+);
+
+sub _build_metadata {
+    my $self = shift;
+
+    my $extract_dir = $self->extract;
+
+    return $self->_load_meta_file || CPAN::Meta->new(
+        {
+            license  => 'unknown',
+            name     => $self->distribution,
+            no_index => { directory => [@always_no_index_dirs] },
+            version  => $self->version || 0,
+        }
+    );
+}
+
+sub _load_meta_file {
+    my $self = shift;
+
+    my $extract_dir = $self->extract;
+
+    my @files;
+    for (qw{*/META.json */META.yml */META.yaml META.json META.yml META.yaml})
+    {
+
+        # scalar context globbing (without exhausting results) produces
+        # confusing results (which caused existsing */META.json files to
+        # get skipped).  using list context seems more reliable.
+        my ($path) = <$extract_dir/$_>;
+        push( @files, $path ) if ( $path && -e $path );
+    }
+    return unless (@files);
+
+    #  YAML YAML::Tiny YAML::XS don't offer better results
+    my @backends = qw(CPAN::Meta::YAML YAML::Syck);
+    my $error;
+    while ( my $mod = shift @backends ) {
+        $ENV{PERL_YAML_BACKEND} = $mod;
+        my $last;
+        for my $file (@files) {
+            try {
+                $last = CPAN::Meta->load_file($file);
+            }
+            catch { $error = $_ };
+            if ($last) {
+                last;
+            }
+        }
+        if ($last) {
+            push( @{ $last->{no_index}->{directory} },
+                @always_no_index_dirs );
+            return $last;
+        }
+    }
+
+    log_warn {"META file could not be loaded: $error"} unless @backends;
 }
 
 sub extract {

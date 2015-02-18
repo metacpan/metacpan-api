@@ -8,7 +8,6 @@ BEGIN {
 }
 
 use CPAN::DistnameInfo ();
-use CPAN::Meta         ();
 use DateTime           ();
 use File::Find         ();
 use File::Find::Rule;
@@ -80,21 +79,6 @@ has perms => (
     isa        => 'HashRef',
     lazy_build => 1,
     traits     => ['NoGetopt'],
-);
-
-my @always_no_index_dirs = (
-
-    # Always ignore the same dirs as PAUSE (lib/PAUSE/dist.pm):
-    ## skip "t" - libraries in ./t are test libraries!
-    ## skip "xt" - libraries in ./xt are author test libraries!
-    ## skip "inc" - libraries in ./inc are usually install libraries
-    ## skip "local" - somebody shipped his carton setup!
-    ## skip 'perl5" - somebody shipped her local::lib!
-    ## skip 'fatlib' - somebody shipped their fatpack lib!
-    qw( t xt inc local perl5 fatlib ),
-
-    # and add a few more
-    qw( example blib examples eg ),
 );
 
 sub run {
@@ -221,25 +205,12 @@ sub import_archive {
         version      => $d->version,
     );
 
-    my $meta = CPAN::Meta->new(
-        {
-            license  => 'unknown',
-            name     => $d->dist,
-            no_index => { directory => [@always_no_index_dirs] },
-            version  => $version || 0,
-        }
-    );
-
     my $st = $archive_path->stat;
     my $stat = { map { $_ => $st->$_ } qw(mode uid gid size mtime) };
 
-    my $extract_dir = $release_model->extract;
-    $meta = $self->load_meta_file($extract_dir) || $meta;
-
-    $release_model->metadata($meta);
-
     log_debug {'Gathering dependencies'};
 
+    my $meta         = $release_model->metadata;
     my @dependencies = $self->dependencies($meta);
 
     log_debug { 'Found ', scalar @dependencies, " dependencies" };
@@ -431,46 +402,6 @@ sub import_archive {
         local @ARGV = ( qw(latest --distribution), $release->distribution );
         MetaCPAN::Script::Runner->run;
     }
-}
-
-sub load_meta_file {
-    my ( $self, $dir ) = @_;
-    my @files;
-    for (qw{*/META.json */META.yml */META.yaml META.json META.yml META.yaml})
-    {
-
-        # scalar context globbing (without exhausting results) produces
-        # confusing results (which caused existsing */META.json files to
-        # get skipped).  using list context seems more reliable.
-        my ($path) = <$dir/$_>;
-        push( @files, $path ) if ( $path && -e $path );
-    }
-    return unless (@files);
-
-    #  YAML YAML::Tiny YAML::XS don't offer better results
-    my @backends = qw(CPAN::Meta::YAML YAML::Syck);
-    my $error;
-    while ( my $mod = shift @backends ) {
-        $ENV{PERL_YAML_BACKEND} = $mod;
-        my $last;
-        for my $file (@files) {
-            try {
-                $last = CPAN::Meta->load_file($file);
-            }
-            catch { $error = $_ };
-            if ($last) {
-                last;
-            }
-        }
-        if ($last) {
-            push( @{ $last->{no_index}->{directory} },
-                @always_no_index_dirs );
-            return $last;
-        }
-    }
-
-    log_warn {"META file could not be loaded: $error"}
-    unless (@backends);
 }
 
 sub dependencies {
