@@ -43,7 +43,7 @@ subtest 'archive extraction' => sub {
     for my $file ( keys %want ) {
         my $size = $want{$file};
 
-        is -s $dir->subdir($file), $size, "size of $file";
+        is -s $dir->file($file), $size, "size of $file";
     }
 };
 
