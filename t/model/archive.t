@@ -76,4 +76,25 @@ subtest 'extract once' => sub {
     is $archive->extract, $archive->extract;
 };
 
+subtest 'set extract dir' => sub {
+    my $temp = File::Temp->newdir;
+
+    {
+        my $archive = $CLASS->new(
+            file =>
+                't/var/tmp/fakecpan/authors/id/L/LO/LOCAL/Some-1.00-TRIAL.tar.gz',
+            extract_dir => $temp->dirname
+        );
+
+        my $dir = $archive->extract_dir;
+
+        isa_ok $dir, "Path::Class::Dir";
+        is $dir,     $temp;
+        is $archive->extract, $temp;
+        ok -s $dir->file('Some-1.00-TRIAL/META.json');
+    }
+
+    ok -e $temp, "Path::Class doesn't cleanup directories it was handed";
+};
+
 done_testing;

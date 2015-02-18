@@ -81,12 +81,12 @@ has _tempdir => (
     }
 );
 
-has _extract_dir => (
-    is       => 'ro',
-    isa      => 'Path::Class::Dir',
-    init_arg => undef,
-    lazy     => 1,
-    default  => sub {
+has extract_dir => (
+    is      => 'ro',
+    isa     => 'Path::Class::Dir',
+    lazy    => 1,
+    coerce  => 1,
+    default => sub {
         my $self = shift;
         return Path::Class::Dir->new( $self->_tempdir );
     }
@@ -139,12 +139,12 @@ The extraction directory will be cleaned up when the object is destroyed.
 sub extract {
     my $self = shift;
 
-    return $self->_extract_dir if $self->_has_extracted;
+    return $self->extract_dir if $self->_has_extracted;
 
-    $self->_extractor->extract( $self->_extract_dir );
+    $self->_extractor->extract( $self->extract_dir );
     $self->_has_extracted(1);
 
-    return $self->_extract_dir;
+    return $self->extract_dir;
 }
 
 1;

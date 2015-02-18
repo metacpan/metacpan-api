@@ -3,9 +3,9 @@ package MetaCPAN::Server::Model::Source;
 use strict;
 use warnings;
 
-use Archive::Any     ();
 use File::Find::Rule ();
-use MetaCPAN::Util   ();
+use MetaCPAN::Model::Archive;
+use MetaCPAN::Util ();
 use Moose;
 use MooseX::Types::Path::Class qw(:all);
 use Path::Class qw(file dir);
@@ -63,11 +63,14 @@ sub path {
         ->in( $author, $http );
     return unless ( $archive_file && -e $archive_file );
 
-    my $archive = Archive::Any->new($archive_file);
-    return
-        if ( $archive->is_naughty );   # unpacks outside the current directory
     $source_dir->mkpath;
-    $archive->extract($source_dir);
+    my $archive = MetaCPAN::Model::Archive->new(
+        file        => $archive_file,
+        extract_dir => $source_dir
+    );
+
+    return if $archive->is_naughty;
+    $archive->extract;
 
     return $self->find_file( $source_dir, $file );
 }
