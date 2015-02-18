@@ -188,7 +188,7 @@ sub import_archive {
     my $version = MetaCPAN::Util::fix_version( $d->version );
     my $bulk    = $cpan->bulk( size => 10 );
 
-    my $release_model = MetaCPAN::Model::Release->new(
+    my $model = MetaCPAN::Model::Release->new(
         author       => $author,
         bulk         => $bulk,
         date         => $date,
@@ -206,8 +206,8 @@ sub import_archive {
     my $st = $archive_path->stat;
     my $stat = { map { $_ => $st->$_ } qw(mode uid gid size mtime) };
 
-    my $meta         = $release_model->metadata;
-    my $dependencies = $release_model->dependencies;
+    my $meta         = $model->metadata;
+    my $dependencies = $model->dependencies;
 
     my $document = DlogS_trace {"adding release $_"} +{
         abstract     => MetaCPAN::Util::strip_pod( $meta->abstract ),
@@ -225,7 +225,7 @@ sub import_archive {
         name     => $name,
         provides => [],
         stat     => $stat,
-        status   => $release_model->status,
+        status   => $model->status,
 
 # Call in scalar context to make sure we only get one value (building a hash).
         ( map { ( $_ => scalar $meta->$_ ) } qw( version resources ) ),
@@ -243,7 +243,7 @@ sub import_archive {
             ->put( { name => $d->dist }, { create => 1 } );
     };
 
-    my @files = $release_model->get_files();
+    my @files = $model->get_files();
 
     log_debug {'Gathering modules'};
 
