@@ -57,13 +57,13 @@ sub path {
     my $http = dir( qw(var tmp http authors), $author );
     $author = $self->cpan . "/authors/$author";
 
-    my ($tarball)
+    my ($archive_file)
         = File::Find::Rule->new->file->name(
         qr/^\Q$distvname\E\.(tgz|tbz|tar[\._-]gz|tar\.bz2|tar\.Z|zip|7z)$/)
         ->in( $author, $http );
-    return unless ( $tarball && -e $tarball );
+    return unless ( $archive_file && -e $archive_file );
 
-    my $archive = Archive::Any->new($tarball);
+    my $archive = Archive::Any->new($archive_file);
     return
         if ( $archive->is_naughty );   # unpacks outside the current directory
     $source_dir->mkpath;

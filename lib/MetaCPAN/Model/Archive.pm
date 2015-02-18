@@ -7,8 +7,8 @@ use MetaCPAN::Types qw(File);
 
 use Archive::Any;
 use Carp;
-use File::Temp ();
-use Path::Class qw(file dir);
+use File::Temp  ();
+use Path::Class ();
 
 =head1 NAME
 
@@ -18,7 +18,7 @@ MetaCPAN::Model::Archive - Inspect and extract archive files
 
     use MetaCPAN::Model::Archive;
 
-    my $archive = MetaCPAN::Model::Archive->new( archive => $some_file );
+    my $archive = MetaCPAN::Model::Archive->new( file => $some_file );
     my $files = $archive->files;
     my $extraction_dir = $archive->extract;
 
@@ -43,7 +43,7 @@ object.
 
 =cut
 
-has archive => (
+has file => (
     is       => 'ro',
     isa      => File,
     coerce   => 1,
@@ -63,8 +63,8 @@ has _extractor => (
     lazy     => 1,
     default  => sub {
         my $self = shift;
-        croak $self->archive . " does not exist" unless -e $self->archive;
-        return Archive::Any->new( $self->archive );
+        croak $self->file . " does not exist" unless -e $self->file;
+        return Archive::Any->new( $self->file );
     }
 );
 
@@ -88,7 +88,7 @@ has _extract_dir => (
     lazy     => 1,
     default  => sub {
         my $self = shift;
-        return dir( $self->_tempdir );
+        return Path::Class::Dir->new( $self->_tempdir );
     }
 );
 

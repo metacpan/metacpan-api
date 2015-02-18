@@ -54,8 +54,8 @@ MetaCPAN::Script::First - Set the C<first> bit after a full reindex
 =head1 DESCRIPTION
 
 Setting the L<MetaCPAN::Document::Release/first> bit cannot be
-set when indexing tarballs in parallel, e.g. when doing a full reindex.
-This script sets the C<first> bit once all tarballs have been indexed.
+set when indexing archives in parallel, e.g. when doing a full reindex.
+This script sets the C<first> bit once all archives have been indexed.
 
 See L<MetaCPAN::Document::Distribution/set_first_release> for more
 information.

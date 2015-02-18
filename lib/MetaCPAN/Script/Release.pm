@@ -103,7 +103,7 @@ sub run {
     my @files;
     for (@args) {
         if ( -d $_ ) {
-            log_info {"Looking for tarballs in $_"};
+            log_info {"Looking for archives in $_"};
             my $find = File::Find::Rule->new->file->name(
                 qr/\.(tgz|tbz|tar[\._-]gz|tar\.bz2|tar\.Z|zip|7z)$/);
             $find = $find->mtime( ">" . ( time - $self->age * 3600 ) )
@@ -146,7 +146,7 @@ sub run {
             log_error {"Dunno what $_ is"};
         }
     }
-    log_info { scalar @files, " tarballs found" } if ( @files > 1 );
+    log_info { scalar @files, " archives found" } if ( @files > 1 );
 
     # build here before we fork
     $self->index;
@@ -183,7 +183,7 @@ sub run {
             push( @pid, $pid );
         }
         else {
-            try { $self->import_tarball($file) }
+            try { $self->import_archive($file) }
             catch {
                 log_fatal {$_};
             };
@@ -194,30 +194,30 @@ sub run {
     $self->index->refresh;
 }
 
-sub import_tarball {
+sub import_archive {
     my $self         = shift;
-    my $tarball_path = Path::Class::File->new(shift);
+    my $archive_path = Path::Class::File->new(shift);
 
     my $cpan = $self->index;
-    my $d    = CPAN::DistnameInfo->new($tarball_path);
+    my $d    = CPAN::DistnameInfo->new($archive_path);
     my ( $author, $archive, $name )
         = ( $d->cpanid, $d->filename, $d->distvname );
-    my $date    = DateTime->from_epoch( epoch => $tarball_path->stat->mtime );
+    my $date    = DateTime->from_epoch( epoch => $archive_path->stat->mtime );
     my $version = MetaCPAN::Util::fix_version( $d->version );
     my $bulk    = $cpan->bulk( size => 10 );
 
-    my $tarball = MetaCPAN::Model::Release->new(
+    my $release_model = MetaCPAN::Model::Release->new(
         author       => $author,
         bulk         => $bulk,
         date         => $date,
         distribution => $d->dist,
+        file         => $archive_path,
         index        => $cpan,
         level        => $self->level,
         logger       => $self->logger,
         maturity     => $d->maturity,
         name         => $name,
         status       => $self->detect_status( $author, $archive ),
-        tarball      => $tarball_path,
         version      => $d->version,
     );
 
@@ -230,13 +230,13 @@ sub import_tarball {
         }
     );
 
-    my $st = $tarball_path->stat;
+    my $st = $archive_path->stat;
     my $stat = { map { $_ => $st->$_ } qw(mode uid gid size mtime) };
 
-    my $extract_dir = $tarball->extract;
+    my $extract_dir = $release_model->extract;
     $meta = $self->load_meta_file($extract_dir) || $meta;
 
-    $tarball->metadata($meta);
+    $release_model->metadata($meta);
 
     log_debug {'Gathering dependencies'};
 
@@ -260,7 +260,7 @@ sub import_tarball {
         name     => $name,
         provides => [],
         stat     => $stat,
-        status   => $tarball->status,
+        status   => $release_model->status,
 
 # Call in scalar context to make sure we only get one value (building a hash).
         ( map { ( $_ => scalar $meta->$_ ) } qw( version resources ) ),
@@ -278,7 +278,7 @@ sub import_tarball {
             ->put( { name => $d->dist }, { create => 1 } );
     };
 
-    my @files = $tarball->get_files();
+    my @files = $release_model->get_files();
 
     log_debug {'Gathering modules'};
 
@@ -591,7 +591,7 @@ individual files or an url.
 
 If an url is specified the file is downloaded to C<var/tmp/http/>. This folder is not
 cleaned up since L<MetaCPAN::Plack::Source> depends on it to extract the source of
-a file. If the tarball cannot be find in the cpan mirror, it tries the temporary
+a file. If the archive cannot be find in the cpan mirror, it tries the temporary
 folder. After a rsync this folder can be purged.
 
 =cut

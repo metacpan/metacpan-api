@@ -23,13 +23,13 @@ getstore $url, $archive_file->filename;
 ok -s $archive_file->filename;
 
 my $release = MetaCPAN::Model::Release->new(
-    logger  => $config->{logger},
-    level   => $config->{level},
-    tarball => $archive_file->filename,
+    logger => $config->{logger},
+    level  => $config->{level},
+    file   => $archive_file->filename,
 );
 $release->set_logger_once;
 
-is $release->tarball, $archive_file->filename;
+is $release->file, $archive_file->filename;
 
 # This isn't going to work without a lot more scaffolding passed into Release
 #my @files = $release->get_files();

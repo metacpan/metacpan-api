@@ -14,12 +14,12 @@ subtest 'missing required arguments' => sub {
 
 subtest 'file does not exist' => sub {
     my $file = "hlaglhalghalghj.blah";
-    my $archive = $CLASS->new( archive => $file );
+    my $archive = $CLASS->new( file => $file );
 
     throws_ok { $archive->files } qr{^$file does not exist};
 };
 
-subtest 'tarball extraction' => sub {
+subtest 'archive extraction' => sub {
     my %want = (
         'Some-1.00-TRIAL/lib/Some.pm' => 45,
         'Some-1.00-TRIAL/Makefile.PL' => 172,
@@ -30,7 +30,7 @@ subtest 'tarball extraction' => sub {
     );
 
     my $archive
-        = $CLASS->new( archive =>
+        = $CLASS->new( file =>
             't/var/tmp/fakecpan/authors/id/L/LO/LOCAL/Some-1.00-TRIAL.tar.gz'
         );
 
@@ -52,7 +52,7 @@ subtest 'temp cleanup' => sub {
 
     {
         my $archive
-            = $CLASS->new( archive =>
+            = $CLASS->new( file =>
                 't/var/tmp/fakecpan/authors/id/L/LO/LOCAL/Some-1.00-TRIAL.tar.gz'
             );
 
@@ -69,7 +69,7 @@ subtest 'temp cleanup' => sub {
 
 subtest 'extract once' => sub {
     my $archive
-        = $CLASS->new( archive =>
+        = $CLASS->new( file =>
             't/var/tmp/fakecpan/authors/id/L/LO/LOCAL/Some-1.00-TRIAL.tar.gz'
         );
 

@@ -9,7 +9,7 @@ use MetaCPAN::Model::Archive;
 use MetaCPAN::Types qw(ArrayRef Dir File HashRef Str);
 use Moose;
 use MooseX::StrictConstructor;
-use Path::Class qw(file dir);
+use Path::Class ();
 
 with 'MetaCPAN::Role::Logger';
 
@@ -20,7 +20,7 @@ has archive => (
     builder => '_build_archive',
 );
 
-has tarball => (
+has file => (
     is       => 'rw',
     isa      => File,
     required => 1,
@@ -79,13 +79,13 @@ has bulk => ( is => 'rw', );
 sub _build_archive {
     my $self = shift;
 
-    log_info { 'Processing ', $self->tarball };
+    log_info { 'Processing ', $self->file };
 
-    my $archive = MetaCPAN::Model::Archive->new( archive => $self->tarball );
+    my $archive = MetaCPAN::Model::Archive->new( file => $self->file );
 
-    log_error {"$self->tarball is being impolite"} if $archive->is_impolite;
+    log_error {"$self->file is being impolite"} if $archive->is_impolite;
 
-    log_error {"$self->tarball is being naughty"} if $archive->is_naughty;
+    log_error {"$self->file is being naughty"} if $archive->is_naughty;
 
     return $archive;
 }
@@ -102,8 +102,8 @@ sub _build_files {
         sub {
             my $child
                 = -d $File::Find::name
-                ? dir($File::Find::name)
-                : file($File::Find::name);
+                ? Path::Class::Dir->new($File::Find::name)
+                : Path::Class::File->new($File::Find::name);
             return if $self->_is_broken_file($File::Find::name);
             my $relative = $child->relative($extract_dir);
             my $stat     = do {
