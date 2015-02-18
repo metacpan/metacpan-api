@@ -209,7 +209,7 @@ sub import_archive {
     my $meta         = $release_model->metadata;
     my $dependencies = $release_model->dependencies;
 
-    my $release = DlogS_trace {"adding release $_"} +{
+    my $document = DlogS_trace {"adding release $_"} +{
         abstract     => MetaCPAN::Util::strip_pod( $meta->abstract ),
         archive      => $archive,
         author       => $author,
@@ -231,11 +231,11 @@ sub import_archive {
         ( map { ( $_ => scalar $meta->$_ ) } qw( version resources ) ),
     };
 
-    delete $release->{abstract}
-        if ( $release->{abstract} eq 'unknown'
-        || $release->{abstract} eq 'null' );
+    delete $document->{abstract}
+        if ( $document->{abstract} eq 'unknown'
+        || $document->{abstract} eq 'null' );
 
-    $release = $cpan->type('release')->put( $release, { refresh => 1 } );
+    $document = $cpan->type('release')->put( $document, { refresh => 1 } );
 
     # create will die if the document already exists
     eval {
@@ -369,31 +369,31 @@ sub import_archive {
         $file->clear_module if ( $file->is_pod_file );
         log_trace {"reindexing file $file->{path}"};
         $bulk->put($file);
-        if ( !$release->has_abstract && $file->abstract ) {
-            ( my $module = $release->distribution ) =~ s/-/::/g;
-            $release->abstract( $file->abstract );
-            $release->put;
+        if ( !$document->has_abstract && $file->abstract ) {
+            ( my $module = $document->distribution ) =~ s/-/::/g;
+            $document->abstract( $file->abstract );
+            $document->put;
         }
     }
     if (@provides) {
-        $release->provides( [ sort @provides ] );
-        $release->put;
+        $document->provides( [ sort @provides ] );
+        $document->put;
     }
     $bulk->commit;
 
     if (@release_unauthorized) {
         log_info {
             "release "
-                . $release->name
+                . $document->name
                 . " contains unauthorized modules: "
                 . join( ",", map { $_->name } @release_unauthorized );
         };
-        $release->authorized(0);
-        $release->put;
+        $document->authorized(0);
+        $document->put;
     }
 
     if ( $self->latest ) {
-        local @ARGV = ( qw(latest --distribution), $release->distribution );
+        local @ARGV = ( qw(latest --distribution), $document->distribution );
         MetaCPAN::Script::Runner->run;
     }
 }
