@@ -348,5 +348,34 @@ sub _is_broken_file {
     return 0;
 }
 
+sub add_modules_from_meta {
+    my $self = shift;
+
+    my @modules;
+
+    my $provides = $self->metadata->provides;
+    my $files    = $self->files;
+    foreach my $module ( sort keys %$provides ) {
+        my $data = $provides->{$module};
+        my $path = $data->{file};
+
+        # Obey no_index and take the shortest path if multiple files match.
+        my ($file) = sort { length( $a->path ) <=> length( $b->path ) }
+            grep { $_->indexed && $_->path =~ /\Q$path\E$/ } @$files;
+
+        next unless $file;
+        $file->add_module(
+            {
+                name    => $module,
+                version => $data->{version},
+                indexed => 1,
+            }
+        );
+        push( @modules, $file );
+    }
+
+    return \@modules;
+}
+
 __PACKAGE__->meta->make_immutable();
 1;

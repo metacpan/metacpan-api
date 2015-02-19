@@ -208,27 +208,10 @@ sub import_archive {
     }
 
     # find modules
-    my @modules;
+    my $modules;
     my $meta = $model->metadata;
-    if ( my %provides = %{ $meta->provides } ) {
-        foreach my $module ( sort keys %provides ) {
-            my $data = $provides{$module};
-            my $path = $data->{file};
-
-           # Obey no_index and take the shortest path if multiple files match.
-            my ($file) = sort { length( $a->path ) <=> length( $b->path ) }
-                grep { $_->indexed && $_->path =~ /\Q$path\E$/ } @$files;
-
-            next unless $file;
-            $file->add_module(
-                {
-                    name    => $module,
-                    version => $data->{version},
-                    indexed => 1,
-                }
-            );
-            push( @modules, $file );
-        }
+    if ( keys %{ $meta->provides } ) {
+        $modules = $model->add_modules_from_meta;
     }
     else {
         my @perl_files = grep { $_->name =~ m{(?:\.pm|\.pm\.PL)\z} }
@@ -254,7 +237,7 @@ sub import_archive {
                         }
                     );
                 }
-                push @modules, $file;
+                push @$modules, $file;
             }
 
             else {
@@ -295,18 +278,18 @@ sub import_archive {
                             }
                         );
                     }
-                    push( @modules, $file );
+                    push( @$modules, $file );
                     alarm(0);
                 };
             }
         }
     }
-    log_debug { 'Indexing ', scalar @modules, ' modules' };
+    log_debug { 'Indexing ', scalar @$modules, ' modules' };
     my $document = $model->document;
     my $perms    = $self->perms;
     my @release_unauthorized;
     my @provides;
-    foreach my $file (@modules) {
+    foreach my $file (@$modules) {
         $_->set_associated_pod( $file, \%associated_pod )
             for ( @{ $file->module } );
         $file->set_indexed($meta);
