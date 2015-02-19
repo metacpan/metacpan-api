@@ -5,9 +5,9 @@ use warnings;
 
 use File::Find::Rule ();
 use MetaCPAN::Model::Archive;
+use MetaCPAN::Types qw( Dir );
 use MetaCPAN::Util ();
 use Moose;
-use MooseX::Types::Path::Class qw(:all);
 use Path::Class qw(file dir);
 
 extends 'Catalyst::Model';

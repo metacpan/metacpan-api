@@ -100,7 +100,7 @@ requires 'MooseX::Types';
 requires 'MooseX::Types::Common::String';
 requires 'MooseX::Types::ElasticSearch', ' == 0.0.2'; # Newer versions use the other ES module which we can't upgrade to yet b/c of ESX-Model.
 requires 'MooseX::Types::Moose';
-requires 'MooseX::Types::Path::Class';
+requires 'MooseX::Types::Path::Class::MoreCoercions';
 requires 'MooseX::Types::Structured';
 requires 'MooseX::Types::URI';
 requires 'Mozilla::CA';

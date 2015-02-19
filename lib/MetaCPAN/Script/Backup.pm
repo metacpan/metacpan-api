@@ -9,9 +9,8 @@ use DateTime;
 use IO::Zlib ();
 use JSON::XS;
 use Log::Contextual qw( :log :dlog );
-use MetaCPAN::Types qw( Bool Int Str );
+use MetaCPAN::Types qw( Bool Int Str File );
 use Moose;
-use MooseX::Types::Path::Class qw(:all);
 use Try::Tiny;
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt::Dashes';

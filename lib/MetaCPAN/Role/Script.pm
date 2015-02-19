@@ -10,7 +10,6 @@ use Log::Contextual qw( :dlog );
 use MetaCPAN::Model;
 use MetaCPAN::Types qw(:all);
 use Moose::Role;
-use MooseX::Types::Path::Class qw(:all);
 
 with 'MetaCPAN::Role::Logger';
 
