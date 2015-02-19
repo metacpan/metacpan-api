@@ -18,9 +18,7 @@ use MetaCPAN::Script::Latest;
 use MetaCPAN::Model::Release;
 use MetaCPAN::Types qw( Dir );
 use MetaCPAN::Util ();
-use Module::Metadata 1.000012 ();    # Improved package detection.
 use Moose;
-use Parse::PMFile;
 use Path::Class qw(file dir);
 use PerlIO::gzip;
 use Try::Tiny;
@@ -207,86 +205,11 @@ sub import_archive {
             = [ @{ $associated_pod{$documentation} || [] }, $_ ];
     }
 
-    # find modules
-    my $modules;
-    my $meta = $model->metadata;
-    if ( keys %{ $meta->provides } ) {
-        $modules = $model->add_modules_from_meta;
-    }
-    else {
-        my @perl_files = grep { $_->name =~ m{(?:\.pm|\.pm\.PL)\z} }
-            grep { $_->indexed } @$files;
-        foreach my $file (@perl_files) {
-
-            if ( $file->name =~ m{\.PL\z} ) {
-
-                my $parser = Parse::PMFile->new( $meta->as_struct );
-
-                # FIXME: Should there be a timeout on this
-                # (like there is below for Module::Metadata)?
-                my $info = $parser->parse( $file->local_path );
-                next if !$info;
-
-                foreach my $module_name ( keys %{$info} ) {
-                    $file->add_module(
-                        {
-                            name => $module_name,
-                            defined $info->{$module_name}->{version}
-                            ? ( version => $info->{$module_name}->{version} )
-                            : (),
-                        }
-                    );
-                }
-                push @$modules, $file;
-            }
-
-            else {
-
-                eval {
-                    local $SIG{'ALRM'} = sub {
-                        log_error {'Call to Module::Metadata timed out '};
-                        die;
-                    };
-                    alarm(5);
-                    my $info;
-                    {
-                        local $SIG{__WARN__} = sub { };
-                        $info = Module::Metadata->new_from_file(
-                            $file->local_path );
-                    }
-
-          # Ignore packages that people cannot claim.
-          # https://github.com/andk/pause/blob/master/lib/PAUSE/pmfile.pm#L236
-                    for my $pkg ( grep { $_ ne 'main' && $_ ne 'DB' }
-                        $info->packages_inside )
-                    {
-                        my $version = $info->version($pkg);
-                        $file->add_module(
-                            {
-                                name => $pkg,
-                                defined $version
-
-# Stringify if it's a version object, otherwise fall back to stupid stringification
-# Changes in Module::Metadata were causing inconsistencies in the return value,
-# we are just trying to survive.
-                                ? (
-                                    version => ref $version eq "version"
-                                    ? $version->stringify
-                                    : ( $version . '' )
-                                    )
-                                : ()
-                            }
-                        );
-                    }
-                    push( @$modules, $file );
-                    alarm(0);
-                };
-            }
-        }
-    }
+    my $modules = $model->modules;
     log_debug { 'Indexing ', scalar @$modules, ' modules' };
     my $document = $model->document;
     my $perms    = $self->perms;
+    my $meta     = $model->metadata;
     my @release_unauthorized;
     my @provides;
     foreach my $file (@$modules) {

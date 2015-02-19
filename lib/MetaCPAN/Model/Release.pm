@@ -11,9 +11,11 @@ use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Model::Archive;
 use MetaCPAN::Types qw(ArrayRef AbsFile Str);
 use MetaCPAN::Util ();
+use Module::Metadata 1.000012 ();    # Improved package detection.
 use Moose;
 use MooseX::StrictConstructor;
 use Path::Class ();
+use Parse::PMFile;
 use Try::Tiny;
 
 with 'MetaCPAN::Role::Logger';
@@ -84,6 +86,21 @@ has metadata => (
     isa     => 'CPAN::Meta',
     lazy    => 1,
     builder => '_build_metadata',
+);
+
+has modules => (
+    is      => 'ro',
+    isa     => ArrayRef,
+    lazy    => 1,
+    default => sub {
+        my $self = shift;
+        if ( keys %{ $self->metadata->provides } ) {
+            return $self->_modules_from_meta;
+        }
+        else {
+            return $self->_modules_from_files;
+        }
+    },
 );
 
 has version => (
@@ -348,7 +365,7 @@ sub _is_broken_file {
     return 0;
 }
 
-sub add_modules_from_meta {
+sub _modules_from_meta {
     my $self = shift;
 
     my @modules;
@@ -372,6 +389,80 @@ sub add_modules_from_meta {
             }
         );
         push( @modules, $file );
+    }
+
+    return \@modules;
+}
+
+sub _modules_from_files {
+    my $self = shift;
+
+    my @modules;
+
+    my @perl_files = grep { $_->name =~ m{(?:\.pm|\.pm\.PL)\z} }
+        grep { $_->indexed } @{ $self->files };
+    foreach my $file (@perl_files) {
+        if ( $file->name =~ m{\.PL\z} ) {
+            my $parser = Parse::PMFile->new( $self->metadata->as_struct );
+
+            # FIXME: Should there be a timeout on this
+            # (like there is below for Module::Metadata)?
+            my $info = $parser->parse( $file->local_path );
+            next if !$info;
+
+            foreach my $module_name ( keys %{$info} ) {
+                $file->add_module(
+                    {
+                        name => $module_name,
+                        defined $info->{$module_name}->{version}
+                        ? ( version => $info->{$module_name}->{version} )
+                        : (),
+                    }
+                );
+            }
+            push @modules, $file;
+        }
+        else {
+            eval {
+                local $SIG{'ALRM'} = sub {
+                    log_error {'Call to Module::Metadata timed out '};
+                    die;
+                };
+                alarm(5);
+                my $info;
+                {
+                    local $SIG{__WARN__} = sub { };
+                    $info = Module::Metadata->new_from_file(
+                        $file->local_path );
+                }
+
+          # Ignore packages that people cannot claim.
+          # https://github.com/andk/pause/blob/master/lib/PAUSE/pmfile.pm#L236
+                for my $pkg ( grep { $_ ne 'main' && $_ ne 'DB' }
+                    $info->packages_inside )
+                {
+                    my $version = $info->version($pkg);
+                    $file->add_module(
+                        {
+                            name => $pkg,
+                            defined $version
+
+# Stringify if it's a version object, otherwise fall back to stupid stringification
+# Changes in Module::Metadata were causing inconsistencies in the return value,
+# we are just trying to survive.
+                            ? (
+                                version => ref $version eq 'version'
+                                ? $version->stringify
+                                : ( $version . q{} )
+                                )
+                            : ()
+                        }
+                    );
+                }
+                push( @modules, $file );
+                alarm(0);
+            };
+        }
     }
 
     return \@modules;
