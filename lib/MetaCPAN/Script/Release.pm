@@ -8,18 +8,14 @@ BEGIN {
 }
 
 use CPAN::DistnameInfo ();
-use DateTime           ();
 use File::Find::Rule;
 use File::stat ();
 use LWP::UserAgent;
 use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Document::Author;
-use MetaCPAN::Script::Latest;
 use MetaCPAN::Model::Release;
 use MetaCPAN::Types qw( Dir );
-use MetaCPAN::Util ();
 use Moose;
-use Path::Class qw(file dir);
 use PerlIO::gzip;
 use Try::Tiny;
 
@@ -177,7 +173,7 @@ sub run {
 
 sub import_archive {
     my $self         = shift;
-    my $archive_path = Path::Class::File->new(shift);
+    my $archive_path = shift;
 
     my $cpan = $self->index;
     my $d    = CPAN::DistnameInfo->new($archive_path);

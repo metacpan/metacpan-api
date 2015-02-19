@@ -16,6 +16,7 @@ use Config::General;
 use ElasticSearch::TestServer;
 use File::Copy;
 use MetaCPAN::Script::Author;
+use MetaCPAN::Script::Latest;
 use MetaCPAN::Script::Mapping;
 use MetaCPAN::Script::Release;
 use MetaCPAN::Script::Runner;
