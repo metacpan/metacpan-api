@@ -16,7 +16,7 @@ subtest 'file does not exist' => sub {
     my $file = 'hlaglhalghalghj.blah';
     my $archive = $CLASS->new( file => $file );
 
-    throws_ok { $archive->files } qr{^$file does not exist};
+    throws_ok { $archive->files } qr{$file does not exist};
 };
 
 subtest 'archive extraction' => sub {

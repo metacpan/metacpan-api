@@ -3,7 +3,7 @@ package MetaCPAN::Model::Archive;
 use v5.10;
 use Moose;
 use MooseX::StrictConstructor;
-use MetaCPAN::Types qw(File);
+use MetaCPAN::Types qw(AbsFile AbsDir Bool);
 
 use Archive::Any;
 use Carp;
@@ -45,7 +45,7 @@ object.
 
 has file => (
     is       => 'ro',
-    isa      => File,
+    isa      => AbsFile,
     coerce   => 1,
     required => 1,
 );
@@ -83,7 +83,7 @@ has _tempdir => (
 
 has extract_dir => (
     is      => 'ro',
-    isa     => 'Path::Class::Dir',
+    isa     => AbsDir,
     lazy    => 1,
     coerce  => 1,
     default => sub {
@@ -94,7 +94,7 @@ has extract_dir => (
 
 has _has_extracted => (
     is       => 'rw',
-    isa      => 'Bool',
+    isa      => Bool,
     init_arg => undef,
     default  => 0,
 );

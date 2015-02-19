@@ -8,7 +8,7 @@ use File::Find ();
 use File::stat ();
 use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Model::Archive;
-use MetaCPAN::Types qw(ArrayRef Dir File HashRef Str);
+use MetaCPAN::Types qw(ArrayRef AbsFile Str);
 use Moose;
 use MooseX::StrictConstructor;
 use Path::Class ();
@@ -25,13 +25,13 @@ has archive => (
 
 has dependencies => (
     is         => 'ro',
-    isa        => 'ArrayRef',
+    isa        => ArrayRef,
     lazy_build => 1,
 );
 
 has file => (
     is       => 'rw',
-    isa      => File,
+    isa      => AbsFile,
     required => 1,
     coerce   => 1,
 );
