@@ -1,14 +1,16 @@
 package MetaCPAN::Model::Release;
 
 use v5.10;
-use CPAN::Meta ();
-use DateTime   ();
+use CPAN::DistnameInfo ();
+use CPAN::Meta         ();
+use DateTime           ();
 use DDP;
 use File::Find ();
 use File::stat ();
 use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Model::Archive;
 use MetaCPAN::Types qw(ArrayRef AbsFile Str);
+use MetaCPAN::Util ();
 use Moose;
 use MooseX::StrictConstructor;
 use Path::Class ();
@@ -27,6 +29,21 @@ has dependencies => (
     is         => 'ro',
     isa        => ArrayRef,
     lazy_build => 1,
+);
+
+has distinfo => (
+    is      => 'ro',
+    isa     => 'CPAN::DistnameInfo',
+    handles => {
+        maturity     => "maturity",
+        author       => "cpanid",
+        name         => "distvname",
+        distribution => "dist",
+    },
+    default => sub {
+        my $self = shift;
+        return CPAN::DistnameInfo->new( $self->file );
+    },
 );
 
 has file => (
@@ -51,16 +68,6 @@ has date => (
 
 has index => ( is => 'rw', );
 
-has author => (
-    is  => 'rw',
-    isa => Str,
-);
-
-has name => (
-    is  => 'rw',
-    isa => Str,
-);
-
 has metadata => (
     is      => 'rw',
     isa     => 'CPAN::Meta',
@@ -68,19 +75,14 @@ has metadata => (
     builder => '_build_metadata',
 );
 
-has distribution => (
-    is  => 'rw',
-    isa => Str,
-);
-
 has version => (
-    is  => 'rw',
-    isa => Str,
-);
-
-has maturity => (
-    is  => 'rw',
-    isa => Str,
+    is      => 'rw',
+    isa     => Str,
+    lazy    => 1,
+    default => sub {
+        my $self = shift;
+        return MetaCPAN::Util::fix_version( $self->distinfo->version );
+    },
 );
 
 has status => (

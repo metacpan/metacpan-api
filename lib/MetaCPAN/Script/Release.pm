@@ -17,6 +17,7 @@ use MetaCPAN::Document::Author;
 use MetaCPAN::Script::Latest;
 use MetaCPAN::Model::Release;
 use MetaCPAN::Types qw( Dir );
+use MetaCPAN::Util ();
 use Module::Metadata 1.000012 ();    # Improved package detection.
 use Moose;
 use Parse::PMFile;
@@ -184,23 +185,18 @@ sub import_archive {
     my $d    = CPAN::DistnameInfo->new($archive_path);
     my ( $author, $archive, $name )
         = ( $d->cpanid, $d->filename, $d->distvname );
-    my $date    = DateTime->from_epoch( epoch => $archive_path->stat->mtime );
-    my $version = MetaCPAN::Util::fix_version( $d->version );
-    my $bulk    = $cpan->bulk( size => 10 );
+    my $date = DateTime->from_epoch( epoch => $archive_path->stat->mtime );
+    my $bulk = $cpan->bulk( size => 10 );
 
     my $model = MetaCPAN::Model::Release->new(
-        author       => $author,
-        bulk         => $bulk,
-        date         => $date,
-        distribution => $d->dist,
-        file         => $archive_path,
-        index        => $cpan,
-        level        => $self->level,
-        logger       => $self->logger,
-        maturity     => $d->maturity,
-        name         => $name,
-        status       => $self->detect_status( $author, $archive ),
-        version      => $d->version,
+        bulk     => $bulk,
+        date     => $date,
+        distinfo => $d,
+        file     => $archive_path,
+        index    => $cpan,
+        level    => $self->level,
+        logger   => $self->logger,
+        status   => $self->detect_status( $author, $archive ),
     );
 
     my $st = $archive_path->stat;
