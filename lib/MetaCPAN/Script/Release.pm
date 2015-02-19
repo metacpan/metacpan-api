@@ -183,68 +183,23 @@ sub import_archive {
 
     my $cpan = $self->index;
     my $d    = CPAN::DistnameInfo->new($archive_path);
-    my ( $author, $archive, $name )
-        = ( $d->cpanid, $d->filename, $d->distvname );
-    my $date = DateTime->from_epoch( epoch => $archive_path->stat->mtime );
     my $bulk = $cpan->bulk( size => 10 );
 
     my $model = MetaCPAN::Model::Release->new(
         bulk     => $bulk,
-        date     => $date,
         distinfo => $d,
         file     => $archive_path,
         index    => $cpan,
         level    => $self->level,
         logger   => $self->logger,
-        status   => $self->detect_status( $author, $archive ),
+        status   => $self->detect_status( $d->cpanid, $d->filename ),
     );
-
-    my $st = $archive_path->stat;
-    my $stat = { map { $_ => $st->$_ } qw(mode uid gid size mtime) };
-
-    my $meta         = $model->metadata;
-    my $dependencies = $model->dependencies;
-
-    my $document = DlogS_trace {"adding release $_"} +{
-        abstract     => MetaCPAN::Util::strip_pod( $meta->abstract ),
-        archive      => $archive,
-        author       => $author,
-        date         => $date . q{},
-        dependency   => $dependencies,
-        distribution => $d->dist,
-
-        # CPAN::Meta->license *must* be called in list context
-        # (and *may* return multiple strings).
-        license  => [ $meta->license ],
-        maturity => $d->maturity,
-        metadata => $meta,
-        name     => $name,
-        provides => [],
-        stat     => $stat,
-        status   => $model->status,
-
-# Call in scalar context to make sure we only get one value (building a hash).
-        ( map { ( $_ => scalar $meta->$_ ) } qw( version resources ) ),
-    };
-
-    delete $document->{abstract}
-        if ( $document->{abstract} eq 'unknown'
-        || $document->{abstract} eq 'null' );
-
-    $document = $cpan->type('release')->put( $document, { refresh => 1 } );
-
-    # create will die if the document already exists
-    eval {
-        $cpan->type('distribution')
-            ->put( { name => $d->dist }, { create => 1 } );
-    };
-
-    my @files = $model->get_files();
 
     log_debug {'Gathering modules'};
 
     # build module -> pod file mapping
     # $file->clear_documentation to force a rebuild
+    my @files = $model->get_files();
     my %associated_pod;
     for ( grep { $_->indexed && $_->documentation } @files ) {
         my $documentation = $_->clear_documentation;
@@ -254,7 +209,7 @@ sub import_archive {
 
     # find modules
     my @modules;
-
+    my $meta = $model->metadata;
     if ( my %provides = %{ $meta->provides } ) {
         foreach my $module ( sort keys %provides ) {
             my $data = $provides{$module};
@@ -347,7 +302,8 @@ sub import_archive {
         }
     }
     log_debug { 'Indexing ', scalar @modules, ' modules' };
-    my $perms = $self->perms;
+    my $document = $model->document;
+    my $perms    = $self->perms;
     my @release_unauthorized;
     my @provides;
     foreach my $file (@modules) {

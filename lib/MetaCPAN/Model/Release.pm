@@ -35,15 +35,22 @@ has distinfo => (
     is      => 'ro',
     isa     => 'CPAN::DistnameInfo',
     handles => {
-        maturity     => "maturity",
-        author       => "cpanid",
-        name         => "distvname",
-        distribution => "dist",
+        maturity     => 'maturity',
+        author       => 'cpanid',
+        name         => 'distvname',
+        distribution => 'dist',
+        filename     => 'filename',
     },
     default => sub {
         my $self = shift;
         return CPAN::DistnameInfo->new( $self->file );
     },
+);
+
+has document => (
+    is         => 'ro',
+    isa        => 'MetaCPAN::Document::Release',
+    lazy_build => 1,
 );
 
 has file => (
@@ -62,8 +69,13 @@ has _files => (
 );
 
 has date => (
-    is  => 'rw',
-    isa => 'DateTime',
+    is      => 'rw',
+    isa     => 'DateTime',
+    lazy    => 1,
+    default => sub {
+        my $self = shift;
+        return DateTime->from_epoch( epoch => $self->file->stat->mtime );
+    },
 );
 
 has index => ( is => 'rw', );
@@ -134,6 +146,53 @@ sub _build_dependencies {
     log_debug { 'Found ', scalar @dependencies, ' dependencies' };
 
     return \@dependencies;
+}
+
+sub _build_document {
+    my $self = shift;
+
+    my $st = $self->file->stat;
+    my $stat = { map { $_ => $st->$_ } qw(mode uid gid size mtime) };
+
+    my $meta         = $self->metadata;
+    my $dependencies = $self->dependencies;
+
+    my $document = DlogS_trace {"adding release $_"} +{
+        abstract     => MetaCPAN::Util::strip_pod( $meta->abstract ),
+        archive      => $self->filename,
+        author       => $self->author,
+        date         => $self->date . q{},
+        dependency   => $dependencies,
+        distribution => $self->distribution,
+
+        # CPAN::Meta->license *must* be called in list context
+        # (and *may* return multiple strings).
+        license  => [ $meta->license ],
+        maturity => $self->maturity,
+        metadata => $meta,
+        name     => $self->name,
+        provides => [],
+        stat     => $stat,
+        status   => $self->status,
+
+# Call in scalar context to make sure we only get one value (building a hash).
+        ( map { ( $_ => scalar $meta->$_ ) } qw( version resources ) ),
+    };
+
+    delete $document->{abstract}
+        if ( $document->{abstract} eq 'unknown'
+        || $document->{abstract} eq 'null' );
+
+    $document
+        = $self->index->type('release')->put( $document, { refresh => 1 } );
+
+    # create will die if the document already exists
+    eval {
+        $self->index->type('distribution')
+            ->put( { name => $self->distribution }, { create => 1 } );
+    };
+
+    return $document;
 }
 
 sub _build_files {
