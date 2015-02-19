@@ -60,12 +60,11 @@ has file => (
     coerce   => 1,
 );
 
-has _files => (
-    is       => 'ro',
-    isa      => ArrayRef,
-    init_arg => undef,
-    lazy     => 1,
-    builder  => '_build_files',
+has files => (
+    is         => 'ro',
+    isa        => ArrayRef,
+    init_arg   => undef,
+    lazy_build => 1,
 );
 
 has date => (
@@ -347,12 +346,6 @@ sub _is_broken_file {
         return 1 if ( !-e $filename && !-l $filename );
     }
     return 0;
-}
-
-sub get_files {
-    my $self  = shift;
-    my $files = $self->_files;
-    return @{$files};
 }
 
 __PACKAGE__->meta->make_immutable();

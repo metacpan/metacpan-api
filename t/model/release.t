@@ -32,7 +32,7 @@ $release->set_logger_once;
 is $release->file, $archive_file->filename;
 
 # This isn't going to work without a lot more scaffolding passed into Release
-#my @files = $release->get_files();
-#is( @files, 4, 'got all files from release' );
+#my $files = $release->files();
+#is( @$files, 4, 'got all files from release' );
 
 done_testing();

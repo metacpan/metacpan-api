@@ -199,9 +199,9 @@ sub import_archive {
 
     # build module -> pod file mapping
     # $file->clear_documentation to force a rebuild
-    my @files = $model->get_files();
+    my $files = $model->files();
     my %associated_pod;
-    for ( grep { $_->indexed && $_->documentation } @files ) {
+    for ( grep { $_->indexed && $_->documentation } @$files ) {
         my $documentation = $_->clear_documentation;
         $associated_pod{$documentation}
             = [ @{ $associated_pod{$documentation} || [] }, $_ ];
@@ -217,7 +217,7 @@ sub import_archive {
 
            # Obey no_index and take the shortest path if multiple files match.
             my ($file) = sort { length( $a->path ) <=> length( $b->path ) }
-                grep { $_->indexed && $_->path =~ /\Q$path\E$/ } @files;
+                grep { $_->indexed && $_->path =~ /\Q$path\E$/ } @$files;
 
             next unless $file;
             $file->add_module(
@@ -231,9 +231,9 @@ sub import_archive {
         }
     }
     else {
-        @files = grep { $_->name =~ m{(?:\.pm|\.pm\.PL)\z} }
-            grep { $_->indexed } @files;
-        foreach my $file (@files) {
+        my @perl_files = grep { $_->name =~ m{(?:\.pm|\.pm\.PL)\z} }
+            grep { $_->indexed } @$files;
+        foreach my $file (@perl_files) {
 
             if ( $file->name =~ m{\.PL\z} ) {
 
