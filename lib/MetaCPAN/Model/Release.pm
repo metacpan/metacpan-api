@@ -125,9 +125,9 @@ sub _build_archive {
 
     my $archive = MetaCPAN::Model::Archive->new( file => $self->file );
 
-    log_error {"$self->file is being impolite"} if $archive->is_impolite;
+    log_error { $self->file, ' is being impolite' } if $archive->is_impolite;
 
-    log_error {"$self->file is being naughty"} if $archive->is_naughty;
+    log_error { $self->file, ' is being naughty' } if $archive->is_naughty;
 
     return $archive;
 }
