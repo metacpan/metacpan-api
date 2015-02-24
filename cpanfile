@@ -77,6 +77,7 @@ requires 'JSON', '2.90';
 requires 'LWP::Protocol::https';
 requires 'LWP::UserAgent';
 requires 'LWP::UserAgent::Paranoid';
+requires 'List::AllUtils';
 requires 'List::MoreUtils';
 requires 'List::Util';
 requires 'Log::Contextual';
