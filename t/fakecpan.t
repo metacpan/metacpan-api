@@ -13,6 +13,7 @@ use Test::Aggregate::Nested 0.371 ();
 
 use CPAN::Faker 0.010;
 use Config::General;
+use DDP;
 use ElasticSearch::TestServer;
 use File::Copy;
 use MetaCPAN::Script::Author;
@@ -39,6 +40,8 @@ ok(
     ),
     'got ElasticSearch object'
 );
+
+p $es;
 
 eval { $es->transport->refresh_servers; };
 
