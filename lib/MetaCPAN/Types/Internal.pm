@@ -148,7 +148,7 @@ coerce HashRef, from 'CPAN::Meta', via {
 
 class_type Logger, { class => 'Log::Log4perl::Logger' };
 coerce Logger, from ArrayRef, via {
-    return MetaCPAN::Role::Common::_build_logger($_);
+    return MetaCPAN::Role::Logger::_build_logger($_);
 };
 
 MooseX::Getopt::OptionTypeMap->add_option_type_to_map(

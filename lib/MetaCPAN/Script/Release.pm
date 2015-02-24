@@ -8,25 +8,18 @@ BEGIN {
 }
 
 use CPAN::DistnameInfo ();
-use CPAN::Meta         ();
-use DateTime           ();
-use File::Find         ();
 use File::Find::Rule;
-use File::Temp ();
 use File::stat ();
 use LWP::UserAgent;
 use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Document::Author;
-use MetaCPAN::Script::Latest;
+use MetaCPAN::Model::Release;
 use MetaCPAN::Types qw( Dir );
-use Module::Metadata 1.000012 ();    # Improved package detection.
 use Moose;
-use Parse::PMFile;
-use Path::Class qw(file dir);
 use PerlIO::gzip;
 use Try::Tiny;
 
-with 'MetaCPAN::Role::Common', 'MooseX::Getopt';
+with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
 has latest => (
     is            => 'ro',
@@ -81,35 +74,13 @@ has perms => (
     traits     => ['NoGetopt'],
 );
 
-has base_dir => (
-    is      => 'ro',
-    isa     => Dir,
-    coerce  => 1,
-    default => '/tmp',
-);
-
-my @always_no_index_dirs = (
-
-    # Always ignore the same dirs as PAUSE (lib/PAUSE/dist.pm):
-    ## skip "t" - libraries in ./t are test libraries!
-    ## skip "xt" - libraries in ./xt are author test libraries!
-    ## skip "inc" - libraries in ./inc are usually install libraries
-    ## skip "local" - somebody shipped his carton setup!
-    ## skip 'perl5" - somebody shipped her local::lib!
-    ## skip 'fatlib' - somebody shipped their fatpack lib!
-    qw( t xt inc local perl5 fatlib ),
-
-    # and add a few more
-    qw( example blib examples eg ),
-);
-
 sub run {
     my $self = shift;
     my ( undef, @args ) = @{ $self->extra_argv };
     my @files;
     for (@args) {
         if ( -d $_ ) {
-            log_info {"Looking for tarballs in $_"};
+            log_info {"Looking for archives in $_"};
             my $find = File::Find::Rule->new->file->name(
                 qr/\.(tgz|tbz|tar[\._-]gz|tar\.bz2|tar\.Z|zip|7z)$/);
             $find = $find->mtime( ">" . ( time - $self->age * 3600 ) )
@@ -152,7 +123,7 @@ sub run {
             log_error {"Dunno what $_ is"};
         }
     }
-    log_info { scalar @files, " tarballs found" } if ( @files > 1 );
+    log_info { scalar @files, " archives found" } if ( @files > 1 );
 
     # build here before we fork
     $self->index;
@@ -189,7 +160,7 @@ sub run {
             push( @pid, $pid );
         }
         else {
-            try { $self->import_tarball($file) }
+            try { $self->import_archive($file) }
             catch {
                 log_fatal {$_};
             };
@@ -200,251 +171,44 @@ sub run {
     $self->index->refresh;
 }
 
-sub import_tarball {
-    my ( $self, $tarball ) = @_;
+sub import_archive {
+    my $self         = shift;
+    my $archive_path = shift;
+
     my $cpan = $self->index;
-
-    $tarball = Path::Class::File->new($tarball);
-    my $d = CPAN::DistnameInfo->new($tarball);
-    my ( $author, $archive, $name )
-        = ( $d->cpanid, $d->filename, $d->distvname );
-    log_info {"Processing $tarball"};
-
-    # load Archive::Any in the child due to bugs in MMagic and MIME::Types
-    require Archive::Any;
-    my $at = Archive::Any->new($tarball);
-    my $tmpdir
-        = dir( File::Temp::tempdir( CLEANUP => 0, DIR => $self->base_dir ) );
-
-    log_error {"$tarball is being impolite"} if $at->is_impolite;
-
-    # TODO: add release to the index with status => 'broken' and move along
-    log_error {"$tarball is being naughty"} if $at->is_naughty;
-
-    log_debug {"Extracting archive to filesystem"};
-    $at->extract($tmpdir);
-
-    my $date    = DateTime->from_epoch( epoch => $tarball->stat->mtime );
-    my $version = MetaCPAN::Util::fix_version( $d->version );
-    my $meta    = CPAN::Meta->new(
-        {
-            version => $version || 0,
-            license => 'unknown',
-            name    => $d->dist,
-            no_index => { directory => [@always_no_index_dirs] },
-        }
-    );
-
-    my $st = $tarball->stat;
-    my $stat = { map { $_ => $st->$_ } qw(mode uid gid size mtime) };
-
-    $meta = $self->load_meta_file($tmpdir) || $meta;
-
-    log_debug {'Gathering dependencies'};
-
-    my @dependencies = $self->dependencies($meta);
-
-    log_debug { 'Found ', scalar @dependencies, " dependencies" };
-
-    my $release = DlogS_trace {"adding release $_"} +{
-        abstract     => MetaCPAN::Util::strip_pod( $meta->abstract ),
-        name         => $name,
-        author       => $author,
-        distribution => $d->dist,
-        archive      => $archive,
-        maturity     => $d->maturity,
-        stat         => $stat,
-        status       => $self->detect_status( $author, $archive ),
-        date         => $date . q{},
-        dependency   => \@dependencies,
-        metadata     => $meta,
-        provides     => [],
-
-        # CPAN::Meta->license *must* be called in list context
-        # (and *may* return multiple strings).
-        license => [ $meta->license ],
-
-# Call in scalar context to make sure we only get one value (building a hash).
-        ( map { ( $_ => scalar $meta->$_ ) } qw( version resources ) ),
-    };
-
-    delete $release->{abstract}
-        if ( $release->{abstract} eq 'unknown'
-        || $release->{abstract} eq 'null' );
-
-    $release = $cpan->type('release')->put( $release, { refresh => 1 } );
-
-    # create will die if the document already exists
-    eval {
-        $cpan->type('distribution')
-            ->put( { name => $d->dist }, { create => 1 } );
-    };
-
-    my @files;
-    my @list = $at->files;
-    log_debug { 'Indexing ', scalar @list, " files" };
-    my $file_set = $cpan->type('file');
+    my $d    = CPAN::DistnameInfo->new($archive_path);
     my $bulk = $cpan->bulk( size => 10 );
 
-    File::Find::find(
-        sub {
-            my $child
-                = -d $File::Find::name
-                ? dir($File::Find::name)
-                : file($File::Find::name);
-            my $relative = $child->relative($tmpdir);
-            my $stat     = do {
-                my $s = $child->stat;
-                +{ map { $_ => $s->$_ } qw(mode uid gid size mtime) };
-            };
-            return if ( $relative eq '.' );
-            ( my $fpath = "$relative" ) =~ s/^.*?\///;
-            my $fname = $fpath;
-            $child->is_dir
-                ? $fname =~ s/^(.*\/)?(.+?)\/?$/$2/
-                : $fname =~ s/.*\///;
-            $fpath = "" if $relative !~ /\// && !$at->is_impolite;
-
-            my $file = $file_set->new_document(
-                Dlog_trace {"adding file $_"} +{
-                    metadata     => $meta,
-                    name         => $fname,
-                    directory    => $child->is_dir,
-                    release      => $name,
-                    date         => $date,
-                    distribution => $d->dist,
-                    author       => $author,
-                    local_path   => $child,
-                    path         => $fpath,
-                    version      => $d->version,
-                    stat         => $stat,
-                    maturity     => $d->maturity,
-                    status       => $release->status,
-                    indexed      => $meta->should_index_file($fpath) ? 1 : 0,
-                    binary       => -B $child,
-
-                    # XXX: Should we be using a file mode or checking encoding
-                    # (like Module::Metadata's BOM handling, for instance)?
-                    content_cb => sub { \( scalar $child->slurp ) },
-                }
-            );
-            $bulk->put($file);
-            push( @files, $file );
-        },
-        $tmpdir
+    my $model = MetaCPAN::Model::Release->new(
+        bulk     => $bulk,
+        distinfo => $d,
+        file     => $archive_path,
+        index    => $cpan,
+        level    => $self->level,
+        logger   => $self->logger,
+        status   => $self->detect_status( $d->cpanid, $d->filename ),
     );
-    $bulk->commit;
 
     log_debug {'Gathering modules'};
 
     # build module -> pod file mapping
     # $file->clear_documentation to force a rebuild
+    my $files = $model->files();
     my %associated_pod;
-    for ( grep { $_->indexed && $_->documentation } @files ) {
+    for ( grep { $_->indexed && $_->documentation } @$files ) {
         my $documentation = $_->clear_documentation;
         $associated_pod{$documentation}
             = [ @{ $associated_pod{$documentation} || [] }, $_ ];
     }
 
-    # find modules
-    my @modules;
-
-    if ( my %provides = %{ $meta->provides } ) {
-        foreach my $module ( sort keys %provides ) {
-            my $data = $provides{$module};
-            my $path = $data->{file};
-
-           # Obey no_index and take the shortest path if multiple files match.
-            my ($file) = sort { length( $a->path ) <=> length( $b->path ) }
-                grep { $_->indexed && $_->path =~ /\Q$path\E$/ } @files;
-
-            next unless $file;
-            $file->add_module(
-                {
-                    name    => $module,
-                    version => $data->{version},
-                    indexed => 1,
-                }
-            );
-            push( @modules, $file );
-        }
-    }
-    else {
-        @files = grep { $_->name =~ m{(?:\.pm|\.pm\.PL)\z} }
-            grep { $_->indexed } @files;
-        foreach my $file (@files) {
-
-            if ( $file->name =~ m{\.PL\z} ) {
-
-                my $parser = Parse::PMFile->new( $meta->as_struct );
-
-                # FIXME: Should there be a timeout on this
-                # (like there is below for Module::Metadata)?
-                my $info = $parser->parse( $file->local_path );
-                next if !$info;
-
-                foreach my $module_name ( keys %{$info} ) {
-                    $file->add_module(
-                        {
-                            name => $module_name,
-                            defined $info->{$module_name}->{version}
-                            ? ( version => $info->{$module_name}->{version} )
-                            : (),
-                        }
-                    );
-                }
-                push @modules, $file;
-            }
-
-            else {
-
-                eval {
-                    local $SIG{'ALRM'} = sub {
-                        log_error {'Call to Module::Metadata timed out '};
-                        die;
-                    };
-                    alarm(5);
-                    my $info;
-                    {
-                        local $SIG{__WARN__} = sub { };
-                        $info = Module::Metadata->new_from_file(
-                            $file->local_path );
-                    }
-
-          # Ignore packages that people cannot claim.
-          # https://github.com/andk/pause/blob/master/lib/PAUSE/pmfile.pm#L236
-                    for my $pkg ( grep { $_ ne 'main' && $_ ne 'DB' }
-                        $info->packages_inside )
-                    {
-                        my $version = $info->version($pkg);
-                        $file->add_module(
-                            {
-                                name => $pkg,
-                                defined $version
-
-# Stringify if it's a version object, otherwise fall back to stupid stringification
-# Changes in Module::Metadata were causing inconsistencies in the return value,
-# we are just trying to survive.
-                                ? (
-                                    version => ref $version eq "version"
-                                    ? $version->stringify
-                                    : ( $version . '' )
-                                    )
-                                : ()
-                            }
-                        );
-                    }
-                    push( @modules, $file );
-                    alarm(0);
-                };
-            }
-        }
-    }
-    log_debug { 'Indexing ', scalar @modules, ' modules' };
-    my $perms = $self->perms;
+    my $modules = $model->modules;
+    log_debug { 'Indexing ', scalar @$modules, ' modules' };
+    my $document = $model->document;
+    my $perms    = $self->perms;
+    my $meta     = $model->metadata;
     my @release_unauthorized;
     my @provides;
-    foreach my $file (@modules) {
+    foreach my $file (@$modules) {
         $_->set_associated_pod( $file, \%associated_pod )
             for ( @{ $file->module } );
         $file->set_indexed($meta);
@@ -459,98 +223,33 @@ sub import_tarball {
         $file->clear_module if ( $file->is_pod_file );
         log_trace {"reindexing file $file->{path}"};
         $bulk->put($file);
-        if ( !$release->has_abstract && $file->abstract ) {
-            ( my $module = $release->distribution ) =~ s/-/::/g;
-            $release->abstract( $file->abstract );
-            $release->put;
+        if ( !$document->has_abstract && $file->abstract ) {
+            ( my $module = $document->distribution ) =~ s/-/::/g;
+            $document->abstract( $file->abstract );
+            $document->put;
         }
     }
     if (@provides) {
-        $release->provides( [ sort @provides ] );
-        $release->put;
+        $document->provides( [ sort @provides ] );
+        $document->put;
     }
     $bulk->commit;
 
     if (@release_unauthorized) {
         log_info {
             "release "
-                . $release->name
+                . $document->name
                 . " contains unauthorized modules: "
                 . join( ",", map { $_->name } @release_unauthorized );
         };
-        $release->authorized(0);
-        $release->put;
+        $document->authorized(0);
+        $document->put;
     }
-
-    $tmpdir->rmtree;
 
     if ( $self->latest ) {
-        local @ARGV = ( qw(latest --distribution), $release->distribution );
+        local @ARGV = ( qw(latest --distribution), $document->distribution );
         MetaCPAN::Script::Runner->run;
     }
-}
-
-sub load_meta_file {
-    my ( $self, $dir ) = @_;
-    my @files;
-    for (qw{*/META.json */META.yml */META.yaml META.json META.yml META.yaml})
-    {
-
-        # scalar context globbing (without exhausting results) produces
-        # confusing results (which caused existsing */META.json files to
-        # get skipped).  using list context seems more reliable.
-        my ($path) = <$dir/$_>;
-        push( @files, $path ) if ( $path && -e $path );
-    }
-    return unless (@files);
-
-    #  YAML YAML::Tiny YAML::XS don't offer better results
-    my @backends = qw(CPAN::Meta::YAML YAML::Syck);
-    my $error;
-    while ( my $mod = shift @backends ) {
-        $ENV{PERL_YAML_BACKEND} = $mod;
-        my $last;
-        for my $file (@files) {
-            try {
-                $last = CPAN::Meta->load_file($file);
-            }
-            catch { $error = $_ };
-            if ($last) {
-                last;
-            }
-        }
-        if ($last) {
-            push( @{ $last->{no_index}->{directory} },
-                @always_no_index_dirs );
-            return $last;
-        }
-    }
-
-    log_warn {"META file could not be loaded: $error"}
-    unless (@backends);
-}
-
-sub dependencies {
-    my ( $self, $meta ) = @_;
-    my @dependencies;
-    if ( my $prereqs = $meta->prereqs ) {
-        while ( my ( $phase, $data ) = each %$prereqs ) {
-            while ( my ( $relationship, $v ) = each %$data ) {
-                while ( my ( $module, $version ) = each %$v ) {
-                    push(
-                        @dependencies,
-                        Dlog_trace {"adding dependency $_"} +{
-                            phase        => $phase,
-                            relationship => $relationship,
-                            module       => $module,
-                            version      => $version,
-                        }
-                    );
-                }
-            }
-        }
-    }
-    return @dependencies;
 }
 
 sub _build_backpan_index {
@@ -648,7 +347,7 @@ individual files or an url.
 
 If an url is specified the file is downloaded to C<var/tmp/http/>. This folder is not
 cleaned up since L<MetaCPAN::Plack::Source> depends on it to extract the source of
-a file. If the tarball cannot be find in the cpan mirror, it tries the temporary
+a file. If the archive cannot be find in the cpan mirror, it tries the temporary
 folder. After a rsync this folder can be purged.
 
 =cut

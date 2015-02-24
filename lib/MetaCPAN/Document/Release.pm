@@ -37,13 +37,13 @@ PAUSE ID of the author.
 
 =head2 archive
 
-Name of the tarball (e.g. C<Some-Module-1.12.tar.gz>).
+Name of the archive file (e.g. C<Some-Module-1.12.tar.gz>).
 
 =head2 date
 
 B<Required>
 
-Release date (i.e. C<mtime> of the tarball).
+Release date (i.e. C<mtime> of the archive file).
 
 =head2 version
 
@@ -90,8 +90,8 @@ See L<CPAN::Meta::Spec/license>.
 
 =head2 stat
 
-L<File::stat> info of the tarball. Contains C<mode>, C<uid>, C<gid>, C<size>
-and C<mtime>.
+L<File::stat> info of the archive file. Contains C<mode>, C<uid>,
+C<gid>, C<size> and C<mtime>.
 
 =head2 first
 

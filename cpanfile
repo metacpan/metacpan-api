@@ -95,11 +95,12 @@ requires 'MooseX::ClassAttribute';
 requires 'MooseX::Getopt';
 requires 'MooseX::Getopt::Dashes';
 requires 'MooseX::Getopt::OptionTypeMap';
+requires 'MooseX::StrictConstructor';
 requires 'MooseX::Types';
 requires 'MooseX::Types::Common::String';
 requires 'MooseX::Types::ElasticSearch', ' == 0.0.2'; # Newer versions use the other ES module which we can't upgrade to yet b/c of ESX-Model.
 requires 'MooseX::Types::Moose';
-requires 'MooseX::Types::Path::Class';
+requires 'MooseX::Types::Path::Class::MoreCoercions';
 requires 'MooseX::Types::Structured';
 requires 'MooseX::Types::URI';
 requires 'Mozilla::CA';
@@ -167,6 +168,7 @@ test_requires 'Test::More', '0.99';
 test_requires 'Test::Most';
 test_requires 'Test::OpenID::Server';
 test_requires 'Test::Perl::Critic';
+test_requires 'Test::RequiresInternet';
 test_requires 'Test::Routine', '0.012';
 test_requires 'Test::Routine::Util', '0';
 

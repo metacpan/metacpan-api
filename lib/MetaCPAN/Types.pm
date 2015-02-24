@@ -10,7 +10,7 @@ __PACKAGE__->provide_types_from(
         MooseX::Types::Common::Numeric
         MooseX::Types::Common::String
         MooseX::Types::Moose
-        MooseX::Types::Path::Class
+        MooseX::Types::Path::Class::MoreCoercions
         MooseX::Types::Structured
         MooseX::Types::URI
         MetaCPAN::Types::Internal

@@ -11,7 +11,7 @@ use WWW::Mechanize::Cached;
 use WWW::Mechanize;
 use XML::Simple;
 
-with 'MetaCPAN::Role::Common';
+with 'MetaCPAN::Role::Script';
 
 sub index_perlmongers {
 

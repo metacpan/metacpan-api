@@ -9,7 +9,7 @@ use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Document::Mirror;
 use Moose;
 
-with 'MetaCPAN::Role::Common', 'MooseX::Getopt';
+with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
 sub run {
     my $self = shift;

@@ -3367,6 +3367,21 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 6.59
       Test::More 0.96
       perl 5.008008
+  File-pushd-1.009
+    pathname: D/DA/DAGOLDEN/File-pushd-1.009.tar.gz
+    provides:
+      File::pushd 1.009
+    requirements:
+      Carp 0
+      Cwd 0
+      Exporter 0
+      ExtUtils::MakeMaker 6.17
+      File::Path 0
+      File::Spec 0
+      File::Temp 0
+      overload 0
+      strict 0
+      warnings 0
   Filesys-Notify-Simple-0.12
     pathname: M/MI/MIYAGAWA/Filesys-Notify-Simple-0.12.tar.gz
     provides:
@@ -4884,6 +4899,25 @@ DISTRIBUTIONS
       aliased 0
       namespace::autoclean 0.12
       namespace::clean 0
+  MooseX-StrictConstructor-0.19
+    pathname: D/DR/DROLSKY/MooseX-StrictConstructor-0.19.tar.gz
+    provides:
+      MooseX::StrictConstructor 0.19
+      MooseX::StrictConstructor::Trait::Class 0.19
+      MooseX::StrictConstructor::Trait::Method::Constructor 0.19
+    requirements:
+      B 0
+      ExtUtils::MakeMaker 6.30
+      Moose 0.94
+      Moose::Exporter 0
+      Moose::Role 0
+      Moose::Util::MetaRole 0
+      Test::Fatal 0
+      Test::Moose 0
+      Test::More 0.88
+      namespace::autoclean 0
+      strict 0
+      warnings 0
   MooseX-Traits-Pluggable-0.12
     pathname: R/RK/RKITOVER/MooseX-Traits-Pluggable-0.12.tar.gz
     provides:
@@ -4966,6 +5000,34 @@ DISTRIBUTIONS
       MooseX::Types 0.04
       Path::Class 0.16
       Test::More 0.88
+  MooseX-Types-Path-Class-MoreCoercions-0.003
+    pathname: D/DA/DAGOLDEN/MooseX-Types-Path-Class-MoreCoercions-0.003.tar.gz
+    provides:
+      MooseX::Types::Path::Class::MoreCoercions 0.003
+    requirements:
+      ExtUtils::MakeMaker 6.30
+      File::Find 0
+      File::Temp 0
+      File::pushd 0
+      Moose 0
+      MooseX::Types 0
+      MooseX::Types::Path::Class 0
+      MooseX::Types::Stringlike 0
+      Path::Class 0
+      Test::More 0.96
+      strict 0
+      warnings 0
+  MooseX-Types-Stringlike-0.003
+    pathname: D/DA/DAGOLDEN/MooseX-Types-Stringlike-0.003.tar.gz
+    provides:
+      MooseX::Types::Stringlike 0.003
+    requirements:
+      ExtUtils::MakeMaker 6.17
+      MooseX::Types 0
+      MooseX::Types::Moose 0
+      overload 0
+      strict 0
+      warnings 0
   MooseX-Types-Structured-0.30
     pathname: E/ET/ETHER/MooseX-Types-Structured-0.30.tar.gz
     provides:
@@ -5397,6 +5459,27 @@ DISTRIBUTIONS
       Test::Trap 0
       overload 0
       parent 0
+  PAUSE-Permissions-0.11
+    pathname: N/NE/NEILB/PAUSE-Permissions-0.11.tar.gz
+    provides:
+      PAUSE::Permissions 0.11
+      PAUSE::Permissions::Entry 0.11
+      PAUSE::Permissions::EntryIterator 0.11
+      PAUSE::Permissions::Module 0.11
+      PAUSE::Permissions::ModuleIterator 0.11
+    requirements:
+      Carp 0
+      ExtUtils::MakeMaker 0
+      File::HomeDir 0
+      File::Spec::Functions 0
+      HTTP::Date 0
+      HTTP::Tiny 0
+      Moo 0
+      autodie 0
+      feature 0
+      perl 5.010000
+      strict 0
+      warnings 0
   POSIX-strftime-Compiler-0.31
     pathname: K/KA/KAZEBURO/POSIX-strftime-Compiler-0.31.tar.gz
     provides:
@@ -7174,6 +7257,15 @@ DISTRIBUTIONS
       Test::Builder::Module 0
       Test::More 0.61
       perl 5.008_001
+  Test-RequiresInternet-0.04
+    pathname: M/MA/MALLEN/Test-RequiresInternet-0.04.tar.gz
+    provides:
+      Test::RequiresInternet 0.04
+    requirements:
+      ExtUtils::MakeMaker 0
+      Socket 0
+      strict 0
+      warnings 0
   Test-Routine-0.018
     pathname: R/RJ/RJBS/Test-Routine-0.018.tar.gz
     provides:

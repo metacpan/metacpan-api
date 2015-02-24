@@ -12,7 +12,7 @@ use LWP::UserAgent ();
 use Log::Contextual qw( :log :dlog );
 use Moose;
 
-with 'MetaCPAN::Role::Common', 'MooseX::Getopt';
+with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
 has db => (
     is      => 'ro',

@@ -1,11 +1,8 @@
 use strict;
 use warnings;
 
-use Archive::Any;
-use File::Spec::Functions qw( catfile );
-use File::Temp qw( tempdir );
 use FindBin;
-use MetaCPAN::Script::Release;
+use MetaCPAN::Model::Release;
 use MetaCPAN::Script::Runner;
 use Test::More;
 
@@ -17,9 +14,6 @@ my $config = do {
     local $FindBin::RealBin = "$FindBin::RealBin/../..";
     MetaCPAN::Script::Runner->build_config;
 };
-
-my $script = MetaCPAN::Script::Release->new($config);
-my $root = tempdir( CLEANUP => 1, TMPDIR => 1 );
 
 my $ext = 'tar.gz';
 foreach my $test (
@@ -34,19 +28,24 @@ foreach my $test (
     die 'You need to build your fakepan (with t/fakepan.t) first'
         unless -e $path;
 
-    my $archive = Archive::Any->new($path);
-    my $tmpdir = tempdir( DIR => $root );
-    $archive->extract($tmpdir);
-
-    my $meta = $script->load_meta_file($tmpdir);
+    my $release = MetaCPAN::Model::Release->new(
+        logger => $config->{logger},
+        level  => $config->{level},
+        file   => $path
+    );
+    $release->set_logger_once;
+    my $meta = $release->metadata;
 
     # some way to identify which file the meta came from
     like eval { $meta->generated_by }, qr/^$genby/,
         "correct meta spec version for $name";
 
+    # Do this after calling metadata to ensure metadata does the
+    # extraction.
+    my $extract_dir = $release->extract;
     foreach my $file (@$files) {
         ok(
-            -e catfile( $tmpdir, $name, $file ),
+            -e $extract_dir->file( $name, $file ),
             "meta file $file exists in $name"
         );
     }

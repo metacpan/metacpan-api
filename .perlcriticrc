@@ -22,6 +22,8 @@ equivalent_modules = Test::Routine
 severity = 5
 
 [ValuesAndExpressions::ProhibitInterpolationOfLiterals]
+allow_if_string_contains_single_quote = 1
+allow = qq{} qq[]
 severity = 5
 
 [ValuesAndExpressions::ProhibitNoisyQuotes]

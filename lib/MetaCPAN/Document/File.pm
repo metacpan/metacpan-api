@@ -117,7 +117,7 @@ has module => (
 
 B<Required>
 
-Release date (i.e. C<mtime> of the tarball).
+Release date (i.e. C<mtime> of the archive file).
 
 =cut
 
@@ -482,8 +482,8 @@ sub _build_slop {
 
 =head2 stat
 
-L<File::stat> info of the tarball. Contains C<mode>, C<uid>, C<gid>, C<size>
-and C<mtime>.
+L<File::stat> info of the archive file. Contains C<mode>, C<uid>,
+C<gid>, C<size> and C<mtime>.
 
 =cut
 

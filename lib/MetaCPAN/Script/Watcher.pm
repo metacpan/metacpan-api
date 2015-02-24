@@ -9,12 +9,12 @@ use Log::Contextual qw( :log );
 use MetaCPAN::Util;
 use Moose;
 
-with 'MetaCPAN::Role::Common', 'MooseX::Getopt';
+with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
 has backpan => (
     is            => 'ro',
     isa           => 'Bool',
-    documentation => 'update deleted tarballs only',
+    documentation => 'update deleted archives only',
 );
 
 has dry_run => (
@@ -148,23 +148,23 @@ sub skip {
 
 sub index_release {
     my ( $self, $release ) = @_;
-    my $tarball = $self->cpan->file( $release->{path} )->stringify;
+    my $archive = $self->cpan->file( $release->{path} )->stringify;
     for ( my $i = 0; $i < 15; $i++ ) {
-        last if ( -e $tarball );
-        log_debug {"Tarball $tarball does not yet exist"};
+        last if ( -e $archive );
+        log_debug {"Archive $archive does not yet exist"};
         sleep(1);
     }
 
-    unless ( -e $tarball ) {
+    unless ( -e $archive ) {
         log_error {
-            "Aborting, tarball $tarball not available after 15 seconds";
+            "Aborting, archive $archive not available after 15 seconds";
         };
         return;
     }
 
     my @run = (
         $FindBin::RealBin . "/metacpan",
-        'release', $tarball, '--latest', '--index', $self->index->name
+        'release', $archive, '--latest', '--index', $self->index->name
     );
     log_debug {"Running @run"};
     system(@run) unless ( $self->dry_run );
