@@ -217,6 +217,26 @@ subtest 'Packages starting with underscore are not indexed' => sub {
     is( $file->module->[0]->indexed, 0, 'Package is not indexed' );
 };
 
+subtest 'files listed under other files' => sub {
+    my $content = <<'END';
+=head1 NAME
+
+Makefile.PL - configure Makefile
+
+=head1 DESCRIPTION
+
+just a makefile description
+
+END
+    my $file = new_file_doc(
+        name       => 'Makefile.PL',
+        content_cb => sub { \$content }
+    );
+
+    $file->set_indexed( {} );
+    is( $file->indexed, 0, 'File listed under other files is not indexed' );
+};
+
 subtest 'pod name/package mismatch' => sub {
     my $content = <<'END';
 package
