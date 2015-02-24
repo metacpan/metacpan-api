@@ -16,7 +16,7 @@ sub cpan_meta {
 sub new_file_doc {
     my %args = @_;
 
-    my $mods = $args{module};
+    my $mods = $args{module} || [];
     $mods = [$mods] unless ref($mods) eq 'ARRAY';
 
     my $pkg_template = <<'PKG';
@@ -24,17 +24,22 @@ package %s;
 our $VERSION = 1;
 PKG
 
+    my $name = $args{name} || 'SomeModule.pm';
     my $file = MetaCPAN::Document::File->new(
         author       => 'CPANER',
         path         => 'some/path',
         release      => 'Some-Release-1',
         distribution => 'Some-Release',
-        name         => 'SomeModule.pm',
+        name         => $name,
 
         # Passing in "content" will override
         # but defaulting to package statements will help avoid buggy tests.
         content_cb => sub {
-            \( join "\n", map { sprintf $pkg_template, $_->{name} } @$mods );
+            \(
+                join "\n",
+                ( map { sprintf $pkg_template, $_->{name} } @$mods ),
+                "\n\n=head1 NAME\n\n${name} - abstract\n\n=cut\n\n",
+            );
         },
 
         %args,
