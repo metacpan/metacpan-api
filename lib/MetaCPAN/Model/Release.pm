@@ -206,7 +206,45 @@ sub _build_document {
             ->put( { name => $self->distribution }, { create => 1 } );
     };
 
+    $self->_set_main_module( $self->modules, $document );
+
     return $document;
+}
+
+sub _set_main_module {
+    my $self = shift;
+    my ( $mod, $release ) = @_;
+
+    my @modules = @{$mod};
+
+    my $dist2module = $release->distribution;
+    $dist2module =~ s{-}{::}g;
+
+    if ( scalar @modules == 1 ) {
+
+        # there is only one module and it will become the main_module
+        $release->main_module( $modules[0]->module->[0]->name );
+        return;
+    }
+
+    foreach my $file (@modules) {
+
+        # the module has the exact name as the ditribution
+        if ( $file->module->[0]->name eq $dist2module ) {
+            $release->main_module( $file->module->[0]->name );
+            return;
+        }
+    }
+
+    # the distribution has modules on different levels
+    # the main_module is the first one with the minimum level
+    # or if they are on the same level, the one with the shortest name
+    my @sorted_modules = sort {
+        $a->level <=> $b->level
+            || length $a->module->[0]->name <=> length $b->module->[0]->name
+    } @modules;
+    $release->main_module( $sorted_modules[0]->module->[0]->name );
+
 }
 
 sub _build_files {

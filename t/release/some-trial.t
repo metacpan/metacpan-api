@@ -8,8 +8,9 @@ my $model   = model();
 my $idx     = $model->index('cpan');
 my $release = $idx->type('release')->get(
     {
-        author => 'LOCAL',
-        name   => 'Some-1.00-TRIAL'
+        author      => 'LOCAL',
+        name        => 'Some-1.00-TRIAL',
+        main_module => 'Some',
     }
 );
 

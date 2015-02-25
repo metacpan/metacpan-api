@@ -11,6 +11,7 @@ test_release(
     {
         first       => \1,
         extra_tests => \&test_pod_examples,
+        main_module => 'Pod::Examples',
     }
 );
 

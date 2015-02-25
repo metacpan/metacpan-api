@@ -217,6 +217,12 @@ has metadata => (
     source_only => 1,
 );
 
+has main_module => (
+    is       => 'rw',
+    isa      => 'Str',
+    required => 0,
+);
+
 sub _build_version_numified {
     return MetaCPAN::Util::numify_version( shift->version );
 }
