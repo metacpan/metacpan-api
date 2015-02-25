@@ -233,7 +233,6 @@ END
         content_cb => sub { \$content }
     );
 
-    $file->set_indexed( {} );
     is( $file->indexed, 0, 'File listed under other files is not indexed' );
 };
 
