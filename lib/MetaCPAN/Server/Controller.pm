@@ -67,7 +67,7 @@ sub model {
 sub mapping : Path('_mapping') {
     my ( $self, $c ) = @_;
     $c->stash(
-        $c->model('CPAN')->es->mapping(
+        $c->model('CPAN')->es->indices->get_mapping(
             index => $c->model('CPAN')->index,
             type  => $self->type
         )
@@ -97,6 +97,7 @@ sub search : Path('_search') : ActionClass('Deserialize') {
 
     # shallow copy
     my $params = { %{ $req->params } };
+    delete $params->{$_} for qw(type index body join);
     {
         my $size = $params->{size} || ( $req->data || {} )->{size};
         $c->detach( '/bad_request',
@@ -106,14 +107,12 @@ sub search : Path('_search') : ActionClass('Deserialize') {
     delete $params->{callback};
     eval {
         $c->stash(
-            $c->model('CPAN')->es->request(
+            $self->model($c)->es->search(
                 {
-                    method => $req->method,
-                    qs     => $params,
-                    cmd    => join( '/',
-                        '',          $c->model('CPAN')->index,
-                        $self->type, '_search' ),
-                    data => $req->data
+                    index => $c->model("CPAN")->index,
+                    type  => $self->type,
+                    body  => $c->req->data,
+                    %$params,
                 }
             )
         );

@@ -888,20 +888,27 @@ sub prefix {
     my @query = split( /\s+/, $prefix );
     my $should = [
         map {
-            { field     => { 'documentation.analyzed'  => "$_*" } },
-                { field => { 'documentation.camelcase' => "$_*" } }
+            {
+                simple_query_string => {
+                    fields => [
+                        'documentation.analyzed', 'documentation.camelcase'
+                    ],
+                    query => "$_*"
+                }
+            }
         } grep {$_} @query
     ];
     return $self->query(
         {
             filtered => {
                 query => {
-                    custom_score => {
+                    function_score => {
                         query => { bool => { should => $should } },
 
-                        #metacpan_script => 'prefer_shorter_module_names_100',
-                        script =>
-                            "_score - doc['documentation'].value.length()/100"
+                        script_score => {
+                            script =>
+                                "_score - doc['documentation'].value.length()/100",
+                        }
                     },
                 },
                 filter => {

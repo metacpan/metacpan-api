@@ -105,7 +105,7 @@ sub _build_cpan {
 }
 
 sub remote {
-    shift->es->transport->default_servers->[0];
+    shift->es->nodes->info->[0];
 }
 
 sub run { }
@@ -114,7 +114,7 @@ before run => sub {
 
     $self->set_logger_once;
 
-    Dlog_debug {"Connected to $_"} $self->remote;
+    #Dlog_debug {"Connected to $_"} $self->remote;
 };
 
 1;

@@ -183,6 +183,17 @@ DISTRIBUTIONS
       Params::Check 0.07
       Test::More 0
       if 0
+  Archive-Tar-Wrapper-0.21
+    pathname: M/MS/MSCHILLI/Archive-Tar-Wrapper-0.21.tar.gz
+    provides:
+      Archive::Tar::Wrapper 0.21
+    requirements:
+      Cwd 0
+      ExtUtils::MakeMaker 0
+      File::Temp 0
+      File::Which 0
+      IPC::Run 0
+      Log::Log4perl 0
   Archive-Zip-1.37
     pathname: P/PH/PHRED/Archive-Zip-1.37.tar.gz
     provides:
@@ -2680,6 +2691,30 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Sub::Exporter::Progressive 0.001011
       perl 5.006
+  Devel-NYTProf-5.06
+    pathname: T/TI/TIMB/Devel-NYTProf-5.06.tar.gz
+    provides:
+      Devel::NYTProf 5.06
+      Devel::NYTProf::Apache 4.00
+      Devel::NYTProf::Constants undef
+      Devel::NYTProf::Core 5.06
+      Devel::NYTProf::Data 4.02
+      Devel::NYTProf::FileHandle undef
+      Devel::NYTProf::FileInfo undef
+      Devel::NYTProf::ReadStream 4.00
+      Devel::NYTProf::Reader 4.06
+      Devel::NYTProf::Run undef
+      Devel::NYTProf::SubCallInfo undef
+      Devel::NYTProf::SubInfo undef
+      Devel::NYTProf::Util 4.00
+    requirements:
+      ExtUtils::MakeMaker 0
+      Getopt::Long 0
+      JSON::Any 0
+      List::Util 0
+      Test::Differences 0.60
+      Test::More 0.84
+      XSLoader 0
   Devel-PartialDump-0.17
     pathname: E/ET/ETHER/Devel-PartialDump-0.17.tar.gz
     provides:
@@ -3854,6 +3889,19 @@ DISTRIBUTIONS
       IO::WrapTie::Slave 2.110
     requirements:
       ExtUtils::MakeMaker 0
+  IPC-Run-0.94
+    pathname: T/TO/TODDR/IPC-Run-0.94.tar.gz
+    provides:
+      IPC::Run 0.94
+      IPC::Run::Debug 0.90
+      IPC::Run::IO 0.90
+      IPC::Run::Timer 0.90
+      IPC::Run::Win32Helper 0.90
+      IPC::Run::Win32IO 0.90
+      IPC::Run::Win32Pump 0.90
+    requirements:
+      ExtUtils::MakeMaker 0
+      Test::More 0.47
   IPC-Run3-0.048
     pathname: R/RJ/RJBS/IPC-Run3-0.048.tar.gz
     provides:
@@ -4020,6 +4068,18 @@ DISTRIBUTIONS
     requirements:
       Test::More 0
       version 0
+  List-AllUtils-0.09
+    pathname: D/DR/DROLSKY/List-AllUtils-0.09.tar.gz
+    provides:
+      List::AllUtils 0.09
+    requirements:
+      Exporter 0
+      ExtUtils::MakeMaker 0
+      List::MoreUtils 0.28
+      List::Util 1.31
+      base 0
+      strict 0
+      warnings 0
   List-MoreUtils-0.33
     pathname: A/AD/ADAMK/List-MoreUtils-0.33.tar.gz
     provides:
@@ -5069,6 +5129,31 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
+  MooseX-UndefTolerant-0.19
+    pathname: E/ET/ETHER/MooseX-UndefTolerant-0.19.tar.gz
+    provides:
+      MooseX::UndefTolerant 0.19
+      MooseX::UndefTolerant::ApplicationToClass 0.19
+      MooseX::UndefTolerant::ApplicationToRole 0.19
+      MooseX::UndefTolerant::Attribute 0.19
+      MooseX::UndefTolerant::Class 0.19
+      MooseX::UndefTolerant::Composite 0.19
+      MooseX::UndefTolerant::Constructor 0.19
+      MooseX::UndefTolerant::Role 0.19
+    requirements:
+      ExtUtils::MakeMaker 6.30
+      File::Find 0
+      File::Temp 0
+      Moose 0.89
+      Moose::Exporter 0
+      Moose::Role 0
+      Test::CheckDeps 0.002
+      Test::Fatal 0
+      Test::Moose 0
+      Test::More 0.88
+      Test::NoWarnings 1.04
+      strict 0
+      warnings 0
   Mouse-2.3.0
     pathname: G/GF/GFUJI/Mouse-2.3.0.tar.gz
     provides:
@@ -5459,14 +5544,14 @@ DISTRIBUTIONS
       Test::Trap 0
       overload 0
       parent 0
-  PAUSE-Permissions-0.11
-    pathname: N/NE/NEILB/PAUSE-Permissions-0.11.tar.gz
+  PAUSE-Permissions-0.10
+    pathname: N/NE/NEILB/PAUSE-Permissions-0.10.tar.gz
     provides:
-      PAUSE::Permissions 0.11
-      PAUSE::Permissions::Entry 0.11
-      PAUSE::Permissions::EntryIterator 0.11
-      PAUSE::Permissions::Module 0.11
-      PAUSE::Permissions::ModuleIterator 0.11
+      PAUSE::Permissions 0.10
+      PAUSE::Permissions::Entry 0.10
+      PAUSE::Permissions::EntryIterator 0.10
+      PAUSE::Permissions::Module 0.10
+      PAUSE::Permissions::ModuleIterator 0.10
     requirements:
       Carp 0
       ExtUtils::MakeMaker 0
@@ -5477,7 +5562,6 @@ DISTRIBUTIONS
       Moo 0
       autodie 0
       feature 0
-      perl 5.010000
       strict 0
       warnings 0
   POSIX-strftime-Compiler-0.31
@@ -6802,6 +6886,16 @@ DISTRIBUTIONS
       Exporter 5.57
       ExtUtils::MakeMaker 0
       Scalar::Util 0
+  Scalar-List-Utils-1.41
+    pathname: P/PE/PEVANS/Scalar-List-Utils-1.41.tar.gz
+    provides:
+      List::Util 1.41
+      List::Util::XS 1.41
+      Scalar::Util 1.41
+      Sub::Util 1.41
+    requirements:
+      ExtUtils::MakeMaker 0
+      Test::More 0
   Scope-Guard-0.20
     pathname: C/CH/CHOCOLATE/Scope-Guard-0.20.tar.gz
     provides:
