@@ -220,7 +220,6 @@ sub reindex {
             }
         ) unless $self->dry_run;
     }
-    $self->es->bulk( \@bulk ) if (@bulk);
 }
 
 sub compare_dates {
