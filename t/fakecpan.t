@@ -40,7 +40,9 @@ ok(
     'got ElasticSearch object'
 );
 
-p $es;
+p $es->cluster->info;
+p $es->->cluster->health;
+p $es->cluster->node_stats;
 
 #eval { $es->transport->refresh_servers; };
 
