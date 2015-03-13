@@ -85,7 +85,7 @@ requires 'Log::Log4perl::Appender::ScreenColoredLevels';
 requires 'Module::Metadata', '1.000022';
 requires 'Module::Pluggable';
 requires 'Module::Runtime';
-requires 'Moose', ' == 2.0802'; # Pin to older version to avoid deprecation warning on enum that we can't escape b/c we're pinned to an old version of MX-Types-ES.
+requires 'Moose', ' >= 2.1403';
 requires 'Moose::Role';
 requires 'Moose::Util';
 requires 'MooseX::Aliases';
