@@ -8,6 +8,7 @@ use Moose;
 use ElasticSearchX::Model::Document;
 
 use Encode;
+use List::AllUtils qw( any );
 use List::MoreUtils qw(any uniq);
 use MetaCPAN::Document::Module;
 use MetaCPAN::Pod::XHTML;
@@ -681,6 +682,52 @@ sub add_module {
     $self->module( [ @{ $self->module }, @modules ] );
 }
 
+=head2 is_in_other_files
+
+Returns true if the file is one from the list below.
+
+=cut
+
+sub is_in_other_files {
+    my $self  = shift;
+    my @other = qw(
+        AUTHORS
+        Build.PL
+        Changelog
+        ChangeLog
+        CHANGELOG
+        Changes
+        CHANGES
+        CONTRIBUTING
+        CONTRIBUTING.md
+        CONTRIBUTING.pod
+        Copying
+        COPYRIGHT
+        cpanfile
+        CREDITS
+        dist.ini
+        FAQ
+        INSTALL
+        INSTALL.md
+        INSTALL.pod
+        LICENSE
+        Makefile.PL
+        MANIFEST
+        META.json
+        META.yml
+        NEWS
+        README
+        README.md
+        README.pod
+        THANKS
+        Todo
+        ToDo
+        TODO
+    );
+
+    return any { $self->name eq $_ } @other;
+}
+
 =head2 set_indexed
 
 Expects a C<$meta> parameter which is an instance of L<CPAN::Meta>.
@@ -707,6 +754,15 @@ does not include any modules, the L</indexed> property is true.
 
 sub set_indexed {
     my ( $self, $meta ) = @_;
+
+    #files listed under 'other files' are not shown in a search
+    if ( $self->is_in_other_files() ) {
+        foreach my $mod ( @{ $self->module } ) {
+            $mod->indexed(0);
+        }
+        $self->indexed(0);
+        return;
+    }
 
     foreach my $mod ( @{ $self->module } ) {
         if ( $mod->name !~ /^[A-Za-z]/ ) {
