@@ -40,11 +40,8 @@ ok(
     'got ElasticSearch object'
 );
 
-p $es->cluster->info;
-p $es->cluster->health;
-p $es->cluster->node_stats;
-
-#eval { $es->transport->refresh_servers; };
+diag p $es->cluster->health;
+diag p $es->nodes->stats;
 
 ok( !$@, "Connected to the ElasticSearch test instance on $ES_HOST_PORT" )
     or do {
