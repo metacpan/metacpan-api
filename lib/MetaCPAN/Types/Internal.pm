@@ -4,7 +4,6 @@ use strict;
 use warnings;
 
 use CPAN::Meta;
-use ElasticSearch;
 use ElasticSearchX::Model::Document::Types qw(:all);
 use JSON;
 use MooseX::Getopt::OptionTypeMap;

@@ -3,7 +3,6 @@ package MetaCPAN::Role::Script;
 use strict;
 use warnings;
 
-use ElasticSearch;
 use ElasticSearchX::Model::Document::Types qw(:all);
 use FindBin;
 use Log::Contextual qw( :dlog );
@@ -27,7 +26,7 @@ has es => (
     is            => 'ro',
     required      => 1,
     coerce        => 1,
-    documentation => 'ElasticSearch http connection string',
+    documentation => 'Elasticsearch http connection string',
 );
 
 has model => ( lazy_build => 1, is => 'ro', traits => ['NoGetopt'] );
