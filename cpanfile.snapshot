@@ -5066,16 +5066,16 @@ DISTRIBUTIONS
       perl 5.008
       strict 0
       warnings 0
-  MooseX-Types-ElasticSearch-0.0.2
-    pathname: P/PE/PERLER/MooseX-Types-ElasticSearch-0.0.2.tar.gz
+  MooseX-Types-ElasticSearch-0.0.4
+    pathname: P/PE/PERLER/MooseX-Types-ElasticSearch-0.0.4.tar.gz
     provides:
-      MooseX::Types::ElasticSearch 0.000002
+      MooseX::Types::ElasticSearch 0.000004
     requirements:
       DateTime::Format::Epoch::Unix 0
       DateTime::Format::ISO8601 0
-      ElasticSearch 0
       Module::Build 0.3601
       MooseX::Types 0
+      Search::Elasticsearch 0
   MooseX-Types-Path-Class-0.06
     pathname: T/TH/THEPLER/MooseX-Types-Path-Class-0.06.tar.gz
     provides:
