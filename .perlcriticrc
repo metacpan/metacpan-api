@@ -13,18 +13,18 @@ verbose = 11
 [-Variables::ProhibitPunctuationVars]
 
 [CodeLayout::RequireTrailingCommas]
-severity = 5
+severity = 4
 
 [TestingAndDebugging::RequireUseStrict]
 equivalent_modules = Test::Routine
 
 [ValuesAndExpressions::ProhibitEmptyQuotes]
-severity = 5
+severity = 4
 
 [ValuesAndExpressions::ProhibitInterpolationOfLiterals]
 allow_if_string_contains_single_quote = 1
 allow = qq{} qq[]
-severity = 5
+severity = 4
 
 [ValuesAndExpressions::ProhibitNoisyQuotes]
-severity = 5
+severity = 4
