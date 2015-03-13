@@ -29,7 +29,9 @@ env:
 
 before_install:
   - sudo service elasticsearch restart
-  
+  - git clone https://github.com/CPAN-API/p5-elasticsearch-model.git
+  - pwd
+
   - cpanm -n Devel::Cover::Report::Coveralls
   - cpanm -n Carton
   - sudo apt-get install libgmp-dev
@@ -50,7 +52,7 @@ script:
   # Devel::Cover isn't in the cpanfile
   # but if it's installed into the global dirs this should work.
   # NOTE: No '-r' for prove; 't/fakecpan.t' does the recursion for us.
-  - HARNESS_PERL_SWITCHES=-MDevel::Cover=+ignore,local carton exec prove -lv t
+  - HARNESS_PERL_SWITCHES=-MDevel::Cover=+ignore,local carton exec prove -lv -I p5-elasticsearch-model/lib t
 
 after_success:
   - cover -report coveralls
