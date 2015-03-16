@@ -183,17 +183,6 @@ DISTRIBUTIONS
       Params::Check 0.07
       Test::More 0
       if 0
-  Archive-Tar-Wrapper-0.21
-    pathname: M/MS/MSCHILLI/Archive-Tar-Wrapper-0.21.tar.gz
-    provides:
-      Archive::Tar::Wrapper 0.21
-    requirements:
-      Cwd 0
-      ExtUtils::MakeMaker 0
-      File::Temp 0
-      File::Which 0
-      IPC::Run 0
-      Log::Log4perl 0
   Archive-Zip-1.37
     pathname: P/PH/PHRED/Archive-Zip-1.37.tar.gz
     provides:
@@ -2691,30 +2680,6 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Sub::Exporter::Progressive 0.001011
       perl 5.006
-  Devel-NYTProf-5.06
-    pathname: T/TI/TIMB/Devel-NYTProf-5.06.tar.gz
-    provides:
-      Devel::NYTProf 5.06
-      Devel::NYTProf::Apache 4.00
-      Devel::NYTProf::Constants undef
-      Devel::NYTProf::Core 5.06
-      Devel::NYTProf::Data 4.02
-      Devel::NYTProf::FileHandle undef
-      Devel::NYTProf::FileInfo undef
-      Devel::NYTProf::ReadStream 4.00
-      Devel::NYTProf::Reader 4.06
-      Devel::NYTProf::Run undef
-      Devel::NYTProf::SubCallInfo undef
-      Devel::NYTProf::SubInfo undef
-      Devel::NYTProf::Util 4.00
-    requirements:
-      ExtUtils::MakeMaker 0
-      Getopt::Long 0
-      JSON::Any 0
-      List::Util 0
-      Test::Differences 0.60
-      Test::More 0.84
-      XSLoader 0
   Devel-PartialDump-0.17
     pathname: E/ET/ETHER/Devel-PartialDump-0.17.tar.gz
     provides:
@@ -3785,13 +3750,6 @@ DISTRIBUTIONS
       Hash::MultiValue 0.15
     requirements:
       ExtUtils::MakeMaker 6.30
-  Hijk-0.19
-    pathname: A/AV/AVAR/Hijk-0.19.tar.gz
-    provides:
-      Hijk 0.19
-    requirements:
-      CPAN::Meta 0
-      ExtUtils::MakeMaker 6.36
   Hook-LexWrap-0.24
     pathname: C/CH/CHORNY/Hook-LexWrap-0.24.tar.gz
     provides:
@@ -3896,19 +3854,6 @@ DISTRIBUTIONS
       IO::WrapTie::Slave 2.110
     requirements:
       ExtUtils::MakeMaker 0
-  IPC-Run-0.94
-    pathname: T/TO/TODDR/IPC-Run-0.94.tar.gz
-    provides:
-      IPC::Run 0.94
-      IPC::Run::Debug 0.90
-      IPC::Run::IO 0.90
-      IPC::Run::Timer 0.90
-      IPC::Run::Win32Helper 0.90
-      IPC::Run::Win32IO 0.90
-      IPC::Run::Win32Pump 0.90
-    requirements:
-      ExtUtils::MakeMaker 0
-      Test::More 0.47
   IPC-Run3-0.048
     pathname: R/RJ/RJBS/IPC-Run3-0.048.tar.gz
     provides:
@@ -4096,36 +4041,16 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 6.52
       Test::More 0.82
       perl 5.00503
-  Log-Any-1.03
-    pathname: D/DA/DAGOLDEN/Log-Any-1.03.tar.gz
+  Log-Any-0.15
+    pathname: J/JS/JSWARTZ/Log-Any-0.15.tar.gz
     provides:
-      Log::Any 1.03
-      Log::Any::Adapter 1.03
-      Log::Any::Adapter::Base 1.03
-      Log::Any::Adapter::File 1.03
-      Log::Any::Adapter::Null 1.03
-      Log::Any::Adapter::Stderr 1.03
-      Log::Any::Adapter::Stdout 1.03
-      Log::Any::Adapter::Test 1.03
-      Log::Any::Adapter::Util 1.03
-      Log::Any::Manager 1.03
-      Log::Any::Proxy 1.03
-      Log::Any::Proxy::Test 1.03
-      Log::Any::Test 1.03
+      Log::Any 0.15
+      Log::Any::Adapter::Null 0.15
+      Log::Any::Adapter::Test 0.15
+      Log::Any::Test 0.15
     requirements:
-      B 0
-      Carp 0
-      Data::Dumper 0
-      Exporter 0
-      ExtUtils::MakeMaker 6.17
-      Fcntl 0
-      IO::File 0
-      Test::Builder 0
-      base 0
-      constant 0
-      perl 5.008001
-      strict 0
-      warnings 0
+      ExtUtils::MakeMaker 6.30
+      Test::More 0
   Log-Contextual-0.006003
     pathname: F/FR/FREW/Log-Contextual-0.006003.tar.gz
     provides:
@@ -5156,31 +5081,6 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  MooseX-UndefTolerant-0.19
-    pathname: E/ET/ETHER/MooseX-UndefTolerant-0.19.tar.gz
-    provides:
-      MooseX::UndefTolerant 0.19
-      MooseX::UndefTolerant::ApplicationToClass 0.19
-      MooseX::UndefTolerant::ApplicationToRole 0.19
-      MooseX::UndefTolerant::Attribute 0.19
-      MooseX::UndefTolerant::Class 0.19
-      MooseX::UndefTolerant::Composite 0.19
-      MooseX::UndefTolerant::Constructor 0.19
-      MooseX::UndefTolerant::Role 0.19
-    requirements:
-      ExtUtils::MakeMaker 6.30
-      File::Find 0
-      File::Temp 0
-      Moose 0.89
-      Moose::Exporter 0
-      Moose::Role 0
-      Test::CheckDeps 0.002
-      Test::Fatal 0
-      Test::Moose 0
-      Test::More 0.88
-      Test::NoWarnings 1.04
-      strict 0
-      warnings 0
   Mouse-2.3.0
     pathname: G/GF/GFUJI/Mouse-2.3.0.tar.gz
     provides:
@@ -5571,14 +5471,14 @@ DISTRIBUTIONS
       Test::Trap 0
       overload 0
       parent 0
-  PAUSE-Permissions-0.10
-    pathname: N/NE/NEILB/PAUSE-Permissions-0.10.tar.gz
+  PAUSE-Permissions-0.11
+    pathname: N/NE/NEILB/PAUSE-Permissions-0.11.tar.gz
     provides:
-      PAUSE::Permissions 0.10
-      PAUSE::Permissions::Entry 0.10
-      PAUSE::Permissions::EntryIterator 0.10
-      PAUSE::Permissions::Module 0.10
-      PAUSE::Permissions::ModuleIterator 0.10
+      PAUSE::Permissions 0.11
+      PAUSE::Permissions::Entry 0.11
+      PAUSE::Permissions::EntryIterator 0.11
+      PAUSE::Permissions::Module 0.11
+      PAUSE::Permissions::ModuleIterator 0.11
     requirements:
       Carp 0
       ExtUtils::MakeMaker 0
@@ -5589,6 +5489,7 @@ DISTRIBUTIONS
       Moo 0
       autodie 0
       feature 0
+      perl 5.010000
       strict 0
       warnings 0
   POSIX-strftime-Compiler-0.31
@@ -6931,93 +6832,6 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Test::More 0
       perl 5.006001
-  Search-Elasticsearch-1.19
-    pathname: D/DR/DRTECH/Search-Elasticsearch-1.19.tar.gz
-    provides:
-      MockCxn undef
-      Search::Elasticsearch 1.19
-      Search::Elasticsearch::Bulk 1.19
-      Search::Elasticsearch::Client::0_90::Direct 1.19
-      Search::Elasticsearch::Client::0_90::Direct::Cluster 1.19
-      Search::Elasticsearch::Client::0_90::Direct::Indices 1.19
-      Search::Elasticsearch::Client::Direct 1.19
-      Search::Elasticsearch::Client::Direct::Cat 1.19
-      Search::Elasticsearch::Client::Direct::Cluster 1.19
-      Search::Elasticsearch::Client::Direct::Indices 1.19
-      Search::Elasticsearch::Client::Direct::Nodes 1.19
-      Search::Elasticsearch::Client::Direct::Snapshot 1.19
-      Search::Elasticsearch::Cxn::Factory 1.19
-      Search::Elasticsearch::Cxn::HTTPTiny 1.19
-      Search::Elasticsearch::Cxn::Hijk 1.19
-      Search::Elasticsearch::Cxn::LWP 1.19
-      Search::Elasticsearch::CxnPool::Sniff 1.19
-      Search::Elasticsearch::CxnPool::Static 1.19
-      Search::Elasticsearch::CxnPool::Static::NoPing 1.19
-      Search::Elasticsearch::Error 1.19
-      Search::Elasticsearch::Logger::LogAny 1.19
-      Search::Elasticsearch::Role::API 1.19
-      Search::Elasticsearch::Role::API::0_90 1.19
-      Search::Elasticsearch::Role::Bulk 1.19
-      Search::Elasticsearch::Role::Client 1.19
-      Search::Elasticsearch::Role::Client::Direct 1.19
-      Search::Elasticsearch::Role::Cxn 1.19
-      Search::Elasticsearch::Role::Cxn::HTTP 1.19
-      Search::Elasticsearch::Role::CxnPool 1.19
-      Search::Elasticsearch::Role::CxnPool::Sniff 1.19
-      Search::Elasticsearch::Role::CxnPool::Static 1.19
-      Search::Elasticsearch::Role::CxnPool::Static::NoPing 1.19
-      Search::Elasticsearch::Role::Is_Sync 1.19
-      Search::Elasticsearch::Role::Logger 1.19
-      Search::Elasticsearch::Role::Scroll 1.19
-      Search::Elasticsearch::Role::Serializer 1.19
-      Search::Elasticsearch::Role::Serializer::JSON 1.19
-      Search::Elasticsearch::Role::Transport 1.19
-      Search::Elasticsearch::Scroll 1.19
-      Search::Elasticsearch::Serializer::JSON 1.19
-      Search::Elasticsearch::Serializer::JSON::Cpanel 1.19
-      Search::Elasticsearch::Serializer::JSON::PP 1.19
-      Search::Elasticsearch::Serializer::JSON::XS 1.19
-      Search::Elasticsearch::TestServer 1.19
-      Search::Elasticsearch::Transport 1.19
-      Search::Elasticsearch::Util 1.19
-      Search::Elasticsearch::Util::API::Path 1.19
-      Search::Elasticsearch::Util::API::QS 1.19
-    requirements:
-      Any::URI::Escape 0
-      Data::Dumper 0
-      Encode 0
-      ExtUtils::MakeMaker 0
-      File::Temp 0
-      HTTP::Headers 0
-      HTTP::Request 0
-      HTTP::Tiny 0.043
-      Hijk 0.12
-      IO::Select 0
-      IO::Socket 0
-      IO::Uncompress::Inflate 0
-      JSON::MaybeXS 1.002002
-      JSON::PP 0
-      LWP::UserAgent 0
-      List::Util 0
-      Log::Any 1.02
-      Log::Any::Adapter 0
-      MIME::Base64 0
-      Module::Runtime 0
-      Moo 1.003
-      Moo::Role 0
-      POSIX 0
-      Package::Stash 0.34
-      Pod::Simple 3.28
-      Scalar::Util 0
-      Sub::Exporter 0
-      Test::More 0.98
-      Time::HiRes 0
-      Try::Tiny 0
-      URI 0
-      namespace::clean 0
-      overload 0
-      strict 0
-      warnings 0
   Sort-Naturally-1.03
     pathname: B/BI/BINGOS/Sort-Naturally-1.03.tar.gz
     provides:

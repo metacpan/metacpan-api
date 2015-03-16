@@ -35,10 +35,16 @@ sub index : Path('/_search/scroll') : Args {
     }
 
     my $res = eval {
-        $c->model('CPAN')->es->scroll(
+        $c->model('CPAN')->es->transport->request(
             {
-                scroll_id => $scroll_id,
-                scroll    => $c->req->params->{scroll},
+                method => $req->method,
+                qs     => $req->parameters,
+
+                # We could alternatively append "/$scroll_id" to the cmd.
+                cmd => '/_search/scroll',
+
+                # Pass reference to scalar as a non-ref will throw an error.
+                data => \$scroll_id,
             }
         );
     } or do { $self->internal_error( $c, $@ ); };

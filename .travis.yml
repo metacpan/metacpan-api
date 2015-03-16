@@ -28,8 +28,11 @@ env:
 
 
 before_install:
+  # We need to run a pre-1.0 instance of ES until we update everything.
+  - wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.90.13.deb
+  - sudo dpkg -i --force-confdef elasticsearch-0.90.13.deb
   - sudo service elasticsearch restart
-  
+
   - cpanm -n Devel::Cover::Report::Coveralls
   - cpanm -n Carton
   - sudo apt-get install libgmp-dev

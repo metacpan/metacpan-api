@@ -42,7 +42,7 @@ requires 'Devel::ArgNames';
 requires 'Digest::MD5';
 requires 'Digest::SHA1';
 requires 'EV';
-requires 'ElasticSearchX::Model', '0.1.7';
+requires 'ElasticSearchX::Model', '0.1.5';
 requires 'Email::Address';
 requires 'Email::Sender::Simple';
 requires 'Email::Simple';
@@ -135,7 +135,6 @@ requires 'Pod::Text';
 requires 'Regexp::Common';
 requires 'Regexp::Common::time';
 requires 'Safe', '2.35'; # bug fixes (used by Parse::PMFile)
-requires 'Search::Elasticsearch';
 requires 'Starman';
 requires 'Time::Local';
 requires 'Throwable::Error';
