@@ -26,7 +26,7 @@ test_psgi app, sub {
         my $json = decode_json_ok($res);
         ok( $json->{pauseid} eq 'MO', 'pauseid is MO' )
             if ( $k eq '/author/MO' );
-        ok( ref $json->{author} eq 'HASH', '_mapping' )
+        ok( ref $json->{cpan_v1}{mappings}{author} eq 'HASH', '_mapping' )
             if ( $k eq '/author/_mapping' );
     }
 

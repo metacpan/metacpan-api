@@ -113,8 +113,14 @@ has id => (
     id => [qw(author name)],
 );
 
-has [qw(license version author archive)] => (
+has [qw(version author archive)] => (
     is       => 'ro',
+    required => 1,
+);
+
+has license => (
+    is       => 'ro',
+    isa      => 'ArrayRef',
     required => 1,
 );
 

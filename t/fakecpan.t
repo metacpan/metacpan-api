@@ -13,7 +13,8 @@ use Test::Aggregate::Nested 0.371 ();
 
 use CPAN::Faker 0.010;
 use Config::General;
-use ElasticSearch::TestServer;
+use DDP;
+use Search::Elasticsearch;
 use File::Copy;
 use MetaCPAN::Script::Author;
 use MetaCPAN::Script::Latest;
@@ -31,16 +32,19 @@ BEGIN { $ENV{EMAIL_SENDER_TRANSPORT} = 'Test' }
 my $ES_HOST_PORT = '127.0.0.1:' . ( $ENV{METACPAN_ES_TEST_PORT} ||= 9900 );
 
 ok(
-    my $es = ElasticSearch->new(
-        transport => 'httplite',
-        servers   => $ES_HOST_PORT,
+    my $es = Search::Elasticsearch->new(
+        nodes => $ES_HOST_PORT,
 
         # trace_calls => 1,
     ),
     'got ElasticSearch object'
 );
 
-eval { $es->transport->refresh_servers; };
+p $es->cluster->info;
+p $es->cluster->health;
+p $es->cluster->node_stats;
+
+#eval { $es->transport->refresh_servers; };
 
 ok( !$@, "Connected to the ElasticSearch test instance on $ES_HOST_PORT" )
     or do {
@@ -54,7 +58,7 @@ EOF
     };
 
 Test::More::note(
-    Test::More::explain( { 'ElasticSearch info' => $es->request } ) );
+    Test::More::explain( { 'ElasticSearch info' => $es->info } ) );
 
 my $config = MetaCPAN::Script::Runner->build_config;
 $config->{es} = $es;
@@ -138,11 +142,11 @@ wait_for_es();
 
 sub wait_for_es {
     sleep $_[0] if $_[0];
-    $es->cluster_health(
+    $es->cluster->health(
         wait_for_status => 'yellow',
         timeout         => '30s'
     );
-    $es->refresh_index();
+    $es->indices->refresh;
 }
 
 subtest 'Nested tests' => sub {
