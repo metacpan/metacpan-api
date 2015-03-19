@@ -9,15 +9,15 @@ test_release(
     {
         name       => 'BadPod-0.01',
         author     => 'MO',
-        authorized => 1,
-        first      => 1,
+        authorized => \1,
+        first      => \1,
         provides   => [ 'BadPod', ],
         modules    => {
             'lib/BadPod.pm' => [
                 {
                     name             => 'BadPod',
-                    indexed          => 1,
-                    authorized       => 1,
+                    indexed          => \1,
+                    authorized       => \1,
                     version          => '0.01',
                     version_numified => 0.01,
                     associated_pod   => 'MO/BadPod-0.01/lib/BadPod.pm',
