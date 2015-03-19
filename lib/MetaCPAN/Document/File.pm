@@ -1006,8 +1006,14 @@ sub autocomplete {
     my @query = split( /\s+/, $query );
     my $should = [
         map {
-            { field     => { 'documentation.analyzed'  => "$_*" } },
-                { field => { 'documentation.camelcase' => "$_*" } }
+            {
+                simple_query_string => {
+                    fields => [
+                        'documentation.analyzed', 'documentation.camelcase'
+                    ],
+                    query => "$_*"
+                }
+            }
         } grep {$_} @query
     ];
 
