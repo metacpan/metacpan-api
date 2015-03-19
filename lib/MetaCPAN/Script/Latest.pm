@@ -189,14 +189,10 @@ sub reindex {
     # Get all the files for the release.
     my $scroll = $self->index->type("file")->size(1000)->filter(
         {
-            query => {
-                filtered => {
-                    and => [
-                        { term => { 'file.release' => $source->{release} } },
-                        { term => { 'file.author'  => $source->{author} } }
-                    ]
-                }
-            }
+            and => [
+                { term => { 'file.release' => $source->{release} } },
+                { term => { 'file.author'  => $source->{author} } }
+            ]
         }
     )->raw->scroll;
 
