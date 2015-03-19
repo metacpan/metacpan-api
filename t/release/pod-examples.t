@@ -9,7 +9,7 @@ use MetaCPAN::TestHelpers;
 test_release(
     'RWSTAUNER/Pod-Examples-99',
     {
-        first       => 1,
+        first       => \1,
         extra_tests => \&test_pod_examples,
     }
 );
