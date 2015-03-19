@@ -1015,9 +1015,12 @@ sub autocomplete {
     # As of 2013-10-27 we are still using 0.20.2 in production.
     return $self->query(
         {
-            custom_score => {
-                query => { bool => { should => $should } },
-                script => "_score - doc['documentation'].value.length()/100",
+            function_score => {
+                query        => { bool => { should => $should } },
+                script_score => {
+                    script =>
+                        "_score - doc['documentation'].value.length()/100",
+                }
             }
         }
         )->filter(
