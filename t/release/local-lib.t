@@ -2,6 +2,7 @@ use Test::More;
 use strict;
 use warnings;
 
+use DDP;
 use lib 't/lib';
 use MetaCPAN::TestHelpers;
 
@@ -37,6 +38,7 @@ test_release(
                 is $file->sloc,       3, 'sloc';
                 is $file->slop,       2, 'slop';
 
+                p $file->{pod_lines};
                 is_deeply $file->{pod_lines}, [ [ 4, 3 ] ], 'pod_lines';
 
                 is $file->abstract, q[Legitimate module], 'abstract';

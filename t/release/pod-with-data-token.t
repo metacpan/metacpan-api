@@ -2,6 +2,7 @@ use Test::More;
 use strict;
 use warnings;
 
+use DDP;
 use lib 't/lib';
 use MetaCPAN::TestHelpers;
 
@@ -37,6 +38,7 @@ sub test_content {
     is $mod->sloc, 5,  'sloc';
     is $mod->slop, 17, 'slop';
 
+    p $mod->{pod_lines};
     is_deeply $mod->{pod_lines},
         #<<<
         [
