@@ -2,6 +2,7 @@ use Test::More;
 use strict;
 use warnings;
 
+use DDP;
 use lib 't/lib';
 use MetaCPAN::TestHelpers;
 
@@ -49,6 +50,7 @@ sub test_binary_data {
         is $file->sloc, 4, 'sloc';
         is $file->slop, 0, 'slop';
 
+        p $file->{pod_lines};
         is_deeply $file->{pod_lines}, [], 'no pod_lines';
 
         my $binary = $self->file_content($file);
@@ -63,6 +65,7 @@ sub test_binary_data {
         is $file->sloc, 4, 'sloc';
         is $file->slop, 7, 'slop';
 
+        p $file->{pod_lines};
         is_deeply $file->{pod_lines}, [ [ 5, 5 ], [ 22, 6 ], ], 'pod_lines';
 
         my $binary = $self->file_content($file);
