@@ -4,7 +4,6 @@ use Test::More;
 use HTTP::Request::Common;
 use List::Util ();
 use version;
-use DDP;
 
 with qw(
     MetaCPAN::Tests::Model
@@ -195,7 +194,6 @@ test 'modules in release files' => sub {
         else {
             ok( 0, $desc );
         }
-        diag p $got;
     }
 
     is( scalar keys %module_files, 0, 'all module files tested' )
