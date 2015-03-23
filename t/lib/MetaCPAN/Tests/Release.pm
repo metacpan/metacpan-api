@@ -4,7 +4,7 @@ use Test::More;
 use HTTP::Request::Common;
 use List::Util ();
 use version;
-use DPP;
+use DDP;
 
 with qw(
     MetaCPAN::Tests::Model
