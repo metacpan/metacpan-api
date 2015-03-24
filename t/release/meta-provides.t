@@ -26,7 +26,7 @@ test_release(
                     and => [
                         { term   => { 'author'    => $release->author } },
                         { term   => { 'release'   => $release->name } },
-                        { term   => { 'directory' => 0 } },
+                        { term   => { 'directory' => \0 } },
                         { prefix => { 'path'      => 'lib/' } },
                     ]
                 }
