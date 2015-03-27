@@ -245,8 +245,8 @@ has directory => (
 
 Holds the name for the documentation in this file.
 
-If the file L</is_pod_file|is a pod file>, the name is derived from the
-C<NAME> section. If the file L</is_perl_file|is a perl file> and the
+If the file L<is a pod file|/is_pod_file>, the name is derived from the
+C<NAME> section. If the file L<is a perl file|/is_perl_file> and the
 name from the C<NAME> section matches one of the modules in L</module>,
 it returns the name. Otherwise it returns the name of the first module
 in L</module>. If there are no modules in the file the documentation is
