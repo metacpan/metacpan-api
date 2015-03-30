@@ -5,8 +5,6 @@ use warnings;
 use lib 't/lib';
 use MetaCPAN::TestHelpers;
 
-local $TODO = 'FIXME';
-
 test_release(
     {
         name       => 'Common-Files-1.1',

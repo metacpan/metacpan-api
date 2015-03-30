@@ -300,7 +300,13 @@ has indexed => (
     required => 1,
     is       => 'rw',
     isa      => 'Bool',
-    default  => 1,
+    lazy     => 1,
+    default  => sub {
+        my ($self) = @_;
+        return 0 if $self->is_in_other_files;
+        return 0 if !$self->metadata->should_index_file( $self->path );
+        return 1;
+    },
 );
 
 =head2 level
