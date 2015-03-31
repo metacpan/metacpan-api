@@ -245,9 +245,7 @@ sub _build_files {
                     date         => $self->date,
                     directory    => $child->is_dir,
                     distribution => $self->distribution,
-                    indexed      => $self->metadata->should_index_file($fpath)
-                    ? 1
-                    : 0,
+
                     local_path => $child,
                     maturity   => $self->maturity,
                     metadata   => $self->metadata,
