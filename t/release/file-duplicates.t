@@ -9,8 +9,9 @@ use MetaCPAN::TestHelpers;
 test_release(
     'BORISNAT/File-Duplicates-1.000',
     {
-        first   => \1,
-        modules => {
+        first       => \1,
+        main_module => 'File::Duplicates',
+        modules     => {
             'lib/File/Duplicates.pm' => [
                 {
                     name             => 'File::Duplicates',

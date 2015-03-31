@@ -16,6 +16,7 @@ test_release(
         first       => \1,
         provides    => [ 'Meta::Provides', ],
         status      => 'latest',
+        main_module => 'Meta::Provides',
         extra_tests => sub {
 
             my ($self) = @_;

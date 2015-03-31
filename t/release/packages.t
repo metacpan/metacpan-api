@@ -9,15 +9,15 @@ use MetaCPAN::TestHelpers;
 
 test_release(
     {
-        name       => 'Packages-1.103',
-        author     => 'RWSTAUNER',
-        abstract   => 'Package examples',
-        authorized => \1,
-        first      => \1,
-        provides   => [ 'Packages', 'Packages::BOM', ],
-        status     => 'latest',
-
-        modules => {
+        name        => 'Packages-1.103',
+        author      => 'RWSTAUNER',
+        abstract    => 'Package examples',
+        authorized  => \1,
+        first       => \1,
+        provides    => [ 'Packages', 'Packages::BOM', ],
+        status      => 'latest',
+        main_module => 'Packages',
+        modules     => {
             'lib/Packages.pm' => [
                 {
                     name             => 'Packages',

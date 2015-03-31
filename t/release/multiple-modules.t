@@ -19,6 +19,8 @@ is( $release->name, 'Multiple-Modules-1.01', 'name ok' );
 
 is( $release->author, 'LOCAL', 'author ok' );
 
+is( $release->main_module, 'Multiple::Modules', 'main_module ok' );
+
 is_deeply(
     [ sort @{ $release->provides } ],
     [

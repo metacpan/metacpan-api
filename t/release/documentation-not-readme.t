@@ -11,6 +11,7 @@ test_release(
     {
         first       => \1,
         extra_tests => \&test_modules,
+        main_module => 'Documentation::Not::Readme',
     }
 );
 

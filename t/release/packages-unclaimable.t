@@ -16,12 +16,12 @@ test_release(
         author => 'RWSTAUNER',
         abstract =>
             'Dist that appears to declare packages that are not allowed',
-        authorized => \1,
-        first      => \1,
-        provides   => [ 'Packages::Unclaimable', ],
-        status     => 'latest',
-
-        modules => {
+        authorized  => \1,
+        first       => \1,
+        provides    => [ 'Packages::Unclaimable', ],
+        status      => 'latest',
+        main_module => 'Packages::Unclaimable',
+        modules     => {
             'lib/Packages/Unclaimable.pm' => [
                 {
                     name             => 'Packages::Unclaimable',
