@@ -162,7 +162,7 @@ sub run {
         else {
             try { $self->import_archive($file) }
             catch {
-                log_fatal {$_};
+                $self->handle_error( $_[0] );
             };
             exit if ( $self->children );
         }

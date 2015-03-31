@@ -6,7 +6,7 @@ use warnings;
 use ElasticSearch;
 use ElasticSearchX::Model::Document::Types qw(:all);
 use FindBin;
-use Log::Contextual qw( :dlog );
+use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Model;
 use MetaCPAN::Types qw(:all);
 use Moose::Role;
@@ -20,6 +20,13 @@ has 'cpan' => (
     coerce     => 1,
     documentation =>
         'Location of a local CPAN mirror, looks for $ENV{MINICPAN} and ~/CPAN',
+);
+
+has die_on_error => (
+    is            => 'ro',
+    isa           => Bool,
+    default       => 0,
+    documentation => 'Die on errors instead of simply logging',
 );
 
 has es => (
@@ -67,6 +74,16 @@ sub _build_config {
         name => 'metacpan_server',
         path => "$FindBin::RealBin/..",
     )->get;
+}
+
+sub handle_error {
+    my ( $self, $error ) = @_;
+
+    # Always log.
+    log_fatal {$error};
+
+    # Die if configured (for the test suite).
+    die $error if $self->die_on_error;
 }
 
 sub index {
