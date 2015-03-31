@@ -217,6 +217,8 @@ sub _set_main_module {
 
     my @modules = @{$mod};
 
+    return unless @modules;
+
     my $dist2module = $release->distribution;
     $dist2module =~ s{-}{::}g;
 
