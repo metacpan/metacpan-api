@@ -13,6 +13,10 @@
     {
       "file": "lib/Packages/BOM.pm",
       "content": "\ufeffpackage Packages::BOM;\nour $VERSION = 0.04;\n\n=head1 NAME\n\nPackages::BOM - package in a file with a BOM\n"
+    },
+    {
+      "file": "lib/Packages/None.pm",
+      "content": "use Packages;\n\n# a .pm file with no package statement\n"
     } ]
   }
 }

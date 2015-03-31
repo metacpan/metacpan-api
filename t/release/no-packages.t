@@ -8,7 +8,7 @@ use MetaCPAN::TestHelpers;
 # Some uploads contain no usable modules.
 test_release(
     {
-        name       => 'No-Modules-1.1',
+        name       => 'No-Packages-1.1',
         author     => 'BORISNAT',
         authorized => \1,
         first      => \1,

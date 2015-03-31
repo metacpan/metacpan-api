@@ -215,7 +215,8 @@ sub _set_main_module {
     my $self = shift;
     my ( $mod, $release ) = @_;
 
-    my @modules = @{$mod};
+    # Only select modules (files) that have modules (packages).
+    my @modules = grep { scalar @{ $_->module } } @$mod;
 
     return unless @modules;
 

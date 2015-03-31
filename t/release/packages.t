@@ -52,6 +52,11 @@ test_release(
             is ${ $file->pod },
                 q[NAME Packages::BOM - package in a file with a BOM],
                 'pod text';
+
+            is_deeply $self->file_by_path('lib/Packages/None.pm')
+                ->module,
+                [],
+                'pm file has no packages';
         },
     },
     'Test Packages release and its modules',
