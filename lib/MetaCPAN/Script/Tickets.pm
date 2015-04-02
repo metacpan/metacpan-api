@@ -74,6 +74,11 @@ sub run {
     my $self = shift;
     my $bugs = {};
 
+# NOTE: Order is important here.
+# Hash keys are distribution names.
+# rt issues are counted for all dists (the download tsv contains everything).
+# gh issues are counted for any dist with a github url in `resources.bugtracker.web`.
+# Any dists in the second will overwrite the first.
     foreach my $source ( @{ $self->source } ) {
         if ( $source eq 'github' ) {
             log_debug {'Fetching GitHub issues'};
@@ -140,6 +145,7 @@ sub retrieve_github_bugs {
     return $summary;
 }
 
+# Try (recursively) to find a github url in the resources hash.
 sub github_user_repo_from_resources {
     my ( $self, $resources ) = @_;
     my ( $user, $repo, $source );
