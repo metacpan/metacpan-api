@@ -208,6 +208,8 @@ sub _build_document {
 
     $self->_set_main_module( $self->modules, $document );
 
+    $document->changes_file( $self->get_changes_file( $self->files ) );
+
     return $document;
 }
 
@@ -248,6 +250,30 @@ sub _set_main_module {
     } @modules;
     $release->main_module( $sorted_modules[0]->module->[0]->name );
 
+}
+
+sub get_changes_file {
+    my $self          = shift;
+    my @files         = @{ $_[0] };
+    my @changes_files = qw(
+        Changelog
+        ChangeLog
+        CHANGELOG
+        Changes
+        CHANGES
+        NEWS
+    );
+
+    if ( $files[0]->distribution eq 'perl' ) {
+        foreach my $file (@files) {
+            if ( $file->name eq 'perldelta.pod' ) {
+                return $file->path;
+            }
+        }
+    }
+    foreach my $file (@files) {
+        return $file->path if grep { $_ eq $file->path } @changes_files;
+    }
 }
 
 sub _build_files {

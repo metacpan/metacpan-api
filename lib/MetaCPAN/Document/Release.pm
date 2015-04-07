@@ -223,6 +223,12 @@ has main_module => (
     required => 0,
 );
 
+has changes_file => (
+    is       => 'rw',
+    isa      => 'Str',
+    required => 0,
+);
+
 sub _build_version_numified {
     return MetaCPAN::Util::numify_version( shift->version );
 }
