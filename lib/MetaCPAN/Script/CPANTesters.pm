@@ -8,12 +8,18 @@ use File::Spec::Functions qw(catfile);
 use File::Temp qw(tempdir);
 use File::stat qw(stat);
 use IO::Uncompress::Bunzip2 qw(bunzip2);
+use List::AllUtils qw(any);
 use LWP::UserAgent ();
 use Log::Contextual qw( :log :dlog );
 use Moose;
 use Try::Tiny;
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
+
+has _bulk_queue => (
+    is      => 'ro',
+    default => sub { [] },
+);
 
 has url => (
     is      => 'ro',
@@ -52,10 +58,8 @@ sub run {
     $self->index->refresh;
 }
 
-sub index_reports {
-    my $self  = shift;
-    my $es    = $self->model->es;
-    my $index = $self->index->name;
+sub update_database {
+    my ($self) = @_;
     my $db = $self->db_file;
 
     log_info { "Mirroring " . $self->url };
@@ -67,8 +71,14 @@ sub index_reports {
     }
 
     bunzip2 "$db.bz2" => "$db", AutoClose => 1;
+    return 1;
+}
 
-    my $scroll = $es->scrolled_search(
+sub fetch_all_releases {
+    my ($self) = @_;
+    my $index = $self->index->name;
+
+    my $scroll = $self->es->scrolled_search(
         index       => $index,
         type        => 'release',
         query       => { match_all => {} },
@@ -77,41 +87,61 @@ sub index_reports {
         scroll      => '5m',
     );
 
-    # Fetch all releases up front and put them in a hash for fast lookup.
-
     my %releases;
     while ( my $release = $scroll->next ) {
         my $data = $release->{_source};
         $releases{ $self->_dist_key($data) } = $data;
     }
 
+    return \%releases;
+}
+
+sub index_reports {
+    my $self = shift;
+
+    $self->update_database
+        or return;
+
+    # Fetch all releases up front and put them in a hash for fast lookup.
+    my $releases = $self->fetch_all_releases;
 
     my $sth = $self->dbh->prepare('SELECT * FROM release');
     $sth->execute;
-    my @bulk;
 
-    while ( my $data = $sth->fetchrow_hashref ) {
-        my $release = join( '-', $data->{dist}, $data->{version} );
-        next unless ( $release = $releases{$release} );
-        my $bulk = 0;
-        for (qw(fail pass na unknown)) {
-            $bulk = 1 if ( $data->{$_} != ( $release->{tests}->{$_} || 0 ) );
-        }
-        next unless ($bulk);
+    my @result_fields = qw(fail pass na unknown);
+    while ( my $row = $sth->fetchrow_hashref ) {
+        next
+            unless my $release
+            = $releases->{ join( '-', $row->{dist}, $row->{version} ) };
+
+        # Only include this doc in the bulk update if there has been a change.
+        next
+            unless any { $row->{$_} != ( $release->{tests}->{$_} || 0 ) }
+        @result_fields;
+
         $release->{tests}
-            = { map { $_ => $data->{$_} } qw(fail pass na unknown) };
-        push( @bulk, $release );
-        $self->bulk( \@bulk ) if ( @bulk > 100 );
+            = { map { $_ => $row->{$_} } @result_fields };
+
+        $self->update_release($release);
     }
-    $self->bulk( \@bulk );
+
+    $self->dequeue_bulk;
     log_info {'done'};
 }
 
-sub bulk {
-    my ( $self, $bulk ) = @_;
+sub update_release {
+    my ( $self, $release ) = @_;
+    my $queue = $self->_bulk_queue;
+    push @$queue, $release;
+    $self->dequeue_bulk if ( @$queue > 100 );
+}
+
+sub dequeue_bulk {
+    my ($self) = @_;
+    my $queue = $self->_bulk_queue;
     my @bulk;
     my $index = $self->index->name;
-    while ( my $data = shift @$bulk ) {
+    while ( my $data = shift @$queue ) {
         push(
             @bulk,
             {
