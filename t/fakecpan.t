@@ -16,6 +16,7 @@ use Config::General;
 use ElasticSearch::TestServer;
 use File::Copy;
 use MetaCPAN::Script::Author;
+use MetaCPAN::Script::CPANTesters;
 use MetaCPAN::Script::Latest;
 use MetaCPAN::Script::Mapping;
 use MetaCPAN::Script::Release;
@@ -133,6 +134,31 @@ ok(
         )->run,
     'tickets'
 );
+
+{
+    {
+        package    ## no critic (Package)
+            _ua_mock;
+        use parent 'LWP::UserAgent';
+
+        # Returning an HTTP::Reasponse from a 'request_send' handler
+        # doens't work wiht mirror (it expects a file to be made based on an
+        # argument not passed to the handler) so just mock the mirror method.
+        sub mirror {
+            my ( $self, $url, $dest ) = @_;
+
+            # Don't download the db, use our cached, minimized, faked copy.
+            my $content
+                = ::file(qw( t var cpantesters-release-fake.db.bz2 ))->slurp;
+            ::file($dest)->openw->print($content);
+        }
+    }
+    my $ua = _ua_mock->new;
+
+    local @ARGV;
+    MetaCPAN::Script::CPANTesters->new_with_options(
+        { %$config, ua => $ua, } )->run;
+}
 
 wait_for_es();
 
