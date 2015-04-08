@@ -19,6 +19,13 @@ has db => (
     default => 'http://devel.cpantesters.org/release/release.db.bz2'
 );
 
+has ua => (
+    is      => 'ro',
+    default => sub {
+        LWP::UserAgent->new
+    }
+);
+
 sub run {
     my $self = shift;
     $self->index_reports;
@@ -29,10 +36,9 @@ sub index_reports {
     my $self  = shift;
     my $es    = $self->model->es;
     my $index = $self->index->name;
-    my $ua    = LWP::UserAgent->new;
     my $db    = $self->home->file(qw(var tmp cpantesters.db));
     log_info { "Mirroring " . $self->db };
-    $ua->mirror( $self->db, "$db.bz2" );
+    $self->ua->mirror( $self->db, "$db.bz2" );
     if ( -e $db && stat($db)->mtime >= stat("$db.bz2")->mtime ) {
         log_info {"DB hasn't been modified"};
         return;
