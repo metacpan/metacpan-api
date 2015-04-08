@@ -20,8 +20,6 @@ test_release(
             my ($self) = @_;
             my $tests = $self->data->tests;
 
-            local $TODO = 'FIXME';
-
             # Don't test the actual numbers since we copy this out of the real
             # database as a live test case.
 

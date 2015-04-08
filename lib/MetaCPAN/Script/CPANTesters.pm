@@ -11,6 +11,7 @@ use IO::Uncompress::Bunzip2 qw(bunzip2);
 use LWP::UserAgent ();
 use Log::Contextual qw( :log :dlog );
 use Moose;
+use Try::Tiny;
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
@@ -55,15 +56,12 @@ sub index_reports {
         scroll      => '5m',
     );
 
+    # Fetch all releases up front and put them in a hash for fast lookup.
+
     my %releases;
     while ( my $release = $scroll->next ) {
         my $data = $release->{_source};
-        $releases{
-            join( '-',
-                grep {defined} $data->{distribution},
-                $data->{version} )
-            }
-            = $data;
+        $releases{ $self->_dist_key($data) } = $data;
     }
 
     log_info { 'Opening database file at ' . $db };
@@ -109,6 +107,22 @@ sub bulk {
         );
     }
     $self->es->bulk( \@bulk );
+}
+
+sub _dist_key {
+    my ( $self, $release ) = @_;
+
+    # The CPAN Testers db uses CPAN::DistnameInfo rather than the META file
+    # so we get better matches this way.
+    try {
+        my $info = CPAN::DistnameInfo->new( $release->{download_url} );
+        join '-', $info->dist, $info->version;
+    }
+    catch {
+        join '-',
+            grep {defined} $release->{distribution},
+            $release->{version};
+    };
 }
 
 __PACKAGE__->meta->make_immutable;
