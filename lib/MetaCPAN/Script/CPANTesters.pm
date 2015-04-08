@@ -15,15 +15,34 @@ use Try::Tiny;
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
-has db => (
+has url => (
     is      => 'ro',
     default => 'http://devel.cpantesters.org/release/release.db.bz2'
 );
 
+has db_file => (
+    is      => 'ro',
+    lazy    => 1,
+    default => sub {
+        $_[0]->home->file(qw(var tmp cpantesters.db));
+    },
+);
+
+has dbh => (
+    is      => 'ro',
+    lazy    => 1,
+    default => sub {
+        my $db = $_[0]->db_file;
+        log_info { 'Opening database file at ' . $db };
+        return DBI->connect( 'dbi:SQLite:dbname=' . $db );
+    },
+);
+
 has ua => (
     is      => 'ro',
+    lazy    => 1,
     default => sub {
-        LWP::UserAgent->new
+        LWP::UserAgent->new;
     }
 );
 
@@ -37,9 +56,11 @@ sub index_reports {
     my $self  = shift;
     my $es    = $self->model->es;
     my $index = $self->index->name;
-    my $db    = $self->home->file(qw(var tmp cpantesters.db));
-    log_info { "Mirroring " . $self->db };
-    $self->ua->mirror( $self->db, "$db.bz2" );
+    my $db = $self->db_file;
+
+    log_info { "Mirroring " . $self->url };
+    $self->ua->mirror( $self->url, "$db.bz2" );
+
     if ( -e $db && stat($db)->mtime >= stat("$db.bz2")->mtime ) {
         log_info {"DB hasn't been modified"};
         return;
@@ -64,11 +85,8 @@ sub index_reports {
         $releases{ $self->_dist_key($data) } = $data;
     }
 
-    log_info { 'Opening database file at ' . $db };
-    my $dbh = DBI->connect( 'dbi:SQLite:dbname=' . $db );
-    my $sth;
-    $sth = $dbh->prepare('SELECT * FROM release');
 
+    my $sth = $self->dbh->prepare('SELECT * FROM release');
     $sth->execute;
     my @bulk;
 
