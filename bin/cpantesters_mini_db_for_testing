@@ -1,0 +1,59 @@
+#!/bin/bash
+
+cd `dirname "$0"`
+cd ..
+
+url=http://devel.cpantesters.org/release/release.db.bz2
+in=t/var/tmp/cpantesters-release.db
+out=t/var/cpantesters-release-fake.db
+table=release
+
+download_original () {
+    test -s "$in" || \
+        wget -O "$in.bz2" "$url"
+    test -f "$in.bz2" && \
+        bunzip2 "$in.bz2"
+
+    rm -f "$out" "$out.bz2"
+}
+
+finish () {
+    # Compress the db like cpantesters does.
+    bzip2 "$out"
+}
+
+sqlout () { sqlite3 "$out"; }
+sql () {
+    sqlite3 "$in" | sqlout
+}
+
+dist_version () {
+    local dist="$1" version="$2"
+cat <<SQL | sql
+.mode insert $table
+select * from release where dist = '$dist' and version LIKE '%$version%';
+SQL
+}
+
+fake_dist () {
+    echo "INSERT INTO $table VALUES('$1', '$2', $3, $4, $5, $6);" | sqlout
+}
+
+populate_db () {
+    # Create tables.
+    echo .schema | sql
+
+    # Get test cases from real data.
+    dist_version 'P' '1.0.20'
+
+    # Add records for our fake dists.
+    fake_dist 'Some' '1.00-TRIAL' 4 3 2 1
+}
+
+# main
+
+download_original
+
+populate_db
+
+finish
