@@ -62,7 +62,7 @@ sub update_database {
     my ($self) = @_;
     my $db = $self->db_file;
 
-    log_info { "Mirroring " . $self->url };
+    log_info { 'Mirroring ' . $self->url };
     $self->ua->mirror( $self->url, "$db.bz2" );
 
     if ( -e $db && stat($db)->mtime >= stat("$db.bz2")->mtime ) {
@@ -93,6 +93,8 @@ sub fetch_all_releases {
         $releases{ $self->_dist_key($data) } = $data;
     }
 
+    log_debug { 'Releases: ' . keys %releases };
+
     return \%releases;
 }
 
@@ -108,8 +110,12 @@ sub index_reports {
     my $sth = $self->dbh->prepare('SELECT * FROM release');
     $sth->execute;
 
+    my $count         = 0;
     my @result_fields = qw(fail pass na unknown);
     while ( my $row = $sth->fetchrow_hashref ) {
+        $count++;
+        log_trace {"Found in db: $row->{dist}-$row->{version}"};
+
         next
             unless my $release
             = $releases->{ join( '-', $row->{dist}, $row->{version} ) };
@@ -126,12 +132,13 @@ sub index_reports {
     }
 
     $self->dequeue_bulk;
-    log_info {'done'};
+    log_info {"Done.  Checked $count releases."};
 }
 
 sub update_release {
     my ( $self, $release ) = @_;
     my $queue = $self->_bulk_queue;
+    log_debug { 'Updating ' . $release->{name} };
     push @$queue, $release;
     $self->dequeue_bulk if ( @$queue > 100 );
 }
@@ -154,6 +161,9 @@ sub dequeue_bulk {
             }
         );
     }
+
+    log_debug { 'Bulk updating ' . @bulk . ' releases' };
+
     $self->es->bulk( \@bulk );
 }
 
