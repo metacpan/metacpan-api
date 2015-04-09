@@ -3,7 +3,8 @@ package MetaCPAN::Script::CPANTesters;
 use strict;
 use warnings;
 
-use DBI ();
+use CPAN::DistnameInfo ();
+use DBI                ();
 use File::Spec::Functions qw(catfile);
 use File::Temp qw(tempdir);
 use File::stat qw(stat);
@@ -177,6 +178,8 @@ sub _dist_key {
         join '-', $info->dist, $info->version;
     }
     catch {
+        my $error = $_[0];
+        log_warn {$error};
         join '-',
             grep {defined} $release->{distribution},
             $release->{version};
