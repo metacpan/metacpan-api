@@ -15,6 +15,7 @@ use CPAN::Faker 0.010;
 use Config::General;
 use ElasticSearch::TestServer;
 use File::Copy;
+use List::AllUtils qw( none );
 use MetaCPAN::Script::Author;
 use MetaCPAN::Script::CPANTesters;
 use MetaCPAN::Script::Latest;
@@ -176,12 +177,12 @@ subtest 'Nested tests' => sub {
         {
             # should we do a glob to get these (and strip out t/var)?
             dirs => [
-                qw(
-                    t/document
-                    t/release
-                    t/script
-                    t/server
-                    )
+                map { $_->stringify }
+                    grep {
+                    my $name = $_->basename;
+                    none { $name eq $_ } qw( var lib )
+                    }
+                    grep { $_->is_dir } dir('t')->children
             ],
             verbose => ( $ENV{TEST_VERBOSE} ? 2 : 0 ),
         }
