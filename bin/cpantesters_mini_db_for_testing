@@ -31,7 +31,7 @@ dist_version () {
     local dist="$1" version="$2"
 cat <<SQL | sql
 .mode insert $table
-select * from release where dist = '$dist' and version LIKE '%$version%';
+select * from release where dist = '$dist' and version = '$version';
 SQL
 }
 
@@ -44,7 +44,11 @@ populate_db () {
     echo .schema | sql
 
     # Get test cases from real data.
+    dist_version 'Devel-GoFaster' '0.000'
     dist_version 'P' '1.0.20'
+    dist_version 'IPsonar' '0.29'
+    dist_version 'weblint' '++-1.15'
+    dist_version 'WWW-Tumblr' ''
 
     # Add records for our fake dists.
     fake_dist 'Some' '1.00-TRIAL' 4 3 2 1
