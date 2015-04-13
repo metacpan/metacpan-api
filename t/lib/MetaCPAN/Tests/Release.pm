@@ -49,7 +49,14 @@ has version_numified => (
     is      => 'ro',
     isa     => 'Str',
     lazy    => 1,
-    default => sub { 'version'->parse( shift->version )->numify + 0 },
+    default => sub {
+
+        # This is much simpler than what we do in the indexer.
+        # If we need to use Util we must need more tests.
+        my $v = $_[0]->version;
+        return 0 unless $v;
+        return 'version'->parse($v)->numify + 0;
+    },
 );
 
 has files => (
