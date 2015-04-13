@@ -42,7 +42,7 @@ requires 'Devel::ArgNames';
 requires 'Digest::MD5';
 requires 'Digest::SHA1';
 requires 'EV';
-requires 'ElasticSearchX::Model', '0.1.5';
+requires 'ElasticSearchX::Model', '0.1.7';
 requires 'Email::Address';
 requires 'Email::Sender::Simple';
 requires 'Email::Simple';
@@ -86,7 +86,7 @@ requires 'Log::Log4perl::Appender::ScreenColoredLevels';
 requires 'Module::Metadata', '1.000022';
 requires 'Module::Pluggable';
 requires 'Module::Runtime';
-requires 'Moose', ' == 2.0802'; # Pin to older version to avoid deprecation warning on enum that we can't escape b/c we're pinned to an old version of MX-Types-ES.
+requires 'Moose', ' >= 2.1403';
 requires 'Moose::Role';
 requires 'Moose::Util';
 requires 'MooseX::Aliases';
@@ -99,7 +99,7 @@ requires 'MooseX::Getopt::OptionTypeMap';
 requires 'MooseX::StrictConstructor';
 requires 'MooseX::Types';
 requires 'MooseX::Types::Common::String';
-requires 'MooseX::Types::ElasticSearch', ' == 0.0.2'; # Newer versions use the other ES module which we can't upgrade to yet b/c of ESX-Model.
+requires 'MooseX::Types::ElasticSearch', ' == 0.0.4';
 requires 'MooseX::Types::Moose';
 requires 'MooseX::Types::Path::Class::MoreCoercions';
 requires 'MooseX::Types::Structured';
@@ -135,6 +135,7 @@ requires 'Pod::Text';
 requires 'Regexp::Common';
 requires 'Regexp::Common::time';
 requires 'Safe', '2.35'; # bug fixes (used by Parse::PMFile)
+requires 'Search::Elasticsearch';
 requires 'Starman';
 requires 'Time::Local';
 requires 'Throwable::Error';

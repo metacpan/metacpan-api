@@ -37,7 +37,7 @@ sub test_bad_pod {
     is $file->sloc, 3, 'sloc';
     is $file->slop, 4, 'slop';
 
-    is_deeply $file->pod_lines, [ [ 5, 7 ], ], 'no pod_lines';
+    is_deeply $file->{pod_lines}, [ [ 5, 7 ], ], 'no pod_lines';
 
     is ${ $file->pod },
 

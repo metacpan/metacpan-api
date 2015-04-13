@@ -1,6 +1,7 @@
 use strict;
 use warnings;
 
+use DDP;
 use MetaCPAN::Server::Test;
 use Test::More;
 
@@ -77,6 +78,7 @@ $signature = $idx->type('file')->filter(
     }
 )->first;
 ok( !$signature, 'SIGNATURE is not documentation' );
+diag p $signature;
 
 $signature = $idx->type('file')->filter(
     {
@@ -90,6 +92,7 @@ $signature = $idx->type('file')->filter(
     }
 )->first;
 ok( !$signature, 'SIGNATURE is not pod' );
+diag p $signature;
 
 {
     my $files  = $idx->type('file');

@@ -89,7 +89,7 @@ sub run {
             'file.release',     'file.distribution',
             'file.date',        'file.status',
         ]
-        )->size(10000)->raw->scroll('1h');
+        )->size(10000)->raw->scroll;
 
     my ( %downgrade, %upgrade );
     log_debug { 'Found ' . $scroll->total . ' modules' };
@@ -100,11 +100,10 @@ sub run {
     while ( my $file = $scroll->next ) {
         $i++;
         log_debug { "$i of " . $scroll->total } unless ( $i % 1000 );
-        my $data = $file->{fields};
-        my @modules
-            = ref $data->{'module.name'}
-            ? @{ $data->{'module.name'} }
-            : $data->{'module.name'};
+        my $data    = $file->{fields};
+        my @modules = @{ $data->{'module.name'} };
+        ( $data->{$_} ) = @{ $data->{$_} }
+            for qw(author release distribution date status);
 
        # Convert module name into Parse::CPAN::Packages::Fast::Package object.
         @modules = grep {defined} map {
@@ -188,33 +187,16 @@ sub reindex {
     $release->put unless ( $self->dry_run );
 
     # Get all the files for the release.
-    my $scroll = $es->scrolled_search(
+    my $scroll = $self->index->type("file")->size(1000)->filter(
         {
-            index       => $self->index->name,
-            type        => 'file',
-            scroll      => '5m',
-            size        => 1000,
-            search_type => 'scan',
-            query       => {
-                filtered => {
-                    query  => { match_all => {} },
-                    filter => {
-                        and => [
-                            {
-                                term =>
-                                    { 'file.release' => $source->{release} }
-                            },
-                            {
-                                term => { 'file.author' => $source->{author} }
-                            }
-                        ]
-                    }
-                }
-            }
+            and => [
+                { term => { 'file.release' => $source->{release} } },
+                { term => { 'file.author'  => $source->{author} } }
+            ]
         }
-    );
+    )->raw->scroll;
 
-    my @bulk;
+    my $bulk = $self->model->bulk;
     while ( my $row = $scroll->next ) {
         my $source = $row->{_source};
         log_trace {
@@ -223,23 +205,17 @@ sub reindex {
         };
 
         # Use bulk update to overwrite the status for X files at a time.
-        push(
-            @bulk,
+        $bulk->add(
             {
                 index => {
                     index => $self->index->name,
                     type  => 'file',
                     id    => $row->{_id},
-                    data  => { %$source, status => $status }
+                    body  => { %$source, status => $status }
                 }
             }
-        ) unless ( $self->dry_run );
-        if ( @bulk > 100 ) {
-            $self->es->bulk( \@bulk );
-            @bulk = ();
-        }
+        ) unless $self->dry_run;
     }
-    $self->es->bulk( \@bulk ) if (@bulk);
 }
 
 sub compare_dates {

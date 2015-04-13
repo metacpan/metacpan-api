@@ -29,15 +29,15 @@ test_psgi app, sub {
         if ( $k eq '/module' ) {
             ok( $json->{hits}->{total}, 'got total count' );
         }
-        elsif ( $v eq 200 ) {
-            ok( $json->{name} eq 'Moose.pm', 'Moose.pm' );
-        }
-        if ( $v =~ /fields/ ) {
+        elsif ( $k =~ /fields/ ) {
             is_deeply(
                 $json,
-                { documentation => 'Moose', name => 'Moose.pm' },
+                { documentation => ['Moose'], name => ['Moose.pm'] },
                 'controller proxies field query parameter to ES'
             );
+        }
+        elsif ( $v eq 200 ) {
+            ok( $json->{name} eq 'Moose.pm', 'Moose.pm' );
         }
     }
 };
