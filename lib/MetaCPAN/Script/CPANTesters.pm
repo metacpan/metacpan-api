@@ -115,7 +115,6 @@ sub index_reports {
     my @result_fields = qw(fail pass na unknown);
     while ( my $row = $sth->fetchrow_hashref ) {
         $count++;
-        log_trace {"Found in db: $row->{dist}-$row->{version}"};
 
         next
             unless my $release
