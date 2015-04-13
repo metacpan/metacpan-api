@@ -175,13 +175,27 @@ sub _dist_key {
     # so we get better matches this way.
     try {
         my $info = CPAN::DistnameInfo->new( $release->{download_url} );
-        join '-', $info->dist, $info->version;
+
+        my $v = $info->version;
+
+# The CPAN Testers release db has no records with a version of '0'
+# but it has several with a version of ''.
+# There are also plenty of '0.00'.
+# I believe the code responsible is
+# https://github.com/barbie/cpan-testers-data-generator/blob/master/lib/CPAN/Testers/Data/Generator.pm#L864:
+# > $fields{$_} ||= ''  for(@fields);
+# Since '0' is false, but '0.0' is true.
+# So use the same logic here, since this also DWIMs undef (which we want):
+        $v ||= '';
+
+        join '-', $info->dist, $v;
     }
     catch {
         my $error = $_[0];
         log_warn {$error};
+
         join '-',
-            grep {defined} $release->{distribution},
+            grep { defined($_) ? $_ : '' } $release->{distribution},
             $release->{version};
     };
 }
