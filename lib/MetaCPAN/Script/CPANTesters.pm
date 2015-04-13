@@ -40,14 +40,7 @@ sub index_reports {
 
     bunzip2 "$db.bz2" => "$db", AutoClose => 1;
 
-    my $scroll = $es->scrolled_search(
-        index       => $index,
-        type        => 'release',
-        query       => { match_all => {} },
-        size        => 500,
-        search_type => 'scan',
-        scroll      => '5m',
-    );
+    my $scroll = $self->index->type('release')->size(500)->raw->scroll;
 
     my %releases;
     while ( my $release = $scroll->next ) {
@@ -56,8 +49,7 @@ sub index_reports {
             join( '-',
                 grep {defined} $data->{distribution},
                 $data->{version} )
-            }
-            = $data;
+        } = $data;
     }
 
     log_info { 'Opening database file at ' . $db };
@@ -87,22 +79,21 @@ sub index_reports {
 
 sub bulk {
     my ( $self, $bulk ) = @_;
-    my @bulk;
+    my $bulk  = $self->model->bulk;
     my $index = $self->index->name;
     while ( my $data = shift @$bulk ) {
-        push(
-            @bulk,
+        $bulk->add(
             {
                 index => {
                     index => $index,
                     id    => $data->{id},
                     type  => 'release',
-                    data  => $data
+                    body  => $data
                 }
             }
         );
     }
-    $self->es->bulk( \@bulk );
+
 }
 
 __PACKAGE__->meta->make_immutable;
