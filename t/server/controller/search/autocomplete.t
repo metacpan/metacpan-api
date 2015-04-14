@@ -5,6 +5,7 @@ use lib 't/lib';
 use MetaCPAN::Server::Test;
 use MetaCPAN::TestHelpers;
 use Test::More;
+use DDP;
 
 test_psgi app, sub {
     my $cb = shift;
@@ -15,8 +16,9 @@ test_psgi app, sub {
             'GET' );
         my $json = decode_json_ok($res);
 
-        my $got = [ map { $_->{fields}{documentation} }
+        my $got = [ map { @{ $_->{fields}{documentation} } }
                 @{ $json->{hits}{hits} } ];
+        diag p $got;
 
         is_deeply $got, [
             qw(
