@@ -47,7 +47,7 @@ sub process {
 sub build_pod_html {
     my ( $self, $source, $show_errors, $x_codes ) = @_;
 
-    my $renderer = $self->_factory->xhtml_renderer;
+    my $renderer = $self->_factory->html_renderer;
     $renderer->nix_X_codes( !$x_codes );
     $renderer->no_errata_section( !$show_errors );
 

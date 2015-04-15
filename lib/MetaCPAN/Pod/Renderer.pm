@@ -6,14 +6,23 @@ use warnings;
 use Moose;
 
 use MetaCPAN::Pod::XHTML;
+use MetaCPAN::Types qw( Uri );
 use Pod::Markdown;
 use Pod::POM;
 use Pod::POM::View::Pod;
 use Pod::Text;
 
+has perldoc_url_prefix => (
+    is      => 'rw',
+    isa     => Uri,
+    coerce  => 1,
+    default => 'https://metacpan.org/pod/',
+);
+
 sub markdown_renderer {
     my $self = shift;
-    return Pod::Markdown->new;
+    return Pod::Markdown->new(
+        perldoc_url_prefix => $self->perldoc_url_prefix );
 }
 
 sub pod_renderer {
@@ -35,7 +44,7 @@ sub html_renderer {
     $parser->html_header('');
     $parser->index(1);
     $parser->no_errata_section(1);
-    $parser->perldoc_url_prefix('https://metacpan.org/pod/');
+    $parser->perldoc_url_prefix( $self->perldoc_url_prefix );
 
     return $parser;
 }
