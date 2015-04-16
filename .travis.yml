@@ -21,7 +21,7 @@ env:
   global:
     # We use a non-standard port to avoid trashing production
     # but travis will have it running on the standard port.
-    - METACPAN_ES_TEST_PORT=9200
+    - ES=localhost:9200
     # Carton --deployment only works on the same version of perl
     # that the snapshot was built from.
     - DEPLOYMENT_PERL_VERSION=5.18
@@ -44,9 +44,7 @@ install:
   - 'carton install `test "${TRAVIS_PERL_VERSION}" = "${DEPLOYMENT_PERL_VERSION}" && echo " --deployment"`'
 
 before_script:
-  # Show status info for ES to verify that it's working, what version, etc.
-  - "curl http://localhost:${METACPAN_ES_TEST_PORT}/"
-  - "perl -i -pe 's/(servers :)9900/$1$ENV{METACPAN_ES_TEST_PORT}/' metacpan_server_testing.conf"
+  - "perl -i -pe 's/(servers :)9900/localhost:9200/' metacpan_server_testing.conf"
 
 script:
   # Devel::Cover isn't in the cpanfile

@@ -1,4 +1,3 @@
-
 use strict;
 use warnings;
 
@@ -7,6 +6,33 @@ use lib 't/lib';
 # Require version for subtests but let Test::Most do the ->import()
 use Test::More 0.96 ();
 use Test::Most;
+use Search::Elasticsearch;
+use Search::Elasticsearch::TestServer;
+
+my $server;
+my $ES_HOST = $ENV{ES};
+
+if ( !$ES_HOST ) {
+    my $ES_HOME = $ENV{ES_HOME} or die <<"USAGE";
+
+    Please set \$ENV{ES} to a running instance of Elasticsearch,
+    eg 'localhost:9200' or set \$ENV{ES_HOME} to the
+    directory containing Elasticsearch
+
+USAGE
+
+    $server = Search::Elasticsearch::TestServer->new(
+        es_home        => $ES_HOME,
+        http_port      => 9900,
+        es_port        => 9700,
+        instances      => 1,
+        "cluster.name" => 'metacpan-test',
+    );
+
+    $ES_HOST = $server->start->[0];
+}
+
+diag "Connecting to Elasticsearch on $ES_HOST";
 
 # Don't warn about Parse::PMFile's exit()
 use Test::Aggregate::Nested 0.371 ();
@@ -29,13 +55,9 @@ use Path::Class qw(dir file);
 
 BEGIN { $ENV{EMAIL_SENDER_TRANSPORT} = 'Test' }
 
-my $ES_HOST_PORT = '127.0.0.1:' . ( $ENV{METACPAN_ES_TEST_PORT} ||= 9900 );
-
-ok(
-    my $es = Search::Elasticsearch->new(
-        nodes => $ES_HOST_PORT,
-
-        # trace_calls => 1,
+ok( my $es = Search::Elasticsearch->new(
+        nodes => $ES_HOST,
+        ( $ENV{TEST_VERBOSE} ? ( trace_to => 'Stderr' ) : () )
     ),
     'got ElasticSearch object'
 );
@@ -43,10 +65,10 @@ ok(
 diag p $es->cluster->health;
 diag p $es->nodes->stats;
 
-ok( !$@, "Connected to the ElasticSearch test instance on $ES_HOST_PORT" )
+ok( !$@, "Connected to the ElasticSearch test instance on $ES_HOST" )
     or do {
     diag(<<EOF);
-Failed to connect to the ElasticSearch test instance on $ES_HOST_PORT.
+Failed to connect to the ElasticSearch test instance on $ES_HOST.
 Did you start one up? See https://github.com/CPAN-API/cpan-api/wiki/Installation
 for more information.
 EOF
@@ -79,8 +101,7 @@ my $mod_faker = 'Module::Faker::Dist::WithPerl';
 eval "require $mod_faker" or die $@;    ## no critic (StringyEval)
 
 my $cpan = CPAN::Faker->new(
-    {
-        source     => 't/var/fakecpan/configs',
+    {   source     => 't/var/fakecpan/configs',
         dest       => $config->{cpan},
         dist_class => $mod_faker,
     }
@@ -113,18 +134,13 @@ copy( file(qw(t var fakecpan 00whois.xml)),
     file( $config->{cpan}, qw(authors 00whois.xml) ) );
 copy( file(qw(t var fakecpan author-1.0.json)),
     file( $config->{cpan}, qw(authors id M MO MO author-1.0.json) ) );
-copy(
-    file(qw(t var fakecpan bugs.tsv)),
-    file( $config->{cpan}, qw(bugs.tsv) )
-);
+copy( file(qw(t var fakecpan bugs.tsv)),
+    file( $config->{cpan}, qw(bugs.tsv) ) );
 local @ARGV = ('author');
-ok( MetaCPAN::Script::Author->new_with_options($config)->run,
-    'index authors' );
+ok( MetaCPAN::Script::Author->new_with_options($config)->run, 'index authors' );
 
-ok(
-    MetaCPAN::Script::Tickets->new_with_options(
-        {
-            %$config,
+ok( MetaCPAN::Script::Tickets->new_with_options(
+        {   %$config,
             rt_summary_url => 'file://'
                 . file( $config->{cpan}, 'bugs.tsv' )->absolute,
             github_issues => 'file://'
@@ -147,11 +163,9 @@ sub wait_for_es {
 }
 
 subtest 'Nested tests' => sub {
-    my $tests = Test::Aggregate::Nested->new(
-        {
+    my $tests = Test::Aggregate::Nested->new( {
             # should we do a glob to get these (and strip out t/var)?
-            dirs => [
-                qw(
+            dirs => [ qw(
                     t/document
                     t/release
                     t/script
