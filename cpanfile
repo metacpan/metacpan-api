@@ -112,7 +112,7 @@ requires 'Parse::CSV';
 requires 'Parse::PMFile', '0.29';
 requires 'Path::Class';
 requires 'Path::Class::File';
-requires 'PerlIO::gzip';
+requires 'PerlIO::gzip', '0.19';
 requires 'Pithub';
 requires 'Plack::App::Directory';
 requires 'Plack::Handler::Twiggy';
