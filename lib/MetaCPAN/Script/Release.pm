@@ -123,6 +123,7 @@ sub run {
             log_error {"Dunno what $_ is"};
         }
     }
+
     log_info { scalar @files, " archives found" } if ( @files > 1 );
 
     # build here before we fork
@@ -152,7 +153,7 @@ sub run {
             }
         }
 
-        if ( @pid >= $self->children ) {
+        if ( @pid > $self->children ) {
             my $pid = waitpid( -1, 0 );
             @pid = grep { $_ != $pid } @pid;
         }
