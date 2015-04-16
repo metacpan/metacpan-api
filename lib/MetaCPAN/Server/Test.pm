@@ -74,7 +74,7 @@ require MetaCPAN::Model;
 
 sub model {
     MetaCPAN::Model->new(
-        es => q[:] . ( $ENV{METACPAN_ES_TEST_PORT} ||= 9900 ) );
+        es => ( $ENV{ES} ||= 'localhost:9900' ) );
 }
 
 1;

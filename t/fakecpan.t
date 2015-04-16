@@ -29,7 +29,7 @@ USAGE
         "cluster.name" => 'metacpan-test',
     );
 
-    $ES_HOST = $server->start->[0];
+    $ENV{ES} = $ES_HOST = $server->start->[0];
 }
 
 diag "Connecting to Elasticsearch on $ES_HOST";
