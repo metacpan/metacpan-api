@@ -185,7 +185,7 @@ sub reindex_release {
     log_info {"Moving $release->{_source}->{name} to BackPAN"};
 
     my $es     = $self->es;
-    my $scroll = $es->scrolled_search(
+    my $scroll = $es->scroll_helper(
         {
             index       => $self->index->name,
             type        => 'file',

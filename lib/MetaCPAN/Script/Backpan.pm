@@ -39,7 +39,7 @@ sub update_status {
     my $es = $self->es;
     $es->trace_calls(1) if $ENV{DEBUG};
 
-    my $scroll = $es->scrolled_search(
+    my $scroll = $es->scroll_helper(
         size   => 500,
         scroll => '2m',
         index  => 'cpan_v1',

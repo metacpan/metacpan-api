@@ -11,7 +11,7 @@ with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 sub run {
     my $self = shift;
 
-    my $scroll = $self->es()->scrolled_search(
+    my $scroll = $self->es()->scroll_helper(
         size   => 10_000,
         scroll => '1m',
         index  => 'user',

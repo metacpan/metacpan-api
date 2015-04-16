@@ -18,7 +18,7 @@ sub run {
 
     log_info {'Loading dependencies ...'};
 
-    my $scroll = $es->scrolled_search(
+    my $scroll = $es->scroll_helper(
         index => $self->index->name,
         type  => 'release',
         query => {
@@ -65,7 +65,7 @@ sub run {
 sub get_recent_modules {
     my $self = shift;
     log_info {"Mapping modules to releases ..."};
-    my $scroll = $self->es->scrolled_search(
+    my $scroll = $self->es->scroll_helper(
         index => $self->index->name,
         type  => 'file',
         query => {

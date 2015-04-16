@@ -73,7 +73,7 @@ sub run {
     $file->dir->mkpath unless ( -e $file->dir );
     my $fh = IO::Zlib->new( "$file", 'wb4' );
 
-    my $scroll = $es->scrolled_search(
+    my $scroll = $es->scroll_helper(
         index => $self->index->name,
         $self->type ? ( type => $self->type ) : (),
         size        => $self->size,
