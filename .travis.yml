@@ -55,6 +55,8 @@ script:
 after_success:
   - cover -report coveralls
 
+after_failure:
+  - cat ~/.cpanm/build.log
 
 services:
   - elasticsearch
