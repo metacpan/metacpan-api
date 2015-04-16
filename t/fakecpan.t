@@ -168,7 +168,6 @@ subtest 'Nested tests' => sub {
             dirs => [ qw(
                     t/document
                     t/release
-                    t/script
                     t/server
                     )
             ],
