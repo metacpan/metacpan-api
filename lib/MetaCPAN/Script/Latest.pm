@@ -66,11 +66,9 @@ sub run {
         : { exists => { field => "module.name" } };
 
     my $scroll = $modules->filter(
-        {
-            bool => {
+        {   bool => {
                 must => [
-                    {
-                        nested => {
+                    {   nested => {
                             path   => 'module',
                             filter => { bool => { must => \@module_filters } }
                         }
@@ -84,8 +82,7 @@ sub run {
             }
         }
         )->source(
-        [
-            'module.name', 'author', 'release', 'distribution',
+        [   'module.name', 'author', 'release', 'distribution',
             'date',        'status',
         ]
         )->size(100)->raw->scroll;
@@ -100,17 +97,17 @@ sub run {
         $i++;
         log_debug { "$i of " . $scroll->total } unless ( $i % 1000 );
         my $data = $file->{_source};
-        my @modules = map { $_->{name} } @{ $data->{module} };
 
-       # Convert module name into Parse::CPAN::Packages::Fast::Package object.
-        @modules = grep {defined} map {
-            eval { $p->package($_) }
-        } @modules;
+        # Convert module name into Parse::CPAN::Packages::Fast::Package object.
+        my @modules = grep {defined}
+            map {
+            eval { $p->package( $_->{name} ) }
+            } @{ $data->{module} };
 
         # For each of the packages in this file...
         foreach my $module (@modules) {
 
-           # Get P:C:P:F:Distribution (CPAN::DistnameInfo) object for package.
+            # Get P:C:P:F:Distribution (CPAN::DistnameInfo) object for package.
             my $dist = $module->distribution;
 
             # If 02packages has the same author/release for this package...
@@ -138,13 +135,18 @@ sub run {
         }
     }
 
+    my $bulk = $self->model->es->bulk_helper(
+        index => $self->index->name,
+        type  => 'file'
+    );
+
     while ( my ( $dist, $data ) = each %upgrade ) {
 
         # Don't reindex if already marked as latest.
         # This just means that it hasn't changed (query includes 'latest').
         next if ( $data->{status} eq 'latest' );
 
-        $self->reindex( $data, 'latest' );
+        $self->reindex( $bulk, $data, 'latest' );
     }
 
     while ( my ( $release, $data ) = each %downgrade ) {
@@ -158,20 +160,20 @@ sub run {
             && $upgrade{ $data->{distribution} }->{release} eq
             $data->{release} );
 
-        $self->reindex( $data, 'cpan' );
+        $self->reindex( $bulk, $data, 'cpan' );
     }
+    $bulk->flush;
     $self->index->refresh;
 }
 
 # Update the status for the release and all the files.
 sub reindex {
-    my ( $self, $source, $status ) = @_;
+    my ( $self, $bulk, $source, $status ) = @_;
     my $es = $self->es;
 
     # Update the status on the release.
     my $release = $self->index->type('release')->get(
-        {
-            author => $source->{author},
+        {   author => $source->{author},
             name   => $source->{release},
         }
     );
@@ -184,16 +186,16 @@ sub reindex {
     $release->put unless ( $self->dry_run );
 
     # Get all the files for the release.
-    my $scroll = $self->index->type("file")->size(1000)->filter(
-        {
-            and => [
-                { term => { 'file.release' => $source->{release} } },
-                { term => { 'file.author'  => $source->{author} } }
-            ]
+    my $scroll = $self->index->type("file")->search_type('scan')->filter(
+        {   bool => {
+                must => [
+                    { term => { 'release' => $source->{release} } },
+                    { term => { 'author'  => $source->{author} } }
+                ]
+            }
         }
-    )->raw->scroll;
+    )->size(100)->source( [ 'status', 'file' ] )->raw->scroll;
 
-    my $bulk = $self->model->bulk;
     while ( my $row = $scroll->next ) {
         my $source = $row->{_source};
         log_trace {
@@ -202,17 +204,10 @@ sub reindex {
         };
 
         # Use bulk update to overwrite the status for X files at a time.
-        $bulk->add(
-            {
-                index => {
-                    index => $self->index->name,
-                    type  => 'file',
-                    id    => $row->{_id},
-                    body  => { %$source, status => $status }
-                }
-            }
-        ) unless $self->dry_run;
+        $bulk->update( { id => $row->{_id}, doc => { status => $status } } )
+            unless $self->dry_run;
     }
+
 }
 
 sub compare_dates {

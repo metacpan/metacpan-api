@@ -158,7 +158,8 @@ sub _build_description {
     my $self = shift;
     return undef unless ( $self->is_perl_file );
     my $section
-        = MetaCPAN::Util::extract_section( ${ $self->content }, 'DESCRIPTION' );
+        = MetaCPAN::Util::extract_section( ${ $self->content },
+        'DESCRIPTION' );
     return undef unless ($section);
     my $parser = Pod::Text->new;
     my $text   = "";
@@ -739,7 +740,7 @@ sub set_indexed {
         # .pm file with no package declaration but pod should be indexed
         !@{ $self->module } ||
 
-            # don't index if the documentation doesn't match any of its modules
+           # don't index if the documentation doesn't match any of its modules
             !!grep { $self->documentation eq $_->name } @{ $self->module }
     ) if ( $self->documentation );
 }
@@ -810,7 +811,8 @@ my @ROGUE_DISTRIBUTIONS
 sub find {
     my ( $self, $module ) = @_;
     my @candidates = $self->index->type("file")->filter(
-        {   bool => {
+        {
+            bool => {
                 must => [
                     { term => { 'indexed'    => \1, } },
                     { term => { 'authorized' => \1 } },
@@ -818,16 +820,19 @@ sub find {
                 ],
                 should => [
                     { term => { 'documentation' => $module } },
-                    {   nested => {
-                            path   => 'module',
-                            filter => { term => { 'module.name' => $module } },
+                    {
+                        nested => {
+                            path => 'module',
+                            filter =>
+                                { term => { 'module.name' => $module } },
                         }
                     }
                 ]
             }
         }
         )->sort(
-        [   { 'date'       => { order => "desc" } },
+        [
+            { 'date'       => { order => "desc" } },
             { 'mime'       => { order => "asc" } },
             { 'stat.mtime' => { order => 'desc' } }
         ]
@@ -853,7 +858,8 @@ sub find_pod {
     if ( $module && ( my $pod = $module->associated_pod ) ) {
         my ( $author, $release, @path ) = split( /\//, $pod );
         return $self->get(
-            {   author  => $author,
+            {
+                author  => $author,
                 release => $release,
                 path    => join( "/", @path ),
             }
@@ -870,7 +876,8 @@ sub find_pod {
 sub find_provided_by {
     my ( $self, $release ) = @_;
     return $self->filter(
-        {   bool => {
+        {
+            bool => {
                 must => [
                     { term => { 'release' => $release->{name} } },
                     { term => { 'author'  => $release->{author} } },
@@ -971,7 +978,8 @@ sub find_download_url {
     # sort by score, then version desc, then date desc
     my @sort = (
         "_score",
-        {   "module.version_numified" => {
+        {
+            "module.version_numified" => {
                 mode          => 'max',
                 order         => 'desc',
                 nested_filter => $module_f
@@ -989,22 +997,26 @@ sub find_download_url {
         # if not dev, then prefer latest > cpan > backpan
         $query = {
             function_score => {
-                filter     => { bool => { must => \@filters } },
+                filter     => $filter,
                 score_mode => 'first',
                 boost_mode => 'replace',
                 functions  => [
-                    {   filter => { term => { status => 'latest' } },
+                    {
+                        filter => { term => { status => 'latest' } },
                         weight => 3
                     },
-                    { filter => { term => { status => 'cpan' } }, weight => 2 },
+                    {
+                        filter => { term => { status => 'cpan' } },
+                        weight => 2
+                    },
                     { filter => { match_all => {} }, weight => 1 },
                 ]
             }
         };
     }
 
-    return $self->size(1)->query($query)->source('download_url')
-        ->sort( \@sort );
+    return $self->size(1)->query($query)
+        ->source( 'download_url', 'date', 'status' )->sort( \@sort );
 
 }
 
@@ -1045,7 +1057,8 @@ sub _version_filters {
                 not => {
                     or => [
                         map {
-                            +{  term => {
+                            +{
+                                term => {
                                     'module.version_numified' =>
                                         $self->_numify($_)
                                 }
@@ -1076,7 +1089,8 @@ sub history {
     my ( $self, $type, $module, @path ) = @_;
     my $search
         = $type eq "module" ? $self->filter(
-        {   nested => {
+        {
+            nested => {
                 path  => "module",
                 query => {
                     constant_score => {
@@ -1095,16 +1109,18 @@ sub history {
         }
         )
         : $type eq "file" ? $self->filter(
-        {   bool => {
+        {
+            bool => {
                 must => [
-                    { term => { "file.path"         => join( "/", @path ) } },
+                    { term => { "file.path" => join( "/", @path ) } },
                     { term => { "file.distribution" => $module } },
                 ]
             }
         }
         )
         : $self->filter(
-        {   bool => {
+        {
+            bool => {
                 must => [
                     { term => { "file.documentation" => $module } },
                     { term => { "file.indexed"       => \1 } },
@@ -1122,13 +1138,15 @@ sub autocomplete {
     return $self unless $query;
 
     return $self->search_type('dfs_query_then_fetch')->query(
-        {   filtered => {
+        {
+            filtered => {
                 query => {
                     multi_match => {
-                        query => $query,
-                        type  => 'most_fields',
-                        fields =>
-                            [ 'documentation', 'documentation.edge_camelcase' ],
+                        query  => $query,
+                        type   => 'most_fields',
+                        fields => [
+                            'documentation', 'documentation.edge_camelcase'
+                        ],
                         analyzer             => 'camelcase',
                         minimum_should_match => "80%"
                     },
@@ -1142,8 +1160,10 @@ sub autocomplete {
                             { term   => { 'authorized' => \1 } }
                         ],
                         must_not => [
-                            {   terms =>
-                                    { 'distribution' => \@ROGUE_DISTRIBUTIONS }
+                            {
+                                terms => {
+                                    'distribution' => \@ROGUE_DISTRIBUTIONS
+                                }
                             },
 
                         ],
