@@ -2671,6 +2671,18 @@ DISTRIBUTIONS
       IO::CaptureOutput 1.0801
       Test::More 0.62
       perl 5.00405
+  Devel-Confess-0.007012
+    pathname: H/HA/HAARG/Devel-Confess-0.007012.tar.gz
+    provides:
+      Devel::Confess 0.007012
+      Devel::Confess::Builtin 0.007012
+      Devel::Confess::Source undef
+      Devel::Confess::_Util undef
+    requirements:
+      Carp 0
+      ExtUtils::MakeMaker 0
+      Scalar::Util 0
+      perl 5.006000
   Devel-GlobalDestruction-0.12
     pathname: H/HA/HAARG/Devel-GlobalDestruction-0.12.tar.gz
     provides:

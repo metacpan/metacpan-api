@@ -39,6 +39,7 @@ requires 'Data::Dumper';
 requires 'DateTime';
 requires 'DateTime::Format::ISO8601';
 requires 'Devel::ArgNames';
+requires 'Devel::Confess';
 requires 'Digest::MD5';
 requires 'Digest::SHA1';
 requires 'EV';
