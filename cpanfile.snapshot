@@ -2692,6 +2692,13 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Sub::Exporter::Progressive 0.001011
       perl 5.006
+  Devel-Hide-0.0009
+    pathname: F/FE/FERREIRA/Devel-Hide-0.0009.tar.gz
+    provides:
+      Devel::Hide 0.0009
+    requirements:
+      ExtUtils::MakeMaker 0
+      Test::More 0
   Devel-OverloadInfo-0.002
     pathname: I/IL/ILMARI/Devel-OverloadInfo-0.002.tar.gz
     provides:
@@ -3109,6 +3116,14 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
+  Exporter-Tiny-0.042
+    pathname: T/TO/TOBYINK/Exporter-Tiny-0.042.tar.gz
+    provides:
+      Exporter::Shiny 0.042
+      Exporter::Tiny 0.042
+    requirements:
+      ExtUtils::MakeMaker 6.17
+      perl 5.006001
   ExtUtils-Config-0.007
     pathname: L/LE/LEONT/ExtUtils-Config-0.007.tar.gz
     provides:
@@ -3549,6 +3564,27 @@ DISTRIBUTIONS
       HTML::Tagset 3
       XSLoader 0
       perl 5.008
+  HTML-Restrict-2.2.2
+    pathname: O/OA/OALDERS/HTML-Restrict-2.2.2.tar.gz
+    provides:
+      HTML::Restrict 2.002002
+    requirements:
+      Carp 0
+      Data::Dump 0
+      ExtUtils::MakeMaker 0
+      HTML::Entities 0
+      HTML::Parser 0
+      List::MoreUtils 0
+      Module::Build 0.28
+      Moo 1.002000
+      Scalar::Util 0
+      Sub::Quote 0
+      Type::Tiny 1.000001
+      Types::Standard 0
+      URI 0
+      namespace::clean 0
+      perl 5.006
+      strict 0
   HTML-Tagset-3.20
     pathname: P/PE/PETDANCE/HTML-Tagset-3.20.tar.gz
     provides:
@@ -3620,6 +3656,24 @@ DISTRIBUTIONS
       File::Temp 0.14
       HTTP::Headers 0
       IO::File 1.14
+  HTTP-CookieMonster-0.09
+    pathname: O/OA/OALDERS/HTTP-CookieMonster-0.09.tar.gz
+    provides:
+      HTTP::CookieMonster 0.09
+      HTTP::CookieMonster::Cookie 0.09
+    requirements:
+      Carp 0
+      ExtUtils::MakeMaker 0
+      HTTP::Cookies 0
+      Module::Build 0.28
+      Moo 1.000003
+      Safe::Isa 0
+      Scalar::Util 0
+      Sub::Exporter 0
+      URI::Escape 0
+      perl 5.006
+      strict 0
+      warnings 0
   HTTP-Cookies-6.01
     pathname: G/GA/GAAS/HTTP-Cookies-6.01.tar.gz
     provides:
@@ -3984,6 +4038,37 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Types::Serialiser 0
       common::sense 0
+  LWP-ConsoleLogger-0.000015
+    pathname: O/OA/OALDERS/LWP-ConsoleLogger-0.000015.tar.gz
+    provides:
+      LWP::ConsoleLogger 0.000015
+      LWP::ConsoleLogger::Easy 0.000015
+    requirements:
+      Data::Printer 0
+      DateTime 0
+      ExtUtils::MakeMaker 0
+      HTML::Restrict 0
+      HTTP::Body 0
+      HTTP::CookieMonster 0
+      JSON::MaybeXS 0
+      Log::Dispatch 0
+      Module::Build 0.28
+      Moo 0
+      MooX::StrictConstructor 0
+      Parse::MIME 0
+      Sub::Exporter 0
+      Term::Size::Any 0
+      Text::SimpleTable::AutoWidth 0.09
+      Try::Tiny 0
+      Type::Tiny 0
+      Types::Common::Numeric 0
+      Types::Standard 0
+      URI::Query 0
+      URI::QueryParam 0
+      XML::Simple 0
+      perl 5.006
+      strict 0
+      warnings 0
   LWP-MediaTypes-6.02
     pathname: G/GA/GAAS/LWP-MediaTypes-6.02.tar.gz
     provides:
@@ -4130,6 +4215,40 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 6.30
       Moo 1.003
       Scalar::Util 0
+  Log-Dispatch-2.44
+    pathname: D/DR/DROLSKY/Log-Dispatch-2.44.tar.gz
+    provides:
+      Log::Dispatch 2.44
+      Log::Dispatch::ApacheLog 2.44
+      Log::Dispatch::Base 2.44
+      Log::Dispatch::Code 2.44
+      Log::Dispatch::Email 2.44
+      Log::Dispatch::Email::MIMELite 2.44
+      Log::Dispatch::Email::MailSend 2.44
+      Log::Dispatch::Email::MailSender 2.44
+      Log::Dispatch::Email::MailSendmail 2.44
+      Log::Dispatch::File 2.44
+      Log::Dispatch::File::Locked 2.44
+      Log::Dispatch::Handle 2.44
+      Log::Dispatch::Null 2.44
+      Log::Dispatch::Output 2.44
+      Log::Dispatch::Screen 2.44
+      Log::Dispatch::Syslog 2.44
+    requirements:
+      Carp 0
+      Devel::GlobalDestruction 0
+      Dist::CheckConflicts 0.02
+      ExtUtils::MakeMaker 0
+      Fcntl 0
+      Module::Runtime 0
+      Params::Validate 0.15
+      Scalar::Util 0
+      Sys::Syslog 0.28
+      base 0
+      strict 0
+      threads 0
+      threads::shared 0
+      warnings 0
   Log-Log4perl-1.44
     pathname: M/MS/MSCHILLI/Log-Log4perl-1.44.tar.gz
     provides:
@@ -4511,6 +4630,20 @@ DISTRIBUTIONS
       Role::Tiny 1.003003
       Scalar::Util 0
       strictures 1.004003
+  MooX-StrictConstructor-0.006
+    pathname: H/HA/HARTZELL/MooX-StrictConstructor-0.006.tar.gz
+    provides:
+      Method::Generate::Constructor::Role::StrictConstructor 0.006
+      MooX::StrictConstructor 0.006
+    requirements:
+      B 0
+      Class::Method::Modifiers 0
+      Module::Build 0.3601
+      Moo 1.001000
+      Moo::Role 0
+      constant 0
+      perl 5.006
+      strictures 1
   MooX-Types-MooseLike-0.25
     pathname: M/MA/MATEU/MooX-Types-MooseLike-0.25.tar.gz
     provides:
@@ -6118,6 +6251,16 @@ DISTRIBUTIONS
       Test::More 0.47
       Text::CSV_XS 0.42
       perl 5.005
+  Parse-MIME-1.003
+    pathname: A/AR/ARISTOTLE/Parse-MIME-1.003.tar.gz
+    provides:
+      Parse::MIME 1.003
+    requirements:
+      Exporter 0
+      ExtUtils::MakeMaker 0
+      perl 5.006
+      strict 0
+      warnings 0
   Parse-PMFile-0.29
     pathname: I/IS/ISHIGAKI/Parse-PMFile-0.29.tar.gz
     provides:
@@ -7310,6 +7453,25 @@ DISTRIBUTIONS
       Scalar::Util 1.14
       Test::More 0.42
       perl 5.005
+  Term-Size-Any-0.002
+    pathname: F/FE/FERREIRA/Term-Size-Any-0.002.tar.gz
+    provides:
+      Term::Size::Any 0.002
+    requirements:
+      Devel::Hide 0
+      ExtUtils::MakeMaker 0
+      Module::Load::Conditional 0
+      Term::Size::Perl 0
+      Test::More 0
+  Term-Size-Perl-0.029
+    pathname: F/FE/FERREIRA/Term-Size-Perl-0.029.tar.gz
+    provides:
+      Term::Size::Perl 0.029
+    requirements:
+      Exporter 0
+      ExtUtils::CBuilder 0
+      ExtUtils::MakeMaker 0
+      Test::More 0
   Test-Aggregate-0.371
     pathname: R/RW/RWSTAUNER/Test-Aggregate-0.371.tar.gz
     provides:
@@ -7868,6 +8030,17 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       Test::More 0
+  Text-SimpleTable-AutoWidth-0.09
+    pathname: C/CU/CUB/Text-SimpleTable-AutoWidth-0.09.tar.gz
+    provides:
+      Text::SimpleTable::AutoWidth 0.09
+    requirements:
+      ExtUtils::MakeMaker 0
+      List::Util 0
+      Moo 0
+      Text::SimpleTable 0
+      strict 0
+      warnings 0
   Text-Template-1.46
     pathname: M/MJ/MJD/Text-Template-1.46.tar.gz
     provides:
@@ -8034,6 +8207,47 @@ DISTRIBUTIONS
       HTTP::Status 0
       Plack 0.99
       Try::Tiny 0
+  Type-Tiny-1.000005
+    pathname: T/TO/TOBYINK/Type-Tiny-1.000005.tar.gz
+    provides:
+      Devel::TypeTiny::Perl56Compat 1.000005
+      Devel::TypeTiny::Perl58Compat 1.000005
+      Error::TypeTiny 1.000005
+      Error::TypeTiny::Assertion 1.000005
+      Error::TypeTiny::Compilation 1.000005
+      Error::TypeTiny::WrongNumberOfParameters 1.000005
+      Eval::TypeTiny 1.000005
+      Reply::Plugin::TypeTiny 1.000005
+      Test::TypeTiny 1.000005
+      Type::Coercion 1.000005
+      Type::Coercion::FromMoose 1.000005
+      Type::Coercion::Union 1.000005
+      Type::Library 1.000005
+      Type::Params 1.000005
+      Type::Parser 1.000005
+      Type::Registry 1.000005
+      Type::Tiny 1.000005
+      Type::Tiny::Class 1.000005
+      Type::Tiny::Duck 1.000005
+      Type::Tiny::Enum 1.000005
+      Type::Tiny::Intersection 1.000005
+      Type::Tiny::Role 1.000005
+      Type::Tiny::Union 1.000005
+      Type::Utils 1.000005
+      Types::Common::Numeric 1.000005
+      Types::Common::String 1.000005
+      Types::Standard 1.000005
+      Types::Standard::ArrayRef 1.000005
+      Types::Standard::Dict 1.000005
+      Types::Standard::HashRef 1.000005
+      Types::Standard::Map 1.000005
+      Types::Standard::ScalarRef 1.000005
+      Types::Standard::Tuple 1.000005
+      Types::TypeTiny 1.000005
+    requirements:
+      Exporter::Tiny 0.026
+      ExtUtils::MakeMaker 6.17
+      perl 5.006001
   Types-Serialiser-1.0
     pathname: M/ML/MLEHMANN/Types-Serialiser-1.0.tar.gz
     provides:
@@ -8139,6 +8353,14 @@ DISTRIBUTIONS
       URI::QueryParam 0
       strict 0
       warnings 0
+  URI-Query-0.10
+    pathname: G/GA/GAVINC/URI-Query-0.10.tar.gz
+    provides:
+      URI::Query 0.10
+    requirements:
+      ExtUtils::MakeMaker 0
+      Test::More 0.88
+      URI 1.31
   Variable-Magic-0.53
     pathname: V/VP/VPIT/Variable-Magic-0.53.tar.gz
     provides:

@@ -162,6 +162,7 @@ test_requires 'Config::General';
 test_requires 'ElasticSearch::TestServer';
 test_requires 'File::Copy';
 test_requires 'HTTP::Cookies';
+test_requires 'LWP::ConsoleLogger';
 test_requires 'Module::Faker', '0.015';
 test_requires 'Module::Faker::Dist', '0.010';
 test_requires 'Plack::Handler::HTTP::Server::Simple';
