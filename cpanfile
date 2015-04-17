@@ -165,6 +165,7 @@ test_requires 'HTTP::Cookies';
 test_requires 'LWP::ConsoleLogger';
 test_requires 'Module::Faker', '0.015';
 test_requires 'Module::Faker::Dist', '0.010';
+test_requires 'Perl::Critic::Nits';
 test_requires 'Plack::Handler::HTTP::Server::Simple';
 test_requires 'Plack::Test::Agent';
 test_requires 'Test::Aggregate::Nested', '0.371';

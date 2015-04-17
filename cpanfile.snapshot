@@ -6630,6 +6630,15 @@ DISTRIBUTIONS
       strict 0
       version 0.77
       warnings 0
+  Perl-Critic-Nits-v1.0.0
+    pathname: K/KC/KCOWGILL/Perl-Critic-Nits-v1.0.0.tar.gz
+    provides:
+      Perl::Critic::Nits undef
+      Perl::Critic::Policy::ValuesAndExpressions::ProhibitAccessOfPrivateData undef
+    requirements:
+      ExtUtils::MakeMaker 0
+      Perl::Critic 1.07
+      Test::More 0
   Perl-Tidy-20140328
     pathname: S/SH/SHANCOCK/Perl-Tidy-20140328.tar.gz
     provides:
