@@ -6,6 +6,8 @@ use warnings;
 use Moose;
 use ElasticSearchX::Model::Document;
 
+with 'ElasticSearchX::Model::Document::EmbeddedRole';
+
 use MetaCPAN::Util;
 
 has [qw(phase relationship module version)] => ( is => 'ro', required => 1 );
