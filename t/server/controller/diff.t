@@ -9,11 +9,15 @@ use lib 't/lib';
 
 use MetaCPAN::TestHelpers;
 
-sub get_ok {
-    my ( $cb, $url, $desc ) = @_;
-    ok( my $res = $cb->( GET $url ), $desc || "GET $url" );
-    is( $res->code, 200, 'code 200' );
-    return $res;
+{
+    no warnings 'redefine';
+
+    sub get_ok {
+        my ( $cb, $url, $desc ) = @_;
+        ok( my $res = $cb->( GET $url ), $desc || "GET $url" );
+        is( $res->code, 200, 'code 200' );
+        return $res;
+    }
 }
 
 sub get_json_ok {

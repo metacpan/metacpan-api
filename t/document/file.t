@@ -514,6 +514,7 @@ use strict;
 Foo - mymodule1 abstract
 POD
 
+    no warnings 'redefine';
     local *Pod::Text::parse_string_document = sub {
         die "# [fake pod error]\n";
     };
