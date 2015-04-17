@@ -2868,31 +2868,31 @@ DISTRIBUTIONS
       Test::More 0.96
       strict 0
       warnings 0
-  ElasticSearchX-Model-0.1.7
-    pathname: P/PE/PERLER/ElasticSearchX-Model-0.1.7.tar.gz
+  ElasticSearchX-Model-0.1.8
+    pathname: O/OA/OALDERS/ElasticSearchX-Model-0.1.8.tar.gz
     provides:
-      ElasticSearchX::Model 0.001007
-      ElasticSearchX::Model::Bulk 0.001007
-      ElasticSearchX::Model::Document 0.001007
-      ElasticSearchX::Model::Document::Mapping 0.001007
-      ElasticSearchX::Model::Document::Role 0.001007
-      ElasticSearchX::Model::Document::Set 0.001007
-      ElasticSearchX::Model::Document::Trait::Attribute 0.001007
-      ElasticSearchX::Model::Document::Trait::Class 0.001007
-      ElasticSearchX::Model::Document::Trait::Class::ID 0.001007
-      ElasticSearchX::Model::Document::Trait::Class::Timestamp 0.001007
-      ElasticSearchX::Model::Document::Trait::Class::Version 0.001007
-      ElasticSearchX::Model::Document::Trait::Field::ID 0.001007
-      ElasticSearchX::Model::Document::Trait::Field::TTL 0.001007
-      ElasticSearchX::Model::Document::Trait::Field::Timestamp 0.001007
-      ElasticSearchX::Model::Document::Trait::Field::Version 0.001007
-      ElasticSearchX::Model::Document::Types 0.001007
-      ElasticSearchX::Model::Index 0.001007
-      ElasticSearchX::Model::Role 0.001007
-      ElasticSearchX::Model::Scroll 0.001007
-      ElasticSearchX::Model::Trait::Class 0.001007
-      ElasticSearchX::Model::Tutorial 0.001007
-      ElasticSearchX::Model::Util 0.001007
+      ElasticSearchX::Model 0.001008
+      ElasticSearchX::Model::Bulk 0.001008
+      ElasticSearchX::Model::Document 0.001008
+      ElasticSearchX::Model::Document::Mapping 0.001008
+      ElasticSearchX::Model::Document::Role 0.001008
+      ElasticSearchX::Model::Document::Set 0.001008
+      ElasticSearchX::Model::Document::Trait::Attribute 0.001008
+      ElasticSearchX::Model::Document::Trait::Class 0.001008
+      ElasticSearchX::Model::Document::Trait::Class::ID 0.001008
+      ElasticSearchX::Model::Document::Trait::Class::Timestamp 0.001008
+      ElasticSearchX::Model::Document::Trait::Class::Version 0.001008
+      ElasticSearchX::Model::Document::Trait::Field::ID 0.001008
+      ElasticSearchX::Model::Document::Trait::Field::TTL 0.001008
+      ElasticSearchX::Model::Document::Trait::Field::Timestamp 0.001008
+      ElasticSearchX::Model::Document::Trait::Field::Version 0.001008
+      ElasticSearchX::Model::Document::Types 0.001008
+      ElasticSearchX::Model::Index 0.001008
+      ElasticSearchX::Model::Role 0.001008
+      ElasticSearchX::Model::Scroll 0.001008
+      ElasticSearchX::Model::Trait::Class 0.001008
+      ElasticSearchX::Model::Tutorial 0.001008
+      ElasticSearchX::Model::Util 0.001008
     requirements:
       Carp 0
       Class::Load 0
@@ -2900,7 +2900,6 @@ DISTRIBUTIONS
       DateTime::Format::Epoch::Unix 0
       DateTime::Format::ISO8601 0
       Digest::SHA1 0
-      ElasticSearch 0.65
       JSON 0
       List::MoreUtils 0
       List::Util 0
@@ -2910,9 +2909,10 @@ DISTRIBUTIONS
       MooseX::Attribute::Chained v1.0.1
       MooseX::Attribute::Deflator v2.2.0
       MooseX::Types 0
-      MooseX::Types::ElasticSearch v0.0.2
+      MooseX::Types::ElasticSearch v0.0.4
       MooseX::Types::Structured 0
       Scalar::Util 0
+      Search::Elasticsearch 1.11
       Sub::Exporter 0
   Email-Abstract-3.007
     pathname: R/RJ/RJBS/Email-Abstract-3.007.tar.gz
