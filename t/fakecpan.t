@@ -26,7 +26,7 @@ USAGE
         http_port      => 9900,
         es_port        => 9700,
         instances      => 1,
-        "cluster.name" => 'metacpan-test',
+        'cluster.name' => 'metacpan-test',
     );
 
     $ENV{ES} = $ES_HOST = $server->start->[0];
@@ -55,20 +55,18 @@ use Path::Class qw(dir file);
 
 BEGIN { $ENV{EMAIL_SENDER_TRANSPORT} = 'Test' }
 
-ok( my $es = Search::Elasticsearch->new(
+ok(
+    my $es = Search::Elasticsearch->new(
         nodes => $ES_HOST,
         ( $ENV{ES_TRACE} ? ( trace_to => 'Stderr' ) : () )
     ),
     'got ElasticSearch object'
 );
 
-diag p $es->cluster->health;
-diag p $es->nodes->stats;
-
-ok( !$@, "Connected to the ElasticSearch test instance on $ES_HOST" )
+ok( !$@, "Connected to the Elasticsearch test instance on $ES_HOST" )
     or do {
     diag(<<EOF);
-Failed to connect to the ElasticSearch test instance on $ES_HOST.
+Failed to connect to the Elasticsearch test instance on $ES_HOST.
 Did you start one up? See https://github.com/CPAN-API/cpan-api/wiki/Installation
 for more information.
 EOF
@@ -77,7 +75,7 @@ EOF
     };
 
 Test::More::note(
-    Test::More::explain( { 'ElasticSearch info' => $es->info } ) );
+    Test::More::explain( { 'Elasticsearch info' => $es->info } ) );
 
 my $config = MetaCPAN::Script::Runner->build_config;
 $config->{es} = $es;
@@ -101,7 +99,8 @@ my $mod_faker = 'Module::Faker::Dist::WithPerl';
 eval "require $mod_faker" or die $@;    ## no critic (StringyEval)
 
 my $cpan = CPAN::Faker->new(
-    {   source     => 't/var/fakecpan/configs',
+    {
+        source     => 't/var/fakecpan/configs',
         dest       => $config->{cpan},
         dist_class => $mod_faker,
     }
@@ -134,13 +133,18 @@ copy( file(qw(t var fakecpan 00whois.xml)),
     file( $config->{cpan}, qw(authors 00whois.xml) ) );
 copy( file(qw(t var fakecpan author-1.0.json)),
     file( $config->{cpan}, qw(authors id M MO MO author-1.0.json) ) );
-copy( file(qw(t var fakecpan bugs.tsv)),
-    file( $config->{cpan}, qw(bugs.tsv) ) );
+copy(
+    file(qw(t var fakecpan bugs.tsv)),
+    file( $config->{cpan}, qw(bugs.tsv) )
+);
 local @ARGV = ('author');
-ok( MetaCPAN::Script::Author->new_with_options($config)->run, 'index authors' );
+ok( MetaCPAN::Script::Author->new_with_options($config)->run,
+    'index authors' );
 
-ok( MetaCPAN::Script::Tickets->new_with_options(
-        {   %$config,
+ok(
+    MetaCPAN::Script::Tickets->new_with_options(
+        {
+            %$config,
             rt_summary_url => 'file://'
                 . file( $config->{cpan}, 'bugs.tsv' )->absolute,
             github_issues => 'file://'
@@ -163,9 +167,11 @@ sub wait_for_es {
 }
 
 subtest 'Nested tests' => sub {
-    my $tests = Test::Aggregate::Nested->new( {
+    my $tests = Test::Aggregate::Nested->new(
+        {
             # should we do a glob to get these (and strip out t/var)?
-            dirs => [ qw(
+            dirs => [
+                qw(
                     t/document
                     t/release
                     t/server
