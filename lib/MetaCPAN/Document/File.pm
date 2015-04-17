@@ -157,8 +157,8 @@ has description => (
 sub _build_description {
     my $self = shift;
     return undef unless ( $self->is_perl_file );
-    my $section = MetaCPAN::Util::extract_section( ${ $self->content },
-        'DESCRIPTION' );
+    my $section
+        = MetaCPAN::Util::extract_section( ${ $self->content }, 'DESCRIPTION' );
     return undef unless ($section);
     my $parser = Pod::Text->new;
     my $text   = "";
@@ -700,7 +700,7 @@ Expects a C<$meta> parameter which is an instance of L<CPAN::Meta>.
 
 For each package (L</module>) in the file and based on L<CPAN::Meta/should_index_package>
 it is decided, whether the module should have a true L</indexed> attribute.
-If there are any packages with leading underscores, the module gets a false 
+If there are any packages with leading underscores, the module gets a false
 L</indexed> attribute, because PAUSE doesn't allow this kind of name for packages
 (https://github.com/andk/pause/blob/master/lib/PAUSE/pmfile.pm#L249).
 
@@ -739,7 +739,7 @@ sub set_indexed {
         # .pm file with no package declaration but pod should be indexed
         !@{ $self->module } ||
 
-           # don't index if the documentation doesn't match any of its modules
+            # don't index if the documentation doesn't match any of its modules
             !!grep { $self->documentation eq $_->name } @{ $self->module }
     ) if ( $self->documentation );
 }
@@ -810,8 +810,7 @@ my @ROGUE_DISTRIBUTIONS
 sub find {
     my ( $self, $module ) = @_;
     my @candidates = $self->index->type("file")->filter(
-        {
-            bool => {
+        {   bool => {
                 must => [
                     { term => { 'indexed'    => \1, } },
                     { term => { 'authorized' => \1 } },
@@ -819,19 +818,16 @@ sub find {
                 ],
                 should => [
                     { term => { 'documentation' => $module } },
-                    {
-                        nested => {
-                            path => 'module',
-                            filter =>
-                                { term => { 'module.name' => $module } },
+                    {   nested => {
+                            path   => 'module',
+                            filter => { term => { 'module.name' => $module } },
                         }
                     }
                 ]
             }
         }
         )->sort(
-        [
-            { 'date'       => { order => "desc" } },
+        [   { 'date'       => { order => "desc" } },
             { 'mime'       => { order => "asc" } },
             { 'stat.mtime' => { order => 'desc' } }
         ]
@@ -857,8 +853,7 @@ sub find_pod {
     if ( $module && ( my $pod = $module->associated_pod ) ) {
         my ( $author, $release, @path ) = split( /\//, $pod );
         return $self->get(
-            {
-                author  => $author,
+            {   author  => $author,
                 release => $release,
                 path    => join( "/", @path ),
             }
@@ -875,8 +870,7 @@ sub find_pod {
 sub find_provided_by {
     my ( $self, $release ) = @_;
     return $self->filter(
-        {
-            bool => {
+        {   bool => {
                 must => [
                     { term => { 'release' => $release->{name} } },
                     { term => { 'author'  => $release->{author} } },
@@ -900,6 +894,178 @@ sub find_module_names_provided_by {
     );
 }
 
+=head2 find_download_url
+
+
+cpanm Foo
+=> status: latest, maturity: released
+
+cpanm --dev Foo
+=> status: -backpan, sort_by: version_numified,date
+
+cpanm Foo~1.0
+=> status: latest, maturity: released, module.version_numified: gte: 1.0
+
+cpanm --dev Foo~1.0
+-> status: -backpan, module.version_numified: gte: 1.0, sort_by: version_numified,date
+
+cpanm Foo~<2
+=> maturity: released, module.version_numified: lt: 2, sort_by: status,version_numified,date
+
+cpanm --dev Foo~<2
+=> status: -backpan, module.version_numified: lt: 2, sort_by: status,version_numified,date
+
+    $file->find_download_url( "Foo", { version => $version, dev => 0|1 });
+
+Sorting:
+
+    if it's stable:
+      prefer latest > cpan > backpan
+      then sort by version desc
+      then sort by date descending (rev chron)
+
+    if it's dev:
+      sort by version desc
+      sort by date descending (reverse chronologically)
+
+
+=cut
+
+sub find_download_url {
+    my ( $self, $module, $args ) = @_;
+    $args ||= {};
+
+    my $dev              = $args->{dev};
+    my $version          = $args->{version};
+    my $explicit_version = $version && $version =~ /==/;
+
+    # exclude backpan if dev, and
+    # require released modules if neither dev nor explicit version
+    my @filters
+        = $dev ? { not => { term => { status => 'backpan' } } }
+        : !$explicit_version ? { term => { maturity => 'released' } }
+        :                      ();
+
+    # filters to be applied to the nested modules
+    my $module_f = {
+        nested => {
+            path   => 'module',
+            filter => {
+                bool => {
+                    must => [
+                        { term => { "module.authorized" => \1 } },
+                        { term => { "module.indexed"    => \1 } },
+                        { term => { "module.name"       => $module } },
+                        $self->_version_filters($version)
+                    ]
+                }
+            }
+        }
+    };
+
+    my $filter
+        = @filters
+        ? { bool => { must => [ @filters, $module_f ] } }
+        : $module_f;
+
+    # sort by score, then version desc, then date desc
+    my @sort = (
+        "_score",
+        {   "module.version_numified" => {
+                mode          => 'max',
+                order         => 'desc',
+                nested_filter => $module_f
+            }
+        },
+        { date => { order => 'desc' } }
+    );
+
+    my $query;
+
+    if ($dev) {
+        $query = { filtered => { filter => $filter } };
+    }
+    else {
+        # if not dev, then prefer latest > cpan > backpan
+        $query = {
+            function_score => {
+                filter     => { bool => { must => \@filters } },
+                score_mode => 'first',
+                boost_mode => 'replace',
+                functions  => [
+                    {   filter => { term => { status => 'latest' } },
+                        weight => 3
+                    },
+                    { filter => { term => { status => 'cpan' } }, weight => 2 },
+                    { filter => { match_all => {} }, weight => 1 },
+                ]
+            }
+        };
+    }
+
+    return $self->size(1)->query($query)->source('download_url')
+        ->sort( \@sort );
+
+}
+
+sub _version_filters {
+    my ( $self, $version ) = @_;
+
+    return () unless $version;
+
+    if ( $version =~ s/^==\s*// ) {
+        return { term => { 'module.version' => $version }, };
+    }
+    elsif ( $version !~ /\s/ ) {
+        return {
+            range => {
+                'module.version_numified' =>
+                    { 'gte' => $self->_numify($version) }
+            },
+        };
+    }
+    else {
+        my %ops = qw(< lt <= lte > gt >= gte);
+        my ( %range, @exclusion );
+        my @requirements = split /,\s*/, $version;
+        for my $r (@requirements) {
+            if ( $r =~ s/^([<>]=?)\s*// ) {
+                $range{ $ops{$1} } = $self->_numify($r);
+            }
+            elsif ( $r =~ s/\!=\s*// ) {
+                push @exclusion, $self->_numify($r);
+            }
+        }
+
+        my @filters
+            = ( { range => { 'module.version_numified' => \%range } }, );
+
+        if (@exclusion) {
+            push @filters, {
+                not => {
+                    or => [
+                        map {
+                            +{  term => {
+                                    'module.version_numified' =>
+                                        $self->_numify($_)
+                                }
+                                }
+                        } @exclusion
+                    ]
+                },
+            };
+        }
+
+        return @filters;
+    }
+}
+
+sub _numify {
+    my ( $self, $ver ) = @_;
+    $ver =~ s/_//g;
+    version->new($ver)->numify;
+}
+
 =head2 history
 
 Find the history of a given module/documentation.
@@ -910,8 +1076,7 @@ sub history {
     my ( $self, $type, $module, @path ) = @_;
     my $search
         = $type eq "module" ? $self->filter(
-        {
-            nested => {
+        {   nested => {
                 path  => "module",
                 query => {
                     constant_score => {
@@ -930,18 +1095,16 @@ sub history {
         }
         )
         : $type eq "file" ? $self->filter(
-        {
-            bool => {
+        {   bool => {
                 must => [
-                    { term => { "file.path" => join( "/", @path ) } },
+                    { term => { "file.path"         => join( "/", @path ) } },
                     { term => { "file.distribution" => $module } },
                 ]
             }
         }
         )
         : $self->filter(
-        {
-            bool => {
+        {   bool => {
                 must => [
                     { term => { "file.documentation" => $module } },
                     { term => { "file.indexed"       => \1 } },
@@ -959,15 +1122,13 @@ sub autocomplete {
     return $self unless $query;
 
     return $self->search_type('dfs_query_then_fetch')->query(
-        {
-            filtered => {
+        {   filtered => {
                 query => {
                     multi_match => {
-                        query  => $query,
-                        type   => 'most_fields',
-                        fields => [
-                            'documentation', 'documentation.edge_camelcase'
-                        ],
+                        query => $query,
+                        type  => 'most_fields',
+                        fields =>
+                            [ 'documentation', 'documentation.edge_camelcase' ],
                         analyzer             => 'camelcase',
                         minimum_should_match => "80%"
                     },
@@ -981,10 +1142,8 @@ sub autocomplete {
                             { term   => { 'authorized' => \1 } }
                         ],
                         must_not => [
-                            {
-                                terms => {
-                                    'distribution' => \@ROGUE_DISTRIBUTIONS
-                                }
+                            {   terms =>
+                                    { 'distribution' => \@ROGUE_DISTRIBUTIONS }
                             },
 
                         ],
