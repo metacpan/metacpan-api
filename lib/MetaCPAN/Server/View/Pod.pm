@@ -24,7 +24,7 @@ sub process {
     $x_codes = $c->config->{pod_html_x_codes} unless defined $x_codes;
 
     if ( $accept eq 'text/plain' ) {
-        $body         = $self->_factory->to_txt($content);
+        $body         = $self->_factory->to_text($content);
         $content_type = 'text/plain';
     }
     elsif ( $accept eq 'text/x-pod' ) {
