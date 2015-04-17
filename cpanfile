@@ -158,12 +158,13 @@ requires 'warnings';
 
 test_requires 'App::Prove';
 test_requires 'CPAN::Faker', '0.010';
-test_requires 'Module::Faker', '0.015';
-test_requires 'Module::Faker::Dist', '0.010';
 test_requires 'Config::General';
 test_requires 'ElasticSearch::TestServer';
 test_requires 'File::Copy';
 test_requires 'HTTP::Cookies';
+test_requires 'Module::Faker', '0.015';
+test_requires 'Module::Faker::Dist', '0.010';
+test_requires 'Plack::Handler::HTTP::Server::Simple';
 test_requires 'Plack::Test::Agent';
 test_requires 'Test::Aggregate::Nested', '0.371';
 test_requires 'Test::Code::TidyAll';

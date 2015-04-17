@@ -3734,6 +3734,16 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 6.42
       Socket 0
       Test::More 0
+  HTTP-Server-Simple-PSGI-0.16
+    pathname: M/MI/MIYAGAWA/HTTP-Server-Simple-PSGI-0.16.tar.gz
+    provides:
+      HTTP::Server::Simple::PSGI 0.16
+      HTTP::Server::Simple::PSGI::Writer 0.16
+      Plack::Handler::HTTP::Server::Simple 0.16
+      Plack::Handler::HTTP::Server::Simple::PSGIServer 0.16
+    requirements:
+      ExtUtils::MakeMaker 6.30
+      HTTP::Server::Simple 0.42
   HTTP-Tiny-0.043
     pathname: D/DA/DAGOLDEN/HTTP-Tiny-0.043.tar.gz
     provides:
