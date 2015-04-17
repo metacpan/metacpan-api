@@ -43,7 +43,7 @@ requires 'Devel::Confess';
 requires 'Digest::MD5';
 requires 'Digest::SHA1';
 requires 'EV';
-requires 'ElasticSearchX::Model', '0.1.8';
+requires 'ElasticSearchX::Model', '0.1.9';
 requires 'Email::Address';
 requires 'Email::Sender::Simple';
 requires 'Email::Simple';
