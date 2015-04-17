@@ -259,7 +259,7 @@ has documentation => (
     lazy_build => 1,
     index      => 'analyzed',
     predicate  => 'has_documentation',
-    analyzer   => [qw(standard camelcase lowercase)],
+    analyzer   => [qw(standard camelcase edge_camelcase)],
     clearer    => 'clear_documentation',
 );
 
@@ -1002,44 +1002,38 @@ sub autocomplete {
     my ( $self, @terms ) = @_;
     my $query = join( " ", @terms );
     return $self unless $query;
-    $query =~ s/::/ /g;
-    my @query = split( /\s+/, $query );
-    my $should = [
-        map {
-            {
-                simple_query_string => {
-                    fields => [
-                        'documentation.analyzed', 'documentation.camelcase'
-                    ],
-                    query => "$_*"
-                }
-            }
-        } grep {$_} @query
-    ];
 
-    # TODO: custom_score is deprecated in 0.90.4 in favor of function_score.
-    # As of 2013-10-27 we are still using 0.20.2 in production.
-    return $self->query(
-        {
-            function_score => {
-                query        => { bool => { should => $should } },
-                script_score => {
-                    script =>
-                        "_score - doc['documentation'].value.length()/100",
+    return $self->search_type('dfs_query_then_fetch')->query(
+        {   filtered => {
+                query => {
+                    multi_match => {
+                        query => $query,
+                        type  => 'most_fields',
+                        fields =>
+                            [ 'documentation', 'documentation.edge_camelcase' ],
+                        analyzer             => 'camelcase',
+                        minimum_should_match => "80%"
+                    },
+                },
+                filter => {
+                    bool => {
+                        must => [
+                            { exists => { field        => 'documentation' } },
+                            { term   => { 'indexed'    => \1 } },
+                            { term   => { 'status'     => 'latest' } },
+                            { term   => { 'authorized' => \1 } }
+                        ],
+                        must_not => [
+                            {   terms =>
+                                    { 'distribution' => \@ROGUE_DISTRIBUTIONS }
+                            },
+
+                        ],
+                    }
                 }
             }
         }
-        )->filter(
-        {
-            and => [
-                $self->_not_rogue,
-                { exists => { field             => 'documentation' } },
-                { term   => { 'file.indexed'    => \1 } },
-                { term   => { 'file.authorized' => \1 } },
-                { term   => { 'file.status'     => 'latest' } },
-            ]
-        }
-        )->sort( [ '_score', 'documentation' ] );
+    )->sort( [ '_score', 'documentation' ] );
 }
 
 __PACKAGE__->meta->make_immutable;

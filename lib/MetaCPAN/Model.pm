@@ -22,10 +22,23 @@ tokenizer camelcase => (
     pattern =>
         "([^\\p{L}\\d]+)|(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)|(?<=[\\p{L}&&[^\\p{Lu}]])(?=\\p{Lu})|(?<=\\p{Lu})(?=\\p{Lu}[\\p{L}&&[^\\p{Lu}]])"
 );
+
+filter edge => (
+    type => 'edge_ngram',
+    min_gram => 1,
+    max_gram => 20
+);
+
 analyzer camelcase => (
     type      => 'custom',
     tokenizer => 'camelcase',
-    filter    => [ 'lowercase', 'unique' ]
+    filter    => [ 'lowercase' ]
+);
+
+analyzer edge_camelcase => (
+    type      => 'custom',
+    tokenizer => 'camelcase',
+    filter    => [ 'lowercase', 'edge' ]
 );
 
 index cpan => (
