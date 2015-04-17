@@ -11,7 +11,6 @@ use Encode;
 use List::AllUtils qw( any );
 use List::MoreUtils qw(any uniq);
 use MetaCPAN::Document::Module;
-use MetaCPAN::Pod::XHTML;
 use MetaCPAN::Types qw(:all);
 use MetaCPAN::Util;
 use MooseX::Types::Moose qw(ArrayRef);

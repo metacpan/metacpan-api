@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 # Keep the coding style of Pod::Simple for consistency and performance.
+# Pod::Simple::XHTML expects you to subclass and then override methods.
 
 use parent 'Pod::Simple::XHTML';
 
@@ -25,12 +26,6 @@ sub handle_text {
         $_[0]->SUPER::handle_text( $_[1] );
     }
 }
-
-sub perldoc_url_prefix {
-    'https://metacpan.org/pod/';
-}
-
-# thanks to Marc Green
 
 sub start_item_text {
 
