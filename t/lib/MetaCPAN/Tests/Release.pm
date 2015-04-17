@@ -1,12 +1,44 @@
 package MetaCPAN::Tests::Release;
+
 use Test::Routine;
-use Test::More;
-use HTTP::Request::Common;
-use List::Util ();
+
 use version;
 
-with qw(
-    MetaCPAN::Tests::Model
+use HTTP::Request::Common;
+use List::Util ();
+use LWP::ConsoleLogger::Easy qw( debug_ua );
+use MetaCPAN::Server::Test qw( app );
+use Plack::Test::Agent;
+use Test::More;
+
+with 'MetaCPAN::Tests::Model';
+
+has _test_agent => (
+    is      => 'ro',
+    isa     => 'Plack::Test::Agent',
+    handles => ['get'],
+    lazy    => 1,
+    default => sub {
+        my $self = shift;
+        return Plack::Test::Agent->new(
+            app => app(),
+            ua  => $self->_user_agent,
+
+            #            server => 'HTTP::Server::Simple',
+        );
+    },
+);
+
+# set a server value above if you want to see debugging info
+has _user_agent => (
+    is      => 'ro',
+    isa     => 'LWP::UserAgent',
+    lazy    => 1,
+    default => sub {
+        my $ua = LWP::UserAgent->new;
+        debug_ua($ua);
+        return $ua;
+    },
 );
 
 sub _build_type {'release'}
@@ -73,12 +105,7 @@ sub file_content {
     # I couldn't get the Source model to work outside the app (I got
     # "No handler available for type 'application/octet-stream'",
     # strangely), so just do the http request.
-    return $self->psgi_app(
-        sub {
-            shift->( GET "/source/$self->{author}/$self->{name}/$path" )
-                ->content;
-        }
-    );
+    return $self->get("/source/$self->{author}/$self->{name}/$path")->content;
 }
 
 sub file_by_path {

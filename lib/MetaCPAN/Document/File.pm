@@ -122,8 +122,8 @@ Download URL of the release
 =cut
 
 has download_url => (
-    is         => 'ro',
-    required   => 1
+    is       => 'ro',
+    required => 1
 );
 
 =head2 date
@@ -537,7 +537,7 @@ has version_numified => (
 sub _build_version_numified {
     my $self = shift;
     return 0 unless ( $self->version );
-    return MetaCPAN::Util::numify_version( $self->version ).'';
+    return MetaCPAN::Util::numify_version( $self->version ) . '';
 }
 
 =head2 mime

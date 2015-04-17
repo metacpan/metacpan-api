@@ -107,7 +107,7 @@ has associated_pod => (
 sub _build_version_numified {
     my $self = shift;
     return 0 unless ( $self->version );
-    return MetaCPAN::Util::numify_version( $self->version ).'';
+    return MetaCPAN::Util::numify_version( $self->version ) . '';
 }
 
 my $bom
