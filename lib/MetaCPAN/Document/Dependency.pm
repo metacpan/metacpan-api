@@ -20,7 +20,7 @@ has version_numified => (
 );
 
 sub _build_version_numified {
-    return MetaCPAN::Util::numify_version( shift->version ) . '';
+    return MetaCPAN::Util::numify_version( shift->version ) . q{};
 }
 
 __PACKAGE__->meta->make_immutable;
