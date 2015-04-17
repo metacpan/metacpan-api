@@ -6777,6 +6777,23 @@ DISTRIBUTIONS
       Digest::SHA1 0
       Module::Build::Tiny 0.030
       Plack 0.9910
+  Plack-Test-Agent-1.4
+    pathname: O/OA/OALDERS/Plack-Test-Agent-1.4.tar.gz
+    provides:
+      Plack::Test::Agent 1.4
+    requirements:
+      ExtUtils::MakeMaker 0
+      HTTP::Message::PSGI 0
+      HTTP::Request::Common 0
+      HTTP::Response 0
+      Plack::Loader 0
+      Plack::Util::Accessor 0
+      Test::TCP 0
+      Test::WWW::Mechanize 0
+      parent 0
+      perl 5.008
+      strict 0
+      warnings 0
   Plack-Test-ExternalServer-0.01
     pathname: F/FL/FLORA/Plack-Test-ExternalServer-0.01.tar.gz
     provides:

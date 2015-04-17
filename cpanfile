@@ -164,6 +164,7 @@ test_requires 'Config::General';
 test_requires 'ElasticSearch::TestServer';
 test_requires 'File::Copy';
 test_requires 'HTTP::Cookies';
+test_requires 'Plack::Test::Agent';
 test_requires 'Test::Aggregate::Nested', '0.371';
 test_requires 'Test::Code::TidyAll';
 test_requires 'Test::More', '0.99';
