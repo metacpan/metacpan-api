@@ -113,6 +113,19 @@ has module => (
     default         => sub { [] },
 );
 
+=head2 download_url
+
+B<Required>
+
+Download URL of the release
+
+=cut
+
+has download_url => (
+    is         => 'ro',
+    required   => 1
+);
+
 =head2 date
 
 B<Required>

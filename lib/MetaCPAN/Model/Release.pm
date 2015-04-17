@@ -248,15 +248,16 @@ sub _build_files {
                     indexed      => $self->metadata->should_index_file($fpath)
                     ? 1
                     : 0,
-                    local_path => $child,
-                    maturity   => $self->maturity,
-                    metadata   => $self->metadata,
-                    name       => $filename,
-                    path       => $fpath,
-                    release    => $self->name,
-                    stat       => $stat,
-                    status     => $self->status,
-                    version    => $self->version,
+                    local_path   => $child,
+                    maturity     => $self->maturity,
+                    metadata     => $self->metadata,
+                    name         => $filename,
+                    path         => $fpath,
+                    release      => $self->name,
+                    download_url => $self->document->download_url,
+                    stat         => $stat,
+                    status       => $self->status,
+                    version      => $self->version,
                 }
             );
 
