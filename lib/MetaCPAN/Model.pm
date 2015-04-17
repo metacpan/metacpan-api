@@ -24,7 +24,7 @@ tokenizer camelcase => (
 );
 
 filter edge => (
-    type => 'edge_ngram',
+    type     => 'edge_ngram',
     min_gram => 1,
     max_gram => 20
 );
@@ -32,7 +32,7 @@ filter edge => (
 analyzer camelcase => (
     type      => 'custom',
     tokenizer => 'camelcase',
-    filter    => [ 'lowercase' ]
+    filter    => ['lowercase']
 );
 
 analyzer edge_camelcase => (
@@ -40,7 +40,6 @@ analyzer edge_camelcase => (
     tokenizer => 'camelcase',
     filter    => [ 'lowercase', 'edge' ]
 );
-
 
 index cpan => (
     namespace => 'MetaCPAN::Document',

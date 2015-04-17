@@ -66,9 +66,11 @@ sub run {
         : { exists => { field => "module.name" } };
 
     my $scroll = $modules->filter(
-        {   bool => {
+        {
+            bool => {
                 must => [
-                    {   nested => {
+                    {
+                        nested => {
                             path   => 'module',
                             filter => { bool => { must => \@module_filters } }
                         }
@@ -82,7 +84,8 @@ sub run {
             }
         }
         )->source(
-        [   'module.name', 'author', 'release', 'distribution',
+        [
+            'module.name', 'author', 'release', 'distribution',
             'date',        'status',
         ]
         )->size(100)->raw->scroll;
@@ -99,7 +102,7 @@ sub run {
         my $data = $file->{_source};
         my @modules = map { $_->{name} } @{ $data->{module} };
 
-        # Convert module name into Parse::CPAN::Packages::Fast::Package object.
+       # Convert module name into Parse::CPAN::Packages::Fast::Package object.
         @modules = grep {defined} map {
             eval { $p->package($_) }
         } @modules;

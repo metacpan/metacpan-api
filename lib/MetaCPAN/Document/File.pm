@@ -797,7 +797,8 @@ my @ROGUE_DISTRIBUTIONS
 sub find {
     my ( $self, $module ) = @_;
     my @candidates = $self->index->type("file")->filter(
-        {   bool => {
+        {
+            bool => {
                 must => [
                     { term => { 'indexed'    => \1, } },
                     { term => { 'authorized' => \1 } },
@@ -805,16 +806,19 @@ sub find {
                 ],
                 should => [
                     { term => { 'documentation' => $module } },
-                    {   nested => {
-                            path   => 'module',
-                            filter => { term => { 'module.name' => $module } },
+                    {
+                        nested => {
+                            path => 'module',
+                            filter =>
+                                { term => { 'module.name' => $module } },
                         }
                     }
                 ]
             }
         }
         )->sort(
-        [   { 'date'       => { order => "desc" } },
+        [
+            { 'date'       => { order => "desc" } },
             { 'mime'       => { order => "asc" } },
             { 'stat.mtime' => { order => 'desc' } }
         ]
@@ -858,7 +862,8 @@ sub find_pod {
 sub find_provided_by {
     my ( $self, $release ) = @_;
     return $self->filter(
-        {   bool => {
+        {
+            bool => {
                 must => [
                     { term => { 'release' => $release->{name} } },
                     { term => { 'author'  => $release->{author} } },
@@ -955,7 +960,8 @@ sub history {
     my ( $self, $type, $module, @path ) = @_;
     my $search
         = $type eq "module" ? $self->filter(
-        {   nested => {
+        {
+            nested => {
                 path  => "module",
                 query => {
                     constant_score => {
@@ -974,16 +980,18 @@ sub history {
         }
         )
         : $type eq "file" ? $self->filter(
-        {   bool => {
+        {
+            bool => {
                 must => [
-                    { term => { "file.path"         => join( "/", @path ) } },
+                    { term => { "file.path" => join( "/", @path ) } },
                     { term => { "file.distribution" => $module } },
                 ]
             }
         }
         )
         : $self->filter(
-        {   bool => {
+        {
+            bool => {
                 must => [
                     { term => { "file.documentation" => $module } },
                     { term => { "file.indexed"       => \1 } },
@@ -1001,13 +1009,15 @@ sub autocomplete {
     return $self unless $query;
 
     return $self->search_type('dfs_query_then_fetch')->query(
-        {   filtered => {
+        {
+            filtered => {
                 query => {
                     multi_match => {
-                        query => $query,
-                        type  => 'most_fields',
-                        fields =>
-                            [ 'documentation', 'documentation.edge_camelcase' ],
+                        query  => $query,
+                        type   => 'most_fields',
+                        fields => [
+                            'documentation', 'documentation.edge_camelcase'
+                        ],
                         analyzer             => 'camelcase',
                         minimum_should_match => "80%"
                     },
@@ -1021,8 +1031,10 @@ sub autocomplete {
                             { term   => { 'authorized' => \1 } }
                         ],
                         must_not => [
-                            {   terms =>
-                                    { 'distribution' => \@ROGUE_DISTRIBUTIONS }
+                            {
+                                terms => {
+                                    'distribution' => \@ROGUE_DISTRIBUTIONS
+                                }
                             },
 
                         ],

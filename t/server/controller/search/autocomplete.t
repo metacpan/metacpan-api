@@ -16,9 +16,11 @@ test_psgi app, sub {
         my $json = decode_json_ok($res);
 
         my $got
-            = [ map { $_->{_source}{documentation} } @{ $json->{hits}{hits} } ];
+            = [ map { $_->{_source}{documentation} }
+                @{ $json->{hits}{hits} } ];
 
-        is_deeply $got, [ qw(
+        is_deeply $got, [
+            qw(
                 Multiple::Modules
                 Multiple::Modules::A
                 Multiple::Modules::B
