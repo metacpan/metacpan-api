@@ -78,7 +78,7 @@ has version => ( is => 'ro' );
 
 has version_numified => (
     is         => 'ro',
-    isa        => 'Num',
+    isa        => 'Str',
     lazy_build => 1,
     required   => 1,
 );
@@ -107,7 +107,7 @@ has associated_pod => (
 sub _build_version_numified {
     my $self = shift;
     return 0 unless ( $self->version );
-    return MetaCPAN::Util::numify_version( $self->version );
+    return MetaCPAN::Util::numify_version( $self->version ).'';
 }
 
 my $bom

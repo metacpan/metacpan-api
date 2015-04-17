@@ -15,12 +15,12 @@ has [qw(phase relationship module version)] => ( is => 'ro', required => 1 );
 has version_numified => (
     is         => 'ro',
     required   => 1,
-    isa        => 'Num',
+    isa        => 'Str',
     lazy_build => 1,
 );
 
 sub _build_version_numified {
-    return MetaCPAN::Util::numify_version( shift->version );
+    return MetaCPAN::Util::numify_version( shift->version ).'';
 }
 
 __PACKAGE__->meta->make_immutable;

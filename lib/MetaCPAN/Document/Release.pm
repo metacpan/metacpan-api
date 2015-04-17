@@ -145,7 +145,7 @@ has [qw(distribution name)] => (
 has version_numified => (
     is         => 'ro',
     required   => 1,
-    isa        => 'Num',
+    isa        => 'Str',
     lazy_build => 1,
 );
 
@@ -224,7 +224,7 @@ has metadata => (
 );
 
 sub _build_version_numified {
-    return MetaCPAN::Util::numify_version( shift->version );
+    return MetaCPAN::Util::numify_version( shift->version ) . '';
 }
 
 sub _build_download_url {

@@ -516,7 +516,7 @@ version could not be parsed.
 
 has version_numified => (
     is         => 'ro',
-    isa        => 'Num',
+    isa        => 'Str',
     lazy_build => 1,
     required   => 1,
 );
@@ -524,7 +524,7 @@ has version_numified => (
 sub _build_version_numified {
     my $self = shift;
     return 0 unless ( $self->version );
-    return MetaCPAN::Util::numify_version( $self->version );
+    return MetaCPAN::Util::numify_version( $self->version ).'';
 }
 
 =head2 mime
