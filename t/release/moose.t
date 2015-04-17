@@ -81,7 +81,7 @@ $signature = $idx->type('file')->filter(
             { term => { name => 'SIGNATURE' } },
 
 # these came from metacpan-web/lib/MetaCPAN/Web/Model/API/Release.pm:sub modules
-            { exists => { field          => 'file.pod.analyzed' } },
+            { exists => { field          => 'file.pod_lines' } },
             { term   => { 'file.indexed' => \1 } },
         ]
     }
