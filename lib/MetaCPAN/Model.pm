@@ -41,10 +41,11 @@ analyzer edge_camelcase => (
     filter    => [ 'lowercase', 'edge' ]
 );
 
+
 index cpan => (
     namespace => 'MetaCPAN::Document',
     alias_for => 'cpan_v1',
-    shards    => 5
+    shards    => 3
 );
 
 index user => ( namespace => 'MetaCPAN::Model::User' );
