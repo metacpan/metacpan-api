@@ -60,36 +60,32 @@ sub run {
 
     return if ( !@filter && $self->distribution );
 
+    my @module_filters = { term => { 'module.indexed' => \1 } };
+    push @module_filters, @filter
+        ? { terms => { "module.name" => \@filter } }
+        : { exists => { field => "module.name" } };
+
     my $scroll = $modules->filter(
-        {
-            and => [
-                @filter
-                ? {
-                    or => [
-                        map { { term => { 'file.module.name' => $_ } } }
-                            @filter
-                    ]
-                    }
-                : (),
-                { exists => { field                 => 'file.module.name' } },
-                { term   => { 'file.module.indexed' => \1 } },
-                { term   => { 'file.maturity'       => 'released' } },
-                { not => { filter => { term => { status => 'backpan' } } } },
-                {
-                    not => {
-                        filter =>
-                            { term => { 'file.distribution' => 'perl' } }
-                    }
-                },
-            ]
+        {   bool => {
+                must => [
+                    {   nested => {
+                            path   => 'module',
+                            filter => { bool => { must => \@module_filters } }
+                        }
+                    },
+                    { term => { 'file.maturity' => 'released' } },
+                ],
+                must_not => [
+                    { term => { status       => 'backpan' } },
+                    { term => { distribution => 'perl' } }
+                ]
+            }
         }
-        )->fields(
-        [
-            'file.module.name', 'file.author',
-            'file.release',     'file.distribution',
-            'file.date',        'file.status',
+        )->source(
+        [   'module.name', 'author', 'release', 'distribution',
+            'date',        'status',
         ]
-        )->size(10000)->raw->scroll;
+        )->size(100)->raw->scroll;
 
     my ( %downgrade, %upgrade );
     log_debug { 'Found ' . $scroll->total . ' modules' };
@@ -100,12 +96,10 @@ sub run {
     while ( my $file = $scroll->next ) {
         $i++;
         log_debug { "$i of " . $scroll->total } unless ( $i % 1000 );
-        my $data    = $file->{fields};
-        my @modules = @{ $data->{'module.name'} };
-        ( $data->{$_} ) = @{ $data->{$_} }
-            for qw(author release distribution date status);
+        my $data = $file->{_source};
+        my @modules = map { $_->{name} } @{ $data->{module} };
 
-       # Convert module name into Parse::CPAN::Packages::Fast::Package object.
+        # Convert module name into Parse::CPAN::Packages::Fast::Package object.
         @modules = grep {defined} map {
             eval { $p->package($_) }
         } @modules;
