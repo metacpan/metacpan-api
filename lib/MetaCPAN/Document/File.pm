@@ -797,26 +797,25 @@ my @ROGUE_DISTRIBUTIONS
 sub find {
     my ( $self, $module ) = @_;
     my @candidates = $self->index->type("file")->filter(
-        {
-            and => [
-                {
-                    or => [
-                        { term => { 'file.module.name'   => $module } },
-                        { term => { 'file.documentation' => $module } },
-                    ]
-                },
-                { term => { 'file.indexed' => \1, } },
-                { term => { status         => 'latest', } },
-                {
-                    not =>
-                        { filter => { term => { 'file.authorized' => \0 } } }
-                },
-            ]
+        {   bool => {
+                must => [
+                    { term => { 'indexed'    => \1, } },
+                    { term => { 'authorized' => \1 } },
+                    { term => { 'status'     => 'latest', } },
+                ],
+                should => [
+                    { term => { 'documentation' => $module } },
+                    {   nested => {
+                            path   => 'module',
+                            filter => { term => { 'module.name' => $module } },
+                        }
+                    }
+                ]
+            }
         }
         )->sort(
-        [
-            { 'date' => { order => "desc" } },
-            'mime',
+        [   { 'date'       => { order => "desc" } },
+            { 'mime'       => { order => "asc" } },
             { 'stat.mtime' => { order => 'desc' } }
         ]
         )->size(100)->all;
@@ -859,13 +858,14 @@ sub find_pod {
 sub find_provided_by {
     my ( $self, $release ) = @_;
     return $self->filter(
-        {
-            and => [
-                { term => { 'release' => $release->{name} } },
-                { term => { 'author'  => $release->{author} } },
-                { term => { 'file.module.authorized' => 1 } },
-                { term => { 'file.module.indexed'    => 1 } },
-            ]
+        {   bool => {
+                must => [
+                    { term => { 'release' => $release->{name} } },
+                    { term => { 'author'  => $release->{author} } },
+                    { term => { 'file.module.authorized' => 1 } },
+                    { term => { 'file.module.indexed'    => 1 } },
+                ]
+            }
         }
     )->size(999)->all;
 }
@@ -955,17 +955,18 @@ sub history {
     my ( $self, $type, $module, @path ) = @_;
     my $search
         = $type eq "module" ? $self->filter(
-        {
-            nested => {
+        {   nested => {
                 path  => "module",
                 query => {
                     constant_score => {
                         filter => {
-                            and => [
-                                { term => { "module.authorized" => \1 } },
-                                { term => { "module.indexed"    => \1 } },
-                                { term => { "module.name" => $module } },
-                            ]
+                            bool => {
+                                must => [
+                                    { term => { "module.authorized" => \1 } },
+                                    { term => { "module.indexed"    => \1 } },
+                                    { term => { "module.name" => $module } },
+                                ]
+                            }
                         }
                     }
                 }
@@ -973,29 +974,25 @@ sub history {
         }
         )
         : $type eq "file" ? $self->filter(
-        {
-            and => [
-                { term => { "file.path"         => join( "/", @path ) } },
-                { term => { "file.distribution" => $module } },
-            ]
+        {   bool => {
+                must => [
+                    { term => { "file.path"         => join( "/", @path ) } },
+                    { term => { "file.distribution" => $module } },
+                ]
+            }
         }
         )
         : $self->filter(
-        {
-            and => [
-                { term => { "file.documentation" => $module } },
-                { term => { "file.indexed"       => \1 } },
-                { term => { "file.authorized"    => \1 } },
-            ]
+        {   bool => {
+                must => [
+                    { term => { "file.documentation" => $module } },
+                    { term => { "file.indexed"       => \1 } },
+                    { term => { "file.authorized"    => \1 } },
+                ]
+            }
         }
         );
     return $search->sort( [ { "file.date" => "desc" } ] );
-}
-
-sub _not_rogue {
-    my @rogue_dists = map { { term => { 'file.distribution' => $_ } } }
-        @ROGUE_DISTRIBUTIONS;
-    return { not => { filter => { or => \@rogue_dists } } };
 }
 
 sub autocomplete {
