@@ -6,6 +6,7 @@ use warnings;
 ## no critic (Modules::RequireEndWithOne)
 
 use CatalystX::RoleApplicator;
+use File::Temp qw( tempdir );
 use Moose;
 use Plack::Middleware::ReverseProxy;
 use Plack::Middleware::ServerStatus::Lite;
@@ -94,9 +95,15 @@ if ( $ENV{PLACK_ENV} && $ENV{PLACK_ENV} eq 'development' ) {
 # Should this be `unless ( $ENV{HARNESS_ACTIVE} ) {` ?
 {
     my $scoreboard = __PACKAGE__->path_to(qw(var tmp scoreboard));
+    my $scoreboard
+        = $ENV{HARNESS_ACTIVE}
+        ? tempdir( CLEANUP => 1 )
+        : __PACKAGE__->path_to(qw(var tmp scoreboard));
 
    # This may be a File object if it doesn't exist so change it, then make it.
-    Path::Class::Dir->new( $scoreboard->stringify )->mkpath;
+    my $dir = Path::Class::Dir->new(
+        ref $scoreboard ? $scoreboard->stringify : $scoreboard );
+    $dir->mkpath unless -d $dir;
 
     Plack::Middleware::ServerStatus::Lite->wrap(
         $app,
@@ -106,3 +113,5 @@ if ( $ENV{PLACK_ENV} && $ENV{PLACK_ENV} eq 'development' ) {
     );
 }
 
+# Let's be explicit because implicit returns can be confusing
+return $app;
