@@ -94,7 +94,6 @@ if ( $ENV{PLACK_ENV} && $ENV{PLACK_ENV} eq 'development' ) {
 
 # Should this be `unless ( $ENV{HARNESS_ACTIVE} ) {` ?
 {
-    my $scoreboard = __PACKAGE__->path_to(qw(var tmp scoreboard));
     my $scoreboard
         = $ENV{HARNESS_ACTIVE}
         ? tempdir( CLEANUP => 1 )
