@@ -900,69 +900,6 @@ sub find_module_names_provided_by {
     );
 }
 
-# TODO: figure out what uses this and write tests for it
-sub prefix {
-    my ( $self, $prefix ) = @_;
-    my @query = split( /\s+/, $prefix );
-    my $should = [
-        map {
-            {
-                simple_query_string => {
-                    fields => [
-                        'documentation.analyzed', 'documentation.camelcase'
-                    ],
-                    query => "$_*"
-                }
-            }
-        } grep {$_} @query
-    ];
-    return $self->query(
-        {
-            filtered => {
-                query => {
-                    function_score => {
-                        query => { bool => { should => $should } },
-
-                        script_score => {
-                            script =>
-                                "_score - doc['documentation'].value.length()/100",
-                        }
-                    },
-                },
-                filter => {
-                    and => [
-                        {
-                            not => {
-                                filter => {
-                                    or => [
-                                        map {
-                                            +{
-                                                term => {
-                                                    'file.distribution' => $_
-                                                }
-                                                }
-                                            } @ROGUE_DISTRIBUTIONS
-
-                                    ]
-                                }
-                            }
-                        },
-                        { exists => { field          => 'documentation' } },
-                        { term   => { 'file.indexed' => \1 } },
-                        { term   => { 'file.status'  => 'latest' } },
-                        {
-                            not => {
-                                filter =>
-                                    { term => { 'file.authorized' => \0 } }
-                            }
-                        }
-                    ]
-                }
-            }
-        }
-    );
-}
-
 =head2 history
 
 Find the history of a given module/documentation.
