@@ -5,7 +5,7 @@ use lib 't/lib';
 
 use MetaCPAN::Server::Test;
 use MetaCPAN::TestHelpers;
-use Test::More;
+use Test::More skip_all => 'Scripting is disabled';
 use URI;
 
 sub uri {

@@ -2,7 +2,7 @@ use strict;
 use warnings;
 
 use MetaCPAN::Server::Test;
-use Test::More;
+use Test::More skip_all => 'Scripting is disabled';
 
 my $model   = model();
 my $idx     = $model->index('cpan');
