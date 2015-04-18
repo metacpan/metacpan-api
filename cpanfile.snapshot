@@ -3468,6 +3468,23 @@ DISTRIBUTIONS
       IPC::Open3 0
       Package::Pkg 0.0014
       Test::Most 0
+  Git-Sub-0.130270
+    pathname: D/DO/DOLMEN/Git-Sub-0.130270.tar.gz
+    provides:
+      Git::Sub 0.130270
+      git 0.130270
+    requirements:
+      Carp 0
+      Cwd 0
+      ExtUtils::MakeMaker 6.30
+      File::Find 0
+      File::Temp 0
+      File::Which 0
+      System::Sub 0
+      Test::More 0
+      strict 0
+      subs 0
+      warnings 0
   Graph-0.96
     pathname: J/JH/JHI/Graph-0.96.tar.gz
     provides:
@@ -3953,6 +3970,19 @@ DISTRIBUTIONS
       IO::WrapTie::Slave 2.110
     requirements:
       ExtUtils::MakeMaker 0
+  IPC-Run-0.94
+    pathname: T/TO/TODDR/IPC-Run-0.94.tar.gz
+    provides:
+      IPC::Run 0.94
+      IPC::Run::Debug 0.90
+      IPC::Run::IO 0.90
+      IPC::Run::Timer 0.90
+      IPC::Run::Win32Helper 0.90
+      IPC::Run::Win32IO 0.90
+      IPC::Run::Win32Pump 0.90
+    requirements:
+      ExtUtils::MakeMaker 0
+      Test::More 0.47
   IPC-Run3-0.048
     pathname: R/RJ/RJBS/IPC-Run3-0.048.tar.gz
     provides:
@@ -4150,6 +4180,18 @@ DISTRIBUTIONS
     requirements:
       Test::More 0
       version 0
+  List-AllUtils-0.09
+    pathname: D/DR/DROLSKY/List-AllUtils-0.09.tar.gz
+    provides:
+      List::AllUtils 0.09
+    requirements:
+      Exporter 0
+      ExtUtils::MakeMaker 0
+      List::MoreUtils 0.28
+      List::Util 1.31
+      base 0
+      strict 0
+      warnings 0
   List-MoreUtils-0.33
     pathname: A/AD/ADAMK/List-MoreUtils-0.33.tar.gz
     provides:
@@ -7451,6 +7493,23 @@ DISTRIBUTIONS
       File::Temp 0
       Test::More 0
       constant 0
+      strict 0
+      warnings 0
+  System-Sub-0.150960
+    pathname: D/DO/DOLMEN/System-Sub-0.150960.tar.gz
+    provides:
+      System::Sub 0.150960
+      System::Sub::AutoLoad 0.150960
+    requirements:
+      Carp 0
+      ExtUtils::MakeMaker 0
+      File::Which 0
+      IPC::Run 0
+      Scalar::Util 1.11
+      Sub::Name 0
+      Symbol 0
+      constant 0
+      perl 5.006
       strict 0
       warnings 0
   Task-Weaken-1.04
