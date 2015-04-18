@@ -973,8 +973,9 @@ sub find_download_url {
     # filters to be applied to the nested modules
     my $module_f = {
         nested => {
-            path   => 'module',
-            filter => {
+            path       => 'module',
+            inner_hits => { _source => "version" },
+            filter     => {
                 bool => {
                     must => [
                         { term => { "module.authorized" => \1 } },
@@ -999,7 +1000,7 @@ sub find_download_url {
             "module.version_numified" => {
                 mode          => 'max',
                 order         => 'desc',
-                nested_filter => $module_f
+                nested_filter => $module_f->{nested}{filter}
             }
         },
         { date => { order => 'desc' } }
@@ -1033,7 +1034,7 @@ sub find_download_url {
     }
 
     return $self->size(1)->query($query)
-        ->source( 'download_url', 'date', 'status' )->sort( \@sort );
+        ->source( [ 'download_url', 'date', 'status' ] )->sort( \@sort );
 
 }
 
