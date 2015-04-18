@@ -12,10 +12,7 @@ analyzer lowercase => (
     filter    => 'lowercase',
 );
 
-analyzer fulltext => (
-    type     => 'snowball',
-    language => 'English',
-);
+analyzer fulltext => ( type => 'english' );
 
 tokenizer camelcase => (
     type => 'pattern',
