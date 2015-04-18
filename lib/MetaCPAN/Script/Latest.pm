@@ -66,9 +66,11 @@ sub run {
         : { exists => { field => "module.name" } };
 
     my $scroll = $modules->filter(
-        {   bool => {
+        {
+            bool => {
                 must => [
-                    {   nested => {
+                    {
+                        nested => {
                             path   => 'module',
                             filter => { bool => { must => \@module_filters } }
                         }
@@ -82,7 +84,8 @@ sub run {
             }
         }
         )->source(
-        [   'module.name', 'author', 'release', 'distribution',
+        [
+            'module.name', 'author', 'release', 'distribution',
             'date',        'status',
         ]
         )->size(100)->raw->scroll;
@@ -98,7 +101,7 @@ sub run {
         log_debug { "$i of " . $scroll->total } unless ( $i % 1000 );
         my $data = $file->{_source};
 
-        # Convert module name into Parse::CPAN::Packages::Fast::Package object.
+       # Convert module name into Parse::CPAN::Packages::Fast::Package object.
         my @modules = grep {defined}
             map {
             eval { $p->package( $_->{name} ) }
@@ -107,7 +110,7 @@ sub run {
         # For each of the packages in this file...
         foreach my $module (@modules) {
 
-            # Get P:C:P:F:Distribution (CPAN::DistnameInfo) object for package.
+           # Get P:C:P:F:Distribution (CPAN::DistnameInfo) object for package.
             my $dist = $module->distribution;
 
             # If 02packages has the same author/release for this package...
@@ -173,7 +176,8 @@ sub reindex {
 
     # Update the status on the release.
     my $release = $self->index->type('release')->get(
-        {   author => $source->{author},
+        {
+            author => $source->{author},
             name   => $source->{release},
         }
     );
@@ -187,7 +191,8 @@ sub reindex {
 
     # Get all the files for the release.
     my $scroll = $self->index->type("file")->search_type('scan')->filter(
-        {   bool => {
+        {
+            bool => {
                 must => [
                     { term => { 'release' => $source->{release} } },
                     { term => { 'author'  => $source->{author} } }
