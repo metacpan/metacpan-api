@@ -281,6 +281,7 @@ sub _build_documentation {
     my $self = shift;
     $self->_build_abstract;
     my $documentation = $self->documentation if ( $self->has_documentation );
+    return undef unless length $documentation;
     return undef unless ( ${ $self->pod } );
     my @indexed = grep { $_->indexed } @{ $self->module || [] };
     if ( $documentation && $self->is_pod_file ) {

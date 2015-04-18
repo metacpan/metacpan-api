@@ -78,11 +78,9 @@ ok( !$signature, 'SIGNATURE is not documentation' );
 $signature = $idx->type('file')->filter(
     {
         and => [
-            { term => { name => 'SIGNATURE' } },
-
-# these came from metacpan-web/lib/MetaCPAN/Web/Model/API/Release.pm:sub modules
-            { exists => { field          => 'file.pod_lines' } },
-            { term   => { 'file.indexed' => \1 } },
+            { term   => { name      => 'SIGNATURE' } },
+            { exists => { field     => 'documentation' } },
+            { term   => { 'indexed' => \1 } },
         ]
     }
 )->first;
