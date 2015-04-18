@@ -7,8 +7,6 @@ use MetaCPAN::TestHelpers;
 use Test::More skip_all =>
     "Need to add CPAN::Test::Dummy::Perl5::VersionBump to CPAN::Faker and write tests";
 
-use Log::Any::Adapter ( 'File', 'out' );
-
 test_psgi app, sub {
     my $cb = shift;
 

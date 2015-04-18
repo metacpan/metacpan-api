@@ -59,7 +59,7 @@ BEGIN { $ENV{EMAIL_SENDER_TRANSPORT} = 'Test' }
 ok(
     my $es = Search::Elasticsearch->new(
         nodes => $ES_HOST,
-        ( $ENV{ES_TRACE} ? ( trace_to => 'Stderr' ) : () )
+        ( $ENV{ES_TRACE} ? ( trace_to => [ 'File', 'es.log' ] ) : () )
     ),
     'got ElasticSearch object'
 );
