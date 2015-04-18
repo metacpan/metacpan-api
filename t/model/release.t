@@ -1,7 +1,6 @@
 use strict;
 use warnings;
 
-use FindBin;
 use File::Temp;
 use LWP::Simple qw(getstore);
 use MetaCPAN::Model::Release;
@@ -9,15 +8,10 @@ use MetaCPAN::Script::Runner;
 use Test::More;
 use Test::RequiresInternet( 'metacpan.org' => 'https' );
 
-my $config = do {
-
-    # build_config expects test to be t/*.t
-    local $FindBin::RealBin = "$FindBin::RealBin/..";
-    MetaCPAN::Script::Runner->build_config;
-};
-
+my $config = get_config();
 my $url
     = 'https://cpan.metacpan.org/authors/id/D/DC/DCANTRELL/Acme-Pony-1.1.2.tar.gz';
+
 my $archive_file = File::Temp->new;
 getstore $url, $archive_file->filename;
 ok -s $archive_file->filename;

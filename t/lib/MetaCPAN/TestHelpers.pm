@@ -4,22 +4,28 @@ use warnings;
 package    # no_index
     MetaCPAN::TestHelpers;
 
+use FindBin;
+use Git::Sub;
 use JSON;
+use MetaCPAN::Script::Runner;
+use Path::Class qw( dir );
 use Try::Tiny;
 use Test::More;
 use Test::Routine::Util;
 
 use base 'Exporter';
 our @EXPORT = qw(
-    try catch finally
-
-    multiline_diag hex_escape
-    encode_json
+    catch
+    get_config
     decode_json_ok
-
+    encode_json
+    finally
+    hex_escape
+    multiline_diag
     run_tests
     test_distribution
     test_release
+    try
 );
 
 =head1 EXPORTS
@@ -82,6 +88,18 @@ sub test_release {
     $args = { %$release, %$args };
     run_tests( $desc || "Release data for $args->{author}/$args->{name}",
         ['MetaCPAN::Tests::Release'], $args, );
+}
+
+sub get_config {
+    my $config = do {
+
+        my $checkout_root = scalar git::rev_parse qw(--show-toplevel);
+
+        # build_config expects test to be t/*.t
+        local $FindBin::RealBin = dir( undef, $checkout_root, 't' );
+        MetaCPAN::Script::Runner->build_config;
+    };
+    return $config;
 }
 
 1;

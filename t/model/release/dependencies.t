@@ -4,14 +4,10 @@ use warnings;
 use FindBin;
 use MetaCPAN::Model::Release;
 use MetaCPAN::Script::Runner;
+use MetaCPAN::TestHelpers qw( get_config );
 use Test::Most;
 
-my $config = do {
-
-    # build_config expects test to be t/*.t
-    local $FindBin::RealBin = "$FindBin::RealBin/../..";
-    MetaCPAN::Script::Runner->build_config;
-};
+my $config = get_config();
 
 subtest 'basic dependencies' => sub {
     my $file

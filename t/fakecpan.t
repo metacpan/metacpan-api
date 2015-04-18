@@ -42,6 +42,7 @@ use Config::General;
 use DDP;
 use Search::Elasticsearch;
 use File::Copy;
+use MetaCPAN::TestHelpers qw( get_config );
 use MetaCPAN::Script::Author;
 use MetaCPAN::Script::Latest;
 use MetaCPAN::Script::Mapping;
@@ -77,7 +78,7 @@ EOF
 Test::More::note(
     Test::More::explain( { 'Elasticsearch info' => $es->info } ) );
 
-my $config = MetaCPAN::Script::Runner->build_config;
+my $config = get_config();
 $config->{es} = $es;
 
 {
