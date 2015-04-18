@@ -575,6 +575,22 @@ sub _build_path {
     return join( '/', $self->release->name, $self->name );
 }
 
+has dir => (
+    is         => 'ro',
+    lazy_build => 1,
+    isa        => 'Str',
+    required   => 1,
+    index      => 'not_analyzed'
+);
+
+sub _build_dir {
+    my $self = shift;
+    $DB::single = 1;
+    my $dir = $self->path;
+    $dir =~ s{/[^/]+$}{};
+    return $dir;
+}
+
 has [qw(release distribution)] => (
     is       => 'ro',
     required => 1,
