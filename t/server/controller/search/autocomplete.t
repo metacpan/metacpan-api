@@ -15,8 +15,7 @@ test_psgi app, sub {
             'GET' );
         my $json = decode_json_ok($res);
 
-        my $got
-            = [ map { $_->{_source}{documentation} }
+        my $got = [ map { @{ $_->{fields}{documentation} } }
                 @{ $json->{hits}{hits} } ];
 
         is_deeply $got, [

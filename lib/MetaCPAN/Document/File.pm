@@ -273,7 +273,7 @@ has documentation => (
     lazy_build => 1,
     index      => 'analyzed',
     predicate  => 'has_documentation',
-    analyzer   => [qw(standard camelcase edge_camelcase)],
+    analyzer   => [qw(standard camelcase lowercase edge edge_camelcase)],
     clearer    => 'clear_documentation',
 );
 
@@ -1160,12 +1160,10 @@ sub autocomplete {
             filtered => {
                 query => {
                     multi_match => {
-                        query  => $query,
-                        type   => 'most_fields',
-                        fields => [
-                            'documentation', 'documentation.edge_camelcase'
-                        ],
-                        analyzer             => 'camelcase',
+                        query    => $query,
+                        type     => 'most_fields',
+                        fields   => [ 'documentation', 'documentation.*' ],
+                        analyzer => 'camelcase',
                         minimum_should_match => "80%"
                     },
                 },
@@ -1183,7 +1181,6 @@ sub autocomplete {
                                     'distribution' => \@ROGUE_DISTRIBUTIONS
                                 }
                             },
-
                         ],
                     }
                 }

@@ -32,12 +32,18 @@ filter edge => (
 analyzer camelcase => (
     type      => 'custom',
     tokenizer => 'camelcase',
-    filter    => ['lowercase']
+    filter    => [ 'lowercase', 'unique' ]
 );
 
 analyzer edge_camelcase => (
     type      => 'custom',
     tokenizer => 'camelcase',
+    filter    => [ 'lowercase', 'edge' ]
+);
+
+analyzer edge => (
+    type      => 'custom',
+    tokenizer => 'standard',
     filter    => [ 'lowercase', 'edge' ]
 );
 
