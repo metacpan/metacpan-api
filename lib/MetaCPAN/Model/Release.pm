@@ -329,7 +329,10 @@ sub _load_meta_file {
             try {
                 $last = CPAN::Meta->load_file($file);
             }
-            catch { $error = $_ };
+            catch {
+                $error = $_;
+                log_warn {"META file ($file) could not be loaded: $error"};
+            };
             if ($last) {
                 last;
             }
@@ -341,7 +344,7 @@ sub _load_meta_file {
         }
     }
 
-    log_warn {"META file could not be loaded: $error"} unless @backends;
+    log_warn {'No META files could be loaded'} unless @backends;
 }
 
 sub extract {
