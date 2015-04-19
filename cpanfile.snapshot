@@ -8270,6 +8270,19 @@ DISTRIBUTIONS
       ExtUtils::Manifest 0
       Test::Builder 0.30
       Test::More 0.60
+  Test-Vars-0.005
+    pathname: G/GF/GFUJI/Test-Vars-0.005.tar.gz
+    provides:
+      Test::Vars 0.005
+    requirements:
+      B 0
+      CPAN::Meta 0
+      CPAN::Meta::Prereqs 0
+      ExtUtils::MakeMaker 6.59
+      Module::Build 0.38
+      Test::More 0.88
+      parent 0
+      perl 5.010000
   Test-Version-1.002004
     pathname: X/XE/XENO/Test-Version-1.002004.tar.gz
     provides:
