@@ -11,22 +11,13 @@ use Test::Most;
 use Test::Aggregate::Nested 0.371 ();
 
 use CPAN::Faker 0.010;
-use Config::General;
-use DDP;
 use File::Copy;
-use MetaCPAN::Script::Author;
-use MetaCPAN::Script::Latest;
-use MetaCPAN::Script::Mapping;
-use MetaCPAN::Script::Release;
-use MetaCPAN::Script::Runner;
 use MetaCPAN::Script::Tickets;
 use MetaCPAN::Server::Test;
 use MetaCPAN::TestHelpers qw( get_config );
 use MetaCPAN::TestServer;
 use Module::Faker 0.015 ();    # Generates META.json.
 use Path::Class qw(dir file);
-use Search::Elasticsearch;
-use Search::Elasticsearch::TestServer;
 
 BEGIN { $ENV{EMAIL_SENDER_TRANSPORT} = 'Test' }
 
@@ -71,12 +62,8 @@ ok( $cpan->make_cpan, 'make fake cpan' );
 require Parse::PMFile;
 local $Parse::PMFile::VERBOSE = $ENV{TEST_VERBOSE} ? 9 : 0;
 
-local @ARGV = ( 'release', $config->{cpan}, '--children', 0 );
-ok( MetaCPAN::Script::Release->new_with_options($config)->run,
-    'index fakecpan' );
-
-local @ARGV = ('latest');
-ok( MetaCPAN::Script::Latest->new_with_options($config)->run, 'latest' );
+$server->index_releases;
+$server->set_latest;
 
 my $cpan_dir = dir( 't', 'var', 'fakecpan', );
 
@@ -88,11 +75,7 @@ copy( $cpan_dir->file('author-1.0.json'),
 
 copy( $cpan_dir->file('bugs.tsv'), file( $config->{cpan}, 'bugs.tsv' ) );
 
-{
-    local @ARGV = ('author');
-    ok( MetaCPAN::Script::Author->new_with_options($config)->run,
-        'index authors' );
-}
+$server->index_authors;
 
 ok(
     MetaCPAN::Script::Tickets->new_with_options(

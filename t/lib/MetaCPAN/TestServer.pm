@@ -3,10 +3,16 @@ package MetaCPAN::TestServer;
 use strict;
 use warnings;
 
+use CPAN::Repository::Perms;
+use MetaCPAN::Script::Author;
+use MetaCPAN::Script::Latest;
 use MetaCPAN::Script::Mapping;
+use MetaCPAN::Script::Release;
 use MetaCPAN::TestHelpers qw( get_config );
-use MetaCPAN::Types qw( HashRef Str );
+use MetaCPAN::Types qw( Dir HashRef Str );
 use Moose;
+use Search::Elasticsearch;
+use Search::Elasticsearch::TestServer;
 use Test::More;
 
 has es_client => (
@@ -37,13 +43,22 @@ has _es_home => (
     builder => '_build_es_home',
 );
 
+has _cpan_dir => (
+    is       => 'ro',
+    isa      => Dir,
+    init_arg => 'cpan_dir',
+    coerce   => 1,
+    default  => 't/var/tmp/fakecpan',
+);
+
 sub _build_config {
     my $self = shift;
 
     # don't know why get_config is not imported by this point
     my $config = MetaCPAN::TestHelpers::get_config();
 
-    $config->{es} = $self->es_client;
+    $config->{es}   = $self->es_client;
+    $config->{cpan} = $self->_cpan_dir;
     return $config;
 }
 
@@ -126,6 +141,29 @@ sub put_mappings {
     ok( MetaCPAN::Script::Mapping->new_with_options( $self->_config )->run,
         'put mapping' );
     $self->wait_for_es();
+}
+
+sub index_releases {
+    my $self = shift;
+
+    local @ARGV = ( 'release', $self->_cpan_dir, '--children', 0 );
+    ok( MetaCPAN::Script::Release->new_with_options( $self->_config )->run,
+        'index fakecpan' );
+}
+
+sub set_latest {
+    my $self = shift;
+    local @ARGV = ('latest');
+    ok( MetaCPAN::Script::Latest->new_with_options( $self->_config )->run,
+        'latest' );
+}
+
+sub index_authors {
+    my $self = shift;
+
+    local @ARGV = ('author');
+    ok( MetaCPAN::Script::Author->new_with_options( $self->_config )->run,
+        'index authors' );
 }
 
 __PACKAGE__->meta->make_immutable();
