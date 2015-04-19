@@ -14,6 +14,6 @@ my $server = MetaCPAN::TestServer->new( cpan_dir => $darkpan->base_dir );
 # create DarkPAN
 $darkpan->run;
 
-$server->index_releases;
+$server->index_releases( bulk_size => 1 );
 
 done_testing();

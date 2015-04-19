@@ -14,7 +14,7 @@ use LWP::UserAgent;
 use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Document::Author;
 use MetaCPAN::Model::Release;
-use MetaCPAN::Types qw( Dir );
+use MetaCPAN::Types qw( Bool Dir HashRef Int Str );
 use Moose;
 use PerlIO::gzip;
 use Try::Tiny;
@@ -23,41 +23,41 @@ with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
 has latest => (
     is            => 'ro',
-    isa           => 'Bool',
+    isa           => Bool,
     default       => 0,
     documentation => q{run 'latest' script after each release},
 );
 
 has age => (
     is            => 'ro',
-    isa           => 'Int',
+    isa           => Int,
     documentation => 'index releases no older than x hours (undef)',
 );
 
 has children => (
     is            => 'ro',
-    isa           => 'Int',
+    isa           => Int,
     default       => 2,
     documentation => 'number of worker processes (2)',
 );
 
 has skip => (
     is            => 'ro',
-    isa           => 'Bool',
+    isa           => Bool,
     default       => 0,
     documentation => 'skip already indexed modules (0)',
 );
 
 has status => (
     is            => 'ro',
-    isa           => 'Str',
+    isa           => Str,
     default       => 'cpan',
     documentation => 'status of the indexed releases (cpan)',
 );
 
 has detect_backpan => (
     is            => 'ro',
-    isa           => 'Bool',
+    isa           => Bool,
     default       => 0,
     documentation => 'enable when indexing from a backpan',
 );
@@ -69,9 +69,16 @@ has backpan_index => (
 
 has perms => (
     is         => 'ro',
-    isa        => 'HashRef',
+    isa        => HashRef,
     lazy_build => 1,
     traits     => ['NoGetopt'],
+);
+
+has _bulk_size => (
+    is       => 'ro',
+    isa      => Int,
+    init_arg => 'bulk_size',
+    default  => 10,
 );
 
 sub run {
@@ -178,7 +185,7 @@ sub import_archive {
 
     my $cpan = $self->index;
     my $d    = CPAN::DistnameInfo->new($archive_path);
-    my $bulk = $cpan->bulk( size => 10 );
+    my $bulk = $cpan->bulk( size => $self->_bulk_size );
 
     my $model = MetaCPAN::Model::Release->new(
         bulk     => $bulk,

@@ -145,10 +145,14 @@ sub put_mappings {
 
 sub index_releases {
     my $self = shift;
+    my %args = @_;
 
     local @ARGV = ( 'release', $self->_cpan_dir, '--children', 0 );
-    ok( MetaCPAN::Script::Release->new_with_options( $self->_config )->run,
-        'index fakecpan' );
+    ok(
+        MetaCPAN::Script::Release->new_with_options( %{ $self->_config },
+            %args )->run,
+        'index fakecpan'
+    );
 }
 
 sub set_latest {
