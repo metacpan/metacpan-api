@@ -6,8 +6,6 @@ use lib 't/lib';
 # Require version for subtests but let Test::Most do the ->import()
 use Test::More 0.96 ();
 use Test::Most;
-use Search::Elasticsearch;
-use Search::Elasticsearch::TestServer;
 
 # Don't warn about Parse::PMFile's exit()
 use Test::Aggregate::Nested 0.371 ();
@@ -15,9 +13,7 @@ use Test::Aggregate::Nested 0.371 ();
 use CPAN::Faker 0.010;
 use Config::General;
 use DDP;
-use Search::Elasticsearch;
 use File::Copy;
-use MetaCPAN::TestHelpers qw( get_config );
 use MetaCPAN::Script::Author;
 use MetaCPAN::Script::Latest;
 use MetaCPAN::Script::Mapping;
@@ -25,9 +21,12 @@ use MetaCPAN::Script::Release;
 use MetaCPAN::Script::Runner;
 use MetaCPAN::Script::Tickets;
 use MetaCPAN::Server::Test;
+use MetaCPAN::TestHelpers qw( get_config );
 use MetaCPAN::TestHelpers qw( get_config get_test_es_server );
 use Module::Faker 0.015 ();    # Generates META.json.
 use Path::Class qw(dir file);
+use Search::Elasticsearch;
+use Search::Elasticsearch::TestServer;
 
 BEGIN { $ENV{EMAIL_SENDER_TRANSPORT} = 'Test' }
 
