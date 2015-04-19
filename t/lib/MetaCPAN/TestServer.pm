@@ -3,7 +3,9 @@ package MetaCPAN::TestServer;
 use strict;
 use warnings;
 
-use MetaCPAN::Types qw( Str );
+use MetaCPAN::Script::Mapping;
+use MetaCPAN::TestHelpers qw( get_config );
+use MetaCPAN::Types qw( HashRef Str );
 use Moose;
 use Test::More;
 
@@ -21,12 +23,29 @@ has es_server => (
     builder => '_build_es_server',
 );
 
+has _config => (
+    is      => 'ro',
+    isa     => HashRef,
+    lazy    => 1,
+    builder => '_build_config',
+);
+
 has _es_home => (
     is      => 'ro',
     isa     => Str,
     lazy    => 1,
     builder => '_build_es_home',
 );
+
+sub _build_config {
+    my $self = shift;
+
+    # don't know why get_config is not imported by this point
+    my $config = MetaCPAN::TestHelpers::get_config();
+
+    $config->{es} = $self->es_client;
+    return $config;
+}
 
 sub _build_es_home {
     my $self = shift;
@@ -98,6 +117,15 @@ sub wait_for_es {
         timeout         => '30s'
     );
     $self->es_client->indices->refresh;
+}
+
+sub put_mappings {
+    my $self = shift;
+
+    local @ARGV = qw(mapping --delete);
+    ok( MetaCPAN::Script::Mapping->new_with_options( $self->_config )->run,
+        'put mapping' );
+    $self->wait_for_es();
 }
 
 __PACKAGE__->meta->make_immutable();

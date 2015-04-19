@@ -22,7 +22,7 @@ use MetaCPAN::Script::Runner;
 use MetaCPAN::Script::Tickets;
 use MetaCPAN::Server::Test;
 use MetaCPAN::TestHelpers qw( get_config );
-use MetaCPAN::TestHelpers qw( get_config get_test_es_server );
+use MetaCPAN::TestServer;
 use Module::Faker 0.015 ();    # Generates META.json.
 use Path::Class qw(dir file);
 use Search::Elasticsearch;
@@ -30,16 +30,11 @@ use Search::Elasticsearch::TestServer;
 
 BEGIN { $ENV{EMAIL_SENDER_TRANSPORT} = 'Test' }
 
-my $server = get_test_es_server();
+my $server = MetaCPAN::TestServer->new;
 my $config = get_config();
 $config->{es} = $server->es_client;
 
-{
-    local @ARGV = qw(mapping --delete);
-    ok( MetaCPAN::Script::Mapping->new_with_options($config)->run,
-        'put mapping' );
-    $server->wait_for_es();
-}
+$server->put_mappings;
 
 foreach my $test_dir ( $config->{cpan}, $config->{source_base} ) {
     next unless $test_dir;
@@ -83,17 +78,21 @@ ok( MetaCPAN::Script::Release->new_with_options($config)->run,
 local @ARGV = ('latest');
 ok( MetaCPAN::Script::Latest->new_with_options($config)->run, 'latest' );
 
-copy( file(qw(t var fakecpan 00whois.xml)),
+my $cpan_dir = dir( 't', 'var', 'fakecpan', );
+
+copy( $cpan_dir->file('00whois.xml'),
     file( $config->{cpan}, qw(authors 00whois.xml) ) );
-copy( file(qw(t var fakecpan author-1.0.json)),
+
+copy( $cpan_dir->file('author-1.0.json'),
     file( $config->{cpan}, qw(authors id M MO MO author-1.0.json) ) );
-copy(
-    file(qw(t var fakecpan bugs.tsv)),
-    file( $config->{cpan}, qw(bugs.tsv) )
-);
-local @ARGV = ('author');
-ok( MetaCPAN::Script::Author->new_with_options($config)->run,
-    'index authors' );
+
+copy( $cpan_dir->file('bugs.tsv'), file( $config->{cpan}, 'bugs.tsv' ) );
+
+{
+    local @ARGV = ('author');
+    ok( MetaCPAN::Script::Author->new_with_options($config)->run,
+        'index authors' );
+}
 
 ok(
     MetaCPAN::Script::Tickets->new_with_options(
