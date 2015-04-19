@@ -457,6 +457,28 @@ DISTRIBUTIONS
       Scalar::Util 0
       strict 0
       warnings 0
+  CPAN-Repository-0.008
+    pathname: G/GE/GETTY/CPAN-Repository-0.008.tar.gz
+    provides:
+      CPAN::Repository 0.008
+      CPAN::Repository::Mailrc 0.008
+      CPAN::Repository::Packages 0.008
+      CPAN::Repository::Perms 0.008
+      CPAN::Repository::Role::File 0.008
+    requirements:
+      DateTime 0.72
+      DateTime::Format::Epoch 0.13
+      DateTime::Format::RFC3339 0
+      Dist::Data 0.002
+      ExtUtils::MakeMaker 6.30
+      File::Path 2.08
+      File::Spec::Functions 3.33
+      File::Temp 0.22
+      IO::File 1.14
+      IO::Zlib 1.10
+      Moo 0.009013
+      Test::LoadAllModules 0.021
+      Test::More 0.96
   Cache-Cache-1.06
     pathname: J/JS/JSWARTZ/Cache-Cache-1.06.tar.gz
     provides:
@@ -1739,6 +1761,15 @@ DISTRIBUTIONS
     requirements:
       DateTime 0.18
       DateTime::Format::Builder 0.77
+  DateTime-Format-RFC3339-v1.0.5
+    pathname: I/IK/IKEGAMI/DateTime-Format-RFC3339-v1.0.5.tar.gz
+    provides:
+      DateTime::Format::RFC3339 1.000005
+    requirements:
+      DateTime 0
+      ExtUtils::MakeMaker 0
+      Test::More 0
+      version 0
   DateTime-Format-Strptime-1.55
     pathname: D/DR/DROLSKY/DateTime-Format-Strptime-1.55.tar.gz
     provides:
@@ -2827,6 +2858,57 @@ DISTRIBUTIONS
       base 0
       strict 0
       warnings 0
+  Dist-Data-0.005
+    pathname: G/GE/GETTY/Dist-Data-0.005.tar.gz
+    provides:
+      Dist::Data 0.005
+    requirements:
+      Archive::Any 0.0932
+      CPAN::Meta 2.113640
+      DateTime::Format::Epoch 0.13
+      Dist::Metadata 0.922
+      ExtUtils::MakeMaker 6.30
+      File::Find::Object 0
+      File::Temp 0.22
+      Module::Extract::Namespaces 0.14
+      Moo 0.009013
+  Dist-Metadata-0.925
+    pathname: R/RW/RWSTAUNER/Dist-Metadata-0.925.tar.gz
+    provides:
+      Dist::Metadata 0.925
+      Dist::Metadata::Archive 0.925
+      Dist::Metadata::Dir 0.925
+      Dist::Metadata::Dist 0.925
+      Dist::Metadata::Struct 0.925
+      Dist::Metadata::Tar 0.925
+      Dist::Metadata::Zip 0.925
+    requirements:
+      Archive::Tar 1
+      Archive::Zip 1.30
+      CPAN::DistnameInfo 0.12
+      CPAN::Meta 2.1
+      Carp 0
+      Digest 1.03
+      Digest::MD5 2
+      Digest::SHA 5
+      ExtUtils::MakeMaker 6.30
+      File::Basename 0
+      File::Find 0
+      File::Spec 0
+      File::Spec::Functions 0
+      File::Spec::Native 1.002
+      File::Temp 0.19
+      List::Util 0
+      Module::Metadata 0
+      Path::Class 0.24
+      Test::Fatal 0
+      Test::MockObject 1.09
+      Test::More 0.96
+      Try::Tiny 0.09
+      constant 0
+      parent 0
+      strict 0
+      warnings 0
   EV-4.17
     pathname: M/ML/MLEHMANN/EV-4.17.tar.gz
     provides:
@@ -3295,6 +3377,26 @@ DISTRIBUTIONS
       File::Spec 0
       FindBin 0
       perl 5.008001
+  File-Find-Object-v0.2.13
+    pathname: S/SH/SHLOMIF/File-Find-Object-v0.2.13.tar.gz
+    provides:
+      File::Find::Object 0.002013
+      File::Find::Object::Base 0.002013
+      File::Find::Object::PathComp 0.002013
+      File::Find::Object::Result 0.002013
+    requirements:
+      Carp 0
+      Class::XSAccessor 0
+      Fcntl 0
+      File::Path 0
+      File::Spec 0
+      List::Util 0
+      Module::Build 0.36
+      Test::More 0
+      parent 0
+      perl 5.008
+      strict 0
+      warnings 0
   File-Find-Rule-0.33
     pathname: R/RC/RCLAMP/File-Find-Rule-0.33.tar.gz
     provides:
@@ -3426,6 +3528,17 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Fcntl 0
       POSIX 0
+  File-Spec-Native-1.003
+    pathname: R/RW/RWSTAUNER/File-Spec-Native-1.003.tar.gz
+    provides:
+      File::Spec::Native 1.003
+    requirements:
+      ExtUtils::MakeMaker 6.30
+      File::Find 0
+      File::Spec 0
+      File::Spec::Functions 0
+      File::Temp 0
+      Test::More 0.88
   File-Sync-0.11
     pathname: B/BR/BRIANSKI/File-Sync-0.11.tar.gz
     provides:
@@ -4650,6 +4763,15 @@ DISTRIBUTIONS
       CPAN::Meta 2.12091
       CPAN::Meta::Prereqs 2.12091
       ExtUtils::MakeMaker 6.30
+  Module-Extract-Namespaces-1.02
+    pathname: B/BD/BDFOY/Module-Extract-Namespaces-1.02.tar.gz
+    provides:
+      Module::Extract::Namespaces 1.02
+      PPI::Lexer 1.02
+    requirements:
+      ExtUtils::MakeMaker 0
+      PPI 0
+      Test::More 0
   Module-Faker-0.016
     pathname: R/RJ/RJBS/Module-Faker-0.016.tar.gz
     provides:
@@ -4707,6 +4829,68 @@ DISTRIBUTIONS
       Try::Tiny 0
       strict 0
       warnings 0
+  Module-Install-1.15
+    pathname: E/ET/ETHER/Module-Install-1.15.tar.gz
+    provides:
+      Module::AutoInstall 1.15
+      Module::Install 1.15
+      Module::Install::Admin 1.15
+      Module::Install::Admin::Bundle 1.15
+      Module::Install::Admin::Compiler 1.15
+      Module::Install::Admin::Find 1.15
+      Module::Install::Admin::Include 1.15
+      Module::Install::Admin::Makefile 1.15
+      Module::Install::Admin::Manifest 1.15
+      Module::Install::Admin::Metadata 1.15
+      Module::Install::Admin::ScanDeps 1.15
+      Module::Install::Admin::WriteAll 1.15
+      Module::Install::AutoInstall 1.15
+      Module::Install::Base 1.15
+      Module::Install::Base::FakeAdmin 1.15
+      Module::Install::Bundle 1.15
+      Module::Install::Can 1.15
+      Module::Install::Compiler 1.15
+      Module::Install::DSL 1.15
+      Module::Install::Deprecated 1.15
+      Module::Install::External 1.15
+      Module::Install::Fetch 1.15
+      Module::Install::Include 1.15
+      Module::Install::Inline 1.15
+      Module::Install::MakeMaker 1.15
+      Module::Install::Makefile 1.15
+      Module::Install::Metadata 1.15
+      Module::Install::PAR 1.15
+      Module::Install::Run 1.15
+      Module::Install::Scripts 1.15
+      Module::Install::Share 1.15
+      Module::Install::Win32 1.15
+      Module::Install::With 1.15
+      Module::Install::WriteAll 1.15
+      inc::Module::Install 1.15
+      inc::Module::Install::DSL 1.15
+    requirements:
+      Devel::PPPort 3.16
+      ExtUtils::Install 1.52
+      ExtUtils::MakeMaker 6.59
+      ExtUtils::ParseXS 2.19
+      File::Path 0
+      File::Remove 1.42
+      File::Spec 3.28
+      Module::Build 0.29
+      Module::CoreList 2.17
+      Module::ScanDeps 1.09
+      Parse::CPAN::Meta 1.4413
+      Test::Harness 3.13
+      Test::More 0.86
+      YAML::Tiny 1.38
+      perl 5.006
+  Module-Install-AuthorTests-0.002
+    pathname: R/RJ/RJBS/Module-Install-AuthorTests-0.002.tar.gz
+    provides:
+      Module::Install::AuthorTests 0.002
+    requirements:
+      ExtUtils::MakeMaker 0
+      Module::Install 0
   Module-Metadata-1.000024
     pathname: E/ET/ETHER/Module-Metadata-1.000024.tar.gz
     provides:
@@ -4754,6 +4938,23 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
+  Module-ScanDeps-1.18
+    pathname: R/RS/RSCHUPP/Module-ScanDeps-1.18.tar.gz
+    provides:
+      Module::ScanDeps 1.18
+      Module::ScanDeps::Cache undef
+      Module::ScanDeps::DataFeed undef
+    requirements:
+      ExtUtils::MakeMaker 6.59
+      File::Spec 0
+      File::Temp 0
+      Getopt::Long 0
+      Module::Metadata 0
+      Test::More 0
+      Test::Requires 0
+      Text::ParseWords 0
+      perl 5.008001
+      version 0
   Moo-2.000001
     pathname: H/HA/HAARG/Moo-2.000001.tar.gz
     provides:
@@ -7992,6 +8193,18 @@ DISTRIBUTIONS
       File::Spec 0
       File::Temp 0
       Test::More 0
+  Test-LoadAllModules-0.022
+    pathname: K/KI/KITANO/Test-LoadAllModules-0.022.tar.gz
+    provides:
+      Test::LoadAllModules 0.022
+    requirements:
+      ExtUtils::MakeMaker 6.36
+      File::Spec 0
+      Filter::Util::Call 0
+      List::MoreUtils 0
+      Module::Install::AuthorTests 0
+      Module::Pluggable::Object 0
+      Test::More 0
   Test-LongString-0.15
     pathname: R/RG/RGARCIA/Test-LongString-0.15.tar.gz
     provides:
@@ -8000,6 +8213,26 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Test::Builder 0.12
       Test::Builder::Tester 1.04
+  Test-MockObject-1.20140408
+    pathname: C/CH/CHROMATIC/Test-MockObject-1.20140408.tar.gz
+    provides:
+      Test::MockObject 1.20140408
+      Test::MockObject::Extends 1.20140408
+    requirements:
+      CGI 0
+      Carp 0
+      Devel::Peek 0
+      ExtUtils::MakeMaker 6.30
+      Scalar::Util 0
+      Test::Builder 0
+      Test::Exception 0.31
+      Test::More 0.98
+      Test::Warn 0.23
+      UNIVERSAL::can 1.20110617
+      UNIVERSAL::isa 1.20110614
+      constant 0
+      strict 0
+      warnings 0
   Test-Most-0.33
     pathname: O/OV/OVID/Test-Most-0.33.tar.gz
     provides:
@@ -8645,6 +8878,31 @@ DISTRIBUTIONS
       Type::Tiny 1.000000
       UUID::Tiny 1.02
       perl 5.008
+  UNIVERSAL-can-1.20140328
+    pathname: C/CH/CHROMATIC/UNIVERSAL-can-1.20140328.tar.gz
+    provides:
+      Test::SmallWarn undef
+      UNIVERSAL::can 1.20140328
+    requirements:
+      ExtUtils::MakeMaker 6.30
+      Scalar::Util 0
+      strict 0
+      vars 0
+      warnings 0
+      warnings::register 0
+  UNIVERSAL-isa-1.20140927
+    pathname: E/ET/ETHER/UNIVERSAL-isa-1.20140927.tar.gz
+    provides:
+      UNIVERSAL::isa 1.20140927
+    requirements:
+      ExtUtils::MakeMaker 0
+      Module::Build::Tiny 0.038
+      Scalar::Util 0
+      UNIVERSAL 0
+      perl v5.6.2
+      strict 0
+      warnings 0
+      warnings::register 0
   UNIVERSAL-require-0.17
     pathname: N/NE/NEILB/UNIVERSAL-require-0.17.tar.gz
     provides:
@@ -8954,6 +9212,20 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 6.59
       perl 5.006
+  YAML-Tiny-1.66
+    pathname: E/ET/ETHER/YAML-Tiny-1.66.tar.gz
+    provides:
+      YAML::Tiny 1.66
+    requirements:
+      B 0
+      Carp 0
+      Exporter 0
+      ExtUtils::MakeMaker 0
+      Fcntl 0
+      Scalar::Util 0
+      perl 5.008001
+      strict 0
+      warnings 0
   aliased-0.31
     pathname: O/OV/OVID/aliased-0.31.tar.gz
     provides:

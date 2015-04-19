@@ -159,6 +159,7 @@ requires 'warnings';
 test_requires 'App::Prove';
 test_requires 'CPAN::Faker', '0.010';
 test_requires 'Config::General';
+test_requires 'CPAN::Repository';
 test_requires 'ElasticSearch::TestServer';
 test_requires 'File::Copy';
 test_requires 'Git::Sub';
