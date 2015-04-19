@@ -2891,32 +2891,32 @@ DISTRIBUTIONS
       Test::More 0.96
       strict 0
       warnings 0
-  ElasticSearchX-Model-0.1.9
-    pathname: O/OA/OALDERS/ElasticSearchX-Model-0.1.9.tar.gz
+  ElasticSearchX-Model-0.2.0
+    pathname: O/OA/OALDERS/ElasticSearchX-Model-0.2.0.tar.gz
     provides:
-      ElasticSearchX::Model 0.001009
-      ElasticSearchX::Model::Bulk 0.001009
-      ElasticSearchX::Model::Document 0.001009
-      ElasticSearchX::Model::Document::EmbeddedRole 0.001009
-      ElasticSearchX::Model::Document::Mapping 0.001009
-      ElasticSearchX::Model::Document::Role 0.001009
-      ElasticSearchX::Model::Document::Set 0.001009
-      ElasticSearchX::Model::Document::Trait::Attribute 0.001009
-      ElasticSearchX::Model::Document::Trait::Class 0.001009
-      ElasticSearchX::Model::Document::Trait::Class::ID 0.001009
-      ElasticSearchX::Model::Document::Trait::Class::Timestamp 0.001009
-      ElasticSearchX::Model::Document::Trait::Class::Version 0.001009
-      ElasticSearchX::Model::Document::Trait::Field::ID 0.001009
-      ElasticSearchX::Model::Document::Trait::Field::TTL 0.001009
-      ElasticSearchX::Model::Document::Trait::Field::Timestamp 0.001009
-      ElasticSearchX::Model::Document::Trait::Field::Version 0.001009
-      ElasticSearchX::Model::Document::Types 0.001009
-      ElasticSearchX::Model::Index 0.001009
-      ElasticSearchX::Model::Role 0.001009
-      ElasticSearchX::Model::Scroll 0.001009
-      ElasticSearchX::Model::Trait::Class 0.001009
-      ElasticSearchX::Model::Tutorial 0.001009
-      ElasticSearchX::Model::Util 0.001009
+      ElasticSearchX::Model 0.002000
+      ElasticSearchX::Model::Bulk 0.002000
+      ElasticSearchX::Model::Document 0.002000
+      ElasticSearchX::Model::Document::EmbeddedRole 0.002000
+      ElasticSearchX::Model::Document::Mapping 0.002000
+      ElasticSearchX::Model::Document::Role 0.002000
+      ElasticSearchX::Model::Document::Set 0.002000
+      ElasticSearchX::Model::Document::Trait::Attribute 0.002000
+      ElasticSearchX::Model::Document::Trait::Class 0.002000
+      ElasticSearchX::Model::Document::Trait::Class::ID 0.002000
+      ElasticSearchX::Model::Document::Trait::Class::Timestamp 0.002000
+      ElasticSearchX::Model::Document::Trait::Class::Version 0.002000
+      ElasticSearchX::Model::Document::Trait::Field::ID 0.002000
+      ElasticSearchX::Model::Document::Trait::Field::TTL 0.002000
+      ElasticSearchX::Model::Document::Trait::Field::Timestamp 0.002000
+      ElasticSearchX::Model::Document::Trait::Field::Version 0.002000
+      ElasticSearchX::Model::Document::Types 0.002000
+      ElasticSearchX::Model::Index 0.002000
+      ElasticSearchX::Model::Role 0.002000
+      ElasticSearchX::Model::Scroll 0.002000
+      ElasticSearchX::Model::Trait::Class 0.002000
+      ElasticSearchX::Model::Tutorial 0.002000
+      ElasticSearchX::Model::Util 0.002000
     requirements:
       Carp 0
       Class::Load 0
