@@ -8,6 +8,7 @@ use FindBin;
 use Git::Sub;
 use JSON;
 use MetaCPAN::Script::Runner;
+use MetaCPAN::TestServer;
 use Path::Class qw( dir );
 use Try::Tiny;
 use Test::More;
@@ -19,6 +20,7 @@ our @EXPORT = qw(
     get_config
     decode_json_ok
     encode_json
+    get_test_es_server
     finally
     hex_escape
     multiline_diag
@@ -100,6 +102,10 @@ sub get_config {
         MetaCPAN::Script::Runner->build_config;
     };
     return $config;
+}
+
+sub get_test_es_server {
+    return MetaCPAN::TestServer->new();
 }
 
 1;

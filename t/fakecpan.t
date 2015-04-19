@@ -9,31 +9,6 @@ use Test::Most;
 use Search::Elasticsearch;
 use Search::Elasticsearch::TestServer;
 
-my $server;
-my $ES_HOST = $ENV{ES};
-
-if ( !$ES_HOST ) {
-    my $ES_HOME = $ENV{ES_HOME} or die <<"USAGE";
-
-    Please set \$ENV{ES} to a running instance of Elasticsearch,
-    eg 'localhost:9200' or set \$ENV{ES_HOME} to the
-    directory containing Elasticsearch
-
-USAGE
-
-    $server = Search::Elasticsearch::TestServer->new(
-        es_home        => $ES_HOME,
-        http_port      => 9900,
-        es_port        => 9700,
-        instances      => 1,
-        'cluster.name' => 'metacpan-test',
-    );
-
-    $ENV{ES} = $ES_HOST = $server->start->[0];
-}
-
-diag "Connecting to Elasticsearch on $ES_HOST";
-
 # Don't warn about Parse::PMFile's exit()
 use Test::Aggregate::Nested 0.371 ();
 
@@ -50,42 +25,21 @@ use MetaCPAN::Script::Release;
 use MetaCPAN::Script::Runner;
 use MetaCPAN::Script::Tickets;
 use MetaCPAN::Server::Test;
-
+use MetaCPAN::TestHelpers qw( get_config get_test_es_server );
 use Module::Faker 0.015 ();    # Generates META.json.
 use Path::Class qw(dir file);
 
 BEGIN { $ENV{EMAIL_SENDER_TRANSPORT} = 'Test' }
 
-ok(
-    my $es = Search::Elasticsearch->new(
-        nodes => $ES_HOST,
-        ( $ENV{ES_TRACE} ? ( trace_to => [ 'File', 'es.log' ] ) : () )
-    ),
-    'got ElasticSearch object'
-);
-
-ok( !$@, "Connected to the Elasticsearch test instance on $ES_HOST" )
-    or do {
-    diag(<<EOF);
-Failed to connect to the Elasticsearch test instance on $ES_HOST.
-Did you start one up? See https://github.com/CPAN-API/cpan-api/wiki/Installation
-for more information.
-EOF
-
-    BAIL_OUT('Test environment not set up properly');
-    };
-
-Test::More::note(
-    Test::More::explain( { 'Elasticsearch info' => $es->info } ) );
-
+my $server = get_test_es_server();
 my $config = get_config();
-$config->{es} = $es;
+$config->{es} = $server->es_client;
 
 {
     local @ARGV = qw(mapping --delete);
     ok( MetaCPAN::Script::Mapping->new_with_options($config)->run,
         'put mapping' );
-    wait_for_es();
+    $server->wait_for_es();
 }
 
 foreach my $test_dir ( $config->{cpan}, $config->{source_base} ) {
@@ -156,16 +110,7 @@ ok(
     'tickets'
 );
 
-wait_for_es();
-
-sub wait_for_es {
-    sleep $_[0] if $_[0];
-    $es->cluster->health(
-        wait_for_status => 'yellow',
-        timeout         => '30s'
-    );
-    $es->indices->refresh;
-}
+$server->wait_for_es();
 
 subtest 'Nested tests' => sub {
     my $tests = Test::Aggregate::Nested->new(
