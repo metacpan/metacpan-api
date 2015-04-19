@@ -31,12 +31,14 @@ sub run {
 
     my $injector = OrePAN2::Injector->new( directory => $dir );
 
+    # Add this one to test handling of Meta file parse warnings
+    # MLEHMANN => ['AnyEvent-4.232.tar.gz'],
+
     my %downloads = (
         MIYAGAWA => [
             'CPAN-Test-Dummy-Perl5-VersionBump-0.01.tar.gz',
             'CPAN-Test-Dummy-Perl5-VersionBump-0.02.tar.gz',
         ],
-        MLEHMANN => ['AnyEvent-4.232.tar.gz'],
     );
 
     foreach my $pauseid (%downloads) {
