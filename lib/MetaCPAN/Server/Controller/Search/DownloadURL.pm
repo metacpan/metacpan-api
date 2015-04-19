@@ -16,12 +16,13 @@ sub get : Local : Path('/download_url') : Args(1) {
     my $args = $c->req->params;
 
     my $model = $self->model($c);
-    my $res = $model->find_download_url( $module, $args )->raw->all;
-    my $hit = $res->{hits}{hits}[0]
+    my $res   = $model->find_download_url( $module, $args )->raw->all;
+    my $hit   = $res->{hits}{hits}[0]
         or return $c->detach( '/not_found', [] );
 
     $c->stash(
-        {   %{ $hit->{_source} },
+        {
+            %{ $hit->{_source} },
             %{ $hit->{inner_hits}{module}{hits}{hits}[0]{_source} }
         }
     );
