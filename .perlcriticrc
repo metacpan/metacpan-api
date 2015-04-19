@@ -11,6 +11,7 @@ verbose = 11
 [-RegularExpressions::RequireExtendedFormatting]
 [-RegularExpressions::RequireLineBoundaryMatching]
 [-ValuesAndExpressions::ProhibitAccessOfPrivateData]
+[-ValuesAndExpressions::ProhibitNoisyQuotes]
 [-Variables::ProhibitPunctuationVars]
 
 [CodeLayout::RequireTrailingCommas]
