@@ -236,6 +236,11 @@ sub import_archive {
             $document->abstract( $file->abstract );
             $document->put;
         }
+        use feature qw( say );
+        if ( $file->can('description') ) {
+            say $file->path;
+            say length( $file->description ) if $file->description;
+        }
     }
     if (@provides) {
         $document->provides( [ sort @provides ] );

@@ -39,6 +39,7 @@ sub run {
             'CPAN-Test-Dummy-Perl5-VersionBump-0.01.tar.gz',
             'CPAN-Test-Dummy-Perl5-VersionBump-0.02.tar.gz',
         ],
+        TINITA => ['HTML-Template-Compiled-1.001.tar.gz'],
     );
 
     foreach my $pauseid (%downloads) {

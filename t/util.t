@@ -1,32 +1,30 @@
-use Test::Most;
 use strict;
 use warnings;
-use MetaCPAN::Util;
-use CPAN::Meta;
 
-is( MetaCPAN::Util::numify_version(1),          1.000 );
-is( MetaCPAN::Util::numify_version('010'),      10.000 );
-is( MetaCPAN::Util::numify_version('v2.1.1'),   2.001001 );
-is( MetaCPAN::Util::numify_version(undef),      0.000 );
-is( MetaCPAN::Util::numify_version('LATEST'),   0.000 );
-is( MetaCPAN::Util::numify_version('0.20_8'),   0.208 );
-is( MetaCPAN::Util::numify_version('0.20_88'),  0.2088 );
-is( MetaCPAN::Util::numify_version('0.208_8'),  0.2088 );
-is( MetaCPAN::Util::numify_version('0.20_108'), 0.20108 );
-is( MetaCPAN::Util::numify_version('v0.9_9'),   0.099 );
+use CPAN::Meta;
+use MetaCPAN::Util qw( numify_version strip_pod );
+use Test::Most;
+
+is( numify_version(1),          1.000 );
+is( numify_version('010'),      10.000 );
+is( numify_version('v2.1.1'),   2.001001 );
+is( numify_version(undef),      0.000 );
+is( numify_version('LATEST'),   0.000 );
+is( numify_version('0.20_8'),   0.208 );
+is( numify_version('0.20_88'),  0.2088 );
+is( numify_version('0.208_8'),  0.2088 );
+is( numify_version('0.20_108'), 0.20108 );
+is( numify_version('v0.9_9'),   0.099 );
 
 lives_ok { is( version('2a'),      2 ) };
 lives_ok { is( version('V0.01'),   'v0.01' ) };
 lives_ok { is( version('0.99_1'),  '0.99_1' ) };
 lives_ok { is( version('0.99.01'), 'v0.99.01' ) };
 
-is( MetaCPAN::Util::strip_pod('hello L<link|http://www.google.com> foo'),
-    'hello link foo' );
-is( MetaCPAN::Util::strip_pod('hello L<Module/section> foo'),
-    'hello section in Module foo' );
-is( MetaCPAN::Util::strip_pod('for L<Dist::Zilla>'), 'for Dist::Zilla' );
-is( MetaCPAN::Util::strip_pod('without a leading C<$>.'),
-    'without a leading $.' );
+is( strip_pod('hello L<link|http://www.google.com> foo'), 'hello link foo' );
+is( strip_pod('hello L<Module/section> foo'), 'hello section in Module foo' );
+is( strip_pod('for L<Dist::Zilla>'),          'for Dist::Zilla' );
+is( strip_pod('without a leading C<$>.'),     'without a leading $.' );
 
 sub version {
     CPAN::Meta->new(
