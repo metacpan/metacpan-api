@@ -974,13 +974,13 @@ sub find_download_url {
     my $module_f = {
         nested => {
             path       => 'module',
-            inner_hits => { _source => "version" },
+            inner_hits => { _source => 'version' },
             filter     => {
                 bool => {
                     must => [
-                        { term => { "module.authorized" => \1 } },
-                        { term => { "module.indexed"    => \1 } },
-                        { term => { "module.name"       => $module } },
+                        { term => { 'module.authorized' => \1 } },
+                        { term => { 'module.indexed'    => \1 } },
+                        { term => { 'module.name'       => $module } },
                         $self->_version_filters($version)
                     ]
                 }
@@ -995,9 +995,9 @@ sub find_download_url {
 
     # sort by score, then version desc, then date desc
     my @sort = (
-        "_score",
+        '_score',
         {
-            "module.version_numified" => {
+            'module.version_numified' => {
                 mode          => 'max',
                 order         => 'desc',
                 nested_filter => $module_f->{nested}{filter}
