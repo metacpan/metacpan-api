@@ -5,6 +5,7 @@ use lib 't/lib';
 
 use MetaCPAN::DarkPAN;
 use MetaCPAN::TestServer;
+use MetaCPAN::Tests::Controller::Search::DownloadURL;
 use Test::More;
 use Test::RequiresInternet ( 'cpan.metacpan.org' => 80 );
 
@@ -15,5 +16,8 @@ my $server = MetaCPAN::TestServer->new( cpan_dir => $darkpan->base_dir );
 $darkpan->run;
 
 $server->index_releases( bulk_size => 1 );
+
+my $download_url = MetaCPAN::Tests::Controller::Search::DownloadURL->new;
+$download_url->run_tests;
 
 done_testing();

@@ -151,7 +151,7 @@ sub index_releases {
     ok(
         MetaCPAN::Script::Release->new_with_options( %{ $self->_config },
             %args )->run,
-        'index fakecpan'
+        'index releases'
     );
 }
 
