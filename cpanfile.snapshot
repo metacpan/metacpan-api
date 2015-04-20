@@ -3631,6 +3631,21 @@ DISTRIBUTIONS
       IPC::Open3 0
       Package::Pkg 0.0014
       Test::Most 0
+  Git-Helpers-0.000002
+    pathname: O/OA/OALDERS/Git-Helpers-0.000002.tar.gz
+    provides:
+      Git::Helpers 0.000002
+    requirements:
+      Carp 0
+      ExtUtils::MakeMaker 0
+      File::pushd 0
+      Git::Sub 0
+      Module::Build 0.28
+      Sub::Exporter 0
+      Try::Tiny 0
+      perl 5.006
+      strict 0
+      warnings 0
   Git-Sub-0.130270
     pathname: D/DO/DOLMEN/Git-Sub-0.130270.tar.gz
     provides:

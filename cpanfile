@@ -162,7 +162,7 @@ test_requires 'Config::General';
 test_requires 'CPAN::Repository';
 test_requires 'ElasticSearch::TestServer';
 test_requires 'File::Copy';
-test_requires 'Git::Sub';
+test_requires 'Git::Helpers';
 test_requires 'HTTP::Cookies';
 test_requires 'LWP::ConsoleLogger';
 test_requires 'Module::Faker', '0.015';
