@@ -1,23 +1,22 @@
+package MetaCPAN::Tests::Controller::Search::DownloadURL;
+
 use strict;
 use warnings;
 
 use MetaCPAN::Server::Test;
 use MetaCPAN::TestHelpers;
-use Test::More skip_all =>
-    'Need to add CPAN::Test::Dummy::Perl5::VersionBump to CPAN::Faker and write tests';
+use Moose;
+use Test::More;
 
-test_psgi app, sub {
-    my $cb = shift;
+sub run_tests {
+    test_psgi app, sub {
+        my $cb = shift;
 
-    # test ES script using doc['blah'] value
-    {
-        ok(
-            my $res = $cb->(
-                GET
-                    '/download_url/CPAN::Test::Dummy::Perl5::VersionBump::Decrease'
-            ),
-            'GET'
-        );
+        my $module = 'CPAN::Test::Dummy::Perl5::VersionBump::Decrease';
+
+        # test ES script using doc['blah'] value
+        ok( my $res = $cb->( GET '/download_url/' . $module ),
+            "GET $module" );
         my $json = decode_json_ok($res);
 
         use Data::Dump qw(pp);
@@ -42,6 +41,7 @@ test_psgi app, sub {
         #            or diag( Test::More::explain($got) );
         #    }
     };
-};
+}
 
-done_testing;
+__PACKAGE__->meta->make_immutable;
+1;
