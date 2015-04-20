@@ -5,7 +5,7 @@ package    # no_index
     MetaCPAN::TestHelpers;
 
 use FindBin;
-use Git::Sub;
+use Git::Helpers qw( checkout_root );
 use JSON;
 use MetaCPAN::Script::Runner;
 use MetaCPAN::TestServer;
@@ -94,10 +94,8 @@ sub test_release {
 sub get_config {
     my $config = do {
 
-        my $checkout_root = scalar git::rev_parse qw(--show-toplevel);
-
         # build_config expects test to be t/*.t
-        local $FindBin::RealBin = dir( undef, $checkout_root, 't' );
+        local $FindBin::RealBin = dir( undef, checkout_root(), 't' );
         MetaCPAN::Script::Runner->build_config;
     };
     return $config;
