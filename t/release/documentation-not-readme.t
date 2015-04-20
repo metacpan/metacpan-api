@@ -1,10 +1,9 @@
-use Test::More;
 use strict;
 use warnings;
 
 use MetaCPAN::Server::Test;
-use lib 't/lib';
 use MetaCPAN::TestHelpers;
+use Test::More;
 
 test_release(
     'RWSTAUNER/Documentation-Not-Readme-0.01',
@@ -16,10 +15,13 @@ test_release(
 
 sub test_modules {
     my ($self) = @_;
+
     my @files = @{ $self->module_files };
     is( @files, 1, 'includes one file with modules' );
+
     my $file = shift @files;
     is( @{ $file->module }, 1, 'file contains one module' );
+
     my ($indexed) = grep { $_->{indexed} } @{ $file->module };
 
     is( $indexed->name,       'Documentation::Not::Readme', 'module name' );

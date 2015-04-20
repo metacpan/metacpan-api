@@ -2,10 +2,8 @@ use strict;
 use warnings;
 
 use MetaCPAN::Server::Test;
-use Test::More;
-
-use lib 't/lib';
 use MetaCPAN::TestHelpers;
+use Test::More;
 
 test_release(
     {
@@ -45,6 +43,7 @@ test_release(
             my $self    = shift;
             my $path    = 'lib/Packages/BOM.pm';
             my $content = $self->file_content($path);
+
             like $content, qr/\A\xef\xbb\xbfpackage Packages::BOM;\n/,
                 'Packages::BOM module starts with UTF-8 BOM';
 

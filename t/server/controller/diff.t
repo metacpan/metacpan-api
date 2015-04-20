@@ -3,11 +3,8 @@ use warnings;
 
 use Encode;
 use MetaCPAN::Server::Test;
-use Test::More;
-
-use lib 't/lib';
-
 use MetaCPAN::TestHelpers;
+use Test::More;
 
 {
     no warnings 'redefine';

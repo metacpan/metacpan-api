@@ -1,10 +1,9 @@
-use Test::More;
 use strict;
 use warnings;
 
-use DDP;
 use lib 't/lib';
 use MetaCPAN::TestHelpers;
+use Test::More;
 
 test_release(
     {
@@ -48,7 +47,7 @@ test_release(
                 is $file->sloc,       2, 'sloc';
                 is $file->slop,       2, 'slop';
 
-                p $file->{pod_lines} is_deeply $file->{pod_lines},
+                is_deeply $file->{pod_lines},
                     [ [ 4, 3 ] ], 'pod_lines';
 
                 is $file->abstract, q[should not have been included],

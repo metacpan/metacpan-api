@@ -94,7 +94,7 @@ subtest 'set extract dir' => sub {
         ok -s $dir->file('Some-1.00-TRIAL/META.json');
     }
 
-    ok -e $temp, q[Path::Class doesn't cleanup directories it was handed];
+    ok -e $temp, q[Path::Class doesn't clean up directories it was handed];
 };
 
 done_testing;

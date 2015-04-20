@@ -1,10 +1,9 @@
-use Test::More;
 use strict;
 use warnings;
 
-use DDP;
 use lib 't/lib';
 use MetaCPAN::TestHelpers;
+use Test::More;
 
 test_release(
     {
@@ -38,7 +37,6 @@ sub test_assoc_pod {
     is $mod->sloc, 3, 'sloc';
     is $mod->slop, 5, 'slop';
 
-    p $mod->{pod_lines};
     is_deeply $mod->{pod_lines},
         [ [ 5, 9 ], ],
         'pod lines determined correctly';

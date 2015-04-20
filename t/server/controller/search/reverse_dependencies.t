@@ -1,7 +1,6 @@
 use strict;
 use warnings;
 
-use lib 't/lib';
 use MetaCPAN::Server::Test;
 use MetaCPAN::TestHelpers;
 use Test::More;
@@ -44,6 +43,7 @@ sub check_search_results {
     );
     is( $res->code, $code, "code $code" )
         or return;
+
     my $json = decode_json_ok($res);
     return unless $code == 200;
 
@@ -123,6 +123,7 @@ test_psgi app, sub {
             ),
             'POST'
         );
+
         my $json = decode_json_ok($res);
         is( $json->{hits}->{total}, 1, 'total is 1' );
         is( $json->{hits}->{hits}->[0]->{fields}->{distribution}->[0],

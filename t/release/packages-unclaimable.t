@@ -1,14 +1,12 @@
 use strict;
 use warnings;
 
-use MetaCPAN::Server::Test;
-use Test::More;
 use IO::String;
-use Module::Metadata;
 use List::MoreUtils qw(uniq);
-
-use lib 't/lib';
+use MetaCPAN::Server::Test;
 use MetaCPAN::TestHelpers;
+use Module::Metadata;
+use Test::More;
 
 test_release(
     {
@@ -46,6 +44,7 @@ test_release(
                 = Module::Metadata->new_from_handle(
                 IO::String->new($content),
                 'lib/Packages/Unclaimable.pm' );
+
             is_deeply [ uniq sort $mm->packages_inside ],
                 [ sort qw(Packages::Unclaimable main DB) ],
                 'Module::Metadata finds the packages we ignore';

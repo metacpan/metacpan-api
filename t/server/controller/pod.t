@@ -15,9 +15,9 @@ my %tests = (
     # TODO
     #'/pod'                            => 404,
     '/pod/DOESNEXIST'                  => 404,
-    '/pod/Moose'                       => 200,
     '/pod/DOY/Moose-0.01/lib/Moose.pm' => 200,
     '/pod/DOY/Moose-0.02/binary.bin'   => 400,
+    '/pod/Moose'                       => 200,
     '/pod/Pod::Pm'                     => 200,
 );
 
@@ -33,6 +33,7 @@ test_psgi app, sub {
             : 'application/json; charset=utf-8',
             'Content-type'
         );
+
         if ( $k eq '/pod/Pod::Pm' ) {
             like( $res->content, qr/Pod::Pm - abstract/, 'NAME section' );
         }
@@ -59,10 +60,12 @@ test_psgi app, sub {
             'text/javascript; charset=UTF-8',
             'Content-type'
         );
+
         ok( my ($function_args) = $res->content =~ /^\/\*\*\/foo\((.*)\)/s,
             'callback included' );
         ok( my $jsdata = JSON->new->allow_nonref->decode($function_args),
             'decode json' );
+
         if ( $v eq 200 ) {
 
             if ($ct) {

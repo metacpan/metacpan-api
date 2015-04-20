@@ -1,7 +1,6 @@
 use strict;
 use warnings;
 use utf8;
-use lib 't/lib';
 
 package # Test::Routine's run_me (in main) doesn't mix well with Test::Aggregate.
     t::server::controller::login::openid;

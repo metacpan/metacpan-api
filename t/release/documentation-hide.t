@@ -29,11 +29,13 @@ ok( $release->first, 'Release is first' );
             ]
         }
     )->all;
+
     is( @files, 1, 'includes one file with modules' );
+
     my $file = shift @files;
     is( @{ $file->module }, 1, 'file contains one module' );
-    my ($indexed) = grep { $_->{indexed} } @{ $file->module };
 
+    my ($indexed) = grep { $_->{indexed} } @{ $file->module };
     is( $indexed->name,       'Documentation::Hide', 'module name ok' );
     is( $file->documentation, 'Documentation::Hide', 'documentation ok' );
 

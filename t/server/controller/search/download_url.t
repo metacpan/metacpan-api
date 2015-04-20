@@ -1,18 +1,18 @@
 use strict;
 use warnings;
 
-use lib 't/lib';
 use MetaCPAN::Server::Test;
 use MetaCPAN::TestHelpers;
 use Test::More skip_all =>
-    "Need to add CPAN::Test::Dummy::Perl5::VersionBump to CPAN::Faker and write tests";
+    'Need to add CPAN::Test::Dummy::Perl5::VersionBump to CPAN::Faker and write tests';
 
 test_psgi app, sub {
     my $cb = shift;
 
     # test ES script using doc['blah'] value
     {
-        ok( my $res = $cb->(
+        ok(
+            my $res = $cb->(
                 GET
                     '/download_url/CPAN::Test::Dummy::Perl5::VersionBump::Decrease'
             ),

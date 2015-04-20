@@ -2,10 +2,8 @@ use strict;
 use warnings;
 
 use MetaCPAN::Server::Test;
-use Test::More;
-
-use lib 't/lib';
 use MetaCPAN::TestHelpers;
+use Test::More;
 
 test_distribution(
     'Moose',

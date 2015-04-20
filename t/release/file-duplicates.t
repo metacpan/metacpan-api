@@ -1,10 +1,9 @@
-use Test::More;
 use strict;
 use warnings;
 
 use MetaCPAN::Server::Test;
-use lib 't/lib';
 use MetaCPAN::TestHelpers;
+use Test::More;
 
 test_release(
     'BORISNAT/File-Duplicates-1.000',

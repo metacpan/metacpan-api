@@ -91,9 +91,11 @@ diag p $signature;
     my $files  = $idx->type('file');
     my $module = $files->history( module => 'Moose' )->raw->all;
     my $file   = $files->history( file => 'Moose', 'lib/Moose.pm' )->raw->all;
+
     is_deeply( $module->{hits}, $file->{hits},
         'history of Moose and lib/Moose.pm match' );
     is( $module->{hits}->{total}, 2, 'two hits' );
+
     my $pod = $files->history( documentation => 'Moose::FAQ' )->raw->all;
     is( $pod->{hits}->{total}, 1, 'one hit' );
 }
