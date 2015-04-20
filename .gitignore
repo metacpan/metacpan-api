@@ -8,7 +8,7 @@
 *.sqlite*
 /var
 /t/var/tmp/
-/t/var/cpan/
+/t/var/darkpan/
 /etc/metacpan_local.pl
 metacpan_server_local.conf
 
