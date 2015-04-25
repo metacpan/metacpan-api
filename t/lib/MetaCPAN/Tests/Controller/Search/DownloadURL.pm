@@ -8,7 +8,7 @@ use MetaCPAN::TestHelpers;
 use Moose;
 use Test::More;
 
-sub run_tests {
+sub run {
     test_psgi app, sub {
         my $cb = shift;
 

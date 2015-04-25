@@ -21,7 +21,7 @@ SKIP: {
     # XXX "path does not support inner_hits"
     skip( 'Download URL not yet fully implemented', 1 );
     my $url_tests = MetaCPAN::Tests::Controller::Search::DownloadURL->new;
-    $url_tests->run_tests;
+    $url_tests->run;
 }
 
 done_testing();
