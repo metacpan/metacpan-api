@@ -4,7 +4,7 @@ For an introduction to the MetaCPAN API which requires no previous knowledge of 
 
 There is also [a repository of examples](https://github.com/CPAN-API/metacpan-examples) you can play with to get up and running in a hurry.  Rather than editing this wiki page, please send pull requests for the metacpan-examples repository.  If you'd rather edit the wiki, please do, but sending the code pull requests is probably the most helpful way to approach this.
 
-_All of these URLs can be tested using the [MetaCPAN Explorer](http://explorer.metacpan.org)_
+_All of these URLs can be tested using the [MetaCPAN Explorer](https://explorer.metacpan.org)_
 
 To learn more about the ElasticSearch query DSL check out Clinton Gormley's [Terms of Endearment - ES Query DSL Explained] (http://www.slideshare.net/clintongormley/terms-of-endearment-the-elasticsearch-query-dsl-explained) slides.
 
@@ -27,13 +27,13 @@ Part of being polite is letting us know who you are and how to reach you.  This 
 Available fields can be found by accessing the corresponding `_mapping` endpoint.
 
 
-* [/author/_mapping](http://api.metacpan.org/v0/author/_mapping) - [explore](http://explorer.metacpan.org/?url=/author/_mapping)
-* [/distribution/_mapping](http://api.metacpan.org/v0/distribution/_mapping) - [explore](http://explorer.metacpan.org/?url=/distribution/_mapping)
-* [/favorite/_mapping](http://api.metacpan.org/v0/favorite/_mapping) - [explore](http://explorer.metacpan.org/?url=/favorite/_mapping)
-* [/file/_mapping](http://api.metacpan.org/v0/file/_mapping) - [explore](http://explorer.metacpan.org/?url=/file/_mapping)
-* [/module/_mapping](http://api.metacpan.org/v0/module/_mapping) - [explore](http://explorer.metacpan.org/?url=/module/_mapping)
-* [/rating/_mapping](http://api.metacpan.org/v0/rating/_mapping) - [explore](http://explorer.metacpan.org/?url=/rating/_mapping)
-* [/release/_mapping](http://api.metacpan.org/v0/release/_mapping) - [explore](http://explorer.metacpan.org/?url=/release/_mapping)
+* [/author/_mapping](http://api.metacpan.org/v0/author/_mapping) - [explore](https://explorer.metacpan.org/?url=/author/_mapping)
+* [/distribution/_mapping](http://api.metacpan.org/v0/distribution/_mapping) - [explore](https://explorer.metacpan.org/?url=/distribution/_mapping)
+* [/favorite/_mapping](http://api.metacpan.org/v0/favorite/_mapping) - [explore](https://explorer.metacpan.org/?url=/favorite/_mapping)
+* [/file/_mapping](http://api.metacpan.org/v0/file/_mapping) - [explore](https://explorer.metacpan.org/?url=/file/_mapping)
+* [/module/_mapping](http://api.metacpan.org/v0/module/_mapping) - [explore](https://explorer.metacpan.org/?url=/module/_mapping)
+* [/rating/_mapping](http://api.metacpan.org/v0/rating/_mapping) - [explore](https://explorer.metacpan.org/?url=/rating/_mapping)
+* [/release/_mapping](http://api.metacpan.org/v0/release/_mapping) - [explore](https://explorer.metacpan.org/?url=/release/_mapping)
 
 
 ## Field documentation
@@ -313,7 +313,7 @@ curl -XPOST api.metacpan.org/v0/file/_search -d '{
   "fields":["release"]
 }'
 ```
-[example](http://explorer.metacpan.org/?url=%2Ffile&content=%7B%22query%22%3A%7B%22filtered%22%3A%7B%22query%22%3A%7B%22match_all%22%3A%7B%7D%7D%2C%22filter%22%3A%7B%22and%22%3A%5B%7B%22term%22%3A%7B%22file.module.name%22%3A%22DBI%3A%3AProfile%22%7D%7D%2C%7B%22term%22%3A%7B%22file.module.version%22%3A%222.014123%22%7D%7D%5D%7D%7D%7D%2C%22fields%22%3A%5B%22release%22%5D%7D)
+[example](https://explorer.metacpan.org/?url=%2Ffile&content=%7B%22query%22%3A%7B%22filtered%22%3A%7B%22query%22%3A%7B%22match_all%22%3A%7B%7D%7D%2C%22filter%22%3A%7B%22and%22%3A%5B%7B%22term%22%3A%7B%22file.module.name%22%3A%22DBI%3A%3AProfile%22%7D%7D%2C%7B%22term%22%3A%7B%22file.module.version%22%3A%222.014123%22%7D%7D%5D%7D%7D%7D%2C%22fields%22%3A%5B%22release%22%5D%7D)
 
 ### Find all authors with github-meets-cpan in their profiles
 Because of the dashes in this profile name, we need to use a term.
