@@ -14,7 +14,7 @@ with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 sub run {
     my $self = shift;
     $self->index_mirrors;
-    $self->es->refresh_index( index => $self->index->name );
+    $self->index->refresh;
 }
 
 sub index_mirrors {
