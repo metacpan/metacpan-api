@@ -20,7 +20,7 @@ has db => (
     default => 'http://devel.cpantesters.org/release/release.db.bz2'
 );
 
-has force_refresh => (
+has skip_download => (
     is  => 'ro',
     isa => Bool,
 );
@@ -45,7 +45,7 @@ sub index_reports {
 
     if ( -e $db && stat($db)->mtime >= stat("$db.bz2")->mtime ) {
         log_info {"DB hasn't been modified"};
-        return unless $self->force_refresh;
+        return unless $self->skip_download;
     }
 
     bunzip2 "$db.bz2" => "$db", AutoClose => 1;
