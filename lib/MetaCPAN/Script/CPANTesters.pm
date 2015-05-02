@@ -10,13 +10,19 @@ use File::stat qw(stat);
 use IO::Uncompress::Bunzip2 qw(bunzip2);
 use LWP::UserAgent ();
 use Log::Contextual qw( :log :dlog );
+use MetaCPAN::Types qw( Bool );
 use Moose;
 
-with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
+with 'MetaCPAN::Role::Script', 'MooseX::Getopt::Dashes';
 
 has db => (
     is      => 'ro',
     default => 'http://devel.cpantesters.org/release/release.db.bz2'
+);
+
+has force_refresh => (
+    is  => 'ro',
+    isa => Bool,
 );
 
 sub run {
@@ -26,16 +32,20 @@ sub run {
 }
 
 sub index_reports {
-    my $self  = shift;
+    my $self = shift;
+
     my $es    = $self->model->es;
     my $index = $self->index->name;
     my $ua    = LWP::UserAgent->new;
     my $db    = $self->home->file(qw(var tmp cpantesters.db));
+
     log_info { "Mirroring " . $self->db };
+
     $ua->mirror( $self->db, "$db.bz2" );
+
     if ( -e $db && stat($db)->mtime >= stat("$db.bz2")->mtime ) {
         log_info {"DB hasn't been modified"};
-        return;
+        return unless $self->force_refresh;
     }
 
     bunzip2 "$db.bz2" => "$db", AutoClose => 1;
@@ -53,6 +63,7 @@ sub index_reports {
     }
 
     log_info { 'Opening database file at ' . $db };
+
     my $dbh = DBI->connect( 'dbi:SQLite:dbname=' . $db );
     my $sth;
     $sth = $dbh->prepare('SELECT * FROM release');

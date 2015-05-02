@@ -75,6 +75,8 @@ sub index {
 
 sub _build_model {
     my $self = shift;
+
+    # es provided by ElasticSearchX::Model::Role
     return MetaCPAN::Model->new( es => $self->es );
 }
 
