@@ -90,7 +90,6 @@ sub index_reports {
 
 sub bulk {
     my ( $self, $bulk ) = @_;
-    my $bulk  = $self->model->bulk;
     my $index = $self->index->name;
     while ( my $data = shift @$bulk ) {
         $bulk->add(
