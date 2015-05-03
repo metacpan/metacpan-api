@@ -25,6 +25,18 @@ has skip_download => (
     isa => Bool,
 );
 
+has _bulk => (
+    is      => 'ro',
+    isa     => 'Search::Elasticsearch::Bulk',
+    lazy    => 1,
+    default => sub {
+        $_[0]->model->es->bulk_helper(
+            index => $_[0]->index->name,
+            type  => 'release'
+        );
+    },
+);
+
 sub run {
     my $self = shift;
     $self->index_reports;
@@ -41,16 +53,20 @@ sub index_reports {
 
     log_info { "Mirroring " . $self->db };
 
-    $ua->mirror( $self->db, "$db.bz2" );
+    $ua->mirror( $self->db, "$db.bz2" ) unless $self->skip_download;
 
     if ( -e $db && stat($db)->mtime >= stat("$db.bz2")->mtime ) {
         log_info {"DB hasn't been modified"};
         return unless $self->skip_download;
     }
 
-    bunzip2 "$db.bz2" => "$db", AutoClose => 1;
+    bunzip2 "$db.bz2" => "$db", AutoClose => 1 if -e "$db.bz2";
 
-    my $scroll = $self->index->type('release')->size(500)->raw->scroll;
+    my $scroll = $es->scroll_helper(
+        index       => $self->index->name,
+        search_type => 'scan',
+        size        => '500',
+    );
 
     my %releases;
     while ( my $release = $scroll->next ) {
@@ -70,40 +86,46 @@ sub index_reports {
 
     $sth->execute;
     my @bulk;
+    use DDP;
+    while ( my $row_from_db = $sth->fetchrow_hashref ) {
+        my $release
+            = join( '-', $row_from_db->{dist}, $row_from_db->{version} );
+        my $release_doc = $releases{$release};
 
-    while ( my $data = $sth->fetchrow_hashref ) {
-        my $release = join( '-', $data->{dist}, $data->{version} );
-        next unless ( $release = $releases{$release} );
+        # there's a cpantesters dist we haven't indexed
+        next unless ($release_doc);
+
         my $bulk = 0;
-        for (qw(fail pass na unknown)) {
-            $bulk = 1 if ( $data->{$_} != ( $release->{tests}->{$_} || 0 ) );
-        }
-        next unless ($bulk);
-        $release->{tests}
-            = { map { $_ => $data->{$_} } qw(fail pass na unknown) };
-        push( @bulk, $release );
-        $self->bulk( \@bulk ) if ( @bulk > 100 );
-    }
-    $self->bulk( \@bulk );
-    log_info {'done'};
-}
 
-sub bulk {
-    my ( $self, $bulk ) = @_;
-    my $index = $self->index->name;
-    while ( my $data = shift @$bulk ) {
-        $bulk->add(
+        my $tester_results = $release_doc->{tests};
+        if ( !$tester_results ) {
+            $tester_results = {};
+            $bulk           = 1;
+        }
+
+        # maybe us Data::Compare instead
+        for my $condition (qw(fail pass na unknown)) {
+            last if $bulk;
+            if ( ( $tester_results->{$condition} || 0 )
+                != $row_from_db->{$condition} )
             {
-                index => {
-                    index => $index,
-                    id    => $data->{id},
-                    type  => 'release',
-                    body  => $data
-                }
+                $bulk = 1;
+            }
+        }
+
+        next unless ($bulk);
+        my %tests = map { $_ => $row_from_db->{$_} } qw(fail pass na unknown);
+        p %tests;
+        $self->_bulk->update(
+            {
+                doc           => { tests => \%tests },
+                doc_as_upsert => 1,
+                id            => $release_doc->{id},
             }
         );
     }
-
+    $self->_bulk->flush;
+    log_info {'done'};
 }
 
 __PACKAGE__->meta->make_immutable;
