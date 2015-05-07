@@ -146,6 +146,7 @@ sub retrieve_github_bugs {
 }
 
 # Try (recursively) to find a github url in the resources hash.
+# FIXME: This should check bugtracker web exclusively, or at least first.
 sub github_user_repo_from_resources {
     my ( $self, $resources ) = @_;
     my ( $user, $repo, $source );
