@@ -120,6 +120,11 @@ Returns the POD of the given module. You can change the output format by either 
 * text/x-pod
 * text/x-markdown
 
+### `/source/{module}`
+
+Returns the full source of the latest, authorized version of the given
+`module`.
+
 ## GET Searches
 
 Names of latest releases by OALDERS:
