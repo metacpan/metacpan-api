@@ -158,6 +158,10 @@ Last 50 dists to get a ++:
 
 http://api.metacpan.org/v0/favorite/_search?size=50&fields=author,user,release,date&sort=date:desc
 
+The Changes file of the Test-Simple distribution:
+
+http://api.metacpan.org/v0/changes/Test-Simple
+
 ## Querying the API with MetaCPAN::Client
 
 Perhaps the easiest way to get started using MetaCPAN is with [MetaCPAN::Client](https://metacpan.org/pod/MetaCPAN::Client).  
