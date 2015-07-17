@@ -17,7 +17,7 @@ sub find : Path('') {
         if ( -B $path );
     $c->detach( '/bad_request',
         ['Requested resource is too large to be processed'] )
-        if ( $path->stat->size > 2**20 );
+        if ( $path->stat->size > 2**21 );
     $c->forward( $c->view('Pod') );
 }
 
