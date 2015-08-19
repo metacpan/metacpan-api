@@ -170,5 +170,19 @@ sub index_authors {
         'index authors' );
 }
 
+# Right now this test requires you to have an internet connection.  If we can
+# get a sample db then we can run this with the '--skip-download' option.
+
+sub index_cpantesters {
+    my $self = shift;
+
+    local @ARGV = ('cpantesters');
+    ok(
+        MetaCPAN::Script::CPANTesters->new_with_options( $self->_config )
+            ->run,
+        'index authors'
+    );
+}
+
 __PACKAGE__->meta->make_immutable();
 1;
