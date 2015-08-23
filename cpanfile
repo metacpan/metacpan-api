@@ -127,7 +127,7 @@ requires 'Plack::Session::Store';
 requires 'Plack::Test';
 requires 'Plack::Util::Accessor';
 requires 'Pod::Coverage::Moose', '0.02';
-requires 'Pod::Markdown', '2.000';
+requires 'Pod::Markdown', '3.002';
 requires 'Pod::POM';
 requires 'Pod::Simple', '3.29';
 requires 'Pod::Simple::XHTML', '3.24';
