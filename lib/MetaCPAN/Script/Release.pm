@@ -95,7 +95,8 @@ sub run {
         elsif ( -f $_ ) {
             push( @files, $_ );
         }
-        elsif ( $_ =~ /^https?:\/\// && CPAN::DistnameInfo->new($_)->cpanid )
+        elsif ( $_ =~ /^https?:\/\//
+            && CPAN::DistnameInfo->new($_)->cpanid )
         {
             my $d    = CPAN::DistnameInfo->new($_);
             my $file = $self->home->file(
@@ -132,6 +133,11 @@ sub run {
     log_info { scalar @files, " archives found" } if ( @files > 1 );
 
     # build here before we fork
+
+    # Going to purge everything as not sure about the 'skip' or fork
+    # logic - feel free to clean up so the CP::DistInfo isn't
+    my @module_to_purge_dists = map { CPAN::DistnameInfo->new($_) } @files;
+
     $self->index;
     $self->backpan_index if ( $self->detect_backpan );
     $self->perms;
@@ -175,6 +181,11 @@ sub run {
     }
     waitpid( -1, 0 ) for (@pid);
     $self->index->refresh;
+
+    # Call Fastly to purge
+    $self->cdn_purge_cpan_distnameinfos(
+        { keys => \@module_to_purge_dists } );
+
 }
 
 sub import_archive {

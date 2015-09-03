@@ -144,11 +144,7 @@ sub fastly_magic {
             uc $_            #
         } $c->surrogate_keys_to_purge();
 
-        $c->cdn_purge_now(
-            {
-                keys => \@keys,
-            }
-        );
+        $c->cdn_purge_now( { keys => \@keys, } );
     }
 
     # Surrogate key caching and purging
@@ -193,6 +189,23 @@ sub _cdn_get_service {
 
     my $fsi = $c->config->{fastly_service_id};
     return $net_fastly->get_service($fsi);
+
+}
+
+sub cdn_purge_cpan_distnameinfos {
+    my ( $c, $dist_list ) = @_;
+
+    my @purge_keys;
+    foreach my $dist ( @{$dist_list} ) {
+
+        # $dist should be CPAN::DistnameInfo
+        push @purge_keys, $dist->cpanid;    # "GBARR"
+        push @purge_keys, $dist->dist;      # "CPAN-DistnameInfo"
+
+    }
+
+    # Now run with this list
+    $c->cdn_purge_now( { keys => \@purge_keys } );
 
 }
 

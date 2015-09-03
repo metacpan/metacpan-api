@@ -96,6 +96,8 @@ sub run {
 
     my $i = 0;
 
+    my @modules_to_purge;
+
     # For each file...
     while ( my $file = $scroll->next ) {
         $i++;
@@ -110,6 +112,8 @@ sub run {
         @modules = grep {defined} map {
             eval { $p->package($_) }
         } @modules;
+
+        push @modules_to_purge, @modules;
 
         # For each of the packages in this file...
         foreach my $module (@modules) {
@@ -165,6 +169,17 @@ sub run {
         $self->reindex( $data, 'cpan' );
     }
     $self->index->refresh;
+
+    # We just want the CPAN::DistnameInfo
+    my @module_to_purge_dists = map { $_->distribution } @modules_to_purge;
+
+    # Call Fastly to purge
+    $self->cdn_purge_cpan_distnameinfos(
+        {
+            keys => \@module_to_purge_dists
+        }
+    );
+
 }
 
 # Update the status for the release and all the files.
