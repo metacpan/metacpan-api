@@ -14,6 +14,7 @@ sub process {
     my $renderer = MetaCPAN::Pod::Renderer->new;
 
     my $content = $c->res->body || $c->stash->{source};
+    my $link_mappings = $c->stash->{link_mappings};
     $content = eval { join( q{}, $content->getlines ) };
 
     my ( $body, $content_type );
@@ -36,7 +37,8 @@ sub process {
         $content_type = 'text/plain';
     }
     else {
-        $body = $self->build_pod_html( $content, $show_errors, $x_codes );
+        $body = $self->build_pod_html( $content, $show_errors, $x_codes,
+            $link_mappings );
         $content_type = 'text/html';
     }
 
@@ -45,11 +47,12 @@ sub process {
 }
 
 sub build_pod_html {
-    my ( $self, $source, $show_errors, $x_codes ) = @_;
+    my ( $self, $source, $show_errors, $x_codes, $link_mappings ) = @_;
 
     my $renderer = $self->_factory->html_renderer;
     $renderer->nix_X_codes( !$x_codes );
     $renderer->no_errata_section( !$show_errors );
+    $renderer->link_mappings($link_mappings);
 
     my $html = q{};
     $renderer->output_string( \$html );

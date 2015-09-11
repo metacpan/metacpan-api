@@ -32,6 +32,56 @@ sub get : Chained('index') : PathPart('') : Args {
         $c->res->body( $res->[2]->[0] );
     }
     else {
+        if ( $c->req->query_params->{permalinks} ) {
+            my $links   = {};
+            my $modules = $c->model('CPAN::File')->raw->filter(
+                {
+                    and => [
+                        { term => { release => $release } },
+                        { term => { author  => $author } },
+                        {
+                            or => [
+                                {
+                                    and => [
+                                        {
+                                            exists => {
+                                                field => 'file.module.name',
+                                            }
+                                        },
+                                        {
+                                            term => {
+                                                'file.module.indexed' => \1
+                                            }
+                                        },
+                                    ]
+                                },
+                                {
+                                    and => [
+                                        {
+                                            exists => {
+                                                field => 'file.pod.analyzed',
+                                            }
+                                        },
+                                        { term => { 'file.indexed' => \1 } },
+                                    ]
+                                },
+                            ]
+                        },
+                    ],
+                }
+                )->fields( [qw( module path documentation )] )->size(5000)
+                ->all->{hits}->{hits};
+            for my $file ( map { $_->{fields} } @$modules ) {
+                my $name = $file->{documentation} or next;
+                my ($module)
+                    = grep { $_->{name} eq $name } @{ $file->{module} };
+                my $link = ( $module && $module->{associated_pod} )
+                    || "$author/$release/$file->{path}";
+                $links->{$name} = $link;
+            }
+            $c->stash->{link_mappings} = $links;
+        }
+
         $c->stash->{path} = $file;
 
         # Tell fastly to cache for a day (for st.aticpan.org,

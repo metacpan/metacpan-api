@@ -27,6 +27,25 @@ sub handle_text {
     }
 }
 
+sub link_mappings {
+    my $self = shift;
+    if (@_) {
+        $self->{_link_map} = $_[0];
+    }
+    $self->{_link_map};
+}
+
+sub resolve_pod_page_link {
+    my $self = shift;
+    my ( $module, $section ) = @_;
+    my $link_map = $self->{_link_map} || {};
+    if ( $module and my $link = $link_map->{$module} ) {
+        $section = $section ? "#$section" : '';
+        return $self->perldoc_url_prefix . "release/" . $link . $section;
+    }
+    $self->SUPER::resolve_pod_page_link(@_);
+}
+
 sub start_item_text {
 
     # see end_item_text
