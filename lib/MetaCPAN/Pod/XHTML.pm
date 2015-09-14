@@ -36,14 +36,12 @@ sub link_mappings {
 }
 
 sub resolve_pod_page_link {
-    my $self = shift;
-    my ( $module, $section ) = @_;
+    my ( $self, $module, $section ) = @_;
     my $link_map = $self->{_link_map} || {};
     if ( $module and my $link = $link_map->{$module} ) {
-        $section = $section ? "#$section" : '';
-        return $self->perldoc_url_prefix . "release/" . $link . $section;
+        $module = $link;
     }
-    $self->SUPER::resolve_pod_page_link(@_);
+    $self->SUPER::resolve_pod_page_link( $module, $section );
 }
 
 sub start_item_text {

@@ -75,8 +75,10 @@ sub get : Chained('index') : PathPart('') : Args {
                 my $name = $file->{documentation} or next;
                 my ($module)
                     = grep { $_->{name} eq $name } @{ $file->{module} };
-                my $link = ( $module && $module->{associated_pod} )
-                    || "$author/$release/$file->{path}";
+                my $link
+                    = 'release/'
+                    . ( ( $module && $module->{associated_pod} )
+                        || "$author/$release/$file->{path}" );
                 $links->{$name} = $link;
             }
             $c->stash->{link_mappings} = $links;
