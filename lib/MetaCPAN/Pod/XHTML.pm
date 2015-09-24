@@ -27,6 +27,23 @@ sub handle_text {
     }
 }
 
+sub link_mappings {
+    my $self = shift;
+    if (@_) {
+        $self->{_link_map} = $_[0];
+    }
+    $self->{_link_map};
+}
+
+sub resolve_pod_page_link {
+    my ( $self, $module, $section ) = @_;
+    my $link_map = $self->{_link_map} || {};
+    if ( $module and my $link = $link_map->{$module} ) {
+        $module = $link;
+    }
+    $self->SUPER::resolve_pod_page_link( $module, $section );
+}
+
 sub start_item_text {
 
     # see end_item_text
