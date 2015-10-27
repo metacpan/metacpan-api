@@ -730,7 +730,7 @@ sub is_in_other_files {
         TODO
     );
 
-    return any { $self->name eq $_ } @other;
+    return any { $self->path eq $_ } @other;
 }
 
 =head2 set_indexed
