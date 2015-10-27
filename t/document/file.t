@@ -27,7 +27,7 @@ PKG
     my $name = $args{name} || 'SomeModule.pm';
     my $file = MetaCPAN::Document::File->new(
         author       => 'CPANER',
-        path         => 'some/path',
+        path         => $name,
         release      => 'Some-Release-1',
         distribution => 'Some-Release',
         name         => $name,
