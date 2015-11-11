@@ -3,6 +3,7 @@ use warnings;
 
 use FindBin;
 use lib "$FindBin::RealBin/lib";
+use Catalyst::Middleware::Stash 'stash';
 
 if ( $ENV{PLACK_ENV} eq 'development' ) {
 

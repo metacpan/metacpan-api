@@ -25,7 +25,9 @@ sub get : Path('') : Args(1) {
 sub not_found : Private {
     my ( $self, $c, @params ) = @_;
     my $message = join( '/', @params );
-    $c->clear_stash;
+
+    # XXX fix me
+    #    $c->clear_stash;
     $c->stash( { code => 404, message => $message || "Not found" } );
     $c->response->status(404);
     $c->forward( $c->view('JSON') );
@@ -33,7 +35,9 @@ sub not_found : Private {
 
 sub not_allowed : Private {
     my ( $self, $c, $message ) = @_;
-    $c->clear_stash;
+
+    # XXX fix me
+    #    $c->clear_stash;
     $c->stash( { message => $message || 'Not allowed' } );
     $c->response->status(403);
     $c->forward( $c->view('JSON') );
@@ -41,7 +45,9 @@ sub not_allowed : Private {
 
 sub bad_request : Private {
     my ( $self, $c, $message, $code ) = @_;
-    $c->clear_stash;
+
+    # XXX fix me
+    #    $c->clear_stash;
     $c->stash( { message => $message || 'Bad request' } );
     $c->response->status( $code || 400 );
     $c->forward( $c->view('JSON') );
