@@ -17,7 +17,7 @@ use Test::More;
 
 has es_client => (
     is      => 'ro',
-    isa     => 'Search::Elasticsearch::Client::Direct',
+    isa     => 'Search::Elasticsearch::Client::2_0::Direct',
     lazy    => 1,
     builder => '_build_es_client',
 );
