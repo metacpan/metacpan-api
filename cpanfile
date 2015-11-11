@@ -29,6 +29,7 @@ requires 'CatalystX::Component::Traits';
 requires 'CatalystX::InjectComponent';
 requires 'CatalystX::RoleApplicator';
 requires 'Config::JFDI';
+requires 'Cpanel::JSON::XS', '3.0115';
 requires 'Cwd';
 requires 'Data::Printer', '0.36';
 requires 'DBD::SQLite', '>=1.44';
