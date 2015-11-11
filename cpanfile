@@ -73,7 +73,7 @@ requires 'IO::String';
 requires 'IO::Uncompress::Bunzip2';
 requires 'IO::Zlib';
 requires 'IPC::Run3';
-requires 'Cpanel::JSON::XS', '3.0115';
+requires 'JSON::XS', '3.01';
 requires 'JSON', '2.90';
 requires 'LWP::Protocol::https';
 requires 'LWP::UserAgent';

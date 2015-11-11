@@ -3,7 +3,7 @@
 use 5.010;
 
 use Data::Dumper;
-use Cpanel::JSON::XS;
+use JSON::XS;
 
 foreach my $file ( @ARGV ) {
     say "Processing $file";

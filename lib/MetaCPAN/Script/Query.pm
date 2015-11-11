@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Data::DPath qw(dpath);
-use Cpanel::JSON::XS;
+use JSON::XS;
 use Moose;
 use MooseX::Aliases;
 use YAML::Syck qw(Dump);
@@ -40,8 +40,7 @@ sub run {
         }
     );
     my @results = dpath($path)->match( decode_json($json) );
-    ( my $dump = Dump(@results) )
-        =~ s/\!\!perl\/scalar:Cpanel::JSON::XS::Boolean //g;
+    ( my $dump = Dump(@results) ) =~ s/\!\!perl\/scalar:JSON::XS::Boolean //g;
     print $dump;
 
 }

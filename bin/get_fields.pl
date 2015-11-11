@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 # PODNAME: get_fields.pl
 use Data::Dumper;
-use Cpanel::JSON::XS;
+use JSON::XS;
 use File::Find::Rule;
 use File::Basename;
 use Path::Class;
