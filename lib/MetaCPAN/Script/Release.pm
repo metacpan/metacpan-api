@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 BEGIN {
-    $ENV{PERL_JSON_BACKEND} = 'JSON::XS';
+    $ENV{PERL_JSON_BACKEND} = 'Cpanel::JSON::XS';
 }
 
 use CPAN::DistnameInfo ();

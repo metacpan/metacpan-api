@@ -24,7 +24,7 @@ sub index_mirrors {
 
     my $json    = $self->cpan->file( 'indices', 'mirrors.json' )->slurp;
     my $type    = $self->index->type('mirror');
-    my $mirrors = JSON::XS::decode_json($json);
+    my $mirrors = Cpanel::JSON::XS::decode_json($json);
     foreach my $mirror (@$mirrors) {
         $mirror->{location}
             = { lon => $mirror->{longitude}, lat => $mirror->{latitude} };

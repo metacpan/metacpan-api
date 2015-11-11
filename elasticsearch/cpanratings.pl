@@ -31,7 +31,7 @@ use Data::Dump;
 use List::Util qw(sum);
 use WWW::Mechanize::Cached;
 use HTML::TokeParser::Simple;
-use JSON::XS;
+use Cpanel::JSON::XS;
 use Parse::CSV;
 use Path::Class::File;
 use feature 'say';
@@ -212,7 +212,7 @@ sub mean {
 sub dump_json
 {
     my $hash_data = shift;
-    my $coder = JSON::XS->new->ascii->pretty->allow_nonref;
+    my $coder = Cpanel::JSON::XS->new->ascii->pretty->allow_nonref;
     my $json = $coder->utf8->encode ($hash_data);
     #binmode(STDOUT, ":utf8");
     return $json;

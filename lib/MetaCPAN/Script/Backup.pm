@@ -7,7 +7,7 @@ use feature qw( state );
 use Data::Printer;
 use DateTime;
 use IO::Zlib ();
-use JSON::XS;
+use Cpanel::JSON::XS;
 use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Types qw( Bool Int Str File );
 use Moose;

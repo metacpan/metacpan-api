@@ -10,7 +10,7 @@ use DateTime::Format::ISO8601 ();
 use Email::Valid              ();
 use Encode                    ();
 use File::stat                ();
-use JSON::XS                  ();
+use Cpanel::JSON::XS          ();
 use Log::Contextual qw( :log );
 use MetaCPAN::Document::Author;
 use URI ();
@@ -113,7 +113,7 @@ sub author_config {
         return undef;
     }
     my $json = $file->slurp;
-    my $author = eval { JSON::XS->new->utf8->relaxed->decode($json) };
+    my $author = eval { Cpanel::JSON::XS->new->utf8->relaxed->decode($json) };
 
     if ($@) {
         log_warn {"$file is broken: $@"};
