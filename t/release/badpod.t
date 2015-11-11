@@ -36,15 +36,7 @@ sub test_bad_pod {
     is $file->sloc, 3, 'sloc';
     is $file->slop, 4, 'slop';
 
-<<<<<<< HEAD
-    is_deeply @{ $file->pod_lines }, [ [ 5, 7 ], ], 'no pod_lines';
-||||||| parent of 55fb395... chaotic behaviour when testing for pod_lines-debug in all releases
-    p $file->pod_lines;
     is_deeply $file->pod_lines, [ [ 5, 7 ], ], 'no pod_lines';
-=======
-    p $file->{pod_lines};
-    is_deeply $file->{pod_lines}, [ [ 5, 7 ], ], 'no pod_lines';
->>>>>>> 55fb395... chaotic behaviour when testing for pod_lines-debug in all releases
 
     is ${ $file->pod },
 
