@@ -174,13 +174,14 @@ requires 'warnings';
 
 test_requires 'App::Prove';
 test_requires 'CPAN::Faker', '0.010';
-test_requires 'Devel::Confess';
-test_requires 'Module::Faker', '0.015';
-test_requires 'Module::Faker::Dist', '0.010';
+test_requires 'Code::TidyAll::Plugin::Test::Vars';
 test_requires 'Config::General';
+test_requires 'Devel::Confess';
 test_requires 'File::Copy';
 test_requires 'HTTP::Cookies';
 test_requires 'LWP::ConsoleLogger::Easy';
+test_requires 'Module::Faker', '0.015';
+test_requires 'Module::Faker::Dist', '0.010';
 test_requires 'Plack::Test::Agent';
 test_requires 'Test::Aggregate::Nested', '0.371';
 test_requires 'Test::Code::TidyAll';
@@ -191,7 +192,7 @@ test_requires 'Test::Perl::Critic';
 test_requires 'Test::RequiresInternet';
 test_requires 'Test::Routine', '0.012';
 test_requires 'Test::Routine::Util', '0';
-test_requires 'Test::Vars';
+test_requires 'Test::Vars', '0.011';
 
 author_requires 'Code::TidyAll', '>= 0.47';
 author_requires 'Plack::Middleware::Rewrite';

@@ -57,3 +57,6 @@ ignore = lib/MetaCPAN/Server/View/JSON.pm
 ignore = lib/MetaCPAN/Server/View/Pod.pm
 ignore = lib/MetaCPAN/Util.pm
 ignore = lib/Plack/Session/Store/ElasticSearch.pm
+
+[Test::Vars]
+select = **/*.pm
