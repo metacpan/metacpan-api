@@ -47,8 +47,7 @@ test_release(
                 is $file->sloc,       2, 'sloc';
                 is $file->slop,       2, 'slop';
 
-                is_deeply $file->{pod_lines},
-                    [ [ 4, 3 ] ], 'pod_lines';
+                is_deeply $file->{pod_lines}, [ [ 4, 3 ] ], 'pod_lines';
 
                 is $file->abstract, q[should not have been included],
                     'abstract';
