@@ -123,6 +123,12 @@ sub run {
             log_error {"Dunno what $_ is"};
         }
     }
+
+    # Strip off any files in a Perl6 folder
+    # e.g. http://www.cpan.org/authors/id/J/JD/JDV/Perl6/
+    # As here we are indexing perl5 only
+    @files = grep { $_ !~ m{/Perl6/} } @files;
+
     log_info { scalar @files, " archives found" } if ( @files > 1 );
 
     # build here before we fork
