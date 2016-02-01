@@ -6,7 +6,7 @@ package MetaCPAN::Role::Fastly;
 use Moose::Role;
 use Net::Fastly;
 
-use MetaCPAN::Web::Types qw( ArrayRef Str );
+use MetaCPAN::Types qw(:all);
 
 =head1 NAME
 
@@ -44,7 +44,7 @@ and 'one_year' so we don't have numbers all over the place
 
 ## Stuff for working with Fastly CDN
 
-has '_surrogate_keys' => (
+has _surrogate_keys => (
     traits  => ['Array'],
     is      => 'ro',
     isa     => ArrayRef [Str],
@@ -57,7 +57,7 @@ has '_surrogate_keys' => (
     },
 );
 
-has '_surrogate_keys_to_purge' => (
+has _surrogate_keys_to_purge => (
     traits  => ['Array'],
     is      => 'ro',
     isa     => ArrayRef [Str],
@@ -72,28 +72,28 @@ has '_surrogate_keys_to_purge' => (
 
 # How long should the CDN cache, irrespective of
 # other cache headers
-has 'cdn_cache_ttl' => (
+has cdn_cache_ttl => (
     is      => 'rw',
-    isa     => 'Int',
-    default => sub {0},
+    isa     => Int,
+    default => 0,
 );
 
 # Make sure the CDN NEVER caches, ignore any other cdn_cache_ttl settings
-has 'cdn_never_cache' => (
+has cdn_never_cache => (
     is      => 'rw',
-    isa     => 'Bool',
-    default => sub {0},
+    isa     => Bool,
+    default => 0,
 );
 
-has 'browser_max_age' => (
+has browser_max_age => (
     is      => 'rw',
-    isa     => 'Int',
+    isa     => Maybe [Int],
     default => sub {undef},
 );
 
-has 'cdn_times' => (
+has cdn_times => (
     is         => 'ro',
-    isa        => 'HashRef',
+    isa        => HashRef,
     lazy_build => 1,
 );
 
@@ -139,9 +139,11 @@ sub fastly_magic {
         # All keys are set as UC, with : and -'s removed
         # so make sure our purging is as well
         my @keys = map {
-            $_ =~ s/://g;    #
-            $_ =~ s/-//g;    #
-            uc $_            #
+            my $key = $_;
+            $key =~ s/://g;    #
+            $key =~ s/-//g;    #
+            $key = uc $key;    #
+            $key
         } $c->surrogate_keys_to_purge();
 
         $c->cdn_purge_now( { keys => \@keys, } );
@@ -221,11 +223,12 @@ sub cdn_purge_now {
     my ( $c, $args ) = @_;
 
     my $service = $c->_cdn_get_service();
-    return unless $service;    # dev box
+    return 1 unless $service;    # dev box
 
     foreach my $key ( @{ $args->{keys} || [] } ) {
         $service->purge_by_key($key);
     }
+    return 1;
 }
 
 =head2 cdn_purge_all

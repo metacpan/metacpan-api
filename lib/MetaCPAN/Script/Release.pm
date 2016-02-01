@@ -183,8 +183,7 @@ sub run {
     $self->index->refresh;
 
     # Call Fastly to purge
-    $self->cdn_purge_cpan_distnameinfos(
-        { keys => \@module_to_purge_dists } );
+    $self->cdn_purge_cpan_distnameinfos( \@module_to_purge_dists );
 
 }
 
