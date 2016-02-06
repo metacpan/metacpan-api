@@ -27,6 +27,10 @@ env:
 
 
 before_install:
+  # Run update to make libgmp-dev findable (Required by Net::OpenID::Consumer)
+  - sudo apt-get update
+  - sudo apt-get install libgmp-dev
+
   # We need to run a pre-1.0 instance of ES until we update everything.
   - wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.90.13.deb
   - sudo dpkg -i --force-confdef elasticsearch-0.90.13.deb
@@ -34,7 +38,6 @@ before_install:
 
   - cpanm -n Devel::Cover::Report::Coveralls
   - cpanm -n Carton
-  - sudo apt-get install libgmp-dev
 
   # Carton refuses to update Safe.pm to the version specified in the cpanfile and the
   # version that's core in 5.16 is too old (it fails to work with Devel::Cover).
