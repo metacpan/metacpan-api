@@ -5231,6 +5231,43 @@ DISTRIBUTIONS
       Test::More 0.98
       parent 0
       perl 5.008008
+  Net-Fastly-1.03
+    pathname: F/FA/FASTLY/Net-Fastly-1.03.tar.gz
+    provides:
+      Net::Fastly 1.03
+      Net::Fastly::Backend undef
+      Net::Fastly::BelongsToServiceAndVersion undef
+      Net::Fastly::Client undef
+      Net::Fastly::Condition undef
+      Net::Fastly::Customer undef
+      Net::Fastly::Director undef
+      Net::Fastly::Domain undef
+      Net::Fastly::Healthcheck undef
+      Net::Fastly::Invoice undef
+      Net::Fastly::Match undef
+      Net::Fastly::Model undef
+      Net::Fastly::Origin undef
+      Net::Fastly::Service undef
+      Net::Fastly::Settings undef
+      Net::Fastly::Stats undef
+      Net::Fastly::Syslog undef
+      Net::Fastly::User undef
+      Net::Fastly::VCL undef
+      Net::Fastly::Version undef
+    requirements:
+      Class::Accessor::Fast 0
+      File::Basename 0
+      File::Spec 0
+      File::Temp 0
+      IO::Socket::SSL != 1.38
+      JSON::XS 0
+      LWP::Protocol::https 0
+      LWP::UserAgent 5.813
+      Module::Build 0.38
+      Test::More 0
+      URI 0
+      URI::Escape 0
+      YAML 0
   Net-HTTP-6.06
     pathname: G/GA/GAAS/Net-HTTP-6.06.tar.gz
     provides:
@@ -5471,27 +5508,6 @@ DISTRIBUTIONS
       Test::Trap 0
       overload 0
       parent 0
-  PAUSE-Permissions-0.11
-    pathname: N/NE/NEILB/PAUSE-Permissions-0.11.tar.gz
-    provides:
-      PAUSE::Permissions 0.11
-      PAUSE::Permissions::Entry 0.11
-      PAUSE::Permissions::EntryIterator 0.11
-      PAUSE::Permissions::Module 0.11
-      PAUSE::Permissions::ModuleIterator 0.11
-    requirements:
-      Carp 0
-      ExtUtils::MakeMaker 0
-      File::HomeDir 0
-      File::Spec::Functions 0
-      HTTP::Date 0
-      HTTP::Tiny 0
-      Moo 0
-      autodie 0
-      feature 0
-      perl 5.010000
-      strict 0
-      warnings 0
   POSIX-strftime-Compiler-0.31
     pathname: K/KA/KAZEBURO/POSIX-strftime-Compiler-0.31.tar.gz
     provides:

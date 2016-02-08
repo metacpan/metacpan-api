@@ -106,6 +106,7 @@ requires 'MooseX::Types::Structured';
 requires 'MooseX::Types::URI';
 requires 'Mozilla::CA';
 requires 'Net::DNS::Paranoid';
+requires 'Net::Fastly', '1.02';
 requires 'Net::OpenID::Consumer';
 requires 'Net::Twitter';
 requires 'Parse::CPAN::Packages::Fast', '0.04';
