@@ -1167,6 +1167,21 @@ DISTRIBUTIONS
       strict 0
       vars 0
       warnings 0
+  Code-TidyAll-Plugin-Test-Vars-0.02
+    pathname: M/MA/MAXMIND/Code-TidyAll-Plugin-Test-Vars-0.02.tar.gz
+    provides:
+      Code::TidyAll::Plugin::Test::Vars 0.02
+    requirements:
+      Code::TidyAll::Plugin 0
+      ExtUtils::MakeMaker 0
+      Moo 0
+      PPI::Document 0
+      Path::Class 0
+      Test::Vars 0.008
+      autodie 0
+      perl 5.010
+      strict 0
+      warnings 0
   Compress-Bzip2-2.22
     pathname: R/RU/RURBAN/Compress-Bzip2-2.22.tar.gz
     provides:
@@ -2447,6 +2462,62 @@ DISTRIBUTIONS
       Canary::Stability 0
       ExtUtils::MakeMaker 6.52
       common::sense 0
+  ElasticSearch-0.68
+    pathname: D/DR/DRTECH/ElasticSearch-0.68.tar.gz
+    provides:
+      ElasticSearch 0.68
+      ElasticSearch::Error 0.68
+      ElasticSearch::QueryParser 0.68
+      ElasticSearch::ScrolledSearch 0.68
+      ElasticSearch::TestServer 0.68
+      ElasticSearch::Transport 0.68
+      ElasticSearch::Transport::HTTP 0.68
+      ElasticSearch::Transport::HTTPLite 0.68
+      ElasticSearch::Transport::HTTPTiny 0.68
+      ElasticSearch::Util 0.68
+    requirements:
+      Any::URI::Escape 0
+      Carp 0
+      Data::Dumper 0
+      ElasticSearch::SearchBuilder 0.18
+      Encode 0
+      Exporter 0
+      ExtUtils::MakeMaker 6.30
+      File::Path 0
+      File::Spec::Functions 0
+      File::Temp 0.22
+      HTTP::Lite 0
+      HTTP::Request 0
+      HTTP::Tiny 0
+      IO::Handle 0
+      IO::Socket 0
+      IO::Uncompress::Inflate 0
+      JSON 0
+      LWP::ConnCache 0
+      LWP::UserAgent 0
+      List::Util 0
+      POSIX 0
+      Scalar::Util 1.07
+      Task::Weaken 0
+      Test::More 0.96
+      URI 0
+      YAML 0
+      constant 0
+      overload 0
+      parent 0
+      strict 0
+      warnings 0
+  ElasticSearch-SearchBuilder-0.19
+    pathname: D/DR/DRTECH/ElasticSearch-SearchBuilder-0.19.tar.gz
+    provides:
+      ElasticSearch::SearchBuilder 0.19
+    requirements:
+      Carp 0
+      ExtUtils::MakeMaker 6.30
+      Scalar::Util 0
+      Test::More 0.96
+      strict 0
+      warnings 0
   ElasticSearchX-Model-0.2.2
     pathname: O/OA/OALDERS/ElasticSearchX-Model-0.2.2.tar.gz
     provides:
@@ -3395,6 +3466,13 @@ DISTRIBUTIONS
       HTTP::Date 0
       Module::Build 0.38
       perl 5.008001
+  HTTP-Lite-2.43
+    pathname: N/NE/NEILB/HTTP-Lite-2.43.tar.gz
+    provides:
+      HTTP::Lite 2.43
+    requirements:
+      ExtUtils::MakeMaker 6.42
+      perl 5.005
   HTTP-Message-6.11
     pathname: E/ET/ETHER/HTTP-Message-6.11.tar.gz
     provides:
@@ -3854,6 +3932,18 @@ DISTRIBUTIONS
       Lingua::EN::Inflect 1.899
     requirements:
       Test::More 0
+  List-AllUtils-0.09
+    pathname: D/DR/DROLSKY/List-AllUtils-0.09.tar.gz
+    provides:
+      List::AllUtils 0.09
+    requirements:
+      Exporter 0
+      ExtUtils::MakeMaker 0
+      List::MoreUtils 0.28
+      List::Util 1.31
+      base 0
+      strict 0
+      warnings 0
   List-Compare-0.53
     pathname: J/JK/JKEENAN/List-Compare-0.53.tar.gz
     provides:
