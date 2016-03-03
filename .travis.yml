@@ -1,11 +1,13 @@
 language: perl
 perl:
+  - "5.22"
   - "5.20"
   - "5.18"
 
 matrix:
   allow_failures:
     - perl: "5.20"
+    - perl: "5.22"
 
 notifications:
   email:
