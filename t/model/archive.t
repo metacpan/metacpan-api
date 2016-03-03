@@ -24,8 +24,8 @@ subtest 'archive extraction' => sub {
         'Some-1.00-TRIAL/lib/Some.pm' => 45,
         'Some-1.00-TRIAL/Makefile.PL' => 172,
         'Some-1.00-TRIAL/t/00-nop.t'  => 41,
-        'Some-1.00-TRIAL/META.json'   => 535,
-        'Some-1.00-TRIAL/META.yml'    => 356,
+        'Some-1.00-TRIAL/META.json'   => 587,
+        'Some-1.00-TRIAL/META.yml'    => 414,
         'Some-1.00-TRIAL/MANIFEST'    => 62,
     );
 
