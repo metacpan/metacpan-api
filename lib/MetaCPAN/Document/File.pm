@@ -9,7 +9,6 @@ use ElasticSearchX::Model::Document;
 
 use Encode;
 use List::AllUtils qw( any );
-use List::MoreUtils qw(any uniq);
 use MetaCPAN::Document::Module;
 use MetaCPAN::Types qw(:all);
 use MetaCPAN::Util;
