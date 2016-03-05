@@ -159,6 +159,7 @@ requires 'warnings';
 
 test_requires 'App::Prove';
 test_requires 'CPAN::Faker', '0.010';
+test_requires 'Devel::Confess';
 test_requires 'Module::Faker', '0.015';
 test_requires 'Module::Faker::Dist', '0.010';
 test_requires 'Config::General';
