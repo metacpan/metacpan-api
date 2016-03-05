@@ -764,15 +764,17 @@ DISTRIBUTIONS
       MooseX::Types 0
       Test::More 0
       namespace::autoclean 0
-  Catalyst-Runtime-5.90064
-    pathname: J/JJ/JJNAPIORK/Catalyst-Runtime-5.90064.tar.gz
+  Catalyst-Runtime-5.90103
+    pathname: M/MS/MSTROUT/Catalyst-Runtime-5.90103.tar.gz
     provides:
-      Catalyst 5.90064
+      Catalyst 5.90103
       Catalyst::Action undef
       Catalyst::ActionChain undef
       Catalyst::ActionContainer undef
       Catalyst::ActionRole::ConsumesContent undef
       Catalyst::ActionRole::HTTPMethods undef
+      Catalyst::ActionRole::QueryMatching undef
+      Catalyst::ActionRole::Scheme undef
       Catalyst::Base undef
       Catalyst::ClassData undef
       Catalyst::Component undef
@@ -794,12 +796,15 @@ DISTRIBUTIONS
       Catalyst::Exception::Go undef
       Catalyst::Exception::Interface undef
       Catalyst::Log undef
+      Catalyst::Middleware::Stash undef
       Catalyst::Model undef
-      Catalyst::Plugin::Unicode::Encoding 2.1
+      Catalyst::Plugin::Unicode::Encoding 99.0
       Catalyst::Request undef
+      Catalyst::Request::PartData undef
       Catalyst::Request::Upload undef
       Catalyst::Response undef
-      Catalyst::Runtime 5.90064
+      Catalyst::Response::Writer undef
+      Catalyst::Runtime 5.90103
       Catalyst::Script::CGI undef
       Catalyst::Script::Create undef
       Catalyst::Script::FastCGI undef
@@ -814,7 +819,7 @@ DISTRIBUTIONS
     requirements:
       CGI::Simple::Cookie 1.109
       CGI::Struct 0
-      Carp 0
+      Carp 1.25
       Class::C3::Adopt::NEXT 0.07
       Class::Data::Inheritable 0
       Class::Load 0.12
@@ -825,7 +830,7 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 6.59
       HTML::Entities 0
       HTML::HeadParser 0
-      HTTP::Body 1.06
+      HTTP::Body 1.22
       HTTP::Headers 1.64
       HTTP::Request 5.814
       HTTP::Request::AsCGI 1.0
@@ -854,7 +859,7 @@ DISTRIBUTIONS
       Plack::Middleware::IIS6ScriptNameFix 0
       Plack::Middleware::IIS7KeepAliveFix 0
       Plack::Middleware::LighttpdScriptNameFix 0
-      Plack::Middleware::MethodOverride 0
+      Plack::Middleware::MethodOverride 0.12
       Plack::Middleware::RemoveRedundantBody 0.03
       Plack::Middleware::ReverseProxy 0.04
       Plack::Request::Upload 0
@@ -873,8 +878,9 @@ DISTRIBUTIONS
       Tree::Simple 1.15
       Tree::Simple::Visitor::FindByPath 0
       Try::Tiny 0.17
-      URI 1.36
-      namespace::autoclean 0.09
+      URI 1.65
+      URI::ws 0.03
+      namespace::autoclean 0.28
       namespace::clean 0.23
       perl 5.008003
   Catalyst-View-JSON-0.36
@@ -3640,20 +3646,20 @@ DISTRIBUTIONS
       base 0
       integer 0
       perl 5.008
-  HTTP-Body-1.19
-    pathname: G/GE/GETTY/HTTP-Body-1.19.tar.gz
+  HTTP-Body-1.22
+    pathname: G/GE/GETTY/HTTP-Body-1.22.tar.gz
     provides:
-      HTTP::Body 1.19
-      HTTP::Body::MultiPart 1.19
-      HTTP::Body::OctetStream 1.19
-      HTTP::Body::UrlEncoded 1.19
-      HTTP::Body::XForms 1.19
-      HTTP::Body::XFormsMultipart 1.19
+      HTTP::Body 1.22
+      HTTP::Body::MultiPart 1.22
+      HTTP::Body::OctetStream 1.22
+      HTTP::Body::UrlEncoded 1.22
+      HTTP::Body::XForms 1.22
+      HTTP::Body::XFormsMultipart 1.22
       PAML undef
     requirements:
       Carp 0
       Digest::MD5 0
-      ExtUtils::MakeMaker 6.30
+      ExtUtils::MakeMaker 0
       File::Temp 0.14
       HTTP::Headers 0
       IO::File 1.14
@@ -6663,17 +6669,19 @@ DISTRIBUTIONS
       Test::More 0
       parent 0
       perl 5.008001
-  Plack-Middleware-MethodOverride-0.10
-    pathname: D/DW/DWHEELER/Plack-Middleware-MethodOverride-0.10.tar.gz
+  Plack-Middleware-MethodOverride-0.15
+    pathname: D/DW/DWHEELER/Plack-Middleware-MethodOverride-0.15.tar.gz
     provides:
-      Plack::Middleware::MethodOverride 0.10
+      Plack::Middleware::MethodOverride 0.15
     requirements:
-      Module::Build 0.30
-      Plack 0.9929
-      Test::Builder 0.70
-      Test::More 0.70
-      URI 0
+      ExtUtils::MakeMaker 0
+      Plack::Middleware 0
+      Plack::Request 0
+      Plack::Util::Accessor 0
+      parent 0
       perl 5.008001
+      strict 0
+      warnings 0
   Plack-Middleware-RemoveRedundantBody-0.05
     pathname: S/SW/SWEETKID/Plack-Middleware-RemoveRedundantBody-0.05.tar.gz
     provides:
@@ -7120,6 +7128,13 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       Test::More 0.88
+  Sub-Identify-0.12
+    pathname: R/RG/RGARCIA/Sub-Identify-0.12.tar.gz
+    provides:
+      Sub::Identify 0.12
+    requirements:
+      ExtUtils::MakeMaker 0
+      Test::More 0
   Sub-Install-0.927
     pathname: R/RJ/RJBS/Sub-Install-0.927.tar.gz
     provides:
@@ -8021,6 +8036,14 @@ DISTRIBUTIONS
       URI::QueryParam 0
       strict 0
       warnings 0
+  URI-ws-0.03
+    pathname: P/PL/PLICEASE/URI-ws-0.03.tar.gz
+    provides:
+      URI::ws 0.03
+      URI::wss 0.03
+    requirements:
+      ExtUtils::MakeMaker 6.30
+      URI 0
   Unicode-LineBreak-2015.12
     pathname: N/NE/NEZUMI/Unicode-LineBreak-2015.12.tar.gz
     provides:
@@ -8484,16 +8507,15 @@ DISTRIBUTIONS
       XSLoader 0
       strict 0
       warnings 0
-  namespace-autoclean-0.15
-    pathname: E/ET/ETHER/namespace-autoclean-0.15.tar.gz
+  namespace-autoclean-0.28
+    pathname: E/ET/ETHER/namespace-autoclean-0.28.tar.gz
     provides:
-      namespace::autoclean 0.15
+      namespace::autoclean 0.28
     requirements:
       B::Hooks::EndOfScope 0.12
-      Class::MOP 0.80
-      ExtUtils::MakeMaker 6.30
+      ExtUtils::MakeMaker 0
       List::Util 0
-      Module::Build::Tiny 0.030
+      Sub::Identify 0
       namespace::clean 0.20
       perl 5.006
       strict 0
