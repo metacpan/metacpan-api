@@ -143,14 +143,12 @@ sub run {
     $self->perms;
     my @pid;
 
-    # FIXME: What is this supposed to do?  Don't do 'my' in a condition.
-    my $cpan = $self->index if ( $self->skip );
     eval { DB::enable_profile() };
     while ( my $file = shift @files ) {
 
         if ( $self->skip ) {
             my $d     = CPAN::DistnameInfo->new($file);
-            my $count = $cpan->type('release')->filter(
+            my $count = $self->index->type('release')->filter(
                 {
                     and => [
                         { term => { archive => $d->filename } },
