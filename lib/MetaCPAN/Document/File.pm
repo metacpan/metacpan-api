@@ -265,7 +265,8 @@ has documentation => (
 sub _build_documentation {
     my $self = shift;
     $self->_build_abstract;
-    my $documentation = $self->has_documentation ? $self->documentation : undef;
+    my $documentation
+        = $self->has_documentation ? $self->documentation : undef;
     return undef unless ( ${ $self->pod } );
     my @indexed = grep { $_->indexed } @{ $self->module || [] };
     if ( $documentation && $self->is_pod_file ) {
