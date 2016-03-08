@@ -28,10 +28,8 @@ test_release(
             my ($self) = @_;
 
             {
-                local $TODO
-                    = 'Should we be stripping the ++ from the distribution?';
-                is $self->data->distribution, 'weblint++',
-                    'distribution matches META name';
+                is $self->data->distribution, 'weblint',
+                    'distribution matches META name, but strips out ++';
             }
         },
     }
