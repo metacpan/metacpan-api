@@ -82,6 +82,7 @@ requires 'List::Util', '1.43';
 requires 'Log::Contextual';
 requires 'Log::Log4perl';
 requires 'Log::Log4perl::Appender::ScreenColoredLevels';
+requires 'Minion', '>= 5.01';
 requires 'Module::Metadata', '1.000022';
 requires 'Module::Pluggable';
 requires 'Module::Runtime';
