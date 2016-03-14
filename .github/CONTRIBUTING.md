@@ -2,7 +2,11 @@
 
 We are always after more contributors and suggestions.
 
-## Suggestions or issues with metacpan...
+### How can I help?
+
+The following issues are tagged as [Volunteer needed](https://github.com/CPAN-API/cpan-api/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+label%3A%22Volunteer+needed%22+no%3Aassignee+)
+
+## Suggestions or issues with MetaCPAN...
 
 #### Does it relate to our API (backend)... ?
 

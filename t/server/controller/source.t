@@ -21,11 +21,7 @@ test_psgi app, sub {
         is( $res->code, $v, "code $v" );
         if ( $k eq '/source/Moose' ) {
             like( $res->content, qr/package Moose/, 'Moose source' );
-            is(
-                $res->header('content-type'),
-                'text/plain; charset=UTF-8',
-                'Content-type'
-            );
+            is( $res->header('content-type'), 'text/plain', 'Content-type' );
 
             # Used for fastly on st.aticpan.org
             is( $res->header('X-Content-Type'),
@@ -68,19 +64,12 @@ test_psgi app, sub {
             }
             else {
                 is( $res->content, $manifest, 'Plain text manifest' );
-                is(
-                    $res->header('content-type'),
-                    'text/plain; charset=UTF-8',
-                    'Content-type'
-                );
+                is( $res->header('content-type'),
+                    'text/plain', 'Content-type' );
             }
         }
         elsif ( $k eq '/source/DOY/Moose-0.01/Changes' ) {
-            is(
-                $res->header('content-type'),
-                'text/plain; charset=UTF-8',
-                'Content-type'
-            );
+            is( $res->header('content-type'), 'text/plain', 'Content-type' );
             like(
                 $res->decoded_content,
                 qr/codename 'M\x{fc}nchen'/,

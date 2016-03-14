@@ -8,7 +8,7 @@ requires 'CPAN::DistnameInfo', '0.12';
 requires 'CPAN::Meta', '2.115005'; # Avoid issues with List::Util dep under carton install.
 requires 'CPAN::Meta::Requirements', '2.140';
 requires 'Captcha::reCAPTCHA', '0.94';
-requires 'Catalyst', '5.90011';
+requires 'Catalyst', '5.90103';
 requires 'Catalyst::Action::RenderView';
 requires 'Catalyst::Authentication::User';
 requires 'Catalyst::Controller';
@@ -159,6 +159,7 @@ requires 'warnings';
 
 test_requires 'App::Prove';
 test_requires 'CPAN::Faker', '0.010';
+test_requires 'Devel::Confess';
 test_requires 'Module::Faker', '0.015';
 test_requires 'Module::Faker::Dist', '0.010';
 test_requires 'Config::General';

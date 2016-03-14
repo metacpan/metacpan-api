@@ -12,8 +12,11 @@ use Plack::Middleware::ServerStatus::Lite;
 
 extends 'Catalyst';
 
-has api      => ( is      => 'ro' );
-has '+stash' => ( clearer => 'clear_stash' );
+has api => ( is => 'ro' );
+
+sub clear_stash {
+    %{ $_[0]->stash } = ();
+}
 
 __PACKAGE__->apply_request_class_roles(
     qw(
