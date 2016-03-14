@@ -83,9 +83,11 @@ requires 'Log::Contextual';
 requires 'Log::Log4perl';
 requires 'Log::Log4perl::Appender::ScreenColoredLevels';
 requires 'Minion', '>= 5.01';
+requires 'Minion::Backend::SQLite';
 requires 'Module::Metadata', '1.000022';
 requires 'Module::Pluggable';
 requires 'Module::Runtime';
+requires 'Mojo::Pg';
 requires 'Moose', ' == 2.0802'; # Pin to older version to avoid deprecation warning on enum that we can't escape b/c we're pinned to an old version of MX-Types-ES.
 requires 'Moose::Role';
 requires 'Moose::Util';

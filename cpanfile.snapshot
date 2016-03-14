@@ -1357,6 +1357,17 @@ DISTRIBUTIONS
       Path::Class 0.26
       Try::Tiny 0.19
       perl 5.006
+  DBD-Pg-3.5.3
+    pathname: T/TU/TURNSTEP/DBD-Pg-3.5.3.tar.gz
+    provides:
+      Bundle::DBD::Pg 3.005003
+      DBD::Pg 3.005003
+    requirements:
+      DBI 1.614
+      ExtUtils::MakeMaker 6.11
+      Test::More 0.88
+      Time::HiRes 0
+      version 0
   DBD-SQLite-1.50
     pathname: I/IS/ISHIGAKI/DBD-SQLite-1.50.tar.gz
     provides:
@@ -4721,6 +4732,19 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       Mojolicious 6.0
+  Minion-Backend-SQLite-0.003
+    pathname: D/DB/DBOOK/Minion-Backend-SQLite-0.003.tar.gz
+    provides:
+      Minion::Backend::SQLite 0.003
+    requirements:
+      DBI 0.88
+      Minion 4.0
+      Module::Build::Tiny 0.034
+      Mojo::SQLite 0.018
+      Mojolicious 6.0
+      Sys::Hostname 0
+      Time::HiRes 0
+      perl 5.010001
   Mixin-Linewise-0.106
     pathname: R/RJ/RJBS/Mixin-Linewise-0.106.tar.gz
     provides:
@@ -5029,6 +5053,41 @@ DISTRIBUTIONS
       Text::ParseWords 0
       perl 5.008001
       version 0
+  Mojo-Pg-2.23
+    pathname: S/SR/SRI/Mojo-Pg-2.23.tar.gz
+    provides:
+      Mojo::Pg 2.23
+      Mojo::Pg::Database undef
+      Mojo::Pg::Migrations undef
+      Mojo::Pg::PubSub undef
+      Mojo::Pg::Results undef
+      Mojo::Pg::Transaction undef
+    requirements:
+      DBD::Pg 3.005001
+      ExtUtils::MakeMaker 0
+      Mojolicious 6.0
+  Mojo-SQLite-0.021
+    pathname: D/DB/DBOOK/Mojo-SQLite-0.021.tar.gz
+    provides:
+      Mojo::SQLite 0.021
+      Mojo::SQLite::Database 0.021
+      Mojo::SQLite::Migrations 0.021
+      Mojo::SQLite::PubSub 0.021
+      Mojo::SQLite::Results 0.021
+      Mojo::SQLite::Transaction 0.021
+    requirements:
+      Carp 0
+      DBD::SQLite 1.50
+      DBI 1.627
+      File::Spec::Functions 0
+      File::Temp 0
+      Module::Build::Tiny 0.034
+      Mojolicious 6.14
+      Scalar::Util 0
+      URI 1.69
+      URI::db 0.15
+      URI::file 4.21
+      perl 5.010001
   Mojolicious-6.55
     pathname: S/SR/SRI/Mojolicious-6.55.tar.gz
     provides:
@@ -9064,6 +9123,15 @@ DISTRIBUTIONS
       URI::QueryParam 0
       strict 0
       warnings 0
+  URI-Nested-0.10
+    pathname: D/DW/DWHEELER/URI-Nested-0.10.tar.gz
+    provides:
+      URI::Nested 0.10
+    requirements:
+      Module::Build 0.30
+      Test::More 0.88
+      URI 1.40
+      perl 5.008001
   URI-Query-0.10
     pathname: G/GA/GAVINC/URI-Query-0.10.tar.gz
     provides:
@@ -9072,6 +9140,53 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Test::More 0.88
       URI 1.31
+  URI-db-0.17
+    pathname: D/DW/DWHEELER/URI-db-0.17.tar.gz
+    provides:
+      URI::cassandra 0.17
+      URI::couch 0.17
+      URI::couchdb 0.17
+      URI::cubrid 0.17
+      URI::db 0.17
+      URI::db2 0.17
+      URI::derby 0.17
+      URI::firebird 0.17
+      URI::hive 0.17
+      URI::impala 0.17
+      URI::informix 0.17
+      URI::ingres 0.17
+      URI::interbase 0.17
+      URI::ldapdb 0.17
+      URI::maria 0.17
+      URI::mariadb 0.17
+      URI::max 0.17
+      URI::maxdb 0.17
+      URI::monet 0.17
+      URI::monetdb 0.17
+      URI::mongo 0.17
+      URI::mongodb 0.17
+      URI::mssql 0.17
+      URI::mysql 0.17
+      URI::oracle 0.17
+      URI::pg 0.17
+      URI::pgsql 0.17
+      URI::pgxc 0.17
+      URI::postgres 0.17
+      URI::postgresql 0.17
+      URI::postgresxc 0.17
+      URI::sqlite 0.17
+      URI::sqlite3 0.17
+      URI::sqlserver 0.17
+      URI::sybase 0.17
+      URI::teradata 0.17
+      URI::unify 0.17
+      URI::vertica 0.17
+    requirements:
+      Module::Build 0.30
+      Test::More 0.88
+      URI 1.40
+      URI::Nested 0.10
+      perl 5.008001
   URI-ws-0.03
     pathname: P/PL/PLICEASE/URI-ws-0.03.tar.gz
     provides:
