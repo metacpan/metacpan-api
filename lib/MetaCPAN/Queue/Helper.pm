@@ -4,8 +4,7 @@ use Moose;
 
 use File::Temp;
 use MetaCPAN::Types qw( HashRef );
-use Minion::Backend::Pg;
-use Minion::Backend::SQLite;
+use Module::Load qw( load );
 
 has backend => (
     is      => 'ro',
@@ -20,10 +19,14 @@ has backend => (
 sub _build_backend {
     my $self = shift;
 
-    return $ENV{HARNESS_ACTIVE}
-        ? { SQLite => 'sqlite:'
-            . File::Temp->new( UNLINK => 1, SUFFIX => '.db' ) }
-        : { Pg => 'postgresql://vagrant@localhost/minion_queue' };
+    if ( $ENV{HARNESS_ACTIVE} ) {
+        load(Minion::Backend::SQLite);
+        my $file = File::Temp->new( UNLINK => 1, SUFFIX => '.db' );
+        return { SQLite => 'sqlite:' . $file };
+    }
+
+    load(Minion::Backend::Pg);
+    return { Pg => 'postgresql://vagrant@localhost/minion_queue' };
 }
 
 __PACKAGE__->meta->make_immutable;
