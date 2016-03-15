@@ -26,7 +26,7 @@ sub _build_backend {
     }
 
     load(Minion::Backend::Pg);
-    return { Pg => 'postgresql://vagrant@localhost/minion_queue' };
+    return { Pg => "postgresql:///minion_queue" };
 }
 
 __PACKAGE__->meta->make_immutable;
