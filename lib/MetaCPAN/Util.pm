@@ -28,7 +28,7 @@ sub generate_sid {
 }
 
 sub numify_version {
-    my $version = shift;
+    my $version = shift || return 0;
     $version = fix_version($version);
     $version =~ s/_//g;
     if ( $version =~ s/^v//i || $version =~ tr/.// > 1 ) {
