@@ -29,7 +29,7 @@ sub startup {
         index_release => sub {
             my ( $job, @args ) = @_;
 
-            # @args could be ( 'latest', '/path/to/release' );
+            # @args could be ( '--latest', '/path/to/release' );
             unshift @args, 'release';
 
             # Runner expects to have been called via CLI

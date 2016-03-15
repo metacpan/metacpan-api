@@ -2,7 +2,7 @@ package MetaCPAN::Queue::Helper;
 
 use Moose;
 
-use File::Temp;
+use File::Temp ();
 use MetaCPAN::Types qw( HashRef );
 use Module::Load qw( load );
 
