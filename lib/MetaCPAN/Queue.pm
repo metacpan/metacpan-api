@@ -12,7 +12,9 @@ queue.
 
 use Mojo::Base 'Mojolicious';
 
-use MetaCPAN::Queue::Helper;
+use MetaCPAN::Queue::Helper  ();
+use MetaCPAN::Script::Runner ();
+use Try::Tiny qw( catch try );
 
 sub startup {
     my $self = shift;
@@ -22,6 +24,24 @@ sub startup {
 
     my $helper = MetaCPAN::Queue::Helper->new;
     $self->plugin( Minion => $helper->backend );
+
+    $self->minion->add_task(
+        index_release => sub {
+            my ( $job, @args ) = @_;
+
+            # @args could be ( 'latest', '/path/to/release' );
+            unshift @args, 'release';
+
+            # Runner expects to have been called via CLI
+            local @ARGV = @args;
+            try {
+                my $release = MetaCPAN::Script::Runner->run(@args);
+            }
+            catch {
+                warn $_;
+            };
+        }
+    );
 }
 
 1;

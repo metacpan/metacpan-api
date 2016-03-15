@@ -1,6 +1,8 @@
-use Test::More;
+use strict;
+use warnings;
 
 use MetaCPAN::Queue::Helper;
+use Test::More;
 
 my $helper = MetaCPAN::Queue::Helper->new;
 
