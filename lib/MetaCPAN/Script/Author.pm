@@ -112,21 +112,21 @@ sub author_config {
         log_debug {"Skipping $pauseid (newer version in index)"};
         return undef;
     }
-    my $json = $file->slurp;
-    my $author = eval { JSON::XS->new->utf8->relaxed->decode($json) };
 
-    if ($@) {
+    my $author;
+    eval {
+        $author = JSON::XS->new->utf8->relaxed->decode( $file->slurp );
+        1;
+    } or do {
         log_warn {"$file is broken: $@"};
         return $fallback;
-    }
-    else {
-        $author
-            = { map { $_ => $author->{$_} }
-                qw(name asciiname profile blog perlmongers donation email website city region country location extra)
-            };
-        $author->{updated} = $mtime;
-        return $author;
-    }
+    };
+    $author
+        = { map { $_ => $author->{$_} }
+            qw(name asciiname profile blog perlmongers donation email website city region country location extra)
+        };
+    $author->{updated} = $mtime;
+    return $author;
 }
 
 __PACKAGE__->meta->make_immutable;
