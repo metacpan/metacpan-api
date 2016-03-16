@@ -3,12 +3,13 @@ use warnings;
 
 use MetaCPAN::Queue;
 use Test::More;
+use Test::RequiresInternet ( 'cpan.metacpan.org' => 443 );
 
 my $app = MetaCPAN::Queue->new;
 ok( $app, 'queue app' );
 
 my $release
-    = 't/var/darkpan/authors/id/T/TI/TINITA/HTML-Template-Compiled-1.001.tar.gz';
+    = 'https://cpan.metacpan.org/authors/id/O/OA/OALDERS/HTML-Restrict-2.2.2.tar.gz';
 
 $app->minion->enqueue( index_release => [$release] );
 $app->minion->enqueue( index_release => [ '--latest', $release ] );
