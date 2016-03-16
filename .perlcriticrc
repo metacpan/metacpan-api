@@ -18,6 +18,9 @@ severity = 4
 [TestingAndDebugging::RequireUseStrict]
 equivalent_modules = Test::Routine Mojo::Base
 
+[TestingAndDebugging::RequireUseWarnings]
+equivalent_modules = Test::Routine Mojo::Base
+
 [ValuesAndExpressions::ProhibitEmptyQuotes]
 severity = 4
 
