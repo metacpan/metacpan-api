@@ -21,6 +21,10 @@ sub run {
     my $self = shift;
     my $ua   = LWP::UserAgent->new;
 
+    if ( my $proxy = $ENV{http_proxy} || $ENV{HTTP_PROXY} ) {
+        $ua->proxy(['http'], $proxy);
+    }
+
     log_info { 'Downloading ' . $self->ratings };
 
     my @path   = qw( var tmp ratings.csv );
