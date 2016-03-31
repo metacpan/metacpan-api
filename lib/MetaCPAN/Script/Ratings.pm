@@ -64,7 +64,7 @@ sub run {
                 {
                     index => $index,
                     type  => 'rating',
-                    data  => Dlog_trace {$_} $data,
+                    body  => Dlog_trace {$_} $data,
                 }
             );
         }
