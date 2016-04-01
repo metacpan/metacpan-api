@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Moose;
-with 'MooseX::Getopt', 'MetaCPAN::Role::Common';
+with 'MooseX::Getopt', 'MetaCPAN::Role::Script';
 
 use Log::Contextual qw( :log );
 use PAUSE::Permissions;
