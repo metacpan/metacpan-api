@@ -4,7 +4,6 @@ use strict;
 use warnings;
 
 use Digest::MD5    ();
-use JSON           ();
 use LWP::UserAgent ();
 use Log::Contextual qw( :log :dlog );
 use Moose;
