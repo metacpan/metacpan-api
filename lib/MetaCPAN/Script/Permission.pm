@@ -29,12 +29,12 @@ sub index_permissions {
 
     my $file_path = $self->cpan . '/modules/06perms.txt';
     my $pp        = PAUSE::Permissions->new( path => $file_path );
-    my $type      = $self->index->type('permissions');
+    my $type      = $self->index->type('permission');
     my $bulk      = $self->model->bulk( size => 100 );
 
     my $iterator = $pp->module_iterator();
     while ( my $mp = $iterator->next_module ) {
-        my $put = { name => $mp->name };
+        my $put = { module => $mp->name };
         $put->{owner}          = $mp->owner          if $mp->owner;
         $put->{co_maintainers} = $mp->co_maintainers if $mp->co_maintainers;
         $bulk->put( $type->new_document($put) );
