@@ -8,6 +8,9 @@ queue.
     # On vagrant VM
     ./bin/run morbo bin/queue.pl
 
+    # Display information on jobs in queue
+    ./bin/run bin/queue.pl minion job
+
 =cut
 
 use Mojo::Base 'Mojolicious';
