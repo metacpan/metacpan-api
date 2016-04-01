@@ -39,6 +39,7 @@ sub startup {
             }
             catch {
                 warn $_;
+                $job->fail( { message => $_ } );
             };
         }
     );
