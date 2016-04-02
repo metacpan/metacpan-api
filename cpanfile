@@ -117,6 +117,7 @@ requires 'Parse::CPAN::Packages::Fast', '0.09';
 requires 'Parse::CSV', '2.04';
 requires 'Parse::PMFile', '0.29';
 requires 'Path::Class', '0.36';
+requires 'Path::Iterator::Rule', '>=1.011';
 requires 'Path::Class::File';
 requires 'PerlIO::gzip';
 requires 'Pithub', '0.01033';
