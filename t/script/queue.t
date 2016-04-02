@@ -9,11 +9,10 @@ use MetaCPAN::Script::Queue;
 my $config = MetaCPAN::Script::Runner::build_config;
 local @ARGV = ( '--dir', $config->{cpan} );
 
-use DDP;
-diag np $config;
-
 my $queue = MetaCPAN::Script::Queue->new_with_options($config);
 $queue->run;
-ok('does not die');
+
+is( $queue->stats->{inactive_jobs},
+    52, '52 files added to queue for indexing' );
 
 done_testing();

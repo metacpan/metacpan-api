@@ -26,7 +26,7 @@ has _minion => (
     is      => 'ro',
     isa     => 'Minion',
     lazy    => 1,
-    handles => { _add_to_queue => 'enqueue' },
+    handles => { _add_to_queue => 'enqueue', stats => 'stats', },
     default => sub { MetaCPAN::Queue->new->minion },
 );
 

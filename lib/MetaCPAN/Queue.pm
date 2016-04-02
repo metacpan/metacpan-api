@@ -37,8 +37,6 @@ sub startup {
 
             # Runner expects to have been called via CLI
             local @ARGV = @args;
-            use DDP;
-            p @ARGV;
             try {
                 my $release = MetaCPAN::Script::Runner->run(@args);
             }
