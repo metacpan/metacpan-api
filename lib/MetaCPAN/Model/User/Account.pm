@@ -110,7 +110,7 @@ Sets the C<_timestamp> field.
 
 has timestamp => (
     is        => 'ro',
-    timestamp => { store => 1 },
+    timestamp => {}, # { store => 1 },
 );
 
 =head1 METHODS

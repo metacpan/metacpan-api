@@ -75,7 +75,8 @@ sub run {
                             filter => { bool => { must => \@module_filters } }
                         }
                     },
-                    { term => { 'file.maturity' => 'released' } },
+                    #                    { term => { 'file.maturity' => 'released' } },
+                    { term => { 'maturity' => 'released' } },
                 ],
                 must_not => [
                     { term => { status       => 'backpan' } },
@@ -83,12 +84,12 @@ sub run {
                 ]
             }
         }
-        )->source(
+    )->source(
         [
             'module.name', 'author', 'release', 'distribution',
             'date',        'status',
         ]
-        )->size(100)->raw->scroll;
+    )->size(100)->raw->scroll;
 
     my ( %downgrade, %upgrade );
     log_debug { 'Found ' . $scroll->total . ' modules' };

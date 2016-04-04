@@ -50,10 +50,13 @@ sub _scan_hash_tree {
     my $ref = ref($struct);
     if ( $ref eq 'HASH' ) {
         while ( my ( $k, $v ) = each %$struct ) {
-            if ( $k eq $key ) {
-                MetaCPAN::Server::QuerySanitizer::Error->throw(
-                    message => qq[Parameter "$key" not allowed], );
-            }
+            # Mickey: disabling this check for 'script' key since
+            #         for ES 1.7 I need to use it in the
+            #         function_score syntax
+            # if ( $k eq $key ) {
+            #     MetaCPAN::Server::QuerySanitizer::Error->throw(
+            #         message => qq[Parameter "$key" not allowed], );
+            # }
             _scan_hash_tree($v) if ref $v;
         }
         if ( my $mscript = delete $struct->{metacpan_script} ) {
@@ -65,6 +68,7 @@ sub _scan_hash_tree {
             _scan_hash_tree($item) if ref($item);
         }
     }
+    # Mickey: what about $ref eq 'JSON::PP::Boolean' ?
 }
 
 __PACKAGE__->meta->make_immutable;
