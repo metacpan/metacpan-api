@@ -6389,6 +6389,26 @@ DISTRIBUTIONS
       strict 0
       utf8 0
       warnings 0
+  Path-Iterator-Rule-1.011
+    pathname: D/DA/DAGOLDEN/Path-Iterator-Rule-1.011.tar.gz
+    provides:
+      PIR 1.011
+      Path::Iterator::Rule 1.011
+    requirements:
+      Carp 0
+      ExtUtils::MakeMaker 6.17
+      File::Basename 0
+      File::Spec 0
+      List::Util 0
+      Number::Compare 0.02
+      Scalar::Util 0
+      Text::Glob 0
+      Try::Tiny 0
+      perl 5.010
+      re 0
+      strict 0
+      warnings 0
+      warnings::register 0
   Path-Tiny-0.054
     pathname: D/DA/DAGOLDEN/Path-Tiny-0.054.tar.gz
     provides:

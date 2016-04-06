@@ -6,4 +6,4 @@ use warnings;
 use lib 'local/lib/perl5';
 
 use Code::TidyAll::Git::Precommit;
-Code::TidyAll::Git::Precommit->check();
+Code::TidyAll::Git::Precommit->check( no_stash => 1 );
