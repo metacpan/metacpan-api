@@ -12,23 +12,16 @@ has query => (
 );
 
 our %metacpan_scripts = (
-    prefer_shorter_module_names_100 => q{
-        _score - doc['documentation'].value.length()/100
-    },
-    prefer_shorter_module_names_400 => q{
-        documentation = doc['documentation'].value;
-        if(documentation == empty) {
-            documentation = 'xxxxxxxxxxxxxxxxxxxxxxxxx'
-        }
-        return _score - documentation.length()/400
-    },
+    prefer_shorter_module_names_100 => qq{_score - doc.documentation.value.length().toDouble()/100},
+    prefer_shorter_module_names_400 =>
+        qq{len = (doc.documentation.empty ? 26 : doc.documentation.value.length()); _score - len.toDouble()/400},
 
     # NOTE: after upgrading to 0.90+ we should be able to sort
     # on nested version numbers directly and not need this script
     # (but we'll need to keep it for a while until clients have updated).
-    score_version_numified => q{doc['module.version_numified'].value},
+    score_version_numified => q{doc.module.version_numified.value},
 
-    status_is_latest => q{doc['status'].value == 'latest'},
+    status_is_latest => q{doc.status.value == 'latest'},
 );
 
 sub _build_clean_query {
@@ -50,17 +43,14 @@ sub _scan_hash_tree {
     my $ref = ref($struct);
     if ( $ref eq 'HASH' ) {
         while ( my ( $k, $v ) = each %$struct ) {
-            # Mickey: disabling this check for 'script' key since
-            #         for ES 1.7 I need to use it in the
-            #         function_score syntax
-            # if ( $k eq $key ) {
-            #     MetaCPAN::Server::QuerySanitizer::Error->throw(
-            #         message => qq[Parameter "$key" not allowed], );
-            # }
+            if ( $k eq $key ) {
+                MetaCPAN::Server::QuerySanitizer::Error->throw(
+                    message => qq[Parameter "$key" not allowed], );
+            }
             _scan_hash_tree($v) if ref $v;
         }
         if ( my $mscript = delete $struct->{metacpan_script} ) {
-            $struct->{script} = $metacpan_scripts{$mscript};
+            $struct->{script_score} = { script => $metacpan_scripts{$mscript} };
         }
     }
     elsif ( $ref eq 'ARRAY' ) {
