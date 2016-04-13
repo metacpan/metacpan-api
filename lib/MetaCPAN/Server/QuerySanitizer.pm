@@ -11,19 +11,6 @@ has query => (
     trigger => \&_build_clean_query,
 );
 
-our %metacpan_scripts = (
-    prefer_shorter_module_names_100 => qq{_score - doc.documentation.value.length().toDouble()/100},
-    prefer_shorter_module_names_400 =>
-        qq{len = (doc.documentation.empty ? 26 : doc.documentation.value.length()); _score - len.toDouble()/400},
-
-    # NOTE: after upgrading to 0.90+ we should be able to sort
-    # on nested version numbers directly and not need this script
-    # (but we'll need to keep it for a while until clients have updated).
-    score_version_numified => q{doc.module.version_numified.value},
-
-    status_is_latest => q{doc.status.value == 'latest'},
-);
-
 sub _build_clean_query {
     my ($self) = @_;
     my $search = $self->query
@@ -50,7 +37,12 @@ sub _scan_hash_tree {
             _scan_hash_tree($v) if ref $v;
         }
         if ( my $mscript = delete $struct->{metacpan_script} ) {
-            $struct->{script_score} = { script => $metacpan_scripts{$mscript} };
+            $struct->{script_score} = {
+                script => {
+                    lang => 'groovy',
+                    file => $mscript
+                },
+            };
         }
     }
     elsif ( $ref eq 'ARRAY' ) {
