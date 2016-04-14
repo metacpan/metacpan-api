@@ -21,19 +21,21 @@ sub run {
     my $scroll = $es->scroll_helper(
         index => $self->index->name,
         type  => 'release',
-        query => {
-            filtered => {
-                query  => { match_all => {} },
-                filter => {
-                    and => [
-                        {
-                            term =>
-                                { 'release.dependency.phase' => 'runtime' }
-                        },
-                        { term => { status => 'latest' } },
-                    ]
+        body  => {
+            query => {
+                filtered => {
+                    query  => { match_all => {} },
+                    filter => {
+                        and => [
+                            {
+                                term =>
+                                    { 'release.dependency.phase' => 'runtime' }
+                            },
+                            { term => { status => 'latest' } },
+                        ]
+                    }
                 }
-            }
+            },
         },
         scroll => '5m',
         size   => 1000,
@@ -68,15 +70,17 @@ sub get_recent_modules {
     my $scroll = $self->es->scroll_helper(
         index => $self->index->name,
         type  => 'file',
-        query => {
-            filtered => {
-                query  => { match_all => {} },
-                filter => {
-                    and => [
-                        { term => { 'file.status'            => 'latest' } },
-                        { term => { 'file.module.indexed'    => \1 } },
-                        { term => { 'file.module.authorized' => \1 } },
-                    ]
+        body => {
+            query => {
+                filtered => {
+                    query  => { match_all => {} },
+                    filter => {
+                        and => [
+                            { term => { 'file.status'            => 'latest' } },
+                            { term => { 'file.module.indexed'    => \1 } },
+                            { term => { 'file.module.authorized' => \1 } },
+                        ]
+                    }
                 }
             }
         },

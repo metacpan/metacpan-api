@@ -45,14 +45,16 @@ sub update_status {
         index  => 'cpan_v1',
         type   => 'release',
         fields => [ 'author', 'name' ],
-        query  => {
-            filtered => {
-                query  => { match_all => {} },
-                filter => {
-                    or => \@search,
+        body   => {
+            query  => {
+                filtered => {
+                    query  => { match_all => {} },
+                    filter => {
+                        or => \@search,
+                    },
                 },
             },
-        },
+        }
     );
 
     while ( my $release = $scroll->next ) {

@@ -94,22 +94,24 @@ sub changes {
 
 sub backpan_changes {
     my $self   = shift;
-    my $scroll = $self->es->scrolled_search(
+    my $scroll = $self->es->scroll_helper(
         {
             size   => 1000,
             scroll => '1m',
             index  => $self->index->name,
             type   => 'release',
             fields => [qw(author archive)],
-            query  => {
-                filtered => {
-                    query  => { match_all => {} },
-                    filter => {
-                        not =>
-                            { filter => { term => { status => 'backpan' } } }
-                    },
+            body   => {
+                query  => {
+                    filtered => {
+                        query  => { match_all => {} },
+                        filter => {
+                            not =>
+                                { filter => { term => { status => 'backpan' } } }
+                        },
+                    }
                 }
-            },
+            }
         }
     );
     my @changes;
@@ -193,24 +195,26 @@ sub reindex_release {
             size        => 1000,
             search_type => 'scan',
             fields      => [ '_parent', '_source' ],
-            query       => {
-                filtered => {
-                    query  => { match_all => {} },
-                    filter => {
-                        and => [
-                            {
-                                term => {
-                                    'file.release' =>
-                                        $release->{_source}->{name}
+            body        => {
+                query       => {
+                    filtered => {
+                        query  => { match_all => {} },
+                        filter => {
+                            and => [
+                                {
+                                    term => {
+                                        'file.release' =>
+                                            $release->{_source}->{name}
+                                    }
+                                },
+                                {
+                                    term => {
+                                        'file.author' =>
+                                            $release->{_source}->{author}
+                                    }
                                 }
-                            },
-                            {
-                                term => {
-                                    'file.author' =>
-                                        $release->{_source}->{author}
-                                }
-                            }
-                        ]
+                            ]
+                        }
                     }
                 }
             }

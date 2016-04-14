@@ -80,17 +80,6 @@ sub _build_model {
     return MetaCPAN::Model->new( es => $self->es );
 }
 
-sub file2mod {
-    my $self = shift;
-    my $name = shift;
-
-    $name =~ s{\Alib\/}{};
-    $name =~ s{\.(pod|pm)\z}{};
-    $name =~ s{\/}{::}gxms;
-
-    return $name;
-}
-
 sub _build_cpan {
     my $self = shift;
     my @dirs = (

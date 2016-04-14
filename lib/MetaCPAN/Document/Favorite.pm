@@ -41,7 +41,7 @@ Sets the C<_timestamp> field to the value of L</date>.
 
 has timestamp => (
     is        => 'ro',
-    timestamp => { path => 'date', store => 1 },
+    timestamp => {}, # { path => 'date', store => 1 },
 );
 
 __PACKAGE__->meta->make_immutable;
