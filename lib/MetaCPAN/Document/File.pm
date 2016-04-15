@@ -439,7 +439,7 @@ sub _build_pod_lines {
     my $self = shift;
     return [] unless ( $self->is_perl_file );
     my ( $lines, $slop ) = MetaCPAN::Util::pod_lines( ${ $self->content } );
-    $self->slop( $slop || 0 );
+    $self->_set_slop( $slop || 0 );
     return $lines;
 }
 
@@ -486,17 +486,20 @@ Source Lines of Pod. Returns the number of pod lines using L</pod_lines>.
 =cut
 
 has slop => (
-    is         => 'ro',
-    required   => 1,
-    isa        => 'Int',
-    is         => 'rw',
-    lazy_build => 1,
+    is      => 'ro',
+    isa     => 'Int',
+    lazy    => 1,
+    default => '_build_slop',
+    writer  => '_set_slop',
 );
 
 sub _build_slop {
     my $self = shift;
     return 0 unless ( $self->is_perl_file );
     $self->_build_pod_lines;
+
+    # danger! infinite recursion if not set by `_build_pod_lines`
+    # we should probably find a better solution -- Mickey
     return $self->slop;
 }
 
