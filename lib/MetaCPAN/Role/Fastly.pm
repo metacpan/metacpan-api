@@ -92,9 +92,10 @@ has browser_max_age => (
 );
 
 has cdn_times => (
-    is         => 'ro',
-    isa        => HashRef,
-    lazy_build => 1,
+    is      => 'ro',
+    isa     => HashRef,
+    lazy    => 1,
+    builder => '_build_cdn_times',
 );
 
 sub _build_cdn_times {

@@ -63,15 +63,17 @@ has detect_backpan => (
 );
 
 has backpan_index => (
-    is         => 'ro',
-    lazy_build => 1,
+    is      => 'ro',
+    lazy    => 1,
+    builder => '_build_backpan_index',
 );
 
 has perms => (
-    is         => 'ro',
-    isa        => HashRef,
-    lazy_build => 1,
-    traits     => ['NoGetopt'],
+    is      => 'ro',
+    isa     => HashRef,
+    lazy    => 1,
+    builder => '_build_perms',
+    traits  => ['NoGetopt'],
 );
 
 has _bulk_size => (

@@ -18,14 +18,16 @@ has [qw(source target)] => (
 );
 
 has raw => (
-    is         => 'ro',
-    lazy_build => 1,
+    is      => 'ro',
+    lazy    => 1,
+    builder => '_build_raw',
 );
 
 has structured => (
-    is         => 'ro',
-    isa        => 'ArrayRef',
-    lazy_build => 1,
+    is      => 'ro',
+    isa     => 'ArrayRef',
+    lazy    => 1,
+    builder => '_build_structured',
 );
 
 has numstat => ( is => 'rw' );

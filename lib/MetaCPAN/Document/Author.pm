@@ -43,9 +43,10 @@ has pauseid => (
 has user => ( is => 'rw' );
 
 has gravatar_url => (
-    is         => 'ro',
-    lazy_build => 1,
-    isa        => NonEmptySimpleStr,
+    is      => 'ro',
+    isa     => NonEmptySimpleStr,
+    lazy    => 1,
+    builder => '_build_gravatar_url',
 );
 
 has profile => (
@@ -110,7 +111,7 @@ sub _build_gravatar_url {
     # (by assigning an image to his author@cpan.org)
     # and now by changing this URL from metacpa.org
     return Gravatar::URL::gravatar_url(
-        email => $self->{pauseid} . '@cpan.org',
+        email => $self->pauseid . '@cpan.org',
         size  => 130,
         https => 1,
 

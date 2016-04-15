@@ -24,9 +24,10 @@ has distribution => (
 );
 
 has packages => (
-    is         => 'ro',
-    lazy_build => 1,
-    traits     => ['NoGetopt'],
+    is      => 'ro',
+    lazy    => 1,
+    builder => '_build_packages',
+    traits  => ['NoGetopt'],
 );
 
 sub _build_packages {
@@ -75,8 +76,6 @@ sub run {
                             filter => { bool => { must => \@module_filters } }
                         }
                     },
-
-           #                    { term => { 'file.maturity' => 'released' } },
                     { term => { 'maturity' => 'released' } },
                 ],
                 must_not => [

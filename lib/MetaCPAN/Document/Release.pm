@@ -130,9 +130,9 @@ has date => (
 );
 
 has download_url => (
-    is         => 'ro',
-    required   => 1,
-    lazy_build => 1,
+    is      => 'ro',
+    lazy    => 1,
+    builder => '_build_download_url',
 );
 
 has [qw(distribution name)] => (
@@ -142,10 +142,10 @@ has [qw(distribution name)] => (
 );
 
 has version_numified => (
-    is         => 'ro',
-    required   => 1,
-    isa        => 'Str',
-    lazy_build => 1,
+    is      => 'ro',
+    isa     => 'Num',
+    lazy    => 1,
+    builder => '_build_version_numified',
 );
 
 has resources => (
@@ -235,7 +235,7 @@ has changes_file => (
 );
 
 sub _build_version_numified {
-    return MetaCPAN::Util::numify_version( shift->version ) . '';
+    return MetaCPAN::Util::numify_version( shift->version );
 }
 
 sub _build_download_url {

@@ -34,10 +34,10 @@ C<NAME> section. It also sets L</documentation> if it succeeds.
 =cut
 
 has abstract => (
-    is         => 'ro',
-    required   => 1,
-    lazy_build => 1,
-    index      => 'analyzed',
+    is      => 'ro',
+    lazy    => 1,
+    builder => '_build_abstract',
+    index   => 'analyzed',
 );
 
 sub _build_abstract {
@@ -147,10 +147,10 @@ whitespaces and POD commands.
 =cut
 
 has description => (
-    is         => 'ro',
-    required   => 1,
-    lazy_build => 1,
-    index      => 'analyzed',
+    is      => 'ro',
+    lazy    => 1,
+    builder => '_build_description',
+    index   => 'analyzed',
 );
 
 sub _build_description {
@@ -267,13 +267,13 @@ set to C<undef>.
 =cut
 
 has documentation => (
-    required   => 1,
-    is         => 'rw',
-    lazy_build => 1,
-    index      => 'analyzed',
-    predicate  => 'has_documentation',
-    analyzer   => [qw(standard camelcase lowercase edge edge_camelcase)],
-    clearer    => 'clear_documentation',
+    is        => 'rw',
+    lazy      => 1,
+    builder   => '_build_documentation',
+    index     => 'analyzed',
+    predicate => 'has_documentation',
+    analyzer  => [qw(standard camelcase lowercase edge edge_camelcase)],
+    clearer   => 'clear_documentation',
 );
 
 sub _build_documentation {
@@ -330,10 +330,10 @@ has a level of C<0>).
 =cut
 
 has level => (
-    is         => 'ro',
-    required   => 1,
-    isa        => 'Int',
-    lazy_build => 1,
+    is      => 'ro',
+    isa     => 'Int',
+    lazy    => 1,
+    builder => '_build_level',
 );
 
 sub _build_level {
@@ -351,9 +351,9 @@ are removed to save space and for better snippet previews.
 
 has pod => (
     is           => 'ro',
-    required     => 1,
     isa          => 'ScalarRef',
-    lazy_build   => 1,
+    lazy         => 1,
+    builder      => '_build_pod',
     index        => 'analyzed',
     not_analyzed => 0,
     store        => 'no',
@@ -427,12 +427,12 @@ ArrayRef of ArrayRefs of offset and length of pod blocks. Example:
 =cut
 
 has pod_lines => (
-    is         => 'ro',
-    required   => 1,
-    isa        => 'ArrayRef',
-    type       => 'integer',
-    lazy_build => 1,
-    index      => 'no',
+    is      => 'ro',
+    isa     => 'ArrayRef',
+    type    => 'integer',
+    lazy    => 1,
+    builder => '_build_pod_lines',
+    index   => 'no',
 );
 
 sub _build_pod_lines {
@@ -451,10 +451,10 @@ L</content> and returns the number of lines.
 =cut
 
 has sloc => (
-    is         => 'ro',
-    required   => 1,
-    isa        => 'Int',
-    lazy_build => 1,
+    is      => 'ro',
+    isa     => 'Int',
+    lazy    => 1,
+    builder => '_build_sloc',
 );
 
 # Metrics from Perl::Metrics2::Plugin::Core.
@@ -527,7 +527,7 @@ has version => (
 
 =head2 version_numified
 
-B<Required>, B<Lazy Build>
+B<Lazy Build>
 
 Numeric representation of L</version>. Contains 0 if there is no version or the
 version could not be parsed.
@@ -535,16 +535,16 @@ version could not be parsed.
 =cut
 
 has version_numified => (
-    is         => 'ro',
-    isa        => 'Str',
-    lazy_build => 1,
-    required   => 1,
+    is      => 'ro',
+    isa     => 'Num',
+    lazy    => 1,
+    builder => '_build_version_numified',
 );
 
 sub _build_version_numified {
     my $self = shift;
     return 0 unless ( $self->version );
-    return MetaCPAN::Util::numify_version( $self->version ) . '';
+    return MetaCPAN::Util::numify_version( $self->version );
 }
 
 =head2 mime
@@ -554,9 +554,9 @@ MIME type of file. Derived using L<Plack::MIME> (for speed).
 =cut
 
 has mime => (
-    is         => 'ro',
-    required   => 1,
-    lazy_build => 1,
+    is      => 'ro',
+    lazy    => 1,
+    builder => '_build_mime',
 );
 
 sub _build_mime {
@@ -581,11 +581,11 @@ sub _build_path {
 }
 
 has dir => (
-    is         => 'ro',
-    lazy_build => 1,
-    isa        => 'Str',
-    required   => 1,
-    index      => 'not_analyzed'
+    is      => 'ro',
+    isa     => 'Str',
+    lazy    => 1,
+    builder => '_build_dir',
+    index   => 'not_analyzed'
 );
 
 sub _build_dir {
@@ -614,11 +614,12 @@ Built by calling L</content_cb>.
 =cut
 
 has content => (
-    is         => 'ro',
-    isa        => 'ScalarRef',
-    lazy_build => 1,
-    property   => 0,
-    required   => 0,
+    is       => 'ro',
+    isa      => 'ScalarRef',
+    lazy     => 1,
+    builder  => '_build_content',
+    property => 0,
+    required => 0,
 );
 
 sub _build_content {
