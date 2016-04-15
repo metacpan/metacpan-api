@@ -42,12 +42,6 @@ has pauseid => (
 
 has user => ( is => 'rw' );
 
-has dir => (
-    is         => 'ro',
-    required   => 1,
-    lazy_build => 1,
-);
-
 has gravatar_url => (
     is         => 'ro',
     lazy_build => 1,
@@ -104,11 +98,6 @@ has updated => (
     isa      => 'DateTime',
     required => 0,
 );
-
-sub _build_dir {
-    my $pauseid = ref $_[0] ? shift->pauseid : shift;
-    return MetaCPAN::Util::author_dir($pauseid);
-}
 
 sub _build_gravatar_url {
     my $self = shift;

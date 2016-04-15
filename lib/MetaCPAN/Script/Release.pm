@@ -12,7 +12,7 @@ use File::Find::Rule;
 use File::stat ();
 use LWP::UserAgent;
 use Log::Contextual qw( :log :dlog );
-use MetaCPAN::Document::Author;
+use MetaCPAN::Util;
 use MetaCPAN::Model::Release;
 use MetaCPAN::Types qw( Bool Dir HashRef Int Str );
 use Moose;
@@ -108,7 +108,7 @@ sub run {
             my $d    = CPAN::DistnameInfo->new($_);
             my $file = $self->home->file(
                 qw(var tmp http authors),
-                MetaCPAN::Document::Author::_build_dir( $d->cpanid ),
+                MetaCPAN::Util::author_dir( $d->cpanid ),
                 $d->filename,
             );
             my $ua = LWP::UserAgent->new(

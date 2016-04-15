@@ -6,7 +6,6 @@ use warnings;
 use Moose;
 use ElasticSearchX::Model::Document;
 
-use MetaCPAN::Document::Author;
 use MetaCPAN::Types qw(:all);
 use MetaCPAN::Util;
 
@@ -243,7 +242,7 @@ sub _build_download_url {
     my $self = shift;
     return
           'https://cpan.metacpan.org/authors/'
-        . MetaCPAN::Document::Author::_build_dir( $self->author ) . '/'
+        . MetaCPAN::Util::author_dir( $self->author ) . '/'
         . $self->archive;
 }
 
