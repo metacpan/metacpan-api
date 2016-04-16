@@ -7,12 +7,13 @@ use MetaCPAN::TestHelpers;
 
 test_release(
     {
-        name       => 'BadPod-0.01',
-        author     => 'MO',
-        authorized => \1,
-        first      => \1,
-        provides   => [ 'BadPod', ],
-        modules    => {
+        name        => 'BadPod-0.01',
+        author      => 'MO',
+        authorized  => \1,
+        first       => \1,
+        provides    => [ 'BadPod', ],
+        main_module => 'BadPod',
+        modules     => {
             'lib/BadPod.pm' => [
                 {
                     name             => 'BadPod',

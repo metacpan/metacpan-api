@@ -17,6 +17,8 @@ is( $release->name, 'Documentation-Hide-0.01', 'name ok' );
 
 is( $release->author, 'MO', 'author ok' );
 
+is( $release->main_module, 'Documentation::Hide', 'main_module ok' );
+
 ok( $release->first, 'Release is first' );
 
 {

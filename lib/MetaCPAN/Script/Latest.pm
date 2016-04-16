@@ -75,7 +75,8 @@ sub run {
                             filter => { bool => { must => \@module_filters } }
                         }
                     },
-                    #                    { term => { 'file.maturity' => 'released' } },
+
+           #                    { term => { 'file.maturity' => 'released' } },
                     { term => { 'maturity' => 'released' } },
                 ],
                 must_not => [
@@ -84,17 +85,23 @@ sub run {
                 ]
             }
         }
-    )->source(
+        )->source(
         [
-            'module.name', 'author', 'release', 'distribution',
-            'date',        'status',
+            'module.name',
+            'author',
+            'release',
+            'distribution',
+            'date',
+            'status',
         ]
-    )->size(100)->raw->scroll;
+        )->size(100)->raw->scroll;
 
     my ( %downgrade, %upgrade );
     log_debug { 'Found ' . $scroll->total . ' modules' };
 
     my $i = 0;
+
+    my @modules_to_purge;
 
     # For each file...
     while ( my $file = $scroll->next ) {
@@ -107,6 +114,8 @@ sub run {
             map {
             eval { $p->package( $_->{name} ) }
             } @{ $data->{module} };
+
+        push @modules_to_purge, @modules;
 
         # For each of the packages in this file...
         foreach my $module (@modules) {
@@ -168,6 +177,13 @@ sub run {
     }
     $bulk->flush;
     $self->index->refresh;
+
+    # We just want the CPAN::DistnameInfo
+    my @module_to_purge_dists = map { $_->distribution } @modules_to_purge;
+
+    # Call Fastly to purge
+    $self->cdn_purge_cpan_distnameinfos( \@module_to_purge_dists );
+
 }
 
 # Update the status for the release and all the files.

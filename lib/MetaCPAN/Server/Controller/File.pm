@@ -37,7 +37,9 @@ sub find : Path('') {
                 path    => join( '/', @path )
             }
         );
-        $c->stash( $file->{_source} || $file->{fields} );
+        if ( $file->{_source} || $file->{fields} ) {
+            $c->stash( $file->{_source} || $file->{fields} );
+        }
     } or $c->detach( '/not_found', [$@] );
 }
 

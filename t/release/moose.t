@@ -15,6 +15,10 @@ map { $first++ } grep { $_->first } @moose;
 
 is( $first, 1, 'only one moose is first' );
 
+is( $moose[0]->main_module, 'Moose', 'main_module ok' );
+
+is( $moose[1]->main_module, 'Moose', 'main_module ok' );
+
 ok(
     my $faq
         = $idx->type('file')

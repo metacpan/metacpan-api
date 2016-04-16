@@ -206,7 +206,74 @@ sub _build_document {
             ->put( { name => $self->distribution }, { create => 1 } );
     };
 
+    $self->_set_main_module( $self->modules, $document );
+
+    $document->changes_file( $self->get_changes_file( $self->files ) );
+
     return $document;
+}
+
+sub _set_main_module {
+    my $self = shift;
+    my ( $mod, $release ) = @_;
+
+    # Only select modules (files) that have modules (packages).
+    my @modules = grep { scalar @{ $_->module } } @$mod;
+
+    return unless @modules;
+
+    my $dist2module = $release->distribution;
+    $dist2module =~ s{-}{::}g;
+
+    if ( scalar @modules == 1 ) {
+
+        # there is only one module and it will become the main_module
+        $release->main_module( $modules[0]->module->[0]->name );
+        return;
+    }
+
+    foreach my $file (@modules) {
+
+        # the module has the exact name as the ditribution
+        if ( $file->module->[0]->name eq $dist2module ) {
+            $release->main_module( $file->module->[0]->name );
+            return;
+        }
+    }
+
+    # the distribution has modules on different levels
+    # the main_module is the first one with the minimum level
+    # or if they are on the same level, the one with the shortest name
+    my @sorted_modules = sort {
+        $a->level <=> $b->level
+            || length $a->module->[0]->name <=> length $b->module->[0]->name
+    } @modules;
+    $release->main_module( $sorted_modules[0]->module->[0]->name );
+
+}
+
+sub get_changes_file {
+    my $self          = shift;
+    my @files         = @{ $_[0] };
+    my @changes_files = qw(
+        Changelog
+        ChangeLog
+        CHANGELOG
+        Changes
+        CHANGES
+        NEWS
+    );
+
+    if ( $files[0]->distribution eq 'perl' ) {
+        foreach my $file (@files) {
+            if ( $file->name eq 'perldelta.pod' ) {
+                return $file->path;
+            }
+        }
+    }
+    foreach my $file (@files) {
+        return $file->path if grep { $_ eq $file->path } @changes_files;
+    }
 }
 
 sub _build_files {

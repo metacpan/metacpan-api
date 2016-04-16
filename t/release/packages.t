@@ -7,15 +7,15 @@ use Test::More;
 
 test_release(
     {
-        name       => 'Packages-1.103',
-        author     => 'RWSTAUNER',
-        abstract   => 'Package examples',
-        authorized => \1,
-        first      => \1,
-        provides   => [ 'Packages', 'Packages::BOM', ],
-        status     => 'latest',
-
-        modules => {
+        name        => 'Packages-1.103',
+        author      => 'RWSTAUNER',
+        abstract    => 'Package examples',
+        authorized  => \1,
+        first       => \1,
+        provides    => [ 'Packages', 'Packages::BOM', ],
+        status      => 'latest',
+        main_module => 'Packages',
+        modules     => {
             'lib/Packages.pm' => [
                 {
                     name             => 'Packages',
@@ -51,6 +51,11 @@ test_release(
             is ${ $file->pod },
                 q[NAME Packages::BOM - package in a file with a BOM],
                 'pod text';
+
+            is_deeply $self->file_by_path('lib/Packages/None.pm')
+                ->module,
+                [],
+                'pm file has no packages';
         },
     },
     'Test Packages release and its modules',

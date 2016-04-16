@@ -16,6 +16,7 @@ my $release = $idx->type('release')->get(
 is( $release->name,         'Prefer-Meta-JSON-1.1', 'name ok' );
 is( $release->distribution, 'Prefer-Meta-JSON',     'distribution ok' );
 is( $release->author,       'LOCAL',                'author ok' );
+is( $release->main_module,  'Prefer::Meta::JSON',   'main_module ok' );
 ok( $release->first, 'Release is first' );
 
 is( ref $release->metadata, 'HASH', 'comes with metadata in a hashref' );

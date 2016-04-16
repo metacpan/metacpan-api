@@ -7,12 +7,13 @@ use Test::More;
 
 test_release(
     {
-        name       => 'Binary-Data-0.01',
-        author     => 'BORISNAT',
-        authorized => \1,
-        first      => \1,
-        provides   => [ 'Binary::Data', 'Binary::Data::WithPod', ],
-        modules    => {
+        name        => 'Binary-Data-0.01',
+        author      => 'BORISNAT',
+        authorized  => \1,
+        first       => \1,
+        provides    => [ 'Binary::Data', 'Binary::Data::WithPod', ],
+        main_module => 'Binary::Data',
+        modules     => {
             'lib/Binary/Data.pm' => [
                 {
                     name             => 'Binary::Data',

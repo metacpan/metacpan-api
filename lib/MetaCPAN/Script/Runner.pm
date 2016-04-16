@@ -4,7 +4,6 @@ use strict;
 use warnings;
 
 use Config::JFDI;
-use FindBin;
 use File::Path ();
 use Hash::Merge::Simple qw(merge);
 use IO::Interactive qw(is_interactive);
@@ -34,20 +33,20 @@ sub run {
 
 sub build_config {
     my $config = Config::JFDI->new(
-        name => "metacpan",
-        path => "$FindBin::RealBin/../etc"
+        name => 'metacpan',
+        path => 'etc'
     )->get;
     if ( $ENV{HARNESS_ACTIVE} ) {
         my $tconf = Config::JFDI->new(
-            name => "metacpan",
-            file => "$FindBin::RealBin/../etc/metacpan_testing.pl"
+            name => 'metacpan',
+            file => 'etc/metacpan_testing.pl'
         )->get;
         $config = merge $config, $tconf;
     }
     elsif ( is_interactive() ) {
         my $iconf = Config::JFDI->new(
-            name => "metacpan",
-            file => "$FindBin::RealBin/../etc/metacpan_interactive.pl"
+            name => 'metacpan',
+            file => 'etc/metacpan_interactive.pl'
         )->get;
         $config = merge $config, $iconf;
     }

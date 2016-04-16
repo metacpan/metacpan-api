@@ -13,6 +13,7 @@ use Log::Contextual qw( :log :dlog );
 use Moose;
 use Parse::CSV;
 use Pithub;
+use URI::Escape qw(uri_escape);
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
@@ -74,6 +75,11 @@ sub run {
     my $self = shift;
     my $bugs = {};
 
+# NOTE: Order is important here.
+# Hash keys are distribution names.
+# rt issues are counted for all dists (the download tsv contains everything).
+# gh issues are counted for any dist with a github url in `resources.bugtracker.web`.
+# Any dists in the second will overwrite the first.
     foreach my $source ( @{ $self->source } ) {
         if ( $source eq 'github' ) {
             log_debug {'Fetching GitHub issues'};
@@ -140,6 +146,8 @@ sub retrieve_github_bugs {
     return $summary;
 }
 
+# Try (recursively) to find a github url in the resources hash.
+# FIXME: This should check bugtracker web exclusively, or at least first.
 sub github_user_repo_from_resources {
     my ( $self, $resources ) = @_;
     my ( $user, $repo, $source );
@@ -165,6 +173,7 @@ sub retrieve_rt_bugs {
 
     log_error { $resp->status_line } unless $resp->is_success;
 
+    # NOTE: This is sending a byte string.
     return $self->parse_tsv( $resp->content );
 }
 
@@ -173,6 +182,7 @@ sub parse_tsv {
     $tsv =~ s/^#\s*(dist\s.+)/$1/m;  # uncomment the field spec for Parse::CSV
     $tsv =~ s/^#.*\n//mg;
 
+    # NOTE: This is byte-oriented.
     my $tsv_parser = Parse::CSV->new(
         handle   => IO::String->new($tsv),
         sep_char => "\t",
@@ -183,8 +193,7 @@ sub parse_tsv {
     while ( my $row = $tsv_parser->fetch ) {
         $summary{ $row->{dist} } = {
             type   => 'rt',
-            source => 'https://rt.cpan.org/Public/Dist/Display.html?Name='
-                . $row->{dist},
+            source => $self->rt_dist_url( $row->{dist} ),
             active => $row->{active},
             closed => $row->{inactive},
             map { $_ => $row->{$_} + 0 }
@@ -194,6 +203,12 @@ sub parse_tsv {
     }
 
     return \%summary;
+}
+
+sub rt_dist_url {
+    my ( $self, $dist ) = @_;
+    return 'https://rt.cpan.org/Public/Dist/Display.html?Name='
+        . uri_escape($dist);
 }
 
 __PACKAGE__->meta->make_immutable;

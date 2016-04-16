@@ -35,6 +35,9 @@ around BUILDARGS => sub {
         @$attr{qw( distribution version )} = ( $1, $2 );
     }
 
+    # We handle this one specially.
+    delete $attr->{_expect}{tests};
+
     return $attr;
 };
 
@@ -51,7 +54,14 @@ has version_numified => (
     is      => 'ro',
     isa     => 'Str',
     lazy    => 1,
-    default => sub { 'version'->parse( shift->version )->numify + 0 },
+    default => sub {
+
+        # This is much simpler than what we do in the indexer.
+        # If we need to use Util we must need more tests.
+        my $v = $_[0]->version;
+        return 0 unless $v;
+        return 'version'->parse($v)->numify + 0;
+    },
 );
 
 has files => (
@@ -162,6 +172,28 @@ has name => (
     },
 );
 
+has tests => (
+    is        => 'ro',
+    predicate => 'expects_tests',
+);
+
+sub has_tests_ok {
+    my ($self) = @_;
+    my $tests = $self->data->tests;
+
+    # Don't test the actual numbers since we copy this out of the real
+    # database as a live test case.
+
+    is ref($tests), 'HASH', 'hashref of tests';
+
+    my @results = qw( pass fail na unknown );
+
+    ok exists( $tests->{$_} ), "has '$_' results" for @results;
+
+    ok List::Util::sum( map { $tests->{$_} } @results ) > 0,
+        'has some results';
+}
+
 push @attrs, qw( version_numified status archive name );
 
 test 'release attributes' => sub {
@@ -169,6 +201,15 @@ test 'release attributes' => sub {
 
     foreach my $attr (@attrs) {
         is $self->data->$attr, $self->$attr, "release $attr";
+    }
+
+    if ( $self->expects_tests ) {
+        if ( $self->tests eq '1' ) {
+            $self->has_tests_ok;
+        }
+        else {
+            is_deeply $self->data->tests, $self->tests, 'test results';
+        }
     }
 };
 

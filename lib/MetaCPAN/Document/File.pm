@@ -8,9 +8,8 @@ use Moose;
 use ElasticSearchX::Model::Document;
 
 use Encode;
-use List::MoreUtils qw(any uniq);
+use List::AllUtils qw( any );
 use MetaCPAN::Document::Module;
-use MetaCPAN::Pod::XHTML;
 use MetaCPAN::Types qw(:all);
 use MetaCPAN::Util;
 use MooseX::Types::Moose qw(ArrayRef);
@@ -258,8 +257,8 @@ has directory => (
 
 Holds the name for the documentation in this file.
 
-If the file L</is_pod_file|is a pod file>, the name is derived from the
-C<NAME> section. If the file L</is_perl_file|is a perl file> and the
+If the file L<is a pod file|/is_pod_file>, the name is derived from the
+C<NAME> section. If the file L<is a perl file|/is_perl_file> and the
 name from the C<NAME> section matches one of the modules in L</module>,
 it returns the name. Otherwise it returns the name of the first module
 in L</module>. If there are no modules in the file the documentation is
@@ -282,7 +281,7 @@ sub _build_documentation {
     $self->_build_abstract;
     my $documentation = $self->documentation if ( $self->has_documentation );
     return undef unless length $documentation;
-    return undef unless ( ${ $self->pod } );
+
     my @indexed = grep { $_->indexed } @{ $self->module || [] };
     if ( $documentation && $self->is_pod_file ) {
         return $documentation;
@@ -314,7 +313,13 @@ has indexed => (
     required => 1,
     is       => 'rw',
     isa      => 'Bool',
-    default  => 1,
+    lazy     => 1,
+    default  => sub {
+        my ($self) = @_;
+        return 0 if $self->is_in_other_files;
+        return 0 if !$self->metadata->should_index_file( $self->path );
+        return 1;
+    },
 );
 
 =head2 level
@@ -712,6 +717,52 @@ sub add_module {
     $self->module( [ @{ $self->module }, @modules ] );
 }
 
+=head2 is_in_other_files
+
+Returns true if the file is one from the list below.
+
+=cut
+
+sub is_in_other_files {
+    my $self  = shift;
+    my @other = qw(
+        AUTHORS
+        Build.PL
+        Changelog
+        ChangeLog
+        CHANGELOG
+        Changes
+        CHANGES
+        CONTRIBUTING
+        CONTRIBUTING.md
+        CONTRIBUTING.pod
+        Copying
+        COPYRIGHT
+        cpanfile
+        CREDITS
+        dist.ini
+        FAQ
+        INSTALL
+        INSTALL.md
+        INSTALL.pod
+        LICENSE
+        Makefile.PL
+        MANIFEST
+        META.json
+        META.yml
+        NEWS
+        README
+        README.md
+        README.pod
+        THANKS
+        Todo
+        ToDo
+        TODO
+    );
+
+    return any { $self->path eq $_ } @other;
+}
+
 =head2 set_indexed
 
 Expects a C<$meta> parameter which is an instance of L<CPAN::Meta>.
@@ -738,6 +789,15 @@ does not include any modules, the L</indexed> property is true.
 
 sub set_indexed {
     my ( $self, $meta ) = @_;
+
+    #files listed under 'other files' are not shown in a search
+    if ( $self->is_in_other_files() ) {
+        foreach my $mod ( @{ $self->module } ) {
+            $mod->indexed(0);
+        }
+        $self->indexed(0);
+        return;
+    }
 
     foreach my $mod ( @{ $self->module } ) {
         if ( $mod->name !~ /^[A-Za-z]/ ) {

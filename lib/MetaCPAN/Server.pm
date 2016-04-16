@@ -15,7 +15,9 @@ extends 'Catalyst';
 
 has api => ( is => 'ro' );
 
-#has '+stash' => ( clearer => 'clear_stash' );
+sub clear_stash {
+    %{ $_[0]->stash } = ();
+}
 
 __PACKAGE__->apply_request_class_roles(
     qw(

@@ -7,12 +7,13 @@ use Test::More;
 
 test_release(
     {
-        name       => 'Oops-LocalLib-0.01',
-        author     => 'BORISNAT',
-        authorized => \1,
-        first      => \1,
-        provides   => [ 'Fruits', 'Oops::LocalLib', ],
-        modules    => {
+        name        => 'Oops-LocalLib-0.01',
+        author      => 'BORISNAT',
+        authorized  => \1,
+        first       => \1,
+        provides    => [ 'Fruits', 'Oops::LocalLib', ],
+        main_module => 'Oops::LocalLib',
+        modules     => {
             'lib/Oops/LocalLib.pm' => [
                 {
                     name             => 'Oops::LocalLib',

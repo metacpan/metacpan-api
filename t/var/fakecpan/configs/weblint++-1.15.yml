@@ -1,0 +1,11 @@
+name: weblint++
+version: 1.15
+provides: {}
+
+X_Module_Faker:
+    # Live test case with an unusual name.  The ++ is part of the name
+    # (according to the META file),
+    # but CPAN::DistnameInfo parses it as part of the version.
+    archive_basename: weblint++-1.15
+    omitted_files:
+        - META.json

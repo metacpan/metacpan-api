@@ -1,0 +1,3 @@
+name: Devel-GoFaster
+# Floating point zero not treated the same as whole number zero.
+version: 0.000

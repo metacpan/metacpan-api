@@ -7,13 +7,14 @@ use Test::More;
 
 test_release(
     {
-        name       => 'local-lib-0.01',
-        author     => 'BORISNAT',
-        abstract   => 'Legitimate module',
-        authorized => \1,
-        first      => \1,
-        provides   => ['local::lib'],
-        modules    => {
+        name        => 'local-lib-0.01',
+        author      => 'BORISNAT',
+        abstract    => 'Legitimate module',
+        authorized  => \1,
+        first       => \1,
+        provides    => ['local::lib'],
+        main_module => 'local::lib',
+        modules     => {
             'lib/local/lib.pm' => [
                 {
                     name             => 'local::lib',

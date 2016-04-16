@@ -4,7 +4,6 @@ use strict;
 use warnings;
 
 use Digest::MD5    ();
-use JSON           ();
 use LWP::UserAgent ();
 use Log::Contextual qw( :log :dlog );
 use Moose;
@@ -22,7 +21,7 @@ sub run {
     my $ua   = LWP::UserAgent->new;
 
     if ( my $proxy = $ENV{http_proxy} || $ENV{HTTP_PROXY} ) {
-        $ua->proxy(['http'], $proxy);
+        $ua->proxy( ['http'], $proxy );
     }
 
     log_info { 'Downloading ' . $self->ratings };

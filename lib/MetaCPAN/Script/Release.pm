@@ -102,7 +102,8 @@ sub run {
         elsif ( -f $_ ) {
             push( @files, $_ );
         }
-        elsif ( $_ =~ /^https?:\/\// && CPAN::DistnameInfo->new($_)->cpanid )
+        elsif ( $_ =~ /^https?:\/\//
+            && CPAN::DistnameInfo->new($_)->cpanid )
         {
             my $d    = CPAN::DistnameInfo->new($_);
             my $file = $self->home->file(
@@ -131,22 +132,30 @@ sub run {
         }
     }
 
+    # Strip off any files in a Perl6 folder
+    # e.g. http://www.cpan.org/authors/id/J/JD/JDV/Perl6/
+    # As here we are indexing perl5 only
+    @files = grep { $_ !~ m{/Perl6/} } @files;
+
     log_info { scalar @files, " archives found" } if ( @files > 1 );
 
     # build here before we fork
+
+    # Going to purge everything as not sure about the 'skip' or fork
+    # logic - feel free to clean up so the CP::DistInfo isn't
+    my @module_to_purge_dists = map { CPAN::DistnameInfo->new($_) } @files;
+
     $self->index;
     $self->backpan_index if ( $self->detect_backpan );
     $self->perms;
     my @pid;
 
-    # FIXME: What is this supposed to do?  Don't do 'my' in a condition.
-    my $cpan = $self->index if ( $self->skip );
     eval { DB::enable_profile() };
     while ( my $file = shift @files ) {
 
         if ( $self->skip ) {
             my $d     = CPAN::DistnameInfo->new($file);
-            my $count = $cpan->type('release')->filter(
+            my $count = $self->index->type('release')->filter(
                 {
                     and => [
                         { term => { archive => $d->filename } },
@@ -170,13 +179,17 @@ sub run {
         else {
             try { $self->import_archive($file) }
             catch {
-                log_fatal {$_};
+                $self->handle_error( $_[0] );
             };
             exit if ( $self->children );
         }
     }
     waitpid( -1, 0 ) for (@pid);
     $self->index->refresh;
+
+    # Call Fastly to purge
+    $self->cdn_purge_cpan_distnameinfos( \@module_to_purge_dists );
+
 }
 
 sub import_archive {
