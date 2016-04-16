@@ -76,13 +76,6 @@ has name => (
 
 has version => ( is => 'ro' );
 
-has version_numified => (
-    is         => 'ro',
-    isa        => 'Str',
-    lazy_build => 1,
-    required   => 1,
-);
-
 has indexed => (
     is       => 'rw',
     required => 1,
@@ -104,11 +97,11 @@ has associated_pod => (
     is       => 'rw',
 );
 
-sub _build_version_numified {
-    my $self = shift;
-    return 0 unless ( $self->version );
-    return MetaCPAN::Util::numify_version( $self->version ) . q{};
-}
+# sub _build_version_numified {
+#     my $self = shift;
+#     return 0 unless ( $self->version );
+#     return MetaCPAN::Util::numify_version( $self->version ) . q{};
+# }
 
 my $bom
     = qr/(?:\x00\x00\xfe\xff|\xff\xfe\x00\x00|\xfe\xff|\xff\xfe|\xef\xbb\xbf)/;
