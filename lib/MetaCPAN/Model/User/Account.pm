@@ -129,8 +129,10 @@ after add_identity => sub {
         $self->clear_looks_human;
         my $profile = $self->index->model->index('cpan')->type('author')
             ->get( $identity->{key} );
-        $profile->user( $self->id ) if ($profile);
-        $profile->put;
+        if ($profile) {
+            $profile->user( $self->id );
+            $profile->put;
+        }
     }
 };
 
