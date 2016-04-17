@@ -38,13 +38,6 @@ the C<analyzed> and the C<camelcase> property.
 
 Contains the raw version string.
 
-=head2 version_numified
-
-B<Required>, B<Lazy Build>
-
-Numified version of L</version>. Contains 0 if there is no version or the
-version could not be parsed.
-
 =head2 indexed
 
 B<Default 0>
@@ -96,12 +89,6 @@ has associated_pod => (
     required => 0,
     is       => 'rw',
 );
-
-# sub _build_version_numified {
-#     my $self = shift;
-#     return 0 unless ( $self->version );
-#     return MetaCPAN::Util::numify_version( $self->version ) . q{};
-# }
 
 my $bom
     = qr/(?:\x00\x00\xfe\xff|\xff\xfe\x00\x00|\xfe\xff|\xff\xfe|\xef\xbb\xbf)/;
