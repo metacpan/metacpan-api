@@ -122,6 +122,20 @@ has status => (
 
 has bulk => ( is => 'rw', );
 
+=head2 run
+
+Try to fix some ordering issues, which are causing deep recursion.  There's
+probably a much cleaner way to do this.
+
+=cut
+
+sub run {
+    my $self = shift;
+    $self->document;
+    $self->document->changes_file( $self->get_changes_file( $self->files ) );
+    $self->_set_main_module( $self->modules, $self->document );
+}
+
 sub _build_archive {
     my $self = shift;
 
@@ -209,10 +223,6 @@ sub _build_document {
         $self->index->type('distribution')
             ->put( { name => $self->distribution }, { create => 1 } );
     };
-
-    $self->_set_main_module( $self->modules, $document );
-
-    $document->changes_file( $self->get_changes_file( $self->files ) );
 
     return $document;
 }
