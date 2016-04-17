@@ -17,7 +17,7 @@ use MetaCPAN::Model::Release;
 use MetaCPAN::Types qw( Bool Dir HashRef Int Str );
 use Moose;
 use PerlIO::gzip;
-use Try::Tiny;
+use Try::Tiny qw( catch try );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
@@ -212,9 +212,11 @@ sub import_archive {
 
     log_debug {'Gathering modules'};
 
+    $model->run;
+
     # build module -> pod file mapping
     # $file->clear_documentation to force a rebuild
-    my $files = $model->files();
+    my $files = $model->files;
     my %associated_pod;
     for ( grep { $_->indexed && $_->documentation } @$files ) {
         my $documentation = $_->clear_documentation;
