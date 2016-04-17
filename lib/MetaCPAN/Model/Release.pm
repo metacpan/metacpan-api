@@ -26,9 +26,10 @@ has archive => (
 );
 
 has dependencies => (
-    is         => 'ro',
-    isa        => ArrayRef,
-    lazy_build => 1,
+    is      => 'ro',
+    isa     => ArrayRef,
+    lazy    => 1,
+    builder => '_build_dependencies',
 );
 
 has distinfo => (
@@ -41,6 +42,7 @@ has distinfo => (
         distribution => 'dist',
         filename     => 'filename',
     },
+    lazy    => 1,
     default => sub {
         my $self = shift;
         return CPAN::DistnameInfo->new( $self->file );
@@ -48,9 +50,10 @@ has distinfo => (
 );
 
 has document => (
-    is         => 'ro',
-    isa        => 'MetaCPAN::Document::Release',
-    lazy_build => 1,
+    is      => 'ro',
+    isa     => 'MetaCPAN::Document::Release',
+    lazy    => 1,
+    builder => '_build_document',
 );
 
 has file => (
@@ -61,10 +64,11 @@ has file => (
 );
 
 has files => (
-    is         => 'ro',
-    isa        => ArrayRef,
-    init_arg   => undef,
-    lazy_build => 1,
+    is       => 'ro',
+    isa      => ArrayRef,
+    init_arg => undef,
+    lazy     => 1,
+    builder  => '_build_files',
 );
 
 has date => (
