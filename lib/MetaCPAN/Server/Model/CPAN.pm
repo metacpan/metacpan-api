@@ -11,9 +11,9 @@ extends 'Catalyst::Model';
 with 'CatalystX::Component::Traits';
 
 has esx_model => (
-    is      => 'ro',
-    handles => ['es'],
-    default => sub { MetaCPAN::Model->new( es => $_[0]->servers ) },
+    is         => 'ro',
+    lazy_build => 1,
+    handles    => ['es'],
 );
 
 has index => (
@@ -25,6 +25,10 @@ has servers => (
     is      => 'ro',
     default => ':9200',
 );
+
+sub _build_esx_model {
+    MetaCPAN::Model->new( es => shift->servers );
+}
 
 sub type {
     my $self = shift;
