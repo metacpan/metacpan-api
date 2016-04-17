@@ -2763,10 +2763,10 @@ DISTRIBUTIONS
       File::Spec 0
       IO::File 0
       perl 5.006
-  ExtUtils-HasCompiler-0.013
-    pathname: L/LE/LEONT/ExtUtils-HasCompiler-0.013.tar.gz
+  ExtUtils-HasCompiler-0.012
+    pathname: L/LE/LEONT/ExtUtils-HasCompiler-0.012.tar.gz
     provides:
-      ExtUtils::HasCompiler 0.013
+      ExtUtils::HasCompiler 0.012
     requirements:
       Carp 0
       DynaLoader 0
