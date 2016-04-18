@@ -209,7 +209,7 @@ File is binary or not.
 
 has binary => (
     is       => 'ro',
-    isa      => 'Bool',
+    isa      => Bool,
     required => 1,
     default  => 0,
 );
@@ -223,7 +223,7 @@ See L</set_authorized>.
 has authorized => (
     required => 1,
     is       => 'rw',
-    isa      => 'Bool',
+    isa      => Bool,
     default  => 1,
 );
 
@@ -249,7 +249,7 @@ Return true if this object represents a directory.
 has directory => (
     is       => 'ro',
     required => 1,
-    isa      => 'Bool',
+    isa      => Bool,
     default  => 0,
 );
 
@@ -312,7 +312,7 @@ not. See L</set_indexed> for a more verbose explanation.
 has indexed => (
     required => 1,
     is       => 'rw',
-    isa      => 'Bool',
+    isa      => Bool,
     lazy     => 1,
     default  => sub {
         my ($self) = @_;
@@ -331,7 +331,7 @@ has a level of C<0>).
 
 has level => (
     is      => 'ro',
-    isa     => 'Int',
+    isa     => Int,
     lazy    => 1,
     builder => '_build_level',
 );
@@ -351,7 +351,7 @@ are removed to save space and for better snippet previews.
 
 has pod => (
     is           => 'ro',
-    isa          => 'ScalarRef',
+    isa          => ScalarRef,
     lazy         => 1,
     builder      => '_build_pod',
     index        => 'analyzed',
@@ -428,7 +428,7 @@ ArrayRef of ArrayRefs of offset and length of pod blocks. Example:
 
 has pod_lines => (
     is      => 'ro',
-    isa     => 'ArrayRef',
+    isa     => ArrayRef,
     type    => 'integer',
     lazy    => 1,
     builder => '_build_pod_lines',
@@ -452,7 +452,7 @@ L</content> and returns the number of lines.
 
 has sloc => (
     is      => 'ro',
-    isa     => 'Int',
+    isa     => Int,
     lazy    => 1,
     builder => '_build_sloc',
 );
@@ -487,7 +487,7 @@ Source Lines of Pod. Returns the number of pod lines using L</pod_lines>.
 
 has slop => (
     is      => 'ro',
-    isa     => 'Int',
+    isa     => Int,
     lazy    => 1,
     default => '_build_slop',
     writer  => '_set_slop',
@@ -539,7 +539,7 @@ version could not be parsed.
 
 has version_numified => (
     is      => 'ro',
-    isa     => 'Num',
+    isa     => Num,
     lazy    => 1,
     builder => '_build_version_numified',
 );
@@ -585,7 +585,7 @@ sub _build_path {
 
 has dir => (
     is      => 'ro',
-    isa     => 'Str',
+    isa     => Str,
     lazy    => 1,
     builder => '_build_dir',
     index   => 'not_analyzed'
@@ -618,7 +618,7 @@ Built by calling L</content_cb>.
 
 has content => (
     is       => 'ro',
-    isa      => 'ScalarRef',
+    isa      => ScalarRef,
     lazy     => 1,
     builder  => '_build_content',
     property => 0,

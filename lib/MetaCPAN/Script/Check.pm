@@ -6,26 +6,27 @@ use warnings;
 use File::Spec::Functions qw(catfile);
 use Log::Contextual qw( :log );
 use Moose;
+use MetaCPAN::Types qw( Bool Int Str );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
 has modules => (
     is            => 'ro',
-    isa           => 'Bool',
+    isa           => Bool,
     default       => 0,
     documentation => 'check CPAN packages against MetaCPAN',
 );
 
 has module => (
     is            => 'ro',
-    isa           => 'Str',
+    isa           => Str,
     default       => '',
     documentation => 'the name of the module you are checking',
 );
 
 has max_errors => (
     is      => 'ro',
-    isa     => 'Int',
+    isa     => Int,
     default => 0,
     documentation =>
         'the maximum number of errors to encounter before stopping',
@@ -33,14 +34,14 @@ has max_errors => (
 
 has errors_only => (
     is            => 'ro',
-    isa           => 'Bool',
+    isa           => Bool,
     default       => 0,
     documentation => 'just show errors',
 );
 
 has error_count => (
     is      => 'rw',
-    isa     => 'Int',
+    isa     => Int,
     default => 0,
     traits  => ['NoGetopt']
 );

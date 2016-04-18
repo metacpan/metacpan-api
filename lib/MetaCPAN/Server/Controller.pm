@@ -8,6 +8,7 @@ use JSON;
 use List::MoreUtils ();
 use Moose::Util     ();
 use Moose;
+use MetaCPAN::Types qw( HashRef );
 
 BEGIN { extends 'Catalyst::Controller'; }
 
@@ -28,7 +29,7 @@ has type => (
 
 has relationships => (
     is      => 'ro',
-    isa     => 'HashRef',
+    isa     => HashRef,
     default => sub { {} },
     traits  => ['Hash'],
     handles => { has_relationships => 'count' },

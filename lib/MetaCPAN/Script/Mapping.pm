@@ -5,12 +5,13 @@ use warnings;
 
 use Log::Contextual qw( :log );
 use Moose;
+use MetaCPAN::Types qw( Bool );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
 has delete => (
     is            => 'ro',
-    isa           => 'Bool',
+    isa           => Bool,
     default       => 0,
     documentation => 'delete index if it exists already',
 );

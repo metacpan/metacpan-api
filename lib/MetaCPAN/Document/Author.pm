@@ -88,7 +88,7 @@ has location => ( is => 'ro', isa => Location, coerce => 1, required => 0 );
 
 has extra => (
     is          => 'ro',
-    isa         => 'HashRef',
+    isa         => HashRef,
     source_only => 1,
     dynamic     => 1,
     required    => 0,

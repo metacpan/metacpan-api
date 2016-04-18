@@ -2,10 +2,11 @@ package MetaCPAN::Server::Diff;
 
 use strict;
 use warnings;
+use Moose;
 
 use Encoding::FixLatin ();
 use IPC::Run3;
-use Moose;
+use MetaCPAN::Types qw( ArrayRef );
 
 has git => (
     is       => 'ro',
@@ -25,7 +26,7 @@ has raw => (
 
 has structured => (
     is      => 'ro',
-    isa     => 'ArrayRef',
+    isa     => ArrayRef,
     lazy    => 1,
     builder => '_build_structured',
 );

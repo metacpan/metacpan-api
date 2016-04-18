@@ -9,18 +9,19 @@ use MooseX::Aliases;
 use Parse::CPAN::Packages::Fast;
 use Regexp::Common qw(time);
 use Time::Local;
+use MetaCPAN::Types qw( Bool Str );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
 has dry_run => (
     is      => 'ro',
-    isa     => 'Bool',
+    isa     => Bool,
     default => 0,
 );
 
 has distribution => (
     is  => 'ro',
-    isa => 'Str',
+    isa => Str,
 );
 
 has packages => (

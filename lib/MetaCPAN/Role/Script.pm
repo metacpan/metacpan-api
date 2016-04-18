@@ -48,13 +48,13 @@ has model => (
 has index => (
     reader        => '_index',
     is            => 'ro',
-    isa           => 'Str',
+    isa           => Str,
     default       => 'cpan',
     documentation => 'Index to use, defaults to "cpan"',
 );
 
 has port => (
-    isa           => 'Int',
+    isa           => Int,
     is            => 'ro',
     required      => 1,
     documentation => 'Port for the proxy, defaults to 5000',
@@ -69,7 +69,7 @@ has home => (
 
 has config => (
     is      => 'ro',
-    isa     => 'HashRef',
+    isa     => HashRef,
     lazy    => 1,
     builder => '_build_config',
 );

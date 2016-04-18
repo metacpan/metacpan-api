@@ -8,7 +8,7 @@ use ElasticSearchX::Model::Document;
 
 with 'ElasticSearchX::Model::Document::EmbeddedRole';
 
-use MetaCPAN::Types qw(AssociatedPod);
+use MetaCPAN::Types qw( AssociatedPod Bool Str );
 use MetaCPAN::Util;
 
 =head1 SYNOPSIS
@@ -72,14 +72,14 @@ has version => ( is => 'ro' );
 has indexed => (
     is       => 'rw',
     required => 1,
-    isa      => 'Bool',
+    isa      => Bool,
     default  => 0,
 );
 
 has authorized => (
     is       => 'rw',
     required => 1,
-    isa      => 'Bool',
+    isa      => Bool,
     default  => 1,
 );
 

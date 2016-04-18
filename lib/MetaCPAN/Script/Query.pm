@@ -8,6 +8,7 @@ use JSON::XS;
 use Moose;
 use MooseX::Aliases;
 use YAML::Syck qw(Dump);
+use MetaCPAN::Types qw( Str );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
@@ -22,7 +23,7 @@ has X => (
 
 has d => (
     is            => 'ro',
-    isa           => 'Str',
+    isa           => Str,
     documentation => 'request body',
 );
 

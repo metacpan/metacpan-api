@@ -4,10 +4,11 @@ use strict;
 use warnings;
 
 use Moose;
+use MetaCPAN::Types qw( HashRef Maybe );
 
 has query => (
     is      => 'ro',
-    isa     => 'Maybe[HashRef]',
+    isa     => Maybe [HashRef],
     trigger => \&_build_clean_query,
 );
 

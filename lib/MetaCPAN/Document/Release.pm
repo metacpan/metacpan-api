@@ -103,8 +103,8 @@ This is an ArrayRef of modules that are included in this release.
 =cut
 
 has provides => (
-    isa => 'ArrayRef[Str]',
-    is  => 'rw',
+    isa => ArrayRef [Str],
+    is => 'rw',
 );
 
 has id => (
@@ -119,7 +119,7 @@ has [qw(version author archive)] => (
 
 has license => (
     is       => 'ro',
-    isa      => 'ArrayRef',
+    isa      => ArrayRef,
     required => 1,
 );
 
@@ -143,7 +143,7 @@ has [qw(distribution name)] => (
 
 has version_numified => (
     is      => 'ro',
-    isa     => 'Num',
+    isa     => Num,
     lazy    => 1,
     builder => '_build_version_numified',
 );
@@ -202,14 +202,14 @@ has tests => (
 has authorized => (
     is       => 'rw',
     required => 1,
-    isa      => 'Bool',
+    isa      => Bool,
     default  => 1,
 );
 
 has first => (
     is       => 'rw',
     required => 1,
-    isa      => 'Bool',
+    isa      => Bool,
     lazy     => 1,
     builder  => '_build_first',
 );
@@ -217,20 +217,20 @@ has first => (
 has metadata => (
     coerce      => 1,
     is          => 'ro',
-    isa         => 'HashRef',
+    isa         => HashRef,
     dynamic     => 1,
     source_only => 1,
 );
 
 has main_module => (
     is       => 'rw',
-    isa      => 'Str',
+    isa      => Str,
     required => 0,
 );
 
 has changes_file => (
     is       => 'rw',
-    isa      => 'Str',
+    isa      => Str,
     required => 0,
 );
 

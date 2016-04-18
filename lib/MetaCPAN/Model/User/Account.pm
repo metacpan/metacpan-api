@@ -91,7 +91,7 @@ is true if the user is connected to a PAUSE account or he L</passed_captcha>.
 
 has looks_human => (
     is      => 'ro',
-    isa     => 'Bool',
+    isa     => Bool,
     lazy    => 1,
     builder => '_build_looks_human',
     clearer => 'clear_looks_human',

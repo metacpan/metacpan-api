@@ -8,6 +8,7 @@ use HTTP::Request::Common;
 use List::Util ();
 use MetaCPAN::TestApp;
 use Test::More;
+use MetaCPAN::Types qw( ArrayRef HashRef Str );
 
 with( 'MetaCPAN::Tests::Model', 'MetaCPAN::Tests::Role::HasApp' );
 
@@ -47,12 +48,12 @@ my @attrs = qw(
 
 has [@attrs] => (
     is  => 'ro',
-    isa => 'Str',
+    isa => Str,
 );
 
 has version_numified => (
     is      => 'ro',
-    isa     => 'Str',
+    isa     => Str,
     lazy    => 1,
     default => sub {
 
@@ -66,7 +67,7 @@ has version_numified => (
 
 has files => (
     is      => 'ro',
-    isa     => 'ArrayRef',
+    isa     => ArrayRef,
     lazy    => 1,
     builder => '_build_files',
 );
@@ -98,7 +99,7 @@ sub file_by_path {
 
 has module_files => (
     is      => 'ro',
-    isa     => 'ArrayRef',
+    isa     => ArrayRef,
     lazy    => 1,
     builder => '_build_module_files',
 );
@@ -131,7 +132,7 @@ sub filter_files {
 
 has modules => (
     is      => 'ro',
-    isa     => 'HashRef',
+    isa     => HashRef,
     default => sub { +{} },
 );
 
@@ -151,20 +152,20 @@ sub pod {
 # but many test dists only have one version so 'latest' is more likely.
 has status => (
     is      => 'ro',
-    isa     => 'Str',
+    isa     => Str,
     default => 'latest',
 );
 
 has archive => (
     is      => 'ro',
-    isa     => 'Str',
+    isa     => Str,
     lazy    => 1,
     default => sub { shift->name . '.tar.gz' },
 );
 
 has name => (
     is      => 'ro',
-    isa     => 'Str',
+    isa     => Str,
     lazy    => 1,
     default => sub {
         my ($self) = @_;
