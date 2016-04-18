@@ -10,9 +10,6 @@ use MetaCPAN::Model;
 use MetaCPAN::Types qw(:all);
 use Moose::Role;
 
-with 'MetaCPAN::Role::Logger';
-with 'MetaCPAN::Role::Fastly';
-
 has 'cpan' => (
     is      => 'ro',
     isa     => Dir,
@@ -67,20 +64,8 @@ has home => (
     default => "$FindBin::RealBin/..",
 );
 
-has config => (
-    is      => 'ro',
-    isa     => HashRef,
-    lazy    => 1,
-    builder => '_build_config',
-);
-
-sub _build_config {
-    my $self = shift;
-    return Config::JFDI->new(
-        name => 'metacpan_server',
-        path => "$FindBin::RealBin/..",
-    )->get;
-}
+with 'MetaCPAN::Role::Fastly', 'MetaCPAN::Role::HasConfig',
+    'MetaCPAN::Role::Logger';
 
 sub handle_error {
     my ( $self, $error ) = @_;
