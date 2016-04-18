@@ -9,16 +9,17 @@ use ElasticSearchX::Model::Document;
 with 'ElasticSearchX::Model::Document::EmbeddedRole';
 
 use MetaCPAN::Util;
+use MetaCPAN::Types qw( Str );
 
 has name => (
     is       => 'ro',
-    isa      => 'Str',
+    isa      => Str,
     required => 1,
 );
 
 has id => (
     is       => 'ro',
-    isa      => 'Str',
+    isa      => Str,
     analyzer => ['simple'],
 );
 

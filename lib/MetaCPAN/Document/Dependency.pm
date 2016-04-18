@@ -9,19 +9,9 @@ use ElasticSearchX::Model::Document;
 with 'ElasticSearchX::Model::Document::EmbeddedRole';
 
 use MetaCPAN::Util;
+use MetaCPAN::Types qw( Str );
 
 has [qw(phase relationship module version)] => ( is => 'ro', required => 1 );
-
-has version_numified => (
-    is         => 'ro',
-    required   => 1,
-    isa        => 'Str',
-    lazy_build => 1,
-);
-
-sub _build_version_numified {
-    return MetaCPAN::Util::numify_version( shift->version ) . q{};
-}
 
 __PACKAGE__->meta->make_immutable;
 1;

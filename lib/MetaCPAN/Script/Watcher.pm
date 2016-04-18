@@ -2,24 +2,25 @@ package MetaCPAN::Script::Watcher;
 
 use strict;
 use warnings;
+use Moose;
 
 use CPAN::DistnameInfo;
 use JSON::XS;
 use Log::Contextual qw( :log );
 use MetaCPAN::Util;
-use Moose;
+use MetaCPAN::Types qw( Bool );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
 has backpan => (
     is            => 'ro',
-    isa           => 'Bool',
+    isa           => Bool,
     documentation => 'update deleted archives only',
 );
 
 has dry_run => (
     is      => 'ro',
-    isa     => 'Bool',
+    isa     => Bool,
     default => 0,
 );
 
@@ -102,12 +103,13 @@ sub backpan_changes {
             type   => 'release',
             fields => [qw(author archive)],
             body   => {
-                query  => {
+                query => {
                     filtered => {
                         query  => { match_all => {} },
                         filter => {
-                            not =>
-                                { filter => { term => { status => 'backpan' } } }
+                            not => {
+                                filter => { term => { status => 'backpan' } }
+                            }
                         },
                     }
                 }
@@ -196,7 +198,7 @@ sub reindex_release {
             search_type => 'scan',
             fields      => [ '_parent', '_source' ],
             body        => {
-                query       => {
+                query => {
                     filtered => {
                         query  => { match_all => {} },
                         filter => {

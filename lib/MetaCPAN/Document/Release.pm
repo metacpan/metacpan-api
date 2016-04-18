@@ -6,7 +6,6 @@ use warnings;
 use Moose;
 use ElasticSearchX::Model::Document;
 
-use MetaCPAN::Document::Author;
 use MetaCPAN::Types qw(:all);
 use MetaCPAN::Util;
 
@@ -104,8 +103,8 @@ This is an ArrayRef of modules that are included in this release.
 =cut
 
 has provides => (
-    isa => 'ArrayRef[Str]',
-    is  => 'rw',
+    isa => ArrayRef [Str],
+    is => 'rw',
 );
 
 has id => (
@@ -120,7 +119,7 @@ has [qw(version author archive)] => (
 
 has license => (
     is       => 'ro',
-    isa      => 'ArrayRef',
+    isa      => ArrayRef,
     required => 1,
 );
 
@@ -131,9 +130,9 @@ has date => (
 );
 
 has download_url => (
-    is         => 'ro',
-    required   => 1,
-    lazy_build => 1,
+    is      => 'ro',
+    lazy    => 1,
+    builder => '_build_download_url',
 );
 
 has [qw(distribution name)] => (
@@ -143,10 +142,10 @@ has [qw(distribution name)] => (
 );
 
 has version_numified => (
-    is         => 'ro',
-    required   => 1,
-    isa        => 'Str',
-    lazy_build => 1,
+    is      => 'ro',
+    isa     => Num,
+    lazy    => 1,
+    builder => '_build_version_numified',
 );
 
 has resources => (
@@ -203,14 +202,14 @@ has tests => (
 has authorized => (
     is       => 'rw',
     required => 1,
-    isa      => 'Bool',
+    isa      => Bool,
     default  => 1,
 );
 
 has first => (
     is       => 'rw',
     required => 1,
-    isa      => 'Bool',
+    isa      => Bool,
     lazy     => 1,
     builder  => '_build_first',
 );
@@ -218,32 +217,32 @@ has first => (
 has metadata => (
     coerce      => 1,
     is          => 'ro',
-    isa         => 'HashRef',
+    isa         => HashRef,
     dynamic     => 1,
     source_only => 1,
 );
 
 has main_module => (
     is       => 'rw',
-    isa      => 'Str',
+    isa      => Str,
     required => 0,
 );
 
 has changes_file => (
     is       => 'rw',
-    isa      => 'Str',
+    isa      => Str,
     required => 0,
 );
 
 sub _build_version_numified {
-    return MetaCPAN::Util::numify_version( shift->version ) . '';
+    return MetaCPAN::Util::numify_version( shift->version );
 }
 
 sub _build_download_url {
     my $self = shift;
     return
           'https://cpan.metacpan.org/authors/'
-        . MetaCPAN::Document::Author::_build_dir( $self->author ) . '/'
+        . MetaCPAN::Util::author_dir( $self->author ) . '/'
         . $self->archive;
 }
 

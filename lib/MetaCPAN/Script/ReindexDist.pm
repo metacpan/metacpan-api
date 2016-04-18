@@ -6,13 +6,15 @@ use strict;
 use warnings;
 
 use Moose;
+use MetaCPAN::Types qw( ArrayRef Bool Str );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
 has distribution => (
-    is         => 'ro',
-    isa        => 'Str',
-    lazy_build => 1,
+    is      => 'ro',
+    isa     => Str,
+    lazy    => 1,
+    builder => '_build_distribution',
 );
 
 sub _build_distribution {
@@ -24,9 +26,10 @@ sub _build_distribution {
 }
 
 has releases => (
-    is         => 'ro',
-    isa        => 'ArrayRef',
-    lazy_build => 1,
+    is      => 'ro',
+    isa     => ArrayRef,
+    lazy    => 1,
+    builder => '_build_releases',
 );
 
 sub _build_releases {
@@ -40,14 +43,15 @@ sub _build_releases {
 }
 
 has sources => (
-    is         => 'ro',
-    isa        => 'ArrayRef',
-    lazy_build => 1,
+    is      => 'ro',
+    isa     => ArrayRef,
+    lazy    => 1,
+    builder => '_build_sources',
 );
 
 has prompt => (
     is            => 'ro',
-    isa           => 'Bool',
+    isa           => Bool,
     default       => 1,
     documentation => q{Prompt for confirmation (default true)},
 );

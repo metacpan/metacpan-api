@@ -9,7 +9,7 @@ use Path::Class ();
 
 has level => (
     is            => 'ro',
-    isa           => 'Str',
+    isa           => Str,
     required      => 1,
     trigger       => \&set_level,
     documentation => 'Log level',

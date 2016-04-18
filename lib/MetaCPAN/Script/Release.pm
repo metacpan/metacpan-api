@@ -12,7 +12,7 @@ use File::Find::Rule;
 use File::stat ();
 use LWP::UserAgent;
 use Log::Contextual qw( :log :dlog );
-use MetaCPAN::Document::Author;
+use MetaCPAN::Util;
 use MetaCPAN::Model::Release;
 use MetaCPAN::Types qw( Bool Dir HashRef Int Str );
 use Moose;
@@ -63,15 +63,17 @@ has detect_backpan => (
 );
 
 has backpan_index => (
-    is         => 'ro',
-    lazy_build => 1,
+    is      => 'ro',
+    lazy    => 1,
+    builder => '_build_backpan_index',
 );
 
 has perms => (
-    is         => 'ro',
-    isa        => HashRef,
-    lazy_build => 1,
-    traits     => ['NoGetopt'],
+    is      => 'ro',
+    isa     => HashRef,
+    lazy    => 1,
+    builder => '_build_perms',
+    traits  => ['NoGetopt'],
 );
 
 has _bulk_size => (
@@ -108,7 +110,7 @@ sub run {
             my $d    = CPAN::DistnameInfo->new($_);
             my $file = $self->home->file(
                 qw(var tmp http authors),
-                MetaCPAN::Document::Author::_build_dir( $d->cpanid ),
+                MetaCPAN::Util::author_dir( $d->cpanid ),
                 $d->filename,
             );
             my $ua = LWP::UserAgent->new(

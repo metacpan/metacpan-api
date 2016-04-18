@@ -4,6 +4,7 @@ use Test::More;
 use Try::Tiny;
 
 use MetaCPAN::Server::Test ();
+use MetaCPAN::Types qw( ArrayRef HashRef Str );
 
 with qw(
     MetaCPAN::Tests::Extra
@@ -34,7 +35,7 @@ around BUILDARGS => sub {
 
 has _type => (
     is      => 'ro',
-    isa     => 'Str',
+    isa     => Str,
     builder => '_build_type',
 );
 
@@ -50,7 +51,7 @@ sub _build__model {
 
 has index => (
     reader  => '_index',
-    isa     => 'Str',
+    isa     => Str,
     default => 'cpan',
 );
 
@@ -61,7 +62,7 @@ sub index {
 
 has search => (
     is      => 'ro',
-    isa     => 'ArrayRef',
+    isa     => ArrayRef,
     lazy    => 1,
     builder => '_build_search',
 );
@@ -81,7 +82,7 @@ has data => (
 
 has _expectations => (
     is        => 'ro',
-    isa       => 'HashRef',
+    isa       => HashRef,
     predicate => 'has_expectations',
     init_arg  => '_expect',
 );

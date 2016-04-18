@@ -42,16 +42,11 @@ has pauseid => (
 
 has user => ( is => 'rw' );
 
-has dir => (
-    is         => 'ro',
-    required   => 1,
-    lazy_build => 1,
-);
-
 has gravatar_url => (
-    is         => 'ro',
-    lazy_build => 1,
-    isa        => NonEmptySimpleStr,
+    is      => 'ro',
+    isa     => NonEmptySimpleStr,
+    lazy    => 1,
+    builder => '_build_gravatar_url',
 );
 
 has profile => (
@@ -93,7 +88,7 @@ has location => ( is => 'ro', isa => Location, coerce => 1, required => 0 );
 
 has extra => (
     is          => 'ro',
-    isa         => 'HashRef',
+    isa         => HashRef,
     source_only => 1,
     dynamic     => 1,
     required    => 0,
@@ -104,11 +99,6 @@ has updated => (
     isa      => 'DateTime',
     required => 0,
 );
-
-sub _build_dir {
-    my $pauseid = ref $_[0] ? shift->pauseid : shift;
-    return MetaCPAN::Util::author_dir($pauseid);
-}
 
 sub _build_gravatar_url {
     my $self = shift;
@@ -121,7 +111,7 @@ sub _build_gravatar_url {
     # (by assigning an image to his author@cpan.org)
     # and now by changing this URL from metacpa.org
     return Gravatar::URL::gravatar_url(
-        email => $self->{pauseid} . '@cpan.org',
+        email => $self->pauseid . '@cpan.org',
         size  => 130,
         https => 1,
 

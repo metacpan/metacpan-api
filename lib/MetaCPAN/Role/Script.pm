@@ -14,10 +14,11 @@ with 'MetaCPAN::Role::Logger';
 with 'MetaCPAN::Role::Fastly';
 
 has 'cpan' => (
-    is         => 'rw',
-    isa        => Dir,
-    lazy_build => 1,
-    coerce     => 1,
+    is      => 'ro',
+    isa     => Dir,
+    lazy    => 1,
+    builder => '_build_cpan',
+    coerce  => 1,
     documentation =>
         'Location of a local CPAN mirror, looks for $ENV{MINICPAN} and ~/CPAN',
 );
@@ -37,18 +38,23 @@ has es => (
     documentation => 'Elasticsearch http connection string',
 );
 
-has model => ( lazy_build => 1, is => 'ro', traits => ['NoGetopt'] );
+has model => (
+    is      => 'ro',
+    lazy    => 1,
+    builder => '_build_model',
+    traits  => ['NoGetopt'],
+);
 
 has index => (
     reader        => '_index',
     is            => 'ro',
-    isa           => 'Str',
+    isa           => Str,
     default       => 'cpan',
     documentation => 'Index to use, defaults to "cpan"',
 );
 
 has port => (
-    isa           => 'Int',
+    isa           => Int,
     is            => 'ro',
     required      => 1,
     documentation => 'Port for the proxy, defaults to 5000',
@@ -63,7 +69,7 @@ has home => (
 
 has config => (
     is      => 'ro',
-    isa     => 'HashRef',
+    isa     => HashRef,
     lazy    => 1,
     builder => '_build_config',
 );

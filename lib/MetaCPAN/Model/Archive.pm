@@ -3,7 +3,7 @@ package MetaCPAN::Model::Archive;
 use v5.10;
 use Moose;
 use MooseX::StrictConstructor;
-use MetaCPAN::Types qw(AbsFile AbsDir Bool);
+use MetaCPAN::Types qw(AbsFile AbsDir ArrayRef Bool);
 
 use Archive::Any;
 use Carp;
@@ -112,7 +112,7 @@ A list of the files in the archive as an array ref.
 # A cheap way to cache the result.
 has files => (
     is       => 'ro',
-    isa      => 'ArrayRef',
+    isa      => ArrayRef,
     init_arg => undef,
     lazy     => 1,
     default  => sub {

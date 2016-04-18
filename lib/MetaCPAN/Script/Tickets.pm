@@ -14,6 +14,7 @@ use Moose;
 use Parse::CSV;
 use Pithub;
 use URI::Escape qw(uri_escape);
+use MetaCPAN::Types qw( ArrayRef Str );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
@@ -39,7 +40,7 @@ has github_token => (
 has source => (
     is       => 'ro',
     required => 1,
-    isa      => 'ArrayRef[Str]',
+    isa      => ArrayRef [Str],
     default  => sub { [qw(rt github)] },
 );
 

@@ -9,24 +9,26 @@ use MooseX::Aliases;
 use Parse::CPAN::Packages::Fast;
 use Regexp::Common qw(time);
 use Time::Local;
+use MetaCPAN::Types qw( Bool Str );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
 has dry_run => (
     is      => 'ro',
-    isa     => 'Bool',
+    isa     => Bool,
     default => 0,
 );
 
 has distribution => (
     is  => 'ro',
-    isa => 'Str',
+    isa => Str,
 );
 
 has packages => (
-    is         => 'ro',
-    lazy_build => 1,
-    traits     => ['NoGetopt'],
+    is      => 'ro',
+    lazy    => 1,
+    builder => '_build_packages',
+    traits  => ['NoGetopt'],
 );
 
 sub _build_packages {
@@ -75,8 +77,6 @@ sub run {
                             filter => { bool => { must => \@module_filters } }
                         }
                     },
-
-           #                    { term => { 'file.maturity' => 'released' } },
                     { term => { 'maturity' => 'released' } },
                 ],
                 must_not => [
