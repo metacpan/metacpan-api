@@ -86,7 +86,6 @@ has authorized => (
 # REINDEX: make 'ro' once a full reindex has been done
 has associated_pod => (
     isa      => AssociatedPod,
-    required => 0,
     is       => 'rw',
 );
 

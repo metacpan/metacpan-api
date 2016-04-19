@@ -32,7 +32,6 @@ has github_issues => (
 
 has github_token => (
     is       => 'ro',
-    required => 0,
     lazy     => 1,
     builder  => '_build_github_token',
 );

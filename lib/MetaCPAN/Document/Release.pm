@@ -164,7 +164,6 @@ has abstract => (
 );
 
 has dependency => (
-    required        => 0,
     is              => 'rw',
     isa             => Dependency,
     coerce          => 1,
@@ -225,13 +224,11 @@ has metadata => (
 has main_module => (
     is       => 'rw',
     isa      => Str,
-    required => 0,
 );
 
 has changes_file => (
     is       => 'rw',
     isa      => Str,
-    required => 0,
 );
 
 sub _build_version_numified {

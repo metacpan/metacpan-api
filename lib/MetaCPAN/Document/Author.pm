@@ -26,7 +26,6 @@ has asciiname => (
     required => 1,
     index    => 'analyzed',
     isa      => NonEmptySimpleStr,
-    required => 0,
 );
 
 has [qw(website email)] =>
@@ -52,7 +51,6 @@ has profile => (
     isa             => Profile,
     coerce          => 1,
     type            => 'nested',
-    required        => 0,
     include_in_root => 1,
 );
 
@@ -60,7 +58,6 @@ has blog => (
     is       => 'ro',
     isa      => Blog,
     coerce   => 1,
-    required => 0,
     dynamic  => 1,
 );
 
@@ -68,34 +65,30 @@ has perlmongers => (
     is       => 'ro',
     isa      => PerlMongers,
     coerce   => 1,
-    required => 0,
     dynamic  => 1,
 );
 
 has donation => (
     is       => 'ro',
     isa      => ArrayRef [ Dict [ name => NonEmptySimpleStr, id => Str ] ],
-    required => 0,
     dynamic  => 1,
 );
 
 has [qw(city region country)] =>
-    ( is => 'ro', required => 0, isa => NonEmptySimpleStr );
+    ( is => 'ro', isa => NonEmptySimpleStr );
 
-has location => ( is => 'ro', isa => Location, coerce => 1, required => 0 );
+has location => ( is => 'ro', isa => Location, coerce => 1 );
 
 has extra => (
     is          => 'ro',
     isa         => HashRef,
     source_only => 1,
     dynamic     => 1,
-    required    => 0,
 );
 
 has updated => (
     is       => 'ro',
     isa      => 'DateTime',
-    required => 0,
 );
 
 sub _build_gravatar_url {

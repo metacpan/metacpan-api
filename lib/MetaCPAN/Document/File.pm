@@ -100,7 +100,6 @@ modules defined in that class (i.e. package declarations).
 =cut
 
 has module => (
-    required        => 0,
     is              => 'rw',
     isa             => Module,
     type            => 'nested',
@@ -512,7 +511,6 @@ C<gid>, C<size> and C<mtime>.
 has stat => (
     is       => 'ro',
     isa      => Stat,
-    required => 0,
     dynamic  => 1,
 );
 
@@ -523,8 +521,7 @@ Contains the raw version string.
 =cut
 
 has version => (
-    is       => 'ro',
-    required => 0,
+    is => 'ro',
 );
 
 =head2 version_numified
@@ -621,7 +618,6 @@ has content => (
     lazy     => 1,
     builder  => '_build_content',
     property => 0,
-    required => 0,
 );
 
 sub _build_content {
@@ -641,7 +637,6 @@ Callback that returns the content of the file as a ScalarRef.
 has content_cb => (
     is       => 'ro',
     property => 0,
-    required => 0,
     default  => sub {
         sub { \'' }
     },

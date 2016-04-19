@@ -20,9 +20,8 @@ ID of user account.
 =cut
 
 has id => (
-    id       => 1,
-    required => 0,
-    is       => 'rw',
+    id => 1,
+    is => 'rw',
 );
 
 =head2 identity
