@@ -12,7 +12,6 @@ use List::AllUtils qw( any );
 use MetaCPAN::Document::Module;
 use MetaCPAN::Types qw(:all);
 use MetaCPAN::Util;
-use MooseX::Types::Moose qw(ArrayRef);
 use Plack::MIME;
 use Pod::Text;
 use Try::Tiny;

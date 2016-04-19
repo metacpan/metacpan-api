@@ -8,9 +8,8 @@ use ElasticSearchX::Model::Document;
 
 use MetaCPAN::Model::User::Identity;
 use MetaCPAN::Types qw(:all);
-use MetaCPAN::Util;
-use MooseX::Types::Moose qw(Str ArrayRef);
 use MooseX::Types::Structured qw(Dict);
+use MetaCPAN::Util;
 
 =head1 PROPERTIES
 

@@ -7,8 +7,7 @@ use namespace::autoclean;
 use Moose;
 use ElasticSearchX::Model::Document;
 
-use MetaCPAN::Types qw(BugSummary);
-use MooseX::Types::Moose qw(ArrayRef);
+use MetaCPAN::Types qw( ArrayRef BugSummary );
 
 has name => (
     is       => 'ro',

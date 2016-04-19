@@ -11,10 +11,8 @@ use ElasticSearchX::Model::Document;
 # load order not important
 use Gravatar::URL ();
 use MetaCPAN::Types qw(:all);
-use MetaCPAN::Util;
-use MooseX::Types::Common::String qw(NonEmptySimpleStr);
-use MooseX::Types::Moose qw( Int Num Str ArrayRef HashRef Undef);
 use MooseX::Types::Structured qw(Dict Tuple Optional);
+use MetaCPAN::Util;
 
 has name => (
     is       => 'ro',
