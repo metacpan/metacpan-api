@@ -21,7 +21,7 @@ ID of user account.
 
 has id => (
     id => 1,
-    is => 'rw',
+    is => 'ro',
 );
 
 =head2 identity
@@ -48,8 +48,9 @@ The code attribute is used temporarily when authenticating using OAuth.
 =cut
 
 has code => (
-    is      => 'rw',
+    is      => 'ro',
     clearer => 'clear_token',
+    writer  => '_set_code',
 );
 
 =head2 access_token
@@ -76,7 +77,7 @@ L<DateTime> when the user passed the captcha.
 =cut
 
 has passed_captcha => (
-    is  => 'rw',
+    is  => 'ro',
     isa => 'DateTime',
 );
 
@@ -127,7 +128,7 @@ after add_identity => sub {
         $self->clear_looks_human;
         my $profile = $self->index->model->index('cpan')->type('author')
             ->get( $identity->{key} );
-        $profile->user( $self->id ) if ($profile);
+        $profile->_set_user( $self->id ) if ($profile);
         $profile->put;
     }
 };

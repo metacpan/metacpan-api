@@ -16,7 +16,7 @@ has name => (
 );
 
 has bugs => (
-    is      => 'rw',
+    is      => 'ro',
     isa     => BugSummary,
     dynamic => 1,
 );
@@ -33,7 +33,7 @@ sub set_first_release {
     my $release = $self->releases->sort( ["date"] )->first;
     return unless $release;
     return $release if $release->first;
-    $release->first(1);
+    $release->_set_first(1);
     $release->put;
     return $release;
 }
@@ -44,7 +44,7 @@ sub unset_first_release {
         = $self->releases->filter( { term => { "release.first" => \1 }, } )
         ->size(200)->scroll;
     while ( my $release = $releases->next ) {
-        $release->first(0);
+        $release->_set_first(0);
         $release->update;
     }
     $self->index->refresh if $releases->total;

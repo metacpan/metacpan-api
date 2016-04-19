@@ -13,10 +13,11 @@ use Pod::POM::View::Pod;
 use Pod::Text;
 
 has perldoc_url_prefix => (
-    is      => 'rw',
+    is      => 'ro',
     isa     => Uri,
     coerce  => 1,
     default => 'https://metacpan.org/pod/',
+    writer  => '_set_perldoc_url_prefix',
 );
 
 sub markdown_renderer {
@@ -44,7 +45,7 @@ sub html_renderer {
     $parser->html_header('');
     $parser->index(1);
     $parser->no_errata_section(1);
-    $parser->perldoc_url_prefix( $self->perldoc_url_prefix );
+    $parser->_set_perldoc_url_prefix( $self->perldoc_url_prefix );
 
     return $parser;
 }

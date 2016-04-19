@@ -195,7 +195,7 @@ sub reindex {
         }
     );
 
-    $release->status($status);
+    $release->_set_status($status);
     log_info {
         $status eq 'latest' ? 'Upgrading ' : 'Downgrading ',
             'release ', $release->name || q[];

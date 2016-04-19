@@ -23,7 +23,7 @@ Loads author info into db. Requires the presence of a local CPAN/minicpan.
 =cut
 
 has author_fh => (
-    is      => 'rw',
+    is      => 'ro',
     traits  => ['NoGetopt'],
     lazy    => 1,
     default => sub { shift->cpan . '/authors/00whois.xml' },

@@ -73,20 +73,20 @@ has _surrogate_keys_to_purge => (
 # How long should the CDN cache, irrespective of
 # other cache headers
 has cdn_cache_ttl => (
-    is      => 'rw',
+    is      => 'ro',
     isa     => Int,
     default => 0,
 );
 
 # Make sure the CDN NEVER caches, ignore any other cdn_cache_ttl settings
 has cdn_never_cache => (
-    is      => 'rw',
+    is      => 'ro',
     isa     => Bool,
     default => 0,
 );
 
 has browser_max_age => (
-    is      => 'rw',
+    is      => 'ro',
     isa     => Maybe [Int],
     default => sub {undef},
 );

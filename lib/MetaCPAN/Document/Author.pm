@@ -37,7 +37,10 @@ has pauseid => (
     id       => 1,
 );
 
-has user => ( is => 'rw' );
+has user => (
+    is     => 'ro',
+    writer => '_set_user',
+);
 
 has gravatar_url => (
     is      => 'ro',

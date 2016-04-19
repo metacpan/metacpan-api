@@ -103,8 +103,9 @@ This is an ArrayRef of modules that are included in this release.
 =cut
 
 has provides => (
-    isa => ArrayRef [Str],
-    is => 'rw',
+    is     => 'ro',
+    isa    => ArrayRef [Str],
+    writer => '_set_provides',
 );
 
 has id => (
@@ -158,13 +159,14 @@ has resources => (
 );
 
 has abstract => (
-    is        => 'rw',
+    is        => 'ro',
     index     => 'analyzed',
     predicate => 'has_abstract',
+    writer    => '_set_abstract',
 );
 
 has dependency => (
-    is              => 'rw',
+    is              => 'ro',
     isa             => Dependency,
     coerce          => 1,
     type            => 'nested',
@@ -175,9 +177,10 @@ has dependency => (
 # The indexer scripts will upgrade it to 'latest' if it's the version in
 # 02packages or downgrade it to 'backpan' if it gets deleted.
 has status => (
-    is       => 'rw',
+    is       => 'ro',
     required => 1,
     default  => 'cpan',
+    writer   => '_set_status',
 );
 
 has maturity => (
@@ -199,18 +202,19 @@ has tests => (
 );
 
 has authorized => (
-    is       => 'rw',
+    is       => 'ro',
     required => 1,
     isa      => Bool,
     default  => 1,
 );
 
 has first => (
-    is       => 'rw',
+    is       => 'ro',
     required => 1,
     isa      => Bool,
     lazy     => 1,
     builder  => '_build_first',
+    writer   => '_set_first',
 );
 
 has metadata => (
@@ -222,13 +226,15 @@ has metadata => (
 );
 
 has main_module => (
-    is       => 'rw',
-    isa      => Str,
+    is     => 'ro',
+    isa    => Str,
+    writer => '_set_main_module',
 );
 
 has changes_file => (
-    is       => 'rw',
-    isa      => Str,
+    is     => 'ro',
+    isa    => Str,
+    writer => '_set_changes_file',
 );
 
 sub _build_version_numified {

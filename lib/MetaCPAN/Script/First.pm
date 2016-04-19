@@ -10,7 +10,7 @@ use MetaCPAN::Types qw( Str );
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
 has distribution => (
-    is            => 'rw',
+    is            => 'ro',
     isa           => Str,
     documentation => q{set the 'first' for only this distribution},
 );

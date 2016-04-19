@@ -27,7 +27,7 @@ sub _build_ua {
 }
 
 has 'sreg' => (
-    is      => 'rw',
+    is      => 'ro',
     isa     => Str,
     default => 'http://openid.net/extensions/sreg/1.1',
 );

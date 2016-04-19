@@ -73,7 +73,7 @@ sub _build_abstract {
         $abstract = MetaCPAN::Util::strip_pod($abstract);
     }
     if ($documentation) {
-        $self->documentation( MetaCPAN::Util::strip_pod($documentation) );
+        $self->_set_documentation( MetaCPAN::Util::strip_pod($documentation) );
     }
     return $abstract;
 }
@@ -100,12 +100,13 @@ modules defined in that class (i.e. package declarations).
 =cut
 
 has module => (
-    is              => 'rw',
+    is              => 'ro',
     isa             => Module,
     type            => 'nested',
     include_in_root => 1,
     coerce          => 1,
     clearer         => 'clear_module',
+    writer          => '_set_module',
     lazy            => 1,
     default         => sub { [] },
 );
@@ -220,9 +221,10 @@ See L</set_authorized>.
 
 has authorized => (
     required => 1,
-    is       => 'rw',
+    is       => 'ro',
     isa      => Bool,
     default  => 1,
+    writer   => '_set_authorized',
 );
 
 =head2 maturity
@@ -265,13 +267,14 @@ set to C<undef>.
 =cut
 
 has documentation => (
-    is        => 'rw',
+    is        => 'ro',
     lazy      => 1,
     builder   => '_build_documentation',
     index     => 'analyzed',
     predicate => 'has_documentation',
     analyzer  => [qw(standard camelcase lowercase edge edge_camelcase)],
     clearer   => 'clear_documentation',
+    writer    => '_set_documentation',
 );
 
 sub _build_documentation {
@@ -309,7 +312,7 @@ not. See L</set_indexed> for a more verbose explanation.
 
 has indexed => (
     required => 1,
-    is       => 'rw',
+    is       => 'ro',
     isa      => Bool,
     lazy     => 1,
     default  => sub {
@@ -318,6 +321,7 @@ has indexed => (
         return 0 if !$self->metadata->should_index_file( $self->path );
         return 1;
     },
+    writer   => '_set_indexed',
 );
 
 =head2 level
@@ -712,7 +716,7 @@ sub add_module {
     my ( $self, @modules ) = @_;
     $_ = MetaCPAN::Document::Module->new($_)
         for ( grep { ref $_ eq 'HASH' } @modules );
-    $self->module( [ @{ $self->module }, @modules ] );
+    $self->_set_module( [ @{ $self->module }, @modules ] );
 }
 
 =head2 is_in_other_files
@@ -791,18 +795,18 @@ sub set_indexed {
     #files listed under 'other files' are not shown in a search
     if ( $self->is_in_other_files() ) {
         foreach my $mod ( @{ $self->module } ) {
-            $mod->indexed(0);
+            $mod->_set_indexed(0);
         }
-        $self->indexed(0);
+        $self->_set_indexed(0);
         return;
     }
 
     foreach my $mod ( @{ $self->module } ) {
         if ( $mod->name !~ /^[A-Za-z]/ ) {
-            $mod->indexed(0);
+            $mod->_set_indexed(0);
             next;
         }
-        $mod->indexed(
+        $mod->_set_indexed(
               $meta->should_index_package( $mod->name )
             ? $mod->hide_from_pause( ${ $self->content }, $self->name )
                     ? 0
@@ -810,7 +814,7 @@ sub set_indexed {
             : 0
         ) unless ( $mod->indexed );
     }
-    $self->indexed(
+    $self->_set_indexed(
 
         # .pm file with no package declaration but pod should be indexed
         !@{ $self->module } ||
@@ -850,11 +854,11 @@ sub set_authorized {
     # only authorized perl distributions make it into the CPAN
     return () if ( $self->distribution eq 'perl' );
     foreach my $module ( @{ $self->module } ) {
-        $module->authorized(0)
+        $module->_set_authorized(0)
             if ( $perms->{ $module->name } && !grep { $_ eq $self->author }
             @{ $perms->{ $module->name } } );
     }
-    $self->authorized(0)
+    $self->_set_authorized(0)
         if ( $self->authorized
         && $self->documentation
         && $perms->{ $self->documentation }

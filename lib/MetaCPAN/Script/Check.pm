@@ -40,10 +40,11 @@ has errors_only => (
 );
 
 has error_count => (
-    is      => 'rw',
+    is      => 'ro',
     isa     => Int,
     default => 0,
-    traits  => ['NoGetopt']
+    traits  => ['NoGetopt'],
+    writer  => '_set_error_count',
 );
 
 sub run {
@@ -181,7 +182,7 @@ sub check_modules {
                                 "    DATE      : $rel->{fields}->{date}";
                             };
                         }
-                        $self->error_count( $self->error_count + 1 );
+                        $self->_set_error_count( $self->error_count + 1 );
                     }
                 }
                 elsif (@files) {
@@ -201,13 +202,13 @@ sub check_modules {
                         };
                         log_warn {"    DATE       : $file->{fields}->{date}"};
                     }
-                    $self->error_count( $self->error_count + 1 );
+                    $self->_set_error_count( $self->error_count + 1 );
                 }
                 else {
                     log_error {
                         "Module $pkg [$dist] doesn't not appear in ElasticSearch!";
                     };
-                    $self->error_count( $self->error_count + 1 );
+                    $self->_set_error_count( $self->error_count + 1 );
                 }
                 last if $self->module;
             }
