@@ -83,7 +83,6 @@ has data => (
 has _expectations => (
     is        => 'ro',
     isa       => HashRef,
-    predicate => 'has_expectations',
     init_arg  => '_expect',
 );
 

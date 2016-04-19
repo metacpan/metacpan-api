@@ -20,7 +20,6 @@ has logger => (
     required  => 1,
     isa       => Logger,
     coerce    => 1,
-    predicate => 'has_logger',
     traits    => ['NoGetopt'],
 );
 
