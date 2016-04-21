@@ -44,9 +44,14 @@ sub run {
     log_debug {'Deleting old CPANRatings'};
 
     $type->filter( { term => { user => 'CPANRatings' } } )->delete;
-    my $bulk  = $self->index->bulk( size => 500 );
-    my $index = $self->index->name;
-    my $date  = DateTime->now->iso8601;
+
+    my $bulk = $self->es->bulk_helper(
+        index     => $self->index->name,
+        type      => 'rating',
+        max_count => 500,
+    );
+
+    my $date = DateTime->now->iso8601;
     while ( my $rating = $parser->fetch ) {
         next unless ( $rating->{review_count} );
         my $data = {
@@ -59,16 +64,14 @@ sub run {
         };
 
         for ( my $i = 0; $i < $rating->{review_count}; $i++ ) {
-            $bulk->put(
+            $bulk->create(
                 {
-                    index => $index,
-                    type  => 'rating',
-                    body  => Dlog_trace {$_} $data,
+                    source => Dlog_trace {$_} $data,
                 }
             );
         }
     }
-    $bulk->commit;
+    $bulk->flush;
     $self->index->refresh;
     log_info {'done'};
 }
