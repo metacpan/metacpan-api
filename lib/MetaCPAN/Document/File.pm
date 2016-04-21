@@ -160,16 +160,19 @@ sub _build_description {
         = MetaCPAN::Util::extract_section( ${ $self->content },
         'DESCRIPTION' );
     return undef unless ($section);
+
     my $parser = Pod::Text->new;
-    my $text   = "";
+    my $text   = q{};
     $parser->output_string( \$text );
 
     try {
         $parser->parse_string_document("=pod\n\n$section");
     }
     catch {
-        warn $_[0];
+        warn $_;
     };
+
+    return undef unless $text;
 
     $text =~ s/\s+/ /g;
     $text =~ s/^\s+//;

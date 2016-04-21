@@ -528,12 +528,13 @@ subtest 'pod parsing errors are not fatal' => sub {
 package Foo;
 use strict;
 
-=head1 NAME
+=head1 DESCRIPTION
 
 Foo - mymodule1 abstract
 POD
 
     no warnings 'redefine';
+
     local *Pod::Text::parse_string_document = sub {
         die "# [fake pod error]\n";
     };
