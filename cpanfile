@@ -42,7 +42,7 @@ requires 'Devel::ArgNames';
 requires 'Digest::MD5';
 requires 'Digest::SHA1';
 requires 'EV';
-requires 'ElasticSearchX::Model', '1.0.0';
+requires 'ElasticSearchX::Model', '1.0.1';
 requires 'Email::Address';
 requires 'Email::Sender::Simple';
 requires 'Email::Simple';
