@@ -8225,6 +8225,17 @@ DISTRIBUTIONS
       ExtUtils::Manifest 0
       Test::Builder 0.30
       Test::More 0.60
+  Test-Vars-0.008
+    pathname: D/DR/DROLSKY/Test-Vars-0.008.tar.gz
+    provides:
+      Test::Vars 0.008
+    requirements:
+      B 0
+      ExtUtils::MakeMaker 6.59
+      Module::Build 0.38
+      Test::More 0.88
+      parent 0
+      perl 5.010000
   Test-WWW-Mechanize-1.44
     pathname: P/PE/PETDANCE/Test-WWW-Mechanize-1.44.tar.gz
     provides:
