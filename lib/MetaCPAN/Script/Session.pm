@@ -16,7 +16,8 @@ sub run {
         scroll => '1m',
         index  => 'user',
         type   => 'session',
-        body => { query  => { filtered => { query => { match_all => {} }, }, }, },
+        body =>
+            { query => { filtered => { query => { match_all => {} }, }, }, },
     );
 
     my @delete;

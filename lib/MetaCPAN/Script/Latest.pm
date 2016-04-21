@@ -87,12 +87,8 @@ sub run {
         }
         )->source(
         [
-            'module.name',
-            'author',
-            'release',
-            'distribution',
-            'date',
-            'status',
+            'module.name', 'author', 'release', 'distribution',
+            'date',        'status',
         ]
         )->size(100)->raw->scroll;
 

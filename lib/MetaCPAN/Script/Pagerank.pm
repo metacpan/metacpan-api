@@ -28,8 +28,9 @@ sub run {
                     filter => {
                         and => [
                             {
-                                term =>
-                                    { 'release.dependency.phase' => 'runtime' }
+                                term => {
+                                    'release.dependency.phase' => 'runtime'
+                                }
                             },
                             { term => { status => 'latest' } },
                         ]
@@ -70,14 +71,14 @@ sub get_recent_modules {
     my $scroll = $self->es->scroll_helper(
         index => $self->index->name,
         type  => 'file',
-        body => {
+        body  => {
             query => {
                 filtered => {
                     query  => { match_all => {} },
                     filter => {
                         and => [
-                            { term => { 'file.status'            => 'latest' } },
-                            { term => { 'file.module.indexed'    => \1 } },
+                            { term => { 'file.status'         => 'latest' } },
+                            { term => { 'file.module.indexed' => \1 } },
                             { term => { 'file.module.authorized' => \1 } },
                         ]
                     }

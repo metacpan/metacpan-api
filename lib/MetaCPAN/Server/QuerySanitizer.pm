@@ -51,6 +51,7 @@ sub _scan_hash_tree {
             _scan_hash_tree($item) if ref($item);
         }
     }
+
     # Mickey: what about $ref eq 'JSON::PP::Boolean' ?
 }
 

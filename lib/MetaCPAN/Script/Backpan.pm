@@ -46,7 +46,7 @@ sub update_status {
         type   => 'release',
         fields => [ 'author', 'name' ],
         body   => {
-            query  => {
+            query => {
                 filtered => {
                     query  => { match_all => {} },
                     filter => {
