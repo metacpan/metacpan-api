@@ -14,6 +14,7 @@ use Moose;
 use Search::Elasticsearch;
 use Search::Elasticsearch::TestServer;
 use Test::More;
+use Try::Tiny qw( catch try );
 
 has es_client => (
     is      => 'ro',
@@ -104,19 +105,22 @@ sub _build_es_client {
 
     ok( $es, 'got ElasticSearch object' );
 
-    my $host = $self->_es_home;
-
-    ok( !$@, "Connected to the Elasticsearch test instance on $host" )
-        or do {
-        diag(<<EOF);
-Failed to connect to the Elasticsearch test instance on $host.
+    my $host;
+    try {
+        $host = $self->_es_home;
+    }
+    catch {
+        diag(<<"EOF");
+Failed to connect to the Elasticsearch test instance on ${\$self->es_home}.
 Did you start one up? See https://github.com/CPAN-API/cpan-api/wiki/Installation
 for more information.
+Error: $_
 EOF
 
         BAIL_OUT('Test environment not set up properly');
-        };
+    };
 
+    diag("Connected to the Elasticsearch test instance on $host");
     note( Test::More::explain( { 'Elasticsearch info' => $es->info } ) );
 
     return $es;
