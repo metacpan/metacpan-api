@@ -73,7 +73,8 @@ sub _build_abstract {
         $abstract = MetaCPAN::Util::strip_pod($abstract);
     }
     if ($documentation) {
-        $self->_set_documentation( MetaCPAN::Util::strip_pod($documentation) );
+        $self->_set_documentation(
+            MetaCPAN::Util::strip_pod($documentation) );
     }
     return $abstract;
 }
@@ -321,7 +322,7 @@ has indexed => (
         return 0 if !$self->metadata->should_index_file( $self->path );
         return 1;
     },
-    writer   => '_set_indexed',
+    writer => '_set_indexed',
 );
 
 =head2 level
@@ -513,9 +514,9 @@ C<gid>, C<size> and C<mtime>.
 =cut
 
 has stat => (
-    is       => 'ro',
-    isa      => Stat,
-    dynamic  => 1,
+    is      => 'ro',
+    isa     => Stat,
+    dynamic => 1,
 );
 
 =head2 version
@@ -524,9 +525,7 @@ Contains the raw version string.
 
 =cut
 
-has version => (
-    is => 'ro',
-);
+has version => ( is => 'ro', );
 
 =head2 version_numified
 
