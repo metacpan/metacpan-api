@@ -79,24 +79,51 @@ USAGE
     return $es_home;
 }
 
+=head2 _build_es_server
+
+This starts an Elastisearch server on the fly.  It should only be called if the
+ES env var contains a path to Elasticsearch.  If the variable contains a port
+number then we'll assume the server has already been started on this port.
+
+=cut
+
 sub _build_es_server {
     my $self = shift;
 
     my $server = Search::Elasticsearch::TestServer->new(
-        es_home        => $self->_es_home,
-        http_port      => 9900,
-        es_port        => 9700,
-        instances      => 1,
-        'cluster.name' => 'metacpan-test',
+        conf      => [ 'cluster.name' => 'metacpan-test' ],
+        es_home   => $self->_es_home,
+        es_port   => 9700,
+        http_port => 9900,
+        instances => 1,
     );
 
-    $ENV{ES} = $server->start->[0];
-
     diag 'Connecting to Elasticsearch on ' . $self->_es_home;
+
+    try {
+        $ENV{ES} = $server->start->[0];
+    }
+    catch {
+        diag(<<"EOF");
+Failed to connect to the Elasticsearch test instance on ${\$self->_es_home}.
+Did you start one up? See https://github.com/CPAN-API/cpan-api/wiki/Installation
+for more information.
+Error: $_
+EOF
+        BAIL_OUT('Test environment not set up properly');
+    };
+
+    diag( 'Connected to the Elasticsearch test instance on '
+            . $self->_es_home );
 }
 
 sub _build_es_client {
     my $self = shift;
+
+    # Don't try to start a test server if we've been passed the port number of
+    # a running instance.
+
+    $self->es_server unless $self->_es_home =~ m{:};
 
     my $es = Search::Elasticsearch->new(
         nodes => $self->_es_home,
@@ -105,24 +132,7 @@ sub _build_es_client {
 
     ok( $es, 'got ElasticSearch object' );
 
-    my $host;
-    try {
-        $host = $self->_es_home;
-    }
-    catch {
-        diag(<<"EOF");
-Failed to connect to the Elasticsearch test instance on ${\$self->es_home}.
-Did you start one up? See https://github.com/CPAN-API/cpan-api/wiki/Installation
-for more information.
-Error: $_
-EOF
-
-        BAIL_OUT('Test environment not set up properly');
-    };
-
-    diag("Connected to the Elasticsearch test instance on $host");
     note( Test::More::explain( { 'Elasticsearch info' => $es->info } ) );
-
     return $es;
 }
 

@@ -9,6 +9,6 @@ When debugging the release indexing, try setting the bulk_size param to a low nu
     
 You can enable Elasticsearch tracing when running tests at the command line:
 
-    ES_TRACE=1 ES=localhost:9200 ./bin/prove t/darkpan.t
+    ES_TRACE=1 ./bin/prove t/darkpan.t
     
 You'll then find extensive logging information in `es.log`, at the top level of your Git checkout.
