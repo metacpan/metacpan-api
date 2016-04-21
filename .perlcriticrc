@@ -10,7 +10,6 @@ verbose = 11
 [-RegularExpressions::RequireDotMatchAnything]
 [-RegularExpressions::RequireExtendedFormatting]
 [-RegularExpressions::RequireLineBoundaryMatching]
-[-ValuesAndExpressions::ProhibitAccessOfPrivateData]
 [-ValuesAndExpressions::ProhibitNoisyQuotes]
 [-Variables::ProhibitPunctuationVars]
 [-Subroutines::ProhibitExplicitReturnUndef]
