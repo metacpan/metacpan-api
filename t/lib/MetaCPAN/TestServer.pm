@@ -1,7 +1,6 @@
 package MetaCPAN::TestServer;
 
-use strict;
-use warnings;
+use Moose;
 
 use CPAN::Repository::Perms;
 use MetaCPAN::Script::Author;
@@ -10,7 +9,6 @@ use MetaCPAN::Script::Mapping;
 use MetaCPAN::Script::Release;
 use MetaCPAN::TestHelpers qw( get_config );
 use MetaCPAN::Types qw( Dir HashRef Str );
-use Moose;
 use Search::Elasticsearch;
 use Search::Elasticsearch::TestServer;
 use Test::More;
@@ -51,6 +49,13 @@ has _cpan_dir => (
     coerce   => 1,
     default  => 't/var/tmp/fakecpan',
 );
+
+sub setup {
+    my $self = shift;
+
+    $self->es_client;
+    $self->put_mappings;
+}
 
 sub _build_config {
     my $self = shift;

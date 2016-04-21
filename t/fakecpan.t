@@ -22,10 +22,10 @@ use Path::Class qw(dir file);
 BEGIN { $ENV{EMAIL_SENDER_TRANSPORT} = 'Test' }
 
 my $server = MetaCPAN::TestServer->new;
+$server->setup;
+
 my $config = get_config();
 $config->{es} = $server->es_client;
-
-$server->put_mappings;
 
 foreach my $test_dir ( $config->{cpan}, $config->{source_base} ) {
     next unless $test_dir;
@@ -80,7 +80,7 @@ $server->index_authors;
 ok(
     MetaCPAN::Script::Tickets->new_with_options(
         {
-            %$config,
+            %{$config},
             rt_summary_url => 'file://'
                 . file( $config->{cpan}, 'bugs.tsv' )->absolute,
             github_issues => 'file://'

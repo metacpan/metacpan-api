@@ -12,6 +12,7 @@ use Test::RequiresInternet ( 'cpan.metacpan.org' => 80 );
 
 my $darkpan = MetaCPAN::DarkPAN->new;
 my $server = MetaCPAN::TestServer->new( cpan_dir => $darkpan->base_dir );
+$server->setup;
 
 # create DarkPAN
 $darkpan->run;
