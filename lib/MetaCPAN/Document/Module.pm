@@ -91,6 +91,19 @@ has associated_pod => (
     writer => '_set_associated_pod',
 );
 
+has version_numified => (
+    is         => 'ro',
+    isa        => 'Num',
+    lazy_build => 1,
+    required   => 1,
+);
+
+sub _build_version_numified {
+    my $self = shift;
+    return 0 unless ( $self->version );
+    return MetaCPAN::Util::numify_version( $self->version );
+}
+
 my $bom
     = qr/(?:\x00\x00\xfe\xff|\xff\xfe\x00\x00|\xfe\xff|\xff\xfe|\xef\xbb\xbf)/;
 

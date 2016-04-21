@@ -23,7 +23,7 @@ has name => (
 
 has asciiname => (
     is       => 'ro',
-    required => 1,
+    required => 0,
     index    => 'analyzed',
     isa      => NonEmptySimpleStr,
 );

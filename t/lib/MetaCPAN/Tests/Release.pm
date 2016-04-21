@@ -107,7 +107,7 @@ has module_files => (
 sub _build_module_files {
     my ($self) = @_;
     return $self->filter_files(
-        [ { exists => { field => 'file.module.name' } }, ] );
+        [ { exists => { field => 'module.name' } }, ] );
 }
 
 sub filter_files {
@@ -121,8 +121,8 @@ sub filter_files {
         $self->index->type('file')->filter(
             {
                 and => [
-                    { term => { 'file.author'  => $release->author } },
-                    { term => { 'file.release' => $release->name } },
+                    { term => { 'author'  => $release->author } },
+                    { term => { 'release' => $release->name } },
                     @{ $add_filters || [] },
                 ],
             }

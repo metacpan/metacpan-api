@@ -206,6 +206,7 @@ has authorized => (
     required => 1,
     isa      => Bool,
     default  => 1,
+    writer   => '_set_authorized',
 );
 
 has first => (

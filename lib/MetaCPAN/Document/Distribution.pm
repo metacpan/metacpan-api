@@ -19,6 +19,7 @@ has bugs => (
     is      => 'ro',
     isa     => BugSummary,
     dynamic => 1,
+    writer  => '_set_bugs',
 );
 
 sub releases {
