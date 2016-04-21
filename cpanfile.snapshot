@@ -632,11 +632,30 @@ DISTRIBUTIONS
       Catalyst::Action::Serialize::YAML 1.20
       Catalyst::Action::Serialize::YAML::HTML 1.20
       Catalyst::Action::SerializeBase 1.20
+      Catalyst::Action::Serializer::Broken undef
       Catalyst::Controller::REST 1.20
       Catalyst::Request::REST 1.20
       Catalyst::Request::REST::ForBrowsers 1.20
       Catalyst::TraitFor::Request::REST 1.20
       Catalyst::TraitFor::Request::REST::ForBrowsers 1.20
+      Test::Action::Class undef
+      Test::Action::Class::Sub undef
+      Test::Catalyst::Action::REST undef
+      Test::Catalyst::Action::REST::Controller::Actions undef
+      Test::Catalyst::Action::REST::Controller::ActionsForBrowsers undef
+      Test::Catalyst::Action::REST::Controller::Deserialize undef
+      Test::Catalyst::Action::REST::Controller::DeserializeMultiPart undef
+      Test::Catalyst::Action::REST::Controller::Override undef
+      Test::Catalyst::Action::REST::Controller::REST undef
+      Test::Catalyst::Action::REST::Controller::Root undef
+      Test::Catalyst::Action::REST::Controller::Serialize undef
+      Test::Catalyst::Log undef
+      Test::Rest undef
+      Test::Serialize undef
+      Test::Serialize::Controller::JSON undef
+      Test::Serialize::Controller::REST undef
+      Test::Serialize::View::Awful undef
+      Test::Serialize::View::Simple undef
     requirements:
       Catalyst::Runtime 5.80030
       Class::Inspector 1.13
@@ -804,7 +823,7 @@ DISTRIBUTIONS
       Catalyst::ScriptRole undef
       Catalyst::ScriptRunner undef
       Catalyst::Stats undef
-      Catalyst::Test undef
+      Catalyst::Test 3.4
       Catalyst::Utils undef
       Catalyst::View undef
     requirements:
@@ -905,6 +924,7 @@ DISTRIBUTIONS
     pathname: R/RO/ROKR/CatalystX-InjectComponent-0.025.tar.gz
     provides:
       CatalystX::InjectComponent 0.025
+      t::Test::Apple undef
     requirements:
       Catalyst::Runtime 5.8
       Class::Inspector 0
@@ -1069,7 +1089,6 @@ DISTRIBUTIONS
     pathname: D/DA/DAGOLDEN/Class-Tiny-1.004.tar.gz
     provides:
       Class::Tiny 1.004
-      Class::Tiny::Object 1.004
     requirements:
       Carp 0
       ExtUtils::MakeMaker 6.17
@@ -1236,6 +1255,8 @@ DISTRIBUTIONS
       Config::JFDI 0.065
       Config::JFDI::Carp undef
       Config::JFDI::Source::Loader undef
+      eq 0.065
+      t::Test undef
     requirements:
       Any::Moose 0
       Carp::Clan::Share 0
@@ -1327,8 +1348,8 @@ DISTRIBUTIONS
   DBD-Pg-3.5.3
     pathname: T/TU/TURNSTEP/DBD-Pg-3.5.3.tar.gz
     provides:
-      Bundle::DBD::Pg v3.5.3
-      DBD::Pg v3.5.3
+      Bundle::DBD::Pg 3.005003
+      DBD::Pg 3.005003
     requirements:
       DBI 1.614
       ExtUtils::MakeMaker 6.11
@@ -1684,7 +1705,23 @@ DISTRIBUTIONS
   Data-Section-0.200006
     pathname: R/RJ/RJBS/Data-Section-0.200006.tar.gz
     provides:
+      Child undef
       Data::Section 0.200006
+      End undef
+      Godfather undef
+      Grandchild undef
+      Header undef
+      I::Child undef
+      I::Grandchild undef
+      I::Parent undef
+      Latin1 undef
+      NoData undef
+      NoName undef
+      Parent undef
+      Relaxed undef
+      Unicode_nopragma undef
+      Unicode_pragma undef
+      WindowsNewlines undef
     requirements:
       Encode 0
       ExtUtils::MakeMaker 6.30
@@ -1718,8 +1755,6 @@ DISTRIBUTIONS
       DateTime::Duration 1.26
       DateTime::Helpers 1.26
       DateTime::Infinite 1.26
-      DateTime::Infinite::Future 1.26
-      DateTime::Infinite::Past 1.26
       DateTime::LeapSecond 1.26
       DateTime::PP 1.26
       DateTime::PPExtra 1.26
@@ -1799,7 +1834,7 @@ DISTRIBUTIONS
   DateTime-Format-RFC3339-v1.2.0
     pathname: I/IK/IKEGAMI/DateTime-Format-RFC3339-v1.2.0.tar.gz
     provides:
-      DateTime::Format::RFC3339 1.002000
+      DateTime::Format::RFC3339 undef
     requirements:
       ExtUtils::MakeMaker 6.52
   DateTime-Format-Strptime-1.67
@@ -2450,29 +2485,29 @@ DISTRIBUTIONS
   ElasticSearchX-Model-1.0.0
     pathname: O/OA/OALDERS/ElasticSearchX-Model-1.0.0.tar.gz
     provides:
-      ElasticSearchX::Model v1.0.0
-      ElasticSearchX::Model::Bulk v1.0.0
-      ElasticSearchX::Model::Document v1.0.0
-      ElasticSearchX::Model::Document::EmbeddedRole v1.0.0
-      ElasticSearchX::Model::Document::Mapping v1.0.0
-      ElasticSearchX::Model::Document::Role v1.0.0
-      ElasticSearchX::Model::Document::Set v1.0.0
-      ElasticSearchX::Model::Document::Trait::Attribute v1.0.0
-      ElasticSearchX::Model::Document::Trait::Class v1.0.0
-      ElasticSearchX::Model::Document::Trait::Class::ID v1.0.0
-      ElasticSearchX::Model::Document::Trait::Class::Timestamp v1.0.0
-      ElasticSearchX::Model::Document::Trait::Class::Version v1.0.0
-      ElasticSearchX::Model::Document::Trait::Field::ID v1.0.0
-      ElasticSearchX::Model::Document::Trait::Field::TTL v1.0.0
-      ElasticSearchX::Model::Document::Trait::Field::Timestamp v1.0.0
-      ElasticSearchX::Model::Document::Trait::Field::Version v1.0.0
-      ElasticSearchX::Model::Document::Types v1.0.0
-      ElasticSearchX::Model::Index v1.0.0
-      ElasticSearchX::Model::Role v1.0.0
-      ElasticSearchX::Model::Scroll v1.0.0
-      ElasticSearchX::Model::Trait::Class v1.0.0
-      ElasticSearchX::Model::Tutorial v1.0.0
-      ElasticSearchX::Model::Util v1.0.0
+      ElasticSearchX::Model 1.000000
+      ElasticSearchX::Model::Bulk 1.000000
+      ElasticSearchX::Model::Document 1.000000
+      ElasticSearchX::Model::Document::EmbeddedRole 1.000000
+      ElasticSearchX::Model::Document::Mapping 1.000000
+      ElasticSearchX::Model::Document::Role 1.000000
+      ElasticSearchX::Model::Document::Set 1.000000
+      ElasticSearchX::Model::Document::Trait::Attribute 1.000000
+      ElasticSearchX::Model::Document::Trait::Class 1.000000
+      ElasticSearchX::Model::Document::Trait::Class::ID 1.000000
+      ElasticSearchX::Model::Document::Trait::Class::Timestamp 1.000000
+      ElasticSearchX::Model::Document::Trait::Class::Version 1.000000
+      ElasticSearchX::Model::Document::Trait::Field::ID 1.000000
+      ElasticSearchX::Model::Document::Trait::Field::TTL 1.000000
+      ElasticSearchX::Model::Document::Trait::Field::Timestamp 1.000000
+      ElasticSearchX::Model::Document::Trait::Field::Version 1.000000
+      ElasticSearchX::Model::Document::Types 1.000000
+      ElasticSearchX::Model::Index 1.000000
+      ElasticSearchX::Model::Role 1.000000
+      ElasticSearchX::Model::Scroll 1.000000
+      ElasticSearchX::Model::Trait::Class 1.000000
+      ElasticSearchX::Model::Tutorial 1.000000
+      ElasticSearchX::Model::Util 1.000000
     requirements:
       Carp 0
       Class::Load 0
@@ -2504,6 +2539,7 @@ DISTRIBUTIONS
       Email::Abstract::MailInternet 3.008
       Email::Abstract::MailMessage 3.008
       Email::Abstract::Plugin 3.008
+      Test::EmailAbstract undef
     requirements:
       Carp 0
       Email::Simple 1.998
@@ -2560,6 +2596,9 @@ DISTRIBUTIONS
       Email::Sender::Transport::Test 1.300027
       Email::Sender::Transport::Wrapper 1.300027
       Email::Sender::Util 1.300027
+      Test::Email::SMTPRig undef
+      Test::Email::Sender::Transport::FailEvery undef
+      Test::Email::Sender::Util undef
     requirements:
       Carp 0
       Email::Abstract 3.006
@@ -2632,9 +2671,6 @@ DISTRIBUTIONS
     pathname: S/SH/SHLOMIF/Error-0.17024.tar.gz
     provides:
       Error 0.17024
-      Error::Simple 0.17024
-      Error::WarnDie undef
-      Error::subs undef
     requirements:
       Module::Build 0.280801
       Scalar::Util 0
@@ -2871,12 +2907,10 @@ DISTRIBUTIONS
   File-Find-Object-v0.2.13
     pathname: S/SH/SHLOMIF/File-Find-Object-v0.2.13.tar.gz
     provides:
-      File::Find::Object v0.2.13
-      File::Find::Object::Base v0.2.13
-      File::Find::Object::DeepPath v0.2.13
-      File::Find::Object::PathComp v0.2.13
-      File::Find::Object::Result v0.2.13
-      File::Find::Object::TopPath v0.2.13
+      File::Find::Object 0.002013
+      File::Find::Object::Base 0.002013
+      File::Find::Object::PathComp 0.002013
+      File::Find::Object::Result 0.002013
     requirements:
       Carp 0
       Class::XSAccessor 0
@@ -3349,6 +3383,7 @@ DISTRIBUTIONS
       HTTP::Body::UrlEncoded 1.22
       HTTP::Body::XForms 1.22
       HTTP::Body::XFormsMultipart 1.22
+      PAML undef
     requirements:
       Carp 0
       Digest::MD5 0
@@ -3539,7 +3574,6 @@ DISTRIBUTIONS
     pathname: E/ET/ETHER/Hook-LexWrap-0.25.tar.gz
     provides:
       Hook::LexWrap 0.25
-      Hook::LexWrap::Cleanup 0.25
     requirements:
       Carp 0
       ExtUtils::MakeMaker 0
@@ -3970,6 +4004,9 @@ DISTRIBUTIONS
   Log-Contextual-0.007000
     pathname: F/FR/FREW/Log-Contextual-0.007000.tar.gz
     provides:
+      BaseLogger undef
+      DefaultImportLogger undef
+      DumbLogger2 undef
       Log::Contextual 0.007000
       Log::Contextual::Easy::Default 0.007000
       Log::Contextual::Easy::Package 0.007000
@@ -3981,6 +4018,10 @@ DISTRIBUTIONS
       Log::Contextual::SimpleLogger 0.007000
       Log::Contextual::TeeLogger 0.007000
       Log::Contextual::WarnLogger 0.007000
+      My::Module undef
+      My::Module2 undef
+      TestExporter undef
+      TestRouter undef
     requirements:
       Carp 0
       Data::Dumper::Concise 0
@@ -4032,16 +4073,13 @@ DISTRIBUTIONS
       L4pResurrectable 0.01
       Log::Log4perl 1.47
       Log::Log4perl::Appender undef
-      Log::Log4perl::Appender::Buffer undef
       Log::Log4perl::Appender::DBI undef
       Log::Log4perl::Appender::File undef
-      Log::Log4perl::Appender::Limit undef
       Log::Log4perl::Appender::RRDs undef
       Log::Log4perl::Appender::Screen undef
       Log::Log4perl::Appender::ScreenColoredLevels undef
       Log::Log4perl::Appender::Socket undef
       Log::Log4perl::Appender::String undef
-      Log::Log4perl::Appender::Synchronized undef
       Log::Log4perl::Appender::TestArrayBuffer undef
       Log::Log4perl::Appender::TestBuffer undef
       Log::Log4perl::Appender::TestFileCreeper undef
@@ -4270,6 +4308,7 @@ DISTRIBUTIONS
   Mixin-Linewise-0.108
     pathname: R/RJ/RJBS/Mixin-Linewise-0.108.tar.gz
     provides:
+      MLTests undef
       Mixin::Linewise 0.108
       Mixin::Linewise::Readers 0.108
       Mixin::Linewise::Writers 0.108
@@ -4608,7 +4647,7 @@ DISTRIBUTIONS
       Mojolicious::Command::generate::app undef
       Mojolicious::Command::generate::lite_app undef
       Mojolicious::Command::generate::makefile undef
-      Mojolicious::Command::generate::plugin undef
+      Mojolicious::Command::generate::plugin 0.01
       Mojolicious::Command::get undef
       Mojolicious::Command::inflate undef
       Mojolicious::Command::prefork undef
@@ -4712,6 +4751,12 @@ DISTRIBUTIONS
       MooX::Options::Descriptive 4.022
       MooX::Options::Descriptive::Usage 4.022
       MooX::Options::Role 4.022
+      TestNamespaceClean undef
+      t::Test undef
+      t::lib::MooXCmdTest undef
+      t::lib::MooXCmdTest::Cmd::test1 undef
+      t::lib::MooXCmdTest::Cmd::test1::Cmd::test2 undef
+      t::lib::MooXCmdTest::Cmd::test3 undef
     requirements:
       Carp 0
       Data::Record 0
@@ -4778,6 +4823,8 @@ DISTRIBUTIONS
       Class::MOP 2.1605
       Class::MOP::Attribute 2.1605
       Class::MOP::Class 2.1605
+      Class::MOP::Class::Immutable::Trait undef
+      Class::MOP::Deprecated undef
       Class::MOP::Instance 2.1605
       Class::MOP::Method 2.1605
       Class::MOP::Method::Accessor 2.1605
@@ -4786,40 +4833,18 @@ DISTRIBUTIONS
       Class::MOP::Method::Inlined 2.1605
       Class::MOP::Method::Meta 2.1605
       Class::MOP::Method::Wrapped 2.1605
+      Class::MOP::MiniTrait undef
+      Class::MOP::Mixin undef
+      Class::MOP::Mixin::AttributeCore undef
+      Class::MOP::Mixin::HasAttributes undef
+      Class::MOP::Mixin::HasMethods undef
+      Class::MOP::Mixin::HasOverloads undef
       Class::MOP::Module 2.1605
       Class::MOP::Object 2.1605
       Class::MOP::Overload 2.1605
       Class::MOP::Package 2.1605
       Moose 2.1605
-      Moose::Cookbook 2.1605
-      Moose::Cookbook::Basics::BankAccount_MethodModifiersAndSubclassing 2.1605
-      Moose::Cookbook::Basics::BinaryTree_AttributeFeatures 2.1605
-      Moose::Cookbook::Basics::BinaryTree_BuilderAndLazyBuild 2.1605
-      Moose::Cookbook::Basics::Company_Subtypes 2.1605
-      Moose::Cookbook::Basics::DateTime_ExtendingNonMooseParent 2.1605
-      Moose::Cookbook::Basics::Document_AugmentAndInner 2.1605
-      Moose::Cookbook::Basics::Genome_OverloadingSubtypesAndCoercion 2.1605
-      Moose::Cookbook::Basics::HTTP_SubtypesAndCoercion 2.1605
-      Moose::Cookbook::Basics::Immutable 2.1605
-      Moose::Cookbook::Basics::Person_BUILDARGSAndBUILD 2.1605
-      Moose::Cookbook::Basics::Point_AttributesAndSubclassing 2.1605
-      Moose::Cookbook::Extending::Debugging_BaseClassRole 2.1605
-      Moose::Cookbook::Extending::ExtensionOverview 2.1605
-      Moose::Cookbook::Extending::Mooseish_MooseSugar 2.1605
-      Moose::Cookbook::Legacy::Debugging_BaseClassReplacement 2.1605
-      Moose::Cookbook::Legacy::Labeled_AttributeMetaclass 2.1605
-      Moose::Cookbook::Legacy::Table_ClassMetaclass 2.1605
-      Moose::Cookbook::Meta::GlobRef_InstanceMetaclass 2.1605
-      Moose::Cookbook::Meta::Labeled_AttributeTrait 2.1605
-      Moose::Cookbook::Meta::PrivateOrPublic_MethodMetaclass 2.1605
-      Moose::Cookbook::Meta::Table_MetaclassTrait 2.1605
-      Moose::Cookbook::Meta::WhyMeta 2.1605
-      Moose::Cookbook::Roles::ApplicationToInstance 2.1605
-      Moose::Cookbook::Roles::Comparable_CodeReuse 2.1605
-      Moose::Cookbook::Roles::Restartable_AdvancedComposition 2.1605
-      Moose::Cookbook::Snack::Keywords 2.1605
-      Moose::Cookbook::Snack::Types 2.1605
-      Moose::Cookbook::Style 2.1605
+      Moose::Deprecated undef
       Moose::Exception 2.1605
       Moose::Exception::AccessorMustReadWrite 2.1605
       Moose::Exception::AddParameterizableTypeTakesParameterizableType 2.1605
@@ -5050,30 +5075,9 @@ DISTRIBUTIONS
       Moose::Exception::WrapTakesACodeRefToBless 2.1605
       Moose::Exception::WrongTypeConstraintGiven 2.1605
       Moose::Exporter 2.1605
-      Moose::Intro 2.1605
-      Moose::Manual 2.1605
-      Moose::Manual::Attributes 2.1605
-      Moose::Manual::BestPractices 2.1605
-      Moose::Manual::Classes 2.1605
-      Moose::Manual::Concepts 2.1605
-      Moose::Manual::Construction 2.1605
-      Moose::Manual::Contributing 2.1605
-      Moose::Manual::Delegation 2.1605
-      Moose::Manual::Delta 2.1605
-      Moose::Manual::Exceptions 2.1605
-      Moose::Manual::Exceptions::Manifest 2.1605
-      Moose::Manual::FAQ 2.1605
-      Moose::Manual::MOP 2.1605
-      Moose::Manual::MethodModifiers 2.1605
-      Moose::Manual::MooseX 2.1605
-      Moose::Manual::Resources 2.1605
-      Moose::Manual::Roles 2.1605
-      Moose::Manual::Support 2.1605
-      Moose::Manual::Types 2.1605
-      Moose::Manual::Unsweetened 2.1605
       Moose::Meta::Attribute 2.1605
-      Moose::Meta::Attribute::Custom::Moose 2.1605
       Moose::Meta::Attribute::Native 2.1605
+      Moose::Meta::Attribute::Native::Trait undef
       Moose::Meta::Attribute::Native::Trait::Array 2.1605
       Moose::Meta::Attribute::Native::Trait::Bool 2.1605
       Moose::Meta::Attribute::Native::Trait::Code 2.1605
@@ -5082,15 +5086,94 @@ DISTRIBUTIONS
       Moose::Meta::Attribute::Native::Trait::Number 2.1605
       Moose::Meta::Attribute::Native::Trait::String 2.1605
       Moose::Meta::Class 2.1605
+      Moose::Meta::Class::Immutable::Trait undef
       Moose::Meta::Instance 2.1605
       Moose::Meta::Method 2.1605
       Moose::Meta::Method::Accessor 2.1605
+      Moose::Meta::Method::Accessor::Native undef
+      Moose::Meta::Method::Accessor::Native::Array undef
+      Moose::Meta::Method::Accessor::Native::Array::Writer undef
+      Moose::Meta::Method::Accessor::Native::Array::accessor undef
+      Moose::Meta::Method::Accessor::Native::Array::clear undef
+      Moose::Meta::Method::Accessor::Native::Array::count undef
+      Moose::Meta::Method::Accessor::Native::Array::delete undef
+      Moose::Meta::Method::Accessor::Native::Array::elements undef
+      Moose::Meta::Method::Accessor::Native::Array::first undef
+      Moose::Meta::Method::Accessor::Native::Array::first_index undef
+      Moose::Meta::Method::Accessor::Native::Array::get undef
+      Moose::Meta::Method::Accessor::Native::Array::grep undef
+      Moose::Meta::Method::Accessor::Native::Array::insert undef
+      Moose::Meta::Method::Accessor::Native::Array::is_empty undef
+      Moose::Meta::Method::Accessor::Native::Array::join undef
+      Moose::Meta::Method::Accessor::Native::Array::map undef
+      Moose::Meta::Method::Accessor::Native::Array::natatime undef
+      Moose::Meta::Method::Accessor::Native::Array::pop undef
+      Moose::Meta::Method::Accessor::Native::Array::push undef
+      Moose::Meta::Method::Accessor::Native::Array::reduce undef
+      Moose::Meta::Method::Accessor::Native::Array::set undef
+      Moose::Meta::Method::Accessor::Native::Array::shallow_clone undef
+      Moose::Meta::Method::Accessor::Native::Array::shift undef
+      Moose::Meta::Method::Accessor::Native::Array::shuffle undef
+      Moose::Meta::Method::Accessor::Native::Array::sort undef
+      Moose::Meta::Method::Accessor::Native::Array::sort_in_place undef
+      Moose::Meta::Method::Accessor::Native::Array::splice undef
+      Moose::Meta::Method::Accessor::Native::Array::uniq undef
+      Moose::Meta::Method::Accessor::Native::Array::unshift undef
+      Moose::Meta::Method::Accessor::Native::Bool::not undef
+      Moose::Meta::Method::Accessor::Native::Bool::set undef
+      Moose::Meta::Method::Accessor::Native::Bool::toggle undef
+      Moose::Meta::Method::Accessor::Native::Bool::unset undef
+      Moose::Meta::Method::Accessor::Native::Code::execute undef
+      Moose::Meta::Method::Accessor::Native::Code::execute_method undef
+      Moose::Meta::Method::Accessor::Native::Collection undef
+      Moose::Meta::Method::Accessor::Native::Counter::Writer undef
+      Moose::Meta::Method::Accessor::Native::Counter::dec undef
+      Moose::Meta::Method::Accessor::Native::Counter::inc undef
+      Moose::Meta::Method::Accessor::Native::Counter::reset undef
+      Moose::Meta::Method::Accessor::Native::Counter::set undef
+      Moose::Meta::Method::Accessor::Native::Hash undef
+      Moose::Meta::Method::Accessor::Native::Hash::Writer undef
+      Moose::Meta::Method::Accessor::Native::Hash::accessor undef
+      Moose::Meta::Method::Accessor::Native::Hash::clear undef
+      Moose::Meta::Method::Accessor::Native::Hash::count undef
+      Moose::Meta::Method::Accessor::Native::Hash::defined undef
+      Moose::Meta::Method::Accessor::Native::Hash::delete undef
+      Moose::Meta::Method::Accessor::Native::Hash::elements undef
+      Moose::Meta::Method::Accessor::Native::Hash::exists undef
+      Moose::Meta::Method::Accessor::Native::Hash::get undef
+      Moose::Meta::Method::Accessor::Native::Hash::is_empty undef
+      Moose::Meta::Method::Accessor::Native::Hash::keys undef
+      Moose::Meta::Method::Accessor::Native::Hash::kv undef
+      Moose::Meta::Method::Accessor::Native::Hash::set undef
+      Moose::Meta::Method::Accessor::Native::Hash::shallow_clone undef
+      Moose::Meta::Method::Accessor::Native::Hash::values undef
+      Moose::Meta::Method::Accessor::Native::Number::abs undef
+      Moose::Meta::Method::Accessor::Native::Number::add undef
+      Moose::Meta::Method::Accessor::Native::Number::div undef
+      Moose::Meta::Method::Accessor::Native::Number::mod undef
+      Moose::Meta::Method::Accessor::Native::Number::mul undef
+      Moose::Meta::Method::Accessor::Native::Number::set undef
+      Moose::Meta::Method::Accessor::Native::Number::sub undef
+      Moose::Meta::Method::Accessor::Native::Reader undef
+      Moose::Meta::Method::Accessor::Native::String::append undef
+      Moose::Meta::Method::Accessor::Native::String::chomp undef
+      Moose::Meta::Method::Accessor::Native::String::chop undef
+      Moose::Meta::Method::Accessor::Native::String::clear undef
+      Moose::Meta::Method::Accessor::Native::String::inc undef
+      Moose::Meta::Method::Accessor::Native::String::length undef
+      Moose::Meta::Method::Accessor::Native::String::match undef
+      Moose::Meta::Method::Accessor::Native::String::prepend undef
+      Moose::Meta::Method::Accessor::Native::String::replace undef
+      Moose::Meta::Method::Accessor::Native::String::substr undef
+      Moose::Meta::Method::Accessor::Native::Writer undef
       Moose::Meta::Method::Augmented 2.1605
       Moose::Meta::Method::Constructor 2.1605
       Moose::Meta::Method::Delegation 2.1605
       Moose::Meta::Method::Destructor 2.1605
       Moose::Meta::Method::Meta 2.1605
       Moose::Meta::Method::Overridden 2.1605
+      Moose::Meta::Mixin::AttributeCore undef
+      Moose::Meta::Object::Trait undef
       Moose::Meta::Role 2.1605
       Moose::Meta::Role::Application 2.1605
       Moose::Meta::Role::Application::RoleSummation 2.1605
@@ -5115,11 +5198,10 @@ DISTRIBUTIONS
       Moose::Meta::TypeConstraint::Union 2.1605
       Moose::Object 2.1605
       Moose::Role 2.1605
-      Moose::Spec::Role 2.1605
-      Moose::Unsweetened 2.1605
       Moose::Util 2.1605
       Moose::Util::MetaRole 2.1605
       Moose::Util::TypeConstraints 2.1605
+      Moose::Util::TypeConstraints::Builtins undef
       Test::Moose 2.1605
       metaclass 2.1605
       oose 2.1605
@@ -5160,6 +5242,13 @@ DISTRIBUTIONS
     pathname: D/DO/DOY/MooseX-Aliases-0.11.tar.gz
     provides:
       MooseX::Aliases 0.11
+      MooseX::Aliases::Meta::Trait::Attribute 0.11
+      MooseX::Aliases::Meta::Trait::Class 0.11
+      MooseX::Aliases::Meta::Trait::Method 0.11
+      MooseX::Aliases::Meta::Trait::Role 0.11
+      MooseX::Aliases::Meta::Trait::Role::ApplicationToClass 0.11
+      MooseX::Aliases::Meta::Trait::Role::ApplicationToRole 0.11
+      MooseX::Aliases::Meta::Trait::Role::Composite 0.11
     requirements:
       ExtUtils::MakeMaker 6.30
       Moose 2.0000
@@ -5170,15 +5259,13 @@ DISTRIBUTIONS
   MooseX-Attribute-Chained-1.0.2
     pathname: T/TO/TOMHUKINS/MooseX-Attribute-Chained-1.0.2.tar.gz
     provides:
-      Moose::Meta::Attribute::Custom::Trait::Chained v1.0.2
-      MooseX::Attribute::Chained v1.0.2
-      MooseX::Attribute::Chained::Method::Accessor v1.0.2
-      MooseX::Attribute::ChainedClone v1.0.2
-      MooseX::Attribute::ChainedClone::Method::Accessor v1.0.2
-      MooseX::ChainedAccessors v1.0.2
-      MooseX::ChainedAccessors::Accessor v1.0.2
-      MooseX::Traits::Attribute::Chained v1.0.2
-      MooseX::Traits::Attribute::ChainedClone v1.0.2
+      Moose::Meta::Attribute::Custom::Trait::Chained 1.000002
+      MooseX::Attribute::Chained 1.000002
+      MooseX::Attribute::ChainedClone 1.000002
+      MooseX::ChainedAccessors 1.000002
+      MooseX::ChainedAccessors::Accessor 1.000002
+      MooseX::Traits::Attribute::Chained 1.000002
+      MooseX::Traits::Attribute::ChainedClone 1.000002
     requirements:
       Module::Build 0.28
       Moose 0
@@ -5187,20 +5274,20 @@ DISTRIBUTIONS
   MooseX-Attribute-Deflator-2.2.2
     pathname: P/PE/PERLER/MooseX-Attribute-Deflator-2.2.2.tar.gz
     provides:
-      MooseX::Attribute::Deflator v2.2.2
-      MooseX::Attribute::Deflator::Meta::Role::Attribute v2.2.2
-      MooseX::Attribute::Deflator::Moose v2.2.2
-      MooseX::Attribute::Deflator::Registry v2.2.2
-      MooseX::Attribute::Deflator::Structured v2.2.2
-      MooseX::Attribute::LazyInflator v2.2.2
-      MooseX::Attribute::LazyInflator::Meta::Role::ApplicationToClass v2.2.2
-      MooseX::Attribute::LazyInflator::Meta::Role::ApplicationToRole v2.2.2
-      MooseX::Attribute::LazyInflator::Meta::Role::Attribute v2.2.2
-      MooseX::Attribute::LazyInflator::Meta::Role::Composite v2.2.2
-      MooseX::Attribute::LazyInflator::Meta::Role::Method::Accessor v2.2.2
-      MooseX::Attribute::LazyInflator::Meta::Role::Method::Constructor v2.2.2
-      MooseX::Attribute::LazyInflator::Meta::Role::Role v2.2.2
-      MooseX::Attribute::LazyInflator::Role::Class v2.2.2
+      MooseX::Attribute::Deflator 2.002002
+      MooseX::Attribute::Deflator::Meta::Role::Attribute 2.002002
+      MooseX::Attribute::Deflator::Moose 2.002002
+      MooseX::Attribute::Deflator::Registry 2.002002
+      MooseX::Attribute::Deflator::Structured 2.002002
+      MooseX::Attribute::LazyInflator 2.002002
+      MooseX::Attribute::LazyInflator::Meta::Role::ApplicationToClass 2.002002
+      MooseX::Attribute::LazyInflator::Meta::Role::ApplicationToRole 2.002002
+      MooseX::Attribute::LazyInflator::Meta::Role::Attribute 2.002002
+      MooseX::Attribute::LazyInflator::Meta::Role::Composite 2.002002
+      MooseX::Attribute::LazyInflator::Meta::Role::Method::Accessor 2.002002
+      MooseX::Attribute::LazyInflator::Meta::Role::Method::Constructor 2.002002
+      MooseX::Attribute::LazyInflator::Meta::Role::Role 2.002002
+      MooseX::Attribute::LazyInflator::Role::Class 2.002002
     requirements:
       DateTime 0
       Devel::PartialDump 0
@@ -5218,6 +5305,9 @@ DISTRIBUTIONS
   MooseX-ClassAttribute-0.27
     pathname: D/DR/DROLSKY/MooseX-ClassAttribute-0.27.tar.gz
     provides:
+      Child undef
+      Delegatee undef
+      HasClassAttribute undef
       MooseX::ClassAttribute 0.27
       MooseX::ClassAttribute::Meta::Role::Attribute 0.27
       MooseX::ClassAttribute::Trait::Application 0.27
@@ -5228,6 +5318,7 @@ DISTRIBUTIONS
       MooseX::ClassAttribute::Trait::Mixin::HasClassAttributes 0.27
       MooseX::ClassAttribute::Trait::Role 0.27
       MooseX::ClassAttribute::Trait::Role::Composite 0.27
+      SharedTests undef
     requirements:
       ExtUtils::MakeMaker 6.30
       List::MoreUtils 0
@@ -5452,7 +5543,7 @@ DISTRIBUTIONS
   MooseX-Types-ElasticSearch-0.0.4
     pathname: P/PE/PERLER/MooseX-Types-ElasticSearch-0.0.4.tar.gz
     provides:
-      MooseX::Types::ElasticSearch v0.0.4
+      MooseX::Types::ElasticSearch 0.000004
     requirements:
       DateTime::Format::Epoch::Unix 0
       DateTime::Format::ISO8601 0
@@ -5545,7 +5636,7 @@ DISTRIBUTIONS
   Mouse-v2.4.5
     pathname: S/SY/SYOHEX/Mouse-v2.4.5.tar.gz
     provides:
-      Mouse v2.4.5
+      Mouse 2.004005
       Mouse::Exporter undef
       Mouse::Meta::Attribute undef
       Mouse::Meta::Class undef
@@ -5557,17 +5648,15 @@ DISTRIBUTIONS
       Mouse::Meta::Module undef
       Mouse::Meta::Role undef
       Mouse::Meta::Role::Application undef
-      Mouse::Meta::Role::Application::RoleSummation undef
       Mouse::Meta::Role::Composite undef
       Mouse::Meta::Role::Method undef
       Mouse::Meta::TypeConstraint undef
       Mouse::Object undef
       Mouse::PurePerl undef
-      Mouse::Role v2.4.5
-      Mouse::Spec v2.4.5
-      Mouse::Tiny v2.4.5
+      Mouse::Role 2.004005
+      Mouse::Spec 2.004005
       Mouse::TypeRegistry undef
-      Mouse::Util v2.4.5
+      Mouse::Util 2.004005
       Mouse::Util::MetaRole undef
       Mouse::Util::TypeConstraints undef
       Squirrel undef
@@ -5718,7 +5807,6 @@ DISTRIBUTIONS
       Net::Fastly::Backend undef
       Net::Fastly::BelongsToServiceAndVersion undef
       Net::Fastly::Client undef
-      Net::Fastly::Client::UserAgent undef
       Net::Fastly::Condition undef
       Net::Fastly::Customer undef
       Net::Fastly::Director undef
@@ -5732,7 +5820,6 @@ DISTRIBUTIONS
       Net::Fastly::Settings undef
       Net::Fastly::Stats undef
       Net::Fastly::Syslog undef
-      Net::Fastly::UA undef
       Net::Fastly::User undef
       Net::Fastly::VCL undef
       Net::Fastly::Version undef
@@ -5834,6 +5921,7 @@ DISTRIBUTIONS
   Net-OpenID-Consumer-1.18
     pathname: W/WR/WROG/Net-OpenID-Consumer-1.18.tar.gz
     provides:
+      FakeFetch undef
       Net::OpenID::Association 1.18
       Net::OpenID::ClaimedIdentity 1.18
       Net::OpenID::Consumer 1.18
@@ -6333,6 +6421,7 @@ DISTRIBUTIONS
   Package-Stash-XS-0.28
     pathname: D/DO/DOY/Package-Stash-XS-0.28.tar.gz
     provides:
+      CompileTime undef
       Package::Stash::XS 0.28
     requirements:
       ExtUtils::MakeMaker 6.30
@@ -6515,8 +6604,8 @@ DISTRIBUTIONS
   Path-FindDev-0.5.2
     pathname: K/KE/KENTNL/Path-FindDev-0.5.2.tar.gz
     provides:
-      Path::FindDev v0.5.2
-      Path::FindDev::Object v0.5.2
+      Path::FindDev 0.005002
+      Path::FindDev::Object 0.005002
     requirements:
       Carp 0
       Class::Tiny 0.010
@@ -6597,7 +6686,7 @@ DISTRIBUTIONS
     pathname: D/DA/DAGOLDEN/Path-Tiny-0.088.tar.gz
     provides:
       Path::Tiny 0.088
-      Path::Tiny::Error 0.088
+      flock undef
     requirements:
       Carp 0
       Cwd 0
@@ -6874,23 +6963,14 @@ DISTRIBUTIONS
     pathname: S/SH/SHANCOCK/Perl-Tidy-20160302.tar.gz
     provides:
       Perl::Tidy 20160302
-      Perl::Tidy::Debugger 20160302
       Perl::Tidy::DevNull 20160302
       Perl::Tidy::Diagnostics 20160302
-      Perl::Tidy::FileWriter 20160302
-      Perl::Tidy::Formatter 20160302
       Perl::Tidy::HtmlWriter 20160302
       Perl::Tidy::IOScalar 20160302
       Perl::Tidy::IOScalarArray 20160302
-      Perl::Tidy::IndentationItem 20160302
-      Perl::Tidy::LineBuffer 20160302
       Perl::Tidy::LineSink 20160302
       Perl::Tidy::LineSource 20160302
       Perl::Tidy::Logger 20160302
-      Perl::Tidy::Tokenizer 20160302
-      Perl::Tidy::VerticalAligner 20160302
-      Perl::Tidy::VerticalAligner::Alignment 20160302
-      Perl::Tidy::VerticalAligner::Line 20160302
     requirements:
       ExtUtils::MakeMaker 0
   PerlIO-gzip-0.19
@@ -6952,6 +7032,7 @@ DISTRIBUTIONS
       Pithub::Result::SharedCache 0.01033
       Pithub::Search 0.01033
       Pithub::SearchV3 0.01033
+      Pithub::Test undef
       Pithub::Users 0.01033
       Pithub::Users::Emails 0.01033
       Pithub::Users::Followers 0.01033
@@ -7273,6 +7354,9 @@ DISTRIBUTIONS
       Pod::POM::View::HTML 2.01
       Pod::POM::View::Pod 2.01
       Pod::POM::View::Text 2.01
+      PodPOMTestCase undef
+      PodPOMTestLib undef
+      YAML::Tiny 1.36
     requirements:
       Encode 0
       Exporter 0
@@ -7363,9 +7447,6 @@ DISTRIBUTIONS
     pathname: S/SA/SANKO/Readonly-2.01.tar.gz
     provides:
       Readonly 2.01
-      Readonly::Array undef
-      Readonly::Hash undef
-      Readonly::Scalar undef
     requirements:
       Module::Build::Tiny 0.035
       perl v5.6.0
@@ -7431,6 +7512,7 @@ DISTRIBUTIONS
   SQL-Abstract-1.81
     pathname: R/RI/RIBASUSHI/SQL-Abstract-1.81.tar.gz
     provides:
+      DBIx::Class::Storage::Debug::PrettyPrint undef
       SQL::Abstract 1.81
       SQL::Abstract::Test undef
       SQL::Abstract::Tree undef
@@ -7486,65 +7568,65 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Test::More 0
       perl 5.006001
-  Search-Elasticsearch-2.01
-    pathname: D/DR/DRTECH/Search-Elasticsearch-2.01.tar.gz
+  Search-Elasticsearch-2.02
+    pathname: D/DR/DRTECH/Search-Elasticsearch-2.02.tar.gz
     provides:
-      Search::Elasticsearch 2.01
-      Search::Elasticsearch::Bulk 2.01
-      Search::Elasticsearch::Client::0_90::Direct 2.01
-      Search::Elasticsearch::Client::0_90::Direct::Cluster 2.01
-      Search::Elasticsearch::Client::0_90::Direct::Indices 2.01
-      Search::Elasticsearch::Client::1_0::Direct 2.01
-      Search::Elasticsearch::Client::1_0::Direct::Cat 2.01
-      Search::Elasticsearch::Client::1_0::Direct::Cluster 2.01
-      Search::Elasticsearch::Client::1_0::Direct::Indices 2.01
-      Search::Elasticsearch::Client::1_0::Direct::Nodes 2.01
-      Search::Elasticsearch::Client::1_0::Direct::Snapshot 2.01
-      Search::Elasticsearch::Client::2_0::Direct 2.01
-      Search::Elasticsearch::Client::2_0::Direct::Cat 2.01
-      Search::Elasticsearch::Client::2_0::Direct::Cluster 2.01
-      Search::Elasticsearch::Client::2_0::Direct::Indices 2.01
-      Search::Elasticsearch::Client::2_0::Direct::Nodes 2.01
-      Search::Elasticsearch::Client::2_0::Direct::Snapshot 2.01
-      Search::Elasticsearch::Client::2_0::Direct::Tasks 2.01
-      Search::Elasticsearch::Cxn::Factory 2.01
-      Search::Elasticsearch::Cxn::HTTPTiny 2.01
-      Search::Elasticsearch::Cxn::Hijk 2.01
-      Search::Elasticsearch::Cxn::LWP 2.01
-      Search::Elasticsearch::CxnPool::Sniff 2.01
-      Search::Elasticsearch::CxnPool::Static 2.01
-      Search::Elasticsearch::CxnPool::Static::NoPing 2.01
-      Search::Elasticsearch::Error 2.01
-      Search::Elasticsearch::Logger::LogAny 2.01
-      Search::Elasticsearch::Role::API::0_90 2.01
-      Search::Elasticsearch::Role::API::1_0 2.01
-      Search::Elasticsearch::Role::API::2_0 2.01
-      Search::Elasticsearch::Role::Bulk 2.01
-      Search::Elasticsearch::Role::Client 2.01
-      Search::Elasticsearch::Role::Client::Direct 2.01
-      Search::Elasticsearch::Role::Client::Direct::Main 2.01
-      Search::Elasticsearch::Role::Cxn 2.01
-      Search::Elasticsearch::Role::Cxn::HTTP 2.01
-      Search::Elasticsearch::Role::CxnPool 2.01
-      Search::Elasticsearch::Role::CxnPool::Sniff 2.01
-      Search::Elasticsearch::Role::CxnPool::Static 2.01
-      Search::Elasticsearch::Role::CxnPool::Static::NoPing 2.01
-      Search::Elasticsearch::Role::Is_Sync 2.01
-      Search::Elasticsearch::Role::Logger 2.01
-      Search::Elasticsearch::Role::Scroll 2.01
-      Search::Elasticsearch::Role::Serializer 2.01
-      Search::Elasticsearch::Role::Serializer::JSON 2.01
-      Search::Elasticsearch::Role::Transport 2.01
-      Search::Elasticsearch::Scroll 2.01
-      Search::Elasticsearch::Serializer::JSON 2.01
-      Search::Elasticsearch::Serializer::JSON::Cpanel 2.01
-      Search::Elasticsearch::Serializer::JSON::PP 2.01
-      Search::Elasticsearch::Serializer::JSON::XS 2.01
-      Search::Elasticsearch::TestServer 2.01
-      Search::Elasticsearch::Transport 2.01
-      Search::Elasticsearch::Util 2.01
-      Search::Elasticsearch::Util::API::Path 2.01
-      Search::Elasticsearch::Util::API::QS 2.01
+      Search::Elasticsearch 2.02
+      Search::Elasticsearch::Bulk 2.02
+      Search::Elasticsearch::Client::0_90::Direct 2.02
+      Search::Elasticsearch::Client::0_90::Direct::Cluster 2.02
+      Search::Elasticsearch::Client::0_90::Direct::Indices 2.02
+      Search::Elasticsearch::Client::1_0::Direct 2.02
+      Search::Elasticsearch::Client::1_0::Direct::Cat 2.02
+      Search::Elasticsearch::Client::1_0::Direct::Cluster 2.02
+      Search::Elasticsearch::Client::1_0::Direct::Indices 2.02
+      Search::Elasticsearch::Client::1_0::Direct::Nodes 2.02
+      Search::Elasticsearch::Client::1_0::Direct::Snapshot 2.02
+      Search::Elasticsearch::Client::2_0::Direct 2.02
+      Search::Elasticsearch::Client::2_0::Direct::Cat 2.02
+      Search::Elasticsearch::Client::2_0::Direct::Cluster 2.02
+      Search::Elasticsearch::Client::2_0::Direct::Indices 2.02
+      Search::Elasticsearch::Client::2_0::Direct::Nodes 2.02
+      Search::Elasticsearch::Client::2_0::Direct::Snapshot 2.02
+      Search::Elasticsearch::Client::2_0::Direct::Tasks 2.02
+      Search::Elasticsearch::Cxn::Factory 2.02
+      Search::Elasticsearch::Cxn::HTTPTiny 2.02
+      Search::Elasticsearch::Cxn::Hijk 2.02
+      Search::Elasticsearch::Cxn::LWP 2.02
+      Search::Elasticsearch::CxnPool::Sniff 2.02
+      Search::Elasticsearch::CxnPool::Static 2.02
+      Search::Elasticsearch::CxnPool::Static::NoPing 2.02
+      Search::Elasticsearch::Error 2.02
+      Search::Elasticsearch::Logger::LogAny 2.02
+      Search::Elasticsearch::Role::API::0_90 2.02
+      Search::Elasticsearch::Role::API::1_0 2.02
+      Search::Elasticsearch::Role::API::2_0 2.02
+      Search::Elasticsearch::Role::Bulk 2.02
+      Search::Elasticsearch::Role::Client 2.02
+      Search::Elasticsearch::Role::Client::Direct 2.02
+      Search::Elasticsearch::Role::Client::Direct::Main 2.02
+      Search::Elasticsearch::Role::Cxn 2.02
+      Search::Elasticsearch::Role::Cxn::HTTP 2.02
+      Search::Elasticsearch::Role::CxnPool 2.02
+      Search::Elasticsearch::Role::CxnPool::Sniff 2.02
+      Search::Elasticsearch::Role::CxnPool::Static 2.02
+      Search::Elasticsearch::Role::CxnPool::Static::NoPing 2.02
+      Search::Elasticsearch::Role::Is_Sync 2.02
+      Search::Elasticsearch::Role::Logger 2.02
+      Search::Elasticsearch::Role::Scroll 2.02
+      Search::Elasticsearch::Role::Serializer 2.02
+      Search::Elasticsearch::Role::Serializer::JSON 2.02
+      Search::Elasticsearch::Role::Transport 2.02
+      Search::Elasticsearch::Scroll 2.02
+      Search::Elasticsearch::Serializer::JSON 2.02
+      Search::Elasticsearch::Serializer::JSON::Cpanel 2.02
+      Search::Elasticsearch::Serializer::JSON::PP 2.02
+      Search::Elasticsearch::Serializer::JSON::XS 2.02
+      Search::Elasticsearch::TestServer 2.02
+      Search::Elasticsearch::Transport 2.02
+      Search::Elasticsearch::Util 2.02
+      Search::Elasticsearch::Util::API::Path 2.02
+      Search::Elasticsearch::Util::API::QS 2.02
     requirements:
       Any::URI::Escape 0
       Data::Dumper 0
@@ -7667,6 +7749,13 @@ DISTRIBUTIONS
     provides:
       Sub::Exporter 0.987
       Sub::Exporter::Util 0.987
+      Test::SubExporter::DashSetup undef
+      Test::SubExporter::Faux undef
+      Test::SubExporter::GroupGen undef
+      Test::SubExporter::GroupGenSubclass undef
+      Test::SubExporter::ObjGen undef
+      Test::SubExporter::ObjGen::Obj undef
+      Test::SubExporter::s_e undef
     requirements:
       Carp 0
       Data::OptList 0.100
@@ -7679,6 +7768,8 @@ DISTRIBUTIONS
     pathname: R/RJ/RJBS/Sub-Exporter-ForMethods-0.100052.tar.gz
     provides:
       Sub::Exporter::ForMethods 0.100052
+      TestDexp undef
+      TestMexp undef
     requirements:
       ExtUtils::MakeMaker 0
       Scalar::Util 0
@@ -7804,8 +7895,8 @@ DISTRIBUTIONS
   Test-Compile-v1.3.0
     pathname: E/EG/EGILES/Test-Compile-v1.3.0.tar.gz
     provides:
-      Test::Compile v1.3.0
-      Test::Compile::Internal v1.3.0
+      Test::Compile 1.003000
+      Test::Compile::Internal 1.003000
     requirements:
       Module::Build 0.38
       UNIVERSAL::require 0
@@ -8109,6 +8200,8 @@ DISTRIBUTIONS
       Test::Routine::Test 0.020
       Test::Routine::Test::Role 0.020
       Test::Routine::Util 0.020
+      t::lib::NoGood undef
+      t::lib::NoGood2 undef
     requirements:
       Carp 0
       Class::Load 0
@@ -8193,11 +8286,11 @@ DISTRIBUTIONS
   Test-Trap-v0.3.2
     pathname: E/EB/EBHANSSEN/Test-Trap-v0.3.2.tar.gz
     provides:
-      Test::Trap v0.3.2
-      Test::Trap::Builder v0.3.2
-      Test::Trap::Builder::PerlIO v0.3.2
-      Test::Trap::Builder::SystemSafe v0.3.2
-      Test::Trap::Builder::TempFile v0.3.2
+      Test::Trap 0.003002
+      Test::Trap::Builder 0.003002
+      Test::Trap::Builder::PerlIO 0.003002
+      Test::Trap::Builder::SystemSafe 0.003002
+      Test::Trap::Builder::TempFile 0.003002
     requirements:
       Carp 0
       Data::Dump 0
@@ -8583,6 +8676,7 @@ DISTRIBUTIONS
   UNIVERSAL-require-0.18
     pathname: N/NE/NEILB/UNIVERSAL-require-0.18.tar.gz
     provides:
+      UNIVERSAL 0.18
       UNIVERSAL::require 0.18
     requirements:
       Carp 0
@@ -8831,6 +8925,7 @@ DISTRIBUTIONS
   WWW-Mechanize-Cached-1.50
     pathname: O/OA/OALDERS/WWW-Mechanize-Cached-1.50.tar.gz
     provides:
+      TestCache undef
       WWW::Mechanize::Cached 1.50
     requirements:
       Cache::FileCache 0
@@ -8922,6 +9017,7 @@ DISTRIBUTIONS
   XML-Simple-2.22
     pathname: G/GR/GRANTM/XML-Simple-2.22.tar.gz
     provides:
+      TagsToUpper undef
       XML::Simple 2.22
     requirements:
       ExtUtils::MakeMaker 0
@@ -8982,6 +9078,7 @@ DISTRIBUTIONS
     pathname: I/IL/ILMARI/bareword-filehandles-0.003.tar.gz
     provides:
       bareword::filehandles 0.003
+      inc::BarewordFilehandlesMakeMaker undef
     requirements:
       B::Hooks::OP::Check 0
       ExtUtils::Depends 0
@@ -9274,6 +9371,8 @@ DISTRIBUTIONS
   multidimensional-0.011
     pathname: I/IL/ILMARI/multidimensional-0.011.tar.gz
     provides:
+      MyTest undef
+      inc::MultidimensionalMakeMaker undef
       multidimensional 0.011
     requirements:
       B::Hooks::OP::Check 0.19
@@ -9311,6 +9410,7 @@ DISTRIBUTIONS
   strictures-2.000002
     pathname: H/HA/HAARG/strictures-2.000002.tar.gz
     provides:
+      ExtUtils::HasCompiler 0.012
       strictures 2.000002
       strictures::extra undef
     requirements:
@@ -9321,6 +9421,7 @@ DISTRIBUTIONS
   version-0.9916
     pathname: J/JP/JPEACOCK/version-0.9916.tar.gz
     provides:
+      charstar 0.9916
       version 0.9916
       version::regex 0.9916
       version::vpp 0.9916
