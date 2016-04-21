@@ -57,7 +57,7 @@ has document => (
 );
 
 has file => (
-    is       => 'rw',
+    is       => 'ro',
     isa      => AbsFile,
     required => 1,
     coerce   => 1,
@@ -72,7 +72,7 @@ has files => (
 );
 
 has date => (
-    is      => 'rw',
+    is      => 'ro',
     isa     => 'DateTime',
     lazy    => 1,
     default => sub {
@@ -81,10 +81,10 @@ has date => (
     },
 );
 
-has index => ( is => 'rw', );
+has index => ( is => 'ro' );
 
 has metadata => (
-    is      => 'rw',
+    is      => 'ro',
     isa     => 'CPAN::Meta',
     lazy    => 1,
     builder => '_build_metadata',
@@ -106,7 +106,7 @@ has modules => (
 );
 
 has version => (
-    is      => 'rw',
+    is      => 'ro',
     isa     => Str,
     lazy    => 1,
     default => sub {
@@ -116,11 +116,11 @@ has version => (
 );
 
 has status => (
-    is  => 'rw',
-    isa => Str,
+    is     => 'ro',
+    isa    => Str,
 );
 
-has bulk => ( is => 'rw', );
+has bulk => ( is => 'ro' );
 
 =head2 run
 
@@ -132,8 +132,8 @@ probably a much cleaner way to do this.
 sub run {
     my $self = shift;
     $self->document;
-    $self->document->changes_file( $self->get_changes_file( $self->files ) );
-    $self->_set_main_module( $self->modules, $self->document );
+    $self->document->_set_changes_file( $self->get_changes_file( $self->files ) );
+    $self->set_main_module( $self->modules, $self->document );
 }
 
 sub _build_archive {
@@ -227,7 +227,7 @@ sub _build_document {
     return $document;
 }
 
-sub _set_main_module {
+sub set_main_module {
     my $self = shift;
     my ( $mod, $release ) = @_;
 
@@ -242,7 +242,7 @@ sub _set_main_module {
     if ( scalar @modules == 1 ) {
 
         # there is only one module and it will become the main_module
-        $release->main_module( $modules[0]->module->[0]->name );
+        $release->_set_main_module( $modules[0]->module->[0]->name );
         return;
     }
 
@@ -250,7 +250,7 @@ sub _set_main_module {
 
         # the module has the exact name as the ditribution
         if ( $file->module->[0]->name eq $dist2module ) {
-            $release->main_module( $file->module->[0]->name );
+            $release->_set_main_module( $file->module->[0]->name );
             return;
         }
     }
@@ -262,7 +262,7 @@ sub _set_main_module {
         $a->level <=> $b->level
             || length $a->module->[0]->name <=> length $b->module->[0]->name
     } @modules;
-    $release->main_module( $sorted_modules[0]->module->[0]->name );
+    $release->_set_main_module( $sorted_modules[0]->module->[0]->name );
 
 }
 

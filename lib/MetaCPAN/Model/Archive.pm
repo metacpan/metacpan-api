@@ -93,10 +93,11 @@ has extract_dir => (
 );
 
 has _has_extracted => (
-    is       => 'rw',
+    is       => 'ro',
     isa      => Bool,
     init_arg => undef,
     default  => 0,
+    writer   => '_set_has_extracted',
 );
 
 =head1 METHODS
@@ -142,7 +143,7 @@ sub extract {
     return $self->extract_dir if $self->_has_extracted;
 
     $self->_extractor->extract( $self->extract_dir );
-    $self->_has_extracted(1);
+    $self->_set_has_extracted(1);
 
     return $self->extract_dir;
 }

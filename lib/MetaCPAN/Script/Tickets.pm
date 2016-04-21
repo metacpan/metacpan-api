@@ -32,7 +32,6 @@ has github_issues => (
 
 has github_token => (
     is       => 'ro',
-    required => 0,
     lazy     => 1,
     builder  => '_build_github_token',
 );
@@ -104,7 +103,7 @@ sub index_bug_summary {
     for my $dist ( keys %$bugs ) {
         my $doc = $dists->get($dist);
         $doc ||= $dists->new_document( { name => $dist } );
-        $doc->bugs( $bugs->{ $doc->name } );
+        $doc->_set_bugs( $bugs->{ $doc->name } );
         $bulk->put($doc);
     }
     $bulk->commit;

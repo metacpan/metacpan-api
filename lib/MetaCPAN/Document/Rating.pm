@@ -7,8 +7,8 @@ use Moose;
 use ElasticSearchX::Model::Document::Types qw(:all);
 use ElasticSearchX::Model::Document;
 
-use MooseX::Types::Moose qw(Int Num Bool Str ArrayRef HashRef Undef);
-use MooseX::Types::Structured qw(Dict Tuple Optional);
+use MetaCPAN::Types qw( ArrayRef Bool Num Str );
+use MooseX::Types::Structured qw( Dict );
 
 has details => (
     is  => 'ro',

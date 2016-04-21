@@ -31,7 +31,10 @@ has structured => (
     builder => '_build_structured',
 );
 
-has numstat => ( is => 'rw' );
+has numstat => (
+    is     => 'ro',
+    writer => '_set_numstat',
+);
 
 has relative => (
     is       => 'ro',
@@ -60,7 +63,7 @@ sub _build_raw {
         \$raw
     );
     ( my $stats = $raw ) =~ s/^([^\n]*\0).*$/$1/s;
-    $self->numstat($stats);
+    $self->_set_numstat($stats);
     $raw = substr( $raw, length($stats) );
     return $raw;
 }

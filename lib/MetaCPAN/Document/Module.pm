@@ -70,24 +70,25 @@ has name => (
 has version => ( is => 'ro' );
 
 has indexed => (
-    is       => 'rw',
+    is       => 'ro',
     required => 1,
     isa      => Bool,
     default  => 0,
+    writer   => '_set_indexed',
 );
 
 has authorized => (
-    is       => 'rw',
+    is       => 'ro',
     required => 1,
     isa      => Bool,
     default  => 1,
+    writer   => '_set_authorized',
 );
 
-# REINDEX: make 'ro' once a full reindex has been done
 has associated_pod => (
-    isa      => AssociatedPod,
-    required => 0,
-    is       => 'rw',
+    isa    => AssociatedPod,
+    is     => 'ro',
+    writer => '_set_associated_pod',
 );
 
 my $bom
@@ -170,7 +171,7 @@ sub set_associated_pod {
          @$files
          #>>>
     );
-    $self->associated_pod($pod);
+    $self->_set_associated_pod($pod);
     return $pod;
 }
 

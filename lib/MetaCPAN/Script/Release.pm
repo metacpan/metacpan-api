@@ -250,12 +250,12 @@ sub import_archive {
         $bulk->put($file);
         if ( !$document->has_abstract && $file->abstract ) {
             ( my $module = $document->distribution ) =~ s/-/::/g;
-            $document->abstract( $file->abstract );
+            $document->_set_abstract( $file->abstract );
             $document->put;
         }
     }
     if (@provides) {
-        $document->provides( [ sort @provides ] );
+        $document->_set_provides( [ sort @provides ] );
         $document->put;
     }
     $bulk->commit;
@@ -267,7 +267,7 @@ sub import_archive {
                 . " contains unauthorized modules: "
                 . join( ",", map { $_->name } @release_unauthorized );
         };
-        $document->authorized(0);
+        $document->_set_authorized(0);
         $document->put;
     }
 
