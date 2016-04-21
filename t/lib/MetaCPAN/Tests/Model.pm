@@ -81,9 +81,9 @@ has data => (
 );
 
 has _expectations => (
-    is        => 'ro',
-    isa       => HashRef,
-    init_arg  => '_expect',
+    is       => 'ro',
+    isa      => HashRef,
+    init_arg => '_expect',
 );
 
 test 'expected model attributes' => sub {

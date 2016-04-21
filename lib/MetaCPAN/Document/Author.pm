@@ -58,27 +58,26 @@ has profile => (
 );
 
 has blog => (
-    is       => 'ro',
-    isa      => Blog,
-    coerce   => 1,
-    dynamic  => 1,
+    is      => 'ro',
+    isa     => Blog,
+    coerce  => 1,
+    dynamic => 1,
 );
 
 has perlmongers => (
-    is       => 'ro',
-    isa      => PerlMongers,
-    coerce   => 1,
-    dynamic  => 1,
+    is      => 'ro',
+    isa     => PerlMongers,
+    coerce  => 1,
+    dynamic => 1,
 );
 
 has donation => (
-    is       => 'ro',
-    isa      => ArrayRef [ Dict [ name => NonEmptySimpleStr, id => Str ] ],
-    dynamic  => 1,
+    is      => 'ro',
+    isa     => ArrayRef [ Dict [ name => NonEmptySimpleStr, id => Str ] ],
+    dynamic => 1,
 );
 
-has [qw(city region country)] =>
-    ( is => 'ro', isa => NonEmptySimpleStr );
+has [qw(city region country)] => ( is => 'ro', isa => NonEmptySimpleStr );
 
 has location => ( is => 'ro', isa => Location, coerce => 1 );
 
@@ -90,8 +89,8 @@ has extra => (
 );
 
 has updated => (
-    is       => 'ro',
-    isa      => 'DateTime',
+    is  => 'ro',
+    isa => 'DateTime',
 );
 
 sub _build_gravatar_url {

@@ -16,11 +16,11 @@ has level => (
 );
 
 has logger => (
-    is        => 'ro',
-    required  => 1,
-    isa       => Logger,
-    coerce    => 1,
-    traits    => ['NoGetopt'],
+    is       => 'ro',
+    required => 1,
+    isa      => Logger,
+    coerce   => 1,
+    traits   => ['NoGetopt'],
 );
 
 sub set_level {

@@ -116,8 +116,8 @@ has version => (
 );
 
 has status => (
-    is     => 'ro',
-    isa    => Str,
+    is  => 'ro',
+    isa => Str,
 );
 
 has bulk => ( is => 'ro' );
@@ -132,7 +132,8 @@ probably a much cleaner way to do this.
 sub run {
     my $self = shift;
     $self->document;
-    $self->document->_set_changes_file( $self->get_changes_file( $self->files ) );
+    $self->document->_set_changes_file(
+        $self->get_changes_file( $self->files ) );
     $self->set_main_module( $self->modules, $self->document );
 }
 

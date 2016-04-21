@@ -31,9 +31,9 @@ has github_issues => (
 );
 
 has github_token => (
-    is       => 'ro',
-    lazy     => 1,
-    builder  => '_build_github_token',
+    is      => 'ro',
+    lazy    => 1,
+    builder => '_build_github_token',
 );
 
 has source => (
