@@ -13,6 +13,7 @@ verbose = 11
 [-ValuesAndExpressions::ProhibitAccessOfPrivateData]
 [-ValuesAndExpressions::ProhibitNoisyQuotes]
 [-Variables::ProhibitPunctuationVars]
+[-Subroutines::ProhibitExplicitReturnUndef]
 
 [CodeLayout::RequireTrailingCommas]
 severity = 4
