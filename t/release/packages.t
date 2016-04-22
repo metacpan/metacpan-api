@@ -10,8 +10,8 @@ test_release(
         name        => 'Packages-1.103',
         author      => 'RWSTAUNER',
         abstract    => 'Package examples',
-        authorized  => \1,
-        first       => \1,
+        authorized  => 1,
+        first       => 1,
         provides    => [ 'Packages', 'Packages::BOM', ],
         status      => 'latest',
         main_module => 'Packages',
@@ -20,7 +20,7 @@ test_release(
                 {
                     name             => 'Packages',
                     indexed          => \1,
-                    authorized       => \1,
+                    authorized       => 'true',
                     version          => '1.103',
                     version_numified => 1.103,
                     associated_pod =>
@@ -31,7 +31,7 @@ test_release(
                 {
                     name             => 'Packages::BOM',
                     indexed          => \1,
-                    authorized       => \1,
+                    authorized       => 'true',
                     version          => 0.04,
                     version_numified => 0.04,
                     associated_pod =>

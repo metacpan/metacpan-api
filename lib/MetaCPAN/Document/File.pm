@@ -356,6 +356,7 @@ are removed to save space and for better snippet previews.
 =cut
 
 has pod => (
+    required     => 1,
     is           => 'ro',
     isa          => ScalarRef,
     lazy         => 1,
@@ -457,10 +458,11 @@ L</content> and returns the number of lines.
 =cut
 
 has sloc => (
-    is      => 'ro',
-    isa     => Int,
-    lazy    => 1,
-    builder => '_build_sloc',
+    required => 1,
+    is       => 'ro',
+    isa      => Int,
+    lazy     => 1,
+    builder  => '_build_sloc',
 );
 
 # Metrics from Perl::Metrics2::Plugin::Core.
@@ -492,11 +494,12 @@ Source Lines of Pod. Returns the number of pod lines using L</pod_lines>.
 =cut
 
 has slop => (
-    is      => 'ro',
-    isa     => Int,
-    lazy    => 1,
-    default => '_build_slop',
-    writer  => '_set_slop',
+    required => 1,
+    is       => 'ro',
+    isa      => Int,
+    lazy     => 1,
+    builder  => '_build_slop',
+    writer   => '_set_slop',
 );
 
 sub _build_slop {
