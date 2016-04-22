@@ -131,6 +131,27 @@ sub run_restore {
 
         my $parent = $raw->{fields}->{_parent};
 
+        if ( $raw->{_type} eq 'author' ) {
+
+            # Hack for dodgy lat / lon's
+            if ( my $loc = $raw->{_source}->{location} ) {
+
+                my $lat = $loc->[1];
+                my $lon = $loc->[0];
+
+                if ( $lat > 90 or $lat < -90 ) {
+
+                    # Invalid latitude
+                    delete $raw->{_source}->{location};
+                }
+                elsif ( $lon > 180 or $lon < -180 ) {
+
+                    # Invalid longitude
+                    delete $raw->{_source}->{location};
+                }
+            }
+        }
+
         $bulk->create(
             {
                 id => $raw->{_id},
