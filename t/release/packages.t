@@ -19,7 +19,7 @@ test_release(
             'lib/Packages.pm' => [
                 {
                     name             => 'Packages',
-                    indexed          => \1,
+                    indexed          => 'true',
                     authorized       => 'true',
                     version          => '1.103',
                     version_numified => 1.103,
@@ -30,7 +30,7 @@ test_release(
             'lib/Packages/BOM.pm' => [
                 {
                     name             => 'Packages::BOM',
-                    indexed          => \1,
+                    indexed          => 'true',
                     authorized       => 'true',
                     version          => 0.04,
                     version_numified => 0.04,
