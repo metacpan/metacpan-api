@@ -34,13 +34,11 @@ PKG
 
         # Passing in "content" will override
         # but defaulting to package statements will help avoid buggy tests.
-        content_cb => sub {
-            \(
-                join "\n",
-                ( map { sprintf $pkg_template, $_->{name} } @$mods ),
-                "\n\n=head1 NAME\n\n${name} - abstract\n\n=cut\n\n",
-            );
-        },
+        content => \(
+            join "\n",
+            ( map { sprintf $pkg_template, $_->{name} } @$mods ),
+            "\n\n=head1 NAME\n\n${name} - abstract\n\n=cut\n\n",
+        ),
 
         %args,
     );
@@ -184,9 +182,9 @@ package MOBY::Config;
 END
 
     my $file = new_file_doc(
-        path       => 't/bar/bat.t',
-        module     => { name => 'MOBY::Config' },
-        content_cb => sub { \$content }
+        path    => 't/bar/bat.t',
+        module  => { name => 'MOBY::Config' },
+        content => \$content,
     );
 
     is( $file->abstract,
@@ -229,8 +227,8 @@ just a makefile description
 
 END
     my $file = new_file_doc(
-        name       => 'Makefile.PL',
-        content_cb => sub { \$content }
+        name    => 'Makefile.PL',
+        content => \$content,
     );
 
     is( $file->indexed, 0, 'File listed under other files is not indexed' );
@@ -268,7 +266,7 @@ AS-specific methods for Number::Phone
 END
     my $file = new_file_doc(
         module => [ { name => 'Number::Phone::NANP::ASS', version => 1.1 } ],
-        content_cb => sub { \$content }
+        content => \$content,
     );
     is( $file->sloc,                                   8, '8 lines of code' );
     is( $file->slop,                                   4, '4 lines of pod' );
@@ -297,9 +295,9 @@ C<Perl6Attribute> -- An example attribute metaclass for Perl 6 style attributes
 
 END
     my $file = new_file_doc(
-        name   => 'Perl6Attribute.pod',
-        module => [ { name => 'main', version => 1.1 } ],
-        content_cb => sub { \$content }
+        name    => 'Perl6Attribute.pod',
+        module  => [ { name => 'main', version => 1.1 } ],
+        content => \$content,
     );
     is( $file->documentation, 'Perl6Attribute' );
     is( $file->abstract,
@@ -345,8 +343,8 @@ Bar
 
 END
     my $file = new_file_doc(
-        name       => 'Foo.pod',
-        content_cb => sub { \$content }
+        name    => 'Foo.pod',
+        content => \$content,
     );
     is( $file->documentation, 'Foo', 'POD in __DATA__ section' );
     is( $file->description, 'hot stuff * Foo * Bar' );
@@ -386,7 +384,7 @@ END
     foreach my $folder ( 'pod', 'lib', 'docs' ) {
         my $file = MetaCPAN::Document::File->new(
             author       => 'Foo',
-            content_cb   => sub { \$content },
+            content      => \$content,
             distribution => 'Foo',
             name         => 'Baz.pod',
             path         => $folder . '/Foo/Bar/Baz.pod',
@@ -438,8 +436,8 @@ parsed.
 END
 
     my $file = new_file_doc(
-        name       => 'Yo.pm',
-        content_cb => sub { \$content }
+        name    => 'Yo.pm',
+        content => \$content,
     );
 
     test_attributes $file,
@@ -487,8 +485,8 @@ last-word.
 END
 
     my $file = new_file_doc(
-        name       => 'Yo.pm',
-        content_cb => sub { \$content }
+        name    => 'Yo.pm',
+        content => \$content,
     );
 
     test_attributes $file, {
@@ -540,8 +538,8 @@ POD
     };
 
     my $file = new_file_doc(
-        name       => 'Yo.pm',
-        content_cb => sub { \$content }
+        name    => 'Yo.pm',
+        content => \$content,
     );
 
     test_attributes $file, {

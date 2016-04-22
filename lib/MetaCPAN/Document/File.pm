@@ -614,7 +614,6 @@ These attributes are not stored.
 =head2 content
 
 A scalar reference to the content of the file.
-Built by calling L</content_cb>.
 
 =cut
 
@@ -622,30 +621,8 @@ has content => (
     is       => 'ro',
     isa      => ScalarRef,
     lazy     => 1,
-    builder  => '_build_content',
+    default  => sub { \"" },
     property => 0,
-);
-
-sub _build_content {
-    my $self = shift;
-
-    # NOTE: We used to remove the __DATA__ section "for performance reasons"
-    # however removing lines from the content will throw off pod_lines.
-    return $self->content_cb->();
-}
-
-=head2 content_cb
-
-Callback that returns the content of the file as a ScalarRef.
-
-=cut
-
-has content_cb => (
-    is       => 'ro',
-    property => 0,
-    default  => sub {
-        sub { \'' }
-    },
 );
 
 =head2 local_path

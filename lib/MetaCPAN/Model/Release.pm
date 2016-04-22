@@ -321,14 +321,14 @@ sub _build_files {
 
             my $file = $file_set->new_document(
                 Dlog_trace {"adding file $_"} +{
-                    author       => $self->author,
-                    binary       => -B $child,
-                    content_cb   => sub { \( scalar $child->slurp ) },
+                    author  => $self->author,
+                    binary  => -B $child,
+                    content => $child->is_dir ? \""
+                    : \( scalar $child->slurp ),
                     date         => $self->date,
                     directory    => $child->is_dir,
                     distribution => $self->distribution,
-                    indexed      => $self->metadata->should_index_file($fpath)
-                    ? 1
+                    indexed => $self->metadata->should_index_file($fpath) ? 1
                     : 0,
                     local_path   => $child,
                     maturity     => $self->maturity,
