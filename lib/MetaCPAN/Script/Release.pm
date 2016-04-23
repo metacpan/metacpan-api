@@ -194,23 +194,30 @@ sub run {
 
 }
 
-sub import_archive {
-    my $self         = shift;
-    my $archive_path = shift;
+sub _get_release_model {
+    my ( $self, $archive_path, $bulk ) = @_;
 
-    my $cpan = $self->index;
-    my $d    = CPAN::DistnameInfo->new($archive_path);
-    my $bulk = $cpan->bulk( size => $self->_bulk_size );
+    my $d = CPAN::DistnameInfo->new($archive_path);
 
     my $model = MetaCPAN::Model::Release->new(
         bulk     => $bulk,
         distinfo => $d,
         file     => $archive_path,
-        index    => $cpan,
+        index    => $self->index,
         level    => $self->level,
         logger   => $self->logger,
         status   => $self->detect_status( $d->cpanid, $d->filename ),
     );
+
+    return $model;
+}
+
+sub import_archive {
+    my $self         = shift;
+    my $archive_path = shift;
+
+    my $bulk = $self->index->bulk( size => $self->_bulk_size );
+    my $model = $self->_get_release_model( $archive_path, $bulk );
 
     log_debug {'Gathering modules'};
 
