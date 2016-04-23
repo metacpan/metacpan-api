@@ -151,8 +151,6 @@ my %_pod_score = (
 );
 
 sub set_associated_pod {
-
-    # FIXME: Why is $file passed if it isn't used?
     my ( $self, $associated_pod ) = @_;
     return unless ( my $files = $associated_pod->{ $self->name } );
 
@@ -187,7 +185,7 @@ sub set_associated_pod {
          @$files
          #>>>
     );
-    $self->_set_associated_pod($file->full_path);
+    $self->_set_associated_pod( $file->full_path );
 }
 
 __PACKAGE__->meta->make_immutable;
