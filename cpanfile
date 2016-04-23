@@ -83,6 +83,7 @@ requires 'List::Util', '1.43';
 requires 'Log::Contextual';
 requires 'Log::Log4perl';
 requires 'Log::Log4perl::Appender::ScreenColoredLevels';
+requires 'MetaCPAN::Moose';
 requires 'Minion', '>= 5.01';
 requires 'Minion::Backend::SQLite';
 requires 'Module::Load';

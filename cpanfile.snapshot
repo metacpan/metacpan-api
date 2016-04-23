@@ -3713,6 +3713,16 @@ DISTRIBUTIONS
       re 0
       strict 0
       warnings 0
+  Import-Into-1.002005
+    pathname: H/HA/HAARG/Import-Into-1.002005.tar.gz
+    provides:
+      Import::Into 1.002005
+    requirements:
+      ExtUtils::MakeMaker 0
+      Module::Runtime 0
+      perl 5.006
+      strict 0
+      warnings 0
   Iterator-0.03
     pathname: R/RO/ROODE/Iterator-0.03.tar.gz
     provides:
@@ -4253,6 +4263,20 @@ DISTRIBUTIONS
       Search::Elasticsearch::Scroll 0
       Try::Tiny 0
       perl 5.008
+      strict 0
+      warnings 0
+  MetaCPAN-Moose-0.000001
+    pathname: O/OA/OALDERS/MetaCPAN-Moose-0.000001.tar.gz
+    provides:
+      MetaCPAN::Moose 0.000001
+    requirements:
+      ExtUtils::MakeMaker 0
+      Import::Into 0
+      Module::Build 0.28
+      Moose 2.1605
+      MooseX::StrictConstructor 0.19
+      namespace::autoclean 0.28
+      perl 5.006
       strict 0
       warnings 0
   Minion-5.04

@@ -19,10 +19,10 @@ verbose = 11
 severity = 4
 
 [TestingAndDebugging::RequireUseStrict]
-equivalent_modules = Test::Routine Mojo::Base
+equivalent_modules = MetaCPAN::Moose Mojo::Base Test::Routine
 
 [TestingAndDebugging::RequireUseWarnings]
-equivalent_modules = Test::Routine Mojo::Base
+equivalent_modules = MetaCPAN::Moose Mojo::Base Test::Routine
 
 [ValuesAndExpressions::ProhibitEmptyQuotes]
 severity = 4
