@@ -580,8 +580,9 @@ has version_numified => (
 
 sub _build_version_numified {
     my $self = shift;
-    return 0 unless ( $self->version );
-    return MetaCPAN::Util::numify_version( $self->version );
+    return $self->version
+        ? MetaCPAN::Util::numify_version( $self->version )
+        : 0;
 }
 
 =head2 mime
