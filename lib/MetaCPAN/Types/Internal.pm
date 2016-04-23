@@ -26,6 +26,7 @@ use MooseX::Types -declare => [
         PerlMongers
         Tests
         BugSummary
+        RiverSummary
         )
 ];
 
@@ -103,6 +104,9 @@ subtype BugSummary,
     type   => Str,
     source => Str
     ];
+
+subtype RiverSummary,
+    as Dict [ ( map { $_ => Optional [Int] } qw(total immediate bucket) ), ];
 
 subtype Resources,
     as Dict [
