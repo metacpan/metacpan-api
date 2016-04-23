@@ -2449,32 +2449,32 @@ DISTRIBUTIONS
       Canary::Stability 0
       ExtUtils::MakeMaker 6.52
       common::sense 0
-  ElasticSearchX-Model-1.0.1
-    pathname: O/OA/OALDERS/ElasticSearchX-Model-1.0.1.tar.gz
+  ElasticSearchX-Model-1.0.2
+    pathname: O/OA/OALDERS/ElasticSearchX-Model-1.0.2.tar.gz
     provides:
-      ElasticSearchX::Model v1.0.1
-      ElasticSearchX::Model::Bulk v1.0.1
-      ElasticSearchX::Model::Document v1.0.1
-      ElasticSearchX::Model::Document::EmbeddedRole v1.0.1
-      ElasticSearchX::Model::Document::Mapping v1.0.1
-      ElasticSearchX::Model::Document::Role v1.0.1
-      ElasticSearchX::Model::Document::Set v1.0.1
-      ElasticSearchX::Model::Document::Trait::Attribute v1.0.1
-      ElasticSearchX::Model::Document::Trait::Class v1.0.1
-      ElasticSearchX::Model::Document::Trait::Class::ID v1.0.1
-      ElasticSearchX::Model::Document::Trait::Class::Timestamp v1.0.1
-      ElasticSearchX::Model::Document::Trait::Class::Version v1.0.1
-      ElasticSearchX::Model::Document::Trait::Field::ID v1.0.1
-      ElasticSearchX::Model::Document::Trait::Field::TTL v1.0.1
-      ElasticSearchX::Model::Document::Trait::Field::Timestamp v1.0.1
-      ElasticSearchX::Model::Document::Trait::Field::Version v1.0.1
-      ElasticSearchX::Model::Document::Types v1.0.1
-      ElasticSearchX::Model::Index v1.0.1
-      ElasticSearchX::Model::Role v1.0.1
-      ElasticSearchX::Model::Scroll v1.0.1
-      ElasticSearchX::Model::Trait::Class v1.0.1
-      ElasticSearchX::Model::Tutorial v1.0.1
-      ElasticSearchX::Model::Util v1.0.1
+      ElasticSearchX::Model v1.0.2
+      ElasticSearchX::Model::Bulk v1.0.2
+      ElasticSearchX::Model::Document v1.0.2
+      ElasticSearchX::Model::Document::EmbeddedRole v1.0.2
+      ElasticSearchX::Model::Document::Mapping v1.0.2
+      ElasticSearchX::Model::Document::Role v1.0.2
+      ElasticSearchX::Model::Document::Set v1.0.2
+      ElasticSearchX::Model::Document::Trait::Attribute v1.0.2
+      ElasticSearchX::Model::Document::Trait::Class v1.0.2
+      ElasticSearchX::Model::Document::Trait::Class::ID v1.0.2
+      ElasticSearchX::Model::Document::Trait::Class::Timestamp v1.0.2
+      ElasticSearchX::Model::Document::Trait::Class::Version v1.0.2
+      ElasticSearchX::Model::Document::Trait::Field::ID v1.0.2
+      ElasticSearchX::Model::Document::Trait::Field::TTL v1.0.2
+      ElasticSearchX::Model::Document::Trait::Field::Timestamp v1.0.2
+      ElasticSearchX::Model::Document::Trait::Field::Version v1.0.2
+      ElasticSearchX::Model::Document::Types v1.0.2
+      ElasticSearchX::Model::Index v1.0.2
+      ElasticSearchX::Model::Role v1.0.2
+      ElasticSearchX::Model::Scroll v1.0.2
+      ElasticSearchX::Model::Trait::Class v1.0.2
+      ElasticSearchX::Model::Tutorial v1.0.2
+      ElasticSearchX::Model::Util v1.0.2
     requirements:
       Carp 0
       Class::Load 0
@@ -2482,20 +2482,33 @@ DISTRIBUTIONS
       DateTime::Format::Epoch::Unix 0
       DateTime::Format::ISO8601 0
       Digest::SHA1 0
-      JSON 0
+      Eval::Closure 0
+      JSON::MaybeXS 0
       List::MoreUtils 0
       List::Util 0
       Module::Build 0.3601
       Module::Find 0
       Moose 2.02
+      Moose::Exporter 0
+      Moose::Role 0
+      Moose::Util::TypeConstraints 0
       MooseX::Attribute::Chained v1.0.1
+      MooseX::Attribute::ChainedClone 0
       MooseX::Attribute::Deflator v2.2.0
+      MooseX::Attribute::Deflator::Moose 0
+      MooseX::Attribute::LazyInflator::Meta::Role::Attribute 0
       MooseX::Types 0
       MooseX::Types::ElasticSearch v0.0.4
+      MooseX::Types::Moose 0
       MooseX::Types::Structured 0
       Scalar::Util 0
-      Search::Elasticsearch 1.11
+      Search::Elasticsearch 2.02
+      Search::Elasticsearch::Bulk 0
+      Search::Elasticsearch::Scroll 0
       Sub::Exporter 0
+      strict 0
+      version 0
+      warnings 0
   Email-Abstract-3.008
     pathname: R/RJ/RJBS/Email-Abstract-3.008.tar.gz
     provides:

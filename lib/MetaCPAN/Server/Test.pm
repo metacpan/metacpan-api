@@ -5,7 +5,7 @@ use warnings;
 
 use HTTP::Request::Common qw(POST GET DELETE);
 use Plack::Test;
-use Test::More 0.96;
+use Test::More;
 
 use base 'Exporter';
 our @EXPORT = qw(
