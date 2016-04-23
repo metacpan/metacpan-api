@@ -272,7 +272,7 @@ END
     is( $file->slop,                                   4, '4 lines of pod' );
     is( $file->module->[0]->hide_from_pause($content), 1, 'not indexed' );
     is( $file->abstract,      'AS-specific methods for Number::Phone' );
-    is( $file->documentation, 'Number::Phone::NANP::AS' );
+    is( $file->documentation, 'Number::Phone::NANP::ASS' );
     is_deeply( $file->pod_lines, [ [ 18, 7 ] ], 'correct pod_lines' );
     is( $file->module->[0]->version_numified,
         1.1, 'numified version has been calculated' );
