@@ -214,7 +214,7 @@ test 'release attributes' => sub {
     }
 };
 
-test 'modules in release files' => sub {
+test 'modules in Packages-1.103' => sub {
     my ($self) = @_;
 
     plan skip_all => 'No modules specified for testing'

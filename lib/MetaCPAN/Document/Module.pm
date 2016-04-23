@@ -8,7 +8,7 @@ use ElasticSearchX::Model::Document;
 
 with 'ElasticSearchX::Model::Document::EmbeddedRole';
 
-use MetaCPAN::Types qw( AssociatedPod Bool Str );
+use MetaCPAN::Types qw( Bool Num Str );
 use MetaCPAN::Util;
 
 =head1 SYNOPSIS
@@ -62,6 +62,7 @@ not declared in one line, the module is considered not-indexed.
 
 has name => (
     is       => 'ro',
+    isa      => Str,
     required => 1,
     index    => 'analyzed',
     analyzer => [qw(standard camelcase lowercase)],
@@ -86,14 +87,16 @@ has authorized => (
 );
 
 has associated_pod => (
-    isa    => AssociatedPod,
-    is     => 'ro',
-    writer => '_set_associated_pod',
+    required => 1,
+    isa      => Str,
+    is       => 'ro',
+    default  => q{},
+    writer   => '_set_associated_pod',
 );
 
 has version_numified => (
     is         => 'ro',
-    isa        => 'Num',
+    isa        => Num,
     lazy_build => 1,
     required   => 1,
 );
@@ -150,12 +153,12 @@ my %_pod_score = (
 sub set_associated_pod {
 
     # FIXME: Why is $file passed if it isn't used?
-    my ( $self, $file, $associated_pod ) = @_;
+    my ( $self, $associated_pod ) = @_;
     return unless ( my $files = $associated_pod->{ $self->name } );
 
     ( my $mod_path = $self->name ) =~ s{::}{/}g;
 
-    my ($pod) = (
+    my ($file) = (
         #<<<
         # TODO: adjust score if all files are in root?
         map  { $_->[1] }
@@ -184,8 +187,7 @@ sub set_associated_pod {
          @$files
          #>>>
     );
-    $self->_set_associated_pod($pod);
-    return $pod;
+    $self->_set_associated_pod($file->full_path);
 }
 
 __PACKAGE__->meta->make_immutable;

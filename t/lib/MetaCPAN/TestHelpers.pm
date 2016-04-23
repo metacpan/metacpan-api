@@ -8,7 +8,6 @@ use FindBin;
 use Git::Helpers qw( checkout_root );
 use JSON;
 use MetaCPAN::Script::Runner;
-use MetaCPAN::TestServer;
 use Path::Class qw( dir );
 use Try::Tiny;
 use Test::More;

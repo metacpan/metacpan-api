@@ -234,8 +234,7 @@ sub import_archive {
     my @release_unauthorized;
     my @provides;
     foreach my $file (@$modules) {
-        $_->set_associated_pod( $file, \%associated_pod )
-            for ( @{ $file->module } );
+        $_->set_associated_pod( \%associated_pod ) for ( @{ $file->module } );
         $file->set_indexed($meta);
 
      # NOTE: "The method returns a list of unauthorized, but indexed modules."

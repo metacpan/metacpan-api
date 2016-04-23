@@ -17,7 +17,6 @@ use MooseX::Types -declare => [
         Resources
         Stat
         Module
-        AssociatedPod
         Identity
         Dependency
         Extra
@@ -153,13 +152,10 @@ coerce Logger, from ArrayRef, via {
 MooseX::Getopt::OptionTypeMap->add_option_type_to_map(
     'MooseX::Types::ElasticSearch::ES' => '=s' );
 
-subtype AssociatedPod, as Item;
-
 use MooseX::Attribute::Deflator;
 deflate 'ScalarRef', via {$$_};
 inflate 'ScalarRef', via { \$_ };
 
-deflate AssociatedPod, via { ref $_ ? $_->full_path : $_ };
 no MooseX::Attribute::Deflator;
 
 1;

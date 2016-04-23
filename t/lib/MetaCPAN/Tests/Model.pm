@@ -41,23 +41,20 @@ has _type => (
 
 has _model => (
     is      => 'ro',
+    isa     => 'MetaCPAN::Model',
     lazy    => 1,
-    builder => '_build__model',
+    default => sub { MetaCPAN::Server::Test::model() },
 );
 
-sub _build__model {
-    return MetaCPAN::Server::Test::model();
-}
-
-has index => (
-    reader  => '_index',
+has _es_index_name => (
+    is      => 'ro',
     isa     => Str,
     default => 'cpan',
 );
 
 sub index {
     my ($self) = @_;
-    $self->_model->index( $self->_index );
+    return $self->_model->index( $self->_es_index_name );
 }
 
 has search => (
