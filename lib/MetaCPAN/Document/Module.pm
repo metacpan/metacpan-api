@@ -8,7 +8,7 @@ use ElasticSearchX::Model::Document;
 
 with 'ElasticSearchX::Model::Document::EmbeddedRole';
 
-use MetaCPAN::Types qw( Bool Num Str );
+use MetaCPAN::Types qw( Bool Maybe Num Str );
 use MetaCPAN::Util;
 
 =head1 SYNOPSIS
@@ -88,9 +88,9 @@ has authorized => (
 
 has associated_pod => (
     required => 1,
-    isa      => Str,
+    isa      => Maybe [Str],
     is       => 'ro',
-    default  => q{},
+    default  => sub { },
     writer   => '_set_associated_pod',
 );
 

@@ -21,8 +21,7 @@ test_release(
                     authorized       => 'true',
                     version          => '0.01',
                     version_numified => 0.01,
-
-                    # no associated_pod
+                    associated_pod   => undef,
                 },
             ],
             'lib/Binary/Data/WithPod.pm' => [
