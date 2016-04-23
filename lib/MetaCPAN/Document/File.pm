@@ -32,18 +32,19 @@ C<NAME> section. It also sets L</documentation> if it succeeds.
 
 =cut
 
-has abstract => (
+has section => (
     is      => 'ro',
+    isa     => Maybe [Str],
     lazy    => 1,
-    builder => '_build_abstract',
-    index   => 'analyzed',
+    builder => '_build_section',
 );
 
-sub _build_abstract {
+my $RE_SECTION = qr/^\s*(\S+)((\h+-+\h+(.+))|(\r?\n\h*\r?\n\h*(.+)))?/ms;
+
+sub _build_section {
     my $self = shift;
-    return undef unless ( $self->is_perl_file );
+
     my $text = ${ $self->content };
-    my ( $documentation, $abstract );
     my $section = MetaCPAN::Util::extract_section( $text, 'NAME' );
 
     # if it's a POD file without a name section, let's try to generate
@@ -59,10 +60,29 @@ sub _build_abstract {
     $section =~ s/^=\w+.*$//mg;
     $section =~ s/X<.*?>//mg;
 
-    if ( $section =~ /^\s*(\S+)((\h+-+\h+(.+))|(\r?\n\h*\r?\n\h*(.+)))?/ms ) {
+    return $section;
+}
+
+has abstract => (
+    is => 'ro',
+
+    #    isa     => Maybe[Str],
+    lazy    => 1,
+    builder => '_build_abstract',
+    index   => 'analyzed',
+);
+
+sub _build_abstract {
+    my $self = shift;
+    return undef unless ( $self->is_perl_file );
+
+    my $section = $self->section;
+    return undef unless $section;
+
+    my $abstract;
+
+    if ( $section =~ $RE_SECTION ) {
         chomp( $abstract = $4 || $6 ) if ( $4 || $6 );
-        my $name = MetaCPAN::Util::strip_pod($1);
-        $documentation = $name if ( $name =~ /^[\w\.:\-_']+$/ );
     }
     if ($abstract) {
         $abstract =~ s/^=\w+.*$//xms;
@@ -71,10 +91,6 @@ sub _build_abstract {
         $abstract =~ s{\s+$}{}gxms;
         $abstract =~ s{(\s)+}{$1}gxms;
         $abstract = MetaCPAN::Util::strip_pod($abstract);
-    }
-    if ($documentation) {
-        $self->_set_documentation(
-            MetaCPAN::Util::strip_pod($documentation) );
     }
     return $abstract;
 }
@@ -271,7 +287,9 @@ set to C<undef>.
 =cut
 
 has documentation => (
-    is        => 'ro',
+    is => 'ro',
+
+    #    isa       => Maybe[Str],
     lazy      => 1,
     builder   => '_build_documentation',
     index     => 'analyzed',
@@ -283,8 +301,20 @@ has documentation => (
 
 sub _build_documentation {
     my $self = shift;
-    $self->_build_abstract;
-    my $documentation = $self->documentation if ( $self->has_documentation );
+    return undef unless ( $self->is_perl_file );
+
+    my $section = $self->section;
+    return undef unless $section;
+
+    my $documentation;
+
+    if ( $section =~ $RE_SECTION ) {
+        my $name = MetaCPAN::Util::strip_pod($1);
+        $documentation = $name if ( $name =~ /^[\w\.:\-_']+$/ );
+    }
+
+    $documentation = MetaCPAN::Util::strip_pod($documentation)
+        if $documentation;
     return undef unless length $documentation;
 
     my @indexed = grep { $_->indexed } @{ $self->module || [] };
@@ -300,9 +330,8 @@ sub _build_documentation {
     elsif ( !@{ $self->module || [] } ) {
         return $documentation;
     }
-    else {
-        return undef;
-    }
+
+    return undef;
 }
 
 =head2 indexed
