@@ -209,6 +209,8 @@ sub _get_release_model {
         status   => $self->detect_status( $d->cpanid, $d->filename ),
     );
 
+    $model->run;
+
     return $model;
 }
 
@@ -221,28 +223,30 @@ sub import_archive {
 
     log_debug {'Gathering modules'};
 
-    $model->run;
+    my $files    = $model->files;
+    my $modules  = $model->modules;
+    my $meta     = $model->metadata;
+    my $document = $model->document;
 
-    # build module -> pod file mapping
-    # $file->clear_documentation to force a rebuild
-    my $files = $model->files;
+    foreach my $file (@$modules) {
+        $file->set_indexed($meta);
+    }
+
     my %associated_pod;
     for ( grep { $_->indexed && $_->documentation } @$files ) {
+
+        # $file->clear_documentation to force a rebuild
         my $documentation = $_->clear_documentation;
         $associated_pod{$documentation}
             = [ @{ $associated_pod{$documentation} || [] }, $_ ];
     }
 
-    my $modules = $model->modules;
     log_debug { 'Indexing ', scalar @$modules, ' modules' };
-    my $document = $model->document;
-    my $perms    = $self->perms;
-    my $meta     = $model->metadata;
+    my $perms = $self->perms;
     my @release_unauthorized;
     my @provides;
     foreach my $file (@$modules) {
         $_->set_associated_pod( \%associated_pod ) for ( @{ $file->module } );
-        $file->set_indexed($meta);
 
      # NOTE: "The method returns a list of unauthorized, but indexed modules."
         push( @release_unauthorized, $file->set_authorized($perms) )
