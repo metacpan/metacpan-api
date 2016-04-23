@@ -74,7 +74,7 @@ has indexed => (
     is       => 'ro',
     required => 1,
     isa      => Bool,
-    default  => 0,
+    default  => 1,
     writer   => '_set_indexed',
 );
 

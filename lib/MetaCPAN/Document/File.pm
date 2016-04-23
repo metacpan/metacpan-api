@@ -287,9 +287,8 @@ set to C<undef>.
 =cut
 
 has documentation => (
-    is => 'ro',
-
-    #    isa       => Maybe[Str],
+    is        => 'ro',
+    isa       => Maybe [Str],
     lazy      => 1,
     builder   => '_build_documentation',
     index     => 'analyzed',
@@ -315,9 +314,11 @@ sub _build_documentation {
 
     $documentation = MetaCPAN::Util::strip_pod($documentation)
         if $documentation;
+
     return undef unless length $documentation;
 
     my @indexed = grep { $_->indexed } @{ $self->module || [] };
+
     if ( $documentation && $self->is_pod_file ) {
         return $documentation;
     }
