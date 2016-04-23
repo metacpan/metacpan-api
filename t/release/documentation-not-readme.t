@@ -8,7 +8,7 @@ use Test::More;
 test_release(
     'RWSTAUNER/Documentation-Not-Readme-0.01',
     {
-        first       => \1,
+        first       => 1,
         extra_tests => \&test_modules,
         main_module => 'Documentation::Not::Readme',
     }

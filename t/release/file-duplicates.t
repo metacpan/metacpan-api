@@ -8,7 +8,7 @@ use Test::More;
 test_release(
     'BORISNAT/File-Duplicates-1.000',
     {
-        first       => \1,
+        first       => 1,
         main_module => 'File::Duplicates',
         modules     => {
             'lib/File/Duplicates.pm' => [
@@ -16,8 +16,8 @@ test_release(
                     name             => 'File::Duplicates',
                     version          => '0.991',
                     version_numified => '0.991',
-                    authorized       => \1,
-                    indexed          => \1,
+                    authorized       => 'true',
+                    indexed          => 'true',
                 }
             ],
             'lib/File/lib/File/Duplicates.pm' => [
@@ -25,8 +25,8 @@ test_release(
                     name             => 'File::lib::File::Duplicates',
                     version          => '0.992',
                     version_numified => '0.992',
-                    authorized       => \1,
-                    indexed          => \1,
+                    authorized       => 'true',
+                    indexed          => 'true',
                 }
             ],
             'lib/Dupe.pm' => [
@@ -34,8 +34,8 @@ test_release(
                     name             => 'Dupe',
                     version          => '0.993',
                     version_numified => '0.993',
-                    authorized       => \1,
-                    indexed          => \1,
+                    authorized       => 'true',
+                    indexed          => 'true',
                 }
             ],
             'DupeX/Dupe.pm' => [
@@ -43,15 +43,15 @@ test_release(
                     name             => 'DupeX::Dupe',
                     version          => '0.994',
                     version_numified => '0.994',
-                    authorized       => \1,
-                    indexed          => \1,
+                    authorized       => 'true',
+                    indexed          => 'true',
                 },
                 {
                     name             => 'DupeX::Dupe::X',
                     version          => '0.995',
                     version_numified => '0.995',
-                    authorized       => \1,
-                    indexed          => \1,
+                    authorized       => 'true',
+                    indexed          => 'true',
                 }
             ],
         },

@@ -11,8 +11,8 @@ test_release(
         distribution => 'IPsonar',
 
         author     => 'LOCAL',
-        authorized => \1,
-        first      => \1,
+        authorized => 1,
+        first      => 1,
 
         # META file says ''.
         version => '',
