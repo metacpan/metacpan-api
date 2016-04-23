@@ -195,7 +195,7 @@ END
             ->hide_from_pause( ${ $file->content }, $file->name ),
         0, 'indexed'
     );
-    is( $file->documentation, 'MOBY::Config.pm' );
+    is( $file->documentation, 'MOBY::Config' );
     is( $file->level,         2 );
     test_attributes $file, {
         sloc      => 1,
