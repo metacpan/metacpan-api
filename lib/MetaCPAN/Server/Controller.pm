@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use namespace::autoclean;
 
-use JSON;
+use Cpanel::JSON::XS;
 use List::MoreUtils ();
 use Moose::Util     ();
 use Moose;

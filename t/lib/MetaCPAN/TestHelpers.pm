@@ -6,7 +6,7 @@ package    # no_index
 
 use FindBin;
 use Git::Helpers qw( checkout_root );
-use JSON;
+use Cpanel::JSON::XS;
 use MetaCPAN::Script::Runner;
 use Path::Class qw( dir );
 use Try::Tiny;

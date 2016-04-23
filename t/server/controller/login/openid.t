@@ -5,7 +5,7 @@ use utf8;
 package # Test::Routine's run_me (in main) doesn't mix well with Test::Aggregate.
     t::server::controller::login::openid;
 
-use JSON qw( decode_json );
+use Cpanel::JSON::XS qw( decode_json );
 use MetaCPAN::Server::Test;
 use Test::More;
 use Test::OpenID::Server;

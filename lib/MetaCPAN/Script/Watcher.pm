@@ -5,7 +5,7 @@ use warnings;
 use Moose;
 
 use CPAN::DistnameInfo;
-use JSON::XS;
+use Cpanel::JSON::XS;
 use Log::Contextual qw( :log );
 use MetaCPAN::Util;
 use MetaCPAN::Types qw( Bool );

@@ -19,7 +19,7 @@ use Moose;
 BEGIN { extends 'Catalyst::Controller' }
 
 use Digest::SHA1;
-use JSON;
+use Cpanel::JSON::XS;
 use URI;
 
 has login   => ( is => 'ro' );

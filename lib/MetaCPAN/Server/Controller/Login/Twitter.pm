@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use HTTP::Request::Common;
-use JSON;
+use Cpanel::JSON::XS;
 use LWP::UserAgent;
 use Moose;
 use Net::Twitter;

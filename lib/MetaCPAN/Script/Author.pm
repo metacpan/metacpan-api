@@ -10,7 +10,7 @@ use DateTime::Format::ISO8601 ();
 use Email::Valid              ();
 use Encode                    ();
 use File::stat                ();
-use JSON::XS                  ();
+use Cpanel::JSON::XS          ();
 use Log::Contextual qw( :log );
 use MetaCPAN::Document::Author;
 use URI ();

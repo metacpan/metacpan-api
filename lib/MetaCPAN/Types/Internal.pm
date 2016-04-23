@@ -5,7 +5,7 @@ use warnings;
 
 use CPAN::Meta;
 use ElasticSearchX::Model::Document::Types qw(:all);
-use JSON;
+use Cpanel::JSON::XS;
 use MooseX::Getopt::OptionTypeMap;
 use MooseX::Types::Common::String qw(NonEmptySimpleStr);
 use MooseX::Types::Moose qw( ArrayRef HashRef Item Int Str );

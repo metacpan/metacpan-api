@@ -8,7 +8,7 @@ use CHI                   ();
 use Email::Sender::Simple ();
 use Email::Simple         ();
 use Encode                ();
-use JSON;
+use Cpanel::JSON::XS;
 use Moose;
 use Try::Tiny;
 use MetaCPAN::Util;

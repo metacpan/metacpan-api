@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Data::DPath qw(dpath);
-use JSON::XS;
+use Cpanel::JSON::XS;
 use Moose;
 use MooseX::Aliases;
 use YAML::Syck qw(Dump);

@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Encode qw(decode_utf8);
-use JSON ();
+use Cpanel::JSON::XS ();
 use Moose;
 
 extends 'Catalyst::View';
