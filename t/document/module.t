@@ -111,8 +111,7 @@ sub test_associated_pod {
     my $module = MetaCPAN::Document::Module->new( name => $name );
     $module->set_associated_pod(
         { $name => [ map { PodFile->new($_) } @$files ] } );
-    is $module->associated_pod->full_path, ".../$exp",
-        $desc || 'Best pod file selected';
+    is $module->associated_pod, ".../$exp", $desc || 'Best pod file selected';
 }
 
 done_testing;
