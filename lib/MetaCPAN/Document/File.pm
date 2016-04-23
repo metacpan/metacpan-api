@@ -17,9 +17,9 @@ use Pod::Text;
 use Try::Tiny;
 use URI::Escape ();
 
-Plack::MIME->add_type( ".t"   => "text/x-script.perl" );
-Plack::MIME->add_type( ".pod" => "text/x-pod" );
-Plack::MIME->add_type( ".xs"  => "text/x-c" );
+Plack::MIME->add_type( '.t'   => 'text/x-script.perl' );
+Plack::MIME->add_type( '.pod' => 'text/x-pod' );
+Plack::MIME->add_type( '.xs'  => 'text/x-c' );
 
 my @NOT_PERL_FILES = qw(SIGNATURE);
 
@@ -675,10 +675,10 @@ Reference to the L<CPAN::Meta> object of the release.
 =cut
 
 has metadata => (
-    is       => "ro",
+    is       => 'ro',
+    isa      => 'CPAN::Meta',
     lazy     => 1,
-    default  => sub { die "meta attribute missing" },
-    isa      => "CPAN::Meta",
+    default  => sub { die 'meta attribute missing' },
     property => 0,
 );
 
@@ -886,7 +886,7 @@ Concatenate L</author>, L</release> and L</path>.
 
 sub full_path {
     my $self = shift;
-    return join( "/", $self->author, $self->release, $self->path );
+    return join( '/', $self->author, $self->release, $self->path );
 }
 
 __PACKAGE__->meta->make_immutable;
