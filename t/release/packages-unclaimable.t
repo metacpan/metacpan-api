@@ -14,8 +14,8 @@ test_release(
         author => 'RWSTAUNER',
         abstract =>
             'Dist that appears to declare packages that are not allowed',
-        authorized  => \1,
-        first       => \1,
+        authorized  => 1,
+        first       => 1,
         provides    => [ 'Packages::Unclaimable', ],
         status      => 'latest',
         main_module => 'Packages::Unclaimable',
@@ -23,8 +23,8 @@ test_release(
             'lib/Packages/Unclaimable.pm' => [
                 {
                     name             => 'Packages::Unclaimable',
-                    indexed          => \1,
-                    authorized       => \1,
+                    indexed          => 'true',
+                    authorized       => 'true',
                     version          => 2,
                     version_numified => 2,
                     associated_pod =>
