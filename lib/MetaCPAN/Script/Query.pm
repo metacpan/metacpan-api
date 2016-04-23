@@ -41,7 +41,8 @@ sub run {
         }
     );
     my @results = dpath($path)->match( decode_json($json) );
-    ( my $dump = Dump(@results) ) =~ s/\!\!perl\/scalar:JSON::XS::Boolean //g;
+    ( my $dump = Dump(@results) )
+        =~ s/\!\!perl\/scalar:Cpanel::JSON::XS::Boolean //g;
     print $dump;
 
 }

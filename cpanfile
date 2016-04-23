@@ -74,8 +74,6 @@ requires 'IO::String';
 requires 'IO::Uncompress::Bunzip2';
 requires 'IO::Zlib';
 requires 'IPC::Run3';
-requires 'JSON::XS', '3.01';
-requires 'JSON', '2.90';
 requires 'LWP::Protocol::https';
 requires 'LWP::UserAgent', '6.15';
 requires 'LWP::UserAgent::Paranoid';

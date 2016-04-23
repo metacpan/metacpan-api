@@ -115,7 +115,8 @@ sub author_config {
 
     my $author;
     eval {
-        $author = JSON::XS->new->utf8->relaxed->decode( $file->slurp );
+        $author
+            = Cpanel::JSON::XS->new->utf8->relaxed->decode( $file->slurp );
         1;
     } or do {
         log_warn {"$file is broken: $@"};
