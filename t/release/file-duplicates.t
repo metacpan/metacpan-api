@@ -18,6 +18,7 @@ test_release(
                     version_numified => '0.991',
                     authorized       => 'true',
                     indexed          => 'true',
+                    associated_pod   => undef,
                 }
             ],
             'lib/File/lib/File/Duplicates.pm' => [
@@ -27,6 +28,7 @@ test_release(
                     version_numified => '0.992',
                     authorized       => 'true',
                     indexed          => 'true',
+                    associated_pod   => undef,
                 }
             ],
             'lib/Dupe.pm' => [
@@ -36,6 +38,7 @@ test_release(
                     version_numified => '0.993',
                     authorized       => 'true',
                     indexed          => 'true',
+                    associated_pod   => undef,
                 }
             ],
             'DupeX/Dupe.pm' => [
@@ -45,6 +48,7 @@ test_release(
                     version_numified => '0.994',
                     authorized       => 'true',
                     indexed          => 'true',
+                    associated_pod   => undef,
                 },
                 {
                     name             => 'DupeX::Dupe::X',
@@ -52,6 +56,7 @@ test_release(
                     version_numified => '0.995',
                     authorized       => 'true',
                     indexed          => 'true',
+                    associated_pod   => undef,
                 }
             ],
         },
