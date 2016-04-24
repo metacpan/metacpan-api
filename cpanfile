@@ -142,6 +142,7 @@ requires 'Pod::POM';
 requires 'Pod::Simple', '3.29';
 requires 'Pod::Simple::XHTML', '3.24';
 requires 'Pod::Text';
+requires 'Ref::Util';
 requires 'Regexp::Common';
 requires 'Regexp::Common::time';
 requires 'Safe', '2.35'; # bug fixes (used by Parse::PMFile)

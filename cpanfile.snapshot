@@ -7407,6 +7407,14 @@ DISTRIBUTIONS
     requirements:
       Module::Build::Tiny 0.035
       perl v5.6.0
+  Ref-Util-0.008
+    pathname: X/XS/XSAWYERX/Ref-Util-0.008.tar.gz
+    provides:
+      Ref::Util 0.008
+    requirements:
+      Exporter 5.57
+      ExtUtils::MakeMaker 0
+      Test::More 0
   Regexp-Common-2016020301
     pathname: A/AB/ABIGAIL/Regexp-Common-2016020301.tar.gz
     provides:

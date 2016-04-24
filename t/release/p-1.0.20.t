@@ -23,7 +23,7 @@ test_release(
             # Don't test the actual numbers since we copy this out of the real
             # database as a live test case.
 
-            is ref($tests), 'HASH', 'hashref of tests';
+            ok( is_hashref($tests), 'hashref of tests' );
 
             ok $tests->{pass} > 0, 'has passed tests';
 
