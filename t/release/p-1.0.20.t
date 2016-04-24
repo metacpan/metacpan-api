@@ -1,17 +1,24 @@
-use Test::More;
 use strict;
 use warnings;
 
 use lib 't/lib';
+
 use MetaCPAN::TestHelpers;
+use Ref::Util qw( is_hashref );
+use Test::More;
+
+use MetaCPAN::TestServer;
+
+my $server = MetaCPAN::TestServer->new;
+$server->index_cpantesters;
 
 test_release(
     {
         name         => 'P-1.0.20',
         distribution => 'P',
         author       => 'LOCAL',
-        authorized   => \1,
-        first        => \1,
+        authorized   => 1,
+        first        => 1,
         version      => 'v1.0.20',
 
         provides => [ 'P', ],
@@ -25,9 +32,9 @@ test_release(
 
             ok( is_hashref($tests), 'hashref of tests' );
 
-            ok $tests->{pass} > 0, 'has passed tests';
+            ok( $tests->{pass} > 0, 'has passed tests' );
 
-            ok exists( $tests->{$_} ), "has '$_' results"
+            ok( exists( $tests->{$_} ), "has '$_' results" )
                 for qw( pass fail na unknown );
         },
     }
