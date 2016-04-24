@@ -4,6 +4,7 @@ use warnings;
 use MetaCPAN::Server::Test;
 use MetaCPAN::TestHelpers;
 use Test::More skip_all => 'Scripting is disabled';
+use Try::Tiny qw( catch try );
 use URI;
 
 sub uri {

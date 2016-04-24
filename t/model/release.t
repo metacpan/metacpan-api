@@ -1,10 +1,11 @@
 use strict;
 use warnings;
 
-use File::Temp;
+use File::Temp ();
 use LWP::Simple qw(getstore);
 use MetaCPAN::Model::Release;
 use MetaCPAN::Script::Runner;
+use MetaCPAN::TestHelpers qw( get_config );
 use Test::More;
 use Test::RequiresInternet( 'metacpan.org' => 'https' );
 
@@ -24,9 +25,5 @@ my $release = MetaCPAN::Model::Release->new(
 $release->set_logger_once;
 
 is $release->file, $archive_file->filename;
-
-# This isn't going to work without a lot more scaffolding passed into Release
-#my $files = $release->files();
-#is( @$files, 4, 'got all files from release' );
 
 done_testing();

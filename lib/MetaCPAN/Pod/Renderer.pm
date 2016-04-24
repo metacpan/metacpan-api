@@ -1,9 +1,6 @@
 package MetaCPAN::Pod::Renderer;
 
-use strict;
-use warnings;
-
-use Moose;
+use MetaCPAN::Moose;
 
 use MetaCPAN::Pod::XHTML;
 use MetaCPAN::Types qw( Uri );
@@ -45,7 +42,7 @@ sub html_renderer {
     $parser->html_header('');
     $parser->index(1);
     $parser->no_errata_section(1);
-    $parser->_set_perldoc_url_prefix( $self->perldoc_url_prefix );
+    $parser->perldoc_url_prefix( $self->perldoc_url_prefix );
 
     return $parser;
 }
@@ -92,5 +89,5 @@ sub _generic_render {
     return $output;
 }
 
-__PACKAGE__->meta->make_immutable();
+__PACKAGE__->meta->make_immutable;
 1;

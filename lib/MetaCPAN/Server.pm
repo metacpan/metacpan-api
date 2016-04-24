@@ -1,13 +1,11 @@
 package MetaCPAN::Server;
 
-use strict;
-use warnings;
+use Moose;
 
 ## no critic (Modules::RequireEndWithOne)
 
 use CatalystX::RoleApplicator;
 use File::Temp qw( tempdir );
-use Moose;
 use Plack::Middleware::ReverseProxy;
 use Plack::Middleware::ServerStatus::Lite;
 
@@ -113,6 +111,10 @@ if ( $ENV{PLACK_ENV} && $ENV{PLACK_ENV} eq 'development' ) {
         allow      => ['127.0.0.1'],
         scoreboard => $scoreboard,
     );
+}
+
+sub to_app {
+    return $app;
 }
 
 # Let's be explicit because implicit returns can be confusing

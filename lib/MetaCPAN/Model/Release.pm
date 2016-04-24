@@ -1,6 +1,9 @@
 package MetaCPAN::Model::Release;
 
+use Moose;
+
 use v5.10;
+
 use CPAN::DistnameInfo ();
 use CPAN::Meta         ();
 use DateTime           ();
@@ -10,11 +13,10 @@ use MetaCPAN::Model::Archive;
 use MetaCPAN::Types qw(ArrayRef AbsFile Str);
 use MetaCPAN::Util ();
 use Module::Metadata 1.000012 ();    # Improved package detection.
-use Moose;
 use MooseX::StrictConstructor;
 use Path::Class ();
 use Parse::PMFile;
-use Try::Tiny;
+use Try::Tiny qw( catch try );
 
 with 'MetaCPAN::Role::Logger';
 

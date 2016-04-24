@@ -531,7 +531,7 @@ use strict;
 Foo - mymodule1 abstract
 POD
 
-    no warnings 'redefine';
+    no warnings qw( once redefine );
 
     local *Pod::Text::parse_string_document = sub {
         die "# [fake pod error]\n";

@@ -1,10 +1,11 @@
 package MetaCPAN::Tests::Model;
+
 use Test::Routine;
-use Test::More;
-use Try::Tiny;
 
 use MetaCPAN::Server::Test ();
 use MetaCPAN::Types qw( ArrayRef HashRef Str );
+use Test::More;
+use Try::Tiny qw( catch try );
 
 with qw(
     MetaCPAN::Tests::Extra

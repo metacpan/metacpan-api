@@ -11,7 +11,7 @@ use MetaCPAN::Script::Runner;
 use Path::Class qw( dir );
 use Test::More;
 use Test::Routine::Util;
-use Try::Tiny qw( catch );
+use Try::Tiny qw( catch try );
 
 use base 'Exporter';
 our @EXPORT = qw(
