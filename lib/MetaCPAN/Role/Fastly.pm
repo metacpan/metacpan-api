@@ -192,7 +192,6 @@ sub _cdn_get_service {
 
     my $fsi = $c->config->{fastly_service_id};
     return $net_fastly->get_service($fsi);
-
 }
 
 sub cdn_purge_cpan_distnameinfos {
@@ -209,7 +208,6 @@ sub cdn_purge_cpan_distnameinfos {
 
     # Now run with this list
     $c->cdn_purge_now( { keys => \@purge_keys } );
-
 }
 
 =head2 cdn_purge_now

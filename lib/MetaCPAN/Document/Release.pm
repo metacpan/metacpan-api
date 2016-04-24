@@ -196,9 +196,10 @@ has stat => (
 );
 
 has tests => (
-    is      => 'ro',
-    isa     => Tests,
-    dynamic => 1,
+    is            => 'ro',
+    isa           => Tests,
+    dynamic       => 1,
+    documentation => 'HashRef: Summary of CPANTesters data',
 );
 
 has authorized => (
