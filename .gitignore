@@ -9,6 +9,7 @@
 /var
 /t/var/tmp/
 /t/var/darkpan/
+/t/var/log/
 /etc/metacpan_local.pl
 metacpan_server_local.conf
 

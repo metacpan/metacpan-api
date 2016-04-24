@@ -9,6 +9,7 @@ use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Model;
 use MetaCPAN::Types qw(:all);
 use Moose::Role;
+use Carp ();
 
 has 'cpan' => (
     is      => 'ro',
@@ -74,7 +75,7 @@ sub handle_error {
     log_fatal {$error};
 
     # Die if configured (for the test suite).
-    die $error if $self->die_on_error;
+    Carp::croak $error if $self->die_on_error;
 }
 
 sub index {

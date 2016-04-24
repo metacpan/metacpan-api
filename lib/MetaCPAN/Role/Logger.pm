@@ -49,7 +49,8 @@ sub set_logger_once {
 # XXX This doesn't belong here.
 sub _build_logger {
     my ($config) = @_;
-    my $log = Log::Log4perl->get_logger( $ARGV[0] );
+    my $log = Log::Log4perl->get_logger( $ARGV[0]
+            || 'this_would_have_been_argv_0_but_there_is_no_such_thing' );
     foreach my $c (@$config) {
         my $layout = Log::Log4perl::Layout::PatternLayout->new( $c->{layout}
                 || qq{%d %p{1} %c: %m{chomp}%n} );
