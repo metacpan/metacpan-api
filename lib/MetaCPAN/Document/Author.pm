@@ -1,10 +1,8 @@
 package MetaCPAN::Document::Author;
 
-use strict;
-use warnings;
+use MetaCPAN::Moose;
 
-# load order important for next 3 modules
-use Moose;
+# load order important for next 2 modules
 use ElasticSearchX::Model::Document::Types qw(:all);
 use ElasticSearchX::Model::Document;
 

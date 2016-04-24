@@ -41,7 +41,7 @@ my $MAX_SIZE = 5000;
 sub apply_request_filter {
     my ( $self, $c, $data ) = @_;
 
-    if ( my $fields = $c->req->param("fields") ) {
+    if ( my $fields = $c->req->param('fields') ) {
         my $filtered = {};
         my @fields = split /,/, $fields;
         @$filtered{@fields} = @$data{@fields};
@@ -54,9 +54,9 @@ sub apply_request_filter {
 sub model {
     my ( $self, $c ) = @_;
     my $model = $c->model('CPAN')->type( $self->type );
-    $model = $model->fields( [ map { split(/,/) } $c->req->param("fields") ] )
-        if $c->req->param("fields");
-    if ( my ($size) = $c->req->param("size") ) {
+    $model = $model->fields( [ map { split(/,/) } $c->req->param('fields') ] )
+        if $c->req->param('fields');
+    if ( my ($size) = $c->req->param('size') ) {
         $c->detach( '/bad_request',
             [ "size parameter exceeds maximum of $MAX_SIZE", 416 ] )
             if ( $size && $size > $MAX_SIZE );
@@ -75,7 +75,7 @@ sub mapping : Path('_mapping') {
     );
 }
 
-sub get : Path('') : Args(1) {
+sub get : Path(q{}) : Args(1) {
     my ( $self, $c, $id ) = @_;
     my $file = $self->model($c)->raw->get($id);
     if ( !defined $file ) {
@@ -86,7 +86,7 @@ sub get : Path('') : Args(1) {
         ['The requested field(s) could not be found'] );
 }
 
-sub all : Path('') : Args(0) : ActionClass('Deserialize') {
+sub all : Path(q{}) : Args(0) : ActionClass('Deserialize') {
     my ( $self, $c ) = @_;
     $c->req->params->{q} ||= '*' unless ( $c->req->data );
     $c->forward('search');
@@ -110,7 +110,7 @@ sub search : Path('_search') : ActionClass('Deserialize') {
         $c->stash(
             $self->model($c)->es->search(
                 {
-                    index => $c->model("CPAN")->index,
+                    index => $c->model('CPAN')->index,
                     type  => $self->type,
                     body  => $c->req->data,
                     %$params,
@@ -131,9 +131,9 @@ sub join : ActionClass('Deserialize') {
         : $c->req->data ? $c->req->data
         :                 { query => { match_all => {} } };
     $c->detach(
-        "/not_allowed",
+        '/not_allowed',
         [
-            "unknown join type, valid values are "
+            'unknown join type, valid values are '
                 . Moose::Util::english_list( keys %$joins )
         ]
     ) if ( scalar grep { !$joins->{$_} } @req_joins );
@@ -163,9 +163,9 @@ sub join : ActionClass('Deserialize') {
         $c->detach(
             "/not_allowed",
             [
-                "The number of joined documents exceeded the allowed number of 1000 documents by "
+                'The number of joined documents exceeded the allowed number of 1000 documents by '
                     . ( $foreign->{hits}->{total} - 1000 )
-                    . ". Please reduce the number of documents or apply additional filters."
+                    . '. Please reduce the number of documents or apply additional filters.'
             ]
         ) if ( $foreign->{hits}->{total} > 1000 );
         $c->stash->{took} += $foreign->{took} unless ($is_get);
@@ -222,9 +222,9 @@ sub internal_error {
 
 sub end : Private {
     my ( $self, $c ) = @_;
-    $c->forward("join")
+    $c->forward('join')
         if ( $self->has_relationships && $c->req->param('join') );
-    $c->forward("/end");
+    $c->forward('/end');
 }
 
 __PACKAGE__->meta->make_immutable;
