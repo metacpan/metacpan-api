@@ -823,18 +823,20 @@ sub set_indexed {
     }
 
     foreach my $mod ( @{ $self->module } ) {
-        if ( $mod->name !~ /^[A-Za-z]/ ) {
+        if ( $mod->name !~ /^[A-Za-z]/
+            or !$meta->should_index_package( $mod->name ) )
+        {
             $mod->_set_indexed(0);
             next;
         }
+
         $mod->_set_indexed(
-              $meta->should_index_package( $mod->name )
-            ? $mod->hide_from_pause( ${ $self->content }, $self->name )
-                    ? 0
-                    : 1
-            : 0
-        ) unless ( $mod->indexed );
+            $mod->hide_from_pause( ${ $self->content }, $self->name )
+            ? 0
+            : 1
+        );
     }
+
     $self->_set_indexed(
 
         # .pm file with no package declaration but pod should be indexed
