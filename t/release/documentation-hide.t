@@ -25,9 +25,9 @@ ok( $release->first, 'Release is first' );
     my @files = $idx->type('file')->filter(
         {
             and => [
-                { term   => { 'file.author'  => $release->author } },
-                { term   => { 'file.release' => $release->name } },
-                { exists => { field          => 'file.module.name' } },
+                { term   => { author  => $release->author } },
+                { term   => { release => $release->name } },
+                { exists => { field   => 'module.name' } },
             ]
         }
     )->all;
@@ -51,7 +51,7 @@ ok( $release->first, 'Release is first' );
             and => [
                 { term   => { author  => $release->author } },
                 { term   => { release => $release->name } },
-                { exists => { field   => 'file.documentation' } }
+                { exists => { field   => 'documentation' } }
             ]
         }
     )->all;
