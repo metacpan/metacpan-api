@@ -1,4 +1,5 @@
 #!/bin/sh
 
+export EMAIL_SENDER_TRANSPORT=Test
 export ES=localhost:9900
-`dirname "$0"`/run prove -It/lib -lv "$@"
+`dirname "$0"`/run prove -It/lib -lvr "$@"
