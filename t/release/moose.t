@@ -8,7 +8,7 @@ use Test::More;
 my $model = model();
 my $idx   = $model->index('cpan');
 my @moose = $idx->type('release')
-    ->filter( { term => { 'release.distribution' => 'Moose' } } )->all;
+    ->filter( { term => { distribution => 'Moose' } } )->all;
 
 my $first = 0;
 map { $first++ } grep { $_->first } @moose;
@@ -22,8 +22,7 @@ is( $moose[1]->main_module, 'Moose', 'main_module ok' );
 ok(
     my $faq
         = $idx->type('file')
-        ->filter( { term => { 'file.documentation' => 'Moose::FAQ' } } )
-        ->first,
+        ->filter( { term => { documentation => 'Moose::FAQ' } } )->first,
     'get Moose::FAQ'
 );
 
@@ -35,8 +34,7 @@ ok( !$faq->binary, 'is not binary' );
 
 ok(
     my $binary
-        = $idx->type('file')->filter( { term => { 'file.name' => 't' } } )
-        ->first,
+        = $idx->type('file')->filter( { term => { name => 't' } } )->first,
     'get a t/ directory'
 );
 
@@ -45,7 +43,7 @@ ok( $binary->binary, 'is binary' );
 ok(
     my $ppport
         = $idx->type('file')
-        ->filter( { term => { 'file.documentation' => 'ppport.h' } } )->first,
+        ->filter( { term => { documentation => 'ppport.h' } } )->first,
     'get ppport.h'
 );
 
@@ -71,9 +69,9 @@ ok( !$signature, 'SIGNATURE is not perl code' );
 $signature = $idx->type('file')->filter(
     {
         and => [
-            { term => { 'file.documentation' => 'SIGNATURE' } },
-            { term => { mime                 => 'text/x-script.perl' } },
-            { term => { name                 => 'SIGNATURE' } }
+            { term => { documentation => 'SIGNATURE' } },
+            { term => { mime          => 'text/x-script.perl' } },
+            { term => { name          => 'SIGNATURE' } }
         ]
     }
 )->first;
@@ -82,9 +80,9 @@ ok( !$signature, 'SIGNATURE is not documentation' );
 $signature = $idx->type('file')->filter(
     {
         and => [
-            { term   => { name      => 'SIGNATURE' } },
-            { exists => { field     => 'documentation' } },
-            { term   => { 'indexed' => \1 } },
+            { term   => { name    => 'SIGNATURE' } },
+            { exists => { field   => 'documentation' } },
+            { term   => { indexed => \1 } },
         ]
     }
 )->first;

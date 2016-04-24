@@ -255,16 +255,16 @@ sub _build_first {
     $self->index->type('release')->filter(
         {
             and => [
-                { term => { 'release.distribution' => $self->distribution } },
+                { term => { distribution => $self->distribution } },
                 {
                     range => {
-                        'release.version_numified' =>
+                        version_numified =>
                             { 'lt' => $self->version_numified }
                     }
                 },
 
           # REINDEX: after a full reindex, the above line is to replaced with:
-          # { term => { 'release.first' => \1 } },
+          # { term => { first => \1 } },
           # currently, the "first" property is not computed on all releases
           # since this feature has not been around when last reindexed
             ]
@@ -289,8 +289,7 @@ sub find_depending_on {
     return $self->filter(
         {
             or => [
-                map { { term => { 'release.dependency.module' => $_ } } }
-                    @$modules
+                map { { term => { 'dependency.module' => $_ } } } @$modules
             ]
         }
     );
@@ -301,8 +300,8 @@ sub find {
     return $self->filter(
         {
             and => [
-                { term => { 'release.distribution' => $name } },
-                { term => { status                 => 'latest' } }
+                { term => { distribution => $name } },
+                { term => { status       => 'latest' } }
             ]
         }
     )->sort( [ { date => 'desc' } ] )->first;
@@ -313,7 +312,7 @@ sub predecessor {
     return $self->filter(
         {
             and => [
-                { term => { 'release.distribution' => $name } },
+                { term => { distribution => $name } },
                 { not => { filter => { term => { status => 'latest' } } } },
             ]
         }

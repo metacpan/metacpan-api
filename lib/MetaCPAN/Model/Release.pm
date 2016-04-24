@@ -224,7 +224,6 @@ sub _build_document {
         $self->index->type('distribution')
             ->put( { name => $self->distribution }, { create => 1 } );
     };
-
     return $document;
 }
 

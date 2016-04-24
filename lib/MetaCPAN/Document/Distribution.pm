@@ -32,7 +32,7 @@ has river => (
 sub releases {
     my $self = shift;
     return $self->index->type("release")
-        ->filter( { term => { "release.distribution" => $self->name } } );
+        ->filter( { term => { "distribution" => $self->name } } );
 }
 
 sub set_first_release {
@@ -49,7 +49,7 @@ sub set_first_release {
 sub unset_first_release {
     my $self = shift;
     my $releases
-        = $self->releases->filter( { term => { "release.first" => \1 }, } )
+        = $self->releases->filter( { term => { first => 'true' }, } )
         ->size(200)->scroll;
     while ( my $release = $releases->next ) {
         $release->_set_first(0);
