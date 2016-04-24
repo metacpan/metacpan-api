@@ -228,7 +228,7 @@ sub import_archive {
     my $meta     = $model->metadata;
     my $document = $model->document;
 
-    foreach my $file (@$modules) {
+    foreach my $file (@$files) {
         $file->set_indexed($meta);
     }
 
@@ -245,7 +245,7 @@ sub import_archive {
     my $perms = $self->perms;
     my @release_unauthorized;
     my @provides;
-    foreach my $file (@$modules) {
+    foreach my $file (@$files) {
         $_->set_associated_pod( \%associated_pod ) for ( @{ $file->module } );
 
      # NOTE: "The method returns a list of unauthorized, but indexed modules."
