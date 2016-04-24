@@ -10,14 +10,34 @@ use File::stat qw(stat);
 use IO::Uncompress::Bunzip2 qw(bunzip2);
 use LWP::UserAgent ();
 use Log::Contextual qw( :log :dlog );
-use MetaCPAN::Types qw( Bool );
+use MetaCPAN::Types qw( Bool File Uri );
 use Moose;
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt::Dashes';
 
 has db => (
     is      => 'ro',
-    default => 'http://devel.cpantesters.org/release/release.db.bz2'
+    isa     => Uri,
+    lazy    => 1,
+    coerce  => 1,
+    builder => '_build_db',
+);
+
+has force_refresh => (
+    is      => 'ro',
+    isa     => Bool,
+    default => 0,
+);
+
+has mirror_file => (
+    is      => 'ro',
+    isa     => File,
+    default => sub {
+        $ENV{HARNESS_ACTIVE}
+            ? shift->home->file(qw(t var tmp cpantesters.db))
+            : shift->home->file(qw( var tmp cpantesters.db));
+    },
+    coerce => 1,
 );
 
 has skip_download => (
@@ -37,6 +57,13 @@ has _bulk => (
     },
 );
 
+sub _build_db {
+    my $self = shift;
+    return $ENV{HARNESS_ACTIVE}
+        ? $self->home->file('t/var/cpantesters-release-fake.db.bz2')
+        : 'http://devel.cpantesters.org/release/release.db.bz2';
+}
+
 sub run {
     my $self = shift;
     $self->index_reports;
@@ -49,15 +76,15 @@ sub index_reports {
     my $es    = $self->model->es;
     my $index = $self->index->name;
     my $ua    = LWP::UserAgent->new;
-    my $db    = $self->home->file(qw(var tmp cpantesters.db));
 
     log_info { "Mirroring " . $self->db };
+    my $db = $self->mirror_file;
 
     $ua->mirror( $self->db, "$db.bz2" ) unless $self->skip_download;
 
     if ( -e $db && stat($db)->mtime >= stat("$db.bz2")->mtime ) {
         log_info {"DB hasn't been modified"};
-        return unless $self->skip_download;
+        return unless $self->force_refresh;
     }
 
     bunzip2 "$db.bz2" => "$db", AutoClose => 1 if -e "$db.bz2";
