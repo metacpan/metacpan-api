@@ -805,13 +805,21 @@ does not include any modules, the L</indexed> property is true.
 sub set_indexed {
     my ( $self, $meta ) = @_;
 
-    #files listed under 'other files' are not shown in a search
+    # files listed under 'other files' are not shown in a search
     if ( $self->is_in_other_files() ) {
         foreach my $mod ( @{ $self->module } ) {
             $mod->_set_indexed(0);
         }
         $self->_set_indexed(0);
         return;
+    }
+
+    # files under no_index directories should not be indexed
+    foreach my $dir ( @{ $meta->no_index->{directory} } ) {
+        if ( $self->path eq $dir or $self->path =~ /^$dir\// ) {
+            $self->_set_indexed(0);
+            return;
+        }
     }
 
     foreach my $mod ( @{ $self->module } ) {

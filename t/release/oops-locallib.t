@@ -9,16 +9,16 @@ test_release(
     {
         name        => 'Oops-LocalLib-0.01',
         author      => 'BORISNAT',
-        authorized  => \1,
-        first       => \1,
+        authorized  => 1,
+        first       => 1,
         provides    => [ 'Fruits', 'Oops::LocalLib', ],
         main_module => 'Oops::LocalLib',
         modules     => {
             'lib/Oops/LocalLib.pm' => [
                 {
                     name             => 'Oops::LocalLib',
-                    indexed          => \1,
-                    authorized       => \1,
+                    indexed          => 'true',
+                    authorized       => 'true',
                     version          => '0.01',
                     version_numified => 0.01,
                     associated_pod =>
@@ -28,8 +28,8 @@ test_release(
             'foreign/Fruits.pm' => [
                 {
                     name             => 'Fruits',
-                    indexed          => \1,
-                    authorized       => \1,
+                    indexed          => 'true',
+                    authorized       => 'true',
                     version          => '1',
                     version_numified => 1,
                     associated_pod =>
@@ -44,6 +44,7 @@ test_release(
                 my $file = $self->file_by_path('local/Vegetable.pm');
 
                 ok !$file->indexed, 'file in /local/ not indexed';
+
                 ok $file->authorized, 'file in /local/ not un-authorized';
                 is $file->sloc,       2, 'sloc';
                 is $file->slop,       2, 'slop';
