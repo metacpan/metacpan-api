@@ -255,13 +255,18 @@ sub _build_first {
     $self->index->type('release')->filter(
         {
             and => [
-                { term => { first => 1 } },
+                { term => { distribution => $self->distribution } },
                 {
                     range => {
                         version_numified =>
                             { 'lt' => $self->version_numified }
                     }
                 },
+
+          # REINDEX: after a full reindex, the above line is to replaced with:
+          # { term => { first => \1 } },
+          # currently, the "first" property is not computed on all releases
+          # since this feature has not been around when last reindexed
             ]
         }
         )->count
