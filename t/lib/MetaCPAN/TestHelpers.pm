@@ -4,14 +4,14 @@ use warnings;
 package    # no_index
     MetaCPAN::TestHelpers;
 
+use Cpanel::JSON::XS;
 use FindBin;
 use Git::Helpers qw( checkout_root );
-use Cpanel::JSON::XS;
 use MetaCPAN::Script::Runner;
 use Path::Class qw( dir );
-use Try::Tiny;
 use Test::More;
 use Test::Routine::Util;
+use Try::Tiny qw( catch );
 
 use base 'Exporter';
 our @EXPORT = qw(

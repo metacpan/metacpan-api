@@ -1,9 +1,10 @@
 package MetaCPAN::TestServer;
 
-use Moose;
+use MetaCPAN::Moose;
 
 use CPAN::Repository::Perms;
 use MetaCPAN::Script::Author;
+use MetaCPAN::Script::CPANTesters ();
 use MetaCPAN::Script::Latest;
 use MetaCPAN::Script::Mapping;
 use MetaCPAN::Script::Release;
@@ -166,7 +167,7 @@ sub index_releases {
     my $self = shift;
     my %args = @_;
 
-    local @ARGV = ( 'release', $self->_cpan_dir, '--children', 0 );
+    local @ARGV = ( 'release', $self->_cpan_dir, );
     ok(
         MetaCPAN::Script::Release->new_with_options( %{ $self->_config },
             %args )->run,

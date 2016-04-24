@@ -34,13 +34,6 @@ has age => (
     documentation => 'index releases no older than x hours (undef)',
 );
 
-has children => (
-    is            => 'ro',
-    isa           => Int,
-    default       => 2,
-    documentation => 'number of worker processes (2)',
-);
-
 has skip => (
     is            => 'ro',
     isa           => Bool,
@@ -171,27 +164,15 @@ sub run {
             }
         }
 
-        if ( @pid > $self->children ) {
-            my $pid = waitpid( -1, 0 );
-            @pid = grep { $_ != $pid } @pid;
-        }
-        if ( $self->children && ( my $pid = fork() ) ) {
-            push( @pid, $pid );
-        }
-        else {
-            try { $self->import_archive($file) }
-            catch {
-                $self->handle_error( $_[0] );
-            };
-            exit if ( $self->children );
-        }
+        try { $self->import_archive($file) }
+        catch {
+            $self->handle_error("$file $_[0]");
+        };
     }
-    waitpid( -1, 0 ) for (@pid);
     $self->index->refresh;
 
     # Call Fastly to purge
     $self->cdn_purge_cpan_distnameinfos( \@module_to_purge_dists );
-
 }
 
 sub _get_release_model {
