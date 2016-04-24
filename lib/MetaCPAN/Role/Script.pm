@@ -5,6 +5,7 @@ use warnings;
 
 use ElasticSearchX::Model::Document::Types qw(:all);
 use FindBin;
+use Git::Helpers qw( checkout_root );
 use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Model;
 use MetaCPAN::Types qw(:all);
@@ -61,8 +62,9 @@ has port => (
 has home => (
     is      => 'ro',
     isa     => Dir,
+    lazy    => 1,
     coerce  => 1,
-    default => "$FindBin::RealBin/..",
+    default => sub { checkout_root() },
 );
 
 with 'MetaCPAN::Role::Fastly', 'MetaCPAN::Role::HasConfig',
