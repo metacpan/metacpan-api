@@ -22,7 +22,7 @@ is( $moose[1]->main_module, 'Moose', 'main_module ok' );
 ok(
     my $faq
         = $idx->type('file')
-        ->filter( { term => { documentation => 'Moose::FAQ' } } )->first,
+        ->filter( { match => { documentation => 'Moose::FAQ' } } )->first,
     'get Moose::FAQ'
 );
 
