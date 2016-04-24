@@ -196,7 +196,7 @@ sub index_authors {
 sub index_cpantesters {
     my $self = shift;
 
-    local @ARGV = ('cpantesters');
+    local @ARGV = ( 'cpantesters', '--force-refresh' );
     ok(
         MetaCPAN::Script::CPANTesters->new_with_options( $self->_config )
             ->run,
@@ -204,5 +204,5 @@ sub index_cpantesters {
     );
 }
 
-__PACKAGE__->meta->make_immutable();
+__PACKAGE__->meta->make_immutable;
 1;
