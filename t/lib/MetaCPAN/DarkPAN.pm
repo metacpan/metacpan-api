@@ -1,13 +1,11 @@
 package MetaCPAN::DarkPAN;
 
-use strict;
-use warnings;
+use MetaCPAN::Moose;
 
 use CPAN::Repository::Perms;
 use MetaCPAN::TestHelpers qw( get_config );
 use MetaCPAN::Types qw( Dir );
 use MetaCPAN::Util qw( author_dir );
-use Moose;
 use OrePAN2::Indexer;
 use OrePAN2::Injector;
 use Path::Class qw( dir );

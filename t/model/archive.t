@@ -3,6 +3,7 @@
 use strict;
 use warnings;
 
+use MetaCPAN::TestHelpers qw( fakecpan_dir );
 use Test::Most;
 
 my $CLASS = 'MetaCPAN::Model::Archive';
@@ -29,10 +30,10 @@ subtest 'archive extraction' => sub {
         'Some-1.00-TRIAL/MANIFEST'    => 62,
     );
 
-    my $archive
-        = $CLASS->new( file =>
-            't/var/tmp/fakecpan/authors/id/L/LO/LOCAL/Some-1.00-TRIAL.tar.gz'
-        );
+    my $archive = $CLASS->new(
+        file => fakecpan_dir->file(
+            '/authors/id/L/LO/LOCAL/Some-1.00-TRIAL.tar.gz')
+    );
 
     ok !$archive->is_impolite;
     ok !$archive->is_naughty;
@@ -51,10 +52,10 @@ subtest 'temp cleanup' => sub {
     my $tempdir;
 
     {
-        my $archive
-            = $CLASS->new( file =>
-                't/var/tmp/fakecpan/authors/id/L/LO/LOCAL/Some-1.00-TRIAL.tar.gz'
-            );
+        my $archive = $CLASS->new(
+            file => fakecpan_dir->file(
+                'authors/id/L/LO/LOCAL/Some-1.00-TRIAL.tar.gz')
+        );
 
         $tempdir = $archive->extract;
         ok -d $tempdir;
@@ -68,10 +69,10 @@ subtest 'temp cleanup' => sub {
 };
 
 subtest 'extract once' => sub {
-    my $archive
-        = $CLASS->new( file =>
-            't/var/tmp/fakecpan/authors/id/L/LO/LOCAL/Some-1.00-TRIAL.tar.gz'
-        );
+    my $archive = $CLASS->new(
+        file => fakecpan_dir->file(
+            'authors/id/L/LO/LOCAL/Some-1.00-TRIAL.tar.gz')
+    );
 
     is $archive->extract, $archive->extract;
 };
@@ -81,8 +82,8 @@ subtest 'set extract dir' => sub {
 
     {
         my $archive = $CLASS->new(
-            file =>
-                't/var/tmp/fakecpan/authors/id/L/LO/LOCAL/Some-1.00-TRIAL.tar.gz',
+            file => facecpan_dir->file(
+                'authors/id/L/LO/LOCAL/Some-1.00-TRIAL.tar.gz'),
             extract_dir => $temp->dirname
         );
 

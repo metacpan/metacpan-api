@@ -4,10 +4,16 @@ use warnings;
 use lib 't/lib';
 
 use CPAN::Faker 0.010;
+use Devel::Confess;
 use File::Copy;
 use MetaCPAN::Script::Tickets;
 use MetaCPAN::Server::Test;
-use MetaCPAN::TestHelpers qw( get_config );
+use MetaCPAN::TestHelpers qw(
+    fakecpan_configs_dir
+    fakecpan_dir
+    get_config
+    tmp_dir
+);
 use MetaCPAN::TestServer;
 use Module::Faker 0.015 ();    # Generates META.json.
 use Path::Class qw(dir);
@@ -16,12 +22,7 @@ use Test::More 0.96;
 use Test::More 0.96 ();
 use Test::Most;
 
-my $tmp_dir = dir('var/tmp');
-
-unless ( -d $tmp_dir || -l $tmp_dir ) {
-    $tmp_dir->mkpath();
-}
-ok( ( -d $tmp_dir || -l $tmp_dir ), 'var/tmp exists for testing' );
+ok( ( -d tmp_dir() ), 'var/tmp exists for testing' );
 
 my $server = MetaCPAN::TestServer->new;
 $server->setup;
@@ -40,19 +41,26 @@ foreach my $test_dir ( $config->{cpan}, $config->{source_base} ) {
 my $mod_faker = 'Module::Faker::Dist::WithPerl';
 eval "require $mod_faker" or die $@;    ## no critic (StringyEval)
 
+my $fakecpan_dir = fakecpan_dir();
+$fakecpan_dir->rmtree;
+$fakecpan_dir = fakecpan_dir();         # recreate dir
+
+my $fakecpan_configs = fakecpan_configs_dir();
+
 my $cpan = CPAN::Faker->new(
     {
-        source     => 't/var/fakecpan/configs',
-        dest       => $config->{cpan},
+        source     => $fakecpan_configs->subdir('configs')->stringify,
+        dest       => $fakecpan_dir->stringify,
         dist_class => $mod_faker,
     }
 );
 
 ok( $cpan->make_cpan, 'make fake cpan' );
+$fakecpan_dir->subdir('authors')->mkpath;
 
 # do some changes to 06perms.txt
 {
-    my $perms_file = dir( $config->{cpan} )->file(qw(modules 06perms.txt));
+    my $perms_file = $fakecpan_dir->subdir('modules')->file('06perms.txt');
     my $perms      = $perms_file->slurp;
     $perms =~ s/^Some,LOCAL,f$/Some,MO,f/m;
     my $fh = $perms_file->openw;
@@ -64,29 +72,29 @@ ok( $cpan->make_cpan, 'make fake cpan' );
 require Parse::PMFile;
 local $Parse::PMFile::VERBOSE = $ENV{TEST_VERBOSE} ? 9 : 0;
 
+my $src_dir = $fakecpan_configs;
+
+$src_dir->file('00whois.xml')
+    ->copy_to( $fakecpan_dir->file(qw(authors 00whois.xml)) );
+
+copy( $src_dir->file('author-1.0.json'),
+    $fakecpan_dir->file(qw(authors id M MO MO author-1.0.json)) );
+
+copy( $src_dir->file('bugs.tsv'), $fakecpan_dir->file('bugs.tsv') );
+
 $server->index_releases;
 $server->set_latest;
-
-my $cpan_dir = dir( 't', 'var', 'fakecpan', );
-
-copy( $cpan_dir->file('00whois.xml'),
-    file( $config->{cpan}, qw(authors 00whois.xml) ) );
-
-copy( $cpan_dir->file('author-1.0.json'),
-    file( $config->{cpan}, qw(authors id M MO MO author-1.0.json) ) );
-
-copy( $cpan_dir->file('bugs.tsv'), file( $config->{cpan}, 'bugs.tsv' ) );
-
 $server->index_authors;
+$server->index_cpantesters;
 
 ok(
     MetaCPAN::Script::Tickets->new_with_options(
         {
             %{$config},
             rt_summary_url => 'file://'
-                . file( $config->{cpan}, 'bugs.tsv' )->absolute,
+                . $fakecpan_dir->file('bugs.tsv')->absolute,
             github_issues => 'file://'
-                . dir(qw(t var fakecpan github))->absolute
+                . $fakecpan_dir->subdir('github')->absolute
                 . '/%s/%s.json?per_page=100',
         }
         )->run,

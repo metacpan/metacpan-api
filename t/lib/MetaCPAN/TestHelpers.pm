@@ -16,15 +16,18 @@ use Try::Tiny qw( catch try );
 use base 'Exporter';
 our @EXPORT = qw(
     catch
-    get_config
     decode_json_ok
     encode_json
+    fakecpan_configs_dir
+    fakecpan_dir
     finally
+    get_config
     hex_escape
     multiline_diag
     run_tests
     test_distribution
     test_release
+    tmp_dir
     try
 );
 
@@ -98,6 +101,25 @@ sub get_config {
         MetaCPAN::Script::Runner->build_config;
     };
     return $config;
+}
+
+sub tmp_dir {
+    my $dir = dir( undef, checkout_root(), 'var', 't', 'tmp' );
+    $dir->mkpath;
+    return $dir;
+}
+
+sub fakecpan_dir {
+    my $dir      = tmp_dir();
+    my $fakecpan = $dir->subdir('fakecpan');
+    $fakecpan->mkpath;
+    return $fakecpan;
+}
+
+sub fakecpan_configs_dir {
+    my $source = dir( undef, checkout_root(), 'test-data', 'fakecpan' );
+    $source->mkpath;
+    return $source;
 }
 
 1;

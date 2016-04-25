@@ -8,7 +8,7 @@ use MetaCPAN::Script::CPANTesters ();
 use MetaCPAN::Script::Latest;
 use MetaCPAN::Script::Mapping;
 use MetaCPAN::Script::Release;
-use MetaCPAN::TestHelpers qw( get_config );
+use MetaCPAN::TestHelpers qw( get_config fakecpan_dir );
 use MetaCPAN::Types qw( Dir HashRef Str );
 use Search::Elasticsearch;
 use Search::Elasticsearch::TestServer;
@@ -48,7 +48,7 @@ has _cpan_dir => (
     isa      => Dir,
     init_arg => 'cpan_dir',
     coerce   => 1,
-    default  => 't/var/tmp/fakecpan',
+    default  => sub { fakecpan_dir() },
 );
 
 sub setup {
