@@ -317,19 +317,30 @@ sub _build_documentation {
 
     return undef unless length $documentation;
 
+    # Modules to be indexed
     my @indexed = grep { $_->indexed } @{ $self->module || [] };
 
+    # This is a Pod file, return its name
     if ( $documentation && $self->is_pod_file ) {
         return $documentation;
     }
-    elsif ( $documentation && grep { $_->name eq $documentation } @indexed ) {
+
+    # OR: found an indexed module with the same name
+    if ( $documentation && grep { $_->name eq $documentation } @indexed ) {
         return $documentation;
     }
-    elsif (@indexed) {
-        return $indexed[0]->name;
+
+    # OR: found an indexed module with a name
+    if ( my ($mod) = grep { defined $_->name } @indexed ) {
+        return $mod->name;
     }
-    elsif ( !@{ $self->module || [] } ) {
-        return $documentation;
+
+    # OR: we have a parsed documentation
+    return $documentation if defined $documentation;
+
+    # OR: found ANY module with a name (better than nothing)
+    if ( my ($mod) = grep { defined $_->name } @{ $self->module || [] } ) {
+        return $mod->name;
     }
 
     return undef;

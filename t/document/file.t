@@ -271,8 +271,18 @@ END
     is( $file->sloc,                                   8, '8 lines of code' );
     is( $file->slop,                                   4, '4 lines of pod' );
     is( $file->module->[0]->hide_from_pause($content), 1, 'not indexed' );
-    is( $file->abstract,      'AS-specific methods for Number::Phone' );
-    is( $file->documentation, 'Number::Phone::NANP::ASS' );
+    is(
+        $file->abstract,
+        'AS-specific methods for Number::Phone',
+        'abstract text'
+    );
+
+    # changed because the extracted document from content takes
+    # precedence over a non-indexed module.
+    # test may need an update if we want to see the name
+    # from the module. -- Mickey
+    is( $file->documentation, 'Number::Phone::NANP::AS', 'document text' );
+
     is_deeply( $file->pod_lines, [ [ 18, 7 ] ], 'correct pod_lines' );
     is( $file->module->[0]->version_numified,
         1.1, 'numified version has been calculated' );
