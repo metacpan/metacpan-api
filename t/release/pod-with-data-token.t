@@ -9,16 +9,16 @@ test_release(
     {
         name        => 'Pod-With-Data-Token-0.01',
         author      => 'BORISNAT',
-        authorized  => \1,
-        first       => \1,
+        authorized  => 1,
+        first       => 1,
         provides    => [ 'Pod::With::Data::Token', ],
         main_module => 'Pod::With::Data::Token',
         modules     => {
             'lib/Pod/With/Data/Token.pm' => [
                 {
                     name             => 'Pod::With::Data::Token',
-                    indexed          => \1,
-                    authorized       => \1,
+                    indexed          => 'true',
+                    authorized       => 'true',
                     version          => '0.01',
                     version_numified => 0.01,
                     associated_pod =>
