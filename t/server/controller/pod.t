@@ -4,7 +4,6 @@ use warnings;
 use Cpanel::JSON::XS ();
 use HTTP::Request::Common qw( GET );
 use MetaCPAN::Server ();
-use MetaCPAN::Server::App;
 use Path::Class qw(dir);
 use Plack::Test;
 use Test::More;
