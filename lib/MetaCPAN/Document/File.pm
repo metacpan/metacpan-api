@@ -23,6 +23,13 @@ Plack::MIME->add_type( '.xs'  => 'text/x-c' );
 
 my @NOT_PERL_FILES = qw(SIGNATURE);
 
+sub BUILD {
+    my $self = shift;
+
+    # force building of `mime`
+    $self->_build_mime;
+}
+
 =head1 PROPERTIES
 
 =head2 abstract
@@ -604,9 +611,10 @@ MIME type of file. Derived using L<Plack::MIME> (for speed).
 =cut
 
 has mime => (
-    is      => 'ro',
-    lazy    => 1,
-    builder => '_build_mime',
+    required => 1,
+    is       => 'ro',
+    lazy     => 1,
+    builder  => '_build_mime',
 );
 
 sub _build_mime {
