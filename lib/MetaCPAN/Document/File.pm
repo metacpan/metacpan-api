@@ -824,6 +824,16 @@ does not include any modules, the L</indexed> property is true.
 sub set_indexed {
     my ( $self, $meta ) = @_;
 
+    # modules explicitly listed in 'provides' should be indexed
+    foreach my $mod ( @{ $self->module } ) {
+        if ( exists $meta->provides->{ $mod->name }
+            and $self->path eq $meta->provides->{ $mod->name }{file} )
+        {
+            $self->_set_indexed(1);
+            return;
+        }
+    }
+
     # files listed under 'other files' are not shown in a search
     if ( $self->is_in_other_files() ) {
         foreach my $mod ( @{ $self->module } ) {
