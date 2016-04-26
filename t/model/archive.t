@@ -82,7 +82,7 @@ subtest 'set extract dir' => sub {
 
     {
         my $archive = $CLASS->new(
-            file => facecpan_dir->file(
+            file => fakecpan_dir->file(
                 'authors/id/L/LO/LOCAL/Some-1.00-TRIAL.tar.gz'),
             extract_dir => $temp->dirname
         );
