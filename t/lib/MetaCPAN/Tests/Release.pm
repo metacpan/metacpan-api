@@ -118,13 +118,15 @@ sub filter_files {
 
     my $release = $self->data;
     return [
-        $self->index->type('file')->filter(
+        $self->index->type('file')->query(
             {
-                and => [
-                    { term => { 'author'  => $release->author } },
-                    { term => { 'release' => $release->name } },
-                    @{ $add_filters || [] },
-                ],
+                bool => {
+                    must => [
+                        { term => { 'author'  => $release->author } },
+                        { term => { 'release' => $release->name } },
+                        @{ $add_filters || [] },
+                    ],
+                }
             }
         )->size(100)->all
     ];
