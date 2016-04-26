@@ -9,16 +9,16 @@ test_release(
     {
         name        => 'Pod-With-Generator-1',
         author      => 'BORISNAT',
-        authorized  => \1,
-        first       => \1,
+        authorized  => 1,
+        first       => 1,
         provides    => [ 'Pod::With::Generator', ],
         main_module => 'Pod::With::Generator',
         modules     => {
             'lib/Pod/With/Generator.pm' => [
                 {
                     name             => 'Pod::With::Generator',
-                    indexed          => \1,
-                    authorized       => \1,
+                    indexed          => 'true',
+                    authorized       => 'true',
                     version          => '1',
                     version_numified => 1,
                     associated_pod =>
