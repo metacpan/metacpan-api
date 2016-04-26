@@ -37,7 +37,7 @@ test_release(
                     version          => '0.993',
                     version_numified => '0.993',
                     authorized       => 'true',
-                    indexed          => 'true',
+                    indexed          => 0,
                     associated_pod   => undef,
                 }
             ],
