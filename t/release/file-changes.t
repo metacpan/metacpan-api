@@ -22,9 +22,9 @@ is( $release->changes_file, 'Changes',          'changes_file ok' );
 {
     my @files
         = $idx->type('file')
-        ->filter(
-        { and => [ { term => { distribution => 'File-Changes' } } ] } )->all;
-    my ($changes) = grep { $_->{name} eq 'Changes' } @files;
+        ->filter( { term => { release => 'File-Changes-1.0' } } )->all;
+
+    my ($changes) = grep { $_->name eq 'Changes' } @files;
     ok $changes, 'found Changes';
 }
 
