@@ -1,13 +1,22 @@
 package MetaCPAN::Document::File::Set;
+
 use Moose;
+
 extends 'ElasticSearchX::Model::Document::Set';
 
-my @ROGUE_DISTRIBUTIONS
-    = qw(kurila perl_debug perl-5.005_02+apache1.3.3+modperl pod2texi perlbench spodcxx Bundle-Everything);
+my @ROGUE_DISTRIBUTIONS = qw(
+    Bundle-Everything
+    kurila
+    perl-5.005_02+apache1.3.3+modperl
+    perlbench
+    perl_debug
+    pod2texi
+    spodcxx
+);
 
 sub find {
     my ( $self, $module ) = @_;
-    my @candidates = $self->index->type("file")->filter(
+    my @candidates = $self->index->type('file')->filter(
         {
             bool => {
                 must => [
@@ -29,8 +38,8 @@ sub find {
         }
         )->sort(
         [
-            { 'date'       => { order => "desc" } },
-            { 'mime'       => { order => "asc" } },
+            { 'date'       => { order => 'desc' } },
+            { 'mime'       => { order => 'asc' } },
             { 'stat.mtime' => { order => 'desc' } }
         ]
         )->size(100)->all;
@@ -58,7 +67,7 @@ sub find_pod {
             {
                 author  => $author,
                 release => $release,
-                path    => join( "/", @path ),
+                path    => join( '/', @path ),
             }
         );
     }
@@ -119,7 +128,7 @@ cpanm Foo~<2
 cpanm --dev Foo~<2
 => status: -backpan, module.version_numified: lt: 2, sort_by: status,version_numified,date
 
-    $file->find_download_url( "Foo", { version => $version, dev => 0|1 });
+    $file->find_download_url( 'Foo', { version => $version, dev => 0|1 });
 
 Sorting:
 
@@ -286,18 +295,18 @@ Find the history of a given module/documentation.
 sub history {
     my ( $self, $type, $module, @path ) = @_;
     my $search
-        = $type eq "module" ? $self->filter(
+        = $type eq 'module' ? $self->filter(
         {
             nested => {
-                path  => "module",
+                path  => 'module',
                 query => {
                     constant_score => {
                         filter => {
                             bool => {
                                 must => [
-                                    { term => { "module.authorized" => \1 } },
-                                    { term => { "module.indexed"    => \1 } },
-                                    { term => { "module.name" => $module } },
+                                    { term => { 'module.authorized' => \1 } },
+                                    { term => { 'module.indexed'    => \1 } },
+                                    { term => { 'module.name' => $module } },
                                 ]
                             }
                         }
@@ -306,12 +315,12 @@ sub history {
             }
         }
         )
-        : $type eq "file" ? $self->filter(
+        : $type eq 'file' ? $self->filter(
         {
             bool => {
                 must => [
-                    { term => { "file.path" => join( "/", @path ) } },
-                    { term => { "file.distribution" => $module } },
+                    { term => { 'file.path' => join( '/', @path ) } },
+                    { term => { 'file.distribution' => $module } },
                 ]
             }
         }
@@ -320,19 +329,19 @@ sub history {
         {
             bool => {
                 must => [
-                    { term => { "file.documentation" => $module } },
-                    { term => { "file.indexed"       => \1 } },
-                    { term => { "file.authorized"    => \1 } },
+                    { term => { 'file.documentation' => $module } },
+                    { term => { 'file.indexed'       => \1 } },
+                    { term => { 'file.authorized'    => \1 } },
                 ]
             }
         }
         );
-    return $search->sort( [ { "file.date" => "desc" } ] );
+    return $search->sort( [ { 'file.date' => 'desc' } ] );
 }
 
 sub autocomplete {
     my ( $self, @terms ) = @_;
-    my $query = join( " ", @terms );
+    my $query = join( q{ }, @terms );
     return $self unless $query;
 
     return $self->search_type('dfs_query_then_fetch')->query(
@@ -344,7 +353,7 @@ sub autocomplete {
                         type     => 'most_fields',
                         fields   => [ 'documentation', 'documentation.*' ],
                         analyzer => 'camelcase',
-                        minimum_should_match => "80%"
+                        minimum_should_match => '80%'
                     },
                 },
                 filter => {
