@@ -22,7 +22,8 @@ use Test::More 0.96;
 use Test::More 0.96 ();
 use Test::Most;
 
-ok( ( -d tmp_dir() ), 'var/tmp exists for testing' );
+my $tmp_dir = tmp_dir();
+ok( $tmp_dir->stat, "$tmp_dir exists for testing" );
 
 my $server = MetaCPAN::TestServer->new;
 $server->setup;

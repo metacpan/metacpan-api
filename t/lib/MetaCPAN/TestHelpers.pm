@@ -104,8 +104,7 @@ sub get_config {
 }
 
 sub tmp_dir {
-    my $dir = dir( undef, ( $ENV{TRAVIS} ? 'tmp' : checkout_root() ),
-        'var', 't', 'tmp' );
+    my $dir = dir( checkout_root(), 'var', 't', 'tmp' );
     $dir->mkpath;
     return $dir;
 }
