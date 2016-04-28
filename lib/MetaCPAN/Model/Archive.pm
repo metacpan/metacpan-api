@@ -77,7 +77,11 @@ has _tempdir => (
     init_arg => undef,
     lazy     => 1,
     default  => sub {
-        return File::Temp->newdir;
+
+        my $scratch_disk = '/mnt/scratch_disk';
+        return -d $scratch_disk
+            ? File::Temp->newdir('/mnt/scratch_disk/tempXXXXX')
+            : File::Temp->newdir;
     },
 );
 
