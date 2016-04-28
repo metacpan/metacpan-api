@@ -100,9 +100,14 @@ sub run {
         elsif ( $_ =~ /^https?:\/\//
             && CPAN::DistnameInfo->new($_)->cpanid )
         {
-            my $d    = CPAN::DistnameInfo->new($_);
+            my $d = CPAN::DistnameInfo->new($_);
+
+            # XXX move path to config file
             my $file = $self->home->file(
-                qw(var tmp http authors),
+                (
+                    'var', ( $ENV{HARNESS_ACTIVE} ? 't' : () ),
+                    'tmp', 'http', 'authors'
+                ),
                 MetaCPAN::Util::author_dir( $d->cpanid ),
                 $d->filename,
             );
