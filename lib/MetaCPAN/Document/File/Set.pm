@@ -336,7 +336,7 @@ sub history {
             }
         }
         );
-    return $search->sort( [ { 'file.date' => 'desc' } ] );
+    return $search->sort( [ { date => 'desc' } ] );
 }
 
 sub autocomplete {
