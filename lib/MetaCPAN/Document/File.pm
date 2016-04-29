@@ -829,7 +829,7 @@ sub set_indexed {
         if ( exists $meta->provides->{ $mod->name }
             and $self->path eq $meta->provides->{ $mod->name }{file} )
         {
-            $self->_set_indexed(1);
+            $mod->_set_indexed(1);
             return;
         }
     }
