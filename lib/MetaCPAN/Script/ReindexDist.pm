@@ -34,10 +34,9 @@ has releases => (
 
 sub _build_releases {
     my ($self) = @_;
-    return [
-        $self->index->type('release')->filter(
-            { term => { 'release.distribution' => $self->distribution } }
-            )->fields( [qw( download_url )] )->sort( ['date'] )->size(5000)
+    return [ $self->index->type('release')
+            ->filter( { term => { distribution => $self->distribution } } )
+            ->fields( [qw( download_url )] )->sort( ['date'] )->size(5000)
             ->all
     ];
 }

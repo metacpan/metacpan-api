@@ -205,13 +205,13 @@ sub reindex_release {
                             and => [
                                 {
                                     term => {
-                                        'file.release' =>
+                                        'release' =>
                                             $release->{_source}->{name}
                                     }
                                 },
                                 {
                                     term => {
-                                        'file.author' =>
+                                        'author' =>
                                             $release->{_source}->{author}
                                     }
                                 }

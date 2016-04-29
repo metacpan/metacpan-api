@@ -29,7 +29,7 @@ sub run {
                         and => [
                             {
                                 term => {
-                                    'release.dependency.phase' => 'runtime'
+                                    'dependency.phase' => 'runtime'
                                 }
                             },
                             { term => { status => 'latest' } },
@@ -87,7 +87,7 @@ sub get_recent_modules {
         },
         size   => 1000,
         fields => [
-            qw(release distribution file.module.authorized file.module.indexed file.module.name)
+            qw(release distribution module.authorized module.indexed module.name)
         ],
         scroll => '1m',
     );
