@@ -20,9 +20,9 @@ sub find {
         {
             bool => {
                 must => [
-                    { term => { 'indexed'    => \1, } },
-                    { term => { 'authorized' => \1 } },
-                    { term => { 'status'     => 'latest', } },
+                    { term => { indexed    => 1, } },
+                    { term => { authorized => 1 } },
+                    { term => { status     => 'latest', } },
                 ],
                 should => [
                     { term => { 'documentation' => $module } },
@@ -85,10 +85,10 @@ sub find_provided_by {
         {
             bool => {
                 must => [
-                    { term => { 'release' => $release->{name} } },
-                    { term => { 'author'  => $release->{author} } },
-                    { term => { 'file.module.authorized' => 1 } },
-                    { term => { 'file.module.indexed'    => 1 } },
+                    { term => { 'release'           => $release->{name} } },
+                    { term => { 'author'            => $release->{author} } },
+                    { term => { 'module.authorized' => 1 } },
+                    { term => { 'module.indexed'    => 1 } },
                 ]
             }
         }
@@ -167,8 +167,8 @@ sub find_download_url {
             filter     => {
                 bool => {
                     must => [
-                        { term => { 'module.authorized' => \1 } },
-                        { term => { 'module.indexed'    => \1 } },
+                        { term => { 'module.authorized' => 1 } },
+                        { term => { 'module.indexed'    => 1 } },
                         { term => { 'module.name'       => $module } },
                         $self->_version_filters($version)
                     ]
@@ -295,7 +295,8 @@ Find the history of a given module/documentation.
 sub history {
     my ( $self, $type, $module, @path ) = @_;
     my $search
-        = $type eq 'module' ? $self->filter(
+        = $type eq "module"
+        ? $self->query(
         {
             nested => {
                 path  => 'module',
@@ -304,9 +305,9 @@ sub history {
                         filter => {
                             bool => {
                                 must => [
-                                    { term => { 'module.authorized' => \1 } },
-                                    { term => { 'module.indexed'    => \1 } },
-                                    { term => { 'module.name' => $module } },
+                                    { term => { "module.authorized" => 1 } },
+                                    { term => { "module.indexed"    => 1 } },
+                                    { term => { "module.name" => $module } },
                                 ]
                             }
                         }
@@ -315,25 +316,38 @@ sub history {
             }
         }
         )
-        : $type eq 'file' ? $self->filter(
+        : $type eq "file" ? $self->query(
         {
             bool => {
                 must => [
-                    { term => { 'file.path' => join( '/', @path ) } },
-                    { term => { 'file.distribution' => $module } },
+                    { term => { path         => join( "/", @path ) } },
+                    { term => { distribution => $module } },
                 ]
             }
         }
         )
-        : $self->filter(
+
+        # XXX: to fix: no filtering on 'release' so this query
+        # will produce modules matching duplications. -- Mickey
+        : $type eq "documentation" ? $self->query(
         {
             bool => {
                 must => [
-                    { term => { 'file.documentation' => $module } },
-                    { term => { 'file.indexed'       => \1 } },
-                    { term => { 'file.authorized'    => \1 } },
+                    { match => { documentation => $module } },
+                    { term  => { indexed       => 1 } },
+                    { term  => { authorized    => 1 } },
                 ]
             }
+        }
+        )
+
+        # clearly, one doesn't know what they want in this case
+        : $self->query(
+        bool => {
+            must => [
+                { term => { indexed    => 1 } },
+                { term => { authorized => 1 } },
+            ]
         }
         );
     return $search->sort( [ { date => 'desc' } ] );
@@ -359,16 +373,15 @@ sub autocomplete {
                 filter => {
                     bool => {
                         must => [
-                            { exists => { field        => 'documentation' } },
-                            { term   => { 'indexed'    => \1 } },
-                            { term   => { 'status'     => 'latest' } },
-                            { term   => { 'authorized' => \1 } }
+                            { exists => { field      => 'documentation' } },
+                            { term   => { status     => 'latest' } },
+                            { term   => { indexed    => 1 } },
+                            { term   => { authorized => 1 } }
                         ],
                         must_not => [
                             {
-                                terms => {
-                                    'distribution' => \@ROGUE_DISTRIBUTIONS
-                                }
+                                terms =>
+                                    { distribution => \@ROGUE_DISTRIBUTIONS }
                             },
                         ],
                     }
