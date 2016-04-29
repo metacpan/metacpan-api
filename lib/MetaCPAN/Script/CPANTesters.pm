@@ -29,13 +29,13 @@ has force_refresh => (
     default => 0,
 );
 
+# XXX move path to config
 has mirror_file => (
     is      => 'ro',
     isa     => File,
     default => sub {
-        $ENV{HARNESS_ACTIVE}
-            ? shift->home->file(qw(t var tmp cpantesters.db))
-            : shift->home->file(qw( var tmp cpantesters.db));
+        shift->home->file( 'var', ( $ENV{HARNESS_ACTIVE} ? 't' : () ),
+            'tmp', 'cpantesters.db' );
     },
     coerce => 1,
 );
