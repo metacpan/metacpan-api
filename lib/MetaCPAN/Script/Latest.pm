@@ -62,7 +62,7 @@ sub run {
 
     return if ( !@filter && $self->distribution );
 
-    my @module_filters = { term => { 'module.indexed' => \1 } };
+    my @module_filters = { term => { 'module.indexed' => 1 } };
     push @module_filters, @filter
         ? { terms => { "module.name" => \@filter } }
         : { exists => { field => "module.name" } };

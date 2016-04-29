@@ -77,9 +77,9 @@ sub get_recent_modules {
                     query  => { match_all => {} },
                     filter => {
                         and => [
-                            { term => { 'file.status'         => 'latest' } },
-                            { term => { 'file.module.indexed' => \1 } },
-                            { term => { 'file.module.authorized' => \1 } },
+                            { term => { 'status'            => 'latest' } },
+                            { term => { 'module.indexed'    => 1 } },
+                            { term => { 'module.authorized' => 1 } },
                         ]
                     }
                 }

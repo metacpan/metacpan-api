@@ -265,7 +265,7 @@ sub _build_first {
                 },
 
           # REINDEX: after a full reindex, the above line is to replaced with:
-          # { term => { first => \1 } },
+          # { term => { first => 1 } },
           # currently, the "first" property is not computed on all releases
           # since this feature has not been around when last reindexed
             ]

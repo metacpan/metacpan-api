@@ -47,12 +47,12 @@ is( $release->main_module, 'Scripts', 'main_module ok' );
         [
             {
                 documentation => 'catalyst',
-                indexed       => \1,
+                indexed       => 1,
                 mime          => 'text/x-script.perl'
             },
             {
                 documentation => 'starman',
-                indexed       => \1,
+                indexed       => 1,
                 mime          => 'text/x-script.perl'
             }
         ],
