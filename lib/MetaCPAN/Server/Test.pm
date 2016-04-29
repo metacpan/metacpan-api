@@ -14,8 +14,6 @@ our @EXPORT = qw(
     test_psgi app
 );
 
-BEGIN { $ENV{METACPAN_SERVER_CONFIG_LOCAL_SUFFIX} = 'testing'; }
-
 sub _prepare_user_test_data {
     ok(
         my $user = MetaCPAN::Server->model('User::Account')->put(
@@ -81,10 +79,6 @@ sub model {
 =pod
 
 # ABSTRACT: Test class for MetaCPAN::Web
-
-=head1 ENVIRONMENTAL VARIABLES
-
-Sets C<METACPAN_SERVER_CONFIG_LOCAL_SUFFIX> to C<testing>.
 
 =head1 EXPORTS
 

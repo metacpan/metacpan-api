@@ -26,6 +26,9 @@ env:
     # that the snapshot was built from.
     - DEPLOYMENT_PERL_VERSION=5.18
 
+    # Instantiate Catalyst models using metacpan_server_testing.conf
+    - METACPAN_SERVER_CONFIG_LOCAL_SUFFIX=testing
+
 
 before_install:
   - sudo service elasticsearch stop && curl -O -L https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-2.3.0.deb && sudo dpkg -i --force-confnew elasticsearch-2.3.0.deb && sudo service elasticsearch start
