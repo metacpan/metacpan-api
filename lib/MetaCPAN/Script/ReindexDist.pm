@@ -37,8 +37,7 @@ sub _build_releases {
     return [ $self->index->type('release')
             ->filter( { term => { distribution => $self->distribution } } )
             ->fields( [qw( download_url )] )->sort( ['date'] )->size(5000)
-            ->all
-    ];
+            ->all ];
 }
 
 has sources => (
