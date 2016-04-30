@@ -61,7 +61,7 @@ has _bulk => (
 sub _build_db {
     my $self = shift;
     return $ENV{HARNESS_ACTIVE}
-        ? $self->home->file('var/t/tmp/cpantesters-release-fake.db.bz2')
+        ? $self->home->file('t/var/cpantesters-release-fake.db.bz2')
         : 'http://devel.cpantesters.org/release/release.db.bz2';
 }
 
