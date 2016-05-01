@@ -114,7 +114,6 @@ sub index_reports {
 
     $sth->execute;
     my @bulk;
-    use DDP;
     while ( my $row_from_db = $sth->fetchrow_hashref ) {
         my $release
             = join( '-', $row_from_db->{dist}, $row_from_db->{version} );
@@ -143,7 +142,6 @@ sub index_reports {
 
         next unless ($bulk);
         my %tests = map { $_ => $row_from_db->{$_} } qw(fail pass na unknown);
-        p %tests;
         $self->_bulk->update(
             {
                 doc           => { tests => \%tests },
