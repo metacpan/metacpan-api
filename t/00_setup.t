@@ -22,7 +22,11 @@ use Test::More 0.96;
 use Test::More 0.96 ();
 use Test::Most;
 
+# Ensure we're starting fresh
 my $tmp_dir = tmp_dir();
+$tmp_dir->rmtree;
+$tmp_dir->mkpath;
+
 ok( $tmp_dir->stat, "$tmp_dir exists for testing" );
 
 my $server = MetaCPAN::TestServer->new;
@@ -30,14 +34,6 @@ $server->setup;
 
 my $config = get_config();
 $config->{es} = $server->es_client;
-
-foreach my $test_dir ( $config->{cpan}, $config->{source_base} ) {
-    next unless $test_dir;
-    my $dir = dir($test_dir);
-    if ( -e $dir->absolute ) {
-        ok( $dir->rmtree, "remove old test dir: $dir" );
-    }
-}
 
 my $mod_faker = 'Module::Faker::Dist::WithPerl';
 eval "require $mod_faker" or die $@;    ## no critic (StringyEval)
