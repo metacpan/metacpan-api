@@ -69,7 +69,7 @@ sub get : Chained('index') : PathPart('') : Args {
                     },
                 ],
             }
-            )->fields( [qw( module path documentation distribution )] )
+            )->fields( [qw( module.name path documentation distribution )] )
             ->size(5000)->all->{hits}->{hits};
         for my $file ( map { $_->{fields} } @$modules ) {
             my $name = $file->{documentation} or next;
