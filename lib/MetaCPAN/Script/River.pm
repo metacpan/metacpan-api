@@ -15,7 +15,7 @@ has river_url => (
     isa      => Uri,
     coerce   => 1,
     required => 1,
-    default  => 'https://neilb.org/FIXME',
+    default  => 'http://neilb.org/river-of-cpan.json.gz',
 );
 
 has _ua => (
