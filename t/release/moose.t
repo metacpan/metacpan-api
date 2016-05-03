@@ -43,7 +43,7 @@ ok( $binary->binary, 'is binary' );
 ok(
     my $ppport
         = $idx->type('file')
-        ->filter( { term => { documentation => 'ppport.h' } } )->first,
+        ->filter( { match => { documentation => 'ppport.h' } } )->first,
     'get ppport.h'
 );
 
@@ -82,7 +82,7 @@ $signature = $idx->type('file')->filter(
         and => [
             { term   => { name    => 'SIGNATURE' } },
             { exists => { field   => 'documentation' } },
-            { term   => { indexed => \1 } },
+            { term   => { indexed => 1 } },
         ]
     }
 )->first;

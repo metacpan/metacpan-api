@@ -36,6 +36,8 @@ sub run {
             "no release found for distribution @{[$distribution->name]}";
             };
     }
+
+    1;
 }
 
 __PACKAGE__->meta->make_immutable;

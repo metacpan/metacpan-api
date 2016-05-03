@@ -114,8 +114,8 @@ ok(
     my $file = $idx->type('file')->filter(
         {
             and => [
-                { term => { release       => 'Multiple-Modules-0.1' } },
-                { term => { documentation => 'Moose' } }
+                { term  => { release       => 'Multiple-Modules-0.1' } },
+                { match => { documentation => 'Moose' } }
             ]
         }
         )->first,
