@@ -57,7 +57,7 @@ sub get : Chained('index') : PathPart('') : Args(2) {
                             {
                                 and => [
                                     { term => { level     => 0 } },
-                                    { term => { directory => \0 } },
+                                    { term => { directory => 0 } },
                                     {
                                         or => [
                                             map {

@@ -384,10 +384,11 @@ has a level of C<0>).
 =cut
 
 has level => (
-    is      => 'ro',
-    isa     => Int,
-    lazy    => 1,
-    builder => '_build_level',
+    required => 1,
+    is       => 'ro',
+    isa      => Int,
+    lazy     => 1,
+    builder  => '_build_level',
 );
 
 sub _build_level {
