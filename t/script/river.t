@@ -4,12 +4,12 @@ use warnings;
 use lib 't/lib';
 
 use Git::Helpers qw( checkout_root );
-use MetaCPAN::Script::River;
-use MetaCPAN::Script::Runner;
-use MetaCPAN::Server::Test;
-use MetaCPAN::TestHelpers;
+use MetaCPAN::Script::River  ();
+use MetaCPAN::Script::Runner ();
+use MetaCPAN::Server::Test qw( app GET test_psgi );
+use MetaCPAN::TestHelpers qw( decode_json_ok );
 use Test::More;
-use URI;
+use URI ();
 
 my $config = MetaCPAN::Script::Runner::build_config;
 
