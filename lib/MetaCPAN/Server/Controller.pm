@@ -75,7 +75,7 @@ sub mapping : Path('_mapping') {
     );
 }
 
-sub get : Path(q{}) : Args(1) {
+sub get : Path('') : Args(1) {
     my ( $self, $c, $id ) = @_;
     my $file = $self->model($c)->raw->get($id);
     if ( !defined $file ) {
@@ -86,7 +86,7 @@ sub get : Path(q{}) : Args(1) {
         ['The requested field(s) could not be found'] );
 }
 
-sub all : Path(q{}) : Args(0) : ActionClass('Deserialize') {
+sub all : Path('') : Args(0) : ActionClass('Deserialize') {
     my ( $self, $c ) = @_;
     $c->req->params->{q} ||= '*' unless ( $c->req->data );
     $c->forward('search');
