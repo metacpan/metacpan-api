@@ -216,8 +216,7 @@ has first => (
     is       => 'ro',
     required => 1,
     isa      => Bool,
-    lazy     => 1,
-    builder  => '_build_first',
+    default  => 0,
     writer   => '_set_first',
 );
 
@@ -249,9 +248,9 @@ sub _build_download_url {
         . $self->archive;
 }
 
-sub _build_first {
-    my $self = shift;
-    $self->index->type('release')->filter(
+sub set_first {
+    my $self     = shift;
+    my $is_first = $self->index->type('release')->filter(
         {
             and => [
                 { term => { distribution => $self->distribution } },
@@ -271,6 +270,8 @@ sub _build_first {
         )->count
         ? 0
         : 1;
+
+    $self->_set_first($is_first);
 }
 
 __PACKAGE__->meta->make_immutable;

@@ -271,6 +271,10 @@ sub import_archive {
         local @ARGV = ( qw(latest --distribution), $document->distribution );
         MetaCPAN::Script::Runner->run;
     }
+
+    # update 'first' value
+    $document->set_first;
+    $document->put;
 }
 
 sub _build_backpan_index {
