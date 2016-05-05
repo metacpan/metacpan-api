@@ -11,7 +11,7 @@ use Encode;
 use List::AllUtils qw( any );
 use MetaCPAN::Document::Module;
 use MetaCPAN::Types qw(:all);
-use MetaCPAN::Util;
+use MetaCPAN::Util qw(numify_version);
 use Plack::MIME;
 use Pod::Text;
 use Try::Tiny;
@@ -600,9 +600,7 @@ has version_numified => (
 
 sub _build_version_numified {
     my $self = shift;
-    return $self->version
-        ? MetaCPAN::Util::numify_version( $self->version )
-        : 0;
+    return numify_version( $self->version );
 }
 
 =head2 mime
