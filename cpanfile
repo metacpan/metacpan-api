@@ -188,5 +188,5 @@ test_requires 'Test::Routine', '0.012';
 test_requires 'Test::Routine::Util', '0';
 test_requires 'Test::Vars';
 
-author_requires 'Code::TidyAll';
+author_requires 'Code::TidyAll', '>= 0.47';
 author_requires 'Plack::Middleware::Rewrite';
