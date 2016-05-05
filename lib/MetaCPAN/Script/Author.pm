@@ -54,7 +54,7 @@ sub index_authors {
         } map { $_->{_source} } @{ $dates->{hits}->{hits} }
     };
 
-    my $bulk = $self->model->bulk( size => 20 );
+    my $bulk = $self->model->bulk( size => 100 );
 
     while ( my ( $pauseid, $data ) = each %$authors ) {
         my ( $name, $email, $homepage, $asciiname )
@@ -85,6 +85,11 @@ sub index_authors {
                 map  { URI->new($_)->canonical }
                 grep {$_} @{ $put->{website} }
         ];
+
+        # Now check the format we have is actually correct
+        my @errors = MetaCPAN::Document::Author->validate($put);
+        next if scalar @errors;
+
         my $author = $type->new_document($put);
         $author->gravatar_url;    # build gravatar_url
 
@@ -106,6 +111,7 @@ sub index_authors {
             }
         }
 
+        # Only try put if this is a valid format
         $bulk->put($author);
     }
     $self->index->refresh;
@@ -114,17 +120,23 @@ sub index_authors {
 
 sub author_config {
     my ( $self, $pauseid, $dates ) = @_;
+
     my $fallback = $dates->{$pauseid} ? undef : {};
+
     my $dir = $self->cpan->subdir( 'authors',
         MetaCPAN::Util::author_dir($pauseid) );
+
     my @files;
     opendir( my $dh, $dir ) || return $fallback;
+
+    # Get the most recent version
     my ($file)
         = sort { $dir->file($b)->stat->mtime <=> $dir->file($a)->stat->mtime }
         grep   {m/author-.*?\.json/} readdir($dh);
     return $fallback unless ($file);
     $file = $dir->file($file);
     return $fallback if !-e $file;
+
     my $mtime = DateTime->from_epoch( epoch => $file->stat->mtime );
 
     if ( $dates->{$pauseid} && $dates->{$pauseid} >= $mtime ) {
