@@ -15,7 +15,7 @@ has river_url => (
     isa      => Uri,
     coerce   => 1,
     required => 1,
-    default  => 'https://neilb.org/FIXME',
+    default  => 'http://neilb.org/river-of-cpan.json.gz',
 );
 
 has _ua => (
@@ -53,7 +53,14 @@ sub retrieve_river_summaries {
 
     $self->handle_error( $resp->status_line ) unless $resp->is_success;
 
-    return decode_json $resp->content;
+    # cleanup headers if .json.gz is served as gzip type
+    # rather than json encoded with gzip
+    if ( $resp->header('Content-Type') eq 'application/x-gzip' ) {
+        $resp->header( 'Content-Type'     => 'application/json' );
+        $resp->header( 'Content-Encoding' => 'gzip' );
+    }
+
+    return decode_json $resp->decoded_content;
 }
 
 __PACKAGE__->meta->make_immutable;
