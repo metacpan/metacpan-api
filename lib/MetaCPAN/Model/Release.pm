@@ -11,7 +11,7 @@ use File::Find         ();
 use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Model::Archive;
 use MetaCPAN::Types qw(ArrayRef AbsFile Str);
-use MetaCPAN::Util ();
+use MetaCPAN::Util qw( fix_version);
 use Module::Metadata 1.000012 ();    # Improved package detection.
 use MooseX::StrictConstructor;
 use Path::Class ();
@@ -112,8 +112,7 @@ has version => (
     isa     => Str,
     lazy    => 1,
     default => sub {
-        my $self = shift;
-        return MetaCPAN::Util::fix_version( $self->distinfo->version );
+        return fix_version( shift->distinfo->version );
     },
 );
 
