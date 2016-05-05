@@ -14,7 +14,7 @@ use MetaCPAN::Types qw(:all);
 use MetaCPAN::Util qw(numify_version);
 use Plack::MIME;
 use Pod::Text;
-use Try::Tiny;
+use Try::Tiny qw( catch try );
 use URI::Escape ();
 
 Plack::MIME->add_type( '.t'   => 'text/x-script.perl' );
