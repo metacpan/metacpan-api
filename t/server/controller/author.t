@@ -90,12 +90,11 @@ test_psgi app, sub {
                                     should => [
                                         {
                                             term => {
-                                                'release.status' => 'latest'
+                                                'status' => 'latest'
                                             }
                                         },
                                         {
-                                            term =>
-                                                { 'author.pauseid' => 'DOY' }
+                                            term => { 'pauseid' => 'DOY' }
                                         }
                                     ]
                                 }
