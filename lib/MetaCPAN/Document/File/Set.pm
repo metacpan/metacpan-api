@@ -333,9 +333,9 @@ sub history {
         {
             bool => {
                 must => [
-                    { match => { documentation => $module } },
-                    { term  => { indexed       => 1 } },
-                    { term  => { authorized    => 1 } },
+                    { match_phrase => { documentation => $module } },
+                    { term         => { indexed       => 1 } },
+                    { term         => { authorized    => 1 } },
                 ]
             }
         }

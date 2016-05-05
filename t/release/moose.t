@@ -22,7 +22,8 @@ is( $moose[1]->main_module, 'Moose', 'main_module ok' );
 ok(
     my $faq
         = $idx->type('file')
-        ->filter( { match => { documentation => 'Moose::FAQ' } } )->first,
+        ->filter( { match_phrase => { documentation => 'Moose::FAQ' } } )
+        ->first,
     'get Moose::FAQ'
 );
 
@@ -43,7 +44,8 @@ ok( $binary->binary, 'is binary' );
 ok(
     my $ppport
         = $idx->type('file')
-        ->filter( { match => { documentation => 'ppport.h' } } )->first,
+        ->filter( { match_phrase => { documentation => 'ppport.h' } } )
+        ->first,
     'get ppport.h'
 );
 
