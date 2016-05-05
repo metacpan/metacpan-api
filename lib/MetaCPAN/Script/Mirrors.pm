@@ -22,8 +22,13 @@ sub index_mirrors {
     my $ua   = LWP::UserAgent->new;
     log_info { 'Getting mirrors.json file from ' . $self->cpan };
 
-    my $json    = $self->cpan->file( 'indices', 'mirrors.json' )->slurp;
-    my $type    = $self->index->type('mirror');
+    my $json = $self->cpan->file( 'indices', 'mirrors.json' )->slurp;
+    my $type = $self->index->type('mirror');
+
+    # Clear out everything in the index
+    # so don't end up with old mirrors
+    $type->delete;
+
     my $mirrors = Cpanel::JSON::XS::decode_json($json);
     foreach my $mirror (@$mirrors) {
         $mirror->{location}
