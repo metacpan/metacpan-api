@@ -5,26 +5,63 @@ use CPAN::Meta;
 use MetaCPAN::Util qw( numify_version strip_pod );
 use Test::Most;
 
-is( numify_version(1),          1.000 );
-is( numify_version('010'),      10.000 );
-is( numify_version('v2.1.1'),   2.001001 );
-is( numify_version(undef),      0.000 );
-is( numify_version('LATEST'),   0.000 );
-is( numify_version('0.20_8'),   0.208 );
-is( numify_version('0.20_88'),  0.2088 );
-is( numify_version('0.208_8'),  0.2088 );
-is( numify_version('0.20_108'), 0.20108 );
-is( numify_version('v0.9_9'),   0.099 );
+{
+    my %versions = (
+        '010'     => 10,
+        '0.20_8'  => 0.208,
+        '0.208_8' => 0.2088,
+        '0.20_88' => 0.2088,
+        1         => 1,
+        LATEST    => 0,
+        undef     => 0,
+        'v0.9_9'  => 0.099,
+        'v2.1.1'  => 2.001001,
+        'v2.0.0'  => 2.0,
+    );
 
-lives_ok { is( version('2a'),      2 ) };
-lives_ok { is( version('V0.01'),   'v0.01' ) };
-lives_ok { is( version('0.99_1'),  '0.99_1' ) };
-lives_ok { is( version('0.99.01'), 'v0.99.01' ) };
+    foreach my $before ( sort keys %versions ) {
+        is( numify_version($before), $versions{$before},
+            "$before => $versions{$before}" );
+    }
+}
 
-is( strip_pod('hello L<link|http://www.google.com> foo'), 'hello link foo' );
-is( strip_pod('hello L<Module/section> foo'), 'hello section in Module foo' );
-is( strip_pod('for L<Dist::Zilla>'),          'for Dist::Zilla' );
-is( strip_pod('without a leading C<$>.'),     'without a leading $.' );
+{
+    my %versions = (
+        '2a'      => 2,
+        'V0.01'   => 'v0.01',
+        '0.99_1'  => '0.99_1',
+        '0.99.01' => 'v0.99.01',
+        'v1.2'    => 'v1.2',
+    );
+    foreach my $before ( sort keys %versions ) {
+        lives_ok {
+            is( version($before), $versions{$before},
+                "$before => $versions{$before}" )
+        }
+        "$before => $versions{$before} does not die";
+    }
+}
+
+is(
+    strip_pod('hello L<link|http://www.google.com> foo'),
+    'hello link foo',
+    'strip_pod strips http links'
+);
+is(
+    strip_pod('hello L<Module/section> foo'),
+    'hello section in Module foo',
+    'strip_pod strips internal links'
+);
+is(
+    strip_pod('for L<Dist::Zilla>'),
+    'for Dist::Zilla',
+    'strip_pod strips module links'
+);
+is(
+    strip_pod('without a leading C<$>.'),
+    'without a leading $.',
+    'strip_pod strips C<>'
+);
 
 sub version {
     CPAN::Meta->new(
