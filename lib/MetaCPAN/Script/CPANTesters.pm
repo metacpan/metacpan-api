@@ -99,11 +99,6 @@ sub index_reports {
     my %releases;
     while ( my $release = $scroll->next ) {
         my $data = $release->{_source};
-
-        # XXX temporary hack.  This may be masking issues with release
-        # versions. (Olaf)
-        $data->{version} =~ s{\Av}{};
-
         $releases{
             join( '-',
                 grep {defined} $data->{distribution},
