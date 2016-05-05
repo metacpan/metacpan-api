@@ -7,7 +7,7 @@ use Moose;
 use ElasticSearchX::Model::Document;
 
 use MetaCPAN::Types qw(:all);
-use MetaCPAN::Util;
+use MetaCPAN::Util qw( numify_version );
 
 =head1 PROPERTIES
 
@@ -146,7 +146,9 @@ has version_numified => (
     is      => 'ro',
     isa     => Num,
     lazy    => 1,
-    builder => '_build_version_numified',
+    default => sub {
+        return numify_version( shift->version );
+    },
 );
 
 has resources => (
@@ -238,10 +240,6 @@ has changes_file => (
     isa    => Str,
     writer => '_set_changes_file',
 );
-
-sub _build_version_numified {
-    return MetaCPAN::Util::numify_version( shift->version );
-}
 
 sub _build_download_url {
     my $self = shift;
