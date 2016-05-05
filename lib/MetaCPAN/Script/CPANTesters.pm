@@ -78,13 +78,13 @@ sub index_reports {
     my $index = $self->index->name;
     my $ua    = LWP::UserAgent->new;
 
-    log_info { "Mirroring " . $self->db };
+    log_info { 'Mirroring ' . $self->db };
     my $db = $self->mirror_file;
 
     $ua->mirror( $self->db, "$db.bz2" ) unless $self->skip_download;
 
     if ( -e $db && stat($db)->mtime >= stat("$db.bz2")->mtime ) {
-        log_info {"DB hasn't been modified"};
+        log_info {'DB hasn\'t been modified'};
         return unless $self->force_refresh;
     }
 
@@ -135,7 +135,7 @@ sub index_reports {
             $bulk           = 1;
         }
 
-        # maybe us Data::Compare instead
+        # maybe use Data::Compare instead
         for my $condition (qw(fail pass na unknown)) {
             last if $bulk;
             if ( ( $tester_results->{$condition} || 0 )
