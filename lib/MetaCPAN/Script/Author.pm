@@ -87,6 +87,25 @@ sub index_authors {
         ];
         my $author = $type->new_document($put);
         $author->gravatar_url;    # build gravatar_url
+
+        # Do not import lat / lon's in the wrong order, or just invalid
+        if ( my $loc = $author->{location} ) {
+
+            my $lat = $loc->[1];
+            my $lon = $loc->[0];
+
+            if ( $lat > 90 or $lat < -90 ) {
+
+                # Invalid latitude
+                delete $author->{location};
+            }
+            elsif ( $lon > 180 or $lon < -180 ) {
+
+                # Invalid longitude
+                delete $author->{location};
+            }
+        }
+
         $bulk->put($author);
     }
     $self->index->refresh;
