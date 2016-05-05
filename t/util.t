@@ -2,7 +2,7 @@ use strict;
 use warnings;
 
 use CPAN::Meta;
-use MetaCPAN::Util qw( numify_version strip_pod );
+use MetaCPAN::Util qw( extract_section numify_version strip_pod );
 use Test::Most;
 
 {
@@ -87,7 +87,7 @@ Some data about a named pipe
 
 EOF
 
-    my $section = MetaCPAN::Util::extract_section( $content, 'NAME' );
+    my $section = extract_section( $content, 'NAME' );
     is( $section, 'Some::Thing - Test',
         'NAME matched correct head1 section' );
 }
@@ -102,7 +102,7 @@ Some description
 =cut
 EOF
 
-    my $section = MetaCPAN::Util::extract_section( $content, 'NAME' );
+    my $section = extract_section( $content, 'NAME' );
     is( $section, undef, 'NAMED did not match requested section NAME' );
 }
 
