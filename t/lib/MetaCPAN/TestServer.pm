@@ -167,7 +167,7 @@ sub index_releases {
     my $self = shift;
     my %args = @_;
 
-    local @ARGV = ( 'release', $self->_cpan_dir, );
+    local @ARGV = ( 'release', $ENV{MC_RELEASE} ? $ENV{MC_RELEASE} : $self->_cpan_dir );
     ok(
         MetaCPAN::Script::Release->new_with_options( %{ $self->_config },
             %args )->run,
