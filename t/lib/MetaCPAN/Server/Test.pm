@@ -14,30 +14,6 @@ our @EXPORT = qw(
     test_psgi app
 );
 
-sub _prepare_user_test_data {
-    ok(
-        my $user = MetaCPAN::Server->model('User::Account')->put(
-            {
-                access_token =>
-                    [ { client => 'testing', token => 'testing' } ]
-            }
-        ),
-        'prepare user'
-    );
-    ok( $user->add_identity( { name => 'pause', key => 'MO' } ),
-        'add pause identity' );
-    ok( $user->put( { refresh => 1 } ), 'put user' );
-
-    ok(
-        MetaCPAN::Server->model('User::Account')->put(
-            { access_token => [ { client => 'testing', token => 'bot' } ] },
-            { refresh      => 1 }
-        ),
-        'put bot user'
-    );
-
-}
-
 # Begin the load-order dance.
 
 my $app;
@@ -48,16 +24,8 @@ sub _load_app {
     $app ||= require MetaCPAN::Server;
 }
 
-my $did_user_data;
-
 sub prepare_user_test_data {
-
-    # Only needed once.
-    return if $did_user_data++;
-
     _load_app();
-
-    subtest 'prepare user test data' => \&_prepare_user_test_data;
 }
 
 sub app {

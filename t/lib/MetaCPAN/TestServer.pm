@@ -8,6 +8,7 @@ use MetaCPAN::Script::CPANTesters ();
 use MetaCPAN::Script::Latest;
 use MetaCPAN::Script::Mapping;
 use MetaCPAN::Script::Release;
+use MetaCPAN::Server ();
 use MetaCPAN::TestHelpers qw( get_config fakecpan_dir );
 use MetaCPAN::Types qw( Dir HashRef Str );
 use Search::Elasticsearch;
@@ -167,7 +168,8 @@ sub index_releases {
     my $self = shift;
     my %args = @_;
 
-    local @ARGV = ( 'release', $ENV{MC_RELEASE} ? $ENV{MC_RELEASE} : $self->_cpan_dir );
+    local @ARGV = ( 'release',
+        $ENV{MC_RELEASE} ? $ENV{MC_RELEASE} : $self->_cpan_dir );
     ok(
         MetaCPAN::Script::Release->new_with_options( %{ $self->_config },
             %args )->run,
@@ -188,6 +190,7 @@ sub index_authors {
     local @ARGV = ('author');
     ok( MetaCPAN::Script::Author->new_with_options( $self->_config )->run,
         'index authors' );
+    $self->prepare_user_test_data;
 }
 
 # Right now this test requires you to have an internet connection.  If we can
@@ -201,6 +204,32 @@ sub index_cpantesters {
         MetaCPAN::Script::CPANTesters->new_with_options( $self->_config )
             ->run,
         'index authors'
+    );
+}
+
+sub prepare_user_test_data {
+    my $self = shift;
+    ok(
+        my $user = MetaCPAN::Server->model('User::Account')->put(
+            {
+                access_token =>
+                    [ { client => 'testing', token => 'testing' } ]
+            }
+        ),
+        'prepare user'
+    );
+    use DDP;
+    p $user;
+    ok( $user->add_identity( { name => 'pause', key => 'MO' } ),
+        'add pause identity' );
+    ok( $user->put( { refresh => 1 } ), 'put user' );
+
+    ok(
+        MetaCPAN::Server->model('User::Account')->put(
+            { access_token => [ { client => 'testing', token => 'bot' } ] },
+            { refresh      => 1 }
+        ),
+        'put bot user'
     );
 }
 
