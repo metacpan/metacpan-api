@@ -126,10 +126,16 @@ after add_identity => sub {
     my ( $self, $identity ) = @_;
     if ( $identity->{name} eq 'pause' ) {
         $self->clear_looks_human;
+        use DDP;
+        p $identity;
         my $profile = $self->index->model->index('cpan')->type('author')
             ->get( $identity->{key} );
-        $profile->_set_user( $self->id ) if ($profile);
-        $profile->put;
+
+        # Not every user is an author
+        if ($profile) {
+            $profile->_set_user( $self->id );
+            $profile->put;
+        }
     }
 };
 
