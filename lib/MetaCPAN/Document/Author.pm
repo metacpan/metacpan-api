@@ -23,7 +23,8 @@ has asciiname => (
     is       => 'ro',
     required => 1,
     index    => 'analyzed',
-    isa      => NonEmptySimpleStr,
+    isa      => Str,
+    default  => q{},
 );
 
 has [qw(website email)] =>

@@ -60,6 +60,7 @@ sub index_authors {
         my ( $name, $email, $homepage, $asciiname )
             = ( @$data{qw(fullname email homepage asciiname)} );
         $name = undef if ( ref $name );
+        $asciiname = q{} unless defined $asciiname;
         $email = lc($pauseid) . '@cpan.org'
             unless ( $email && Email::Valid->address($email) );
         log_debug {
