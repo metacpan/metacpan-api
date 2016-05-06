@@ -126,8 +126,6 @@ after add_identity => sub {
     my ( $self, $identity ) = @_;
     if ( $identity->{name} eq 'pause' ) {
         $self->clear_looks_human;
-        use DDP;
-        p $identity;
         my $profile = $self->index->model->index('cpan')->type('author')
             ->get( $identity->{key} );
 

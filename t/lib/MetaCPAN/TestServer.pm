@@ -218,8 +218,6 @@ sub prepare_user_test_data {
         ),
         'prepare user'
     );
-    use DDP;
-    p $user;
     ok( $user->add_identity( { name => 'pause', key => 'MO' } ),
         'add pause identity' );
     ok( $user->put( { refresh => 1 } ), 'put user' );
