@@ -6,6 +6,7 @@ use CPAN::Repository::Perms;
 use MetaCPAN::Script::Author;
 use MetaCPAN::Script::CPANTesters ();
 use MetaCPAN::Script::Latest;
+use MetaCPAN::Script::First;
 use MetaCPAN::Script::Mapping;
 use MetaCPAN::Script::Release;
 use MetaCPAN::Server ();
@@ -182,6 +183,13 @@ sub set_latest {
     local @ARGV = ('latest');
     ok( MetaCPAN::Script::Latest->new_with_options( $self->_config )->run,
         'latest' );
+}
+
+sub set_first {
+    my $self = shift;
+    local @ARGV = ('first');
+    ok( MetaCPAN::Script::First->new_with_options( $self->_config )->run,
+        'first' );
 }
 
 sub index_authors {

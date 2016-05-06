@@ -275,10 +275,6 @@ sub import_archive {
     # update 'first' value
     $document->set_first;
     $document->put;
-
-    sleep 2
-        if defined $ENV{'METACPAN_SERVER_CONFIG_LOCAL_SUFFIX'}
-        and $ENV{'METACPAN_SERVER_CONFIG_LOCAL_SUFFIX'} eq 'testing';
 }
 
 sub _build_backpan_index {
