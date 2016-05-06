@@ -102,12 +102,11 @@ sub index_reports {
 
         # XXX temporary hack.  This may be masking issues with release
         # versions. (Olaf)
-        $data->{version} =~ s{\Av}{} if $data->{version};
+        my $version = $data->{version};
+        $version =~ s{\Av}{} if $version;
 
         $releases{
-            join( '-',
-                grep {defined} $data->{distribution},
-                $data->{version} )
+            join( '-', grep {defined} $data->{distribution}, $version )
         } = $data;
     }
 
