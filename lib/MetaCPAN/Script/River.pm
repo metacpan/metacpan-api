@@ -5,7 +5,7 @@ use namespace::autoclean;
 
 use JSON::MaybeXS qw( decode_json );
 use Log::Contextual qw( :log :dlog );
-use LWP::UserAgent;
+use LWP::UserAgent ();
 use MetaCPAN::Types qw( ArrayRef Str Uri);
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
@@ -21,7 +21,7 @@ has river_url => (
 has _ua => (
     is      => 'ro',
     isa     => 'LWP::UserAgent',
-    default => sub { LWP::UserAgent->new },
+    default => sub { LWP::UserAgent->new( agent => 'MetaCPAN' ) },
 );
 
 sub run {
