@@ -126,25 +126,25 @@ sub index_reports {
         # there's a cpantesters dist we haven't indexed
         next unless ($release_doc);
 
-        my $bulk = 0;
+        my $insert_ok = 0;
 
         my $tester_results = $release_doc->{tests};
         if ( !$tester_results ) {
             $tester_results = {};
-            $bulk           = 1;
+            $insert_ok      = 1;
         }
 
         # maybe use Data::Compare instead
         for my $condition (qw(fail pass na unknown)) {
-            last if $bulk;
+            last if $insert_ok;
             if ( ( $tester_results->{$condition} || 0 )
                 != $row_from_db->{$condition} )
             {
-                $bulk = 1;
+                $insert_ok = 1;
             }
         }
 
-        next unless ($bulk);
+        next unless ($insert_ok);
         my %tests = map { $_ => $row_from_db->{$_} } qw(fail pass na unknown);
         $self->_bulk->update(
             {
