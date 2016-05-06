@@ -81,6 +81,7 @@ copy( $src_dir->file('bugs.tsv'), $fakecpan_dir->file('bugs.tsv') );
 
 $server->index_releases;
 $server->set_latest;
+$server->set_first;
 $server->index_authors;
 $server->index_cpantesters;
 

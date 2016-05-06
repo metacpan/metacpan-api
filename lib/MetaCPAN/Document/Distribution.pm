@@ -37,26 +37,19 @@ sub releases {
 
 sub set_first_release {
     my $self = shift;
-    $self->unset_first_release;
-    my $release = $self->releases->sort( ["date"] )->first;
-    return unless $release;
-    return $release if $release->first;
-    $release->_set_first(1);
-    $release->put;
-    return $release;
-}
 
-sub unset_first_release {
-    my $self = shift;
-    my $releases
-        = $self->releases->filter( { term => { first => 'true' }, } )
-        ->size(200)->scroll;
-    while ( my $release = $releases->next ) {
-        $release->_set_first(0);
-        $release->update;
+    my @releases = $self->releases->sort( ["date"] )->all;
+
+    my $first = shift @releases;
+    $first->_set_first(1);
+    $first->put;
+
+    for my $rel (@releases) {
+        $rel->_set_first(0);
+        $rel->put;
     }
-    $self->index->refresh if $releases->total;
-    return $releases->total;
+
+    return $first;
 }
 
 __PACKAGE__->meta->make_immutable;
