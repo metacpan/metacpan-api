@@ -74,9 +74,8 @@ sub run {
 sub index_reports {
     my $self = shift;
 
-    my $es    = $self->model->es;
-    my $index = $self->index->name;
-    my $ua    = LWP::UserAgent->new;
+    my $es = $self->model->es;
+    my $ua = LWP::UserAgent->new;
 
     log_info { 'Mirroring ' . $self->db };
     my $db = $self->mirror_file;
@@ -94,6 +93,7 @@ sub index_reports {
         index       => $self->index->name,
         search_type => 'scan',
         size        => '500',
+        type        => 'release',
     );
 
     my %releases;
