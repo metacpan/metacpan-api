@@ -21,7 +21,7 @@ has name => (
 
 has asciiname => (
     is       => 'ro',
-    required => 0,
+    required => 1,
     index    => 'analyzed',
     isa      => NonEmptySimpleStr,
 );
