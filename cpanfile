@@ -11,7 +11,7 @@ requires 'Captcha::reCAPTCHA', '0.94';
 requires 'Catalyst', '5.90103';
 requires 'Catalyst::Action::RenderView';
 requires 'Catalyst::Controller';
-requires 'Catalyst::Controller::REST', '0.94';
+requires 'Catalyst::Controller::REST';
 requires 'Catalyst::Model';
 requires 'Catalyst::Plugin::Authentication';
 requires 'Catalyst::Plugin::ConfigLoader';
