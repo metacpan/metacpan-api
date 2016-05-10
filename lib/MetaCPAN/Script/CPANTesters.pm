@@ -124,6 +124,14 @@ sub index_reports {
        # 0.
 
         my $version = $row_from_db->{version} || 0;
+
+        # weblint++ gets a name of 'weblint' and a version of '++-1.15' from
+        # the testers db.  Special case it for now.  Maybe try and get the db
+        # fixed.
+
+        $version =~ s{\+}{}g;
+        $version =~ s{\A-}{};
+
         my $release = join( '-', $row_from_db->{dist}, $version );
         my $release_doc = $releases{$release};
 
