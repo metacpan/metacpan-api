@@ -119,8 +119,12 @@ sub index_reports {
     $sth->execute;
     my @bulk;
     while ( my $row_from_db = $sth->fetchrow_hashref ) {
-        my $release
-            = join( '-', $row_from_db->{dist}, $row_from_db->{version} );
+
+       # The testers db seems to return q{} where we would expect a version of
+       # 0.
+
+        my $version = $row_from_db->{version} || 0;
+        my $release = join( '-', $row_from_db->{dist}, $version );
         my $release_doc = $releases{$release};
 
         # there's a cpantesters dist we haven't indexed
