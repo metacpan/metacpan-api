@@ -12,10 +12,33 @@ test_psgi app, sub {
     is( $user->code, 200, 'code 200' );
     $user = decode_json_ok($user);
 
+    is_deeply(
+        $user->{identity},
+        [
+            {
+                'key'  => 'MO',
+                'name' => 'pause'
+            }
+        ],
+        'got correct identity'
+    );
+
+    is_deeply(
+        $user->{access_token},
+        [
+            {
+                'client' => 'testing',
+                'token'  => 'testing'
+            }
+        ],
+        'got correct access_token'
+    );
+
     ok(
         my $res = $cb->(
             POST '/user/favorite?access_token=testing',
-            Content => encode_json(
+            Content_Type => 'application/json',
+            Content      => encode_json(
                 {
                     distribution => 'Moose',
                     release      => 'Moose-1.10',
