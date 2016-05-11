@@ -198,7 +198,6 @@ sub index_authors {
     local @ARGV = ('author');
     ok( MetaCPAN::Script::Author->new_with_options( $self->_config )->run,
         'index authors' );
-    $self->prepare_user_test_data;
 }
 
 # Right now this test requires you to have an internet connection.  If we can

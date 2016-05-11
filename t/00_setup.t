@@ -83,6 +83,7 @@ $server->index_releases;
 $server->set_latest;
 $server->set_first;
 $server->index_authors;
+$server->prepare_user_test_data;
 $server->index_cpantesters;
 
 ok(
