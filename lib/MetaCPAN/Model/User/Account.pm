@@ -90,11 +90,12 @@ is true if the user is connected to a PAUSE account or he L</passed_captcha>.
 =cut
 
 has looks_human => (
-    is      => 'ro',
-    isa     => Bool,
-    lazy    => 1,
-    builder => '_build_looks_human',
-    clearer => 'clear_looks_human',
+    required => 1,
+    is       => 'ro',
+    isa      => Bool,
+    lazy     => 1,
+    builder  => '_build_looks_human',
+    clearer  => 'clear_looks_human',
 );
 
 sub _build_looks_human {
