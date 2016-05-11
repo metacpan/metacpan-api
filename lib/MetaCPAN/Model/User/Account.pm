@@ -77,8 +77,9 @@ L<DateTime> when the user passed the captcha.
 =cut
 
 has passed_captcha => (
-    is  => 'ro',
-    isa => 'DateTime',
+    is     => 'ro',
+    isa    => 'DateTime',
+    writer => '_set_passed_captcha',
 );
 
 =head2 looks_human
