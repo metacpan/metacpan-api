@@ -177,8 +177,8 @@ sub find {
     return $self->filter(
         {
             and => [
-                { term => { 'account.identity.name' => $p->{name} } },
-                { term => { 'account.identity.key'  => $p->{key} } }
+                { term => { 'identity.name' => $p->{name} } },
+                { term => { 'identity.key'  => $p->{key} } }
             ]
         }
     )->first;
@@ -194,7 +194,7 @@ Find account by C<$code>. See L</code>.
 
 sub find_code {
     my ( $self, $token ) = @_;
-    return $self->filter( { term => { 'account.code' => $token } } )->first;
+    return $self->filter( { term => { 'code' => $token } } )->first;
 }
 
 =head2 find_token
@@ -207,8 +207,8 @@ Find account by C<$access_token>. See L</access_token>.
 
 sub find_token {
     my ( $self, $token ) = @_;
-    return $self->filter(
-        { term => { 'account.access_token.token' => $token } } )->first;
+    return $self->filter( { term => { 'access_token.token' => $token } } )
+        ->first;
 }
 
 __PACKAGE__->meta->make_immutable;
