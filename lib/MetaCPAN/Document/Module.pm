@@ -170,12 +170,12 @@ sub set_associated_pod {
                 $_->path =~ /^README\.pod$/i ? -10 :
 
                 # If the name of the package matches the name of the file,
-                $_->path =~ m!(^lib/)?\b${mod_path}.(pod|pm)$! ?
+                $_->path =~ m!(^lib/)?\b${mod_path}.((?i)pod|pm)$! ?
                     # Score pod over pm, and boost (most points for 'lib' dir).
-                    ($1 ? 50 : 25) + $_pod_score{$2} :
+                    ($1 ? 50 : 25) + $_pod_score{lc($2)} :
 
                 # Sort files by extension: Foo.pod > Foo.pm > foo.pl.
-                $_->name =~ /\.(pod|pm|pl)/i ? $_pod_score{$1} :
+                $_->name =~ /\.(pod|pm|pl)/i ? $_pod_score{lc($1)} :
 
                 # Otherwise score unknown (near the bottom).
                 -1
