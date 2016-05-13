@@ -1,16 +1,14 @@
 use strict;
 use warnings;
 
-use lib 't/lib';
-
 use MetaCPAN::Server::Test;
 use MetaCPAN::TestHelpers;
 use Test::More;
 
 my @tests = (
     [ '/distribution'            => 200 ],
-    [ '/distribution/Moose'      => 200 ],
     [ '/distribution/DOESNEXIST' => 404 ],
+    [ '/distribution/Moose'      => 200 ],
 );
 
 test_psgi app, sub {

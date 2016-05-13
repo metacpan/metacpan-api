@@ -1,25 +1,25 @@
-use Test::More;
 use strict;
 use warnings;
 
 use lib 't/lib';
 use MetaCPAN::TestHelpers;
+use Test::More;
 
 test_release(
     {
         name        => 'local-lib-0.01',
         author      => 'BORISNAT',
         abstract    => 'Legitimate module',
-        authorized  => \1,
-        first       => \1,
+        authorized  => 1,
+        first       => 1,
         provides    => ['local::lib'],
         main_module => 'local::lib',
         modules     => {
             'lib/local/lib.pm' => [
                 {
                     name             => 'local::lib',
-                    indexed          => \1,
-                    authorized       => \1,
+                    indexed          => 'true',
+                    authorized       => 'true',
                     version          => '0.01',
                     version_numified => 0.01,
                     associated_pod =>

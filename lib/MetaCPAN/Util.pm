@@ -8,6 +8,14 @@ use version;
 
 use Digest::SHA1;
 use Encode;
+use Sub::Exporter -setup => {
+    exports => [
+        'author_dir',      'digest',
+        'extract_section', 'fix_pod',
+        'fix_version',     'numify_version',
+        'pod_lines',       'strip_pod',
+    ]
+};
 
 sub digest {
     my $digest = Digest::SHA1::sha1_base64( join( "\0", grep {defined} @_ ) );
@@ -20,7 +28,7 @@ sub generate_sid {
 }
 
 sub numify_version {
-    my $version = shift;
+    my $version = shift || return 0;
     $version = fix_version($version);
     $version =~ s/_//g;
     if ( $version =~ s/^v//i || $version =~ tr/.// > 1 ) {

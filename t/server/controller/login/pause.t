@@ -2,7 +2,6 @@ use strict;
 use warnings;
 use utf8;
 
-use lib 't/lib';
 use Encode qw( encode is_utf8 FB_CROAK LEAVE_SRC );
 use MetaCPAN::Server::Test;
 use MetaCPAN::TestHelpers;

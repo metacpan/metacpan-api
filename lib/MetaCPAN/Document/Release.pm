@@ -6,9 +6,8 @@ use warnings;
 use Moose;
 use ElasticSearchX::Model::Document;
 
-use MetaCPAN::Document::Author;
 use MetaCPAN::Types qw(:all);
-use MetaCPAN::Util;
+use MetaCPAN::Util qw( numify_version );
 
 =head1 PROPERTIES
 
@@ -104,8 +103,9 @@ This is an ArrayRef of modules that are included in this release.
 =cut
 
 has provides => (
-    isa => 'ArrayRef[Str]',
-    is  => 'rw',
+    is     => 'ro',
+    isa    => ArrayRef [Str],
+    writer => '_set_provides',
 );
 
 has id => (
@@ -113,8 +113,14 @@ has id => (
     id => [qw(author name)],
 );
 
-has [qw(license version author archive)] => (
+has [qw(version author archive)] => (
     is       => 'ro',
+    required => 1,
+);
+
+has license => (
+    is       => 'ro',
+    isa      => ArrayRef,
     required => 1,
 );
 
@@ -125,9 +131,9 @@ has date => (
 );
 
 has download_url => (
-    is         => 'ro',
-    required   => 1,
-    lazy_build => 1,
+    is      => 'ro',
+    lazy    => 1,
+    builder => '_build_download_url',
 );
 
 has [qw(distribution name)] => (
@@ -137,10 +143,12 @@ has [qw(distribution name)] => (
 );
 
 has version_numified => (
-    is         => 'ro',
-    required   => 1,
-    isa        => 'Num',
-    lazy_build => 1,
+    is      => 'ro',
+    isa     => Num,
+    lazy    => 1,
+    default => sub {
+        return numify_version( shift->version );
+    },
 );
 
 has resources => (
@@ -153,14 +161,14 @@ has resources => (
 );
 
 has abstract => (
-    is        => 'rw',
+    is        => 'ro',
     index     => 'analyzed',
     predicate => 'has_abstract',
+    writer    => '_set_abstract',
 );
 
 has dependency => (
-    required        => 0,
-    is              => 'rw',
+    is              => 'ro',
     isa             => Dependency,
     coerce          => 1,
     type            => 'nested',
@@ -171,9 +179,10 @@ has dependency => (
 # The indexer scripts will upgrade it to 'latest' if it's the version in
 # 02packages or downgrade it to 'backpan' if it gets deleted.
 has status => (
-    is       => 'rw',
+    is       => 'ro',
     required => 1,
     default  => 'cpan',
+    writer   => '_set_status',
 );
 
 has maturity => (
@@ -189,73 +198,71 @@ has stat => (
 );
 
 has tests => (
-    is      => 'ro',
-    isa     => Tests,
-    dynamic => 1,
+    is            => 'ro',
+    isa           => Tests,
+    dynamic       => 1,
+    documentation => 'HashRef: Summary of CPANTesters data',
 );
 
 has authorized => (
-    is       => 'rw',
+    is       => 'ro',
     required => 1,
-    isa      => 'Bool',
+    isa      => Bool,
     default  => 1,
+    writer   => '_set_authorized',
 );
 
 has first => (
-    is       => 'rw',
+    is       => 'ro',
     required => 1,
-    isa      => 'Bool',
-    lazy     => 1,
-    builder  => '_build_first',
+    isa      => Bool,
+    default  => 0,
+    writer   => '_set_first',
 );
 
 has metadata => (
     coerce      => 1,
     is          => 'ro',
-    isa         => 'HashRef',
+    isa         => HashRef,
     dynamic     => 1,
     source_only => 1,
 );
 
 has main_module => (
-    is       => 'rw',
-    isa      => 'Str',
-    required => 0,
+    is     => 'ro',
+    isa    => Str,
+    writer => '_set_main_module',
 );
 
 has changes_file => (
-    is       => 'rw',
-    isa      => 'Str',
-    required => 0,
+    is     => 'ro',
+    isa    => Str,
+    writer => '_set_changes_file',
 );
-
-sub _build_version_numified {
-    return MetaCPAN::Util::numify_version( shift->version );
-}
 
 sub _build_download_url {
     my $self = shift;
     return
           'https://cpan.metacpan.org/authors/'
-        . MetaCPAN::Document::Author::_build_dir( $self->author ) . '/'
+        . MetaCPAN::Util::author_dir( $self->author ) . '/'
         . $self->archive;
 }
 
-sub _build_first {
-    my $self = shift;
-    $self->index->type('release')->filter(
+sub set_first {
+    my $self     = shift;
+    my $is_first = $self->index->type('release')->filter(
         {
             and => [
-                { term => { 'release.distribution' => $self->distribution } },
+                { term => { distribution => $self->distribution } },
                 {
                     range => {
-                        'release.version_numified' =>
+                        version_numified =>
                             { 'lt' => $self->version_numified }
                     }
                 },
 
           # REINDEX: after a full reindex, the above line is to replaced with:
-          # { term => { 'release.first' => \1 } },
+          # { term => { first => 1 } },
           # currently, the "first" property is not computed on all releases
           # since this feature has not been around when last reindexed
             ]
@@ -263,6 +270,8 @@ sub _build_first {
         )->count
         ? 0
         : 1;
+
+    $self->_set_first($is_first);
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -280,8 +289,7 @@ sub find_depending_on {
     return $self->filter(
         {
             or => [
-                map { { term => { 'release.dependency.module' => $_ } } }
-                    @$modules
+                map { { term => { 'dependency.module' => $_ } } } @$modules
             ]
         }
     );
@@ -292,8 +300,8 @@ sub find {
     return $self->filter(
         {
             and => [
-                { term => { 'release.distribution' => $name } },
-                { term => { status                 => 'latest' } }
+                { term => { distribution => $name } },
+                { term => { status       => 'latest' } }
             ]
         }
     )->sort( [ { date => 'desc' } ] )->first;
@@ -304,7 +312,7 @@ sub predecessor {
     return $self->filter(
         {
             and => [
-                { term => { 'release.distribution' => $name } },
+                { term => { distribution => $name } },
                 { not => { filter => { term => { status => 'latest' } } } },
             ]
         }

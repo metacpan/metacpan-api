@@ -14,7 +14,7 @@ Sets the C<_timestamp> field.
 
 has timestamp => (
     is        => 'ro',
-    timestamp => { store => 1 },
+    timestamp => {},     # { store => 1 },
 );
 
 __PACKAGE__->meta->make_immutable;

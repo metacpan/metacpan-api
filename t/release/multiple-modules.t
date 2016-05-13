@@ -38,9 +38,9 @@ ok( !$release->first, 'Release is not first' );
     my @files = $idx->type('file')->filter(
         {
             and => [
-                { term   => { 'file.author'  => $release->author } },
-                { term   => { 'file.release' => $release->name } },
-                { exists => { field          => 'file.module.name' } },
+                { term   => { author  => $release->author } },
+                { term   => { release => $release->name } },
+                { exists => { field   => 'module.name' } },
             ]
         }
     )->all;
@@ -114,8 +114,8 @@ ok(
     my $file = $idx->type('file')->filter(
         {
             and => [
-                { term => { release       => 'Multiple-Modules-0.1' } },
-                { term => { documentation => 'Moose' } }
+                { term => { release => 'Multiple-Modules-0.1' } },
+                { match_phrase => { documentation => 'Moose' } }
             ]
         }
         )->first,

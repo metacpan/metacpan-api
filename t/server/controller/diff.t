@@ -3,17 +3,18 @@ use warnings;
 
 use Encode;
 use MetaCPAN::Server::Test;
+use MetaCPAN::TestHelpers;
 use Test::More;
 
-use lib 't/lib';
+{
+    no warnings 'redefine';
 
-use MetaCPAN::TestHelpers;
-
-sub get_ok {
-    my ( $cb, $url, $desc ) = @_;
-    ok( my $res = $cb->( GET $url ), $desc || "GET $url" );
-    is( $res->code, 200, 'code 200' );
-    return $res;
+    sub get_ok {
+        my ( $cb, $url, $desc ) = @_;
+        ok( my $res = $cb->( GET $url ), $desc || "GET $url" );
+        is( $res->code, 200, 'code 200' );
+        return $res;
+    }
 }
 
 sub get_json_ok {

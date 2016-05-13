@@ -1,9 +1,11 @@
 package MetaCPAN::Tests::Model;
+
 use Test::Routine;
-use Test::More;
-use Try::Tiny;
 
 use MetaCPAN::Server::Test ();
+use MetaCPAN::Types qw( ArrayRef HashRef Str );
+use Test::More;
+use Try::Tiny qw( catch try );
 
 with qw(
     MetaCPAN::Tests::Extra
@@ -34,34 +36,31 @@ around BUILDARGS => sub {
 
 has _type => (
     is      => 'ro',
-    isa     => 'Str',
+    isa     => Str,
     builder => '_build_type',
 );
 
 has _model => (
     is      => 'ro',
+    isa     => 'MetaCPAN::Model',
     lazy    => 1,
-    builder => '_build__model',
+    default => sub { MetaCPAN::Server::Test::model() },
 );
 
-sub _build__model {
-    return MetaCPAN::Server::Test::model();
-}
-
-has index => (
-    reader  => '_index',
-    isa     => 'Str',
+has _es_index_name => (
+    is      => 'ro',
+    isa     => Str,
     default => 'cpan',
 );
 
 sub index {
     my ($self) = @_;
-    $self->_model->index( $self->_index );
+    return $self->_model->index( $self->_es_index_name );
 }
 
 has search => (
     is      => 'ro',
-    isa     => 'ArrayRef',
+    isa     => ArrayRef,
     lazy    => 1,
     builder => '_build_search',
 );
@@ -80,10 +79,9 @@ has data => (
 );
 
 has _expectations => (
-    is        => 'ro',
-    isa       => 'HashRef',
-    predicate => 'has_expectations',
-    init_arg  => '_expect',
+    is       => 'ro',
+    isa      => HashRef,
+    init_arg => '_expect',
 );
 
 test 'expected model attributes' => sub {

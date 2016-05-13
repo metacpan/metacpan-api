@@ -19,7 +19,7 @@ use Moose;
 BEGIN { extends 'Catalyst::Controller' }
 
 use Digest::SHA1;
-use JSON;
+use Cpanel::JSON::XS;
 use URI;
 
 has login   => ( is => 'ro' );
@@ -64,7 +64,7 @@ sub authorize : Local {
     my $uri  = URI->new($redirect_uri);
     my $code = $self->_build_code;
     $uri->query_form( { code => $code, $state ? ( state => $state ) : () } );
-    $c->user->code($code);
+    $c->user->_set_code($code);
     $c->user->put( { refresh => 1 } );
     $c->res->redirect($uri);
 }

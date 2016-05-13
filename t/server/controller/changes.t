@@ -1,7 +1,6 @@
 use strict;
 use warnings;
 
-use lib 't/lib';
 use MetaCPAN::Server::Test;
 use MetaCPAN::TestHelpers;
 use Test::More;
@@ -85,6 +84,7 @@ done_testing;
 
 sub get_ok {
     my ( $cb, $path, $code ) = @_;
+
     ok( my $res = $cb->( GET $path), "GET $path" );
     is( $res->code, $code, "code $code" );
     is(

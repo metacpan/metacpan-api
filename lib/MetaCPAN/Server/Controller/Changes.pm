@@ -47,7 +47,7 @@ sub get : Chained('index') : PathPart('') : Args(2) {
                                     { term => { distribution => 'perl' } },
                                     {
                                         term => {
-                                            'file.name' => 'perldelta.pod'
+                                            'name' => 'perldelta.pod'
                                         }
                                     },
                                 ]
@@ -57,13 +57,11 @@ sub get : Chained('index') : PathPart('') : Args(2) {
                             {
                                 and => [
                                     { term => { level     => 0 } },
-                                    { term => { directory => \0 } },
+                                    { term => { directory => 0 } },
                                     {
                                         or => [
                                             map {
-                                                { term =>
-                                                        { 'file.name' => $_ }
-                                                }
+                                                { term => { 'name' => $_ } }
                                             } @candidates
                                         ]
                                     }

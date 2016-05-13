@@ -1,11 +1,10 @@
 use strict;
 use warnings;
 
-use lib 't/lib';
-
 use MetaCPAN::Server::Test;
 use MetaCPAN::TestHelpers;
-use Test::More;
+use Test::More skip_all => 'Scripting is disabled';
+use Try::Tiny qw( catch try );
 use URI;
 
 sub uri {
@@ -70,7 +69,7 @@ test_psgi app, sub {
             my $json = decode_json_ok($res);
 
             is_deeply $json->{hits}{hits}->[0]->{fields},
-                { pauselen2 => 18 }, 'script_fields via metacpan_script'
+                { pauselen2 => [18] }, 'script_fields via metacpan_script'
                 or diag explain $json;
         },
     );
@@ -149,8 +148,7 @@ while ( my ( $mscript, $re ) = each %replacements ) {
     $cleaned
         = MetaCPAN::Server::QuerySanitizer->new( query => $query )->query;
 
-    like_if_defined
-        delete $cleaned->{foo}{bar}->[0]->{script},
+    like_if_defined delete $cleaned->{foo}{bar}->[0]->{script},
         $re, "$mscript script replaced";
     is_deeply $cleaned, { foo => { bar => [ { other => 'val' } ] } },
         'any hash structure accepts metacpan_script';
@@ -169,8 +167,7 @@ hash_key_rejected(
 {
     my $hash = filtered_custom_score_hash( hi => 'there' );
 
-    is_deeply
-        delete $hash->{query}{filtered}{query},
+    is_deeply delete $hash->{query}{filtered}{query},
         { custom_score => { query => { foo => 'bar' }, hi => 'there' } },
         'remove custom_score hash';
 

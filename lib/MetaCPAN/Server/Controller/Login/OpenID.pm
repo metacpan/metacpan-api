@@ -7,6 +7,7 @@ use Moose;
 use Net::OpenID::Consumer;
 use LWP::UserAgent::Paranoid;
 use MooseX::ClassAttribute;
+use MetaCPAN::Types qw( Str );
 
 BEGIN { extends 'MetaCPAN::Server::Controller::Login' }
 
@@ -26,8 +27,8 @@ sub _build_ua {
 }
 
 has 'sreg' => (
-    is      => 'rw',
-    isa     => 'Str',
+    is      => 'ro',
+    isa     => Str,
     default => 'http://openid.net/extensions/sreg/1.1',
 );
 

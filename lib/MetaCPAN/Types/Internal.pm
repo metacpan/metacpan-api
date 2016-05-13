@@ -4,13 +4,12 @@ use strict;
 use warnings;
 
 use CPAN::Meta;
-use ElasticSearch;
 use ElasticSearchX::Model::Document::Types qw(:all);
-use JSON;
+use Cpanel::JSON::XS;
 use MooseX::Getopt::OptionTypeMap;
 use MooseX::Types::Common::String qw(NonEmptySimpleStr);
-use MooseX::Types::Moose qw( ArrayRef Bool HashRef Item Int Num Str Undef );
-use MooseX::Types::Structured qw(Dict Tuple Optional);
+use MooseX::Types::Moose qw( ArrayRef HashRef Item Int Str );
+use MooseX::Types::Structured qw(Dict Optional);
 
 use MooseX::Types -declare => [
     qw(
@@ -18,7 +17,6 @@ use MooseX::Types -declare => [
         Resources
         Stat
         Module
-        AssociatedPod
         Identity
         Dependency
         Extra
@@ -28,6 +26,7 @@ use MooseX::Types -declare => [
         PerlMongers
         Tests
         BugSummary
+        RiverSummary
         )
 ];
 
@@ -106,6 +105,9 @@ subtype BugSummary,
     source => Str
     ];
 
+subtype RiverSummary,
+    as Dict [ ( map { $_ => Optional [Int] } qw(total immediate bucket) ), ];
+
 subtype Resources,
     as Dict [
     license => Optional [ ArrayRef [Str] ],
@@ -154,13 +156,10 @@ coerce Logger, from ArrayRef, via {
 MooseX::Getopt::OptionTypeMap->add_option_type_to_map(
     'MooseX::Types::ElasticSearch::ES' => '=s' );
 
-subtype AssociatedPod, as Item;
-
 use MooseX::Attribute::Deflator;
 deflate 'ScalarRef', via {$$_};
 inflate 'ScalarRef', via { \$_ };
 
-deflate AssociatedPod, via { ref $_ ? $_->full_path : $_ };
 no MooseX::Attribute::Deflator;
 
 1;

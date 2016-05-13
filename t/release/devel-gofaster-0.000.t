@@ -10,8 +10,8 @@ test_release(
         name         => 'Devel-GoFaster-0.000',
         distribution => 'Devel-GoFaster',
         author       => 'LOCAL',
-        authorized   => \1,
-        first        => \1,
+        authorized   => 1,
+        first        => 1,
         version      => '0.000',
 
         provides => [ 'Devel::GoFaster', ],

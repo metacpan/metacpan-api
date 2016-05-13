@@ -6,7 +6,9 @@ use warnings;
 use Moose;
 use ElasticSearchX::Model::Document;
 
-use MetaCPAN::Types qw(AssociatedPod);
+with 'ElasticSearchX::Model::Document::EmbeddedRole';
+
+use MetaCPAN::Types qw( Bool Maybe Num Str );
 use MetaCPAN::Util;
 
 =head1 SYNOPSIS
@@ -36,13 +38,6 @@ the C<analyzed> and the C<camelcase> property.
 
 Contains the raw version string.
 
-=head2 version_numified
-
-B<Required>, B<Lazy Build>
-
-Numified version of L</version>. Contains 0 if there is no version or the
-version could not be parsed.
-
 =head2 indexed
 
 B<Default 0>
@@ -67,6 +62,7 @@ not declared in one line, the module is considered not-indexed.
 
 has name => (
     is       => 'ro',
+    isa      => Str,
     required => 1,
     index    => 'analyzed',
     analyzer => [qw(standard camelcase lowercase)],
@@ -74,32 +70,35 @@ has name => (
 
 has version => ( is => 'ro' );
 
-has version_numified => (
-    is         => 'ro',
-    isa        => 'Num',
-    lazy_build => 1,
-    required   => 1,
-);
-
 has indexed => (
-    is       => 'rw',
+    is       => 'ro',
     required => 1,
-    isa      => 'Bool',
-    default  => 0,
+    isa      => Bool,
+    default  => 1,
+    writer   => '_set_indexed',
 );
 
 has authorized => (
-    is       => 'rw',
+    is       => 'ro',
     required => 1,
-    isa      => 'Bool',
+    isa      => Bool,
     default  => 1,
+    writer   => '_set_authorized',
 );
 
-# REINDEX: make 'ro' once a full reindex has been done
 has associated_pod => (
-    isa      => AssociatedPod,
-    required => 0,
-    is       => 'rw',
+    required => 1,
+    isa      => Maybe [Str],
+    is       => 'ro',
+    default  => sub { },
+    writer   => '_set_associated_pod',
+);
+
+has version_numified => (
+    is         => 'ro',
+    isa        => Num,
+    lazy_build => 1,
+    required   => 1,
 );
 
 sub _build_version_numified {
@@ -152,14 +151,12 @@ my %_pod_score = (
 );
 
 sub set_associated_pod {
-
-    # FIXME: Why is $file passed if it isn't used?
-    my ( $self, $file, $associated_pod ) = @_;
+    my ( $self, $associated_pod ) = @_;
     return unless ( my $files = $associated_pod->{ $self->name } );
 
     ( my $mod_path = $self->name ) =~ s{::}{/}g;
 
-    my ($pod) = (
+    my ($file) = (
         #<<<
         # TODO: adjust score if all files are in root?
         map  { $_->[1] }
@@ -173,12 +170,12 @@ sub set_associated_pod {
                 $_->path =~ /^README\.pod$/i ? -10 :
 
                 # If the name of the package matches the name of the file,
-                $_->path =~ m!(^lib/)?\b${mod_path}.(pod|pm)$! ?
+                $_->path =~ m!(^lib/)?\b${mod_path}.((?i)pod|pm)$! ?
                     # Score pod over pm, and boost (most points for 'lib' dir).
-                    ($1 ? 50 : 25) + $_pod_score{$2} :
+                    ($1 ? 50 : 25) + $_pod_score{lc($2)} :
 
                 # Sort files by extension: Foo.pod > Foo.pm > foo.pl.
-                $_->name =~ /\.(pod|pm|pl)/i ? $_pod_score{$1} :
+                $_->name =~ /\.(pod|pm|pl)/i ? $_pod_score{lc($1)} :
 
                 # Otherwise score unknown (near the bottom).
                 -1
@@ -188,8 +185,7 @@ sub set_associated_pod {
          @$files
          #>>>
     );
-    $self->associated_pod($pod);
-    return $pod;
+    $self->_set_associated_pod( $file->full_path );
 }
 
 __PACKAGE__->meta->make_immutable;

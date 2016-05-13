@@ -32,7 +32,7 @@ sub index_POST {
     );
 
     if ( $result->{is_valid} ) {
-        $user->passed_captcha( DateTime->now );
+        $user->_set_passed_captcha( DateTime->now );
         $user->clear_looks_human;    # rebuild
         $user->put( { refresh => 1 } );
         $self->status_ok( $c, entity => $user->meta->get_data($user) );

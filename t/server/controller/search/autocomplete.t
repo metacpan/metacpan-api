@@ -1,7 +1,6 @@
 use strict;
 use warnings;
 
-use lib 't/lib';
 use MetaCPAN::Server::Test;
 use MetaCPAN::TestHelpers;
 use Test::More;
@@ -15,7 +14,7 @@ test_psgi app, sub {
             'GET' );
         my $json = decode_json_ok($res);
 
-        my $got = [ map { $_->{fields}{documentation} }
+        my $got = [ map { @{ $_->{fields}{documentation} } }
                 @{ $json->{hits}{hits} } ];
 
         is_deeply $got, [
@@ -24,12 +23,12 @@ test_psgi app, sub {
                 Multiple::Modules::A
                 Multiple::Modules::B
                 Multiple::Modules::RDeps
-                Multiple::Modules::Tester
                 Multiple::Modules::RDeps::A
                 Multiple::Modules::RDeps::Deprecated
+                Multiple::Modules::Tester
                 )
             ],
-            'results are sorted by module name length'
+            'results are sorted lexically by module name + length'
             or diag( Test::More::explain($got) );
     }
 };

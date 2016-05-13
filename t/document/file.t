@@ -34,13 +34,11 @@ PKG
 
         # Passing in "content" will override
         # but defaulting to package statements will help avoid buggy tests.
-        content_cb => sub {
-            \(
-                join "\n",
-                ( map { sprintf $pkg_template, $_->{name} } @$mods ),
-                "\n\n=head1 NAME\n\n${name} - abstract\n\n=cut\n\n",
-            );
-        },
+        content => \(
+            join "\n",
+            ( map { sprintf $pkg_template, $_->{name} } @$mods ),
+            "\n\n=head1 NAME\n\n${name} - abstract\n\n=cut\n\n",
+        ),
 
         %args,
     );
@@ -184,9 +182,9 @@ package MOBY::Config;
 END
 
     my $file = new_file_doc(
-        path       => 't/bar/bat.t',
-        module     => { name => 'MOBY::Config' },
-        content_cb => sub { \$content }
+        path    => 't/bar/bat.t',
+        module  => { name => 'MOBY::Config' },
+        content => \$content,
     );
 
     is( $file->abstract,
@@ -197,7 +195,7 @@ END
             ->hide_from_pause( ${ $file->content }, $file->name ),
         0, 'indexed'
     );
-    is( $file->documentation, 'MOBY::Config.pm' );
+    is( $file->documentation, 'MOBY::Config' );
     is( $file->level,         2 );
     test_attributes $file, {
         sloc      => 1,
@@ -229,8 +227,8 @@ just a makefile description
 
 END
     my $file = new_file_doc(
-        name       => 'Makefile.PL',
-        content_cb => sub { \$content }
+        name    => 'Makefile.PL',
+        content => \$content,
     );
 
     is( $file->indexed, 0, 'File listed under other files is not indexed' );
@@ -268,13 +266,23 @@ AS-specific methods for Number::Phone
 END
     my $file = new_file_doc(
         module => [ { name => 'Number::Phone::NANP::ASS', version => 1.1 } ],
-        content_cb => sub { \$content }
+        content => \$content,
     );
     is( $file->sloc,                                   8, '8 lines of code' );
     is( $file->slop,                                   4, '4 lines of pod' );
     is( $file->module->[0]->hide_from_pause($content), 1, 'not indexed' );
-    is( $file->abstract,      'AS-specific methods for Number::Phone' );
-    is( $file->documentation, 'Number::Phone::NANP::AS' );
+    is(
+        $file->abstract,
+        'AS-specific methods for Number::Phone',
+        'abstract text'
+    );
+
+    # changed because the extracted document from content takes
+    # precedence over a non-indexed module.
+    # test may need an update if we want to see the name
+    # from the module. -- Mickey
+    is( $file->documentation, 'Number::Phone::NANP::AS', 'document text' );
+
     is_deeply( $file->pod_lines, [ [ 18, 7 ] ], 'correct pod_lines' );
     is( $file->module->[0]->version_numified,
         1.1, 'numified version has been calculated' );
@@ -297,9 +305,9 @@ C<Perl6Attribute> -- An example attribute metaclass for Perl 6 style attributes
 
 END
     my $file = new_file_doc(
-        name   => 'Perl6Attribute.pod',
-        module => [ { name => 'main', version => 1.1 } ],
-        content_cb => sub { \$content }
+        name    => 'Perl6Attribute.pod',
+        module  => [ { name => 'main', version => 1.1 } ],
+        content => \$content,
     );
     is( $file->documentation, 'Perl6Attribute' );
     is( $file->abstract,
@@ -345,8 +353,8 @@ Bar
 
 END
     my $file = new_file_doc(
-        name       => 'Foo.pod',
-        content_cb => sub { \$content }
+        name    => 'Foo.pod',
+        content => \$content,
     );
     is( $file->documentation, 'Foo', 'POD in __DATA__ section' );
     is( $file->description, 'hot stuff * Foo * Bar' );
@@ -386,7 +394,7 @@ END
     foreach my $folder ( 'pod', 'lib', 'docs' ) {
         my $file = MetaCPAN::Document::File->new(
             author       => 'Foo',
-            content_cb   => sub { \$content },
+            content      => \$content,
             distribution => 'Foo',
             name         => 'Baz.pod',
             path         => $folder . '/Foo/Bar/Baz.pod',
@@ -438,8 +446,8 @@ parsed.
 END
 
     my $file = new_file_doc(
-        name       => 'Yo.pm',
-        content_cb => sub { \$content }
+        name    => 'Yo.pm',
+        content => \$content,
     );
 
     test_attributes $file,
@@ -487,8 +495,8 @@ last-word.
 END
 
     my $file = new_file_doc(
-        name       => 'Yo.pm',
-        content_cb => sub { \$content }
+        name    => 'Yo.pm',
+        content => \$content,
     );
 
     test_attributes $file, {
@@ -528,18 +536,20 @@ subtest 'pod parsing errors are not fatal' => sub {
 package Foo;
 use strict;
 
-=head1 NAME
+=head1 DESCRIPTION
 
 Foo - mymodule1 abstract
 POD
+
+    no warnings qw( once redefine );
 
     local *Pod::Text::parse_string_document = sub {
         die "# [fake pod error]\n";
     };
 
     my $file = new_file_doc(
-        name       => 'Yo.pm',
-        content_cb => sub { \$content }
+        name    => 'Yo.pm',
+        content => \$content,
     );
 
     test_attributes $file, {

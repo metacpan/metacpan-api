@@ -12,66 +12,68 @@ use File::Find::Rule;
 use File::stat ();
 use LWP::UserAgent;
 use Log::Contextual qw( :log :dlog );
-use MetaCPAN::Document::Author;
+use MetaCPAN::Util;
 use MetaCPAN::Model::Release;
-use MetaCPAN::Types qw( Dir );
+use MetaCPAN::Types qw( Bool Dir HashRef Int Str );
 use Moose;
 use PerlIO::gzip;
-use Try::Tiny;
+use Try::Tiny qw( catch try );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
 has latest => (
     is            => 'ro',
-    isa           => 'Bool',
+    isa           => Bool,
     default       => 0,
     documentation => q{run 'latest' script after each release},
 );
 
 has age => (
     is            => 'ro',
-    isa           => 'Int',
+    isa           => Int,
     documentation => 'index releases no older than x hours (undef)',
-);
-
-has children => (
-    is            => 'ro',
-    isa           => 'Int',
-    default       => 2,
-    documentation => 'number of worker processes (2)',
 );
 
 has skip => (
     is            => 'ro',
-    isa           => 'Bool',
+    isa           => Bool,
     default       => 0,
     documentation => 'skip already indexed modules (0)',
 );
 
 has status => (
     is            => 'ro',
-    isa           => 'Str',
+    isa           => Str,
     default       => 'cpan',
     documentation => 'status of the indexed releases (cpan)',
 );
 
 has detect_backpan => (
     is            => 'ro',
-    isa           => 'Bool',
+    isa           => Bool,
     default       => 0,
     documentation => 'enable when indexing from a backpan',
 );
 
 has backpan_index => (
-    is         => 'ro',
-    lazy_build => 1,
+    is      => 'ro',
+    lazy    => 1,
+    builder => '_build_backpan_index',
 );
 
 has perms => (
-    is         => 'ro',
-    isa        => 'HashRef',
-    lazy_build => 1,
-    traits     => ['NoGetopt'],
+    is      => 'ro',
+    isa     => HashRef,
+    lazy    => 1,
+    builder => '_build_perms',
+    traits  => ['NoGetopt'],
+);
+
+has _bulk_size => (
+    is       => 'ro',
+    isa      => Int,
+    init_arg => 'bulk_size',
+    default  => 10,
 );
 
 sub run {
@@ -98,10 +100,15 @@ sub run {
         elsif ( $_ =~ /^https?:\/\//
             && CPAN::DistnameInfo->new($_)->cpanid )
         {
-            my $d    = CPAN::DistnameInfo->new($_);
+            my $d = CPAN::DistnameInfo->new($_);
+
+            # XXX move path to config file
             my $file = $self->home->file(
-                qw(var tmp http authors),
-                MetaCPAN::Document::Author::_build_dir( $d->cpanid ),
+                (
+                    'var', ( $ENV{HARNESS_ACTIVE} ? 't' : () ),
+                    'tmp', 'http', 'authors'
+                ),
+                MetaCPAN::Util::author_dir( $d->cpanid ),
                 $d->filename,
             );
             my $ua = LWP::UserAgent->new(
@@ -162,70 +169,70 @@ sub run {
             }
         }
 
-        if ( @pid >= $self->children ) {
-            my $pid = waitpid( -1, 0 );
-            @pid = grep { $_ != $pid } @pid;
-        }
-        if ( $self->children && ( my $pid = fork() ) ) {
-            push( @pid, $pid );
-        }
-        else {
-            try { $self->import_archive($file) }
-            catch {
-                $self->handle_error( $_[0] );
-            };
-            exit if ( $self->children );
-        }
+        try { $self->import_archive($file) }
+        catch {
+            $self->handle_error("$file $_[0]");
+        };
     }
-    waitpid( -1, 0 ) for (@pid);
     $self->index->refresh;
 
     # Call Fastly to purge
     $self->cdn_purge_cpan_distnameinfos( \@module_to_purge_dists );
+}
 
+sub _get_release_model {
+    my ( $self, $archive_path, $bulk ) = @_;
+
+    my $d = CPAN::DistnameInfo->new($archive_path);
+
+    my $model = MetaCPAN::Model::Release->new(
+        bulk     => $bulk,
+        distinfo => $d,
+        file     => $archive_path,
+        index    => $self->index,
+        level    => $self->level,
+        logger   => $self->logger,
+        status   => $self->detect_status( $d->cpanid, $d->filename ),
+    );
+
+    $model->run;
+
+    return $model;
 }
 
 sub import_archive {
     my $self         = shift;
     my $archive_path = shift;
 
-    my $cpan = $self->index;
-    my $d    = CPAN::DistnameInfo->new($archive_path);
-    my $bulk = $cpan->bulk( size => 10 );
-
-    my $model = MetaCPAN::Model::Release->new(
-        bulk     => $bulk,
-        distinfo => $d,
-        file     => $archive_path,
-        index    => $cpan,
-        level    => $self->level,
-        logger   => $self->logger,
-        status   => $self->detect_status( $d->cpanid, $d->filename ),
-    );
+    my $bulk = $self->index->bulk( size => $self->_bulk_size );
+    my $model = $self->_get_release_model( $archive_path, $bulk );
 
     log_debug {'Gathering modules'};
 
-    # build module -> pod file mapping
-    # $file->clear_documentation to force a rebuild
-    my $files = $model->files();
+    my $files    = $model->files;
+    my $modules  = $model->modules;
+    my $meta     = $model->metadata;
+    my $document = $model->document;
+
+    foreach my $file (@$files) {
+        $file->set_indexed($meta);
+    }
+
     my %associated_pod;
     for ( grep { $_->indexed && $_->documentation } @$files ) {
+
+        # $file->clear_documentation to force a rebuild
         my $documentation = $_->clear_documentation;
         $associated_pod{$documentation}
             = [ @{ $associated_pod{$documentation} || [] }, $_ ];
     }
 
-    my $modules = $model->modules;
     log_debug { 'Indexing ', scalar @$modules, ' modules' };
-    my $document = $model->document;
-    my $perms    = $self->perms;
-    my $meta     = $model->metadata;
+    my $perms = $self->perms;
     my @release_unauthorized;
     my @provides;
-    foreach my $file (@$modules) {
-        $_->set_associated_pod( $file, \%associated_pod )
-            for ( @{ $file->module } );
-        $file->set_indexed($meta);
+    foreach my $file (@$files) {
+        $_->set_associated_pod( \%associated_pod ) for ( @{ $file->module } );
 
      # NOTE: "The method returns a list of unauthorized, but indexed modules."
         push( @release_unauthorized, $file->set_authorized($perms) )
@@ -239,12 +246,12 @@ sub import_archive {
         $bulk->put($file);
         if ( !$document->has_abstract && $file->abstract ) {
             ( my $module = $document->distribution ) =~ s/-/::/g;
-            $document->abstract( $file->abstract );
+            $document->_set_abstract( $file->abstract );
             $document->put;
         }
     }
     if (@provides) {
-        $document->provides( [ sort @provides ] );
+        $document->_set_provides( [ sort @provides ] );
         $document->put;
     }
     $bulk->commit;
@@ -256,7 +263,7 @@ sub import_archive {
                 . " contains unauthorized modules: "
                 . join( ",", map { $_->name } @release_unauthorized );
         };
-        $document->authorized(0);
+        $document->_set_authorized(0);
         $document->put;
     }
 
@@ -264,6 +271,10 @@ sub import_archive {
         local @ARGV = ( qw(latest --distribution), $document->distribution );
         MetaCPAN::Script::Runner->run;
     }
+
+    # update 'first' value
+    $document->set_first;
+    $document->put;
 }
 
 sub _build_backpan_index {
@@ -331,9 +342,10 @@ sub _build_perms {
     return \%authors;
 }
 
-$SIG{__WARN__} = sub {
-    my $msg = shift;
-    warn $msg unless $msg =~ m{Invalid header block at offset unknown at};
+my $warn = $SIG{__WARN__} || sub { warn $_[0] };
+local $SIG{__WARN__} = sub {
+    $warn->( $_[0] )
+        unless $_[0] =~ /Invalid header block at offset unknown at/;
 };
 
 __PACKAGE__->meta->make_immutable;

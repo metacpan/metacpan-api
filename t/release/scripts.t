@@ -2,7 +2,7 @@ use strict;
 use warnings;
 
 use MetaCPAN::Server::Test;
-use Test::More;
+use Test::More skip_all => 'Scripting is disabled';
 
 my $model   = model();
 my $idx     = $model->index('cpan');
@@ -47,12 +47,12 @@ is( $release->main_module, 'Scripts', 'main_module ok' );
         [
             {
                 documentation => 'catalyst',
-                indexed       => \1,
+                indexed       => 1,
                 mime          => 'text/x-script.perl'
             },
             {
                 documentation => 'starman',
-                indexed       => \1,
+                indexed       => 1,
                 mime          => 'text/x-script.perl'
             }
         ],

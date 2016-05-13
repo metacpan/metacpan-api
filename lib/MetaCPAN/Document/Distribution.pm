@@ -7,8 +7,7 @@ use namespace::autoclean;
 use Moose;
 use ElasticSearchX::Model::Document;
 
-use MetaCPAN::Types qw(BugSummary);
-use MooseX::Types::Moose qw(ArrayRef);
+use MetaCPAN::Types qw( ArrayRef BugSummary RiverSummary);
 
 has name => (
     is       => 'ro',
@@ -17,39 +16,40 @@ has name => (
 );
 
 has bugs => (
-    is      => 'rw',
+    is      => 'ro',
     isa     => BugSummary,
     dynamic => 1,
+    writer  => '_set_bugs',
+);
+
+has river => (
+    is      => 'ro',
+    isa     => RiverSummary,
+    dynamic => 1,
+    writer  => '_set_river',
 );
 
 sub releases {
     my $self = shift;
     return $self->index->type("release")
-        ->filter( { term => { "release.distribution" => $self->name } } );
+        ->filter( { term => { "distribution" => $self->name } } );
 }
 
 sub set_first_release {
     my $self = shift;
-    $self->unset_first_release;
-    my $release = $self->releases->sort( ["date"] )->first;
-    return unless $release;
-    return $release if $release->first;
-    $release->first(1);
-    $release->put;
-    return $release;
-}
 
-sub unset_first_release {
-    my $self = shift;
-    my $releases
-        = $self->releases->filter( { term => { "release.first" => \1 }, } )
-        ->size(200)->scroll;
-    while ( my $release = $releases->next ) {
-        $release->first(0);
-        $release->update;
+    my @releases = $self->releases->sort( ["date"] )->all;
+
+    my $first = shift @releases;
+    $first->_set_first(1);
+    $first->put;
+
+    for my $rel (@releases) {
+        $rel->_set_first(0);
+        $rel->put;
     }
-    $self->index->refresh if $releases->total;
-    return $releases->total;
+
+    return $first;
 }
 
 __PACKAGE__->meta->make_immutable;

@@ -8,8 +8,9 @@ use Moose;
 extends 'Catalyst::Authentication::User';
 
 has obj => (
-    is  => 'rw',
-    isa => 'MetaCPAN::Model::User::Account',
+    is     => 'ro',
+    isa    => 'MetaCPAN::Model::User::Account',
+    writer => '_set_obj',
 );
 
 sub get_object { shift->obj }
@@ -23,13 +24,13 @@ sub for_session {
 sub from_session {
     my ( $self, $c, $id ) = @_;
     my $user = $c->model('User::Account')->get($id);
-    $self->obj($user) if ($user);
+    $self->_set_obj($user) if ($user);
     return $user ? $self : undef;
 }
 
 sub find_user {
     my ( $self, $auth ) = @_;
-    $self->obj( $auth->{user} );
+    $self->_set_obj( $auth->{user} );
     return $self;
 }
 

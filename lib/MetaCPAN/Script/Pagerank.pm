@@ -18,22 +18,25 @@ sub run {
 
     log_info {'Loading dependencies ...'};
 
-    my $scroll = $es->scrolled_search(
+    my $scroll = $es->scroll_helper(
         index => $self->index->name,
         type  => 'release',
-        query => {
-            filtered => {
-                query  => { match_all => {} },
-                filter => {
-                    and => [
-                        {
-                            term =>
-                                { 'release.dependency.phase' => 'runtime' }
-                        },
-                        { term => { status => 'latest' } },
-                    ]
+        body  => {
+            query => {
+                filtered => {
+                    query  => { match_all => {} },
+                    filter => {
+                        and => [
+                            {
+                                term => {
+                                    'dependency.phase' => 'runtime'
+                                }
+                            },
+                            { term => { status => 'latest' } },
+                        ]
+                    }
                 }
-            }
+            },
         },
         scroll => '5m',
         size   => 1000,
@@ -65,24 +68,26 @@ sub run {
 sub get_recent_modules {
     my $self = shift;
     log_info {"Mapping modules to releases ..."};
-    my $scroll = $self->es->scrolled_search(
+    my $scroll = $self->es->scroll_helper(
         index => $self->index->name,
         type  => 'file',
-        query => {
-            filtered => {
-                query  => { match_all => {} },
-                filter => {
-                    and => [
-                        { term => { 'file.status'            => 'latest' } },
-                        { term => { 'file.module.indexed'    => \1 } },
-                        { term => { 'file.module.authorized' => \1 } },
-                    ]
+        body  => {
+            query => {
+                filtered => {
+                    query  => { match_all => {} },
+                    filter => {
+                        and => [
+                            { term => { 'status'            => 'latest' } },
+                            { term => { 'module.indexed'    => 1 } },
+                            { term => { 'module.authorized' => 1 } },
+                        ]
+                    }
                 }
             }
         },
         size   => 1000,
         fields => [
-            qw(release distribution file.module.authorized file.module.indexed file.module.name)
+            qw(release distribution module.authorized module.indexed module.name)
         ],
         scroll => '1m',
     );

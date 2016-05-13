@@ -1,35 +1,34 @@
-use Test::More;
 use strict;
 use warnings;
 
 use lib 't/lib';
 use MetaCPAN::TestHelpers;
+use Test::More;
 
 test_release(
     {
         name        => 'Binary-Data-0.01',
         author      => 'BORISNAT',
-        authorized  => \1,
-        first       => \1,
+        authorized  => 1,
+        first       => 1,
         provides    => [ 'Binary::Data', 'Binary::Data::WithPod', ],
         main_module => 'Binary::Data',
         modules     => {
             'lib/Binary/Data.pm' => [
                 {
                     name             => 'Binary::Data',
-                    indexed          => \1,
-                    authorized       => \1,
+                    indexed          => 'true',
+                    authorized       => 'true',
                     version          => '0.01',
                     version_numified => 0.01,
-
-                    # no associated_pod
+                    associated_pod   => undef,
                 },
             ],
             'lib/Binary/Data/WithPod.pm' => [
                 {
                     name             => 'Binary::Data::WithPod',
-                    indexed          => \1,
-                    authorized       => \1,
+                    indexed          => 'true',
+                    authorized       => 'true',
                     version          => '0.02',
                     version_numified => 0.02,
                     associated_pod =>

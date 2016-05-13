@@ -3,16 +3,17 @@ package Catalyst::Authentication::Store::Proxy;
 # ABSTRACT: Delegates authentication logic to the user object
 use Moose;
 use Catalyst::Utils;
+use MetaCPAN::Types qw( HashRef Str );
 
 has user_class => (
     is       => 'ro',
     required => 1,
-    isa      => 'Str',
+    isa      => Str,
     lazy     => 1,
     builder  => '_build_user_class'
 );
-has handles => ( is => 'ro', isa => 'HashRef' );
-has config  => ( is => 'ro', isa => 'HashRef' );
+has handles => ( is => 'ro', isa => HashRef );
+has config  => ( is => 'ro', isa => HashRef );
 has app     => ( is => 'ro', isa => 'ClassName' );
 has realm   => ( is => 'ro' );
 

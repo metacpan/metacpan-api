@@ -73,28 +73,29 @@ has _surrogate_keys_to_purge => (
 # How long should the CDN cache, irrespective of
 # other cache headers
 has cdn_cache_ttl => (
-    is      => 'rw',
+    is      => 'ro',
     isa     => Int,
     default => 0,
 );
 
 # Make sure the CDN NEVER caches, ignore any other cdn_cache_ttl settings
 has cdn_never_cache => (
-    is      => 'rw',
+    is      => 'ro',
     isa     => Bool,
     default => 0,
 );
 
 has browser_max_age => (
-    is      => 'rw',
+    is      => 'ro',
     isa     => Maybe [Int],
     default => sub {undef},
 );
 
 has cdn_times => (
-    is         => 'ro',
-    isa        => HashRef,
-    lazy_build => 1,
+    is      => 'ro',
+    isa     => HashRef,
+    lazy    => 1,
+    builder => '_build_cdn_times',
 );
 
 sub _build_cdn_times {
@@ -191,7 +192,6 @@ sub _cdn_get_service {
 
     my $fsi = $c->config->{fastly_service_id};
     return $net_fastly->get_service($fsi);
-
 }
 
 sub cdn_purge_cpan_distnameinfos {
@@ -208,7 +208,6 @@ sub cdn_purge_cpan_distnameinfos {
 
     # Now run with this list
     $c->cdn_purge_now( { keys => \@purge_keys } );
-
 }
 
 =head2 cdn_purge_now

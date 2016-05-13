@@ -7,10 +7,10 @@ use Test::More;
 my %tests = (
     '/source/DOESNEXIST'                           => 404,
     '/source/DOY/Moose-0.01/'                      => 200,
-    '/source/DOY/Moose-0.01/MANIFEST'              => 200,
-    '/source/DOY/Moose-0.01/MANIFEST?callback=foo' => 200,
     '/source/DOY/Moose-0.01/Changes'               => 200,
     '/source/DOY/Moose-0.01/Changes?callback=foo'  => 200,
+    '/source/DOY/Moose-0.01/MANIFEST'              => 200,
+    '/source/DOY/Moose-0.01/MANIFEST?callback=foo' => 200,
     '/source/Moose'                                => 200,
 );
 

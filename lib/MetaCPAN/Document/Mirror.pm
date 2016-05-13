@@ -4,10 +4,11 @@ use strict;
 use warnings;
 
 use Moose;
-use ElasticSearchX::Model::Document::Types qw(:all);
+use ElasticSearchX::Model::Document::Types qw( Location );
 use ElasticSearchX::Model::Document;
 
-use MetaCPAN::Util;
+use MetaCPAN::Types qw( ArrayRef Dict Str );
+use MooseX::Types::Structured qw(Dict );    # not sure why I have to do this
 
 has name => (
     is       => 'ro',
@@ -28,10 +29,11 @@ has location => (
     isa    => Location,
     coerce => 1,
 );
+
 has contact => (
     is       => 'ro',
     required => 1,
-    isa      => 'ArrayRef',
+    isa      => Dict [ contact_site => Str, contact_user => Str ],
 );
 
 has [qw(inceptdate reitredate)] => (

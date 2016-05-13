@@ -1,25 +1,22 @@
 package MetaCPAN::Tests::PSGI;
+
 use Test::Routine;
 use Test::More;
 
-use MetaCPAN::Server::Test;
+use MetaCPAN::Server::Test qw( app test_psgi );
 
 sub psgi_app {
     my ( $self, $sub ) = @_;
     my @result;
-    my $wantarray = wantarray;
 
-    test_psgi app, sub {
-        defined $wantarray
-            ? $wantarray
-                ? ( @result = $sub->(@_) )
-                : ( $result[0] = $sub->(@_) )
-            : do { $sub->(@_); 1 };
-        return;
-    };
+    test_psgi(
+        app    => app(),
+        client => sub {
+            @result = $sub->(@_);
+        },
+    );
 
-    return $wantarray ? @result : $result[0] if defined $wantarray;
-    return;
+    return $result[0];
 }
 
 1;

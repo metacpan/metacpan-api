@@ -1,13 +1,16 @@
 package MetaCPAN::Tests::Release;
+
 use Test::Routine;
-use Test::More;
-use HTTP::Request::Common;
-use List::Util ();
+
 use version;
 
-with qw(
-    MetaCPAN::Tests::Model
-);
+use HTTP::Request::Common;
+use List::Util ();
+use MetaCPAN::TestApp;
+use Test::More;
+use MetaCPAN::Types qw( ArrayRef HashRef Str );
+
+with( 'MetaCPAN::Tests::Model', 'MetaCPAN::Tests::Role::HasApp' );
 
 sub _build_type {'release'}
 
@@ -45,12 +48,12 @@ my @attrs = qw(
 
 has [@attrs] => (
     is  => 'ro',
-    isa => 'Str',
+    isa => Str,
 );
 
 has version_numified => (
     is      => 'ro',
-    isa     => 'Str',
+    isa     => Str,
     lazy    => 1,
     default => sub {
 
@@ -64,7 +67,7 @@ has version_numified => (
 
 has files => (
     is      => 'ro',
-    isa     => 'ArrayRef',
+    isa     => ArrayRef,
     lazy    => 1,
     builder => '_build_files',
 );
@@ -83,12 +86,8 @@ sub file_content {
     # I couldn't get the Source model to work outside the app (I got
     # "No handler available for type 'application/octet-stream'",
     # strangely), so just do the http request.
-    return $self->psgi_app(
-        sub {
-            shift->( GET "/source/$self->{author}/$self->{name}/$path" )
-                ->content;
-        }
-    );
+    return $self->app->get("/source/$self->{author}/$self->{name}/$path")
+        ->content;
 }
 
 sub file_by_path {
@@ -100,7 +99,7 @@ sub file_by_path {
 
 has module_files => (
     is      => 'ro',
-    isa     => 'ArrayRef',
+    isa     => ArrayRef,
     lazy    => 1,
     builder => '_build_module_files',
 );
@@ -108,7 +107,7 @@ has module_files => (
 sub _build_module_files {
     my ($self) = @_;
     return $self->filter_files(
-        [ { exists => { field => 'file.module.name' } }, ] );
+        [ { exists => { field => 'module.name' } }, ] );
 }
 
 sub filter_files {
@@ -119,13 +118,15 @@ sub filter_files {
 
     my $release = $self->data;
     return [
-        $self->index->type('file')->filter(
+        $self->index->type('file')->query(
             {
-                and => [
-                    { term => { 'file.author'  => $release->author } },
-                    { term => { 'file.release' => $release->name } },
-                    @{ $add_filters || [] },
-                ],
+                bool => {
+                    must => [
+                        { term => { 'author'  => $release->author } },
+                        { term => { 'release' => $release->name } },
+                        @{ $add_filters || [] },
+                    ],
+                }
             }
         )->size(100)->all
     ];
@@ -133,7 +134,7 @@ sub filter_files {
 
 has modules => (
     is      => 'ro',
-    isa     => 'HashRef',
+    isa     => HashRef,
     default => sub { +{} },
 );
 
@@ -153,20 +154,20 @@ sub pod {
 # but many test dists only have one version so 'latest' is more likely.
 has status => (
     is      => 'ro',
-    isa     => 'Str',
+    isa     => Str,
     default => 'latest',
 );
 
 has archive => (
     is      => 'ro',
-    isa     => 'Str',
+    isa     => Str,
     lazy    => 1,
     default => sub { shift->name . '.tar.gz' },
 );
 
 has name => (
     is      => 'ro',
-    isa     => 'Str',
+    isa     => Str,
     lazy    => 1,
     default => sub {
         my ($self) = @_;
@@ -215,7 +216,7 @@ test 'release attributes' => sub {
     }
 };
 
-test 'modules in release files' => sub {
+test 'modules in Packages-1.103' => sub {
     my ($self) = @_;
 
     plan skip_all => 'No modules specified for testing'

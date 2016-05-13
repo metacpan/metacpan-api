@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use JSON;
+use Cpanel::JSON::XS;
 use File::Find;
 
 my @files;

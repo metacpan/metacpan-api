@@ -2,24 +2,25 @@ package MetaCPAN::Script::Watcher;
 
 use strict;
 use warnings;
+use Moose;
 
 use CPAN::DistnameInfo;
-use JSON::XS;
+use Cpanel::JSON::XS;
 use Log::Contextual qw( :log );
 use MetaCPAN::Util;
-use Moose;
+use MetaCPAN::Types qw( Bool );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
 has backpan => (
     is            => 'ro',
-    isa           => 'Bool',
+    isa           => Bool,
     documentation => 'update deleted archives only',
 );
 
 has dry_run => (
     is      => 'ro',
-    isa     => 'Bool',
+    isa     => Bool,
     default => 0,
 );
 
@@ -94,22 +95,25 @@ sub changes {
 
 sub backpan_changes {
     my $self   = shift;
-    my $scroll = $self->es->scrolled_search(
+    my $scroll = $self->es->scroll_helper(
         {
             size   => 1000,
             scroll => '1m',
             index  => $self->index->name,
             type   => 'release',
             fields => [qw(author archive)],
-            query  => {
-                filtered => {
-                    query  => { match_all => {} },
-                    filter => {
-                        not =>
-                            { filter => { term => { status => 'backpan' } } }
-                    },
+            body   => {
+                query => {
+                    filtered => {
+                        query  => { match_all => {} },
+                        filter => {
+                            not => {
+                                filter => { term => { status => 'backpan' } }
+                            }
+                        },
+                    }
                 }
-            },
+            }
         }
     );
     my @changes;
@@ -185,7 +189,7 @@ sub reindex_release {
     log_info {"Moving $release->{_source}->{name} to BackPAN"};
 
     my $es     = $self->es;
-    my $scroll = $es->scrolled_search(
+    my $scroll = $es->scroll_helper(
         {
             index       => $self->index->name,
             type        => 'file',
@@ -193,24 +197,26 @@ sub reindex_release {
             size        => 1000,
             search_type => 'scan',
             fields      => [ '_parent', '_source' ],
-            query       => {
-                filtered => {
-                    query  => { match_all => {} },
-                    filter => {
-                        and => [
-                            {
-                                term => {
-                                    'file.release' =>
-                                        $release->{_source}->{name}
+            body        => {
+                query => {
+                    filtered => {
+                        query  => { match_all => {} },
+                        filter => {
+                            and => [
+                                {
+                                    term => {
+                                        'release' =>
+                                            $release->{_source}->{name}
+                                    }
+                                },
+                                {
+                                    term => {
+                                        'author' =>
+                                            $release->{_source}->{author}
+                                    }
                                 }
-                            },
-                            {
-                                term => {
-                                    'file.author' =>
-                                        $release->{_source}->{author}
-                                }
-                            }
-                        ]
+                            ]
+                        }
                     }
                 }
             }

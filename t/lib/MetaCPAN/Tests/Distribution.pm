@@ -2,6 +2,7 @@ package MetaCPAN::Tests::Distribution;
 use Test::Routine;
 use Test::More;
 use version;
+use MetaCPAN::Types qw( Str );
 
 with qw(
     MetaCPAN::Tests::Model
@@ -19,7 +20,7 @@ my @attrs = qw(
 
 has [@attrs] => (
     is  => 'ro',
-    isa => 'Str',
+    isa => Str,
 );
 
 test 'distribution attributes' => sub {

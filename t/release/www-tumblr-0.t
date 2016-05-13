@@ -10,8 +10,8 @@ test_release(
         name         => 'WWW-Tumblr-0',
         distribution => 'WWW-Tumblr',
         author       => 'LOCAL',
-        authorized   => \1,
-        first        => \1,
+        authorized   => 1,
+        first        => 1,
         version      => '0',
 
         provides => [ 'WWW::Tumblr', ],

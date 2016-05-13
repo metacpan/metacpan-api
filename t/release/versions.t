@@ -8,10 +8,10 @@ my $model = model();
 my $idx   = $model->index('cpan');
 
 my %modules = (
-    'Versions::PkgVar'              => '1.23',
     'Versions::Our'                 => '1.45',
     'Versions::PkgNameVersion'      => '1.67',
     'Versions::PkgNameVersionBlock' => '1.89',
+    'Versions::PkgVar'              => '1.23',
 );
 
 while ( my ( $module, $version ) = each %modules ) {

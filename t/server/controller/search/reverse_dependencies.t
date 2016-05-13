@@ -1,7 +1,6 @@
 use strict;
 use warnings;
 
-use lib 't/lib';
 use MetaCPAN::Server::Test;
 use MetaCPAN::TestHelpers;
 use Test::More;
@@ -44,9 +43,10 @@ sub check_search_results {
     );
     is( $res->code, $code, "code $code" )
         or return;
-    my $json = decode_json_ok($res);
+
     return unless $code == 200;
 
+    my $json = decode_json_ok($res);
     $json = $json->{hits}{hits} if $json->{hits};
     is scalar @$json, @$rdeps, 'got expected number of releases';
     is_deeply [
@@ -76,9 +76,8 @@ test_psgi app, sub {
                 POST $k,
                 Content => encode_json(
                     {
-                        query => { match_all => {} },
-                        filter =>
-                            { term => { 'release.status' => 'latest' }, },
+                        query  => { match_all => {} },
+                        filter => { term      => { status => 'latest' }, },
                     }
                 )
             ),
@@ -108,14 +107,13 @@ test_psgi app, sub {
         ok(
             my $res = $cb->(
                 POST
-                    '/search/reverse_dependencies/Multiple-Modules?fields=release.distribution',
+                    '/search/reverse_dependencies/Multiple-Modules?fields=distribution',
                 Content => encode_json(
                     {
                         query  => { match_all => {} },
                         filter => {
                             term => {
-                                'release.distribution' =>
-                                    'Multiple-Modules-RDeps-A'
+                                distribution => 'Multiple-Modules-RDeps-A'
                             },
                         },
                     }
@@ -123,9 +121,10 @@ test_psgi app, sub {
             ),
             'POST'
         );
+
         my $json = decode_json_ok($res);
         is( $json->{hits}->{total}, 1, 'total is 1' );
-        is( $json->{hits}->{hits}->[0]->{fields}->{distribution},
+        is( $json->{hits}->{hits}->[0]->{fields}->{distribution}->[0],
             'Multiple-Modules-RDeps-A', 'filter worked' );
     }
 };

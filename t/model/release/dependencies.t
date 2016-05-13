@@ -4,18 +4,15 @@ use warnings;
 use FindBin;
 use MetaCPAN::Model::Release;
 use MetaCPAN::Script::Runner;
+use MetaCPAN::TestHelpers qw( fakecpan_dir get_config );
 use Test::Most;
 
-my $config = do {
-
-    # build_config expects test to be t/*.t
-    local $FindBin::RealBin = "$FindBin::RealBin/../..";
-    MetaCPAN::Script::Runner->build_config;
-};
+my $config = get_config();
 
 subtest 'basic dependencies' => sub {
     my $file
-        = 't/var/tmp/fakecpan/authors/id/M/MS/MSCHWERN/Prereqs-Basic-0.01.tar.gz';
+        = fakecpan_dir->file(
+        '/authors/id/M/MS/MSCHWERN/Prereqs-Basic-0.01.tar.gz');
 
     my $release = MetaCPAN::Model::Release->new(
         logger => $config->{logger},

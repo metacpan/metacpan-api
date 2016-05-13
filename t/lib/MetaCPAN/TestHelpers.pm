@@ -4,22 +4,31 @@ use warnings;
 package    # no_index
     MetaCPAN::TestHelpers;
 
-use JSON;
-use Try::Tiny;
+use Cpanel::JSON::XS;
+use FindBin;
+use Git::Helpers qw( checkout_root );
+use MetaCPAN::Script::Runner;
+use Path::Class qw( dir );
 use Test::More;
 use Test::Routine::Util;
+use Try::Tiny qw( catch try );
 
 use base 'Exporter';
 our @EXPORT = qw(
-    try catch finally
-
-    multiline_diag hex_escape
-    encode_json
+    catch
     decode_json_ok
-
+    encode_json
+    fakecpan_configs_dir
+    fakecpan_dir
+    finally
+    get_config
+    hex_escape
+    multiline_diag
     run_tests
     test_distribution
     test_release
+    tmp_dir
+    try
 );
 
 =head1 EXPORTS
@@ -82,6 +91,35 @@ sub test_release {
     $args = { %$release, %$args };
     run_tests( $desc || "Release data for $args->{author}/$args->{name}",
         ['MetaCPAN::Tests::Release'], $args, );
+}
+
+sub get_config {
+    my $config = do {
+
+        # build_config expects test to be t/*.t
+        local $FindBin::RealBin = dir( undef, checkout_root(), 't' );
+        MetaCPAN::Script::Runner->build_config;
+    };
+    return $config;
+}
+
+sub tmp_dir {
+    my $dir = dir( checkout_root(), 'var', 't', 'tmp' );
+    $dir->mkpath;
+    return $dir;
+}
+
+sub fakecpan_dir {
+    my $dir      = tmp_dir();
+    my $fakecpan = $dir->subdir('fakecpan');
+    $fakecpan->mkpath;
+    return $fakecpan;
+}
+
+sub fakecpan_configs_dir {
+    my $source = dir( undef, checkout_root(), 'test-data', 'fakecpan' );
+    $source->mkpath;
+    return $source;
 }
 
 1;

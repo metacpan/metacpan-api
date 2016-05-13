@@ -1,6 +1,9 @@
 package MetaCPAN::Model::Release;
 
+use Moose;
+
 use v5.10;
+
 use CPAN::DistnameInfo ();
 use CPAN::Meta         ();
 use DateTime           ();
@@ -8,13 +11,12 @@ use File::Find         ();
 use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Model::Archive;
 use MetaCPAN::Types qw(ArrayRef AbsFile Str);
-use MetaCPAN::Util ();
+use MetaCPAN::Util qw( fix_version);
 use Module::Metadata 1.000012 ();    # Improved package detection.
-use Moose;
 use MooseX::StrictConstructor;
 use Path::Class ();
 use Parse::PMFile;
-use Try::Tiny;
+use Try::Tiny qw( catch try );
 
 with 'MetaCPAN::Role::Logger';
 
@@ -26,9 +28,10 @@ has archive => (
 );
 
 has dependencies => (
-    is         => 'ro',
-    isa        => ArrayRef,
-    lazy_build => 1,
+    is      => 'ro',
+    isa     => ArrayRef,
+    lazy    => 1,
+    builder => '_build_dependencies',
 );
 
 has distinfo => (
@@ -41,6 +44,7 @@ has distinfo => (
         distribution => 'dist',
         filename     => 'filename',
     },
+    lazy    => 1,
     default => sub {
         my $self = shift;
         return CPAN::DistnameInfo->new( $self->file );
@@ -48,27 +52,29 @@ has distinfo => (
 );
 
 has document => (
-    is         => 'ro',
-    isa        => 'MetaCPAN::Document::Release',
-    lazy_build => 1,
+    is      => 'ro',
+    isa     => 'MetaCPAN::Document::Release',
+    lazy    => 1,
+    builder => '_build_document',
 );
 
 has file => (
-    is       => 'rw',
+    is       => 'ro',
     isa      => AbsFile,
     required => 1,
     coerce   => 1,
 );
 
 has files => (
-    is         => 'ro',
-    isa        => ArrayRef,
-    init_arg   => undef,
-    lazy_build => 1,
+    is       => 'ro',
+    isa      => ArrayRef,
+    init_arg => undef,
+    lazy     => 1,
+    builder  => '_build_files',
 );
 
 has date => (
-    is      => 'rw',
+    is      => 'ro',
     isa     => 'DateTime',
     lazy    => 1,
     default => sub {
@@ -77,10 +83,10 @@ has date => (
     },
 );
 
-has index => ( is => 'rw', );
+has index => ( is => 'ro' );
 
 has metadata => (
-    is      => 'rw',
+    is      => 'ro',
     isa     => 'CPAN::Meta',
     lazy    => 1,
     builder => '_build_metadata',
@@ -102,21 +108,35 @@ has modules => (
 );
 
 has version => (
-    is      => 'rw',
+    is      => 'ro',
     isa     => Str,
     lazy    => 1,
     default => sub {
-        my $self = shift;
-        return MetaCPAN::Util::fix_version( $self->distinfo->version );
+        return fix_version( shift->distinfo->version );
     },
 );
 
 has status => (
-    is  => 'rw',
+    is  => 'ro',
     isa => Str,
 );
 
-has bulk => ( is => 'rw', );
+has bulk => ( is => 'ro' );
+
+=head2 run
+
+Try to fix some ordering issues, which are causing deep recursion.  There's
+probably a much cleaner way to do this.
+
+=cut
+
+sub run {
+    my $self = shift;
+    $self->document;
+    $self->document->_set_changes_file(
+        $self->get_changes_file( $self->files ) );
+    $self->set_main_module( $self->modules, $self->document );
+}
 
 sub _build_archive {
     my $self = shift;
@@ -205,15 +225,10 @@ sub _build_document {
         $self->index->type('distribution')
             ->put( { name => $self->distribution }, { create => 1 } );
     };
-
-    $self->_set_main_module( $self->modules, $document );
-
-    $document->changes_file( $self->get_changes_file( $self->files ) );
-
     return $document;
 }
 
-sub _set_main_module {
+sub set_main_module {
     my $self = shift;
     my ( $mod, $release ) = @_;
 
@@ -228,7 +243,7 @@ sub _set_main_module {
     if ( scalar @modules == 1 ) {
 
         # there is only one module and it will become the main_module
-        $release->main_module( $modules[0]->module->[0]->name );
+        $release->_set_main_module( $modules[0]->module->[0]->name );
         return;
     }
 
@@ -236,7 +251,7 @@ sub _set_main_module {
 
         # the module has the exact name as the ditribution
         if ( $file->module->[0]->name eq $dist2module ) {
-            $release->main_module( $file->module->[0]->name );
+            $release->_set_main_module( $file->module->[0]->name );
             return;
         }
     }
@@ -248,7 +263,7 @@ sub _set_main_module {
         $a->level <=> $b->level
             || length $a->module->[0]->name <=> length $b->module->[0]->name
     } @modules;
-    $release->main_module( $sorted_modules[0]->module->[0]->name );
+    $release->_set_main_module( $sorted_modules[0]->module->[0]->name );
 
 }
 
@@ -306,22 +321,25 @@ sub _build_files {
 
             my $file = $file_set->new_document(
                 Dlog_trace {"adding file $_"} +{
-                    author       => $self->author,
-                    binary       => -B $child,
-                    content_cb   => sub { \( scalar $child->slurp ) },
+                    author  => $self->author,
+                    binary  => -B $child,
+                    content => $child->is_dir ? \""
+                    : \( scalar $child->slurp ),
                     date         => $self->date,
                     directory    => $child->is_dir,
                     distribution => $self->distribution,
-
-                    local_path => $child,
-                    maturity   => $self->maturity,
-                    metadata   => $self->metadata,
-                    name       => $filename,
-                    path       => $fpath,
-                    release    => $self->name,
-                    stat       => $stat,
-                    status     => $self->status,
-                    version    => $self->version,
+                    indexed => $self->metadata->should_index_file($fpath) ? 1
+                    : 0,
+                    local_path   => $child,
+                    maturity     => $self->maturity,
+                    metadata     => $self->metadata,
+                    name         => $filename,
+                    path         => $fpath,
+                    release      => $self->name,
+                    download_url => $self->document->download_url,
+                    stat         => $stat,
+                    status       => $self->status,
+                    version      => $self->version,
                 }
             );
 
@@ -393,7 +411,10 @@ sub _load_meta_file {
             try {
                 $last = CPAN::Meta->load_file($file);
             }
-            catch { $error = $_ };
+            catch {
+                $error = $_;
+                log_warn {"META file ($file) could not be loaded: $error"};
+            };
             if ($last) {
                 last;
             }
@@ -405,7 +426,7 @@ sub _load_meta_file {
         }
     }
 
-    log_warn {"META file could not be loaded: $error"} unless @backends;
+    log_warn {'No META files could be loaded'} unless @backends;
 }
 
 sub extract {
