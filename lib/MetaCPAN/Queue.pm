@@ -32,6 +32,12 @@ sub startup {
         index_release => sub {
             my ( $job, @args ) = @_;
 
+            my @warnings;
+            local $SIG{__WARN__} = sub {
+                push @warnings, $_[0];
+                warn $_[0];
+            };
+
             # @args could be ( '--latest', '/path/to/release' );
             unshift @args, 'release';
 
@@ -39,10 +45,11 @@ sub startup {
             local @ARGV = @args;
             try {
                 my $release = MetaCPAN::Script::Runner->run(@args);
+                $job->finish( { warnings => \@warnings } );
             }
             catch {
                 warn $_;
-                $job->fail( { message => $_ } );
+                $job->fail( { message => $_, warnings => \@warnings } );
             };
         }
     );
