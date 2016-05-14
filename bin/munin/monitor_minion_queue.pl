@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-# Munin runs this as root, need the sudo to get the Pg perms
+# Munin runs this as metacpan user, but with root's env
 # it's only for production so path is hard coded
 
 my $config_mode = 0;
@@ -11,6 +11,7 @@ $config_mode = 1 if $ARGV[0] && $ARGV[0] eq 'config';
 
 if($config_mode) {
 
+# Dump this (though we supported dynamic below) so it's faster
 print <<'EOF';
 graph_title Minion Queue stats
 graph_vlabel count
@@ -28,7 +29,7 @@ exit;
 }
 
 # Get the stats
-my $stats_report = `sudo -u metacpan /home/metacpan/bin/metacpan-api-carton-exec bin/queue.pl minion job -s`;
+my $stats_report = `/home/metacpan/bin/metacpan-api-carton-exec bin/queue.pl minion job -s`;
 
 my @lines = split("\n", $stats_report);
 
