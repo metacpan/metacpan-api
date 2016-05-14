@@ -45,11 +45,16 @@ sub startup {
             local @ARGV = @args;
             try {
                 my $release = MetaCPAN::Script::Runner->run(@args);
-                $job->finish( { warnings => \@warnings } );
+                $job->finish( @warnings ? { warnings => \@warnings } : () );
             }
             catch {
                 warn $_;
-                $job->fail( { message => $_, warnings => \@warnings } );
+                $job->fail(
+                    {
+                        message => $_,
+                        @warnings ? ( warnings => \@warnings ) : (),
+                    }
+                );
             };
         }
     );
