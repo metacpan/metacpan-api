@@ -16,8 +16,15 @@ graph_title Minion Queue stats
 graph_vlabel count
 graph_category metacpan_api
 graph_info What's happening in the Minion queue
+workers_inactive.label Inactive workers
+workers_active.label Active workers
+jobs_inactive.label Inactive jobs
+jobs_active.label Active jobs
+jobs_failed.label Failed jobs
+jobs_finished.label Finished jobs
 EOF
 
+exit;
 }
 
 # Get the stats
