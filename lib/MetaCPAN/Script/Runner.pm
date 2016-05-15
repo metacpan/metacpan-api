@@ -18,8 +18,12 @@ sub run {
     require_module( $plugins{$class} );
 
     my $config = build_config();
+    my $module = $plugins{$class};
 
-    my $obj = $plugins{$class}->new_with_options($config);
+    my %args = map { $_ => $config->{$_} }
+        grep { $module->can($_) } keys %{$config};
+
+    my $obj = $module->new_with_options(%args);
     $obj->run;
 }
 
