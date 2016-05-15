@@ -3,12 +3,11 @@ package MetaCPAN::Script::Runner;
 use strict;
 use warnings;
 
-use Config::JFDI;
-use File::Path ();
+use Config::JFDI ();
 use Hash::Merge::Simple qw(merge);
 use IO::Interactive qw(is_interactive);
 use Module::Pluggable search_path => ['MetaCPAN::Script'];
-use Module::Runtime ();
+use Module::Runtime qw(require_module);
 
 sub run {
     my ( $class, @actions ) = @ARGV;
@@ -16,16 +15,9 @@ sub run {
         = map { ( my $key = $_ ) =~ s/^MetaCPAN::Script:://; lc($key) => $_ }
         plugins;
     die "Usage: metacpan [command] [args]" unless ($class);
-    Module::Runtime::require_module( $plugins{$class} );
+    require_module( $plugins{$class} );
 
     my $config = build_config();
-
-    foreach my $logger ( @{ $config->{logger} || [] } ) {
-        my $path = $logger->{filename} or next;
-        $path =~ s{([^/]+)$}{};
-        -d $path
-            or File::Path::mkpath($path);
-    }
 
     my $obj = $plugins{$class}->new_with_options($config);
     $obj->run;
