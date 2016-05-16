@@ -1,7 +1,8 @@
 package MetaCPAN::Role::HasConfig;
 
 use Moose::Role;
-
+use Config::JFDI;
+use FindBin;
 use MetaCPAN::Types qw(HashRef);
 
 has config => (
