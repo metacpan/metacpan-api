@@ -152,14 +152,31 @@ sub run_restore {
             }
         }
 
-        $bulk->create(
-            {
-                id => $raw->{_id},
-                $parent ? ( parent => $parent ) : (),
-                source => $raw->{_source},
-            }
+        my $exists = $es->exists(
+            index => $raw->{_index},
+            type  => $raw->{_type},
+            id    => $raw->{_id},
         );
 
+        if ($exists) {
+            $bulk->update(
+                {
+                    id            => $raw->{_id},
+                    doc           => $raw->{_source},
+                    doc_as_upsert => 1,
+                }
+            );
+
+        }
+        else {
+            $bulk->create(
+                {
+                    id => $raw->{_id},
+                    $parent ? ( parent => $parent ) : (),
+                    source => $raw->{_source},
+                }
+            );
+        }
     }
 
     # Flush anything left over just incase
