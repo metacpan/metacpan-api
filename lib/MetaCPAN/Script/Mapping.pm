@@ -6,6 +6,9 @@ use warnings;
 use Log::Contextual qw( :log );
 use Moose;
 use MetaCPAN::Types qw( Bool );
+use Term::ANSIColor qw( colored );
+use IO::Interactive qw( is_interactive );
+use IO::Prompt;
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
@@ -18,6 +21,20 @@ has delete => (
 
 sub run {
     my $self = shift;
+    if (is_interactive) {
+        print colored(
+            ['bold red'],
+            '*** Warning ***: this will delete EVERYTHING and re-create the (empty) indexes'
+            ),
+            "\n";
+        my $answer = prompt
+            'Are you sure you want to do this (type "YES" to confirm) ? ';
+        if ( $answer ne 'YES' ) {
+            print "bye.\n";
+            exit 0;
+        }
+        print "alright then...\n";
+    }
     log_info {"Putting mapping to ElasticSearch server"};
     $self->model->deploy( delete => $self->delete );
 }

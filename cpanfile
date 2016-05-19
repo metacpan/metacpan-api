@@ -70,6 +70,7 @@ requires 'HTTP::Request::Common';
 requires 'Hash::Merge::Simple';
 requires 'IO::All';
 requires 'IO::Interactive';
+requires 'IO::Prompt';
 requires 'IO::String';
 requires 'IO::Uncompress::Bunzip2';
 requires 'IO::Zlib';
