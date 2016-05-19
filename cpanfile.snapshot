@@ -3630,6 +3630,18 @@ DISTRIBUTIONS
       File::Spec::Functions 0
       perl 5.008
       version 0.78
+  IO-Prompt-0.997003
+    pathname: D/DC/DCONWAY/IO-Prompt-0.997003.tar.gz
+    provides:
+      IO::Prompt 0.997003
+      IO::Prompt::ReturnVal 0.997003
+    requirements:
+      IO::Handle 0
+      POSIX 0
+      Term::ReadKey 0
+      Test::More 0
+      Want 0
+      version 0
   IO-Socket-IP-0.37
     pathname: P/PE/PEVANS/IO-Socket-IP-0.37.tar.gz
     provides:
@@ -7833,6 +7845,12 @@ DISTRIBUTIONS
       ExtUtils::CBuilder 0
       ExtUtils::MakeMaker 0
       Test::More 0
+  TermReadKey-2.33
+    pathname: J/JS/JSTOWE/TermReadKey-2.33.tar.gz
+    provides:
+      Term::ReadKey 2.33
+    requirements:
+      ExtUtils::MakeMaker 0
   Test-Aggregate-0.373
     pathname: R/RW/RWSTAUNER/Test-Aggregate-0.373.tar.gz
     provides:
@@ -8905,6 +8923,12 @@ DISTRIBUTIONS
       Fcntl 0
       URI 1.10
       perl 5.008001
+  Want-0.29
+    pathname: R/RO/ROBIN/Want-0.29.tar.gz
+    provides:
+      Want 0.29
+    requirements:
+      ExtUtils::MakeMaker 0
   XML-NamespaceSupport-1.11
     pathname: P/PE/PERIGRIN/XML-NamespaceSupport-1.11.tar.gz
     provides:
