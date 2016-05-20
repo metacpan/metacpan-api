@@ -223,42 +223,43 @@ sub reindex_release {
         }
     );
     return if ( $self->dry_run );
-    my @bulk;
+
+    my %bulk_helper;
+    for (qw/ file release /) {
+        $bulk_helper{$_} = $self->es->bulk_helper(
+            index => $self->index->name,
+            type  => $_,
+        );
+    }
 
     while ( my $row = $scroll->next ) {
         my $source = $row->{_source};
-        push(
-            @bulk,
+        $bulk_helper{file}->index(
             {
-                index => {
-                    index => $self->index->name,
-                    type  => 'file',
-                    id    => $row->{_id},
+                id     => $row->{_id},
+                source => {
                     $row->{fields}->{_parent}
                     ? ( parent => $row->{fields}->{_parent} )
                     : (),
-                    data => { %$source, status => 'backpan' }
+                    %$source,
+                    status => 'backpan',
                 }
             }
         );
-        if ( @bulk > 100 ) {
-            $self->es->bulk( \@bulk );
-            @bulk = ();
-        }
     }
-    push(
-        @bulk,
+
+    $bulk_helper{release}->index(
         {
-            index => {
-                index => $self->index->name,
-                type  => 'release',
-                id    => $release->{_id},
-                data  => { %{ $release->{_source} }, status => 'backpan' },
+            id     => $release->{_id},
+            source => {
+                %{ $release->{_source} }, status => 'backpan',
             }
         }
     );
-    $self->es->bulk( \@bulk ) if (@bulk);
 
+    for my $bulk ( values %bulk_helper ) {
+        $bulk->flush;
+    }
 }
 
 __PACKAGE__->meta->make_immutable;
