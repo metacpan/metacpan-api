@@ -23,9 +23,9 @@ test_psgi app, sub {
                 Multiple::Modules::A
                 Multiple::Modules::B
                 Multiple::Modules::RDeps
+                Multiple::Modules::Tester
                 Multiple::Modules::RDeps::A
                 Multiple::Modules::RDeps::Deprecated
-                Multiple::Modules::Tester
                 )
             ],
             'results are sorted lexically by module name + length'

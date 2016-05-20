@@ -388,7 +388,7 @@ sub autocomplete {
                 }
             }
         }
-    )->sort( [ '_score', 'module.name.lowercase' ] );
+    )->sort( [ '_score', 'documentation' ] );
 }
 
 __PACKAGE__->meta->make_immutable;
