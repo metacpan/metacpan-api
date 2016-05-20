@@ -73,7 +73,10 @@ sub _build_section {
 has abstract => (
     is => 'ro',
 
-    #    isa     => Maybe[Str],
+    # isa is commented as it affect the type mapping
+    # see https://github.com/CPAN-API/cpan-api/pull/484
+    # -- Mickey
+    # isa => Maybe[Str],
     lazy    => 1,
     builder => '_build_abstract',
     index   => 'analyzed',
@@ -294,11 +297,15 @@ set to C<undef>.
 =cut
 
 has documentation => (
-    is        => 'ro',
-    isa       => Maybe [Str],
+    is => 'ro',
+
+    # isa is commented as it affect the type mapping
+    # see https://github.com/CPAN-API/cpan-api/pull/484
+    # -- Mickey
+    # isa => Maybe [Str],
     lazy      => 1,
-    builder   => '_build_documentation',
     index     => 'analyzed',
+    builder   => '_build_documentation',
     predicate => 'has_documentation',
     analyzer  => [qw(standard camelcase lowercase edge edge_camelcase)],
     clearer   => 'clear_documentation',
