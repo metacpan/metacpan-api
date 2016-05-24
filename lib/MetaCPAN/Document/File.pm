@@ -71,7 +71,8 @@ sub _build_section {
 }
 
 has abstract => (
-    is => 'ro',
+    required => 1,
+    is       => 'ro',
 
     # isa is commented as it affect the type mapping
     # see https://github.com/CPAN-API/cpan-api/pull/484
@@ -173,10 +174,11 @@ whitespaces and POD commands.
 =cut
 
 has description => (
-    is      => 'ro',
-    lazy    => 1,
-    builder => '_build_description',
-    index   => 'analyzed',
+    required => 1,
+    is       => 'ro',
+    lazy     => 1,
+    builder  => '_build_description',
+    index    => 'not_analyzed',
 );
 
 sub _build_description {
