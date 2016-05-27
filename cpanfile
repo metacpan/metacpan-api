@@ -5,8 +5,9 @@ requires 'Archive::Tar', '2.04';
 requires 'BackPAN::Index', '0.42';
 requires 'CHI', '0.60';
 requires 'CPAN::DistnameInfo', '0.12';
-requires 'CPAN::Meta', '2.115005'; # Avoid issues with List::Util dep under carton install.
+requires 'CPAN::Meta', '2.150005'; # Avoid issues with List::Util dep under carton install.
 requires 'CPAN::Meta::Requirements', '2.140';
+requires 'CPAN::Meta::YAML', '0.018';
 requires 'Captcha::reCAPTCHA', '0.94';
 requires 'Catalyst', '5.90103';
 requires 'Catalyst::Action::RenderView';
