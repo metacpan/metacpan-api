@@ -1,13 +1,6 @@
 language: perl
 perl:
   - "5.22"
-  - "5.20"
-  - "5.18"
-
-matrix:
-  allow_failures:
-    - perl: "5.20"
-    - perl: "5.22"
 
 notifications:
   email:
@@ -24,7 +17,7 @@ env:
     - ES=localhost:9200
     # Carton --deployment only works on the same version of perl
     # that the snapshot was built from.
-    - DEPLOYMENT_PERL_VERSION=5.18
+    - DEPLOYMENT_PERL_VERSION=5.22
 
     # Instantiate Catalyst models using metacpan_server_testing.conf
     - METACPAN_SERVER_CONFIG_LOCAL_SUFFIX=testing
