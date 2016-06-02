@@ -40,10 +40,11 @@ C<NAME> section. It also sets L</documentation> if it succeeds.
 =cut
 
 has section => (
-    is      => 'ro',
-    isa     => Maybe [Str],
-    lazy    => 1,
-    builder => '_build_section',
+    is       => 'ro',
+    isa      => Maybe [Str],
+    lazy     => 1,
+    builder  => '_build_section',
+    property => 0,
 );
 
 my $RE_SECTION = qr/^\s*(\S+)((\h+-+\h+(.+))|(\r?\n\h*\r?\n\h*(.+)))?/ms;
