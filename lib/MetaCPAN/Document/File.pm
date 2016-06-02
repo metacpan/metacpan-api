@@ -601,10 +601,11 @@ version could not be parsed.
 =cut
 
 has version_numified => (
-    is      => 'ro',
-    isa     => Num,
-    lazy    => 1,
-    builder => '_build_version_numified',
+    required => 1,
+    is       => 'ro',
+    isa      => Num,
+    lazy     => 1,
+    builder  => '_build_version_numified',
 );
 
 sub _build_version_numified {

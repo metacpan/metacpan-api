@@ -143,10 +143,11 @@ has [qw(distribution name)] => (
 );
 
 has version_numified => (
-    is      => 'ro',
-    isa     => Num,
-    lazy    => 1,
-    default => sub {
+    required => 1,
+    is       => 'ro',
+    isa      => Num,
+    lazy     => 1,
+    default  => sub {
         return numify_version( shift->version );
     },
 );
