@@ -14,6 +14,7 @@ use LWP::UserAgent;
 use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Util;
 use MetaCPAN::Model::Release;
+use MetaCPAN::Script::Runner;
 use MetaCPAN::Types qw( Bool Dir HashRef Int Str );
 use Moose;
 use PerlIO::gzip;
@@ -39,6 +40,13 @@ has skip => (
     isa           => Bool,
     default       => 0,
     documentation => 'skip already indexed modules (0)',
+);
+
+has queue => (
+    is            => 'ro',
+    isa           => Bool,
+    default       => 0,
+    documentation => 'add indexing jobs to the  minion queue',
 );
 
 has status => (
@@ -169,12 +177,18 @@ sub run {
             }
         }
 
-        try { $self->import_archive($file) }
-        catch {
-            $self->handle_error("$file $_[0]");
-        };
+        if ( $self->queue ) {
+            local @ARGV = ( qw{ queue --file }, $file );
+            MetaCPAN::Script::Runner->run;
+        }
+        else {
+            try { $self->import_archive($file) }
+            catch {
+                $self->handle_error("$file $_[0]");
+            };
+        }
     }
-    $self->index->refresh;
+    $self->index->refresh unless $self->queue;
 
     # Call Fastly to purge
     $self->cdn_purge_cpan_distnameinfos( \@module_to_purge_dists );
