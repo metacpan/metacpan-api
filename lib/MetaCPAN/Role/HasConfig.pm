@@ -4,6 +4,8 @@ use Moose::Role;
 
 use MetaCPAN::Types qw(HashRef);
 
+use FindBin;
+
 has config => (
     is      => 'ro',
     isa     => HashRef,
