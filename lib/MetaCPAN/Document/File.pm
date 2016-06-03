@@ -40,10 +40,11 @@ C<NAME> section. It also sets L</documentation> if it succeeds.
 =cut
 
 has section => (
-    is      => 'ro',
-    isa     => Maybe [Str],
-    lazy    => 1,
-    builder => '_build_section',
+    is       => 'ro',
+    isa      => Maybe [Str],
+    lazy     => 1,
+    builder  => '_build_section',
+    property => 0,
 );
 
 my $RE_SECTION = qr/^\s*(\S+)((\h+-+\h+(.+))|(\r?\n\h*\r?\n\h*(.+)))?/ms;
@@ -601,10 +602,11 @@ version could not be parsed.
 =cut
 
 has version_numified => (
-    is      => 'ro',
-    isa     => Num,
-    lazy    => 1,
-    builder => '_build_version_numified',
+    required => 1,
+    is       => 'ro',
+    isa      => Num,
+    lazy     => 1,
+    builder  => '_build_version_numified',
 );
 
 sub _build_version_numified {
