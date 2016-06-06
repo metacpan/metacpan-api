@@ -186,7 +186,7 @@ sub _build_document {
     my $self = shift;
 
     my $st = $self->file->stat;
-    my $stat = { map { $_ => $st->$_ } qw(mode uid gid size mtime) };
+    my $stat = { map { $_ => $st->$_ } qw(mode size mtime) };
 
     my $meta         = $self->metadata;
     my $dependencies = $self->dependencies;
@@ -309,7 +309,7 @@ sub _build_files {
             my $relative = $child->relative($extract_dir);
             my $stat     = do {
                 my $s = $child->stat;
-                +{ map { $_ => $s->$_ } qw(mode uid gid size mtime) };
+                +{ map { $_ => $s->$_ } qw(mode size mtime) };
             };
             return if ( $relative eq q{.} );
             ( my $fpath = "$relative" ) =~ s/^.*?\///;
