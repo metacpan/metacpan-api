@@ -34,6 +34,7 @@ sub numify_version {
     if ( $version =~ s/^v//i || $version =~ tr/.// > 1 ) {
         my @parts = split /\./, $version;
         my $n = shift @parts;
+        return 0 unless defined $n;
         $version
             = sprintf( join( '.', '%s', ( '%03s' x @parts ) ), $n, @parts );
     }
