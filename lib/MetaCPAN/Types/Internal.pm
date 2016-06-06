@@ -40,8 +40,6 @@ coerce Blog, from HashRef, via { [$_] };
 subtype Stat,
     as Dict [
     mode  => Int,
-    uid   => Int,
-    gid   => Int,
     size  => Int,
     mtime => Int
     ];

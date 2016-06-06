@@ -573,8 +573,8 @@ sub _build_slop {
 
 =head2 stat
 
-L<File::stat> info of the archive file. Contains C<mode>, C<uid>,
-C<gid>, C<size> and C<mtime>.
+L<File::stat> info of the archive file. Contains C<mode>,
+C<size> and C<mtime>.
 
 =cut
 
