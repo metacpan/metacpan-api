@@ -31,6 +31,12 @@ has packages => (
     traits  => ['NoGetopt'],
 );
 
+has force => (
+    is      => 'ro',
+    isa     => Bool,
+    default => 0,
+);
+
 sub _build_packages {
     return Parse::CPAN::Packages::Fast->new(
         shift->cpan->file(qw(modules 02packages.details.txt.gz))->stringify );
@@ -153,7 +159,7 @@ sub run {
 
         # Don't reindex if already marked as latest.
         # This just means that it hasn't changed (query includes 'latest').
-        next if ( $data->{status} eq 'latest' );
+        next if ( !$self->force and $data->{status} eq 'latest' );
 
         $self->reindex( $bulk, $data, 'latest' );
     }
@@ -165,7 +171,8 @@ sub run {
         # but the old dist remains (with other packages).
         # This could also include bug fixes in our indexer, PAUSE, etc.
         next
-            if ( $upgrade{ $data->{distribution} }
+            if ( !$self->force
+            && $upgrade{ $data->{distribution} }
             && $upgrade{ $data->{distribution} }->{release} eq
             $data->{release} );
 
@@ -185,7 +192,6 @@ sub run {
 # Update the status for the release and all the files.
 sub reindex {
     my ( $self, $bulk, $source, $status ) = @_;
-    my $es = $self->es;
 
     # Update the status on the release.
     my $release = $self->index->type('release')->get(
