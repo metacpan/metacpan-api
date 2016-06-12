@@ -3,7 +3,7 @@ package MetaCPAN::Script::River;
 use Moose;
 use namespace::autoclean;
 
-use JSON::MaybeXS qw( decode_json );
+use Cpanel::JSON::XS qw( decode_json );
 use Log::Contextual qw( :log :dlog );
 use LWP::UserAgent ();
 use MetaCPAN::Types qw( ArrayRef Str Uri);
