@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Facebook::Graph;
-use JSON;
+use Cpanel::JSON::XS;
 use Moose;
 
 BEGIN { extends 'Catalyst::Controller' }

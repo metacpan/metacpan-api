@@ -4,10 +4,11 @@ use strict;
 use warnings;
 use namespace::autoclean;
 
-use JSON;
+use Cpanel::JSON::XS;
 use List::MoreUtils ();
 use Moose::Util     ();
 use Moose;
+use MetaCPAN::Types qw( HashRef );
 
 BEGIN { extends 'Catalyst::Controller'; }
 
@@ -28,7 +29,7 @@ has type => (
 
 has relationships => (
     is      => 'ro',
-    isa     => 'HashRef',
+    isa     => HashRef,
     default => sub { {} },
     traits  => ['Hash'],
     handles => { has_relationships => 'count' },
@@ -40,7 +41,7 @@ my $MAX_SIZE = 5000;
 sub apply_request_filter {
     my ( $self, $c, $data ) = @_;
 
-    if ( my $fields = $c->req->param("fields") ) {
+    if ( my $fields = $c->req->param('fields') ) {
         my $filtered = {};
         my @fields = split /,/, $fields;
         @$filtered{@fields} = @$data{@fields};
@@ -53,9 +54,9 @@ sub apply_request_filter {
 sub model {
     my ( $self, $c ) = @_;
     my $model = $c->model('CPAN')->type( $self->type );
-    $model = $model->fields( [ map { split(/,/) } $c->req->param("fields") ] )
-        if $c->req->param("fields");
-    if ( my ($size) = $c->req->param("size") ) {
+    $model = $model->fields( [ map { split(/,/) } $c->req->param('fields') ] )
+        if $c->req->param('fields');
+    if ( my ($size) = $c->req->param('size') ) {
         $c->detach( '/bad_request',
             [ "size parameter exceeds maximum of $MAX_SIZE", 416 ] )
             if ( $size && $size > $MAX_SIZE );
@@ -67,7 +68,7 @@ sub model {
 sub mapping : Path('_mapping') {
     my ( $self, $c ) = @_;
     $c->stash(
-        $c->model('CPAN')->es->mapping(
+        $c->model('CPAN')->es->indices->get_mapping(
             index => $c->model('CPAN')->index,
             type  => $self->type
         )
@@ -97,6 +98,7 @@ sub search : Path('_search') : ActionClass('Deserialize') {
 
     # shallow copy
     my $params = { %{ $req->params } };
+    delete $params->{$_} for qw(type index body join);
     {
         my $size = $params->{size} || ( $req->data || {} )->{size};
         $c->detach( '/bad_request',
@@ -106,14 +108,12 @@ sub search : Path('_search') : ActionClass('Deserialize') {
     delete $params->{callback};
     eval {
         $c->stash(
-            $c->model('CPAN')->es->request(
+            $self->model($c)->es->search(
                 {
-                    method => $req->method,
-                    qs     => $params,
-                    cmd    => join( '/',
-                        '',          $c->model('CPAN')->index,
-                        $self->type, '_search' ),
-                    data => $req->data
+                    index => $c->model('CPAN')->index,
+                    type  => $self->type,
+                    body  => $c->req->data,
+                    %$params,
                 }
             )
         );
@@ -131,9 +131,9 @@ sub join : ActionClass('Deserialize') {
         : $c->req->data ? $c->req->data
         :                 { query => { match_all => {} } };
     $c->detach(
-        "/not_allowed",
+        '/not_allowed',
         [
-            "unknown join type, valid values are "
+            'unknown join type, valid values are '
                 . Moose::Util::english_list( keys %$joins )
         ]
     ) if ( scalar grep { !$joins->{$_} } @req_joins );
@@ -163,9 +163,9 @@ sub join : ActionClass('Deserialize') {
         $c->detach(
             "/not_allowed",
             [
-                "The number of joined documents exceeded the allowed number of 1000 documents by "
+                'The number of joined documents exceeded the allowed number of 1000 documents by '
                     . ( $foreign->{hits}->{total} - 1000 )
-                    . ". Please reduce the number of documents or apply additional filters."
+                    . '. Please reduce the number of documents or apply additional filters.'
             ]
         ) if ( $foreign->{hits}->{total} > 1000 );
         $c->stash->{took} += $foreign->{took} unless ($is_get);
@@ -222,9 +222,9 @@ sub internal_error {
 
 sub end : Private {
     my ( $self, $c ) = @_;
-    $c->forward("join")
+    $c->forward('join')
         if ( $self->has_relationships && $c->req->param('join') );
-    $c->forward("/end");
+    $c->forward('/end');
 }
 
 __PACKAGE__->meta->make_immutable;

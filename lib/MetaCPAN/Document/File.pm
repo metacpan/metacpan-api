@@ -11,18 +11,24 @@ use Encode;
 use List::AllUtils qw( any );
 use MetaCPAN::Document::Module;
 use MetaCPAN::Types qw(:all);
-use MetaCPAN::Util;
-use MooseX::Types::Moose qw(ArrayRef);
+use MetaCPAN::Util qw(numify_version);
 use Plack::MIME;
 use Pod::Text;
-use Try::Tiny;
+use Try::Tiny qw( catch try );
 use URI::Escape ();
 
-Plack::MIME->add_type( ".t"   => "text/x-script.perl" );
-Plack::MIME->add_type( ".pod" => "text/x-pod" );
-Plack::MIME->add_type( ".xs"  => "text/x-c" );
+Plack::MIME->add_type( '.t'   => 'text/x-script.perl' );
+Plack::MIME->add_type( '.pod' => 'text/x-pod' );
+Plack::MIME->add_type( '.xs'  => 'text/x-c' );
 
 my @NOT_PERL_FILES = qw(SIGNATURE);
+
+sub BUILD {
+    my $self = shift;
+
+    # force building of `mime`
+    $self->_build_mime;
+}
 
 =head1 PROPERTIES
 
@@ -33,18 +39,20 @@ C<NAME> section. It also sets L</documentation> if it succeeds.
 
 =cut
 
-has abstract => (
-    is         => 'ro',
-    required   => 1,
-    lazy_build => 1,
-    index      => 'analyzed',
+has section => (
+    is       => 'ro',
+    isa      => Maybe [Str],
+    lazy     => 1,
+    builder  => '_build_section',
+    property => 0,
 );
 
-sub _build_abstract {
+my $RE_SECTION = qr/^\s*(\S+)((\h+-+\h+(.+))|(\r?\n\h*\r?\n\h*(.+)))?/ms;
+
+sub _build_section {
     my $self = shift;
-    return undef unless ( $self->is_perl_file );
+
     my $text = ${ $self->content };
-    my ( $documentation, $abstract );
     my $section = MetaCPAN::Util::extract_section( $text, 'NAME' );
 
     # if it's a POD file without a name section, let's try to generate
@@ -60,10 +68,33 @@ sub _build_abstract {
     $section =~ s/^=\w+.*$//mg;
     $section =~ s/X<.*?>//mg;
 
-    if ( $section =~ /^\s*(\S+)((\h+-+\h+(.+))|(\r?\n\h*\r?\n\h*(.+)))?/ms ) {
+    return $section;
+}
+
+has abstract => (
+    required => 1,
+    is       => 'ro',
+
+    # isa is commented as it affect the type mapping
+    # see https://github.com/CPAN-API/cpan-api/pull/484
+    # -- Mickey
+    # isa => Maybe[Str],
+    lazy    => 1,
+    builder => '_build_abstract',
+    index   => 'analyzed',
+);
+
+sub _build_abstract {
+    my $self = shift;
+    return undef unless ( $self->is_perl_file );
+
+    my $section = $self->section;
+    return undef unless $section;
+
+    my $abstract;
+
+    if ( $section =~ $RE_SECTION ) {
         chomp( $abstract = $4 || $6 ) if ( $4 || $6 );
-        my $name = MetaCPAN::Util::strip_pod($1);
-        $documentation = $name if ( $name =~ /^[\w\.:\-_']+$/ );
     }
     if ($abstract) {
         $abstract =~ s/^=\w+.*$//xms;
@@ -72,9 +103,6 @@ sub _build_abstract {
         $abstract =~ s{\s+$}{}gxms;
         $abstract =~ s{(\s)+}{$1}gxms;
         $abstract = MetaCPAN::Util::strip_pod($abstract);
-    }
-    if ($documentation) {
-        $self->documentation( MetaCPAN::Util::strip_pod($documentation) );
     }
     return $abstract;
 }
@@ -101,15 +129,28 @@ modules defined in that class (i.e. package declarations).
 =cut
 
 has module => (
-    required        => 0,
-    is              => 'rw',
+    is              => 'ro',
     isa             => Module,
     type            => 'nested',
     include_in_root => 1,
     coerce          => 1,
     clearer         => 'clear_module',
+    writer          => '_set_module',
     lazy            => 1,
     default         => sub { [] },
+);
+
+=head2 download_url
+
+B<Required>
+
+Download URL of the release
+
+=cut
+
+has download_url => (
+    is       => 'ro',
+    required => 1
 );
 
 =head2 date
@@ -134,28 +175,33 @@ whitespaces and POD commands.
 =cut
 
 has description => (
-    is         => 'ro',
-    required   => 1,
-    lazy_build => 1,
-    index      => 'analyzed',
+    required => 1,
+    is       => 'ro',
+    lazy     => 1,
+    builder  => '_build_description',
+    index    => 'not_analyzed',
 );
 
 sub _build_description {
     my $self = shift;
     return undef unless ( $self->is_perl_file );
-    my $section = MetaCPAN::Util::extract_section( ${ $self->content },
+    my $section
+        = MetaCPAN::Util::extract_section( ${ $self->content },
         'DESCRIPTION' );
     return undef unless ($section);
+
     my $parser = Pod::Text->new;
-    my $text   = "";
+    my $text   = q{};
     $parser->output_string( \$text );
 
     try {
         $parser->parse_string_document("=pod\n\n$section");
     }
     catch {
-        warn $_[0];
+        warn $_;
     };
+
+    return undef unless $text;
 
     $text =~ s/\s+/ /g;
     $text =~ s/^\s+//;
@@ -195,7 +241,7 @@ File is binary or not.
 
 has binary => (
     is       => 'ro',
-    isa      => 'Bool',
+    isa      => Bool,
     required => 1,
     default  => 0,
 );
@@ -208,9 +254,10 @@ See L</set_authorized>.
 
 has authorized => (
     required => 1,
-    is       => 'rw',
-    isa      => 'Bool',
+    is       => 'ro',
+    isa      => Bool,
     default  => 1,
+    writer   => '_set_authorized',
 );
 
 =head2 maturity
@@ -235,7 +282,7 @@ Return true if this object represents a directory.
 has directory => (
     is       => 'ro',
     required => 1,
-    isa      => 'Bool',
+    isa      => Bool,
     default  => 0,
 );
 
@@ -253,37 +300,67 @@ set to C<undef>.
 =cut
 
 has documentation => (
-    required   => 1,
-    is         => 'rw',
-    lazy_build => 1,
-    index      => 'analyzed',
-    predicate  => 'has_documentation',
-    analyzer   => [qw(standard camelcase lowercase)],
-    clearer    => 'clear_documentation',
+    is => 'ro',
+
+    # isa is commented as it affect the type mapping
+    # see https://github.com/CPAN-API/cpan-api/pull/484
+    # -- Mickey
+    # isa => Maybe [Str],
+    lazy      => 1,
+    index     => 'analyzed',
+    builder   => '_build_documentation',
+    predicate => 'has_documentation',
+    analyzer  => [qw(standard camelcase lowercase edge edge_camelcase)],
+    clearer   => 'clear_documentation',
+    writer    => '_set_documentation',
 );
 
 sub _build_documentation {
     my $self = shift;
-    $self->_build_abstract;
-    my $documentation
-        = $self->has_documentation ? $self->documentation : undef;
-    return undef unless ( ${ $self->pod } );
+    return undef unless ( $self->is_perl_file );
+
+    my $section = $self->section;
+    return undef unless $section;
+
+    my $documentation;
+
+    if ( $section =~ $RE_SECTION ) {
+        my $name = MetaCPAN::Util::strip_pod($1);
+        $documentation = $name if ( $name =~ /^[\w\.:\-_']+$/ );
+    }
+
+    $documentation = MetaCPAN::Util::strip_pod($documentation)
+        if $documentation;
+
+    return undef unless length $documentation;
+
+    # Modules to be indexed
     my @indexed = grep { $_->indexed } @{ $self->module || [] };
+
+    # This is a Pod file, return its name
     if ( $documentation && $self->is_pod_file ) {
         return $documentation;
     }
-    elsif ( $documentation && grep { $_->name eq $documentation } @indexed ) {
+
+    # OR: found an indexed module with the same name
+    if ( $documentation && grep { $_->name eq $documentation } @indexed ) {
         return $documentation;
     }
-    elsif (@indexed) {
-        return $indexed[0]->name;
+
+    # OR: found an indexed module with a name
+    if ( my ($mod) = grep { defined $_->name } @indexed ) {
+        return $mod->name;
     }
-    elsif ( !@{ $self->module || [] } ) {
-        return $documentation;
+
+    # OR: we have a parsed documentation
+    return $documentation if defined $documentation;
+
+    # OR: found ANY module with a name (better than nothing)
+    if ( my ($mod) = grep { defined $_->name } @{ $self->module || [] } ) {
+        return $mod->name;
     }
-    else {
-        return undef;
-    }
+
+    return undef;
 }
 
 =head2 indexed
@@ -297,8 +374,8 @@ not. See L</set_indexed> for a more verbose explanation.
 
 has indexed => (
     required => 1,
-    is       => 'rw',
-    isa      => 'Bool',
+    is       => 'ro',
+    isa      => Bool,
     lazy     => 1,
     default  => sub {
         my ($self) = @_;
@@ -306,6 +383,7 @@ has indexed => (
         return 0 if !$self->metadata->should_index_file( $self->path );
         return 1;
     },
+    writer => '_set_indexed',
 );
 
 =head2 level
@@ -316,10 +394,11 @@ has a level of C<0>).
 =cut
 
 has level => (
-    is         => 'ro',
-    required   => 1,
-    isa        => 'Int',
-    lazy_build => 1,
+    required => 1,
+    is       => 'ro',
+    isa      => Int,
+    lazy     => 1,
+    builder  => '_build_level',
 );
 
 sub _build_level {
@@ -336,10 +415,11 @@ are removed to save space and for better snippet previews.
 =cut
 
 has pod => (
-    is           => 'ro',
     required     => 1,
-    isa          => 'ScalarRef',
-    lazy_build   => 1,
+    is           => 'ro',
+    isa          => ScalarRef,
+    lazy         => 1,
+    builder      => '_build_pod',
     index        => 'analyzed',
     not_analyzed => 0,
     store        => 'no',
@@ -413,19 +493,19 @@ ArrayRef of ArrayRefs of offset and length of pod blocks. Example:
 =cut
 
 has pod_lines => (
-    is         => 'ro',
-    required   => 1,
-    isa        => 'ArrayRef',
-    type       => 'integer',
-    lazy_build => 1,
-    index      => 'no',
+    is      => 'ro',
+    isa     => ArrayRef,
+    type    => 'integer',
+    lazy    => 1,
+    builder => '_build_pod_lines',
+    index   => 'no',
 );
 
 sub _build_pod_lines {
     my $self = shift;
     return [] unless ( $self->is_perl_file );
     my ( $lines, $slop ) = MetaCPAN::Util::pod_lines( ${ $self->content } );
-    $self->slop( $slop || 0 );
+    $self->_set_slop( $slop || 0 );
     return $lines;
 }
 
@@ -437,10 +517,11 @@ L</content> and returns the number of lines.
 =cut
 
 has sloc => (
-    is         => 'ro',
-    required   => 1,
-    isa        => 'Int',
-    lazy_build => 1,
+    required => 1,
+    is       => 'ro',
+    isa      => Int,
+    lazy     => 1,
+    builder  => '_build_sloc',
 );
 
 # Metrics from Perl::Metrics2::Plugin::Core.
@@ -472,32 +553,35 @@ Source Lines of Pod. Returns the number of pod lines using L</pod_lines>.
 =cut
 
 has slop => (
-    is         => 'ro',
-    required   => 1,
-    isa        => 'Int',
-    is         => 'rw',
-    lazy_build => 1,
+    required => 1,
+    is       => 'ro',
+    isa      => Int,
+    lazy     => 1,
+    builder  => '_build_slop',
+    writer   => '_set_slop',
 );
 
 sub _build_slop {
     my $self = shift;
     return 0 unless ( $self->is_perl_file );
     $self->_build_pod_lines;
+
+    # danger! infinite recursion if not set by `_build_pod_lines`
+    # we should probably find a better solution -- Mickey
     return $self->slop;
 }
 
 =head2 stat
 
-L<File::stat> info of the archive file. Contains C<mode>, C<uid>,
-C<gid>, C<size> and C<mtime>.
+L<File::stat> info of the archive file. Contains C<mode>,
+C<size> and C<mtime>.
 
 =cut
 
 has stat => (
-    is       => 'ro',
-    isa      => Stat,
-    required => 0,
-    dynamic  => 1,
+    is      => 'ro',
+    isa     => Stat,
+    dynamic => 1,
 );
 
 =head2 version
@@ -506,14 +590,11 @@ Contains the raw version string.
 
 =cut
 
-has version => (
-    is       => 'ro',
-    required => 0,
-);
+has version => ( is => 'ro', );
 
 =head2 version_numified
 
-B<Required>, B<Lazy Build>
+B<Lazy Build>
 
 Numeric representation of L</version>. Contains 0 if there is no version or the
 version could not be parsed.
@@ -521,16 +602,16 @@ version could not be parsed.
 =cut
 
 has version_numified => (
-    is         => 'ro',
-    isa        => 'Num',
-    lazy_build => 1,
-    required   => 1,
+    required => 1,
+    is       => 'ro',
+    isa      => Num,
+    lazy     => 1,
+    builder  => '_build_version_numified',
 );
 
 sub _build_version_numified {
     my $self = shift;
-    return 0 unless ( $self->version );
-    return MetaCPAN::Util::numify_version( $self->version );
+    return numify_version( $self->version );
 }
 
 =head2 mime
@@ -540,9 +621,10 @@ MIME type of file. Derived using L<Plack::MIME> (for speed).
 =cut
 
 has mime => (
-    is         => 'ro',
-    required   => 1,
-    lazy_build => 1,
+    required => 1,
+    is       => 'ro',
+    lazy     => 1,
+    builder  => '_build_mime',
 );
 
 sub _build_mime {
@@ -566,6 +648,22 @@ sub _build_path {
     return join( '/', $self->release->name, $self->name );
 }
 
+has dir => (
+    is      => 'ro',
+    isa     => Str,
+    lazy    => 1,
+    builder => '_build_dir',
+    index   => 'not_analyzed'
+);
+
+sub _build_dir {
+    my $self = shift;
+    $DB::single = 1;
+    my $dir = $self->path;
+    $dir =~ s{/[^/]+$}{};
+    return $dir;
+}
+
 has [qw(release distribution)] => (
     is       => 'ro',
     required => 1,
@@ -579,39 +677,15 @@ These attributes are not stored.
 =head2 content
 
 A scalar reference to the content of the file.
-Built by calling L</content_cb>.
 
 =cut
 
 has content => (
-    is         => 'ro',
-    isa        => 'ScalarRef',
-    lazy_build => 1,
-    property   => 0,
-    required   => 0,
-);
-
-sub _build_content {
-    my $self = shift;
-
-    # NOTE: We used to remove the __DATA__ section "for performance reasons"
-    # however removing lines from the content will throw off pod_lines.
-    return $self->content_cb->();
-}
-
-=head2 content_cb
-
-Callback that returns the content of the file as a ScalarRef.
-
-=cut
-
-has content_cb => (
     is       => 'ro',
+    isa      => ScalarRef,
+    lazy     => 1,
+    default  => sub { \"" },
     property => 0,
-    required => 0,
-    default  => sub {
-        sub { \'' }
-    },
 );
 
 =head2 local_path
@@ -632,10 +706,10 @@ Reference to the L<CPAN::Meta> object of the release.
 =cut
 
 has metadata => (
-    is       => "ro",
+    is       => 'ro',
+    isa      => 'CPAN::Meta',
     lazy     => 1,
-    default  => sub { die "meta attribute missing" },
-    isa      => "CPAN::Meta",
+    default  => sub { die 'meta attribute missing' },
     property => 0,
 );
 
@@ -684,7 +758,7 @@ sub add_module {
     my ( $self, @modules ) = @_;
     $_ = MetaCPAN::Document::Module->new($_)
         for ( grep { ref $_ eq 'HASH' } @modules );
-    $self->module( [ @{ $self->module }, @modules ] );
+    $self->_set_module( [ @{ $self->module }, @modules ] );
 }
 
 =head2 is_in_other_files
@@ -739,7 +813,7 @@ Expects a C<$meta> parameter which is an instance of L<CPAN::Meta>.
 
 For each package (L</module>) in the file and based on L<CPAN::Meta/should_index_package>
 it is decided, whether the module should have a true L</indexed> attribute.
-If there are any packages with leading underscores, the module gets a false 
+If there are any packages with leading underscores, the module gets a false
 L</indexed> attribute, because PAUSE doesn't allow this kind of name for packages
 (https://github.com/andk/pause/blob/master/lib/PAUSE/pmfile.pm#L249).
 
@@ -760,29 +834,49 @@ does not include any modules, the L</indexed> property is true.
 sub set_indexed {
     my ( $self, $meta ) = @_;
 
-    #files listed under 'other files' are not shown in a search
+    # modules explicitly listed in 'provides' should be indexed
+    foreach my $mod ( @{ $self->module } ) {
+        if ( exists $meta->provides->{ $mod->name }
+            and $self->path eq $meta->provides->{ $mod->name }{file} )
+        {
+            $mod->_set_indexed(1);
+            return;
+        }
+    }
+
+    # files listed under 'other files' are not shown in a search
     if ( $self->is_in_other_files() ) {
         foreach my $mod ( @{ $self->module } ) {
-            $mod->indexed(0);
+            $mod->_set_indexed(0);
         }
-        $self->indexed(0);
+        $self->_set_indexed(0);
         return;
     }
 
+    # files under no_index directories should not be indexed
+    foreach my $dir ( @{ $meta->no_index->{directory} } ) {
+        if ( $self->path eq $dir or $self->path =~ /^$dir\// ) {
+            $self->_set_indexed(0);
+            return;
+        }
+    }
+
     foreach my $mod ( @{ $self->module } ) {
-        if ( $mod->name !~ /^[A-Za-z]/ ) {
-            $mod->indexed(0);
+        if ( $mod->name !~ /^[A-Za-z]/
+            or !$meta->should_index_package( $mod->name ) )
+        {
+            $mod->_set_indexed(0);
             next;
         }
-        $mod->indexed(
-              $meta->should_index_package( $mod->name )
-            ? $mod->hide_from_pause( ${ $self->content }, $self->name )
-                    ? 0
-                    : 1
-            : 0
-        ) unless ( $mod->indexed );
+
+        $mod->_set_indexed(
+            $mod->hide_from_pause( ${ $self->content }, $self->name )
+            ? 0
+            : 1
+        );
     }
-    $self->indexed(
+
+    $self->_set_indexed(
 
         # .pm file with no package declaration but pod should be indexed
         !@{ $self->module } ||
@@ -822,11 +916,11 @@ sub set_authorized {
     # only authorized perl distributions make it into the CPAN
     return () if ( $self->distribution eq 'perl' );
     foreach my $module ( @{ $self->module } ) {
-        $module->authorized(0)
+        $module->_set_authorized(0)
             if ( $perms->{ $module->name } && !grep { $_ eq $self->author }
             @{ $perms->{ $module->name } } );
     }
-    $self->authorized(0)
+    $self->_set_authorized(0)
         if ( $self->authorized
         && $self->documentation
         && $perms->{ $self->documentation }
@@ -843,248 +937,7 @@ Concatenate L</author>, L</release> and L</path>.
 
 sub full_path {
     my $self = shift;
-    return join( "/", $self->author, $self->release, $self->path );
-}
-
-__PACKAGE__->meta->make_immutable;
-
-package MetaCPAN::Document::File::Set;
-use Moose;
-extends 'ElasticSearchX::Model::Document::Set';
-
-my @ROGUE_DISTRIBUTIONS
-    = qw(kurila perl_debug perl-5.005_02+apache1.3.3+modperl pod2texi perlbench spodcxx Bundle-Everything);
-
-sub find {
-    my ( $self, $module ) = @_;
-    my @candidates = $self->index->type("file")->filter(
-        {
-            and => [
-                {
-                    or => [
-                        { term => { 'file.module.name'   => $module } },
-                        { term => { 'file.documentation' => $module } },
-                    ]
-                },
-                { term => { 'file.indexed' => \1, } },
-                { term => { status         => 'latest', } },
-                {
-                    not =>
-                        { filter => { term => { 'file.authorized' => \0 } } }
-                },
-            ]
-        }
-        )->sort(
-        [
-            { 'date' => { order => "desc" } },
-            'mime',
-            { 'stat.mtime' => { order => 'desc' } }
-        ]
-        )->size(100)->all;
-
-    my ($file) = grep {
-        grep { $_->indexed && $_->authorized && $_->name eq $module }
-            @{ $_->module || [] }
-        } grep { !$_->documentation || $_->documentation eq $module }
-        @candidates;
-
-    $file ||= shift @candidates;
-    return $file ? $self->get( $file->id ) : undef;
-}
-
-sub find_pod {
-    my ( $self, $name ) = @_;
-    my $file = $self->find($name);
-    return $file unless ($file);
-    my ($module)
-        = grep { $_->indexed && $_->authorized && $_->name eq $name }
-        @{ $file->module || [] };
-    if ( $module && ( my $pod = $module->associated_pod ) ) {
-        my ( $author, $release, @path ) = split( /\//, $pod );
-        return $self->get(
-            {
-                author  => $author,
-                release => $release,
-                path    => join( "/", @path ),
-            }
-        );
-    }
-    else {
-        return $file;
-    }
-}
-
-# return files that contain modules that match the given dist
-# NOTE: these still need to be filtered by authorized/indexed
-# TODO: test that we are getting the correct version (latest)
-sub find_provided_by {
-    my ( $self, $release ) = @_;
-    return $self->filter(
-        {
-            and => [
-                { term => { 'release' => $release->{name} } },
-                { term => { 'author'  => $release->{author} } },
-                { term => { 'file.module.authorized' => 1 } },
-                { term => { 'file.module.indexed'    => 1 } },
-            ]
-        }
-    )->size(999)->all;
-}
-
-# filter find_provided_by results for indexed/authorized modules
-# and return a list of package names
-sub find_module_names_provided_by {
-    my ( $self, $release ) = @_;
-    my $mods = $self->inflate(0)->find_provided_by($release);
-    return (
-        map { $_->{name} }
-        grep { $_->{indexed} && $_->{authorized} }
-        map { @{ $_->{_source}->{module} } } @{ $mods->{hits}->{hits} }
-    );
-}
-
-# TODO: figure out what uses this and write tests for it
-sub prefix {
-    my ( $self, $prefix ) = @_;
-    my @query = split( /\s+/, $prefix );
-    my $should = [
-        map {
-            { field     => { 'documentation.analyzed'  => "$_*" } },
-                { field => { 'documentation.camelcase' => "$_*" } }
-        } grep {$_} @query
-    ];
-    return $self->query(
-        {
-            filtered => {
-                query => {
-                    custom_score => {
-                        query => { bool => { should => $should } },
-
-                        #metacpan_script => 'prefer_shorter_module_names_100',
-                        script =>
-                            "_score - doc['documentation'].value.length()/100"
-                    },
-                },
-                filter => {
-                    and => [
-                        {
-                            not => {
-                                filter => {
-                                    or => [
-                                        map {
-                                            +{
-                                                term => {
-                                                    'file.distribution' => $_
-                                                }
-                                                }
-                                            } @ROGUE_DISTRIBUTIONS
-
-                                    ]
-                                }
-                            }
-                        },
-                        { exists => { field          => 'documentation' } },
-                        { term   => { 'file.indexed' => \1 } },
-                        { term   => { 'file.status'  => 'latest' } },
-                        {
-                            not => {
-                                filter =>
-                                    { term => { 'file.authorized' => \0 } }
-                            }
-                        }
-                    ]
-                }
-            }
-        }
-    );
-}
-
-=head2 history
-
-Find the history of a given module/documentation.
-
-=cut
-
-sub history {
-    my ( $self, $type, $module, @path ) = @_;
-    my $search
-        = $type eq "module" ? $self->filter(
-        {
-            nested => {
-                path  => "module",
-                query => {
-                    constant_score => {
-                        filter => {
-                            and => [
-                                { term => { "module.authorized" => \1 } },
-                                { term => { "module.indexed"    => \1 } },
-                                { term => { "module.name" => $module } },
-                            ]
-                        }
-                    }
-                }
-            }
-        }
-        )
-        : $type eq "file" ? $self->filter(
-        {
-            and => [
-                { term => { "file.path"         => join( "/", @path ) } },
-                { term => { "file.distribution" => $module } },
-            ]
-        }
-        )
-        : $self->filter(
-        {
-            and => [
-                { term => { "file.documentation" => $module } },
-                { term => { "file.indexed"       => \1 } },
-                { term => { "file.authorized"    => \1 } },
-            ]
-        }
-        );
-    return $search->sort( [ { "file.date" => "desc" } ] );
-}
-
-sub _not_rogue {
-    my @rogue_dists = map { { term => { 'file.distribution' => $_ } } }
-        @ROGUE_DISTRIBUTIONS;
-    return { not => { filter => { or => \@rogue_dists } } };
-}
-
-sub autocomplete {
-    my ( $self, @terms ) = @_;
-    my $query = join( " ", @terms );
-    return $self unless $query;
-    $query =~ s/::/ /g;
-    my @query = split( /\s+/, $query );
-    my $should = [
-        map {
-            { field     => { 'documentation.analyzed'  => "$_*" } },
-                { field => { 'documentation.camelcase' => "$_*" } }
-        } grep {$_} @query
-    ];
-
-    # TODO: custom_score is deprecated in 0.90.4 in favor of function_score.
-    # As of 2013-10-27 we are still using 0.20.2 in production.
-    return $self->query(
-        {
-            custom_score => {
-                query => { bool => { should => $should } },
-                script => "_score - doc['documentation'].value.length()/100",
-            }
-        }
-        )->filter(
-        {
-            and => [
-                $self->_not_rogue,
-                { exists => { field             => 'documentation' } },
-                { term   => { 'file.indexed'    => \1 } },
-                { term   => { 'file.authorized' => \1 } },
-                { term   => { 'file.status'     => 'latest' } },
-            ]
-        }
-        )->sort( [ '_score', 'documentation' ] );
+    return join( '/', $self->author, $self->release, $self->path );
 }
 
 __PACKAGE__->meta->make_immutable;

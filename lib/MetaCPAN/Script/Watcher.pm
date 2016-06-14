@@ -2,24 +2,25 @@ package MetaCPAN::Script::Watcher;
 
 use strict;
 use warnings;
+use Moose;
 
 use CPAN::DistnameInfo;
-use JSON::XS;
+use Cpanel::JSON::XS;
 use Log::Contextual qw( :log );
 use MetaCPAN::Util;
-use Moose;
+use MetaCPAN::Types qw( Bool );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
 has backpan => (
     is            => 'ro',
-    isa           => 'Bool',
+    isa           => Bool,
     documentation => 'update deleted archives only',
 );
 
 has dry_run => (
     is      => 'ro',
-    isa     => 'Bool',
+    isa     => Bool,
     default => 0,
 );
 
@@ -94,22 +95,25 @@ sub changes {
 
 sub backpan_changes {
     my $self   = shift;
-    my $scroll = $self->es->scrolled_search(
+    my $scroll = $self->es->scroll_helper(
         {
             size   => 1000,
             scroll => '1m',
             index  => $self->index->name,
             type   => 'release',
             fields => [qw(author archive)],
-            query  => {
-                filtered => {
-                    query  => { match_all => {} },
-                    filter => {
-                        not =>
-                            { filter => { term => { status => 'backpan' } } }
-                    },
+            body   => {
+                query => {
+                    filtered => {
+                        query  => { match_all => {} },
+                        filter => {
+                            not => {
+                                filter => { term => { status => 'backpan' } }
+                            }
+                        },
+                    }
                 }
-            },
+            }
         }
     );
     my @changes;
@@ -185,7 +189,7 @@ sub reindex_release {
     log_info {"Moving $release->{_source}->{name} to BackPAN"};
 
     my $es     = $self->es;
-    my $scroll = $es->scrolled_search(
+    my $scroll = $es->scroll_helper(
         {
             index       => $self->index->name,
             type        => 'file',
@@ -193,66 +197,69 @@ sub reindex_release {
             size        => 1000,
             search_type => 'scan',
             fields      => [ '_parent', '_source' ],
-            query       => {
-                filtered => {
-                    query  => { match_all => {} },
-                    filter => {
-                        and => [
-                            {
-                                term => {
-                                    'file.release' =>
-                                        $release->{_source}->{name}
+            body        => {
+                query => {
+                    filtered => {
+                        query  => { match_all => {} },
+                        filter => {
+                            and => [
+                                {
+                                    term => {
+                                        'release' =>
+                                            $release->{_source}->{name}
+                                    }
+                                },
+                                {
+                                    term => {
+                                        'author' =>
+                                            $release->{_source}->{author}
+                                    }
                                 }
-                            },
-                            {
-                                term => {
-                                    'file.author' =>
-                                        $release->{_source}->{author}
-                                }
-                            }
-                        ]
+                            ]
+                        }
                     }
                 }
             }
         }
     );
     return if ( $self->dry_run );
-    my @bulk;
+
+    my %bulk_helper;
+    for (qw/ file release /) {
+        $bulk_helper{$_} = $self->es->bulk_helper(
+            index => $self->index->name,
+            type  => $_,
+        );
+    }
 
     while ( my $row = $scroll->next ) {
         my $source = $row->{_source};
-        push(
-            @bulk,
+        $bulk_helper{file}->index(
             {
-                index => {
-                    index => $self->index->name,
-                    type  => 'file',
-                    id    => $row->{_id},
+                id     => $row->{_id},
+                source => {
                     $row->{fields}->{_parent}
                     ? ( parent => $row->{fields}->{_parent} )
                     : (),
-                    data => { %$source, status => 'backpan' }
+                    %$source,
+                    status => 'backpan',
                 }
             }
         );
-        if ( @bulk > 100 ) {
-            $self->es->bulk( \@bulk );
-            @bulk = ();
-        }
     }
-    push(
-        @bulk,
+
+    $bulk_helper{release}->index(
         {
-            index => {
-                index => $self->index->name,
-                type  => 'release',
-                id    => $release->{_id},
-                data  => { %{ $release->{_source} }, status => 'backpan' },
+            id     => $release->{_id},
+            source => {
+                %{ $release->{_source} }, status => 'backpan',
             }
         }
     );
-    $self->es->bulk( \@bulk ) if (@bulk);
 
+    for my $bulk ( values %bulk_helper ) {
+        $bulk->flush;
+    }
 }
 
 __PACKAGE__->meta->make_immutable;

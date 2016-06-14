@@ -9,19 +9,19 @@ use MooseX::Types::ElasticSearch qw(:all);
 
 has _session_es => (
     required => 1,
-    is       => 'rw',
+    is       => 'ro',
     coerce   => 1,
     isa      => ES,
     default  => sub { shift->_session_plugin_config->{servers} || ':9200' }
 );
 has _session_es_index => (
     required => 1,
-    is       => 'rw',
+    is       => 'ro',
     default  => sub { shift->_session_plugin_config->{index} || 'user' }
 );
 has _session_es_type => (
     required => 1,
-    is       => 'rw',
+    is       => 'ro',
     default  => sub { shift->_session_plugin_config->{type} || 'session' }
 );
 
@@ -52,7 +52,7 @@ sub store_session_data {
             index   => $self->_session_es_index,
             type    => $self->_session_es_type,
             id      => $sid,
-            data    => $session,
+            body    => $session,
             refresh => 1,
         );
     }
@@ -85,7 +85,7 @@ sub delete_expired_sessions { }
      Session
      Session::Store::ElasticSearch
  );
- 
+
  # defaults
  MyApp->config(
      'Plugin::Session' => {

@@ -3,30 +3,30 @@ package MetaCPAN::Script::Check;
 use strict;
 use warnings;
 
-use ElasticSearch;
 use File::Spec::Functions qw(catfile);
 use Log::Contextual qw( :log );
 use Moose;
+use MetaCPAN::Types qw( Bool Int Str );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
 has modules => (
     is            => 'ro',
-    isa           => 'Bool',
+    isa           => Bool,
     default       => 0,
     documentation => 'check CPAN packages against MetaCPAN',
 );
 
 has module => (
     is            => 'ro',
-    isa           => 'Str',
+    isa           => Str,
     default       => '',
     documentation => 'the name of the module you are checking',
 );
 
 has max_errors => (
     is      => 'ro',
-    isa     => 'Int',
+    isa     => Int,
     default => 0,
     documentation =>
         'the maximum number of errors to encounter before stopping',
@@ -34,16 +34,17 @@ has max_errors => (
 
 has errors_only => (
     is            => 'ro',
-    isa           => 'Bool',
+    isa           => Bool,
     default       => 0,
     documentation => 'just show errors',
 );
 
 has error_count => (
-    is      => 'rw',
-    isa     => 'Int',
+    is      => 'ro',
+    isa     => Int,
     default => 0,
-    traits  => ['NoGetopt']
+    traits  => ['NoGetopt'],
+    writer  => '_set_error_count',
 );
 
 sub run {
@@ -181,7 +182,7 @@ sub check_modules {
                                 "    DATE      : $rel->{fields}->{date}";
                             };
                         }
-                        $self->error_count( $self->error_count + 1 );
+                        $self->_set_error_count( $self->error_count + 1 );
                     }
                 }
                 elsif (@files) {
@@ -201,13 +202,13 @@ sub check_modules {
                         };
                         log_warn {"    DATE       : $file->{fields}->{date}"};
                     }
-                    $self->error_count( $self->error_count + 1 );
+                    $self->_set_error_count( $self->error_count + 1 );
                 }
                 else {
                     log_error {
                         "Module $pkg [$dist] doesn't not appear in ElasticSearch!";
                     };
-                    $self->error_count( $self->error_count + 1 );
+                    $self->_set_error_count( $self->error_count + 1 );
                 }
                 last if $self->module;
             }

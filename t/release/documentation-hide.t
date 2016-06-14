@@ -25,17 +25,19 @@ ok( $release->first, 'Release is first' );
     my @files = $idx->type('file')->filter(
         {
             and => [
-                { term   => { 'file.author'  => $release->author } },
-                { term   => { 'file.release' => $release->name } },
-                { exists => { field          => 'file.module.name' } },
+                { term   => { author  => $release->author } },
+                { term   => { release => $release->name } },
+                { exists => { field   => 'module.name' } },
             ]
         }
     )->all;
+
     is( @files, 1, 'includes one file with modules' );
+
     my $file = shift @files;
     is( @{ $file->module }, 1, 'file contains one module' );
-    my ($indexed) = grep { $_->{indexed} } @{ $file->module };
 
+    my ($indexed) = grep { $_->{indexed} } @{ $file->module };
     is( $indexed->name,       'Documentation::Hide', 'module name ok' );
     is( $file->documentation, 'Documentation::Hide', 'documentation ok' );
 
@@ -49,7 +51,7 @@ ok( $release->first, 'Release is first' );
             and => [
                 { term   => { author  => $release->author } },
                 { term   => { release => $release->name } },
-                { exists => { field   => 'file.documentation' } }
+                { exists => { field   => 'documentation' } }
             ]
         }
     )->all;

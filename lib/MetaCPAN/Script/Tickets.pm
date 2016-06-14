@@ -4,6 +4,9 @@ use strict;
 use warnings;
 use namespace::autoclean;
 
+# Some issue with rt.cpan.org's cert
+$ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0;
+
 use HTTP::Request::Common;
 use IO::String;
 use LWP::UserAgent;
@@ -14,6 +17,7 @@ use Moose;
 use Parse::CSV;
 use Pithub;
 use URI::Escape qw(uri_escape);
+use MetaCPAN::Types qw( ArrayRef Str );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
@@ -30,16 +34,15 @@ has github_issues => (
 );
 
 has github_token => (
-    is       => 'ro',
-    required => 0,
-    lazy     => 1,
-    builder  => '_build_github_token',
+    is      => 'ro',
+    lazy    => 1,
+    builder => '_build_github_token',
 );
 
 has source => (
     is       => 'ro',
     required => 1,
-    isa      => 'ArrayRef[Str]',
+    isa      => ArrayRef [Str],
     default  => sub { [qw(rt github)] },
 );
 
@@ -103,7 +106,7 @@ sub index_bug_summary {
     for my $dist ( keys %$bugs ) {
         my $doc = $dists->get($dist);
         $doc ||= $dists->new_document( { name => $dist } );
-        $doc->bugs( $bugs->{ $doc->name } );
+        $doc->_set_bugs( $bugs->{ $doc->name } );
         $bulk->put($doc);
     }
     $bulk->commit;
@@ -214,3 +217,23 @@ sub rt_dist_url {
 __PACKAGE__->meta->make_immutable;
 
 1;
+
+=pod
+
+=head1 SYNOPSIS
+
+ # bin/metacpan tickets
+
+=head1 DESCRIPTION
+
+Tracks the number of issues and the source, if the issue
+tracker is RT or Github it fetches the info and updates
+out ES information.
+
+This can then be accessed here:
+
+http://api.metacpan.org/distribution/Moose
+http://api.metacpan.org/distribution/HTTP-BrowserDetect
+
+=cut
+

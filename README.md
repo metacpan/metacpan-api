@@ -66,7 +66,7 @@ The test suite has to pass all tests.
 ## Create the ElasticSearch Index
 
 ```sh
-./bin/carton-exec bin/metacpan mapping --delete
+./bin/run bin/metacpan mapping --delete
 ```
 
 `--delete` will drop all indices first to clear the index from test data.
@@ -74,23 +74,23 @@ The test suite has to pass all tests.
 ## Begin Indexing Your Modules
 
 ```sh
-./bin/carton-exec bin/metacpan release /path/to/cpan/authors/id/
+./bin/run bin/metacpan release /path/to/cpan/authors/id/
 ```
 You should note that you can index either your CPAN mirror or a minicpan mirror.  You can even index just parts of a mirror:
 ```sh
-./bin/carton-exec bin/metacpan release /path/to/cpan/authors/id/{A,B}
+./bin/run bin/metacpan release /path/to/cpan/authors/id/{A,B}
 ```
 
 ## Tag the Latest Releases
 
 ```sh
-./bin/carton-exec bin/metacpan latest --cpan /path/to/cpan/
+./bin/run bin/metacpan latest --cpan /path/to/cpan/
 ```
 
 ## Index Author Data
 
 ```sh
-./bin/carton-exec bin/metacpan author --cpan /path/to/cpan/
+./bin/run bin/metacpan author --cpan /path/to/cpan/
 ```
 Note that minicpan doesn't provide the 00whois.xml file which is used to generate the index; you will have to download it manually (it is in the authors/ directory) in order to index authors.
 
@@ -102,7 +102,7 @@ It also doesn't include author.json files, so that data will also be missing unl
 
 Start API server on port 5000
 ```sh
-./bin/carton-exec plackup -p 5000 -r
+./bin/run plackup -p 5000 -r
 ```
 This will start a single-threaded test server. If you need extra performance, use `Starman` instead.
 
@@ -110,7 +110,7 @@ This will start a single-threaded test server. If you need extra performance, us
 
 For a full list of options:
 ```sh
-./bin/carton-exec bin/metacpan release --help
+./bin/run bin/metacpan release --help
 ```
 
 Contributing:

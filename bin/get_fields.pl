@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 # PODNAME: get_fields.pl
 use Data::Dumper;
-use JSON::XS;
+use Cpanel::JSON::XS;
 use File::Find::Rule;
 use File::Basename;
 use Path::Class;
@@ -15,11 +15,11 @@ my %fields;
 foreach my $file ( @files ) {
     warn "Processing $file";
     my $hash;
-	
-    eval { 
+
+    eval {
         $hash = decode_json( do { local( @ARGV, $/ ) = $file; <> } );
     } or print "\terror in $file: $@";
-    
+
     while ( my ($author, $info) = each %{$hash} ) {
         my @local_fields       = keys %{$info};
         @fields{@local_fields} = @local_fields;

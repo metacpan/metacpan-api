@@ -11,9 +11,10 @@ extends 'Catalyst::Model';
 with 'CatalystX::Component::Traits';
 
 has esx_model => (
-    is         => 'ro',
-    lazy_build => 1,
-    handles    => ['es'],
+    is      => 'ro',
+    lazy    => 1,
+    builder => '_build_esx_model',
+    handles => ['es'],
 );
 
 has index => (

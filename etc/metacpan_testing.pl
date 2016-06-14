@@ -1,10 +1,10 @@
 {
-    es => ':' . ($ENV{METACPAN_ES_TEST_PORT} ||= 9900),
+    es => ($ENV{ES} || 'localhost:9900'),
     port => '5900',
     die_on_error => 1,
     level => ($ENV{TEST_VERBOSE} ? 'info' : 'warn'),
-    cpan => 't/var/tmp/fakecpan',
-    source_base => 't/var/tmp/source',
+    cpan => 'var/t/tmp/fakecpan',
+    source_base => 'var/t/tmp/source',
     logger => [{
         class => 'Log::Log4perl::Appender::Screen',
         name => 'testing'

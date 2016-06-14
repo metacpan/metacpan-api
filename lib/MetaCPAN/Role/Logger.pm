@@ -9,19 +9,18 @@ use Path::Class ();
 
 has level => (
     is            => 'ro',
-    isa           => 'Str',
+    isa           => Str,
     required      => 1,
     trigger       => \&set_level,
     documentation => 'Log level',
 );
 
 has logger => (
-    is        => 'ro',
-    required  => 1,
-    isa       => Logger,
-    coerce    => 1,
-    predicate => 'has_logger',
-    traits    => ['NoGetopt'],
+    is       => 'ro',
+    required => 1,
+    isa      => Logger,
+    coerce   => 1,
+    traits   => ['NoGetopt'],
 );
 
 sub set_level {
@@ -50,7 +49,8 @@ sub set_logger_once {
 # XXX This doesn't belong here.
 sub _build_logger {
     my ($config) = @_;
-    my $log = Log::Log4perl->get_logger( $ARGV[0] );
+    my $log = Log::Log4perl->get_logger( $ARGV[0]
+            || 'this_would_have_been_argv_0_but_there_is_no_such_thing' );
     foreach my $c (@$config) {
         my $layout = Log::Log4perl::Layout::PatternLayout->new( $c->{layout}
                 || qq{%d %p{1} %c: %m{chomp}%n} );

@@ -5,12 +5,13 @@ use warnings;
 
 use Log::Contextual qw( :log );
 use Moose;
+use MetaCPAN::Types qw( Str );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
 has distribution => (
-    is            => 'rw',
-    isa           => 'Str',
+    is            => 'ro',
+    isa           => Str,
     documentation => q{set the 'first' for only this distribution},
 );
 
@@ -35,6 +36,8 @@ sub run {
             "no release found for distribution @{[$distribution->name]}";
             };
     }
+
+    1;
 }
 
 __PACKAGE__->meta->make_immutable;

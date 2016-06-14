@@ -3,7 +3,7 @@ package MetaCPAN::Model::Archive;
 use v5.10;
 use Moose;
 use MooseX::StrictConstructor;
-use MetaCPAN::Types qw(AbsFile AbsDir Bool);
+use MetaCPAN::Types qw(AbsFile AbsDir ArrayRef Bool);
 
 use Archive::Any;
 use Carp;
@@ -77,7 +77,11 @@ has _tempdir => (
     init_arg => undef,
     lazy     => 1,
     default  => sub {
-        return File::Temp->newdir;
+
+        my $scratch_disk = '/mnt/scratch_disk';
+        return -d $scratch_disk
+            ? File::Temp->newdir('/mnt/scratch_disk/tempXXXXX')
+            : File::Temp->newdir;
     },
 );
 
@@ -93,10 +97,11 @@ has extract_dir => (
 );
 
 has _has_extracted => (
-    is       => 'rw',
+    is       => 'ro',
     isa      => Bool,
     init_arg => undef,
     default  => 0,
+    writer   => '_set_has_extracted',
 );
 
 =head1 METHODS
@@ -112,7 +117,7 @@ A list of the files in the archive as an array ref.
 # A cheap way to cache the result.
 has files => (
     is       => 'ro',
-    isa      => 'ArrayRef',
+    isa      => ArrayRef,
     init_arg => undef,
     lazy     => 1,
     default  => sub {
@@ -142,7 +147,7 @@ sub extract {
     return $self->extract_dir if $self->_has_extracted;
 
     $self->_extractor->extract( $self->extract_dir );
-    $self->_has_extracted(1);
+    $self->_set_has_extracted(1);
 
     return $self->extract_dir;
 }

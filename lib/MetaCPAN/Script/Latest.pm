@@ -9,24 +9,32 @@ use MooseX::Aliases;
 use Parse::CPAN::Packages::Fast;
 use Regexp::Common qw(time);
 use Time::Local;
+use MetaCPAN::Types qw( Bool Str );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
 has dry_run => (
     is      => 'ro',
-    isa     => 'Bool',
+    isa     => Bool,
     default => 0,
 );
 
 has distribution => (
     is  => 'ro',
-    isa => 'Str',
+    isa => Str,
 );
 
 has packages => (
-    is         => 'ro',
-    lazy_build => 1,
-    traits     => ['NoGetopt'],
+    is      => 'ro',
+    lazy    => 1,
+    builder => '_build_packages',
+    traits  => ['NoGetopt'],
+);
+
+has force => (
+    is      => 'ro',
+    isa     => Bool,
+    default => 0,
 );
 
 sub _build_packages {
@@ -60,36 +68,35 @@ sub run {
 
     return if ( !@filter && $self->distribution );
 
+    my @module_filters = { term => { 'module.indexed' => 1 } };
+    push @module_filters, @filter
+        ? { terms => { "module.name" => \@filter } }
+        : { exists => { field => "module.name" } };
+
     my $scroll = $modules->filter(
         {
-            and => [
-                @filter
-                ? {
-                    or => [
-                        map { { term => { 'file.module.name' => $_ } } }
-                            @filter
-                    ]
-                    }
-                : (),
-                { exists => { field                 => 'file.module.name' } },
-                { term   => { 'file.module.indexed' => \1 } },
-                { term   => { 'file.maturity'       => 'released' } },
-                { not => { filter => { term => { status => 'backpan' } } } },
-                {
-                    not => {
-                        filter =>
-                            { term => { 'file.distribution' => 'perl' } }
-                    }
-                },
-            ]
+            bool => {
+                must => [
+                    {
+                        nested => {
+                            path   => 'module',
+                            filter => { bool => { must => \@module_filters } }
+                        }
+                    },
+                    { term => { 'maturity' => 'released' } },
+                ],
+                must_not => [
+                    { term => { status       => 'backpan' } },
+                    { term => { distribution => 'perl' } }
+                ]
+            }
         }
-        )->fields(
+        )->source(
         [
-            'file.module.name', 'file.author',
-            'file.release',     'file.distribution',
-            'file.date',        'file.status',
+            'module.name', 'author', 'release', 'distribution',
+            'date',        'status',
         ]
-        )->size(10000)->raw->scroll('1h');
+        )->size(100)->raw->scroll;
 
     my ( %downgrade, %upgrade );
     log_debug { 'Found ' . $scroll->total . ' modules' };
@@ -102,16 +109,13 @@ sub run {
     while ( my $file = $scroll->next ) {
         $i++;
         log_debug { "$i of " . $scroll->total } unless ( $i % 1000 );
-        my $data = $file->{fields};
-        my @modules
-            = ref $data->{'module.name'}
-            ? @{ $data->{'module.name'} }
-            : $data->{'module.name'};
+        my $data = $file->{_source};
 
        # Convert module name into Parse::CPAN::Packages::Fast::Package object.
-        @modules = grep {defined} map {
-            eval { $p->package($_) }
-        } @modules;
+        my @modules = grep {defined}
+            map {
+            eval { $p->package( $_->{name} ) }
+            } @{ $data->{module} };
 
         push @modules_to_purge, @modules;
 
@@ -146,13 +150,18 @@ sub run {
         }
     }
 
+    my $bulk = $self->model->es->bulk_helper(
+        index => $self->index->name,
+        type  => 'file'
+    );
+
     while ( my ( $dist, $data ) = each %upgrade ) {
 
         # Don't reindex if already marked as latest.
         # This just means that it hasn't changed (query includes 'latest').
-        next if ( $data->{status} eq 'latest' );
+        next if ( !$self->force and $data->{status} eq 'latest' );
 
-        $self->reindex( $data, 'latest' );
+        $self->reindex( $bulk, $data, 'latest' );
     }
 
     while ( my ( $release, $data ) = each %downgrade ) {
@@ -162,12 +171,14 @@ sub run {
         # but the old dist remains (with other packages).
         # This could also include bug fixes in our indexer, PAUSE, etc.
         next
-            if ( $upgrade{ $data->{distribution} }
+            if ( !$self->force
+            && $upgrade{ $data->{distribution} }
             && $upgrade{ $data->{distribution} }->{release} eq
             $data->{release} );
 
-        $self->reindex( $data, 'cpan' );
+        $self->reindex( $bulk, $data, 'cpan' );
     }
+    $bulk->flush;
     $self->index->refresh;
 
     # We just want the CPAN::DistnameInfo
@@ -180,8 +191,7 @@ sub run {
 
 # Update the status for the release and all the files.
 sub reindex {
-    my ( $self, $source, $status ) = @_;
-    my $es = $self->es;
+    my ( $self, $bulk, $source, $status ) = @_;
 
     # Update the status on the release.
     my $release = $self->index->type('release')->get(
@@ -191,7 +201,7 @@ sub reindex {
         }
     );
 
-    $release->status($status);
+    $release->_set_status($status);
     log_info {
         $status eq 'latest' ? 'Upgrading ' : 'Downgrading ',
             'release ', $release->name || q[];
@@ -199,33 +209,17 @@ sub reindex {
     $release->put unless ( $self->dry_run );
 
     # Get all the files for the release.
-    my $scroll = $es->scrolled_search(
+    my $scroll = $self->index->type("file")->search_type('scan')->filter(
         {
-            index       => $self->index->name,
-            type        => 'file',
-            scroll      => '5m',
-            size        => 1000,
-            search_type => 'scan',
-            query       => {
-                filtered => {
-                    query  => { match_all => {} },
-                    filter => {
-                        and => [
-                            {
-                                term =>
-                                    { 'file.release' => $source->{release} }
-                            },
-                            {
-                                term => { 'file.author' => $source->{author} }
-                            }
-                        ]
-                    }
-                }
+            bool => {
+                must => [
+                    { term => { 'release' => $source->{release} } },
+                    { term => { 'author'  => $source->{author} } }
+                ]
             }
         }
-    );
+    )->size(100)->source( [ 'status', 'file' ] )->raw->scroll;
 
-    my @bulk;
     while ( my $row = $scroll->next ) {
         my $source = $row->{_source};
         log_trace {
@@ -234,23 +228,10 @@ sub reindex {
         };
 
         # Use bulk update to overwrite the status for X files at a time.
-        push(
-            @bulk,
-            {
-                index => {
-                    index => $self->index->name,
-                    type  => 'file',
-                    id    => $row->{_id},
-                    data  => { %$source, status => $status }
-                }
-            }
-        ) unless ( $self->dry_run );
-        if ( @bulk > 100 ) {
-            $self->es->bulk( \@bulk );
-            @bulk = ();
-        }
+        $bulk->update( { id => $row->{_id}, doc => { status => $status } } )
+            unless $self->dry_run;
     }
-    $self->es->bulk( \@bulk ) if (@bulk);
+
 }
 
 sub compare_dates {

@@ -2,10 +2,11 @@ package MetaCPAN::Server::Diff;
 
 use strict;
 use warnings;
+use Moose;
 
 use Encoding::FixLatin ();
 use IPC::Run3;
-use Moose;
+use MetaCPAN::Types qw( ArrayRef );
 
 has git => (
     is       => 'ro',
@@ -18,17 +19,22 @@ has [qw(source target)] => (
 );
 
 has raw => (
-    is         => 'ro',
-    lazy_build => 1,
+    is      => 'ro',
+    lazy    => 1,
+    builder => '_build_raw',
 );
 
 has structured => (
-    is         => 'ro',
-    isa        => 'ArrayRef',
-    lazy_build => 1,
+    is      => 'ro',
+    isa     => ArrayRef,
+    lazy    => 1,
+    builder => '_build_structured',
 );
 
-has numstat => ( is => 'rw' );
+has numstat => (
+    is     => 'ro',
+    writer => '_set_numstat',
+);
 
 has relative => (
     is       => 'ro',
@@ -57,7 +63,7 @@ sub _build_raw {
         \$raw
     );
     ( my $stats = $raw ) =~ s/^([^\n]*\0).*$/$1/s;
-    $self->numstat($stats);
+    $self->_set_numstat($stats);
     $raw = substr( $raw, length($stats) );
     return $raw;
 }

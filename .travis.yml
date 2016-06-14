@@ -1,13 +1,6 @@
 language: perl
 perl:
   - "5.22"
-  - "5.20"
-  - "5.18"
-
-matrix:
-  allow_failures:
-    - perl: "5.20"
-    - perl: "5.22"
 
 notifications:
   email:
@@ -17,27 +10,28 @@ notifications:
     on_failure: always
   irc: "irc.perl.org#metacpan-travis"
 
-
 env:
   global:
     # We use a non-standard port to avoid trashing production
     # but travis will have it running on the standard port.
-    - METACPAN_ES_TEST_PORT=9200
+    - ES=localhost:9200
     # Carton --deployment only works on the same version of perl
     # that the snapshot was built from.
-    - DEPLOYMENT_PERL_VERSION=5.18
+    - DEPLOYMENT_PERL_VERSION=5.22
+
+    # Instantiate Catalyst models using metacpan_server_testing.conf
+    - METACPAN_SERVER_CONFIG_LOCAL_SUFFIX=testing
 
 
 before_install:
+  - sudo service elasticsearch stop && curl -O -L https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-2.3.0.deb && sudo dpkg -i --force-confnew elasticsearch-2.3.0.deb && sudo service elasticsearch start
+
   # Run update to make libgmp-dev findable (Required by Net::OpenID::Consumer)
   # postgresql-server-dev-all is required by DBD::Pg
-  - sudo apt-get update
   - sudo apt-get install libgmp-dev postgresql-server-dev-all
 
-  # We need to run a pre-1.0 instance of ES until we update everything.
-  - wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.90.13.deb
-  - sudo dpkg -i --force-confdef elasticsearch-0.90.13.deb
   - sudo service elasticsearch restart
+  - pwd
 
   - cpanm -n Devel::Cover::Report::Coveralls
   - cpanm -n Carton
@@ -50,19 +44,19 @@ install:
   - 'carton install `test "${TRAVIS_PERL_VERSION}" = "${DEPLOYMENT_PERL_VERSION}" && echo " --deployment"`'
 
 before_script:
-  # Show status info for ES to verify that it's working, what version, etc.
-  - "curl http://localhost:${METACPAN_ES_TEST_PORT}/"
-  - "perl -i -pe 's/(servers :)9900/$1$ENV{METACPAN_ES_TEST_PORT}/' metacpan_server_testing.conf"
+  - "perl -i -pe 's/(servers :)9900/localhost:9200/' metacpan_server_testing.conf"
 
 script:
   # Devel::Cover isn't in the cpanfile
   # but if it's installed into the global dirs this should work.
   # NOTE: No '-r' for prove; 't/fakecpan.t' does the recursion for us.
-  - HARNESS_PERL_SWITCHES=-MDevel::Cover=+ignore,local carton exec prove -lv t
+  - HARNESS_PERL_SWITCHES=-MDevel::Cover=+ignore,local carton exec prove -It/lib -lvr t
 
 after_success:
   - cover -report coveralls
 
+#after_failure:
+#  - cat ~/.cpanm/build.log
 
 services:
   - elasticsearch

@@ -45,12 +45,12 @@ sub get : Chained('index') : PathPart('') : Args {
                                 and => [
                                     {
                                         exists => {
-                                            field => 'file.module.name',
+                                            field => 'module.name',
                                         }
                                     },
                                     {
                                         term => {
-                                            'file.module.indexed' => \1
+                                            'module.indexed' => 1
                                         }
                                     },
                                 ]
@@ -59,17 +59,17 @@ sub get : Chained('index') : PathPart('') : Args {
                                 and => [
                                     {
                                         exists => {
-                                            field => 'file.pod.analyzed',
+                                            field => 'pod.analyzed',
                                         }
                                     },
-                                    { term => { 'file.indexed' => \1 } },
+                                    { term => { indexed => 1 } },
                                 ]
                             },
                         ]
                     },
                 ],
             }
-            )->fields( [qw( module path documentation distribution )] )
+            )->fields( [qw( module.name path documentation distribution )] )
             ->size(5000)->all->{hits}->{hits};
         for my $file ( map { $_->{fields} } @$modules ) {
             my $name = $file->{documentation} or next;
@@ -87,10 +87,11 @@ sub get : Chained('index') : PathPart('') : Args {
                     = "distribution/$file->{distribution}/$file->{path}";
             }
             elsif ( !$module->{authorized} || !$module->{indexed} ) {
-                $links->{$name}
-                    = 'release/'
-                    . ( $module->{associated_pod}
-                        || "$author/$release/$file->{path}" );
+                $links->{$name} = 'release/' . (
+                    $module->{associated_pod}
+
+                        || "$author/$release/$file->{path}"
+                );
             }
         }
         $c->stash->{link_mappings} = $links;

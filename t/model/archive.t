@@ -3,7 +3,9 @@
 use strict;
 use warnings;
 
+use MetaCPAN::TestHelpers qw( fakecpan_dir );
 use Test::Most;
+use Digest::SHA1 qw( sha1_hex );
 
 my $CLASS = 'MetaCPAN::Model::Archive';
 require_ok $CLASS;
@@ -21,18 +23,24 @@ subtest 'file does not exist' => sub {
 
 subtest 'archive extraction' => sub {
     my %want = (
-        'Some-1.00-TRIAL/lib/Some.pm' => 45,
-        'Some-1.00-TRIAL/Makefile.PL' => 172,
-        'Some-1.00-TRIAL/t/00-nop.t'  => 41,
-        'Some-1.00-TRIAL/META.json'   => 587,
-        'Some-1.00-TRIAL/META.yml'    => 414,
-        'Some-1.00-TRIAL/MANIFEST'    => 62,
+        'Some-1.00-TRIAL/lib/Some.pm' =>
+            '2f806b4c7413496966f52ef353984dde10b6477b',
+        'Some-1.00-TRIAL/Makefile.PL' =>
+            'bc7f47a8e0e9930f41c06e150c7d229cfd3feae7',
+        'Some-1.00-TRIAL/t/00-nop.t' =>
+            '2eba5fd5f9e08a9dcc1c5e2166b7d7d958caf377',
+        'Some-1.00-TRIAL/META.json' =>
+            '075033ae62d19864203ae413822be6846e101556',
+        'Some-1.00-TRIAL/META.yml' =>
+            '10f129398229a8b1cff0922d498f5982d976d247',
+        'Some-1.00-TRIAL/MANIFEST' =>
+            'e93d21831fb3d3cac905dbe852ba1a4a07abd991',
     );
 
-    my $archive
-        = $CLASS->new( file =>
-            't/var/tmp/fakecpan/authors/id/L/LO/LOCAL/Some-1.00-TRIAL.tar.gz'
-        );
+    my $archive = $CLASS->new(
+        file => fakecpan_dir->file(
+            '/authors/id/L/LO/LOCAL/Some-1.00-TRIAL.tar.gz')
+    );
 
     ok !$archive->is_impolite;
     ok !$archive->is_naughty;
@@ -41,9 +49,8 @@ subtest 'archive extraction' => sub {
 
     my $dir = $archive->extract;
     for my $file ( keys %want ) {
-        my $size = $want{$file};
-
-        is -s $dir->file($file), $size, "size of $file";
+        my $digest = sha1_hex( $dir->file($file)->slurp );
+        is $digest, $want{$file}, "content of $file";
     }
 };
 
@@ -51,10 +58,10 @@ subtest 'temp cleanup' => sub {
     my $tempdir;
 
     {
-        my $archive
-            = $CLASS->new( file =>
-                't/var/tmp/fakecpan/authors/id/L/LO/LOCAL/Some-1.00-TRIAL.tar.gz'
-            );
+        my $archive = $CLASS->new(
+            file => fakecpan_dir->file(
+                'authors/id/L/LO/LOCAL/Some-1.00-TRIAL.tar.gz')
+        );
 
         $tempdir = $archive->extract;
         ok -d $tempdir;
@@ -68,10 +75,10 @@ subtest 'temp cleanup' => sub {
 };
 
 subtest 'extract once' => sub {
-    my $archive
-        = $CLASS->new( file =>
-            't/var/tmp/fakecpan/authors/id/L/LO/LOCAL/Some-1.00-TRIAL.tar.gz'
-        );
+    my $archive = $CLASS->new(
+        file => fakecpan_dir->file(
+            'authors/id/L/LO/LOCAL/Some-1.00-TRIAL.tar.gz')
+    );
 
     is $archive->extract, $archive->extract;
 };
@@ -81,8 +88,8 @@ subtest 'set extract dir' => sub {
 
     {
         my $archive = $CLASS->new(
-            file =>
-                't/var/tmp/fakecpan/authors/id/L/LO/LOCAL/Some-1.00-TRIAL.tar.gz',
+            file => fakecpan_dir->file(
+                'authors/id/L/LO/LOCAL/Some-1.00-TRIAL.tar.gz'),
             extract_dir => $temp->dirname
         );
 
@@ -94,7 +101,7 @@ subtest 'set extract dir' => sub {
         ok -s $dir->file('Some-1.00-TRIAL/META.json');
     }
 
-    ok -e $temp, q[Path::Class doesn't cleanup directories it was handed];
+    ok -e $temp, q[Path::Class doesn't clean up directories it was handed];
 };
 
 done_testing;

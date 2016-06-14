@@ -3,7 +3,7 @@ package MetaCPAN::Script::Mirrors;
 use strict;
 use warnings;
 
-use JSON ();
+use Cpanel::JSON::XS ();
 use LWP::UserAgent;
 use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Document::Mirror;
@@ -14,7 +14,7 @@ with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 sub run {
     my $self = shift;
     $self->index_mirrors;
-    $self->es->refresh_index( index => $self->index->name );
+    $self->index->refresh;
 }
 
 sub index_mirrors {
@@ -22,9 +22,14 @@ sub index_mirrors {
     my $ua   = LWP::UserAgent->new;
     log_info { 'Getting mirrors.json file from ' . $self->cpan };
 
-    my $json    = $self->cpan->file( 'indices', 'mirrors.json' )->slurp;
-    my $type    = $self->index->type('mirror');
-    my $mirrors = JSON::XS::decode_json($json);
+    my $json = $self->cpan->file( 'indices', 'mirrors.json' )->slurp;
+    my $type = $self->index->type('mirror');
+
+    # Clear out everything in the index
+    # so don't end up with old mirrors
+    $type->delete;
+
+    my $mirrors = Cpanel::JSON::XS::decode_json($json);
     foreach my $mirror (@$mirrors) {
         $mirror->{location}
             = { lon => $mirror->{longitude}, lat => $mirror->{latitude} };

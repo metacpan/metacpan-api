@@ -11,40 +11,33 @@ with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 sub run {
     my $self = shift;
 
-    my $scroll = $self->es()->scrolled_search(
+    my $scroll = $self->es()->scroll_helper(
         size   => 10_000,
         scroll => '1m',
         index  => 'user',
         type   => 'session',
-        query  => { filtered => { query => { match_all => {} }, }, },
+        body =>
+            { query => { filtered => { query => { match_all => {} }, }, }, },
     );
 
-    my @delete;
+    my $bulk = $self->es->bulk_helper(
+        index     => 'user',
+        type      => 'session',
+        max_count => 10_000
+    );
 
     my $cutoff = DateTime->now->subtract( months => 1 )->epoch;
-    while ( my $search = $scroll->next ) {
-        if ( $search->{_source}->{__updated} < $cutoff ) {
-            push @delete, $search->{_id};
-        }
 
-        if ( scalar @delete >= 10_000 ) {
-            $self->delete(@delete);
-            @delete = ();
+    while ( my $search = $scroll->next ) {
+
+        if ( $search->{_source}->{__updated} < $cutoff ) {
+            $bulk->delete( { id => $search->{_id} } );
         }
 
     }
-    $self->delete(@delete) if @delete;
-}
 
-sub delete {
-    my $self   = shift;
-    my @delete = @_;
+    $bulk->flush;
 
-    $self->es->bulk(
-        index   => 'user',
-        type    => 'session',
-        actions => [ map { +{ delete => { id => $_ } } } @delete ],
-    );
 }
 
 __PACKAGE__->meta->make_immutable;

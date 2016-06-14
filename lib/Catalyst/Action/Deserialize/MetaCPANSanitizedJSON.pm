@@ -3,7 +3,7 @@ package Catalyst::Action::Deserialize::MetaCPANSanitizedJSON;
 use Moose;
 use namespace::autoclean;
 use Try::Tiny;
-use JSON                             ();
+use Cpanel::JSON::XS                 ();
 use MetaCPAN::Server::QuerySanitizer ();
 
 extends 'Catalyst::Action::Deserialize::JSON';

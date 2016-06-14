@@ -13,8 +13,8 @@ test_release(
         distribution => 'weblint',
 
         author     => 'LOCAL',
-        authorized => \1,
-        first      => \1,
+        authorized => 1,
+        first      => 1,
         version    => '1.15',
 
         # No modules.

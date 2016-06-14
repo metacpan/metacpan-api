@@ -1,20 +1,19 @@
 use strict;
 use warnings;
 
-use lib 't/lib';
 use MetaCPAN::Server::Test;
 use MetaCPAN::TestHelpers;
 use Test::More;
 
 my @tests = (
-    [ '/release/File-Changes'                  => 200 ],
-    [ '/release/No-Dist-Here'                  => 404 ],
-    [ '/changes/LOCAL/File-Changes-2.0'        => 200 ],
     [ '/changes/LOCAL/File-Changes-2'          => 404 ],
+    [ '/changes/LOCAL/File-Changes-2.0'        => 200 ],
+    [ '/fakedoctype/andaction'                 => 404 ],
     [ '/file/LOCAL/File-Changes-2.0/Changes'   => 200 ],
     [ '/file/LOCAL/File-Changes-2.0/NoChanges' => 404 ],
+    [ '/release/File-Changes'                  => 200 ],
+    [ '/release/No-Dist-Here'                  => 404 ],
     [ '/root.file'                             => 404 ],
-    [ '/fakedoctype/andaction'                 => 404 ],
 );
 
 test_psgi app, sub {

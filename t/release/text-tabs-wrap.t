@@ -32,8 +32,8 @@ test_release(
         distribution => 'Text-Tabs+Wrap',
 
         author     => 'LOCAL',
-        authorized => \1,
-        first      => \1,
+        authorized => 1,
+        first      => 1,
         version    => '2013.0523',
 
         # No modules.

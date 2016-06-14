@@ -13,6 +13,8 @@ has backend => (
     builder => '_build_backend',
 );
 
+with 'MetaCPAN::Role::HasConfig';
+
 # We could also use an in-memory SQLite db, but this gives us the option of not
 # unlinking in order to debug the contents of the db, if we need to.
 
@@ -26,7 +28,7 @@ sub _build_backend {
     }
 
     load(Minion::Backend::Pg);
-    return { Pg => "postgresql:///minion_queue" };
+    return { Pg => $self->config->{minion_dsn} };
 }
 
 __PACKAGE__->meta->make_immutable;

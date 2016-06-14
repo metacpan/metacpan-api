@@ -9,15 +9,15 @@ test_release(
     {
         name       => 'Common-Files-1.1',
         author     => 'BORISNAT',
-        authorized => \1,
-        first      => \1,
+        authorized => 1,
+        first      => 1,
         provides   => ['Common::Files'],
         modules    => {
             'lib/Common/Files.pm' => [
                 {
                     name             => 'Common::Files',
-                    indexed          => \1,
-                    authorized       => \1,
+                    indexed          => 'true',
+                    authorized       => 'true',
                     version          => '1.1',
                     version_numified => 1.1,
                     associated_pod =>

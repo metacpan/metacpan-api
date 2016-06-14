@@ -1,3 +1,7 @@
 #!/bin/sh
 
-`dirname "$0"`/run prove -lv "$@"
+export EMAIL_SENDER_TRANSPORT=Test
+export ES=localhost:9900
+export METACPAN_SERVER_CONFIG_LOCAL_SUFFIX=testing
+
+`dirname "$0"`/run prove -It/lib -lvr "$@"

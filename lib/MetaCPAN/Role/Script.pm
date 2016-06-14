@@ -3,22 +3,21 @@ package MetaCPAN::Role::Script;
 use strict;
 use warnings;
 
-use ElasticSearch;
 use ElasticSearchX::Model::Document::Types qw(:all);
 use FindBin;
+use Git::Helpers qw( checkout_root );
 use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Model;
 use MetaCPAN::Types qw(:all);
 use Moose::Role;
-
-with 'MetaCPAN::Role::Logger';
-with 'MetaCPAN::Role::Fastly';
+use Carp ();
 
 has 'cpan' => (
-    is         => 'rw',
-    isa        => Dir,
-    lazy_build => 1,
-    coerce     => 1,
+    is      => 'ro',
+    isa     => Dir,
+    lazy    => 1,
+    builder => '_build_cpan',
+    coerce  => 1,
     documentation =>
         'Location of a local CPAN mirror, looks for $ENV{MINICPAN} and ~/CPAN',
 );
@@ -35,21 +34,26 @@ has es => (
     is            => 'ro',
     required      => 1,
     coerce        => 1,
-    documentation => 'ElasticSearch http connection string',
+    documentation => 'Elasticsearch http connection string',
 );
 
-has model => ( lazy_build => 1, is => 'ro', traits => ['NoGetopt'] );
+has model => (
+    is      => 'ro',
+    lazy    => 1,
+    builder => '_build_model',
+    traits  => ['NoGetopt'],
+);
 
 has index => (
     reader        => '_index',
     is            => 'ro',
-    isa           => 'Str',
+    isa           => Str,
     default       => 'cpan',
     documentation => 'Index to use, defaults to "cpan"',
 );
 
 has port => (
-    isa           => 'Int',
+    isa           => Int,
     is            => 'ro',
     required      => 1,
     documentation => 'Port for the proxy, defaults to 5000',
@@ -58,24 +62,13 @@ has port => (
 has home => (
     is      => 'ro',
     isa     => Dir,
-    coerce  => 1,
-    default => "$FindBin::RealBin/..",
-);
-
-has config => (
-    is      => 'ro',
-    isa     => 'HashRef',
     lazy    => 1,
-    builder => '_build_config',
+    coerce  => 1,
+    default => sub { checkout_root() },
 );
 
-sub _build_config {
-    my $self = shift;
-    return Config::JFDI->new(
-        name => 'metacpan_server',
-        path => "$FindBin::RealBin/..",
-    )->get;
-}
+with 'MetaCPAN::Role::Fastly', 'MetaCPAN::Role::HasConfig',
+    'MetaCPAN::Role::Logger';
 
 sub handle_error {
     my ( $self, $error ) = @_;
@@ -84,7 +77,7 @@ sub handle_error {
     log_fatal {$error};
 
     # Die if configured (for the test suite).
-    die $error if $self->die_on_error;
+    Carp::croak $error if $self->die_on_error;
 }
 
 sub index {
@@ -94,18 +87,9 @@ sub index {
 
 sub _build_model {
     my $self = shift;
+
+    # es provided by ElasticSearchX::Model::Role
     return MetaCPAN::Model->new( es => $self->es );
-}
-
-sub file2mod {
-    my $self = shift;
-    my $name = shift;
-
-    $name =~ s{\Alib\/}{};
-    $name =~ s{\.(pod|pm)\z}{};
-    $name =~ s{\/}{::}gxms;
-
-    return $name;
 }
 
 sub _build_cpan {
@@ -123,7 +107,7 @@ sub _build_cpan {
 }
 
 sub remote {
-    shift->es->transport->default_servers->[0];
+    shift->es->nodes->info->[0];
 }
 
 sub run { }
@@ -132,7 +116,7 @@ before run => sub {
 
     $self->set_logger_once;
 
-    Dlog_debug {"Connected to $_"} $self->remote;
+    #Dlog_debug {"Connected to $_"} $self->remote;
 };
 
 1;

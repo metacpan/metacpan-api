@@ -10,7 +10,7 @@ use DateTime::Format::ISO8601 ();
 use Email::Valid              ();
 use Encode                    ();
 use File::stat                ();
-use JSON::XS                  ();
+use Cpanel::JSON::XS qw( decode_json );
 use Log::Contextual qw( :log );
 use MetaCPAN::Document::Author;
 use URI ();
@@ -23,7 +23,7 @@ Loads author info into db. Requires the presence of a local CPAN/minicpan.
 =cut
 
 has author_fh => (
-    is      => 'rw',
+    is      => 'ro',
     traits  => ['NoGetopt'],
     lazy    => 1,
     default => sub { shift->cpan . '/authors/00whois.xml' },
@@ -46,7 +46,7 @@ sub index_authors {
     log_debug {"Getting last update dates"};
     my $dates
         = $type->inflate(0)->filter( { exists => { field => 'updated' } } )
-        ->size(99999)->all;
+        ->size(10000)->all;
     $dates = {
         map {
             $_->{pauseid} =>
@@ -54,12 +54,13 @@ sub index_authors {
         } map { $_->{_source} } @{ $dates->{hits}->{hits} }
     };
 
-    my $bulk = $self->model->bulk( size => 20 );
+    my $bulk = $self->model->bulk( size => 100 );
 
     while ( my ( $pauseid, $data ) = each %$authors ) {
         my ( $name, $email, $homepage, $asciiname )
             = ( @$data{qw(fullname email homepage asciiname)} );
         $name = undef if ( ref $name );
+        $asciiname = q{} unless defined $asciiname;
         $email = lc($pauseid) . '@cpan.org'
             unless ( $email && Email::Valid->address($email) );
         log_debug {
@@ -85,8 +86,33 @@ sub index_authors {
                 map  { URI->new($_)->canonical }
                 grep {$_} @{ $put->{website} }
         ];
+
+        # Now check the format we have is actually correct
+        my @errors = MetaCPAN::Document::Author->validate($put);
+        next if scalar @errors;
+
         my $author = $type->new_document($put);
         $author->gravatar_url;    # build gravatar_url
+
+        # Do not import lat / lon's in the wrong order, or just invalid
+        if ( my $loc = $author->{location} ) {
+
+            my $lat = $loc->[1];
+            my $lon = $loc->[0];
+
+            if ( $lat > 90 or $lat < -90 ) {
+
+                # Invalid latitude
+                delete $author->{location};
+            }
+            elsif ( $lon > 180 or $lon < -180 ) {
+
+                # Invalid longitude
+                delete $author->{location};
+            }
+        }
+
+        # Only try put if this is a valid format
         $bulk->put($author);
     }
     $self->index->refresh;
@@ -95,38 +121,44 @@ sub index_authors {
 
 sub author_config {
     my ( $self, $pauseid, $dates ) = @_;
+
     my $fallback = $dates->{$pauseid} ? undef : {};
+
     my $dir = $self->cpan->subdir( 'authors',
         MetaCPAN::Util::author_dir($pauseid) );
+
     my @files;
     opendir( my $dh, $dir ) || return $fallback;
+
+    # Get the most recent version
     my ($file)
         = sort { $dir->file($b)->stat->mtime <=> $dir->file($a)->stat->mtime }
         grep   {m/author-.*?\.json/} readdir($dh);
     return $fallback unless ($file);
     $file = $dir->file($file);
     return $fallback if !-e $file;
+
     my $mtime = DateTime->from_epoch( epoch => $file->stat->mtime );
 
     if ( $dates->{$pauseid} && $dates->{$pauseid} >= $mtime ) {
         log_debug {"Skipping $pauseid (newer version in index)"};
         return undef;
     }
-    my $json = $file->slurp;
-    my $author = eval { JSON::XS->new->utf8->relaxed->decode($json) };
 
-    if ($@) {
+    my $author;
+    eval {
+        $author = decode_json( $file->slurp );
+        1;
+    } or do {
         log_warn {"$file is broken: $@"};
         return $fallback;
-    }
-    else {
-        $author
-            = { map { $_ => $author->{$_} }
-                qw(name asciiname profile blog perlmongers donation email website city region country location extra)
-            };
-        $author->{updated} = $mtime;
-        return $author;
-    }
+    };
+    $author
+        = { map { $_ => $author->{$_} }
+            qw(name asciiname profile blog perlmongers donation email website city region country location extra)
+        };
+    $author->{updated} = $mtime;
+    return $author;
 }
 
 __PACKAGE__->meta->make_immutable;

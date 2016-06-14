@@ -17,7 +17,6 @@ package main;
 use strict;
 use warnings;
 
-use lib 't/lib';
 use MetaCPAN::Server::Test;
 use MetaCPAN::TestHelpers;
 use Test::More;
@@ -50,7 +49,9 @@ test_psgi app, sub {
         ),
         'post challenge'
     );
+
     is( $res->code, 200, 'successful request' );
+
     my $user = decode_json_ok($res);
     ok( $user->{looks_human},    'looks human' );
     ok( $user->{passed_captcha}, 'passed captcha' );
