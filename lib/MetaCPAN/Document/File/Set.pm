@@ -95,6 +95,46 @@ sub find_provided_by {
     )->size(999)->all;
 }
 
+sub documented_modules {
+    my ( $self, $release ) = @_;
+    return $self->filter(
+        {
+            and => [
+                { term => { release => $release->{name} } },
+                { term => { author  => $release->{author} } },
+                {
+                    or => [
+                        {
+                            and => [
+                                {
+                                    exists => {
+                                        field => 'module.name',
+                                    }
+                                },
+                                {
+                                    term => {
+                                        'module.indexed' => 1
+                                    }
+                                },
+                            ]
+                        },
+                        {
+                            and => [
+                                {
+                                    exists => {
+                                        field => 'pod.analyzed',
+                                    }
+                                },
+                                { term => { indexed => 1 } },
+                            ]
+                        },
+                    ]
+                },
+            ],
+        }
+    )->size(999);
+}
+
 # filter find_provided_by results for indexed/authorized modules
 # and return a list of package names
 sub find_module_names_provided_by {
