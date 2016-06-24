@@ -178,7 +178,10 @@ sub run {
         }
 
         if ( $self->queue ) {
-            local @ARGV = ( qw{ queue --file }, $file );
+            local @ARGV = (
+                qw{ queue --file },
+                $file, ( $self->latest ? '--latest' : () )
+            );
             MetaCPAN::Script::Runner->run;
         }
         else {
