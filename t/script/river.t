@@ -11,7 +11,7 @@ use URI ();
 
 my $config = MetaCPAN::Script::Runner::build_config;
 
-# local json file with structure from https://github.com/CPAN-API/cpan-api/issues/460
+# local json file with structure from https://github.com/metacpan/metacpan-api/issues/460
 my $root = checkout_root();
 my $file = URI->new('t/var/river.json')->abs("file://$root/");
 $config->{'river_url'} = "$file";

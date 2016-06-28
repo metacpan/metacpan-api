@@ -92,7 +92,7 @@ EOF
         'NAME matched correct head1 section' );
 }
 
-# https://github.com/CPAN-API/cpan-api/issues/167
+# https://github.com/metacpan/metacpan-api/issues/167
 {
     my $content = <<EOF;
 =head1 NAMED PIPE

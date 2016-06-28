@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/CPAN-API/cpan-api.png?branch=master)](https://travis-ci.org/CPAN-API/cpan-api)
-[![Coverage Status](https://coveralls.io/repos/CPAN-API/cpan-api/badge.png)](https://coveralls.io/r/CPAN-API/cpan-api)
+[![Build Status](https://travis-ci.org/metacpan/metacpan-api.png?branch=master)](https://travis-ci.org/metacpan/metacpan-api)
+[![Coverage Status](https://coveralls.io/repos/metacpan/metacpan-api/badge.png)](https://coveralls.io/r/metacpan/metacpan-api)
 
 A Web Service for the CPAN
 ==========================
@@ -12,7 +12,7 @@ REST API
 
 MetaCPAN is based on Elasticsearch, so it provides a RESTful interface as well
 as the option to create complex queries. [The
-wiki](https://github.com/CPAN-API/cpan-api/wiki/API-docs) provides a good
+wiki](https://github.com/metacpan/metacpan-api/wiki/API-docs) provides a good
 starting point for REST access to MetaCPAN.
 
 Expanding Your Author Info
@@ -25,7 +25,7 @@ information about yourself.
 Installing Your Own MetaCPAN:
 ---------------------------------------
 
-If you want to run MetaCPAN locally, we encourage you to start with a VM: [Metacpan Developer VM](https://github.com/CPAN-API/metacpan-developer)
+If you want to run MetaCPAN locally, we encourage you to start with a VM: [Metacpan Developer VM](https://github.com/metacpan/metacpan-developer)
 However, you may still find some info here:
 
 ## Troubleshooting Elasticsearch

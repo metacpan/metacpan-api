@@ -76,7 +76,7 @@ has abstract => (
     is       => 'ro',
 
     # isa is commented as it affect the type mapping
-    # see https://github.com/CPAN-API/cpan-api/pull/484
+    # see https://github.com/metacpan/metacpan-api/pull/484
     # -- Mickey
     # isa => Maybe[Str],
     lazy    => 1,
@@ -303,7 +303,7 @@ has documentation => (
     is => 'ro',
 
     # isa is commented as it affect the type mapping
-    # see https://github.com/CPAN-API/cpan-api/pull/484
+    # see https://github.com/metacpan/metacpan-api/pull/484
     # -- Mickey
     # isa => Maybe [Str],
     lazy      => 1,
