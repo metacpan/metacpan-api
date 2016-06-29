@@ -2,7 +2,7 @@
 
 For an introduction to the MetaCPAN API which requires no previous knowledge of MetaCPAN or ElasticSearch, see [the slides for "Abusing MetaCPAN for Fun and Profit"](http://www.slideshare.net/oalders/abusing-metacpan2013) or [watch the actual talk](http://www.youtube.com/watch?v=J8ymBuFlHQg).
 
-There is also [a repository of examples](https://github.com/CPAN-API/metacpan-examples) you can play with to get up and running in a hurry.  Rather than editing this wiki page, please send pull requests for the metacpan-examples repository.  If you'd rather edit the wiki, please do, but sending the code pull requests is probably the most helpful way to approach this.
+There is also [a repository of examples](https://github.com/metacpan/metacpan-examples) you can play with to get up and running in a hurry.  Rather than editing this wiki page, please send pull requests for the metacpan-examples repository.  If you'd rather edit the wiki, please do, but sending the code pull requests is probably the most helpful way to approach this.
 
 _All of these URLs can be tested using the [MetaCPAN Explorer](https://explorer.metacpan.org)_
 
@@ -20,7 +20,7 @@ Be aware that when you scroll, your docs will come back unsorted, as noted in th
 
 ## Identifying Yourself
 
-Part of being polite is letting us know who you are and how to reach you.  This is not mandatory, but please do consider adding your app to the [API-Consumers](https://github.com/CPAN-API/cpan-api/wiki/API-Consumers) page.
+Part of being polite is letting us know who you are and how to reach you.  This is not mandatory, but please do consider adding your app to the [API-Consumers](https://github.com/metacpan/metacpan-api/wiki/API-Consumers) page.
 
 ## Available fields
 
@@ -38,7 +38,7 @@ Available fields can be found by accessing the corresponding `_mapping` endpoint
 
 ## Field documentation
 
-Fields are documented in the API codebase: https://github.com/CPAN-API/cpan-api/tree/master/lib/MetaCPAN/Document  Check the Pod for discussion of what the various fields represent.  Be sure to have a look at https://github.com/CPAN-API/cpan-api/blob/master/lib/MetaCPAN/Document/File.pm in particular as results for /module are really a thin wrapper around the `file` type.
+Fields are documented in the API codebase: https://github.com/metacpan/metacpan-api/tree/master/lib/MetaCPAN/Document  Check the Pod for discussion of what the various fields represent.  Be sure to have a look at https://github.com/metacpan/metacpan-api/blob/master/lib/MetaCPAN/Document/File.pm in particular as results for /module are really a thin wrapper around the `file` type.
 
 ## Search without constraints
 
@@ -53,7 +53,7 @@ Performing a search without any constraints is an easy way to get sample data
 
 ## Joins
 
-ElasticSearch itself doesn't support joining data across multiple types. The API server can, however, handle a `join` query parameter if the underlying type was set up accordingly. Browse https://github.com/CPAN-API/cpan-api/blob/master/lib/MetaCPAN/Server/Controller/ to see all join conditions. Here are some examples.
+ElasticSearch itself doesn't support joining data across multiple types. The API server can, however, handle a `join` query parameter if the underlying type was set up accordingly. Browse https://github.com/metacpan/metacpan-api/blob/master/lib/MetaCPAN/Server/Controller/ to see all join conditions. Here are some examples.
 
 Joins on documents:
 

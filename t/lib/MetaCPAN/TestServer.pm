@@ -114,7 +114,7 @@ sub _build_es_server {
     catch {
         diag(<<"EOF");
 Failed to connect to the Elasticsearch test instance on ${\$self->_es_home}.
-Did you start one up? See https://github.com/CPAN-API/cpan-api/wiki/Installation
+Did you start one up? See https://github.com/metacpan/metacpan-api/wiki/Installation
 for more information.
 Error: $_
 EOF
