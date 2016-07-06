@@ -63,10 +63,10 @@ has detect_backpan => (
     documentation => 'enable when indexing from a backpan',
 );
 
-has backpan_index => (
+has _cpan_files_list => (
     is      => 'ro',
     lazy    => 1,
-    builder => '_build_backpan_index',
+    builder => '_build_cpan_files_list',
 );
 
 has perms => (
@@ -154,7 +154,7 @@ sub run {
     my @module_to_purge_dists = map { CPAN::DistnameInfo->new($_) } @files;
 
     $self->index;
-    $self->backpan_index if ( $self->detect_backpan );
+    $self->_cpan_files_list if ( $self->detect_backpan );
     $self->perms;
     my @pid;
 
@@ -294,7 +294,7 @@ sub import_archive {
     $document->put;
 }
 
-sub _build_backpan_index {
+sub _build_cpan_files_list {
     my $self = shift;
     my $ls   = $self->cpan->file(qw(indices find-ls.gz));
     unless ( -e $ls ) {
@@ -316,7 +316,7 @@ sub _build_backpan_index {
 sub detect_status {
     my ( $self, $author, $archive ) = @_;
     return $self->status unless ( $self->detect_backpan );
-    if ( $self->backpan_index->{ join( '/', $author, $archive ) } ) {
+    if ( $self->_cpan_files_list->{ join( '/', $author, $archive ) } ) {
         return 'cpan';
     }
     else {
