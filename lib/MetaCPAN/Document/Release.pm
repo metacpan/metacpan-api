@@ -285,6 +285,32 @@ use warnings;
 use Moose;
 extends 'ElasticSearchX::Model::Document::Set';
 
+sub aggregate_status_by_author {
+    my ( $self, $pauseid ) = @_;
+    my $agg = $self->es->search(
+        {
+            index => $self->index->name,
+            type  => 'release',
+            body  => {
+                query => {
+                    term => { author => $pauseid }
+                },
+                aggregations => {
+                    count => { terms => { field => 'status' } }
+                },
+                size => 0,
+            }
+        }
+    );
+    my %ret = ( cpan => 0, latest => 0, backpan => 0 );
+    if ($agg) {
+        $ret{ $_->{'key'} } = $_->{'doc_count'}
+            for @{ $agg->{'aggregations'}{'count'}{'buckets'} };
+    }
+    $ret{'backpan-only'} = delete $ret{'backpan'};
+    return \%ret;
+}
+
 sub find_depending_on {
     my ( $self, $modules ) = @_;
     return $self->filter(

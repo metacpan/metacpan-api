@@ -33,29 +33,12 @@ sub get : Path('') : Args(1) {
     my $st = $file->{_source} || $file->{fields};
     if ( $st and $st->{pauseid} ) {
         $st->{release_count}
-            = $self->_get_author_release_status_counts( $c, $st->{pauseid} );
+            = $c->model('CPAN::Release')
+            ->aggregate_status_by_author( $st->{pauseid} );
     }
     $c->stash($st)
         || $c->detach( '/not_found',
         ['The requested field(s) could not be found'] );
-}
-
-sub _get_author_release_status_counts {
-    my ( $self, $c, $pauseid ) = @_;
-    my %ret;
-    for my $status (qw< cpan backpan latest >) {
-        $ret{$status} = $c->model('CPAN::Release')->filter(
-            {
-                and => [
-                    { term => { author => $pauseid } },
-                    { term => { status => $status } }
-                ]
-            }
-            )->count
-            || 0;
-    }
-    $ret{'backpan-only'} = delete $ret{'backpan'};
-    return \%ret;
 }
 
 1;
