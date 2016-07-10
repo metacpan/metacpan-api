@@ -111,8 +111,16 @@ test_psgi app, sub {
     $json = decode_json_ok($res);
 
     is( @{ $json->{hits}->{hits} }, 1, '1 hit' );
-    is_deeply( $json->{hits}->{hits}->[0]->{_source},
-        $doy, 'same result as direct get' );
+
+    my $release_count = delete $doy->{release_count};
+    is_deeply(
+        [ sort keys %{$release_count} ],
+        [qw< backpan-only cpan latest >],
+        'release_count has the correct keys'
+    );
+
+    my $source = $json->{hits}->{hits}->[0]->{_source};
+    is_deeply( $doy, $source, 'same result as direct get' );
 
     {
         ok( my $res = $cb->( GET '/author/_search?q=*&size=99999' ),
