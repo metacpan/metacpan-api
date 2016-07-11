@@ -11,8 +11,9 @@ extends 'Catalyst::View';
 sub process {
     my ( $self, $c ) = @_;
 
-    my $content = $c->res->body || $c->stash->{source};
+    my $content       = $c->res->body || $c->stash->{source};
     my $link_mappings = $c->stash->{link_mappings};
+    my $url_prefix    = $c->stash->{url_prefix};
     $content = eval { join( q{}, $content->getlines ) };
 
     my ( $body, $content_type );
@@ -23,6 +24,7 @@ sub process {
     $x_codes = $c->config->{pod_html_x_codes} unless defined $x_codes;
 
     my $renderer = $self->_factory(
+        ( $url_prefix ? ( perldoc_url_prefix => $url_prefix ) : () ),
         no_errata_section => !$show_errors,
         nix_X_codes       => !$x_codes,
         ( $link_mappings ? ( link_mappings => $link_mappings ) : () ),

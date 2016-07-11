@@ -14,6 +14,7 @@ sub find : Path('') {
     $c->stash->{link_mappings}
         = $self->find_dist_links( $c, $author, $release,
         !!$c->req->query_params->{permalinks} );
+    $c->stash->{url_prefix} = $c->req->query_params->{url_prefix};
 
     $c->forward( '/source/get', [ $author, $release, @path ] );
     my $path = $c->stash->{path};
