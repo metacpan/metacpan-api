@@ -35,6 +35,19 @@ sub get : Path('') : Args(1) {
         $st->{release_count}
             = $c->model('CPAN::Release')
             ->aggregate_status_by_author( $st->{pauseid} );
+
+        my ( $id_2, $id_1 ) = $id =~ /^((\w)\w)/;
+        $st->{links} = {
+            cpan_directory => "http://cpan.org/authors/id/$id_1/$id_2/$id",
+            backpan_directory =>
+                "https://cpan.metacpan.org/authors/id/$id_1/$id_2/$id",
+            cpants => "http://cpants.cpanauthors.org/author/$id",
+            cpantesters_reports =>
+                "http://cpantesters.org/author/$id_1/$id.html",
+            cpantesters_matrix => "http://matrix.cpantesters.org/?author=$id",
+            metacpan_explorer =>
+                "https://explorer.metacpan.org/?url=/author/$id",
+        };
     }
     $c->stash($st)
         || $c->detach( '/not_found',
