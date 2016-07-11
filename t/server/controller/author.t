@@ -119,6 +119,15 @@ test_psgi app, sub {
         'release_count has the correct keys'
     );
 
+    my $links = delete $doy->{links};
+    is_deeply(
+        [ sort keys %{$links} ],
+        [
+            qw< backpan_directory cpan_directory cpantesters_matrix cpantesters_reports cpants metacpan_explorer >
+        ],
+        'links has the correct keys'
+    );
+
     my $source = $json->{hits}->{hits}->[0]->{_source};
     is_deeply( $doy, $source, 'same result as direct get' );
 
