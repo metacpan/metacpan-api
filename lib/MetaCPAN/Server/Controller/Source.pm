@@ -32,10 +32,6 @@ sub get : Chained('index') : PathPart('') : Args {
         $c->res->body( $res->[2]->[0] );
     }
     else {
-        $c->stash->{link_mappings}
-            = $self->find_dist_links( $c, $author, $release,
-            !!$c->req->query_params->{permalinks} );
-
         $c->stash->{path} = $file;
 
         # Tell fastly to cache for a day (for st.aticpan.org,
@@ -50,45 +46,6 @@ sub get : Chained('index') : PathPart('') : Args {
         $c->res->content_type('text/plain');
         $c->res->body( $file->openr );
     }
-}
-
-sub find_dist_links {
-    my ( $self, $c, $author, $release, $permalinks ) = @_;
-    my $module_query
-        = $c->model('CPAN::File')
-        ->documented_modules( { name => $release, author => $author } )
-        ->source( [qw(name module path documentation distribution)] );
-    my @modules = $module_query->all;
-
-    my $links = {};
-
-    for my $file (@modules) {
-        next
-            unless $file->has_documentation;
-        my $name = $file->documentation;
-        my ($module)
-            = grep { $_->name eq $name } @{ $file->module };
-        if ( $module && $module->authorized && $module->indexed ) {
-            if ($permalinks) {
-                $links->{$name} = join '/',
-                    'release', $author, $release, $file->path;
-            }
-            else {
-                $links->{$name} = $name;
-            }
-        }
-        next
-            if exists $links->{$name};
-        if ($permalinks) {
-            $links->{$name} = join '/',
-                'release', $author, $release, $file->path;
-        }
-        else {
-            $links->{$name} = join '/',
-                'distribution', $file->distribution, $file->path;
-        }
-    }
-    return $links;
 }
 
 sub module : Chained('index') : PathPart('') : Args(1) {
