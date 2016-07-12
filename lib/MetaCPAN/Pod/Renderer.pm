@@ -17,6 +17,15 @@ has perldoc_url_prefix => (
     writer  => '_set_perldoc_url_prefix',
 );
 
+has nix_X_codes => ( is => 'ro' );
+
+has no_errata_section => (
+    is      => 'ro',
+    default => 1,
+);
+
+has link_mappings => ( is => 'ro' );
+
 sub markdown_renderer {
     my $self = shift;
     return Pod::Markdown->new(
@@ -41,8 +50,10 @@ sub html_renderer {
     $parser->html_footer('');
     $parser->html_header('');
     $parser->index(1);
-    $parser->no_errata_section(1);
+    $parser->no_errata_section( $self->no_errata_section );
     $parser->perldoc_url_prefix( $self->perldoc_url_prefix );
+    $parser->nix_X_codes( $self->nix_X_codes );
+    $parser->link_mappings( $self->link_mappings );
 
     return $parser;
 }
