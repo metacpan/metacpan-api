@@ -290,14 +290,15 @@ sub import_archive {
         $document->put;
     }
 
+    # update 'first' value
+    $document->set_first;
+    $document->put;
+
+    # update 'latest' (must be done _after_ last update of the document)
     if ( $self->latest ) {
         local @ARGV = ( qw(latest --distribution), $document->distribution );
         MetaCPAN::Script::Runner->run;
     }
-
-    # update 'first' value
-    $document->set_first;
-    $document->put;
 }
 
 sub _build_cpan_files_list {
