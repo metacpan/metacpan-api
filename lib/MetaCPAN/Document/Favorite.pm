@@ -33,15 +33,5 @@ has date => (
     default  => sub { DateTime->now },
 );
 
-=head2 timestamp
-
-Sets the C<_timestamp> field to the value of L</date>.
-
-=cut
-
-has timestamp => (
-    is        => 'ro',
-    timestamp => {},     # { path => 'date', store => 1 },
-);
-
 __PACKAGE__->meta->make_immutable;
+1;

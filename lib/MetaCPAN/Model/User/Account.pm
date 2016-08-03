@@ -103,17 +103,6 @@ sub _build_looks_human {
     return $self->has_identity('pause') || ( $self->passed_captcha ? 1 : 0 );
 }
 
-=head2 timestamp
-
-Sets the C<_timestamp> field.
-
-=cut
-
-has timestamp => (
-    is        => 'ro',
-    timestamp => {},
-);
-
 =head1 METHODS
 
 =head2 add_identity
