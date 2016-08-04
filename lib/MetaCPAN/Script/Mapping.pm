@@ -21,6 +21,13 @@ has delete => (
 
 sub run {
     my $self = shift;
+    $self->delete_mapping;
+}
+
+sub delete_mapping {
+    my $self = shift;
+    return unless $self->delete;
+
     if (is_interactive) {
         print colored(
             ['bold red'],
