@@ -3,7 +3,6 @@ package MetaCPAN::Script::Queue;
 use strict;
 use warnings;
 
-use MetaCPAN::Queue ();
 use MetaCPAN::Types qw( Dir File );
 use Moose;
 use Path::Iterator::Rule ();
@@ -20,14 +19,6 @@ has file => (
     isa       => File,
     predicate => '_has_file',
     coerce    => 1,
-);
-
-has _minion => (
-    is      => 'ro',
-    isa     => 'Minion',
-    lazy    => 1,
-    handles => { _add_to_queue => 'enqueue', stats => 'stats', },
-    default => sub { MetaCPAN::Queue->new->minion },
 );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
