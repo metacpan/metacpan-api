@@ -45,8 +45,7 @@ __PACKAGE__->meta->make_immutable;
 
 =pod
 
-Purges user sessions.  The timestamp field doesn't appear to get populated in
-the session type, so we just iterate over the sessions for the time being and
+Purges user sessions. we iterate over the sessions for the time being and
 perform bulk delete.
 
 =cut
