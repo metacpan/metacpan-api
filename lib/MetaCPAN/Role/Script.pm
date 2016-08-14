@@ -9,6 +9,7 @@ use Git::Helpers qw( checkout_root );
 use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Model;
 use MetaCPAN::Types qw(:all);
+use MetaCPAN::Queue ();
 use Moose::Role;
 use Carp ();
 
@@ -65,6 +66,21 @@ has home => (
     lazy    => 1,
     coerce  => 1,
     default => sub { checkout_root() },
+);
+
+has _minion => (
+    is      => 'ro',
+    isa     => 'Minion',
+    lazy    => 1,
+    handles => { _add_to_queue => 'enqueue', stats => 'stats', },
+    default => sub { MetaCPAN::Queue->new->minion },
+);
+
+has queue => (
+    is            => 'ro',
+    isa           => Bool,
+    default       => 0,
+    documentation => 'add indexing jobs to the minion queue',
 );
 
 with 'MetaCPAN::Role::Fastly', 'MetaCPAN::Role::HasConfig',

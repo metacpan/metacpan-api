@@ -42,9 +42,17 @@ sub _build_packages {
         shift->cpan->file(qw(modules 02packages.details.txt.gz))->stringify );
 }
 
+sub _queue_latest {
+    my $self = shift;
+    my $dist = shift || $self->distribution;
+
+    log_info { "queueing " . $dist };
+    $self->_add_to_queue( index_latest =>
+            [ ( $self->force ? '--force' : () ), '--distribution', $dist ] );
+}
+
 sub run {
-    my $self    = shift;
-    my $modules = $self->index->type('file');
+    my $self = shift;
 
     if ( $self->dry_run ) {
         log_info {'Dry run: updates will not be written to ES'};
@@ -68,12 +76,18 @@ sub run {
 
     return if ( !@filter && $self->distribution );
 
+    # if we are just queueing a single distribution
+    if ( $self->queue and $self->distribution ) {
+        $self->_queue_latest();
+        return;
+    }
+
     my @module_filters = { term => { 'module.indexed' => 1 } };
     push @module_filters, @filter
         ? { terms => { "module.name" => \@filter } }
         : { exists => { field => "module.name" } };
 
-    my $scroll = $modules->filter(
+    my $scroll = $self->index->type('file')->filter(
         {
             bool => {
                 must => [
@@ -91,12 +105,10 @@ sub run {
                 ]
             }
         }
-        )->source(
-        [
-            'module.name', 'author', 'release', 'distribution',
-            'date',        'status',
-        ]
-        )->size(100)->raw->scroll;
+        )
+        ->source(
+        [qw< author date distribution module.name release status >] )
+        ->size(100)->raw->scroll;
 
     my ( %downgrade, %upgrade );
     log_debug { 'Found ' . $scroll->total . ' modules' };
@@ -104,6 +116,7 @@ sub run {
     my $i = 0;
 
     my @modules_to_purge;
+    my %queued_distributions;
 
     # For each file...
     while ( my $file = $scroll->next ) {
@@ -124,6 +137,14 @@ sub run {
 
            # Get P:C:P:F:Distribution (CPAN::DistnameInfo) object for package.
             my $dist = $module->distribution;
+
+            if ( $self->queue ) {
+                my $d = $dist->dist;
+                $self->_queue_latest($d)
+                    unless exists $queued_distributions{$d};
+                $queued_distributions{$d} = 1;
+                next;
+            }
 
             # If 02packages has the same author/release for this package...
 

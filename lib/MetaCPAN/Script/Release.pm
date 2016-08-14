@@ -16,7 +16,6 @@ use MetaCPAN::Util;
 use MetaCPAN::Model::Release;
 use MetaCPAN::Script::Runner;
 use MetaCPAN::Types qw( Bool Dir HashRef Int Str );
-use MetaCPAN::Queue ();
 use Moose;
 use PerlIO::gzip;
 use Try::Tiny qw( catch try );
@@ -41,13 +40,6 @@ has skip => (
     isa           => Bool,
     default       => 0,
     documentation => 'skip already indexed modules (0)',
-);
-
-has queue => (
-    is            => 'ro',
-    isa           => Bool,
-    default       => 0,
-    documentation => 'add indexing jobs to the  minion queue',
 );
 
 has status => (
@@ -83,14 +75,6 @@ has _bulk_size => (
     isa      => Int,
     init_arg => 'bulk_size',
     default  => 10,
-);
-
-has _minion => (
-    is      => 'ro',
-    isa     => 'Minion',
-    lazy    => 1,
-    handles => { _add_to_queue => 'enqueue', stats => 'stats', },
-    default => sub { MetaCPAN::Queue->new->minion },
 );
 
 sub run {
