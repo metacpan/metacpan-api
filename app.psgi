@@ -4,6 +4,7 @@ use warnings;
 use FindBin;
 use lib "$FindBin::RealBin/lib";
 use Catalyst::Middleware::Stash 'stash';
+use MetaCPAN::Server;
 
 if ( $ENV{PLACK_ENV} eq 'development' ) {
 
@@ -14,5 +15,5 @@ if ( $ENV{PLACK_ENV} eq 'development' ) {
     }
 }
 
-# The class has the Plack initialization and returns the app.
-require MetaCPAN::Server;
+MetaCPAN::Server->to_app;
+
