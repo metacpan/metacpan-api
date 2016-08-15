@@ -6,7 +6,6 @@ use warnings;
 use HTTP::Request::Common qw(POST GET DELETE);
 use Plack::Test;
 use Test::More;
-use MetaCPAN::Server;
 
 use base 'Exporter';
 our @EXPORT = qw(
@@ -22,7 +21,7 @@ my $app;
 sub _load_app {
 
     # Delay loading.
-    $app ||= MetaCPAN::Server->to_app;
+    $app ||= require MetaCPAN::Server;
 }
 
 sub prepare_user_test_data {

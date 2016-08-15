@@ -117,6 +117,5 @@ sub to_app {
     return $app;
 }
 
-1;
-
-__END__
+# Let's be explicit because implicit returns can be confusing
+return $app;
