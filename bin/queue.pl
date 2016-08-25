@@ -9,9 +9,16 @@ Simple script to start Mojo app.
 
     carton exec -- morbo bin/queue.pl
 
-Get status on jobs and workers:
+Get status on jobs and workers.
+
+On production:
 
     sh /home/metacpan/bin/metacpan-api-carton-exec bin/queue.pl minion job -s
+
+On vagrant:
+
+    cd /home/vagrant/metacpan-api
+    ./bin/run bin/queue.pl minion job -s
 
 =cut
 
