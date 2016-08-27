@@ -7810,17 +7810,18 @@ DISTRIBUTIONS
       Net::OpenID::Consumer 0
       Test::Builder 0
       Test::HTTP::Server::Simple 0
-  Test-OpenID-Server-0.02
-    pathname: J/JE/JESSE/Test-OpenID-Server-0.02.tar.gz
+  Test-OpenID-Server-0.03
+    pathname: T/TS/TSIBLEY/Test-OpenID-Server-0.03.tar.gz
     provides:
-      Test::OpenID::Server 0.02
+      Test::OpenID::Server 0.03
     requirements:
-      ExtUtils::MakeMaker 0
+      ExtUtils::MakeMaker 6.36
       HTTP::Server::Simple 0
       Net::OpenID::Server 0
       Test::HTTP::Server::Simple 0
       Test::OpenID::Consumer 0
       Test::WWW::Mechanize 0
+      Test::Warnings 0.009
   Test-Perl-Critic-1.03
     pathname: T/TH/THALJEF/Test-Perl-Critic-1.03.tar.gz
     provides:
@@ -8006,6 +8007,19 @@ DISTRIBUTIONS
       Test::Builder::Tester 1.02
       Test::More 0
       perl 5.006
+  Test-Warnings-0.026
+    pathname: E/ET/ETHER/Test-Warnings-0.026.tar.gz
+    provides:
+      Test::Warnings 0.026
+    requirements:
+      Carp 0
+      Exporter 0
+      ExtUtils::MakeMaker 0
+      Test::Builder 0
+      parent 0
+      perl 5.006
+      strict 0
+      warnings 0
   Text-CSV_XS-1.23
     pathname: H/HM/HMBRAND/Text-CSV_XS-1.23.tgz
     provides:

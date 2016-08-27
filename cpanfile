@@ -183,7 +183,7 @@ test_requires 'Test::Aggregate::Nested', '0.371';
 test_requires 'Test::Code::TidyAll';
 test_requires 'Test::More', '0.99';
 test_requires 'Test::Most';
-test_requires 'Test::OpenID::Server';
+test_requires 'Test::OpenID::Server', '0.03';
 test_requires 'Test::Perl::Critic';
 test_requires 'Test::RequiresInternet';
 test_requires 'Test::Routine', '0.012';
