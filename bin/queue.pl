@@ -5,9 +5,10 @@ use warnings;
 
 =head2 DESCRIPTION
 
-Simple script to start Mojo app.
+Start Minion worker on vagrant:
 
-    carton exec -- morbo bin/queue.pl
+    cd /home/vagrant/metacpan-api
+    ./bin/run bin/queue.pl minion worker
 
 Get status on jobs and workers.
 
@@ -22,7 +23,7 @@ On vagrant:
 
 =cut
 
-# for morbo
+# For vagrant
 use lib 'lib';
 
 # Start command line interface for application
