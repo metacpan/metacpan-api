@@ -25,6 +25,8 @@ use MooseX::Types -declare => [
         Blog
         PerlMongers
         Tests
+        RTIssueStatus
+        GitHubIssueStatus
         BugSummary
         RiverSummary
         )
@@ -93,14 +95,25 @@ coerce Profile, from HashRef,
 subtype Tests,
     as Dict [ fail => Int, na => Int, pass => Int, unknown => Int ];
 
-subtype BugSummary,
+subtype RTIssueStatus,
     as Dict [
     (
         map { $_ => Optional [Int] }
-            qw(new open stalled patched resolved rejected active closed)
+            qw( active closed new open patched rejected resolved stalled )
     ),
-    type   => Str,
     source => Str
+    ];
+
+subtype GitHubIssueStatus,
+    as Dict [
+    ( map { $_ => Optional [Int] } qw( active closed open ) ),
+    source => Str,
+    ];
+
+subtype BugSummary,
+    as Dict [
+    rt     => Optional [RTIssueStatus],
+    github => Optional [GitHubIssueStatus],
     ];
 
 subtype RiverSummary,
