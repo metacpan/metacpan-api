@@ -114,7 +114,7 @@ sub _net_fastly {
     my $c = shift;
 
     my $api_key = $c->config->{fastly_api_key};
-    my $fsi     = $c->config->{fastly_service_id};
+    my $fsi     = $c->config->{fastly_service_id};    # can be array ref
 
     return unless $api_key && $fsi;
 
@@ -184,14 +184,18 @@ sub fastly_magic {
     }
 }
 
-sub _cdn_get_service {
+sub _cdn_get_services {
     my ( $c, $args ) = @_;
 
     my $net_fastly = $c->_net_fastly();
     return unless $net_fastly;
 
     my $fsi = $c->config->{fastly_service_id};
-    return $net_fastly->get_service($fsi);
+
+    my @service_ids = ref(fsi) eq 'ARRAY' ? @{$fsi} : ($fsi);
+    my @services = map { $net_fastly->get_service($fsi) } @service_ids;
+
+    return \@services;
 }
 
 sub cdn_purge_cpan_distnameinfos {
@@ -221,11 +225,13 @@ sub cdn_purge_cpan_distnameinfos {
 sub cdn_purge_now {
     my ( $c, $args ) = @_;
 
-    my $service = $c->_cdn_get_service();
-    return 1 unless $service;    # dev box
+    my $services = $c->_cdn_get_services();
+    return 1 unless @{$services};    # dev box
 
-    foreach my $key ( @{ $args->{keys} || [] } ) {
-        $service->purge_by_key($key);
+    foreach my $service ( @{$services} ) {
+        foreach my $key ( @{ $args->{keys} || [] } ) {
+            $service->purge_by_key( $key, 1 );    # Soft purge
+        }
     }
     return 1;
 }
@@ -239,10 +245,12 @@ sub cdn_purge_now {
 sub cdn_purge_all {
     my $c = shift;
 
-    my $fastly_service = $c->_cdn_get_service();
-    die "No access" unless $fastly_service;
+    my $services = $c->_cdn_get_services();
+    die "No access" unless @{$services};
 
-    $fastly_service->purge_all;
+    foreach my $service ( @{$services} ) {
+        $service->purge_all;
+    }
 }
 
 1;
