@@ -113,7 +113,7 @@ requires 'MooseX::Types::Structured';
 requires 'MooseX::Types::URI';
 requires 'Mozilla::CA';
 requires 'Net::DNS::Paranoid';
-requires 'Net::Fastly', '1.03';
+requires 'Net::Fastly', '1.05';
 requires 'Net::OpenID::Consumer';
 requires 'Net::Twitter', '4.01010';
 requires 'OrePAN2';
