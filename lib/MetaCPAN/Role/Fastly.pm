@@ -1,61 +1,124 @@
 package MetaCPAN::Role::Fastly;
 
-#### NOTE: This is a copy of MetaCPAN::Web::Role::Fastly
-####       We should unify these some how!
+# Direct copy of MetaCPAN::Web::Role::Fastly, just different namespace
 
 use Moose::Role;
 use Net::Fastly;
+use Carp;
 
-use MetaCPAN::Types qw(:all);
+with 'CatalystX::Fastly::Role::Response';
+with 'MooseX::Fastly::Role';
 
 =head1 NAME
 
 MetaCPAN::Web::Role::Fastly - Methods for fastly intergration
 
+=head1 SYNOPSIS
+
+  use Catalyst qw/
+    +MetaCPAN::Web::Role::Fastly
+    /;
+
+=head1 DESCRIPTION
+
+This role includes L<CatalystX::Fastly::Role::Response> and
+L<MooseX::Fastly::Role>.
+
+It also adds some methods.
+
+Finally just before C<finalize> it will add the content type
+as surrogate keys and perform a purge of anything needing
+to be purged
+
 =head1 METHODS
-
-The following:
-
-=head2 $c->add_surrogate_key('FOO');
 
 =head2 $c->purge_surrogate_key('BAR');
 
-=head2 $c->cdn_cache_ttl( $c->cdn_times->{one_day} );
-
-Are applied when:
-
-=head2 $c->fastly_magic()
-
-   is run in the L<end>, however if
-
-=head2 $c->cdn_never_cache(1)
-
-Is set fastly is forced to NOT cache, no matter
-what other options have been set
-
-=head2 $c->browser_max_age( $c->cdn_times->{'one_day'});
-
-=head2 $c->cdn_times;
-
-Returns a hashref of 'one_hour', 'one_day', 'one_week'
-and 'one_year' so we don't have numbers all over the place
+Try to use on of the more specific methods below if possible.
 
 =cut
 
-## Stuff for working with Fastly CDN
+=head2 $c->add_author_key('Ether');
 
-has _surrogate_keys => (
-    traits  => ['Array'],
-    is      => 'ro',
-    isa     => ArrayRef [Str],
-    default => sub { [] },
-    handles => {
-        add_surrogate_key   => 'push',
-        has_surrogate_keys  => 'count',
-        surrogate_keys      => 'elements',
-        join_surrogate_keys => 'join',
-    },
-);
+Always upper cases
+
+=cut
+
+sub add_author_key {
+    my ( $c, $author ) = @_;
+
+    $c->add_surrogate_key( $c->_format_auth_key($author) );
+}
+
+=head2 $c->purge_author_key('Ether');
+
+=cut
+
+sub purge_author_key {
+    my ( $c, $author ) = @_;
+
+    $c->purge_surrogate_key( $c->_format_auth_key($author) );
+}
+
+=head2 $c->add_dist_key('Moose');
+
+Upper cases, removed I<:> and I<-> so that
+Foo::bar and FOO-Bar becomes FOOBAR,
+not caring about the edge case of there
+ALSO being a Foobar package, they'd
+all just get purged.
+
+=cut
+
+sub add_dist_key {
+    my ( $c, $dist ) = @_;
+
+    $c->add_surrogate_key( $c->_format_dist_key($dist) );
+}
+
+=head2 $c->purge_dist_key('Moose');
+
+=cut
+
+sub purge_dist_key {
+    my ( $c, $dist ) = @_;
+
+    $c->add_surrogate_key( $c->_format_dist_key($dist) );
+}
+
+=head2 $c->purge_cpan_distnameinfos(\@list_of_distnameinfo_objects);
+
+Using this array reference of L<CPAN::DistnameInfo> objects,
+the cpanid and dist name are extracted and used to build a list
+of keys to purge, the purge happens from within this method.
+
+All other purging requires `finalize` to be implimented so it
+can be wrapped with a I<before> and called.
+
+=cut
+
+#cdn_purge_cpan_distnameinfos
+sub purge_cpan_distnameinfos {
+    my ( $c, $dist_list ) = @_;
+
+    my %purge_keys;
+    foreach my $dist ( @{$dist_list} ) {
+
+        croak "Must be CPAN::DistnameInfo"
+            unless UNIVERSIAL::isa('CPAN::DistnameInfo');
+
+        $purge_keys{ $c->_format_auth_key( $dist->cpanid ) } = 1;    # "GBARR"
+        $purge_keys{ $c->_format_dist_key( $dist->dist ) }
+            = 1;    # "CPAN-DistnameInfo"
+
+    }
+
+    my @unique_to_purge = keys %purge_keys;
+
+    # Now run with this list
+    $c->cdn_purge_now( { keys => \@unique_to_purge } );
+
+}
 
 has _surrogate_keys_to_purge => (
     traits  => ['Array'],
@@ -70,187 +133,63 @@ has _surrogate_keys_to_purge => (
     },
 );
 
-# How long should the CDN cache, irrespective of
-# other cache headers
-has cdn_cache_ttl => (
-    is      => 'ro',
-    isa     => Int,
-    default => 0,
-);
-
-# Make sure the CDN NEVER caches, ignore any other cdn_cache_ttl settings
-has cdn_never_cache => (
-    is      => 'ro',
-    isa     => Bool,
-    default => 0,
-);
-
-has browser_max_age => (
-    is      => 'ro',
-    isa     => Maybe [Int],
-    default => sub {undef},
-);
-
-has cdn_times => (
-    is      => 'ro',
-    isa     => HashRef,
-    lazy    => 1,
-    builder => '_build_cdn_times',
-);
-
-sub _build_cdn_times {
-    return {
-        one_min     => 60,
-        ten_mins    => 600,
-        thirty_mins => 1800,
-        one_hour    => 3600,
-        one_day     => 86_400,
-        one_week    => 604_800,
-        one_year    => 31_536_000
-    };
-}
-
-sub _net_fastly {
+before 'finalize' => sub {
     my $c = shift;
 
-    my $api_key = $c->config->{fastly_api_key};
-    my $fsi     = $c->config->{fastly_service_id};    # can be array ref
+    if ( $c->cdn_max_age ) {
 
-    return unless $api_key && $fsi;
-
-    # We have the credentials, so must be on production
-    my $fastly = Net::Fastly->new( api_key => $api_key );
-    return $fastly;
-}
-
-sub fastly_magic {
-    my $c = shift;
-
-    # If there is a max age for the browser to have,
-    # set the header
-    my $browser_max_age = $c->browser_max_age;
-    if ( defined $browser_max_age ) {
-        $c->res->header( 'Cache-Control' => 'max-age=' . $browser_max_age );
+        # We've decided to cache on Fastly, so throw fail overs
+        # if there is an error at origin
+        $c->cdn_stale_if_error('30d');
     }
+
+    my $content_type = lc( $c->res->content_type || 'none' );
+
+    $c->add_surrogate_key( 'content_type=' . $content_type );
+
+    $content_type =~ s/\/.+$//;    # text/html -> 'text'
+    $c->add_surrogate_key( 'content_type=' . $content_type );
 
     # Some action must have triggered a purge
     if ( $c->has_surrogate_keys_to_purge ) {
 
         # Something changed, means we need to purge some keys
-        # All keys are set as UC, with : and -'s removed
-        # so make sure our purging is as well
-        my @keys = map {
-            my $key = $_;
-            $key =~ s/://g;    #
-            $key =~ s/-//g;    #
-            $key = uc $key;    #
-            $key
-        } $c->surrogate_keys_to_purge();
+        my @keys = $c->surrogate_keys_to_purge();
 
         $c->cdn_purge_now( { keys => \@keys, } );
     }
 
-    # Surrogate key caching and purging
-    if ( $c->has_surrogate_keys ) {
+};
 
-        # See http://www.fastly.com/blog/surrogate-keys-part-1/
-        # Force all keys to uc, and remove :'s and -'s for consistency
-        my $key = uc $c->join_surrogate_keys(' ');
-        $key =~ s/://g;    # FOO::BAR -> FOOBAR
-        $key =~ s/-//g;    # FOO-BAR -> FOOBAR
-        $c->res->header( 'Surrogate-Key' => $key );
-    }
+=head2 datacenters()
 
-    # Set the caching at CDN, seperate to what the user's browser does
-    # https://docs.fastly.com/guides/tutorials/cache-control-tutorial
-    if ( $c->cdn_never_cache ) {
+=cut
 
-        # Make sure fastly doesn't cache this by accident
-        $c->res->header( 'Surrogate-Control' => 'no-cache' );
-
-    }
-    elsif ( my $ttl = $c->cdn_cache_ttl ) {
-
-        # TODO: https://www.fastly.com/blog/stale-while-revalidate/
-        # Use this value
-        $c->res->header( 'Surrogate-Control' => 'max-age=' . $ttl );
-
-    }
-    elsif ( !$c->res->header('Last-Modified') ) {
-
-        # If Last-Modified, Fastly can use that, otherwise default to no-cache
-        $c->res->header( 'Surrogate-Control' => 'no-cache' );
-
-    }
-}
-
-sub _cdn_get_services {
-    my ( $c, $args ) = @_;
-
-    my $net_fastly = $c->_net_fastly();
+sub datacenters {
+    my ($c) = @_;
+    my $net_fastly = $c->cdn_api();
     return unless $net_fastly;
 
-    my $fsi = $c->config->{fastly_service_id};
-
-    my @service_ids = ref(fsi) eq 'ARRAY' ? @{$fsi} : ($fsi);
-    my @services = map { $net_fastly->get_service($fsi) } @service_ids;
-
-    return \@services;
+    # Uses the private interface as fastly client doesn't
+    # have this end point yet
+    my $datacenters = $net_fastly->client->_get('/datacenters');
+    return $datacenters;
 }
 
-sub cdn_purge_cpan_distnameinfos {
-    my ( $c, $dist_list ) = @_;
+sub _format_dist_key {
+    my ( $c, $dist ) = @_;
 
-    my @purge_keys;
-    foreach my $dist ( @{$dist_list} ) {
+    $dist = uc($dist);
+    $dist =~ s/:/-/g;    #
 
-        # $dist should be CPAN::DistnameInfo
-        push @purge_keys, $dist->cpanid;    # "GBARR"
-        push @purge_keys, $dist->dist;      # "CPAN-DistnameInfo"
-
-    }
-
-    # Now run with this list
-    $c->cdn_purge_now( { keys => \@purge_keys } );
+    return 'dist=' . $dist;
 }
 
-=head2 cdn_purge_now
+sub _format_auth_key {
+    my ( $c, $author ) = @_;
 
-  $c->cdn_purge_now({
-    keys => [ 'foo', 'bar' ]
-  });
-
-=cut
-
-sub cdn_purge_now {
-    my ( $c, $args ) = @_;
-
-    my $services = $c->_cdn_get_services();
-    return 1 unless @{$services};    # dev box
-
-    foreach my $service ( @{$services} ) {
-        foreach my $key ( @{ $args->{keys} || [] } ) {
-            $service->purge_by_key( $key, 1 );    # Soft purge
-        }
-    }
-    return 1;
-}
-
-=head2 cdn_purge_all
-
-  $c->cdn_purge_all()
-
-=cut
-
-sub cdn_purge_all {
-    my $c = shift;
-
-    my $services = $c->_cdn_get_services();
-    die "No access" unless @{$services};
-
-    foreach my $service ( @{$services} ) {
-        $service->purge_all;
-    }
+    $author = uc($author);
+    return 'author=' . $author;
 }
 
 1;
