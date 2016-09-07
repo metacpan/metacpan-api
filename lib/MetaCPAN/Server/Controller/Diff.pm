@@ -19,6 +19,10 @@ sub index : Chained('/') : PathPart('diff') : CaptureArgs(0) {
 sub diff_releases : Chained('index') : PathPart('release') : Args(4) {
     my ( $self, $c, @path ) = @_;
 
+    $c->add_author_key( $path[0] );
+    $c->add_author_key( $path[2] );
+    $c->cdn_max_age('1y');
+
     # Use author/release as top dirs for diff.
     $self->_do_diff( $c, [ $path[0], $path[1] ], [ $path[2], $path[3] ] );
 }

@@ -29,6 +29,10 @@ __PACKAGE__->config(
 
 sub find : Path('') {
     my ( $self, $c, $author, $release, @path ) = @_;
+
+    $c->add_author_key($author);
+    $c->cdn_max_age('1y');
+
     eval {
         my $file = $self->model($c)->raw->get(
             {

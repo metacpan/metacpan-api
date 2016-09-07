@@ -16,6 +16,10 @@ sub index : Chained('/') : PathPart('source') : CaptureArgs(0) {
 
 sub get : Chained('index') : PathPart('') : Args {
     my ( $self, $c, $author, $release, @path ) = @_;
+
+    $c->add_author_key($author);
+    $c->cdn_max_age('1y');
+
     my $path = join( '/', @path );
     my $file = $c->model('Source')->path( $author, $release, $path )
         or $c->detach( '/not_found', [] );
