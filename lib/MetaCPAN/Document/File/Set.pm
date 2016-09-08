@@ -199,6 +199,8 @@ sub find_download_url {
         : !$explicit_version ? { term => { maturity => 'released' } }
         :                      ();
 
+    my $version_filters = $self->_version_filters($version);
+
     # filters to be applied to the nested modules
     my $module_f = {
         nested => {
@@ -210,8 +212,17 @@ sub find_download_url {
                         { term => { 'module.authorized' => 1 } },
                         { term => { 'module.indexed'    => 1 } },
                         { term => { 'module.name'       => $module } },
-                        $self->_version_filters($version)
-                    ]
+                        (
+                            exists $version_filters->{must}
+                            ? @{ $version_filters->{must} }
+                            : ()
+                        )
+                    ],
+                    (
+                        exists $version_filters->{must_not}
+                        ? ( must_not => [ $version_filters->{must_not} ] )
+                        : ()
+                    )
                 }
             }
         }
@@ -264,7 +275,6 @@ sub find_download_url {
 
     return $self->size(1)->query($query)
         ->source( [ 'download_url', 'date', 'status' ] )->sort( \@sort );
-
 }
 
 sub _version_filters {
@@ -273,19 +283,11 @@ sub _version_filters {
     return () unless $version;
 
     if ( $version =~ s/^==\s*// ) {
-        return { term => { 'module.version' => $version }, };
+        return +{ must => [ { term => { 'module.version' => $version } } ] };
     }
-    elsif ( $version !~ /\s/ ) {
-        return {
-            range => {
-                'module.version_numified' =>
-                    { 'gte' => $self->_numify($version) }
-            },
-        };
-    }
-    else {
+    elsif ( $version =~ /^[<>!]=?\s*/ ) {
         my %ops = qw(< lt <= lte > gt >= gte);
-        my ( %range, @exclusion );
+        my ( %filters, %range, @exclusion );
         my @requirements = split /,\s*/, $version;
         for my $r (@requirements) {
             if ( $r =~ s/^([<>]=?)\s*// ) {
@@ -296,27 +298,35 @@ sub _version_filters {
             }
         }
 
-        my @filters
-            = ( { range => { 'module.version_numified' => \%range } }, );
-
-        if (@exclusion) {
-            push @filters, {
-                not => {
-                    or => [
-                        map {
-                            +{
-                                term => {
-                                    'module.version_numified' =>
-                                        $self->_numify($_)
-                                }
-                                }
-                        } @exclusion
-                    ]
-                },
-            };
+        if ( keys %range ) {
+            $filters{must}
+                = [ { range => { 'module.version_numified' => \%range } } ];
         }
 
-        return @filters;
+        if (@exclusion) {
+            $filters{must_not} = [];
+            push @{ $filters{must_not} }, map {
+                +{
+                    term => {
+                        'module.version_numified' => $self->_numify($_)
+                    }
+                    }
+            } @exclusion;
+        }
+
+        return \%filters;
+    }
+    elsif ( $version !~ /\s/ ) {
+        return +{
+            must => [
+                {
+                    range => {
+                        'module.version_numified' =>
+                            { 'gte' => $self->_numify($version) }
+                    },
+                }
+            ]
+        };
     }
 }
 
