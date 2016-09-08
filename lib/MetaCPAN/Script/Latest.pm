@@ -206,7 +206,7 @@ sub run {
     my @module_to_purge_dists = map { $_->distribution } @modules_to_purge;
 
     # Call Fastly to purge
-    $self->cdn_purge_cpan_distnameinfos( \@module_to_purge_dists );
+    $self->purge_cpan_distnameinfos( \@module_to_purge_dists );
 
 }
 

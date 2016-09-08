@@ -6,7 +6,12 @@ use MetaCPAN::Types qw(HashRef);
 
 use FindBin;
 
-has config => (
+# Done like this so can be required by a roles
+sub config {
+    return $_[0]->_config;
+}
+
+has _config => (
     is      => 'ro',
     isa     => HashRef,
     lazy    => 1,

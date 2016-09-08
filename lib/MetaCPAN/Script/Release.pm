@@ -190,7 +190,8 @@ sub run {
     $self->index->refresh unless $self->queue;
 
     # Call Fastly to purge
-    $self->cdn_purge_cpan_distnameinfos( \@module_to_purge_dists );
+    $self->purge_cpan_distnameinfos( \@module_to_purge_dists );
+
 }
 
 sub _get_release_model {

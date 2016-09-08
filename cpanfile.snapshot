@@ -884,6 +884,14 @@ DISTRIBUTIONS
       MooseX::Traits::Pluggable 0
       Scalar::Util 0
       namespace::autoclean 0
+  CatalystX-Fastly-Role-Response-0.04
+    pathname: L/LL/LLAP/CatalystX-Fastly-Role-Response-0.04.tar.gz
+    provides:
+      CatalystX::Fastly::Role::Response 0.04
+    requirements:
+      Carp 0
+      ExtUtils::MakeMaker 0
+      Moose::Role 0
   CatalystX-InjectComponent-0.025
     pathname: R/RO/ROKR/CatalystX-InjectComponent-0.025.tar.gz
     provides:
@@ -4193,6 +4201,19 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
+  MetaCPAN-Role-0.01
+    pathname: L/LL/LLAP/MetaCPAN-Role-0.01.tar.gz
+    provides:
+      MetaCPAN::Role 0.01
+      MetaCPAN::Role::Fastly 0.01
+      MetaCPAN::Role::Fastly::Catalyst 0.01
+    requirements:
+      Carp 0
+      CatalystX::Fastly::Role::Response 0
+      ExtUtils::MakeMaker 0
+      Moose::Role 0
+      MooseX::Fastly::Role 0
+      Net::Fastly 0
   Minion-5.08
     pathname: S/SR/SRI/Minion-5.08.tar.gz
     provides:
@@ -5190,6 +5211,15 @@ DISTRIBUTIONS
       Test::Exception 0
       Test::More 0
       namespace::clean 0
+  MooseX-Fastly-Role-0.01
+    pathname: L/LL/LLAP/MooseX-Fastly-Role-0.01.tar.gz
+    provides:
+      MooseX::Fastly::Role 0.01
+    requirements:
+      Carp 0
+      ExtUtils::MakeMaker 0
+      Moose::Role 0
+      Net::Fastly 1.05
   MooseX-Getopt-0.70
     pathname: D/DR/DROLSKY/MooseX-Getopt-0.70.tar.gz
     provides:
