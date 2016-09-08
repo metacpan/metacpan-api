@@ -27,8 +27,11 @@ test_psgi app, sub {
             is( $res->header('X-Content-Type'),
                 'text/x-script.perl-module', 'X-Content-Type' );
 
-            is( $res->header('Surrogate-Control'),
-                'max-age=86400', 'Surrogate-Control' );
+            is(
+                $res->header('Surrogate-Control'),
+                'max-age=31556952, stale-if-error=2592000',
+                'Surrogate-Control'
+            );
 
         }
         elsif ( $k =~ /MANIFEST/ ) {
