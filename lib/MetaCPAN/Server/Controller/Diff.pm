@@ -20,7 +20,7 @@ sub diff_releases : Chained('index') : PathPart('release') : Args(4) {
     my ( $self, $c, @path ) = @_;
 
     $c->add_author_key( $path[0] );
-    $c->add_author_key( $path[2] );
+    $c->add_author_key( $path[2] ) unless $path[0] eq $path[2];
     $c->cdn_max_age('1y');
 
     # Use author/release as top dirs for diff.

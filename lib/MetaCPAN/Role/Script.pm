@@ -12,9 +12,8 @@ use MetaCPAN::Queue ();
 
 use Carp ();
 
-with 'MetaCPAN::Role::HasConfig';
-with 'MetaCPAN::Role::Fastly';
-with 'MetaCPAN::Role::Logger';
+with( 'MetaCPAN::Role::HasConfig', 'MetaCPAN::Role::Fastly',
+    'MetaCPAN::Role::Logger' );
 
 has cpan => (
     is      => 'ro',

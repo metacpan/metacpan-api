@@ -191,7 +191,6 @@ sub run {
 
     # Call Fastly to purge
     $self->purge_cpan_distnameinfos( \@module_to_purge_dists );
-
 }
 
 sub _get_release_model {

@@ -3,9 +3,7 @@ package MetaCPAN::Server;
 use Moose;
 
 ## no critic (Modules::RequireEndWithOne)
-use Catalyst qw/
-    +MetaCPAN::Role::Fastly::Catalyst
-    /;
+use Catalyst qw( +MetaCPAN::Role::Fastly::Catalyst );
 
 use CatalystX::RoleApplicator;
 use File::Temp qw( tempdir );
