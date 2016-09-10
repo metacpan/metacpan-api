@@ -112,7 +112,7 @@ sub search : Path('_search') : ActionClass('Deserialize') {
                 {
                     index => $c->model('CPAN')->index,
                     type  => $self->type,
-                    body  => $c->req->data,
+                    body  => $c->req->data || delete $params->{source},
                     %$params,
                 }
             )
