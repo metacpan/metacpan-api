@@ -260,6 +260,9 @@ sub reindex_release {
     for my $bulk ( values %bulk_helper ) {
         $bulk->flush;
     }
+
+    # Call Fastly to purge
+    $self->purge_cpan_distnameinfos( [$info] );
 }
 
 __PACKAGE__->meta->make_immutable;
