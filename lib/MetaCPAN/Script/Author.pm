@@ -56,6 +56,8 @@ sub index_authors {
 
     my $bulk = $self->model->bulk( size => 100 );
 
+    my @author_ids_to_purge;
+
     while ( my ( $pauseid, $data ) = each %$authors ) {
         my ( $name, $email, $homepage, $asciiname )
             = ( @$data{qw(fullname email homepage asciiname)} );
@@ -112,10 +114,16 @@ sub index_authors {
             }
         }
 
+        push @author_ids_to_purge, $put->{pauseid};
+
         # Only try put if this is a valid format
         $bulk->put($author);
     }
     $self->index->refresh;
+
+    $self->purge_author_key(@author_ids_to_purge);
+    $self->perform_purges;
+
     log_info {"done"};
 }
 
