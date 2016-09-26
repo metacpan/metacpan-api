@@ -153,9 +153,9 @@ sub run {
 
     eval { DB::enable_profile() };
     while ( my $file = shift @files ) {
+        my $d = CPAN::DistnameInfo->new($file);
 
         if ( $self->skip ) {
-            my $d     = CPAN::DistnameInfo->new($file);
             my $count = $self->index->type('release')->filter(
                 {
                     and => [
@@ -171,8 +171,14 @@ sub run {
         }
 
         if ( $self->queue ) {
-            $self->_add_to_queue( index_release =>
-                    [ ( $self->latest ? '--latest' : () ), $file ] );
+            $self->_add_to_queue(
+                index_release => [$file] => { priority => 3 } );
+
+            if ( $self->latest ) {
+                $self->_add_to_queue(
+                    index_latest => [ '--distribution', $d->dist ] =>
+                        { priority => 2 } );
+            }
         }
         else {
             try { $self->import_archive($file) }
@@ -279,7 +285,7 @@ sub import_archive {
     $document->put;
 
     # update 'latest' (must be done _after_ last update of the document)
-    if ( $self->latest ) {
+    if ( $self->latest and !$self->queue ) {
         local @ARGV = ( qw(latest --distribution), $document->distribution );
         MetaCPAN::Script::Runner->run;
     }
