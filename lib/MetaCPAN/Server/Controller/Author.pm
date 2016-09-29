@@ -8,6 +8,7 @@ use Moose;
 BEGIN { extends 'MetaCPAN::Server::Controller' }
 
 with 'MetaCPAN::Server::Role::JSONP';
+with 'MetaCPAN::Server::Role::ES::Query';
 
 __PACKAGE__->config(
     relationships => {
@@ -57,6 +58,13 @@ sub get : Path('') : Args(1) {
     $c->stash($st)
         || $c->detach( '/not_found',
         ['The requested field(s) could not be found'] );
+}
+
+# endpoint: /author/by_user?user=<csv_user_ids>[&fields=<csv_fields>][&sort=<csv_sort>][&size=N]
+sub by_user : Path('by_user') : Args(0) {
+    my ( $self, $c ) = @_;
+    my @users = split /,/ => $c->req->parameters->{user};
+    $self->es_query_by_key( $c, 'user', \@users );
 }
 
 1;
