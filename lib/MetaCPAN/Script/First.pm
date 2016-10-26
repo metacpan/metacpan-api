@@ -37,6 +37,9 @@ sub run {
             };
     }
 
+    # FIXME
+    # Should purge all of fastly after this?
+
     1;
 }
 
