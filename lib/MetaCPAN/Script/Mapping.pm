@@ -19,14 +19,31 @@ has delete => (
     documentation => 'delete index if it exists already',
 );
 
+has list_types => (
+    is            => 'ro',
+    isa           => Bool,
+    default       => 0,
+    documentation => 'list available index type names',
+);
+
 sub run {
     my $self = shift;
-    $self->delete_mapping;
+
+    if ( $self->delete ) {
+        $self->delete_mapping;
+    }
+    elsif ( $self->list_types ) {
+        $self->list_available_types;
+    }
+}
+
+sub list_available_types {
+    my $self = shift;
+    print "$_\n" for sort keys %{ $self->index->types };
 }
 
 sub delete_mapping {
     my $self = shift;
-    return unless $self->delete;
 
     if (is_interactive) {
         print colored(
