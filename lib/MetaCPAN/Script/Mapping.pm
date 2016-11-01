@@ -19,14 +19,31 @@ has delete => (
     documentation => 'delete index if it exists already',
 );
 
+has list_types => (
+    is            => 'ro',
+    isa           => Bool,
+    default       => 0,
+    documentation => 'list available index type names',
+);
+
 sub run {
     my $self = shift;
-    $self->delete_mapping;
+
+    if ( $self->delete ) {
+        $self->delete_mapping;
+    }
+    elsif ( $self->list_types ) {
+        $self->list_available_types;
+    }
+}
+
+sub list_available_types {
+    my $self = shift;
+    print "$_\n" for sort keys %{ $self->index->types };
 }
 
 sub delete_mapping {
     my $self = shift;
-    return unless $self->delete;
 
     if (is_interactive) {
         print colored(
@@ -44,66 +61,6 @@ sub delete_mapping {
     }
     log_info {"Putting mapping to ElasticSearch server"};
     $self->model->deploy( delete => $self->delete );
-}
-
-sub map_perlmongers {
-    my ( $self, $es ) = @_;
-    return $es->put_mapping(
-        index      => ['cpan'],
-        type       => 'perlmongers',
-        properties => {
-            city      => { type       => "string" },
-            continent => { type       => "string" },
-            email     => { properties => { type => { type => "string" } } },
-            inception_date =>
-                { format => "dateOptionalTime", type => "date" },
-            latitude => { type => "object" },
-            location => {
-                properties => {
-                    city      => { type => "string" },
-                    continent => { type => "string" },
-                    country   => { type => "string" },
-                    latitude  => { type => "string" },
-                    longitude => { type => "string" },
-                    region    => { type => "object" },
-                    state     => { type => "string" },
-                },
-            },
-            longitude    => { type => "object" },
-            mailing_list => {
-                properties => {
-                    email => {
-                        properties => {
-                            domain => { type => "string" },
-                            type   => { type => "string" },
-                            user   => { type => "string" },
-                        },
-                    },
-                    name => { type => "string" },
-                },
-            },
-            name   => { type => "string" },
-            pm_id  => { type => "string" },
-            region => { type => "string" },
-            state  => { type => "object" },
-            status => { type => "string" },
-            tsar   => {
-                properties => {
-                    email => {
-                        properties => {
-                            domain => { type => "string" },
-                            type   => { type => "string" },
-                            user   => { type => "string" },
-                        },
-                    },
-                    name => { type => "string" },
-                },
-            },
-            web => { type => "string" },
-        },
-
-    );
-
 }
 
 __PACKAGE__->meta->make_immutable;
