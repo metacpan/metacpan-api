@@ -46,11 +46,6 @@ has source => (
     default  => sub { [qw(rt github)] },
 );
 
-has ua => (
-    is      => 'ro',
-    default => sub { LWP::UserAgent->new },
-);
-
 has pithub => (
     is      => 'ro',
     isa     => 'Pithub',

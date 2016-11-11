@@ -13,7 +13,7 @@ use MetaCPAN::Queue ();
 use Moose::Role;
 use Carp ();
 
-has 'cpan' => (
+has cpan => (
     is      => 'ro',
     isa     => Dir,
     lazy    => 1,
@@ -30,9 +30,21 @@ has die_on_error => (
     documentation => 'Die on errors instead of simply logging',
 );
 
+has ua => (
+    is      => 'ro',
+    lazy    => 1,
+    builder => '_build_ua',
+);
+
+has proxy => (
+    is      => 'ro',
+    isa     => Str,
+    default => '',
+);
+
 has es => (
-    isa           => ES,
     is            => 'ro',
+    isa           => ES,
     required      => 1,
     coerce        => 1,
     documentation => 'Elasticsearch http connection string',
@@ -106,6 +118,20 @@ sub _build_model {
 
     # es provided by ElasticSearchX::Model::Role
     return MetaCPAN::Model->new( es => $self->es );
+}
+
+sub _build_ua {
+    my $self  = shift;
+    my $ua    = LWP::UserAgent->new;
+    my $proxy = $self->proxy;
+
+    if ($proxy) {
+        $proxy eq 'env'
+            ? $ua->env_proxy
+            : $ua->proxy( [qw<http https>], $proxy );
+    }
+
+    return $ua;
 }
 
 sub _build_cpan {
