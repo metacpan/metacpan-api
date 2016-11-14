@@ -9,6 +9,7 @@ use List::MoreUtils ();
 use Moose::Util     ();
 use Moose;
 use MetaCPAN::Types qw( HashRef );
+use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
 
 BEGIN { extends 'Catalyst::Controller'; }
 
@@ -107,16 +108,18 @@ sub search : Path('_search') : ActionClass('Deserialize') {
     }
     delete $params->{callback};
     eval {
-        $c->stash(
-            $self->model($c)->es->search(
-                {
-                    index => $c->model('CPAN')->index,
-                    type  => $self->type,
-                    body  => $c->req->data || delete $params->{source},
-                    %$params,
-                }
-            )
+        my $res = $self->model($c)->es->search(
+            {
+                index => $c->model('CPAN')->index,
+                type  => $self->type,
+                body  => $c->req->data || delete $params->{source},
+                %$params,
+            }
         );
+        single_valued_arrayref_to_scalar( $_->{fields} )
+            for @{ $res->{hits}{hits} };
+        $c->stash($res);
+        1;
     } or do { $self->internal_error( $c, $@ ) };
 }
 
