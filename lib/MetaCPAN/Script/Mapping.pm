@@ -46,6 +46,27 @@ has patch_mapping => (
     documentation => 'type mapping patches',
 );
 
+has copy_to_index => (
+    is            => 'ro',
+    isa           => Str,
+    default       => "",
+    documentation => 'index to copy type to',
+);
+
+has copy_type => (
+    is            => 'ro',
+    isa           => Str,
+    default       => "",
+    documentation => 'type to copy',
+);
+
+has copy_query => (
+    is            => 'ro',
+    isa           => Str,
+    default       => "",
+    documentation => 'match query',
+);
+
 has reindex => (
     is            => 'ro',
     isa           => Bool,
@@ -64,6 +85,7 @@ sub run {
     my $self = shift;
     $self->index_create   if $self->create_index;
     $self->index_delete   if $self->delete_index;
+    $self->copy_index     if $self->copy_to_index;
     $self->types_list     if $self->list_types;
     $self->delete_mapping if $self->delete;
 }
@@ -81,7 +103,6 @@ sub _check_index_exists {
         log_error {"Index doesn't exists: $name"};
         exit 0;
     }
-
 }
 
 sub index_delete {
@@ -150,6 +171,49 @@ sub index_create {
             . join( ',', @patch_types ) . ")"
     }
     if @patch_types;
+}
+
+sub copy_index {
+    my $self = shift;
+    my $type = $self->copy_type;
+    $type or die "can't copy without a type\n";
+
+    my $query = { match_all => {} };
+    if ( $self->copy_query ) {
+        eval {
+            $query = decode_json $self->copy_query;
+            1;
+        } or do {
+            my $err = $@ || 'zombie error';
+            die $err;
+        };
+    }
+
+    my $scroll = $self->es()->scroll_helper(
+        search_type => 'scan',
+        size        => 250,
+        scroll      => '10m',
+        index       => $self->index->name,
+        type        => $type,
+        body        => { query => { filtered => { query => $query } } },
+    );
+
+    my $bulk = $self->es->bulk_helper(
+        index     => $self->copy_to_index,
+        type      => $type,
+        max_count => 500,
+    );
+
+    while ( my $search = $scroll->next ) {
+        $bulk->create(
+            {
+                id     => $search->{_id},
+                source => $search->{_source}
+            }
+        );
+    }
+
+    $bulk->flush;
 }
 
 sub types_list {
