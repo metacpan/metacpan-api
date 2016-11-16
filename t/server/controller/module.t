@@ -6,24 +6,65 @@ use MetaCPAN::TestHelpers;
 use Test::More;
 
 my %tests = (
-    '/module'                                 => 200,
-    '/module/DOESNEXIST'                      => 404,
-    '/module/DOES/Not/Exist.pm'               => 404,
-    '/module/DOY/Moose-0.01/lib/Moose.pm'     => 200,
-    '/module/Moose'                           => 200,
-    '/module/Moose?fields=documentation,name' => 200,
+
+    '/module' => {
+        code          => 200,
+        cache_control => 'private',
+        surrogate_key =>
+            'content_type=application/json content_type=application',
+        surrogate_control => undef,
+    },
+    '/module/DOY/Moose-0.01/lib/Moose.pm' => {
+        code          => 200,
+        cache_control => undef,
+        surrogate_key =>
+            'author=DOY content_type=application/json content_type=application',
+        surrogate_control => 'max-age=31556952, stale-if-error=2592000',
+    },
+    '/module/Moose' => {
+        code          => 200,
+        cache_control => 'private',
+        surrogate_key =>
+            'content_type=application/json content_type=application',
+        surrogate_control => undef,
+    },
+    '/module/Moose?fields=documentation,name' => {
+        code          => 200,
+        cache_control => 'private',
+        surrogate_key =>
+            'content_type=application/json content_type=application',
+        surrogate_control => undef,
+    },
+
+    '/module/DOESNEXIST' => {
+        code          => 404,
+        cache_control => 'private',
+        surrogate_key =>
+            'content_type=application/json content_type=application',
+        surrogate_control => undef,
+    },
+    '/module/DOES/Not/Exist.pm' => {
+        code          => 404,
+        cache_control => undef,
+        surrogate_key =>
+            'author=DOES content_type=application/json content_type=application',
+        surrogate_control => 'max-age=31556952, stale-if-error=2592000',
+    },
+
 );
 
 test_psgi app, sub {
     my $cb = shift;
     while ( my ( $k, $v ) = each %tests ) {
         ok( my $res = $cb->( GET $k), "GET $k" );
-        is( $res->code, $v, "code $v" );
+        is( $res->code, $v->{code}, "code " . $v->{code} );
         is(
             $res->header('content-type'),
             'application/json; charset=utf-8',
             'Content-type'
         );
+
+        test_cache_headers( $res, $v );
 
         my $json = decode_json_ok($res);
         if ( $k eq '/module' ) {
