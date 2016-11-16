@@ -10,9 +10,12 @@ use Test::More;
     no warnings 'redefine';
 
     sub get_ok {
-        my ( $cb, $url, $desc ) = @_;
+        my ( $cb, $url, $desc, $headers ) = @_;
         ok( my $res = $cb->( GET $url ), $desc || "GET $url" );
         is( $res->code, 200, 'code 200' );
+
+        test_cache_headers( $res, $headers );
+
         return $res;
     }
 }
@@ -25,7 +28,17 @@ test_psgi app, sub {
     my $cb = shift;
 
     my $dist_url = '/diff/release/Moose';
-    my $json = get_json_ok( $cb, $dist_url, 'GET /diff/dist' );
+    my $json     = get_json_ok(
+        $cb,
+        $dist_url,
+        'GET /diff/dist',
+        {
+            cache_control => 'private',
+            surrogate_key =>
+                'content_type=application/json content_type=application',
+            surrogate_control => undef,
+        }
+    );
 
     diffed_file_like( $json, 'DOY/Moose-0.01', 'DOY/Moose-0.02',
         'Changes' =>
@@ -47,8 +60,17 @@ test_psgi app, sub {
     );
 
     my $release_url = '/diff/release/DOY/Moose-0.01/DOY/Moose-0.02/';
-    my $json2       = get_json_ok( $cb, $release_url,
-        'GET /diff/author/release/author/release' );
+    my $json2       = get_json_ok(
+        $cb,
+        $release_url,
+        'GET /diff/author/release/author/release',
+        {
+            cache_control => undef,
+            surrogate_key =>
+                'author=DOY content_type=application/json content_type=application',
+            surrogate_control => 'max-age=31556952, stale-if-error=2592000',
+        }
+    );
 
     my $plain2 = plain_text_diff_ok(
         $cb,
@@ -61,7 +83,17 @@ test_psgi app, sub {
 
     my $file_url
         = '/diff/file/8yTixXQGpkbPsMBXKvDoJV4Qkg8/dPgxn7qq0wm1l_UO1aIMyQWFJPw';
-    $json = get_json_ok( $cb, $file_url, 'GET diff Moose.pm' );
+    $json = get_json_ok(
+        $cb,
+        $file_url,
+        'GET diff Moose.pm',
+        {
+            cache_control => undef,
+            surrogate_key =>
+                'content_type=application/json content_type=application',
+            surrogate_control => 'max-age=31556952, stale-if-error=2592000',
+        }
+    );
 
     $plain = plain_text_diff_ok(
         $cb,
