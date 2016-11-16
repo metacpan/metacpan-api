@@ -12,7 +12,7 @@ with 'MetaCPAN::Server::Role::JSONP';
 sub find : Path('') {
     my ( $self, $c, $author, $release, @path ) = @_;
 
-    $c->add_author_key($author);
+    # $c->add_author_key($author) called from /source/get request below
     $c->cdn_max_age('1y');
 
     $c->stash->{link_mappings}
