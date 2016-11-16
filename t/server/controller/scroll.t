@@ -59,6 +59,16 @@ sub req_json {
     is( $res->code, $code, "HTTP $code" )
         or diag Test::More::explain($res);
 
+    test_cache_headers(
+        $res,
+        {
+            cache_control => 'private',
+            surrogate_key =>
+                'content_type=application/json content_type=application',
+            surrogate_control => undef,
+        }
+    );
+
     my $json = decode_json_ok($res);
     return $json;
 }
