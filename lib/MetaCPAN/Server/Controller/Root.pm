@@ -77,13 +77,18 @@ sub end : ActionClass('RenderView') {
             if ( $c->req->params->{callback} );
     }
 
-    unless (
-        # Already have something set for fastly
-        $c->res->header('Surrogate-Control')
-        )
-    {
-        # Make sure fastly doesn't cache anything by accident
-        $c->res->header( 'Surrogate-Control' => 'no-store' );
+    if ( $c->cdn_max_age ) {
+
+        # If we allow caching, we can serve stale content, if we error
+        # on backend. Because we have caching on our UI (metacpan.org)
+        # we don't really want to use stale_while_revalidate on
+        # our API as otherwise the UI cacheing could be of old content
+        $c->cdn_stale_if_error('1M');
+    }
+    else {
+        # Default to telling fastly NOT to cache unless we have a
+        # cdn cache time
+        $c->cdn_never_cache(1);
     }
 
 }
