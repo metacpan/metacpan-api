@@ -14,6 +14,7 @@ with 'MetaCPAN::Server::Role::JSONP';
 sub index : Chained('/') : PathPart('source') : CaptureArgs(0) {
 }
 
+# e.g. /source/DOY/Moose-0.01/MANIFEST or /source/DOY/Moose-0.01/
 sub get : Chained('index') : PathPart('') : Args {
     my ( $self, $c, $author, $release, @path ) = @_;
 
@@ -38,12 +39,6 @@ sub get : Chained('index') : PathPart('') : Args {
     else {
         $c->stash->{path} = $file;
 
-        # Tell fastly to cache for a day (for st.aticpan.org,
-        # api.metacpan.org does not go through fastly)
-        my $max_age_seconds = 60 * 60 * 24;
-        $c->res->header(
-            'Surrogate-Control' => "max-age=${max_age_seconds}" );
-
         # Add X-Content-Type header, for fastly to rewrite on st.aticpan.org
         $c->res->header( 'X-Content-Type' => Plack::MIME->mime_type($file)
                 || 'text/plain' );
@@ -52,8 +47,12 @@ sub get : Chained('index') : PathPart('') : Args {
     }
 }
 
+# e.g. /source/Moose
 sub module : Chained('index') : PathPart('') : Args(1) {
     my ( $self, $c, $module ) = @_;
+
+    $c->cdn_never_cache(1);
+
     $module = $c->model('CPAN::File')->find($module)
         or $c->detach( '/not_found', [] );
     $c->forward( 'get', [ map { $module->$_ } qw(author release path) ] );

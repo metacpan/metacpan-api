@@ -2,23 +2,69 @@ use strict;
 use warnings;
 
 use MetaCPAN::Server::Test;
+use MetaCPAN::TestHelpers;
 use Test::More;
 
 my %tests = (
-    '/source/DOESNEXIST'                           => 404,
-    '/source/DOY/Moose-0.01/'                      => 200,
-    '/source/DOY/Moose-0.01/Changes'               => 200,
-    '/source/DOY/Moose-0.01/Changes?callback=foo'  => 200,
-    '/source/DOY/Moose-0.01/MANIFEST'              => 200,
-    '/source/DOY/Moose-0.01/MANIFEST?callback=foo' => 200,
-    '/source/Moose'                                => 200,
+    '/source/DOESNEXIST' => {
+        code          => 404,
+        cache_control => 'private',
+        surrogate_key =>
+            'content_type=application/json content_type=application',
+        surrogate_control => undef
+    },
+    '/source/DOY/Moose-0.01/' => {
+        code          => 200,
+        cache_control => undef,
+        surrogate_key =>
+            'author=DOY content_type=text/html content_type=text',
+        surrogate_control => 'max-age=31556952, stale-if-error=2592000'
+    },
+    '/source/DOY/Moose-0.01/Changes' => {
+        code          => 200,
+        cache_control => undef,
+        surrogate_key =>
+            'author=DOY content_type=text/plain content_type=text',
+        surrogate_control => 'max-age=31556952, stale-if-error=2592000',
+    },
+    '/source/DOY/Moose-0.01/Changes?callback=foo' => {
+        code          => 200,
+        cache_control => undef,
+        surrogate_key =>
+            'author=DOY content_type=text/javascript content_type=text',
+        surrogate_control => 'max-age=31556952, stale-if-error=2592000',
+    },
+    '/source/DOY/Moose-0.01/MANIFEST' => {
+        code          => 200,
+        cache_control => undef,
+        surrogate_key =>
+            'author=DOY content_type=text/plain content_type=text',
+        surrogate_control => 'max-age=31556952, stale-if-error=2592000',
+    },
+    '/source/DOY/Moose-0.01/MANIFEST?callback=foo' => {
+        code          => 200,
+        cache_control => undef,
+        surrogate_key =>
+            'author=DOY content_type=text/javascript content_type=text',
+        surrogate_control => 'max-age=31556952, stale-if-error=2592000',
+    },
+    '/source/Moose' => {
+        code          => 200,
+        cache_control => 'private',
+        surrogate_key =>
+            'author=DOY content_type=text/plain content_type=text',
+        surrogate_control => undef
+    },
 );
 
 test_psgi app, sub {
     my $cb = shift;
     while ( my ( $k, $v ) = each %tests ) {
         ok( my $res = $cb->( GET $k), "GET $k" );
-        is( $res->code, $v, "code $v" );
+        is( $res->code, $v->{code}, "code " . $v->{code} );
+
+        test_cache_headers( $res, $v );
+
         if ( $k eq '/source/Moose' ) {
             like( $res->content, qr/package Moose/, 'Moose source' );
             is( $res->header('content-type'), 'text/plain', 'Content-type' );
@@ -26,12 +72,6 @@ test_psgi app, sub {
             # Used for fastly on st.aticpan.org
             is( $res->header('X-Content-Type'),
                 'text/x-script.perl-module', 'X-Content-Type' );
-
-            is(
-                $res->header('Surrogate-Control'),
-                'max-age=31556952, stale-if-error=2592000',
-                'Surrogate-Control'
-            );
 
         }
         elsif ( $k =~ /MANIFEST/ ) {
@@ -100,7 +140,7 @@ test_psgi app, sub {
                 'JSONP-wrapped change-log'
             );
         }
-        elsif ( $v eq 200 ) {
+        elsif ( $v->{code} eq 200 ) {
             like( $res->content, qr/Index of/, 'Index of' );
             is(
                 $res->header('content-type'),
