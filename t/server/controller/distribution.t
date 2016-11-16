@@ -6,9 +6,33 @@ use MetaCPAN::TestHelpers;
 use Test::More;
 
 my @tests = (
-    [ '/distribution'            => 200 ],
-    [ '/distribution/DOESNEXIST' => 404 ],
-    [ '/distribution/Moose'      => 200 ],
+    [
+        '/distribution' => {
+            code          => 200,
+            cache_control => 'private',
+            surrogate_key =>
+                'content_type=application/json content_type=application',
+            surrogate_control => undef,
+        }
+    ],
+    [
+        '/distribution/DOESNEXIST' => {
+            code          => 404,
+            cache_control => 'private',
+            surrogate_key =>
+                'content_type=application/json content_type=application',
+            surrogate_control => undef,
+        }
+    ],
+    [
+        '/distribution/Moose' => {
+            code          => 200,
+            cache_control => 'private',
+            surrogate_key =>
+                'content_type=application/json content_type=application',
+            surrogate_control => undef,
+        }
+    ],
 );
 
 test_psgi app, sub {
@@ -18,12 +42,14 @@ test_psgi app, sub {
         ok( my $res = $cb->( GET $k), "GET $k" );
 
         # TRAVIS 5.18
-        is( $res->code, $v, "code $v" );
+        is( $res->code, $v->{code}, "code " . $v->{code} );
         is(
             $res->header('content-type'),
             'application/json; charset=utf-8',
             'Content-type'
         );
+        test_cache_headers( $res, $v );
+
         my $json = decode_json_ok($res);
         if ( $k eq '/distribution' ) {
             ok( $json->{hits}->{total}, 'got total count' );
