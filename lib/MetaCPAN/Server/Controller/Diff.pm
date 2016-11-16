@@ -48,8 +48,11 @@ sub release : Chained('index') : PathPart('release') : Args(1) {
 }
 
 # Diff two files (also works with directories).
+# eg. /diff/file/8yTixXQGpkbPsMBXKvDoJV4Qkg8/dPgxn7qq0wm1l_UO1aIMyQWFJPw
 sub file : Chained('index') : PathPart('file') : Args(2) {
     my ( $self, $c, $source, $target ) = @_;
+
+    $c->cdn_max_age('1y');
 
     my ( $source_args, $target_args )
         = map { [ @$_{qw(author release path)} ] }
