@@ -8,25 +8,6 @@ use warnings;
 
 use parent 'Pod::Simple::XHTML';
 
-sub start_X {
-    $_[0]{_in_X_} = 1;
-}
-
-sub end_X {
-    $_[0]{_in_X_} = 0;
-    $_[0]{'scratch'}
-        .= '<a id="' . $_[0]->idify( $_[0]{_last_X_} ) . '"></a>';
-}
-
-sub handle_text {
-    if ( $_[0]{_in_X_} ) {
-        $_[0]{_last_X_} = $_[1];
-    }
-    else {
-        $_[0]->SUPER::handle_text( $_[1] );
-    }
-}
-
 sub link_mappings {
     my $self = shift;
     if (@_) {
