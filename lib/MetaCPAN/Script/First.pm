@@ -37,8 +37,8 @@ sub run {
             };
     }
 
-    # FIXME
-    # Should purge all of fastly after this?
+    # Everything changed - reboot the world!
+    $self->cdn_purge_all;
 
     1;
 }
