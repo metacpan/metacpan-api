@@ -64,7 +64,7 @@ has index => (
     is            => 'ro',
     isa           => Str,
     default       => 'cpan',
-    documentation => 'Index to use, defaults to "cpan"',
+    documentation => 'Index to use, defaults to "cpan" (when used: also export ES_SCRIPT_INDEX)',
 );
 
 has port => (
