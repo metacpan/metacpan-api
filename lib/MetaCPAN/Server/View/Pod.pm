@@ -18,7 +18,7 @@ sub process {
 
     my ( $body, $content_type );
     my $accept = eval { $c->req->preferred_content_type } || 'text/html';
-    my $show_errors = $c->req->params->{show_errors};
+    my $show_errors = $c->stash->{show_errors};
 
     my $renderer = $self->_factory(
         ( $url_prefix ? ( perldoc_url_prefix => $url_prefix ) : () ),
