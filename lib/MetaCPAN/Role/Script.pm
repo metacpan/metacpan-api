@@ -1,7 +1,6 @@
 package MetaCPAN::Role::Script;
 
-use strict;
-use warnings;
+use Moose::Role;
 
 use ElasticSearchX::Model::Document::Types qw(:all);
 use FindBin;
@@ -10,8 +9,11 @@ use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Model;
 use MetaCPAN::Types qw(:all);
 use MetaCPAN::Queue ();
-use Moose::Role;
+
 use Carp ();
+
+with( 'MetaCPAN::Role::HasConfig', 'MetaCPAN::Role::Fastly',
+    'MetaCPAN::Role::Logger' );
 
 has cpan => (
     is      => 'ro',
@@ -94,9 +96,6 @@ has queue => (
     default       => 0,
     documentation => 'add indexing jobs to the minion queue',
 );
-
-with 'MetaCPAN::Role::Fastly', 'MetaCPAN::Role::HasConfig',
-    'MetaCPAN::Role::Logger';
 
 sub handle_error {
     my ( $self, $error ) = @_;

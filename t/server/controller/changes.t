@@ -5,32 +5,69 @@ use MetaCPAN::Server::Test;
 use MetaCPAN::TestHelpers;
 use Test::More;
 
+my $LOCAL_default_headers = {
+    cache_control => undef,
+    surrogate_key =>
+        'author=LOCAL content_type=application/json content_type=application',
+    surrogate_control => 'max-age=31556952, stale-if-error=2592000',
+};
+
+my $RWSTAUNER_default_headers = {
+    cache_control => undef,
+    surrogate_key =>
+        'author=RWSTAUNER content_type=application/json content_type=application',
+    surrogate_control => 'max-age=31556952, stale-if-error=2592000',
+};
+
 my @tests = (
     [
         '/changes/File-Changes' => 200,
         Changes => qr/^Revision history for Changes\n\n2\.0.+1\.0.+/sm,
+        $LOCAL_default_headers,
     ],
     [
         '/changes/LOCAL/File-Changes-2.0' => 200,
         Changes => qr/^Revision history for Changes\n\n2\.0.+1\.0.+/sm,
+        $LOCAL_default_headers,
     ],
     [
         '/changes/LOCAL/File-Changes-1.0' => 200,
         Changes => qr/^Revision history for Changes\n\n1\.0.+/sm,
+        $LOCAL_default_headers,
     ],
     [
         '/changes/File-Changes-News' => 200,
         NEWS                         => qr/^F\nR\nE\nE\nF\nO\nR\nM\n/,
+        $LOCAL_default_headers,
     ],
     [
         '/changes/LOCAL/File-Changes-News-11.22' => 200,
         NEWS => qr/^F\nR\nE\nE\nF\nO\nR\nM\n/,
+        $LOCAL_default_headers,
     ],
-    [ '/changes/NOEXISTY'        => 404 ],
-    [ '/changes/NOAUTHOR/NODIST' => 404 ],
+    [
+        '/changes/NOEXISTY' => 404,
+        '',
+        {
+            cache_control => undef,
+            surrogate_key =>
+                'author=NOEXISTY content_type=application/json content_type=application',
+            surrogate_control => 'max-age=31556952, stale-if-error=2592000',
+        }
+    ],
+    [
+        '/changes/NOAUTHOR/NODIST' => 404,
+        '',
+        {
+            cache_control => undef,
+            surrogate_key =>
+                'author=NOAUTOR content_type=application/json content_type=application',
+            surrogate_control => 'max-age=31556952, stale-if-error=2592000',
+        }
+    ],
 
     # Don't search for all files.
-    [ '/changes' => 404 ],
+    [ '/changes' => 404, '', $LOCAL_default_headers ],
 
     # NOTE: We need to use author/release because in these tests
     # 'perl' doesn't get flagged as latest.
@@ -38,24 +75,29 @@ my @tests = (
         '/changes/RWSTAUNER/perl-1' => 200,
         'perldelta.pod' =>
             qr/^=head1 NAME\n\nperldelta - changes for perl\n\n/m,
+        $RWSTAUNER_default_headers,
     ],
     [
         '/changes/File-Changes-UTF8' => 200,
         'Changes' => qr/^  - 23E7 \x{23E7} ELECTRICAL INTERSECTION/m,
+        $RWSTAUNER_default_headers,
     ],
     [
         '/changes/File-Changes-Latin1' => 200,
         'Changes'                      => qr/^  - \244 CURRENCY SIGN/m,
+        $RWSTAUNER_default_headers,
     ],
 );
 
 test_psgi app, sub {
     my $cb = shift;
     for my $test (@tests) {
-        my ( $path, $code, $name, $content ) = @{$test};
+        my ( $path, $code, $name, $content, $headers ) = @{$test};
 
         my $res = get_ok( $cb, $path, $code );
         my $json = decode_json_ok($res);
+
+        test_cache_headers( $res, $headers );
 
         next unless $res->code == 200;
 

@@ -37,6 +37,9 @@ sub run {
             };
     }
 
+    # Everything changed - reboot the world!
+    $self->cdn_purge_all;
+
     1;
 }
 

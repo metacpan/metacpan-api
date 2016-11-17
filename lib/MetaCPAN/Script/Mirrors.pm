@@ -42,6 +42,9 @@ sub index_mirrors {
         );
     }
     log_info {'done'};
+
+    $self->cdn_purge_now( { keys => ['MIRRORS'], } );
+
 }
 
 __PACKAGE__->meta->make_immutable;

@@ -24,8 +24,13 @@ __PACKAGE__->config(
     }
 );
 
+# https://fastapi.metacpan.org/v1/author/LLAP
 sub get : Path('') : Args(1) {
     my ( $self, $c, $id ) = @_;
+
+    $c->add_author_key($id);
+    $c->cdn_max_age('1y');
+
     my $file = $self->model($c)->raw->get($id);
     if ( !defined $file ) {
         $c->detach( '/not_found', ['Not found'] );

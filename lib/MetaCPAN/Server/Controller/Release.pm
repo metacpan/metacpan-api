@@ -31,6 +31,10 @@ sub find : Path('') : Args(1) {
 
 sub get : Path('') : Args(2) {
     my ( $self, $c, $author, $name ) = @_;
+
+    $c->add_author_key($author);
+    $c->cdn_max_age('1y');
+
     my $file = $self->model($c)->raw->get(
         {
             author => $author,

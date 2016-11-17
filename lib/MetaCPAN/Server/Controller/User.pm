@@ -16,6 +16,9 @@ __PACKAGE__->config(
 
 sub auto : Private {
     my ( $self, $c ) = @_;
+
+    $c->cdn_never_cache(1);
+
     if ( my $token = $c->req->params->{access_token} ) {
         my $user = $c->model('User::Account')->find_token($token);
         $c->authenticate( { user => $user } ) if ($user);

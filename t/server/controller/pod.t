@@ -4,6 +4,7 @@ use warnings;
 use Cpanel::JSON::XS ();
 use HTTP::Request::Common qw( GET );
 use MetaCPAN::Server ();
+use MetaCPAN::TestHelpers;
 use Path::Class qw(dir);
 use Plack::Test;
 use Test::More;
@@ -20,11 +21,41 @@ my %tests = (
 
     # TODO
     #'/pod'                            => 404,
-    '/pod/DOESNEXIST'                  => 404,
-    '/pod/DOY/Moose-0.01/lib/Moose.pm' => 200,
-    '/pod/DOY/Moose-0.02/binary.bin'   => 400,
-    '/pod/Moose'                       => 200,
-    '/pod/Pod::Pm'                     => 200,
+    '/pod/DOESNOTEXIST' => {
+        code          => 404,
+        cache_control => 'private',
+        surrogate_key =>
+            'content_type=application/json content_type=application',
+        surrogate_control => undef,
+    },
+    '/pod/DOY/Moose-0.02/binary.bin' => {
+        code          => 400,
+        cache_control => undef,
+        surrogate_key =>
+            'author=DOY content_type=application/json content_type=application',
+        surrogate_control => 'max-age=31556952, stale-if-error=2592000',
+    },
+
+    '/pod/DOY/Moose-0.01/lib/Moose.pm' => {
+        code          => 200,
+        cache_control => undef,
+        surrogate_key =>
+            'author=DOY content_type=text/html content_type=text',
+        surrogate_control => 'max-age=31556952, stale-if-error=2592000',
+    },
+    '/pod/Moose' => {
+        code          => 200,
+        cache_control => undef,
+        surrogate_key =>
+            'author=DOY content_type=text/html content_type=text',
+        surrogate_control => 'max-age=31556952, stale-if-error=2592000',
+    },
+    '/pod/Pod::Pm' => {
+        code          => 200,
+        cache_control => undef,
+        surrogate_key => 'author=MO content_type=text/html content_type=text',
+        surrogate_control => 'max-age=31556952, stale-if-error=2592000',
+    },
 );
 
 my $app  = MetaCPAN::Server->new->to_app();
@@ -33,19 +64,21 @@ my $test = Plack::Test->create($app);
 while ( my ( $k, $v ) = each %tests ) {
     my $res = $test->request( GET $k);
     ok( $res, "GET $k" );
-    is( $res->code, $v, "code $v" );
+    is( $res->code, $v->{code}, "code " . $v->{code} );
     is(
         $res->header('content-type'),
-        $v == 200
+        $v->{code} == 200
         ? 'text/html; charset=UTF-8'
         : 'application/json; charset=utf-8',
         'Content-type'
     );
 
+    test_cache_headers( $res, $v );
+
     if ( $k eq '/pod/Pod::Pm' ) {
         like( $res->content, qr/Pod::Pm - abstract/, 'NAME section' );
     }
-    elsif ( $v == 200 ) {
+    elsif ( $v->{code} == 200 ) {
         like( $res->content, qr/Moose - abstract/, 'NAME section' );
         $res = $test->request( GET "$k?content-type=text/plain" );
         is(
@@ -54,13 +87,13 @@ while ( my ( $k, $v ) = each %tests ) {
             'Content-type'
         );
     }
-    elsif ( $v == 404 ) {
+    elsif ( $v->{code} == 404 ) {
         like( $res->content, qr/Not found/, '404 correct error' );
     }
 
     my $ct = $k =~ /Moose[.]pm$/ ? '&content-type=text/x-pod' : q[];
     $res = $test->request( GET "$k?callback=foo$ct" );
-    is( $res->code, $v, "code $v" );
+    is( $res->code, $v->{code}, "code " . $v->{code} );
     is(
         $res->header('content-type'),
         'text/javascript; charset=UTF-8',
@@ -77,7 +110,7 @@ while ( my ( $k, $v ) = each %tests ) {
     };
     ok( $js_data, 'decode json' );
 
-    if ( $v eq 200 ) {
+    if ( $v->{code} eq 200 ) {
 
         if ($ct) {
             like( $js_data, qr{=head1 NAME}, 'POD body was JSON encoded' );

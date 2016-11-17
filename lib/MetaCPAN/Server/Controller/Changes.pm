@@ -19,8 +19,12 @@ has '+type' => ( default => 'file' );
 sub index : Chained('/') : PathPart('changes') : CaptureArgs(0) {
 }
 
+# https://fastapi.metacpan.org/v1/changes/LLAP/CatalystX-Fastly-Role-Response-0.04
 sub get : Chained('index') : PathPart('') : Args(2) {
     my ( $self, $c, $author, $release ) = @_;
+
+    $c->add_author_key($author);
+    $c->cdn_max_age('1y');
 
     # find the most likely file
     # TODO: should we do this when the release is indexed

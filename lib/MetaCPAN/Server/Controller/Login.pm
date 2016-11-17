@@ -12,6 +12,8 @@ BEGIN { extends 'Catalyst::Controller' }
 sub auto : Private {
     my ( $self, $c ) = @_;
 
+    $c->cdn_never_cache(1);
+
     # Store params in a temporary cookie so we can keep track of them.
     # This should include `client_id` (metacpan env) and `choice` (provider).
     if ( $c->req->params->{client_id} ) {

@@ -25,6 +25,7 @@ our @EXPORT = qw(
     hex_escape
     multiline_diag
     run_tests
+    test_cache_headers
     test_distribution
     test_release
     tmp_dir
@@ -120,6 +121,28 @@ sub fakecpan_configs_dir {
     my $source = dir( undef, checkout_root(), 'test-data', 'fakecpan' );
     $source->mkpath;
     return $source;
+}
+
+sub test_cache_headers {
+    my ( $res, $conf ) = @_;
+
+    is(
+        $res->header('Cache-Control'),
+        $conf->{cache_control},
+        "Cache Header: Cache-Control ok"
+    ) if exists $conf->{cache_control};
+
+    is(
+        $res->header('Surrogate-Key'),
+        $conf->{surrogate_key},
+        "Cache Header: Surrogate-Key ok"
+    ) if exists $conf->{surrogate_key};
+
+    is(
+        $res->header('Surrogate-Control'),
+        $conf->{surrogate_control},
+        "Cache Header: Surrogate-Control ok"
+    ) if exists $conf->{surrogate_control};
 }
 
 1;

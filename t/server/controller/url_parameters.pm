@@ -4,6 +4,7 @@ use warnings;
 use Cpanel::JSON::XS ();
 use HTTP::Request::Common qw( GET );
 use MetaCPAN::Server ();
+use MetaCPAN::TestHelpers;
 use Plack::Test;
 use Test::More;
 use Ref::Util qw( is_arrayref is_hashref );
@@ -34,6 +35,16 @@ subtest "parem 'source'" => sub {
             my $res = $test->request( GET $url );
             ok( $res, "GET $url" );
             is( $res->code, 200, "code 200" );
+            test_cache_headers(
+                $res,
+                {
+                    cache_control => 'private',
+                    surrogate_key =>
+                        'content_type=application/json content_type=application',
+                    surrogate_control => undef,
+
+                }
+            );
             is(
                 $res->header('content-type'),
                 'application/json; charset=utf-8',
