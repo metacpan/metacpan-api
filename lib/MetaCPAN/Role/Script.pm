@@ -98,6 +98,20 @@ has queue => (
     documentation => 'add indexing jobs to the minion queue',
 );
 
+sub BUILDARGS {
+    my ( $self, @args ) = @_;
+    my %args = @args == 1 ? %{ $args[0] } : @args;
+
+    if ( exists $args{'index'} ) {
+        die
+            "when setting --index, please export ES_SCRIPT_INDEX to the same value\n"
+            unless $ENV{'ES_SCRIPT_INDEX'}
+            and $args{'index'} eq $ENV{'ES_SCRIPT_INDEX'};
+    }
+
+    return \%args;
+}
+
 sub handle_error {
     my ( $self, $error ) = @_;
 
