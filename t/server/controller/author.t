@@ -85,7 +85,7 @@ test_psgi app, sub {
         'GET /author/DOY?join=release' );
 
     $json = decode_json_ok($res);
-    is( @{ $json->{release}->{hits}->{hits} }, 2, 'joined 2 releases' );
+    is( @{ $json->{release}->{hits}->{hits} }, 4, 'joined 4 releases' );
 
     ok(
         $res = $cb->(

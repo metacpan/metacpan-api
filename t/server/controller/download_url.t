@@ -39,6 +39,25 @@ my @tests = (
         'latest',         '0.02'
     ],
     [ 'version >=', '/download_url/Moose?version=>=0.01', 'latest', '0.02' ],
+    [
+        'range >, <', '/download_url/Try::Tiny?version=>0.21,<0.27',
+        'cpan',       '0.24'
+    ],
+    [
+        'range >, <, !',
+        '/download_url/Try::Tiny?version=>0.21,<0.27,!=0.24',
+        'cpan', '0.23'
+    ],
+    [
+        'range >, <; dev',
+        '/download_url/Try::Tiny?version=>0.21,<0.27&dev=1',
+        'cpan', '0.26'
+    ],
+    [
+        'range >, <, !; dev',
+        '/download_url/Try::Tiny?version=>0.21,<0.27,!=0.26&dev=1',
+        'cpan', '0.25'
+    ],
 );
 
 for (@tests) {
