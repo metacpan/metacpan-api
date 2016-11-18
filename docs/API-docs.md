@@ -1,39 +1,39 @@
-# API Docs: v0
+# API Docs: v1
 
-For an introduction to the MetaCPAN API which requires no previous knowledge of MetaCPAN or ElasticSearch, see [the slides for "Abusing MetaCPAN for Fun and Profit"](http://www.slideshare.net/oalders/abusing-metacpan2013) or [watch the actual talk](http://www.youtube.com/watch?v=J8ymBuFlHQg).
+For an introduction to the MetaCPAN API which requires no previous knowledge of MetaCPAN or ElasticSearch, see [the slides for "Abusing MetaCPAN for Fun and Profit"](https://www.slideshare.net/oalders/abusing-metacpan2013) or [watch the actual talk](https://www.youtube.com/watch?v=J8ymBuFlHQg).
 
 There is also [a repository of examples](https://github.com/metacpan/metacpan-examples) you can play with to get up and running in a hurry.  Rather than editing this wiki page, please send pull requests for the metacpan-examples repository.  If you'd rather edit the wiki, please do, but sending the code pull requests is probably the most helpful way to approach this.
 
 _All of these URLs can be tested using the [MetaCPAN Explorer](https://explorer.metacpan.org)_
 
-To learn more about the ElasticSearch query DSL check out Clinton Gormley's [Terms of Endearment - ES Query DSL Explained] (http://www.slideshare.net/clintongormley/terms-of-endearment-the-elasticsearch-query-dsl-explained) slides.
+To learn more about the ElasticSearch query DSL check out Clinton Gormley's [Terms of Endearment - ES Query DSL Explained] (https://www.slideshare.net/clintongormley/terms-of-endearment-the-elasticsearch-query-dsl-explained) slides.
 
-The query syntax is explained on ElasticSearch's [reference page](http://www.elasticsearch.org/guide/reference/query-dsl/). You can also check out this getting started tutorial about Elasticsearch [reference page](http://joelabrahamsson.com/elasticsearch-101/).
+The query syntax is explained on ElasticSearch's [reference page](https://www.elasticsearch.org/guide/reference/query-dsl/). You can also check out this getting started tutorial about Elasticsearch [reference page](https://joelabrahamsson.com/elasticsearch-101/).
 
 ## Being polite
 
-Currently, the only rules around using the API are to "be polite". We have enforced an upper limit of a size of 5000 on search requests.  If you need to fetch more than 5000 items, you should look at using the scrolling API.  Search this page for "scroll" to get an example using [Search::Elasticsearch](https://metacpan.org/pod/Search::Elasticsearch) or see the [Elasticsearch scroll docs](http://www.elasticsearch.org/guide/reference/api/search/scroll.html) if you are connecting in some other way.
+Currently, the only rules around using the API are to "be polite". We have enforced an upper limit of a size of 5_000 on search requests.  If you need to fetch more than 5_000 items, you should look at using the scrolling API.  Search this page for "scroll" to get an example using [Search::Elasticsearch](https://metacpan.org/pod/Search::Elasticsearch) or see the [Elasticsearch scroll docs](https://www.elasticsearch.org/guide/reference/fastapi/search/scroll.html) if you are connecting in some other way.
 
-You can certainly scroll if you are fetching less than 5000 items.  You might want to do this if you are expecting a large data set, but will still need to run many requests to get all of the required data.
+You can certainly scroll if you are fetching less than 5_000 items.  You might want to do this if you are expecting a large data set, but will still need to run many requests to get all of the required data.
 
-Be aware that when you scroll, your docs will come back unsorted, as noted in the [ElasticSearch scan documentation](http://www.elasticsearch.org/guide/reference/api/search/search-type.html).
+Be aware that when you scroll, your docs will come back unsorted, as noted in the [ElasticSearch scan documentation](https://www.elasticsearch.org/guide/reference/fastapi/search/search-type.html).
 
 ## Identifying Yourself
 
-Part of being polite is letting us know who you are and how to reach you.  This is not mandatory, but please do consider adding your app to the [API-Consumers](https://github.com/metacpan/metacpan-api/wiki/API-Consumers) page.
+Part of being polite is letting us know who you are and how to reach you.  This is not mandatory, but please do consider adding your app to the [API-Consumers](https://github.com/metacpan/metacpan-api/wiki/fastapi-Consumers) page.
 
 ## Available fields
 
 Available fields can be found by accessing the corresponding `_mapping` endpoint.
 
 
-* [/author/_mapping](http://api.metacpan.org/v0/author/_mapping) - [explore](https://explorer.metacpan.org/?url=/author/_mapping)
-* [/distribution/_mapping](http://api.metacpan.org/v0/distribution/_mapping) - [explore](https://explorer.metacpan.org/?url=/distribution/_mapping)
-* [/favorite/_mapping](http://api.metacpan.org/v0/favorite/_mapping) - [explore](https://explorer.metacpan.org/?url=/favorite/_mapping)
-* [/file/_mapping](http://api.metacpan.org/v0/file/_mapping) - [explore](https://explorer.metacpan.org/?url=/file/_mapping)
-* [/module/_mapping](http://api.metacpan.org/v0/module/_mapping) - [explore](https://explorer.metacpan.org/?url=/module/_mapping)
-* [/rating/_mapping](http://api.metacpan.org/v0/rating/_mapping) - [explore](https://explorer.metacpan.org/?url=/rating/_mapping)
-* [/release/_mapping](http://api.metacpan.org/v0/release/_mapping) - [explore](https://explorer.metacpan.org/?url=/release/_mapping)
+* [/author/_mapping](https://fastapi.metacpan.org/v1/author/_mapping) - [explore](https://explorer.metacpan.org/?url=/author/_mapping)
+* [/distribution/_mapping](https://fastapi.metacpan.org/v1/distribution/_mapping) - [explore](https://explorer.metacpan.org/?url=/distribution/_mapping)
+* [/favorite/_mapping](https://fastapi.metacpan.org/v1/favorite/_mapping) - [explore](https://explorer.metacpan.org/?url=/favorite/_mapping)
+* [/file/_mapping](https://fastapi.metacpan.org/v1/file/_mapping) - [explore](https://explorer.metacpan.org/?url=/file/_mapping)
+* [/module/_mapping](https://fastapi.metacpan.org/v1/module/_mapping) - [explore](https://explorer.metacpan.org/?url=/module/_mapping)
+* [/rating/_mapping](https://fastapi.metacpan.org/v1/rating/_mapping) - [explore](https://explorer.metacpan.org/?url=/rating/_mapping)
+* [/release/_mapping](https://fastapi.metacpan.org/v1/release/_mapping) - [explore](https://explorer.metacpan.org/?url=/release/_mapping)
 
 
 ## Field documentation
@@ -44,12 +44,12 @@ Fields are documented in the API codebase: https://github.com/metacpan/metacpan-
 
 Performing a search without any constraints is an easy way to get sample data
 
-* [/author/_search](http://api.metacpan.org/v0/author/_search)
-* [/distribution/_search](http://api.metacpan.org/v0/distribution/_search)
-* [/favorite/_search](http://api.metacpan.org/v0/favorite/_search)
-* [/file/_search](http://api.metacpan.org/v0/file/_search)
-* [/rating/_search](http://api.metacpan.org/v0/rating/_search)
-* [/release/_search](http://api.metacpan.org/v0/release/_search)
+* [/author/_search](https://fastapi.metacpan.org/v1/author/_search)
+* [/distribution/_search](https://fastapi.metacpan.org/v1/distribution/_search)
+* [/favorite/_search](https://fastapi.metacpan.org/v1/favorite/_search)
+* [/file/_search](https://fastapi.metacpan.org/v1/file/_search)
+* [/rating/_search](https://fastapi.metacpan.org/v1/rating/_search)
+* [/release/_search](https://fastapi.metacpan.org/v1/release/_search)
 
 ## Joins
 
@@ -57,17 +57,17 @@ ElasticSearch itself doesn't support joining data across multiple types. The API
 
 Joins on documents:
 
-* [/author/PERLER?join=favorite](http://api.metacpan.org/v0/author/PERLER?join=favorite)
-* [/author/PERLER?join=favorite&join=release](http://api.metacpan.org/v0/author/PERLER?join=favorite&join=release)
-* [/release/Moose?join=author](http://api.metacpan.org/v0/release/Moose?join=author)
-* [/module/Moose?join=release](http://api.metacpan.org/v0/module/Moose?join=release)
+* [/author/PERLER?join=favorite](https://fastapi.metacpan.org/v1/author/PERLER?join=favorite)
+* [/author/PERLER?join=favorite&join=release](https://fastapi.metacpan.org/v1/author/PERLER?join=favorite&join=release)
+* [/release/Moose?join=author](https://fastapi.metacpan.org/v1/release/Moose?join=author)
+* [/module/Moose?join=release](https://fastapi.metacpan.org/v1/module/Moose?join=release)
 
 Joins on search results is work in progress.
 
-Restricting the joined results can be done by using the [boolean "should"](http://www.elasticsearch.org/guide/reference/query-dsl/bool-query.html) occurrence type:
+Restricting the joined results can be done by using the [boolean "should"](https://www.elasticsearch.org/guide/reference/query-dsl/bool-query.html) occurrence type:
 
 ```sh
-curl -XPOST http://api.metacpan.org/v0/author/PERLER?join=release -d '
+curl -XPOST https://fastapi.metacpan.org/v1/author/PERLER?join=release -d '
 {
     "query": {
         "bool": {
@@ -85,7 +85,7 @@ curl -XPOST http://api.metacpan.org/v0/author/PERLER?join=release -d '
 
 Simply add a `callback` query parameter with the name of your callback, and you'll get a JSONP response.
 
-* [/favorite?q=distribution:Moose&callback=cb](http://api.metacpan.org/favorite?q=distribution:Moose&callback=cb)
+* [/favorite?q=distribution:Moose&callback=cb](https://fastapi.metacpan.org/favorite?q=distribution:Moose&callback=cb)
 
 ## GET convenience URLs
 
@@ -93,27 +93,27 @@ You should be able to run most POST queries, but very few GET urls are currently
 
 ### `/distribution/{distribution}`
 
-The `/distribution` endpoint accepts the name of a `distribution` (e.g. [/distribution/Moose](http://api.metacpan.org/v0/distribution/Moose)), which returns information about the distribution which is not specific to a version (like RT bug counts).
+The `/distribution` endpoint accepts the name of a `distribution` (e.g. [/distribution/Moose](https://fastapi.metacpan.org/v1/distribution/Moose)), which returns information about the distribution which is not specific to a version (like RT bug counts).
 
 ### `/release/{distribution}`
 
 ### `/release/{author}/{release}`
 
-The `/release` endpoint accepts either the name of a `distribution` (e.g. [/release/Moose](http://api.metacpan.org/v0/release/Moose)), which returns the most recent release of the distribution. Or provide the full path which consists of its `author` and the name of the `release` (e.g. [/release/DOY/Moose-2.0001](http://api.metacpan.org/v0/release/DOY/Moose-2.0001)).
+The `/release` endpoint accepts either the name of a `distribution` (e.g. [/release/Moose](https://fastapi.metacpan.org/v1/release/Moose)), which returns the most recent release of the distribution. Or provide the full path which consists of its `author` and the name of the `release` (e.g. [/release/DOY/Moose-2.0001](https://fastapi.metacpan.org/v1/release/DOY/Moose-2.0001)).
 
 ### `/author/{author}`
 
-`author` refers to the pauseid of the author. It must be uppercased (e.g. [/author/DOY](http://api.metacpan.org/v0/author/DOY)).
+`author` refers to the pauseid of the author. It must be uppercased (e.g. [/author/DOY](https://fastapi.metacpan.org/v1/author/DOY)).
 
 ### `/module/{module}`
 
-Returns the corresponding `file` of the latest version of the `module`. Considering that Moose-2.0001 is the latest release, the result of [/module/Moose](http://api.metacpan.org/v0/module/Moose) is the same as [/file/DOY/Moose-2.0001/lib/Moose.pm](http://api.metacpan.org/v0/file/DOY/Moose-2.0001/lib/Moose.pm).
+Returns the corresponding `file` of the latest version of the `module`. Considering that Moose-2.0001 is the latest release, the result of [/module/Moose](https://fastapi.metacpan.org/v1/module/Moose) is the same as [/file/DOY/Moose-2.0001/lib/Moose.pm](https://fastapi.metacpan.org/v1/file/DOY/Moose-2.0001/lib/Moose.pm).
 
 ### `/pod/{module}`
 
 ### `/pod/{author}/{release}/{path}`
 
-Returns the POD of the given module. You can change the output format by either passing a `content-type` query parameter (e.g. [/pod/Moose?content-type=text/plain](http://api.metacpan.org/v0/pod/Moose?content-type=text/plain) or by adding an `Accept` header to the HTTP request. Valid content types are:
+Returns the POD of the given module. You can change the output format by either passing a `content-type` query parameter (e.g. [/pod/Moose?content-type=text/plain](https://fastapi.metacpan.org/v1/pod/Moose?content-type=text/plain) or by adding an `Accept` header to the HTTP request. Valid content types are:
 
 * text/html (default)
 * text/plain
@@ -129,47 +129,47 @@ Returns the full source of the latest, authorized version of the given
 
 Names of latest releases by OALDERS:
 
-http://api.metacpan.org/v0/release/_search?q=author:OALDERS%20AND%20status:latest&fields=name,status&size=100
+https://fastapi.metacpan.org/v1/release/_search?q=author:OALDERS%20AND%20status:latest&fields=name,status&size=100
 
-All CPAN Authors:
+5_000 CPAN Authors:
 
-[http://api.metacpan.org/v0/author/_search?pretty=true&q=*&size=100000](http://api.metacpan.org/author/_search?pretty=true&q=*)
+[https://fastapi.metacpan.org/v1/author/_search?q=*&size=5000](https://fastapi.metacpan.org/author/_search?q=*)
 
 All CPAN Authors Who Have Provided Twitter IDs:
 
-http://api.metacpan.org/v0/author/_search?pretty=true&q=author.profile.name:twitter
+https://fastapi.metacpan.org/v1/author/_search?q=author.profile.name:twitter
 
 All CPAN Authors Who Have Updated MetaCPAN Profiles:
 
-http://api.metacpan.org/v0/author/_search?q=updated:*&sort=updated:desc
+https://fastapi.metacpan.org/v1/author/_search?q=updated:*&sort=updated:desc
 
 First 100 distributions which SZABGAB has given a ++:
 
- http://api.metacpan.org/v0/favorite/_search?q=user:sWuxlxYeQBKoCQe1f-FQ_Q&size=100&fields=distribution
+ https://fastapi.metacpan.org/v1/favorite/_search?q=user:sWuxlxYeQBKoCQe1f-FQ_Q&size=100&fields=distribution
 
 The 100 most recent releases ( similar to https://metacpan.org/recent )
 
- http://api.metacpan.org/v0/release/_search?q=status:latest&fields=name,status,date&sort=date:desc&size=100
+ https://fastapi.metacpan.org/v1/release/_search?q=status:latest&fields=name,status,date&sort=date:desc&size=100
 
 Number of ++'es that DOY's dists have received:
 
-http://api.metacpan.org/v0/favorite/_search?q=author:DOY&size=0
+https://fastapi.metacpan.org/v1/favorite/_search?q=author:DOY&size=0
 
 List of users who have ++'ed DOY's dists and the dists they have ++'ed:
 
-http://api.metacpan.org/v0/favorite/_search?q=author:DOY&fields=user,distribution
+https://fastapi.metacpan.org/v1/favorite/_search?q=author:DOY&fields=user,distribution
 
 Last 50 dists to get a ++:
 
-http://api.metacpan.org/v0/favorite/_search?size=50&fields=author,user,release,date&sort=date:desc
+https://fastapi.metacpan.org/v1/favorite/_search?size=50&fields=author,user,release,date&sort=date:desc
 
 The Changes file of the Test-Simple distribution:
 
-http://api.metacpan.org/v0/changes/Test-Simple
+https://fastapi.metacpan.org/v1/changes/Test-Simple
 
 ## Querying the API with MetaCPAN::Client
 
-Perhaps the easiest way to get started using MetaCPAN is with [MetaCPAN::Client](https://metacpan.org/pod/MetaCPAN::Client).  
+Perhaps the easiest way to get started using MetaCPAN is with [MetaCPAN::Client](https://metacpan.org/pod/MetaCPAN::Client).
 
 ```perl
 use MetaCPAN::Client ();
@@ -180,7 +180,7 @@ my $dist   = $mcpan->release('MetaCPAN-API');
 
 ## Querying the API with Search::Elasticsearch
 
-The API server at api.metacpan.org is a wrapper around an [Elasticsearch](http://elasticsearch.org) instance. It adds support for the convenient GET URLs, handles authentication and does some access control. Therefore you can use the powerful API of [Search::Elasticsearch](https://metacpan.org/pod/Search::Elasticsearch) to query MetaCPAN.
+The API server at api.metacpan.org is a wrapper around an [Elasticsearch](https://elasticsearch.org) instance. It adds support for the convenient GET URLs, handles authentication and does some access control. Therefore you can use the powerful API of [Search::Elasticsearch](https://metacpan.org/pod/Search::Elasticsearch) to query MetaCPAN.
 
 **NOTE**: The `cxn_pool => 'Static::NoPing'` is important because of the HTTP proxy we have in front of Elasticsearch.
 
@@ -195,12 +195,12 @@ my $es =  Search::Elasticsearch->new(
 my $scroller = $es->scroll_helper(
     search_type => 'scan',
     scroll      => '5m',
-    index       => 'v0',
+    index       => 'v1',
     type        => 'release',
     size        => 100,
     body => {
         query => {
-            match_all =>  {} 
+            match_all =>  {}
         }
     }
 );
@@ -221,7 +221,7 @@ This query returns a list of all releases which list MooseX::NonMoose as a
 dependency.
 
 ```sh
-curl -XPOST api.metacpan.org/v0/release/_search -d '{
+curl -XPOST api.metacpan.org/v1/release/_search -d '{
   "query": {
     "match_all": {}
   },
@@ -237,18 +237,18 @@ curl -XPOST api.metacpan.org/v0/release/_search -d '{
 }'
 ```
 
-_Note it is also possible to use these queries in GET requests (useful for cross-domain JSONP requests) by appropriately encoding the JSON query into the `source` parameter of the URL.  For example the query above [would become](http://api.metacpan.org/v0/release/_search?source=%7B%22query%22%3A%7B%22match_all%22%3A%7B%7D%7D%2C%22size%22%3A5000%2C%22fields%22%3A%5B%22distribution%22%5D%2C%22filter%22%3A%7B%22and%22%3A%5B%7B%22term%22%3A%7B%22release.dependency.module%22%3A%22MooseX%3A%3ANonMoose%22%7D%7D%2C%7B%22term%22%3A%7B%22release.maturity%22%3A%22released%22%7D%7D%2C%7B%22term%22%3A%7B%22release.status%22%3A%22latest%22%7D%7D%5D%7D%7D):_
+_Note it is also possible to use these queries in GET requests (useful for cross-domain JSONP requests) by appropriately encoding the JSON query into the `source` parameter of the URL.  For example the query above [would become](https://fastapi.metacpan.org/v1/release/_search?source=%7B%22query%22%3A%7B%22match_all%22%3A%7B%7D%7D%2C%22size%22%3A5000%2C%22fields%22%3A%5B%22distribution%22%5D%2C%22filter%22%3A%7B%22and%22%3A%5B%7B%22term%22%3A%7B%22release.dependency.module%22%3A%22MooseX%3A%3ANonMoose%22%7D%7D%2C%7B%22term%22%3A%7B%22release.maturity%22%3A%22released%22%7D%7D%2C%7B%22term%22%3A%7B%22release.status%22%3A%22latest%22%7D%7D%5D%7D%7D):_
 
 ```
-curl 'api.metacpan.org/v0/release/_search?source=%7B%22query%22%3A%7B%22match_all%22%3A%7B%7D%7D%2C%22size%22%3A5000%2C%22fields%22%3A%5B%22distribution%22%5D%2C%22filter%22%3A%7B%22and%22%3A%5B%7B%22term%22%3A%7B%22release.dependency.module%22%3A%22MooseX%3A%3ANonMoose%22%7D%7D%2C%7B%22term%22%3A%7B%22release.maturity%22%3A%22released%22%7D%7D%2C%7B%22term%22%3A%7B%22release.status%22%3A%22latest%22%7D%7D%5D%7D%7D'
+curl 'api.metacpan.org/v1/release/_search?source=%7B%22query%22%3A%7B%22match_all%22%3A%7B%7D%7D%2C%22size%22%3A5000%2C%22fields%22%3A%5B%22distribution%22%5D%2C%22filter%22%3A%7B%22and%22%3A%5B%7B%22term%22%3A%7B%22release.dependency.module%22%3A%22MooseX%3A%3ANonMoose%22%7D%7D%2C%7B%22term%22%3A%7B%22release.maturity%22%3A%22released%22%7D%7D%2C%7B%22term%22%3A%7B%22release.status%22%3A%22latest%22%7D%7D%5D%7D%7D'
 ```
 
 ### The size of the CPAN unpacked
 
 ```sh
-curl -XPOST api.metacpan.org/v0/file/_search -d '{
+curl -XPOST api.metacpan.org/v1/file/_search -d '{
   "query": { "match_all": {} },
-  "facets": { 
+  "facets": {
     "size": {
       "statistical": {
         "field": "stat.size"
@@ -260,7 +260,7 @@ curl -XPOST api.metacpan.org/v0/file/_search -d '{
 ### Get license types of all releases in an arbitrary time span:
 
 ```sh
-curl -XPOST api.metacpan.org/v0/release/_search?size=100 -d '{
+curl -XPOST api.metacpan.org/v1/release/_search?size=100 -d '{
   "query": {
     "match_all": {},
     "range" : {
@@ -277,7 +277,7 @@ curl -XPOST api.metacpan.org/v0/release/_search?size=100 -d '{
 ### Aggregate by license:
 
 ```sh
-curl -XPOST api.metacpan.org/v0/release/_search -d '{
+curl -XPOST api.metacpan.org/v1/release/_search -d '{
     "query": {
         "match_all": {}
     },
@@ -295,10 +295,10 @@ curl -XPOST api.metacpan.org/v0/release/_search -d '{
 ### Most used file names in the root directory of releases:
 
 ```sh
-curl -XPOST api.metacpan.org/v0/file/_search -d '{
+curl -XPOST api.metacpan.org/v1/file/_search -d '{
   "query": { "filtered":{"query":{"match_all":{}},"filter":{"term":{"level":0}}}
    },
-  "facets": { 
+  "facets": {
     "license": {
       "terms": {
         "size":100,
@@ -311,7 +311,7 @@ curl -XPOST api.metacpan.org/v0/file/_search -d '{
 ### Find all releases that contain a particular version of a module:
 
 ```sh
-curl -XPOST api.metacpan.org/v0/file/_search -d '{
+curl -XPOST api.metacpan.org/v1/file/_search -d '{
   "query": { "filtered":{
       "query":{"match_all":{}},
       "filter":{"and":[
@@ -328,7 +328,7 @@ curl -XPOST api.metacpan.org/v0/file/_search -d '{
 Because of the dashes in this profile name, we need to use a term.
 
 ```sh
-curl -XPOST api.metacpan.org/v0/author/_search -d '{
+curl -XPOST api.metacpan.org/v1/author/_search -d '{
   "query": {
     "match_all": {}
   },
@@ -343,10 +343,10 @@ curl -XPOST api.metacpan.org/v0/author/_search -d '{
 ### Get a leaderboard of ++'ed distributions
 
 ```sh
-curl -XPOST api.metacpan.org/v0/favorite/_search -d '{
+curl -XPOST api.metacpan.org/v1/favorite/_search -d '{
   "query": { "match_all": {}
    },
-  "facets": { 
+  "facets": {
     "leaderboard": {
       "terms": {
         "field":"distribution",
@@ -359,7 +359,7 @@ curl -XPOST api.metacpan.org/v0/favorite/_search -d '{
 ### Get a leaderboard of Authors with Most Uploads
 
 ```sh
-curl -XPOST api.metacpan.org/v0/release/_search -d '{
+curl -XPOST api.metacpan.org/v1/release/_search -d '{
     "query": {
         "match_all": {}
     },
@@ -378,7 +378,7 @@ curl -XPOST api.metacpan.org/v0/release/_search -d '{
 ### Search for a release by name
 
 ```sh
-curl -XPOST api.metacpan.org/v0/release/_search -d '{ 
+curl -XPOST api.metacpan.org/v1/release/_search -d '{
   "query" : { "match_all" : {  } },
   "filter" : { "term" : { "release.name" : "YAML-Syck-1.07_01" } }
 }'
@@ -389,7 +389,7 @@ curl -XPOST api.metacpan.org/v0/release/_search -d '{
 Note that "size" should be the number of distributions you are looking for.
 
 ```sh
-lynx --dump --post_data http://api.metacpan.org/v0/release/_search <<EOL 
+lynx --dump --post_data https://fastapi.metacpan.org/v1/release/_search <<EOL
 {
     "query" : { "terms" : { "release.distribution" : [
         "Mojolicious",
@@ -405,7 +405,7 @@ EOL
 
 ### Get a list of all files where the directory is false and the path is blank
 ```sh
-curl -XPOST api.metacpan.org/v0/file/_search -d '{
+curl -XPOST api.metacpan.org/v1/file/_search -d '{
   "query": {
     "match_all": {}
   },
@@ -421,7 +421,7 @@ curl -XPOST api.metacpan.org/v0/file/_search -d '{
 
 ### List releases which have an email address for a bugtracker, but not an url
 ```sh
-curl -XPOST api.metacpan.org/v0/release/_search -d '{
+curl -XPOST api.metacpan.org/v1/release/_search -d '{
   "query": {
     "match_all": {}
   },
@@ -440,7 +440,7 @@ curl -XPOST api.metacpan.org/v0/release/_search -d '{
 
 ### List distributions for which we have a bugtracker URL
 ```sh
-curl -XPOST api.metacpan.org/v0/distribution/_search -d '{
+curl -XPOST api.metacpan.org/v1/distribution/_search -d '{
   "query": {
     "match_all": {}
   },
@@ -453,11 +453,11 @@ curl -XPOST api.metacpan.org/v0/distribution/_search -d '{
 
 ### Search the current PDL documentation for the string `axisvals`
 ```sh
-curl -XPOST api.metacpan.org/v0/file/_search -d '{
+curl -XPOST api.metacpan.org/v1/file/_search -d '{
     "query" : { "filtered" : {
-      "query" : { 
-        "query_string" : { 
-          "query" : "axisvals", 
+      "query" : {
+        "query_string" : {
+          "query" : "axisvals",
           "fields" : [ "pod.analyzed", "module.name" ] }
       },
       "filter" : { "and" : [
@@ -468,4 +468,4 @@ curl -XPOST api.metacpan.org/v0/file/_search -d '{
     "fields" : [ "documentation", "abstract", "module" ],
     "size" : 20
   }'
-``` 
+```
