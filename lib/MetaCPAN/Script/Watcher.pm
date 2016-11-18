@@ -168,7 +168,8 @@ sub index_release {
 
     my @run = (
         $FindBin::RealBin . "/metacpan",
-        'release', $archive, '--latest', '--index', $self->index->name
+        'release', $archive, '--latest', '--queue', '--index',
+        $self->index->name
     );
     log_debug {"Running @run"};
     system(@run) unless ( $self->dry_run );
