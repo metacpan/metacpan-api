@@ -52,7 +52,7 @@ requires 'Email::Valid', '1.198';
 requires 'Encode';
 requires 'Encoding::FixLatin';
 requires 'Exporter';
-requires 'ExtUtils::HasCompiler', '<= 0.012'; # 0.013 is buggy on Travis
+requires 'ExtUtils::HasCompiler';
 requires 'Facebook::Graph';
 requires 'File::Basename';
 requires 'File::Find';
