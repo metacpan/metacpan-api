@@ -38,6 +38,7 @@ sub find {
         }
         )->sort(
         [
+            '_score',
             { 'date'       => { order => 'desc' } },
             { 'mime'       => { order => 'asc' } },
             { 'stat.mtime' => { order => 'desc' } }
