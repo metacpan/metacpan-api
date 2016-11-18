@@ -21,6 +21,9 @@ env:
 
     # Instantiate Catalyst models using metacpan_server_testing.conf
     - METACPAN_SERVER_CONFIG_LOCAL_SUFFIX=testing
+  matrix:
+    - USE_CPANFILE_SNAPSHOT=true
+    - USE_CPANFILE_SNAPSHOT=false
 
 
 before_install:
@@ -41,7 +44,7 @@ before_install:
   - cpanm -n Safe@2.35
 
 install:
-  - 'carton install `test "${TRAVIS_PERL_VERSION}" = "${DEPLOYMENT_PERL_VERSION}" && echo " --deployment"`'
+  - 'carton install `test "${TRAVIS_PERL_VERSION}" = "${DEPLOYMENT_PERL_VERSION}" && test "${USE_CPANFILE_SNAPSHOT}" = "true" && echo " --deployment"`'
 
 before_script:
   - "perl -i -pe 's/(servers :)9900/localhost:9200/' metacpan_server_testing.conf"
