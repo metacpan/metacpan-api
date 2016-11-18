@@ -17,7 +17,7 @@ use Moose;
 use Parse::CSV;
 use Pithub;
 use URI::Escape qw(uri_escape);
-use MetaCPAN::Types qw( HashRef );
+use MetaCPAN::Types qw( ArrayRef Str );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
@@ -53,11 +53,19 @@ has pithub => (
     builder => '_build_pithub',
 );
 
-has _bugs => (
+has _bulk => (
     is      => 'ro',
-    isa     => HashRef,
-    default => sub { +{} },
+    lazy    => 1,
+    builder => '_build_bulk',
 );
+
+sub _build_bulk {
+    my $self = shift;
+    $self->es->bulk_helper(
+        index => $self->index->name,
+        type  => 'distribution',
+    );
+}
 
 sub _build_github_token {
     my $self = shift;
@@ -77,34 +85,62 @@ sub _build_pithub {
 
 sub run {
     my $self = shift;
-    $self->retrieve_rt_bugs();
-    $self->retrieve_github_bugs();
-    $self->index_bug_summary();
+
+    $self->check_all_distributions;
+
+# Hash keys are distribution names.
+# rt issues are counted for all dists (the download tsv contains everything).
+# gh issues are counted for any dist with a github url in `resources.bugtracker.web`.
+    foreach my $source ( @{ $self->source } ) {
+        if ( $source eq 'github' ) {
+            log_debug {'Fetching GitHub issues'};
+            $self->index_github_bugs;
+        }
+        elsif ( $source eq 'rt' ) {
+            log_debug {'Fetching RT bugs'};
+            $self->index_rt_bugs;
+        }
+    }
+
     return 1;
 }
 
-sub index_bug_summary {
+sub check_all_distributions {
     my $self = shift;
-    $self->index->refresh;
-    my $dists = $self->index->type('distribution');
-    my $bulk = $self->index->bulk( size => 300 );
-    for my $dist ( keys %{ $self->_bugs } ) {
-        my $doc = $dists->get($dist);
-        $doc ||= $dists->new_document( { name => $dist } );
-        $doc->_set_bugs( $self->_bugs->{ $doc->name } );
-        $bulk->put($doc);
+
+    # first: make sure all distributions have an entry
+    my $scroll = $self->es->scroll_helper(
+        size   => 500,
+        scroll => '5m',
+        index  => $self->index->name,
+        type   => 'release',
+        fields => ['distribution'],
+        body   => {
+            query => {
+                not => { term => { status => 'backpan' } }
+            }
+        },
+    );
+
+    my $dists = {};
+
+    while ( my $release = $scroll->next ) {
+        my $distribution = $release->{'fields'}{'distribution'}[0];
+        $distribution or next;
+        $dists->{$distribution} = {};
     }
-    $bulk->commit;
+
+    $self->_bulk_update($dists);
 }
 
-sub retrieve_github_bugs {
+sub index_github_bugs {
     my $self = shift;
-    log_info {'Fetching GitHub issues'};
+    my %summary;
 
     my $scroll
         = $self->index->type('release')->find_github_based->scroll('5m');
     log_debug { sprintf( "Found %s repos", $scroll->total ) };
-    my $summary = {};
+
     while ( my $release = $scroll->next ) {
         my $resources = $release->resources;
         my ( $user, $repo, $source )
@@ -123,18 +159,16 @@ sub retrieve_github_bugs {
             params => { state => 'closed' }
         );
         next unless ( $closed->success );
-        $summary->{ $release->{distribution} }
-            = { open => 0, closed => 0, source => $source };
-        $summary->{ $release->{distribution} }->{open}++
-            while ( $open->next );
-        $summary->{ $release->{distribution} }->{closed}++
-            while ( $closed->next );
-        $summary->{ $release->{distribution} }->{active}
-            = $summary->{ $release->{distribution} }->{open};
 
+        my $rec = { open => 0, closed => 0, source => $source };
+        $rec->{open}++   while ( $open->next );
+        $rec->{closed}++ while ( $closed->next );
+        $rec->{active} = $rec->{open};
+        $summary{ $release->{'distribution'} }{'bugs'}{'github'} = $rec;
     }
 
-    $self->_bugs->{$_}{github} = $summary->{$_} for keys %{$summary};
+    log_info {"writing github data"};
+    $self->_bulk_update( \%summary );
 }
 
 # Try (recursively) to find a github url in the resources hash.
@@ -157,18 +191,18 @@ sub github_user_repo_from_resources {
     return ();
 }
 
-sub retrieve_rt_bugs {
-    my $self = shift;
-    log_info {'Fetching RT issues'};
+sub index_rt_bugs {
+    my ($self) = @_;
 
     my $resp = $self->ua->request( GET $self->rt_summary_url );
 
     log_error { $resp->status_line } unless $resp->is_success;
 
     # NOTE: This is sending a byte string.
-    my $rt = $self->parse_tsv( $resp->content );
+    my $summary = $self->parse_tsv( $resp->content );
 
-    $self->_bugs->{$_}{rt} = $rt->{$_} for keys %{$rt};
+    log_info {"writing rt data"};
+    $self->_bulk_update($summary);
 }
 
 sub parse_tsv {
@@ -185,7 +219,7 @@ sub parse_tsv {
 
     my %summary;
     while ( my $row = $tsv_parser->fetch ) {
-        $summary{ $row->{dist} } = {
+        $summary{ $row->{dist} }{'bugs'}{'rt'} = {
             source => $self->rt_dist_url( $row->{dist} ),
             active => $row->{active},
             closed => $row->{inactive},
@@ -202,6 +236,22 @@ sub rt_dist_url {
     my ( $self, $dist ) = @_;
     return 'https://rt.cpan.org/Public/Dist/Display.html?Name='
         . uri_escape($dist);
+}
+
+sub _bulk_update {
+    my ( $self, $summary ) = @_;
+
+    for my $distribution ( keys %$summary ) {
+        $self->_bulk->update(
+            {
+                id            => $distribution,
+                doc           => $summary->{$distribution},
+                doc_as_upsert => 1,
+            }
+        );
+    }
+
+    $self->_bulk->flush;
 }
 
 __PACKAGE__->meta->make_immutable;
