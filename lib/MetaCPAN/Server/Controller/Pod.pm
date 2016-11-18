@@ -15,10 +15,14 @@ sub find : Path('') {
     # $c->add_author_key($author) called from /source/get request below
     $c->cdn_max_age('1y');
 
+    my $q = $c->req->query_params;
+    for my $opt (qw(show_errors url_prefix)) {
+        $c->stash->{$opt} = $q->{$opt}
+            if exists $q->{$opt};
+    }
+
     $c->stash->{link_mappings}
-        = $self->find_dist_links( $c, $author, $release,
-        !!$c->req->query_params->{permalinks} );
-    $c->stash->{url_prefix} = $c->req->query_params->{url_prefix};
+        = $self->find_dist_links( $c, $author, $release, !!$q->{permalinks} );
 
     $c->forward( '/source/get', [ $author, $release, @path ] );
     my $path = $c->stash->{path};

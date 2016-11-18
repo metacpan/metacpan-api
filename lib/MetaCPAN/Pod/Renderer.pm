@@ -50,9 +50,9 @@ sub html_renderer {
     $parser->html_footer('');
     $parser->html_header('');
     $parser->index(1);
+    $parser->anchor_items(1);
     $parser->no_errata_section( $self->no_errata_section );
     $parser->perldoc_url_prefix( $self->perldoc_url_prefix );
-    $parser->nix_X_codes( $self->nix_X_codes );
     $parser->link_mappings( $self->link_mappings );
 
     return $parser;
