@@ -2730,10 +2730,10 @@ DISTRIBUTIONS
       File::Spec 0
       IO::File 0
       perl 5.006
-  ExtUtils-HasCompiler-0.016
-    pathname: L/LE/LEONT/ExtUtils-HasCompiler-0.016.tar.gz
+  ExtUtils-HasCompiler-0.012
+    pathname: L/LE/LEONT/ExtUtils-HasCompiler-0.012.tar.gz
     provides:
-      ExtUtils::HasCompiler 0.016
+      ExtUtils::HasCompiler 0.012
     requirements:
       Carp 0
       DynaLoader 0
@@ -4201,12 +4201,12 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  MetaCPAN-Role-0.03
-    pathname: L/LL/LLAP/MetaCPAN-Role-0.03.tar.gz
+  MetaCPAN-Role-0.05
+    pathname: L/LL/LLAP/MetaCPAN-Role-0.05.tar.gz
     provides:
-      MetaCPAN::Role 0.03
-      MetaCPAN::Role::Fastly 0.03
-      MetaCPAN::Role::Fastly::Catalyst 0.03
+      MetaCPAN::Role 0.05
+      MetaCPAN::Role::Fastly 0.05
+      MetaCPAN::Role::Fastly::Catalyst 0.05
     requirements:
       Carp 0
       CatalystX::Fastly::Role::Response 0.04
