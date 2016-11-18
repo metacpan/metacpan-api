@@ -9,18 +9,19 @@ test_distribution(
     'Text-Tabs+Wrap',
     {
         bugs => {
-            type => 'rt',
-            source =>
-                'https://rt.cpan.org/Public/Dist/Display.html?Name=Text-Tabs%2BWrap',
-            new      => 2,
-            open     => 0,
-            stalled  => 0,
-            patched  => 0,
-            resolved => 15,
-            rejected => 1,
-            active   => 2,
-            closed   => 16,
-        },
+            rt => {
+                source =>
+                    'https://rt.cpan.org/Public/Dist/Display.html?Name=Text-Tabs%2BWrap',
+                new      => 2,
+                open     => 0,
+                stalled  => 0,
+                patched  => 0,
+                resolved => 15,
+                rejected => 1,
+                active   => 2,
+                closed   => 16,
+            },
+        }
     },
     'rt url is uri escaped',
 );
