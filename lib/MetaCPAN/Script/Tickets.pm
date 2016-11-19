@@ -127,7 +127,7 @@ sub check_all_distributions {
     while ( my $release = $scroll->next ) {
         my $distribution = $release->{'fields'}{'distribution'}[0];
         $distribution or next;
-        $dists->{$distribution} = {};
+        $dists->{$distribution} = { name => $distribution };
     }
 
     $self->_bulk_update($dists);
