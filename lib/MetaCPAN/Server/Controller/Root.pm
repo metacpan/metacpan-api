@@ -15,6 +15,15 @@ sub default : Path {
     $c->forward( '/not_found', [] );
 }
 
+# handle /
+sub all : Path('') : Args(0) {
+    my ( $self, $c ) = @_;
+    $c->res->redirect(
+        'https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md',
+        302
+    );
+}
+
 # The parent class has a sub with this signature but expects a namespace
 # and an es type... since this controller doesn't have those, just overwrite.
 sub get : Path('') : Args(1) {
