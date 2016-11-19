@@ -205,12 +205,16 @@ sub join : ActionClass('Deserialize') {
 
 sub not_found : Private {
     my ( $self, $c ) = @_;
+    $c->cdn_never_cache(1);
+
     $c->res->code(404);
     $c->stash( { message => 'Not found' } );
 }
 
 sub internal_error {
     my ( $self, $c, $message ) = @_;
+    $c->cdn_never_cache(1);
+
     $c->res->code(500);
     if ( eval { $message->isa('ElasticSearch::Error') } ) {
         $c->res->content_type('text/plain');
