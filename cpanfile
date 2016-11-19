@@ -88,7 +88,7 @@ requires 'Log::Log4perl';
 requires 'Log::Log4perl::Appender::ScreenColoredLevels';
 requires 'MetaCPAN::Moose';
 requires 'MetaCPAN::Role', '0.05';
-requires 'Minion', '>= 5.01';
+requires 'Minion', '>= 5.07';
 requires 'Minion::Backend::SQLite';
 requires 'Module::Load';
 requires 'Module::Metadata', '1.000022';
