@@ -12,9 +12,9 @@ The query syntax is explained on ElasticSearch's [reference page](https://www.el
 
 ## Being polite
 
-Currently, the only rules around using the API are to "be polite". We have enforced an upper limit of a size of 5_000 on search requests.  If you need to fetch more than 5_000 items, you should look at using the scrolling API.  Search this page for "scroll" to get an example using [Search::Elasticsearch](https://metacpan.org/pod/Search::Elasticsearch) or see the [Elasticsearch scroll docs](https://www.elasticsearch.org/guide/reference/fastapi/search/scroll.html) if you are connecting in some other way.
+Currently, the only rules around using the API are to "be polite". We have enforced an upper limit of a size of 5,000 on search requests.  If you need to fetch more than 5,000 items, you should look at using the scrolling API.  Search this page for "scroll" to get an example using [Search::Elasticsearch](https://metacpan.org/pod/Search::Elasticsearch) or see the [Elasticsearch scroll docs](https://www.elasticsearch.org/guide/reference/fastapi/search/scroll.html) if you are connecting in some other way.
 
-You can certainly scroll if you are fetching less than 5_000 items.  You might want to do this if you are expecting a large data set, but will still need to run many requests to get all of the required data.
+You can certainly scroll if you are fetching less than 5,000 items.  You might want to do this if you are expecting a large data set, but will still need to run many requests to get all of the required data.
 
 Be aware that when you scroll, your docs will come back unsorted, as noted in the [ElasticSearch scan documentation](https://www.elasticsearch.org/guide/reference/fastapi/search/search-type.html).
 
@@ -131,13 +131,13 @@ Names of latest releases by OALDERS:
 
 https://fastapi.metacpan.org/v1/release/_search?q=author:OALDERS%20AND%20status:latest&fields=name,status&size=100
 
-5_000 CPAN Authors:
+5,000 CPAN Authors:
 
 [https://fastapi.metacpan.org/v1/author/_search?q=*&size=5000](https://fastapi.metacpan.org/author/_search?q=*)
 
 All CPAN Authors Who Have Provided Twitter IDs:
 
-https://fastapi.metacpan.org/v1/author/_search?q=author.profile.name:twitter
+https://fastapi.metacpan.org/v1/author/_search?q=profile.name:twitter
 
 All CPAN Authors Who Have Updated MetaCPAN Profiles:
 
@@ -171,45 +171,15 @@ https://fastapi.metacpan.org/v1/changes/Test-Simple
 
 Perhaps the easiest way to get started using MetaCPAN is with [MetaCPAN::Client](https://metacpan.org/pod/MetaCPAN::Client).
 
-```perl
-use MetaCPAN::Client ();
-my $mcpan  = MetaCPAN::Client->new();
-my $author = $mcpan->author('XSAWYERX');
-my $dist   = $mcpan->release('MetaCPAN-API');
-```
+You can get started with [this example script to fetch author data](https://github.com/metacpan/metacpan-examples/blob/master/scripts/author/1-fetch-single-author.pl).
 
 ## Querying the API with Search::Elasticsearch
 
-The API server at api.metacpan.org is a wrapper around an [Elasticsearch](https://elasticsearch.org) instance. It adds support for the convenient GET URLs, handles authentication and does some access control. Therefore you can use the powerful API of [Search::Elasticsearch](https://metacpan.org/pod/Search::Elasticsearch) to query MetaCPAN.
+The API server at fastapi.metacpan.org is a wrapper around an [Elasticsearch](https://elasticsearch.org) instance. It adds support for the convenient GET URLs, handles authentication and does some access control. Therefore you can use the powerful API of [Search::Elasticsearch](https://metacpan.org/pod/Search::Elasticsearch) to query MetaCPAN.
 
 **NOTE**: The `cxn_pool => 'Static::NoPing'` is important because of the HTTP proxy we have in front of Elasticsearch.
 
-```perl
-use Search::Elasticsearch;
-
-my $es =  Search::Elasticsearch->new(
-    cxn_pool   => 'Static::NoPing',
-    nodes      => 'api.metacpan.org'
-);
-
-my $scroller = $es->scroll_helper(
-    search_type => 'scan',
-    scroll      => '5m',
-    index       => 'v1',
-    type        => 'release',
-    size        => 100,
-    body => {
-        query => {
-            match_all =>  {}
-        }
-    }
-);
-
-while ( my $result = $scroller->next ) {
-    print $result->{_source}->{author}, '/',
-          $result->{_source}->{name}, $/;
-}
-```
+You can get started with [this example script to fetch author data](https://github.com/metacpan/metacpan-examples/blob/master/scripts/author/1-fetch-single-author-es.pl).
 
 ## POST Searches
 
@@ -221,17 +191,14 @@ This query returns a list of all releases which list MooseX::NonMoose as a
 dependency.
 
 ```sh
-curl -XPOST api.metacpan.org/v1/release/_search -d '{
-  "query": {
-    "match_all": {}
-  },
+curl -XPOST https://fastapi.metacpan.org/v1/release/_search -d '{
   "size": 5000,
   "fields": [ "distribution" ],
   "filter": {
     "and": [
-      { "term": { "release.dependency.module": "MooseX::NonMoose" } },
-      { "term": {"release.maturity": "released"} },
-      { "term": {"release.status": "latest"} }
+      { "term": { "dependency.module": "MooseX::NonMoose" } },
+      { "term": {"maturity": "released"} },
+      { "term": {"status": "latest"} }
     ]
   }
 }'
@@ -243,48 +210,36 @@ _Note it is also possible to use these queries in GET requests (useful for cross
 curl 'api.metacpan.org/v1/release/_search?source=%7B%22query%22%3A%7B%22match_all%22%3A%7B%7D%7D%2C%22size%22%3A5000%2C%22fields%22%3A%5B%22distribution%22%5D%2C%22filter%22%3A%7B%22and%22%3A%5B%7B%22term%22%3A%7B%22release.dependency.module%22%3A%22MooseX%3A%3ANonMoose%22%7D%7D%2C%7B%22term%22%3A%7B%22release.maturity%22%3A%22released%22%7D%7D%2C%7B%22term%22%3A%7B%22release.status%22%3A%22latest%22%7D%7D%5D%7D%7D'
 ```
 
-### The size of the CPAN unpacked
+### [The size of the CPAN unpacked](https://github.com/metacpan/metacpan-examples/blob/master/scripts/file/5-size-of-cpan.pl)
 
-```sh
-curl -XPOST api.metacpan.org/v1/file/_search -d '{
-  "query": { "match_all": {} },
-  "facets": {
-    "size": {
-      "statistical": {
-        "field": "stat.size"
-  } } },
-  "size":0
-}'
-```
 
 ### Get license types of all releases in an arbitrary time span:
 
 ```sh
-curl -XPOST api.metacpan.org/v1/release/_search?size=100 -d '{
+curl -XPOST https://fastapi.metacpan.org/v1/release/_search?size=100 -d '{
   "query": {
-    "match_all": {},
     "range" : {
-        "release.date" : {
-            "from" : "2010-06-05T00:00:00",
-            "to" : "2011-06-05T00:00:00"
+        "date" : {
+            "gte" : "2010-06-05T00:00:00",
+            "lte" : "2011-06-05T00:00:00"
         }
     }
   },
-  "fields": ["release.license", "release.name", "release.distribution", "release.date", "release.version_numified"]
+  "fields": ["license", "name", "distribution", "date", "version_numified"]
 }'
 ```
 
 ### Aggregate by license:
 
 ```sh
-curl -XPOST api.metacpan.org/v1/release/_search -d '{
+curl -XPOST https://fastapi.metacpan.org/v1/release/_search -d '{
     "query": {
         "match_all": {}
     },
-    "facets": {
+    "aggs": {
         "license": {
             "terms": {
-                "field": "release.license"
+                "field": "license"
             }
         }
     },
@@ -295,14 +250,14 @@ curl -XPOST api.metacpan.org/v1/release/_search -d '{
 ### Most used file names in the root directory of releases:
 
 ```sh
-curl -XPOST api.metacpan.org/v1/file/_search -d '{
+curl -XPOST https://fastapi.metacpan.org/v1/file/_search -d '{
   "query": { "filtered":{"query":{"match_all":{}},"filter":{"term":{"level":0}}}
    },
-  "facets": {
+  "aggs": {
     "license": {
       "terms": {
         "size":100,
-        "field":"file.name"
+        "field":"name"
   } } },
   "size":0
 }'
@@ -311,79 +266,28 @@ curl -XPOST api.metacpan.org/v1/file/_search -d '{
 ### Find all releases that contain a particular version of a module:
 
 ```sh
-curl -XPOST api.metacpan.org/v1/file/_search -d '{
+curl -XPOST https://fastapi.metacpan.org/v1/file/_search -d '{
   "query": { "filtered":{
       "query":{"match_all":{}},
       "filter":{"and":[
-          {"term":{"file.module.name":"DBI::Profile"}},
-          {"term":{"file.module.version":"2.014123"}}
+          {"term":{"module.name":"DBI::Profile"}},
+          {"term":{"module.version":"2.014123"}}
       ]}
   }},
   "fields":["release"]
 }'
 ```
-[example](https://explorer.metacpan.org/?url=%2Ffile&content=%7B%22query%22%3A%7B%22filtered%22%3A%7B%22query%22%3A%7B%22match_all%22%3A%7B%7D%7D%2C%22filter%22%3A%7B%22and%22%3A%5B%7B%22term%22%3A%7B%22file.module.name%22%3A%22DBI%3A%3AProfile%22%7D%7D%2C%7B%22term%22%3A%7B%22file.module.version%22%3A%222.014123%22%7D%7D%5D%7D%7D%7D%2C%22fields%22%3A%5B%22release%22%5D%7D)
 
-### Find all authors with github-meets-cpan in their profiles
-Because of the dashes in this profile name, we need to use a term.
+### [Find all authors with Twitter in their profiles](https://github.com/metacpan/metacpan-examples/blob/master/scripts/author/1c-scroll-all-authors-with-twitter-es.pl)
 
-```sh
-curl -XPOST api.metacpan.org/v1/author/_search -d '{
-  "query": {
-    "match_all": {}
-  },
-  "filter": {
-    "term": {
-      "author.profile.name": "github-meets-cpan"
-    }
-  }
-}'
-```
+### [Get a leaderboard of ++'ed distributions](https://github.com/metacpan/metacpan-examples/blob/master/scripts/favorite/3-leaderboard-es.pl)
 
-### Get a leaderboard of ++'ed distributions
+### [Get a leaderboard of Authors with Most Uploads](https://github.com/metacpan/metacpan-examples/blob/master/scripts/release/2-author-upload-leaderboard-es.pl)
 
-```sh
-curl -XPOST api.metacpan.org/v1/favorite/_search -d '{
-  "query": { "match_all": {}
-   },
-  "facets": {
-    "leaderboard": {
-      "terms": {
-        "field":"distribution",
-        "size" : 100
-  } } },
-  "size":0
-}'
-```
 
-### Get a leaderboard of Authors with Most Uploads
+### [Search for a release by name](https://github.com/metacpan/metacpan-examples/blob/master/scripts/release/1-pkg2url-es.pl)
 
-```sh
-curl -XPOST api.metacpan.org/v1/release/_search -d '{
-    "query": {
-        "match_all": {}
-    },
-    "facets": {
-        "author": {
-            "terms": {
-                "field": "author",
-                "size": 100
-            }
-        }
-    },
-    "size": 0
-}'
-```
 
-### Search for a release by name
-
-```sh
-curl -XPOST api.metacpan.org/v1/release/_search -d '{
-  "query" : { "match_all" : {  } },
-  "filter" : { "term" : { "release.name" : "YAML-Syck-1.07_01" } }
-}'
-
-```
 ### Get the latest version numbers of your favorite modules
 
 Note that "size" should be the number of distributions you are looking for.
@@ -391,12 +295,12 @@ Note that "size" should be the number of distributions you are looking for.
 ```sh
 lynx --dump --post_data https://fastapi.metacpan.org/v1/release/_search <<EOL
 {
-    "query" : { "terms" : { "release.distribution" : [
+    "query" : { "terms" : { "distribution" : [
         "Mojolicious",
         "MetaCPAN-API",
         "DBIx-Class"
     ] } },
-    "filter" : { "term" : { "release.status" : "latest" } },
+    "filter" : { "term" : { "status" : "latest" } },
     "fields" : [ "distribution", "version" ],
     "size"   : 3
 }
@@ -405,7 +309,7 @@ EOL
 
 ### Get a list of all files where the directory is false and the path is blank
 ```sh
-curl -XPOST api.metacpan.org/v1/file/_search -d '{
+curl -XPOST https://fastapi.metacpan.org/v1/file/_search -d '{
   "query": {
     "match_all": {}
   },
@@ -421,39 +325,29 @@ curl -XPOST api.metacpan.org/v1/file/_search -d '{
 
 ### List releases which have an email address for a bugtracker, but not an url
 ```sh
-curl -XPOST api.metacpan.org/v1/release/_search -d '{
+curl -XPOST https://fastapi.metacpan.org/v1/release/_search -d '{
   "query": {
     "match_all": {}
   },
   "size": 10,
-  "fields": [ "release.name", "release.resources.bugtracker.mailto" ],
+  "fields": [ "name", "resources.bugtracker.mailto" ],
   "filter": {
     "and": [
-      { "term": {"release.maturity": "released"} },
-      { "term": {"release.status": "latest"} },
-      {  "exists" : { "field" : "release.resources.bugtracker.mailto" } },
-      {  "missing" : { "field" : "release.resources.bugtracker.web" } }
+      { "term": {"maturity": "released"} },
+      { "term": {"status": "latest"} },
+      {  "exists" : { "field" : "resources.bugtracker.mailto" } },
+      {  "missing" : { "field" : "resources.bugtracker.web" } }
     ]
   }
 }'
 ```
 
-### List distributions for which we have a bugtracker URL
-```sh
-curl -XPOST api.metacpan.org/v1/distribution/_search -d '{
-  "query": {
-    "match_all": {}
-  },
-  "size": 1000,
-  "filter": {
-    "exists" : { "field" : "distribution.bugs.source" }
-  }
-}'
-```
+### [List distributions for which we have RT issues](https://github.com/metacpan/metacpan-examples/blob/master/scripts/release/2-dists-with-rt-source.pl)
+
 
 ### Search the current PDL documentation for the string `axisvals`
 ```sh
-curl -XPOST api.metacpan.org/v1/file/_search -d '{
+curl -XPOST https://fastapi.metacpan.org/v1/file/_search -d '{
     "query" : { "filtered" : {
       "query" : {
         "query_string" : {
@@ -465,7 +359,7 @@ curl -XPOST api.metacpan.org/v1/file/_search -d '{
         { "term" : { "status" : "latest" } }
       ]}
     }},
-    "fields" : [ "documentation", "abstract", "module" ],
+    "fields" : [ "documentation", "abstract", "module.name" ],
     "size" : 20
   }'
 ```
