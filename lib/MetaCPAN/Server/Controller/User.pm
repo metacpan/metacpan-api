@@ -105,7 +105,9 @@ sub profile_PUT {
             location => $c->uri_for( '/author/' . $profile->{pauseid} ),
             entity   => $profile->meta->get_data($profile)
         );
+        $self->purge_author_key( $profile->{pauseid} );
     }
+
 }
 
 1;
