@@ -95,6 +95,20 @@ You should be able to run most POST queries, but very few GET urls are currently
 
 The `/distribution` endpoint accepts the name of a `distribution` (e.g. [/distribution/Moose](https://fastapi.metacpan.org/v1/distribution/Moose)), which returns information about the distribution which is not specific to a version (like RT bug counts).
 
+### `/download_url/{module}`
+
+The `/download_url` endpoint exists specifically for the `cpanm` client.  It takes a module name with an optional version (or range of versions) and an optional `dev` flag (for development releases) and returns a `download_url` as well as some other helpful info.
+
+Obviously anyone can use this endpoint, but we'll only consider changes to this endpoint after considering how `cpanm` might be affected.
+
+* [https://fastapi.metacpan.org/v1/download_url/HTTP::Tiny](https://fastapi.metacpan.org/v1/download_url/HTTP::Tiny)
+* [https://fastapi.metacpan.org/v1/download_url/Moose?version===0.01](https://fastapi.metacpan.org/v1/download_url/Moose?version===0.01)
+* [https://fastapi.metacpan.org/v1/download_url/Moose?version=!=0.01](https://fastapi.metacpan.org/v1/download_url/Moose?version=!=0.01)
+* [https://fastapi.metacpan.org/v1/download_url/Moose?version=<=0.02](https://fastapi.metacpan.org/v1/download_url/Moose?version=<=0.02)
+* [https://fastapi.metacpan.org/v1/download_url/Try::Tiny?version=>0.21,<0.27,!=0.24](https://fastapi.metacpan.org/v1/download_url/Try::Tiny?version=>0.21,<0.27,!=0.24)
+* [https://fastapi.metacpan.org/v1/download_url/Try::Tiny?version=>0.21,<0.27&dev=1](https://fastapi.metacpan.org/v1/download_url/Try::Tiny?version=>0.21,<0.27&dev=1)
+* [https://fastapi.metacpan.org/v1/download_url/Try::Tiny?version=>0.21,<0.27,!=0.26&dev=1](https://fastapi.metacpan.org/v1/download_url/Try::Tiny?version=>0.21,<0.27,!=0.26&dev=1)
+
 ### `/release/{distribution}`
 
 ### `/release/{author}/{release}`
