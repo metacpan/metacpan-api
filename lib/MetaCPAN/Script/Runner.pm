@@ -27,7 +27,13 @@ sub run {
             or File::Path::mkpath($path);
     }
 
-    my $obj = $plugins{$class}->new_with_options($config);
+    my $destination_class = $plugins{$class};
+
+    # This is a hack in order to be able to use MooseX::StrictConstructor.
+    my %args = map { $_ => $config->{$_} }
+        grep { $destination_class->can($_) } keys %{$config};
+
+    my $obj = $destination_class->new_with_options(%args);
     $obj->run;
 }
 
