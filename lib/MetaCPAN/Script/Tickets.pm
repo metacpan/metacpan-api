@@ -18,6 +18,7 @@ use Parse::CSV;
 use Pithub;
 use URI::Escape qw(uri_escape);
 use MetaCPAN::Types qw( ArrayRef Str );
+use Ref::Util qw( is_ref is_hashref);
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
@@ -37,13 +38,6 @@ has github_token => (
     is      => 'ro',
     lazy    => 1,
     builder => '_build_github_token',
-);
-
-has source => (
-    is       => 'ro',
-    required => 1,
-    isa      => ArrayRef [Str],
-    default  => sub { [qw(rt github)] },
 );
 
 has pithub => (
@@ -87,20 +81,8 @@ sub run {
     my $self = shift;
 
     $self->check_all_distributions;
-
-# Hash keys are distribution names.
-# rt issues are counted for all dists (the download tsv contains everything).
-# gh issues are counted for any dist with a github url in `resources.bugtracker.web`.
-    foreach my $source ( @{ $self->source } ) {
-        if ( $source eq 'github' ) {
-            log_debug {'Fetching GitHub issues'};
-            $self->index_github_bugs;
-        }
-        elsif ( $source eq 'rt' ) {
-            log_debug {'Fetching RT bugs'};
-            $self->index_rt_bugs;
-        }
-    }
+    $self->index_rt_bugs;
+    $self->index_github_bugs;
 
     return 1;
 }
@@ -133,13 +115,17 @@ sub check_all_distributions {
     $self->_bulk_update($dists);
 }
 
+# gh issues are counted for any dist with a github url in `resources.bugtracker.web`.
 sub index_github_bugs {
     my $self = shift;
-    my %summary;
+
+    log_debug {'Fetching GitHub issues'};
 
     my $scroll
         = $self->index->type('release')->find_github_based->scroll('5m');
     log_debug { sprintf( "Found %s repos", $scroll->total ) };
+
+    my %summary;
 
     while ( my $release = $scroll->next ) {
         my $resources = $release->resources;
@@ -176,23 +162,32 @@ sub index_github_bugs {
 sub github_user_repo_from_resources {
     my ( $self, $resources ) = @_;
     my ( $user, $repo, $source );
-    while ( my ( $k, $v ) = each %$resources ) {
-        if ( !ref $v
+
+    for my $k ( keys %{$resources} ) {
+        my $v = $resources->{$k};
+
+        if ( !is_ref($v)
             && $v
             =~ /^(https?|git):\/\/github\.com\/([^\/]+)\/([^\/]+?)(\.git)?\/?$/
             )
         {
             return ( $2, $3, $v );
         }
+
         ( $user, $repo, $source ) = $self->github_user_repo_from_resources($v)
-            if ( ref $v eq 'HASH' );
-        return ( $user, $repo, $source ) if ($user);
+            if is_hashref($v);
+
+        return ( $user, $repo, $source ) if $user;
     }
+
     return ();
 }
 
+# rt issues are counted for all dists (the download tsv contains everything).
 sub index_rt_bugs {
-    my ($self) = @_;
+    my $self = shift;
+
+    log_debug {'Fetching RT bugs'};
 
     my $resp = $self->ua->request( GET $self->rt_summary_url );
 
