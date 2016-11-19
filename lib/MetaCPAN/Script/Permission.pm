@@ -1,15 +1,12 @@
 package MetaCPAN::Script::Permission;
 
-use strict;
-use warnings;
-
-use Moose;
-with 'MooseX::Getopt', 'MetaCPAN::Role::Script';
+use MetaCPAN::Moose;
 
 use Log::Contextual qw( :log );
-use PAUSE::Permissions;
+use MetaCPAN::Document::Permission ();
+use PAUSE::Permissions             ();
 
-use MetaCPAN::Document::Permission;
+with 'MooseX::Getopt', 'MetaCPAN::Role::Script';
 
 =head1 SYNOPSIS
 
@@ -32,18 +29,19 @@ sub index_permissions {
     my $type      = $self->index->type('permission');
     my $bulk      = $self->model->bulk( size => 100 );
 
-    my $iterator = $pp->module_iterator();
-    while ( my $mp = $iterator->next_module ) {
-        my $put = { module => $mp->name };
-        $put->{owner}          = $mp->owner          if $mp->owner;
-        $put->{co_maintainers} = $mp->co_maintainers if $mp->co_maintainers;
+    my $iterator = $pp->module_iterator;
+    while ( my $perms = $iterator->next_module ) {
+        my $put = { module => $perms->name };
+        $put->{owner} = $perms->owner if $perms->owner;
+        $put->{co_maintainers} = $perms->co_maintainers
+            if $perms->co_maintainers;
         $bulk->put( $type->new_document($put) );
     }
 
     $bulk->commit;
 
     $self->index->refresh;
-    log_info {'done'};
+    log_info {'finished indexing 06perms'};
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -61,6 +59,6 @@ Parse out CPAN author permissions.
 =head2 index_authors
 
 Adds/updates all ownership and maintenance permissions in the CPAN index to
-ElasticSearch.
+Elasticsearch.
 
 =cut

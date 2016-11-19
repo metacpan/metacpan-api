@@ -1,29 +1,24 @@
 package MetaCPAN::Document::Permission;
 
-use strict;
-use warnings;
-
-use Moose;
+use MetaCPAN::Moose;
 
 use ElasticSearchX::Model::Document;
-use MooseX::StrictConstructor;
+use MetaCPAN::Types qw( ArrayRef Str );
 
 has module => (
     is       => 'ro',
-    isa      => 'Str',
+    isa      => Str,
     required => 1,
 );
 
 has owner => (
-    is       => 'ro',
-    isa      => 'Str',
-    required => 0,
+    is  => 'ro',
+    isa => Str,
 );
 
 has co_maintainers => (
-    is       => 'ro',
-    isa      => 'ArrayRef',
-    required => 0,
+    is  => 'ro',
+    isa => ArrayRef,
 );
 
 __PACKAGE__->meta->make_immutable;
