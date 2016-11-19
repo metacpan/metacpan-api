@@ -171,13 +171,13 @@ sub run {
         }
 
         if ( $self->queue ) {
-            $self->_add_to_queue(
+            my $job_id = $self->_add_to_queue(
                 index_release => [$file] => { priority => 3 } );
 
             if ( $self->latest ) {
                 $self->_add_to_queue(
                     index_latest => [ '--distribution', $d->dist ] =>
-                        { priority => 2 } );
+                        { priority => 2, parents => [$job_id] } );
             }
         }
         else {
