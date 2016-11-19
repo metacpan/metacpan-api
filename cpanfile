@@ -82,7 +82,7 @@ requires 'LWP::UserAgent', '6.15';
 requires 'LWP::UserAgent::Paranoid';
 requires 'List::AllUtils', '0.09';
 requires 'List::MoreUtils', '0.413';
-requires 'List::Util', '1.43';
+requires 'List::Util', '1.45';
 requires 'Log::Contextual';
 requires 'Log::Log4perl';
 requires 'Log::Log4perl::Appender::ScreenColoredLevels';
