@@ -42,24 +42,27 @@ has ua => (
 );
 
 has proxy => (
-    is      => 'ro',
-    isa     => Str,
-    default => '',
+    is        => 'ro',
+    isa       => Str,
+    predicate => '_has_proxy',
 );
 
 has es => (
     is            => 'ro',
     isa           => ES,
-    required      => 1,
+    lazy          => 1,
     coerce        => 1,
+    default       => sub { $_[0]->config->{es} },
     documentation => 'Elasticsearch http connection string',
 );
 
 has model => (
-    is      => 'ro',
-    lazy    => 1,
-    builder => '_build_model',
-    traits  => ['NoGetopt'],
+    is       => 'ro',
+    isa      => 'MetaCPAN::Model',
+    init_arg => undef,
+    lazy     => 1,
+    traits   => ['NoGetopt'],
+    default  => sub { MetaCPAN::Model->new( es => $_[0]->es ) },
 );
 
 has index => (
@@ -74,7 +77,8 @@ has index => (
 has port => (
     isa           => Int,
     is            => 'ro',
-    required      => 1,
+    lazy          => 1,
+    default       => sub { $_[0]->config->{port} },
     documentation => 'Port for the proxy, defaults to 5000',
 );
 
@@ -132,20 +136,17 @@ sub index {
 
 sub _build_model {
     my $self = shift;
-
-    # es provided by ElasticSearchX::Model::Role
     return MetaCPAN::Model->new( es => $self->es );
 }
 
 sub _build_ua {
-    my $self  = shift;
-    my $ua    = LWP::UserAgent->new;
-    my $proxy = $self->proxy;
+    my $self = shift;
+    my $ua   = LWP::UserAgent->new;
 
-    if ($proxy) {
-        $proxy eq 'env'
+    if ( $self->_has_proxy ) {
+        $self->proxy eq 'env'
             ? $ua->env_proxy
-            : $ua->proxy( [qw<http https>], $proxy );
+            : $ua->proxy( [qw<http https>], $self->proxy );
     }
 
     return $ua;
@@ -161,7 +162,7 @@ sub _build_cpan {
         return $dir if -d $dir;
     }
     die
-        "Couldn't find a local cpan mirror. Please specify --cpan or set MINICPAN";
+        q{Couldn't find a local cpan mirror. Please specify --cpan or set MINICPAN.};
 
 }
 
@@ -170,12 +171,11 @@ sub remote {
 }
 
 sub run { }
+
 before run => sub {
     my $self = shift;
 
     $self->set_logger_once;
-
-    #Dlog_debug {"Connected to $_"} $self->remote;
 };
 
 sub are_you_sure {
@@ -201,6 +201,6 @@ __END__
 
 =head1 SYNOPSIS
 
-Roles which should be available to all modules
+Roles which should be available to all modules.
 
 =cut
