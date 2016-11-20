@@ -5,6 +5,7 @@ use warnings;
 
 use Moose;
 use ElasticSearchX::Model::Document;
+use DateTime;
 
 use MetaCPAN::Types qw(:all);
 use MetaCPAN::Util qw( numify_version );
@@ -362,6 +363,44 @@ sub find_github_based {
     shift    #->fields([qw(resources)])
         ->filter(
         { and => [ { term => { status => 'latest' } }, { or => $or } ] } );
+}
+
+sub top_uploaders {
+    my ( $self, $range ) = @_;
+
+    my $range_filter = {
+        range => {
+            date => {
+                from => $range eq 'all' ? 0 : DateTime->now->subtract(
+                    $range eq 'weekly'  ? 'weeks'
+                        : $range eq 'monthly' ? 'months'
+                            : $range eq 'yearly'  ? 'years'
+                                :                       'weeks' => 1
+                )->truncate( to => 'day' )->iso8601
+            },
+        }
+    };
+
+    my $body = +{
+        query        => { match_all => {} },
+        aggregations => {
+            author => {
+                aggregations => {
+                    entries => {
+                        terms => { field => 'author', size => 50 }
+                    }
+                },
+                filter => $range_filter,
+            },
+        },
+        size => 0,
+    };
+
+    return $self->es->search({
+        index => $self->index->name,
+        type  => 'release',
+        body  => $body,
+    });
 }
 
 __PACKAGE__->meta->make_immutable;

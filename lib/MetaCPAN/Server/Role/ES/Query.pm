@@ -16,7 +16,7 @@ sub es_by_key_vals {
         = +{
         bool => { should => [ map +{ term => { $key => $_ } }, @vals ] }
         };
-    $self->es_by_filter( c => $c, cb => $cb, filter => $filter );
+    return $self->es_by_filter( c => $c, cb => $cb, filter => $filter );
 }
 
 # queries by given filter
@@ -54,7 +54,7 @@ sub es_query_res {
     $res = $res->size($size)->all;
     $res = $cb->($res) if $cb and is_coderef($cb);
 
-    $c->stash($res);
+    return $res;
 }
 
 no Moose::Role;

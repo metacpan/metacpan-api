@@ -60,6 +60,24 @@ sub get : Path('') : Args(1) {
         ['The requested field(s) could not be found'] );
 }
 
+# endpoint: /author/by_id?id=<csv_author_ids>[&fields=<csv_fields>][&sort=<csv_sort>][&size=N]
+sub by_id : Path('by_id') : Args(0) {
+    my ( $self, $c ) = @_;
+    my @ids = map {uc} split /,/ => $c->req->parameters->{id};
+    $c->stash(
+        $self->es_by_key_vals( c => $c, key => 'pauseid', vals => \@ids )
+    );
+}
+
+# endpoint: /author/by_user?user=<csv_user_ids>[&fields=<csv_fields>][&sort=<csv_sort>][&size=N]
+sub by_user : Path('by_user') : Args(0) {
+    my ( $self, $c ) = @_;
+    my @users = split /,/ => $c->req->parameters->{user};
+    $c->stash(
+        $self->es_by_key_vals( c => $c, key => 'user', vals => \@users )
+    );
+}
+
 # endpoint: /author/search?key=<key>[&fields=<csv_fields>][&sort=<csv_sort>][&size=N]
 sub search : Path('search') : Args(0) {
     my ( $self, $c ) = @_;
@@ -97,21 +115,36 @@ sub search : Path('search') : Args(0) {
         };
     };
 
-    $self->es_by_filter( c => $c, filter => $filter, cb => $cb );
+    $c->stash(
+        $self->es_by_filter( c => $c, filter => $filter, cb => $cb )
+    );
 }
 
-# endpoint: /author/by_id?id=<csv_author_ids>[&fields=<csv_fields>][&sort=<csv_sort>][&size=N]
-sub by_id : Path('by_id') : Args(0) {
+# endpoint: /author/top_uploaders?range=<range>[&fields=<csv_fields>][&sort=<csv_sort>][&size=N]
+sub top_uploaders : Path('top_uploaders') : Args(0) {
     my ( $self, $c ) = @_;
-    my @ids = map {uc} split /,/ => $c->req->parameters->{id};
-    $self->es_by_key_vals( c => $c, key => 'pauseid', vals => \@ids );
-}
-
-# endpoint: /author/by_user?user=<csv_user_ids>[&fields=<csv_fields>][&sort=<csv_sort>][&size=N]
-sub by_user : Path('by_user') : Args(0) {
-    my ( $self, $c ) = @_;
-    my @users = split /,/ => $c->req->parameters->{user};
-    $self->es_by_key_vals( c => $c, key => 'user', vals => \@users );
+    my $range   = $c->req->parameters->{range};
+    my $data    = $c->model('CPAN::Release')->top_uploaders;
+    my $counts  = +{
+        map { $_->{key} => $_->{doc_count} }
+           @{ $data->{aggregations}{author}{entries}{buckets} }
+    };
+    my $authors = $self->es_by_key_vals( c => $c, key => 'pauseid', vals => [keys %$counts] );
+    $c->stash(
+        {
+            authors => [
+                sort { $b->{releases} <=> $a->{releases} } map {
+                    {
+                        %{ $_->{_source} },
+                            releases => $counts->{ $_->{_source}->{pauseid} }
+                        }
+                } @{ $authors->{hits}{hits} }
+            ],
+            took     => $data->{took},
+            total    => $data->{aggregations}{author}{total},
+            range    => $range,
+        }
+    );
 }
 
 1;
