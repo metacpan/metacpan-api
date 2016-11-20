@@ -1,10 +1,8 @@
 package MetaCPAN::Script::Latest;
 
-use strict;
-use warnings;
+use MetaCPAN::Moose;
 
 use Log::Contextual qw( :log );
-use Moose;
 use MooseX::Aliases;
 use Parse::CPAN::Packages::Fast;
 use Regexp::Common qw(time);

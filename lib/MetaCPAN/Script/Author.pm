@@ -1,9 +1,6 @@
 package MetaCPAN::Script::Author;
 
-use strict;
-use warnings;
-
-use Moose;
+use MetaCPAN::Moose;
 with 'MooseX::Getopt', 'MetaCPAN::Role::Script';
 
 use DateTime::Format::ISO8601 ();

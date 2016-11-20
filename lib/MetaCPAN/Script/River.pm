@@ -1,7 +1,6 @@
 package MetaCPAN::Script::River;
 
-use Moose;
-use namespace::autoclean;
+use MetaCPAN::Moose;
 
 use Cpanel::JSON::XS qw( decode_json );
 use Log::Contextual qw( :log :dlog );

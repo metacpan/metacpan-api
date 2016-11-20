@@ -1,8 +1,6 @@
 package MetaCPAN::Script::Watcher;
 
-use strict;
-use warnings;
-use Moose;
+use MetaCPAN::Moose;
 
 use CPAN::DistnameInfo;
 use Cpanel::JSON::XS;
@@ -28,8 +26,6 @@ my $fails  = 0;
 my $latest = 0;
 
 my @segments = qw(1h 6h 1d 1W 1M 1Q 1Y Z);
-
-#my @segments = qw(1Y);
 
 sub run {
     my $self = shift;

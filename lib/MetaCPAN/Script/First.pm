@@ -1,10 +1,8 @@
 package MetaCPAN::Script::First;
 
-use strict;
-use warnings;
+use MetaCPAN::Moose;
 
 use Log::Contextual qw( :log );
-use Moose;
 use MetaCPAN::Types qw( Str );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';

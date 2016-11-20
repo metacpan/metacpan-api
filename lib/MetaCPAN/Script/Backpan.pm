@@ -1,9 +1,6 @@
 package MetaCPAN::Script::Backpan;
 
-use strict;
-use warnings;
-
-use Moose;
+use MetaCPAN::Moose;
 
 use Log::Contextual qw( :log :dlog );
 use BackPAN::Index;

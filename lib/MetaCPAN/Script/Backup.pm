@@ -1,16 +1,14 @@
 package MetaCPAN::Script::Backup;
 
-use strict;
-use warnings;
+use MetaCPAN::Moose;
 use feature qw( state );
 
 use Data::Printer;
-use DateTime;
+use DateTime ();
 use IO::Zlib ();
 use Cpanel::JSON::XS;
 use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Types qw( Bool Int Str File );
-use Moose;
 use Try::Tiny;
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt::Dashes';
