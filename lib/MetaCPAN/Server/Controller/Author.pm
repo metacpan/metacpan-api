@@ -60,11 +60,51 @@ sub get : Path('') : Args(1) {
         ['The requested field(s) could not be found'] );
 }
 
+# endpoint: /author/search?key=<key>[&fields=<csv_fields>][&sort=<csv_sort>][&size=N]
+sub search : Path('search') : Args(0) {
+    my ( $self, $c ) = @_;
+    my $key    = $c->req->parameters->{key};
+    my $filter = +{
+        bool => {
+            should => [
+                {
+                    match => {
+                        'name.analyzed' =>
+                            { query => $key, operator => 'and' }
+                    }
+                },
+                {
+                    match => {
+                        'asciiname.analyzed' =>
+                            { query => $key, operator => 'and' }
+                    }
+                },
+                { match => { 'pauseid'    => uc($key) } },
+                { match => { 'profile.id' => lc($key) } },
+            ]
+        }
+    };
+
+    my $cb = sub {
+        my $res = shift;
+        return +{
+            results => [
+                map { +{ %{ $_->{_source} }, id => $_->{_id} } }
+                    @{ $res->{hits}{hits} }
+            ],
+            total => $res->{hits}{total} || 0,
+            took => $res->{took}
+        };
+    };
+
+    $self->es_by_filter( $c, $filter, $cb );
+}
+
 # endpoint: /author/by_user?user=<csv_user_ids>[&fields=<csv_fields>][&sort=<csv_sort>][&size=N]
 sub by_user : Path('by_user') : Args(0) {
     my ( $self, $c ) = @_;
     my @users = split /,/ => $c->req->parameters->{user};
-    $self->es_query_by_key( $c, 'user', \@users );
+    $self->es_by_key_vals( $c, 'user', \@users );
 }
 
 1;

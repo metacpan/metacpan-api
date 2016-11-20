@@ -5,10 +5,30 @@ use warnings;
 
 use Moose::Role;
 
-use Ref::Util qw( is_arrayref );
+use Ref::Util qw( is_arrayref is_coderef );
 
-sub es_query_by_filter {
-    my ( $self, $c, $filter ) = @_;
+# queries by given key and values
+sub es_by_key_vals {
+    my ( $self, $c, $key, $vals, $cb ) = @_;
+    my @vals = is_arrayref $vals ? @{$vals} : $vals;
+    my $filter
+        = +{
+        bool => { should => [ map +{ term => { $key => $_ } }, @vals ] }
+        };
+    $self->es_query_by_filter( $c, $filter, $cb );
+}
+
+# queries by given filter
+sub es_by_filter {
+    my ( $self, $c, $filter, $cb ) = @_;
+    my $res = $self->model($c)->raw->filter($filter);
+    return $self->es_query_res( $c, $res, $cb );
+}
+
+# applies generic 'size', 'sort' & 'fields' to
+# query result
+sub es_query_res {
+    my ( $self, $c, $res, $cb ) = @_;
     my $params = $c->req->parameters;
 
     my $size = $params->{size} || 5000;
@@ -25,20 +45,12 @@ sub es_query_by_filter {
             split /,/ => $params->{sort};
     }
 
-    my $res = $self->model($c)->raw->filter($filter);
     $res = $res->fields( \@fields ) if @fields;
     $res = $res->sort( \@sort )     if @sort;
     $res = $res->size($size)->all;
+    $res = $cb->($res) if $cb and is_coderef($cb);
 
     $c->stash($res);
-}
-
-sub es_query_by_key {
-    my ( $self, $c, $key, $vals ) = @_;
-    my @vals = is_arrayref $vals ? @{$vals} : $vals;
-    $self->es_query_by_filter( $c,
-        { bool => { should => [ map +{ term => { $key => $_ } }, @vals ] } }
-    );
 }
 
 no Moose::Role;

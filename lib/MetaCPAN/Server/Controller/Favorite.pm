@@ -31,7 +31,7 @@ sub find : Path('') : Args(2) {
 sub by_user : Path('by_user') : Args(0) {
     my ( $self, $c ) = @_;
     my @users = split /,/ => $c->req->parameters->{user};
-    $self->es_query_by_key( $c, 'user', \@users );
+    $self->es_by_key_vals( $c, 'user', \@users );
 }
 
 __PACKAGE__->meta->make_immutable;
