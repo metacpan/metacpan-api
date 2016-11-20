@@ -46,6 +46,13 @@ has patch_mapping => (
     documentation => 'type mapping patches',
 );
 
+has skip_existing_mapping => (
+    is            => 'ro',
+    isa           => Bool,
+    default       => 0,
+    documentation => 'do NOT copy mappings other than patch_mapping',
+);
+
 has copy_to_index => (
     is            => 'ro',
     isa           => Str,
@@ -122,10 +129,11 @@ sub index_create {
     my $dst_idx = $self->create_index;
     $self->_check_index_exists( $dst_idx, NOT_EXPECTED );
 
-    my $patch_mapping = decode_json $self->patch_mapping;
-    my @patch_types   = sort keys %{$patch_mapping};
-    my $dep           = $self->index->deployment_statement;
-    my $mapping       = delete $dep->{mappings};
+    my $patch_mapping    = decode_json $self->patch_mapping;
+    my @patch_types      = sort keys %{$patch_mapping};
+    my $dep              = $self->index->deployment_statement;
+    my $existing_mapping = delete $dep->{mappings};
+    my $mapping = $self->skip_existing_mapping ? +{} : $existing_mapping;
 
     # create the new index with the copied settings
     log_info {"Creating index: $dst_idx"};
@@ -257,6 +265,7 @@ __END__
  # bin/metacpan mapping --delete_index xxx
  # bin/metacpan mapping --create_index xxx --reindex
  # bin/metacpan mapping --create_index xxx --reindex --patch_mapping '{"distribution":{"dynamic":"false","properties":{"name":{"index":"not_analyzed","ignore_above":2048,"type":"string"},"river":{"properties":{"total":{"type":"integer"},"immediate":{"type":"integer"},"bucket":{"type":"integer"}},"dynamic":"true"},"bugs":{"properties":{"rt":{"dynamic":"true","properties":{"rejected":{"type":"integer"},"closed":{"type":"integer"},"open":{"type":"integer"},"active":{"type":"integer"},"patched":{"type":"integer"},"source":{"type":"string","ignore_above":2048,"index":"not_analyzed"},"resolved":{"type":"integer"},"stalled":{"type":"integer"},"new":{"type":"integer"}}},"github":{"dynamic":"true","properties":{"active":{"type":"integer"},"open":{"type":"integer"},"closed":{"type":"integer"},"source":{"type":"string","index":"not_analyzed","ignore_above":2048}}}},"dynamic":"true"}}}}'
+ # bin/metacpan mapping --create_index xxx --patch_mapping '{...mapping...}' --skip_existing_mapping
  # bin/metacpan mapping --copy_to_index xxx --copy_type release
  # bin/metacpan mapping --copy_to_index xxx --copy_type release --copy_query '{"range":{"date":{"gte":"2016-01","lt":"2017-01"}}}'
 
