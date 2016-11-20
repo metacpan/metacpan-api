@@ -23,20 +23,30 @@ sub find {
                     { term => { indexed    => 1, } },
                     { term => { authorized => 1 } },
                     { term => { status     => 'latest' } },
-                    { or => [
-                        {
-                            nested => {
-                                path => "module",
-                                filter => {
-                                    and => [
-                                        { term => { "module.name" => $module } },
-                                        { term => { "module.authorized" => 1 } },
-                                    ]
+                    {
+                        or => [
+                            {
+                                nested => {
+                                    path   => "module",
+                                    filter => {
+                                        and => [
+                                            {
+                                                term => {
+                                                    "module.name" => $module
+                                                }
+                                            },
+                                            {
+                                                term => {
+                                                    "module.authorized" => 1
+                                                }
+                                            },
+                                        ]
+                                    }
                                 }
-                            }
-                        },
-                        { term => { documentation => $module } },
-                    ] },
+                            },
+                            { term => { documentation => $module } },
+                        ]
+                    },
                 ],
                 should => [
                     { term => { documentation => $module } },
