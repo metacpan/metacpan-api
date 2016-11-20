@@ -3,13 +3,15 @@ package MetaCPAN::Server;
 use Moose;
 
 ## no critic (Modules::RequireEndWithOne)
-use Catalyst qw( +MetaCPAN::Role::Fastly::Catalyst );
+use Catalyst qw( +MetaCPAN::Role::Fastly::Catalyst ), '-Log=warn,error,fatal';
+use Log::Log4perl::Catalyst;
 
 use CatalystX::RoleApplicator;
 use File::Temp qw( tempdir );
 use Plack::Middleware::ReverseProxy;
 use Plack::Middleware::ServerStatus::Lite;
 use Ref::Util qw( is_arrayref );
+use Plack::Builder;
 
 extends 'Catalyst';
 
@@ -73,6 +75,9 @@ __PACKAGE__->config(
         },
     }
 );
+
+__PACKAGE__->log( Log::Log4perl::Catalyst->new( undef, autoflush => 1 ) );
+
 __PACKAGE__->setup(
     qw(
         Static::Simple
@@ -85,44 +90,45 @@ __PACKAGE__->setup(
         )
 );
 
-my $app = __PACKAGE__->apply_default_middlewares( __PACKAGE__->psgi_app );
+sub app {
+    my $class = shift;
+    builder {
+        enable sub {
+            my $app = shift;
+            sub {
+                my ($env) = @_;
+                Log::Log4perl::MDC->remove;
+                Log::Log4perl::MDC->put( "ip",      $env->{REMOTE_ADDR} );
+                Log::Log4perl::MDC->put( "method",  $env->{REMOTE_METHOD} );
+                Log::Log4perl::MDC->put( "url",     $env->{REQUEST_URI} );
+                Log::Log4perl::MDC->put( "referer", $env->{HTTP_REFERER} );
+                $app->($env);
+            };
+        };
 
-# Using an ES client against the API requires an index (/v0).
-# In production nginx handles this.
-if ( $ENV{PLACK_ENV} && $ENV{PLACK_ENV} eq 'development' ) {
-    require Plack::Middleware::Rewrite;
-    $app = Plack::Middleware::Rewrite->wrap( $app,
-        rules => sub {s{^/?v\d+/}{}} );
-}
+        if ( $ENV{PLACK_ENV} && $ENV{PLACK_ENV} eq 'development' ) {
+            enable 'Rewrite', rules => sub {s{^/?v\d+/}{}};
+        }
 
-# Should this be `unless ( $ENV{HARNESS_ACTIVE} ) {` ?
-{
-    my $scoreboard
-        = $ENV{HARNESS_ACTIVE}
-        ? tempdir( CLEANUP => 1 )
-        : __PACKAGE__->path_to(qw(var tmp scoreboard));
+        # Using an ES client against the API requires an index (/v0).
+        # In production nginx handles this.
+
+        unless ( $ENV{HARNESS_ACTIVE} or $0 =~ /\.t$/ ) {
+            my $scoreboard = $class->path_to(qw(var tmp scoreboard));
 
    # This may be a File object if it doesn't exist so change it, then make it.
-    my $dir = Path::Class::Dir->new(
-        ref $scoreboard ? $scoreboard->stringify : $scoreboard );
-    $dir->mkpath unless -d $dir;
+            my $dir = Path::Class::Dir->new(
+                ref $scoreboard ? $scoreboard->stringify : $scoreboard );
+            $dir->mkpath unless -d $dir;
 
-    Plack::Middleware::ServerStatus::Lite->wrap(
-        $app,
-        path       => '/server-status',
-        allow      => ['127.0.0.1'],
-        scoreboard => $scoreboard,
-    );
-}
-
-# prevent output buffering when in Docker containers (e.g. in docker-compose)
-if ( -e "/.dockerenv" and __PACKAGE__->log->isa('Catalyst::Log') ) {
-    STDERR->autoflush;
-    STDOUT->autoflush;
-}
-
-sub to_app {
-    return $app;
+            enable 'ServerStatus::Lite',
+                path       => '/server-status',
+                allow      => ['127.0.0.1'],
+                scoreboard => $scoreboard,
+                ;
+        }
+        $class->apply_default_middlewares( $class->psgi_app );
+    };
 }
 
 # a controller method to read a given parameter key which will be read

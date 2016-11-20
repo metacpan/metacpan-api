@@ -20,5 +20,6 @@
 /var
 cover_db/
 local/
+log4perl_local.conf
 metacpan_server_local.conf
 perltidy.LOG
