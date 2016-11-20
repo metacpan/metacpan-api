@@ -39,6 +39,13 @@ has create_index => (
     documentation => 'create a new empty index (copy mappings)',
 );
 
+has update_index => (
+    is            => 'ro',
+    isa           => Str,
+    default       => "",
+    documentation => 'update existing index (add mappings)',
+);
+
 has patch_mapping => (
     is            => 'ro',
     isa           => Str,
@@ -92,6 +99,7 @@ sub run {
     my $self = shift;
     $self->index_create   if $self->create_index;
     $self->index_delete   if $self->delete_index;
+    $self->index_update   if $self->update_index;
     $self->copy_index     if $self->copy_to_index;
     $self->types_list     if $self->list_types;
     $self->delete_mapping if $self->delete;
@@ -121,6 +129,36 @@ sub index_delete {
 
     log_info {"Deleting index: $name"};
     $self->es->indices->delete( index => $name );
+}
+
+sub index_update {
+    my $self = shift;
+    my $name = $self->update_index;
+
+    $self->_check_index_exists( $name, EXPECTED );
+    $self->_prompt("Index $name will be updated !!!");
+
+    die "update_index requires patch_mapping\n"
+        unless $self->patch_mapping;
+
+    my $patch_mapping    = decode_json $self->patch_mapping;
+    my @patch_types      = sort keys %{$patch_mapping};
+    my $dep              = $self->index->deployment_statement;
+    my $existing_mapping = delete $dep->{mappings};
+    my $mapping          = +{ map { $_ => $patch_mapping->{$_} } @patch_types };
+
+    log_info {"Updating mapping for index: $name"};
+
+    for my $type ( sort keys %{$mapping} ) {
+        log_info {"Adding mapping to index: $type"};
+        $self->es->indices->put_mapping(
+            index => $self->index->name,
+            type  => $type,
+            body  => { $type => $mapping->{$type} },
+        );
+    }
+
+    log_info {"Done."};
 }
 
 sub index_create {
@@ -266,6 +304,7 @@ __END__
  # bin/metacpan mapping --create_index xxx --reindex
  # bin/metacpan mapping --create_index xxx --reindex --patch_mapping '{"distribution":{"dynamic":"false","properties":{"name":{"index":"not_analyzed","ignore_above":2048,"type":"string"},"river":{"properties":{"total":{"type":"integer"},"immediate":{"type":"integer"},"bucket":{"type":"integer"}},"dynamic":"true"},"bugs":{"properties":{"rt":{"dynamic":"true","properties":{"rejected":{"type":"integer"},"closed":{"type":"integer"},"open":{"type":"integer"},"active":{"type":"integer"},"patched":{"type":"integer"},"source":{"type":"string","ignore_above":2048,"index":"not_analyzed"},"resolved":{"type":"integer"},"stalled":{"type":"integer"},"new":{"type":"integer"}}},"github":{"dynamic":"true","properties":{"active":{"type":"integer"},"open":{"type":"integer"},"closed":{"type":"integer"},"source":{"type":"string","index":"not_analyzed","ignore_above":2048}}}},"dynamic":"true"}}}}'
  # bin/metacpan mapping --create_index xxx --patch_mapping '{...mapping...}' --skip_existing_mapping
+ # bin/metacpan mapping --update_index xxx --patch_mapping '{...mapping...}'
  # bin/metacpan mapping --copy_to_index xxx --copy_type release
  # bin/metacpan mapping --copy_to_index xxx --copy_type release --copy_query '{"range":{"date":{"gte":"2016-01","lt":"2017-01"}}}'
 
