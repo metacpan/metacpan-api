@@ -34,16 +34,24 @@ sub index_permissions {
 
     my $iterator = $pp->module_iterator;
     while ( my $perms = $iterator->next_module ) {
+
+        # This method does a "return sort @foo", so it can't be called in the
+        # ternary since it always returns false in that context.
+        # https://github.com/neilb/PAUSE-Permissions/pull/16
+
+        my @co_maints = $perms->co_maintainers;
+        my $doc       = {
+            @co_maints
+            ? ( co_maintainers => \@co_maints )
+            : (),
+            module_name => $perms->name,
+            owner       => $perms->owner,
+        };
+
         $bulk_helper->update(
             {
-                id  => $perms->name,
-                doc => {
-                    $perms->co_maintainers
-                    ? ( co_maintainers => $perms->co_maintainers )
-                    : (),
-                    module_name => $perms->name,
-                    owner       => $perms->owner,
-                },
+                id            => $perms->name,
+                doc           => $doc,
                 doc_as_upsert => 1,
             }
         );
