@@ -8,7 +8,7 @@ use Moose;
 extends 'MetaCPAN::Server::Model::CPAN';
 
 use Hash::Merge qw( merge );
-use List::Util qw( max sum uniq );
+use List::Util qw( sum uniq );
 use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
 
 my $RESULTS_PER_RUN = 200;
@@ -60,6 +60,119 @@ sub search_expanded {
         took => sum( grep {defined} $data->{took}, $favorites->{took} )
     };
     return $return;
+}
+
+sub search_collapsed {
+    my ( $self, $query, $from, $page_size ) = @_;
+    $page_size //= 20;
+    $from      //= 0;
+
+    my $took = 0;
+    my $total;
+    my $run  = 1;
+    my $hits = 0;
+    my @distributions;
+    my $process_or_repeat;
+    my $data;
+    do {
+        # We need to scan enough modules to build up a sufficient number of
+        # distributions to fill the results to the number requested
+        my $es_query_opts = {
+            size   => $RESULTS_PER_RUN,
+            from   => ( $run - 1 ) * $RESULTS_PER_RUN,
+            fields => [qw(distribution)],
+        };
+
+        # On the first request also fetch the number of total distributions
+        # that match the query so that can be reported to the user. There is
+        # no need to do it on each iteration though, once is enough.
+        $es_query_opts->{aggregations}
+            = {
+            count => { terms => { size => 999, field => 'distribution' } }
+            }
+            if $run == 1;
+        my $es_query = $self->build_query( $query, $es_query_opts );
+
+        $data = $self->run_query( file => $es_query );
+        $took += $data->{took} || 0;
+        $total = @{ $data->{aggregations}->{count}->{buckets} || [] }
+            if $run == 1;
+        $hits = @{ $data->{hits}->{hits} || [] };
+        @distributions = uniq(
+            @distributions,
+            map {
+                single_valued_arrayref_to_scalar( $_->{fields} );
+                $_->{fields}->{distribution}
+            } @{ $data->{hits}->{hits} }
+        );
+        $run++;
+        } while ( @distributions < $page_size + $from
+        && $data->{hits}->{total}
+        && $data->{hits}->{total} > $hits + ( $run - 2 ) * $RESULTS_PER_RUN );
+
+    @distributions = splice( @distributions, $from, $page_size );
+
+    # Everything else will fail (slowly and quietly) without distributions.
+    return {} unless @distributions;
+
+    # Now that we know which distributions are going to be displayed on the
+    # results page, fetch the details about those distributions
+    my $favorites = $self->search_favorites(@distributions);
+    my $es_query  = $self->build_query(
+        $query,
+        {
+# we will probably never hit that limit, since we are searching in $page_size=20 distributions max
+            size  => 5000,
+            query => {
+                filtered => {
+                    filter => {
+                        and => [
+                            {
+                                or => [
+                                    map {
+                                        { term => { 'distribution' => $_ } }
+                                    } @distributions
+                                ]
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    );
+    my $results = $self->run_query( file => $es_query );
+
+    $took += sum( grep {defined} $results->{took}, $favorites->{took} );
+    $results = $self->_extract_results( $results, $favorites );
+    $results = $self->_collapse_results($results);
+    my @ids = map { $_->[0]{id} } @$results;
+    $data = {
+        results => $results,
+        total   => $total,
+        took    => $took,
+    };
+    my $descriptions = $self->search_descriptions(@ids);
+    $data->{took} += $descriptions->{took} || 0;
+    map { $_->[0]{description} = $descriptions->{results}{ $_->[0]{id} } }
+        @{ $data->{results} };
+    return $data;
+}
+
+sub _collapse_results {
+    my ( $self, $results ) = @_;
+    my %collapsed;
+    foreach my $result (@$results) {
+        my $distribution = $result->{distribution};
+        $collapsed{$distribution}
+            = { position => scalar keys %collapsed, results => [] }
+            unless ( $collapsed{$distribution} );
+        push( @{ $collapsed{$distribution}->{results} }, $result );
+    }
+    return [
+        map      { $collapsed{$_}->{results} }
+            sort { $collapsed{$a}->{position} <=> $collapsed{$b}->{position} }
+            keys %collapsed
+    ];
 }
 
 # was sub search {}

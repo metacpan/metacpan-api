@@ -30,4 +30,15 @@ sub expanded : Chained('/search/index') : PathPart('expanded') : Args(0) {
     $c->stash($results);
 }
 
+sub collapsed : Chained('/search/index') : PathPart('collapsed') : Args(0) {
+    my ( $self, $c ) = @_;
+    my $args  = $c->req->params;
+    my $query = $args->{q};
+
+    my $model   = $c->model('Search');
+    my $results = $model->search_collapsed($query);
+
+    $c->stash($results);
+}
+
 1;
