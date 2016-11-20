@@ -7,6 +7,8 @@ BEGIN {
     $ENV{PERL_JSON_BACKEND} = 'JSON::XS';
 }
 
+use MetaCPAN::Moose;
+
 use CPAN::DistnameInfo ();
 use File::Find::Rule;
 use File::stat ();
@@ -16,7 +18,6 @@ use MetaCPAN::Util;
 use MetaCPAN::Model::Release;
 use MetaCPAN::Script::Runner;
 use MetaCPAN::Types qw( Bool Dir HashRef Int Str );
-use Moose;
 use PerlIO::gzip;
 use Try::Tiny qw( catch try );
 

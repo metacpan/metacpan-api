@@ -21,6 +21,7 @@ use Path::Class qw(dir file);
 use Test::More 0.96;
 use Test::More 0.96 ();
 use Test::Most;
+use URI::FromHash qw( uri );
 
 # Ensure we're starting fresh
 my $tmp_dir = tmp_dir();
@@ -89,12 +90,15 @@ $server->index_cpantesters;
 ok(
     MetaCPAN::Script::Tickets->new_with_options(
         {
-            %{$config},
-            rt_summary_url => 'file://'
-                . $fakecpan_dir->file('bugs.tsv')->absolute,
-            github_issues => 'file://'
-                . $fakecpan_dir->subdir('github')->absolute
-                . '/%s/%s.json?per_page=100',
+            rt_summary_url => uri(
+                scheme => 'file',
+                path => $fakecpan_dir->file('bugs.tsv')->absolute->stringify,
+            ),
+            github_issues => uri(
+                scheme => 'file',
+                path   => $fakecpan_dir->subdir('github')->absolute->stringify
+                    . '/%s/%s.json?per_page=100'
+            ),
         }
         )->run,
     'tickets'
