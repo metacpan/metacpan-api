@@ -25,22 +25,31 @@ sub index_permissions {
     my $self = shift;
 
     my $file_path = $self->cpan . '/modules/06perms.txt';
-    my $pp        = PAUSE::Permissions->new( path => $file_path );
-    my $type      = $self->index->type('permission');
-    my $bulk      = $self->model->bulk( size => 100 );
+    my $pp = PAUSE::Permissions->new( path => $file_path );
+
+    my $bulk_helper = $self->es->bulk_helper(
+        index => $self->index->name,
+        type  => 'permission',
+    );
 
     my $iterator = $pp->module_iterator;
     while ( my $perms = $iterator->next_module ) {
-        my $put = { module => $perms->name };
-        $put->{owner} = $perms->owner if $perms->owner;
-        $put->{co_maintainers} = $perms->co_maintainers
-            if $perms->co_maintainers;
-        $bulk->put( $type->new_document($put) );
+        $bulk_helper->update(
+            {
+                id  => $perms->name,
+                doc => {
+                    $perms->co_maintainers
+                    ? ( co_maintainers => $perms->co_maintainers )
+                    : (),
+                    module_name => $perms->name,
+                    owner       => $perms->owner,
+                },
+                doc_as_upsert => 1,
+            }
+        );
     }
 
-    $bulk->commit;
-
-    $self->index->refresh;
+    $bulk_helper->flush;
     log_info {'finished indexing 06perms'};
 }
 
