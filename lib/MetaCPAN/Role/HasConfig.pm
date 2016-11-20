@@ -2,7 +2,7 @@ package MetaCPAN::Role::HasConfig;
 
 use Moose::Role;
 
-use FindBin qw( $RealBin );
+use FindBin;
 use Hash::Merge::Simple qw(merge);
 use IO::Interactive qw(is_interactive);
 use MetaCPAN::Types qw(HashRef);
@@ -13,17 +13,18 @@ sub config {
 }
 
 has _config => (
-    is      => 'ro',
-    isa     => HashRef,
-    lazy    => 1,
-    builder => '_build_config',
+    is       => 'ro',
+    isa      => HashRef,
+    init_arg => undef,
+    lazy     => 1,
+    builder  => '_build_config',
 );
 
 sub _build_config {
     my $self   = shift;
     my $config = Config::JFDI->new(
         name => 'metacpan_server',
-        path => "$RealBin/..",
+        path => "$FindBin::RealBin/..",
     )->get;
 
     if ( $ENV{HARNESS_ACTIVE} ) {
