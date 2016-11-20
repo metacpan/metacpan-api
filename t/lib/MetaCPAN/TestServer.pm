@@ -2,14 +2,14 @@ package MetaCPAN::TestServer;
 
 use MetaCPAN::Moose;
 
-use CPAN::Repository::Perms;
-use MetaCPAN::Script::Author;
+use MetaCPAN::Script::Author      ();
 use MetaCPAN::Script::CPANTesters ();
-use MetaCPAN::Script::Latest;
-use MetaCPAN::Script::First;
-use MetaCPAN::Script::Mapping;
-use MetaCPAN::Script::Release;
-use MetaCPAN::Server ();
+use MetaCPAN::Script::First       ();
+use MetaCPAN::Script::Latest      ();
+use MetaCPAN::Script::Mapping     ();
+use MetaCPAN::Script::Permission  ();
+use MetaCPAN::Script::Release     ();
+use MetaCPAN::Server              ();
 use MetaCPAN::TestHelpers qw( fakecpan_dir );
 use MetaCPAN::Types qw( Dir HashRef Str );
 use Search::Elasticsearch;
@@ -185,6 +185,13 @@ sub index_cpantesters {
     local @ARGV = ( 'cpantesters', '--force-refresh' );
     ok( MetaCPAN::Script::CPANTesters->new_with_options->run,
         'index authors' );
+}
+
+sub index_permissions {
+    my $self = shift;
+
+    ok( MetaCPAN::Script::Permission->new_with_options->run,
+        'index permissions' );
 }
 
 sub prepare_user_test_data {

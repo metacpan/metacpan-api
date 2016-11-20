@@ -53,7 +53,7 @@ my $cpan = CPAN::Faker->new(
 ok( $cpan->make_cpan, 'make fake cpan' );
 $fakecpan_dir->subdir('authors')->mkpath;
 
-# do some changes to 06perms.txt
+# make some changes to 06perms.txt
 {
     my $perms_file = $fakecpan_dir->subdir('modules')->file('06perms.txt');
     my $perms      = $perms_file->slurp;
@@ -77,6 +77,7 @@ copy( $src_dir->file('author-1.0.json'),
 
 copy( $src_dir->file('bugs.tsv'), $fakecpan_dir->file('bugs.tsv') );
 
+$server->index_permissions;
 $server->index_releases;
 $server->set_latest;
 $server->set_first;
