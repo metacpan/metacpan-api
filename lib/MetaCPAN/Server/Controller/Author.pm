@@ -97,14 +97,21 @@ sub search : Path('search') : Args(0) {
         };
     };
 
-    $self->es_by_filter( $c, $filter, $cb );
+    $self->es_by_filter( c => $c, filter => $filter, cb => $cb );
+}
+
+# endpoint: /author/by_id?id=<csv_author_ids>[&fields=<csv_fields>][&sort=<csv_sort>][&size=N]
+sub by_id : Path('by_id') : Args(0) {
+    my ( $self, $c ) = @_;
+    my @ids = map {uc} split /,/ => $c->req->parameters->{id};
+    $self->es_by_key_vals( c => $c, key => 'pauseid', vals => \@ids );
 }
 
 # endpoint: /author/by_user?user=<csv_user_ids>[&fields=<csv_fields>][&sort=<csv_sort>][&size=N]
 sub by_user : Path('by_user') : Args(0) {
     my ( $self, $c ) = @_;
     my @users = split /,/ => $c->req->parameters->{user};
-    $self->es_by_key_vals( $c, 'user', \@users );
+    $self->es_by_key_vals( c => $c, key => 'user', vals => \@users );
 }
 
 1;
