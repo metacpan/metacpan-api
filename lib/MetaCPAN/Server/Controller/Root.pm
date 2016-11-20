@@ -4,10 +4,18 @@ use strict;
 use warnings;
 
 use Moose;
+use Log::Log4perl::MDC;
 
 BEGIN { extends 'MetaCPAN::Server::Controller' }
 
 __PACKAGE__->config( namespace => '' );
+
+sub auto : Private {
+    my ( $self, $c ) = @_;
+    Log::Log4perl::MDC->put( "ip",      $c->req->address );
+    Log::Log4perl::MDC->put( "url",     $c->req->uri . '' );
+    Log::Log4perl::MDC->put( "referer", $c->req->referer );
+}
 
 # This will catch anything that isn't matched by another route.
 sub default : Path {

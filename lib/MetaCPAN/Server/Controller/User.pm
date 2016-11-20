@@ -5,6 +5,7 @@ use warnings;
 
 use DateTime;
 use Moose;
+use Log::Log4perl::MDC;
 
 BEGIN { extends 'Catalyst::Controller::REST' }
 
@@ -22,6 +23,7 @@ sub auto : Private {
     if ( my $token = $c->req->params->{access_token} ) {
         my $user = $c->model('User::Account')->find_token($token);
         $c->authenticate( { user => $user } ) if ($user);
+
     }
     return $c->user_exists;
 }
