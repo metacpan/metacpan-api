@@ -19,22 +19,12 @@ sub simple : Chained('/search/index') : PathPart('simple') : Args(0) {
     $c->stash( $model->run_query( file => $query ) );
 }
 
-sub expanded : Chained('/search/index') : PathPart('expanded') : Args(0) {
+sub web : Chained('/search/index') : PathPart('web') : Args(0) {
     my ( $self, $c ) = @_;
     my $args = $c->req->params;
 
     my $model   = $c->model('Search');
-    my $results = $model->search_expanded( @{$args}{qw( q from size )} );
-
-    $c->stash($results);
-}
-
-sub collapsed : Chained('/search/index') : PathPart('collapsed') : Args(0) {
-    my ( $self, $c ) = @_;
-    my $args = $c->req->params;
-
-    my $model   = $c->model('Search');
-    my $results = $model->search_collapsed( @{$args}{qw( q from size )} );
+    my $results = $model->search_web( @{$args}{qw( q from size collapsed )} );
 
     $c->stash($results);
 }

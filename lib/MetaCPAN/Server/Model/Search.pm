@@ -21,10 +21,27 @@ sub _not_rogue {
     return { not => { filter => { or => \@rogue_dists } } };
 }
 
-sub search_expanded {
-    my ( $self, $query, $from, $page_size ) = @_;
+sub search_web {
+    my ( $self, $query, $from, $page_size, $collapsed ) = @_;
     $page_size //= 20;
     $from      //= 0;
+
+    # munge the query
+    # these would be nicer if we had variable-length lookbehinds...
+    $query =~ s{(^|\s)author:([a-zA-Z]+)(?=\s|$)}{$1author:\U$2\E}g;
+    $query =~ s/(^|\s)dist(ribution)?:([\w-]+)(?=\s|$)/$1distribution:$3/g;
+    $query =~ s/(^|\s)module:(\w[\w:]*)(?=\s|$)/$1module.name.analyzed:$2/g;
+
+    my $results
+        = $collapsed // $query !~ /(distribution|module\.name\S*):/
+        ? $self->_search_collapsed( $query, $from, $page_size )
+        : $self->_search_expanded( $query, $from, $page_size );
+
+    return $results;
+}
+
+sub _search_expanded {
+    my ( $self, $query, $from, $page_size ) = @_;
 
     # When used for a distribution or module search, the limit is included in
     # thl query and ES does the right thing.
@@ -57,15 +74,14 @@ sub search_expanded {
     my $return = {
         results => [ map { [$_] } @$results ],
         total   => $data->{hits}->{total},
-        took => sum( grep {defined} $data->{took}, $favorites->{took} )
+        took      => sum( grep {defined} $data->{took}, $favorites->{took} ),
+        collapsed => \0,
     };
     return $return;
 }
 
-sub search_collapsed {
+sub _search_collapsed {
     my ( $self, $query, $from, $page_size ) = @_;
-    $page_size //= 20;
-    $from      //= 0;
 
     my $took = 0;
     my $total;
@@ -151,9 +167,10 @@ sub search_collapsed {
     $results = $self->_collapse_results($results);
     my @ids = map { $_->[0]{id} } @$results;
     $data = {
-        results => $results,
-        total   => $total,
-        took    => $took,
+        results   => $results,
+        total     => $total,
+        took      => $took,
+        collapsed => \1,
     };
     my $descriptions = $self->search_descriptions(@ids);
     $data->{took} += $descriptions->{took} || 0;
@@ -179,7 +196,6 @@ sub _collapse_results {
     ];
 }
 
-# was sub search {}
 sub build_query {
     my ( $self, $query, $params ) = @_;
     $params //= {};
@@ -323,9 +339,7 @@ sub build_query {
     );
 
     # Ensure our requested fields are unique so that Elasticsearch doesn't
-    # return us the same value multiple times in an unexpected arrayref.  For
-    # example, distribution is listed both above and in ->_search, which calls
-    # this function (->search) and gets merged with the query above.
+    # return us the same value multiple times in an unexpected arrayref.
     $search->{fields} = [ uniq @{ $search->{fields} || [] } ];
 
     return $search;
