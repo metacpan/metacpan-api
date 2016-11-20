@@ -161,6 +161,9 @@ sub _build_cpan {
     foreach my $dir ( grep {defined} @dirs ) {
         return $dir if -d $dir;
     }
+
+    return 't/var/darkpan' if $ENV{HARNESS_ACTIVE};
+
     die
         q{Couldn't find a local cpan mirror. Please specify --cpan or set MINICPAN.};
 
