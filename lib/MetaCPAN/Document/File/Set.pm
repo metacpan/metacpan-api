@@ -16,32 +16,55 @@ my @ROGUE_DISTRIBUTIONS = qw(
 
 sub find {
     my ( $self, $module ) = @_;
-    my @candidates = $self->index->type('file')->filter(
+    my @candidates = $self->index->type('file')->query(
         {
             bool => {
                 must => [
                     { term => { indexed    => 1, } },
                     { term => { authorized => 1 } },
-                    { term => { status     => 'latest', } },
+                    { term => { status     => 'latest' } },
+                    { or => [
+                        {
+                            nested => {
+                                path => "module",
+                                filter => {
+                                    and => [
+                                        { term => { "module.name" => $module } },
+                                        { term => { "module.authorized" => 1 } },
+                                    ]
+                                }
+                            }
+                        },
+                        { term => { documentation => $module } },
+                    ] },
                 ],
                 should => [
-                    { term => { 'documentation' => $module } },
+                    { term => { documentation => $module } },
                     {
                         nested => {
-                            path => 'module',
-                            filter =>
-                                { term => { 'module.name' => $module } },
+                            path   => 'module',
+                            filter => {
+                                and => [
+                                    { term => { 'module.name' => $module } },
+                                    {
+                                        exists => {
+                                            field => 'module.associated_pod'
+                                        }
+                                    },
+                                ]
+                            }
                         }
-                    }
+                    },
                 ]
             }
         }
         )->sort(
         [
             '_score',
-            { 'date'       => { order => 'desc' } },
-            { 'mime'       => { order => 'asc' } },
-            { 'stat.mtime' => { order => 'desc' } }
+            { 'version_numified' => { order => 'desc' } },
+            { 'date'             => { order => 'desc' } },
+            { 'mime'             => { order => 'asc' } },
+            { 'stat.mtime'       => { order => 'desc' } }
         ]
         )->size(100)->all;
 
