@@ -11,7 +11,6 @@ use MetaCPAN::Server::Test;
 use MetaCPAN::TestHelpers qw(
     fakecpan_configs_dir
     fakecpan_dir
-    get_config
     tmp_dir
 );
 use MetaCPAN::TestServer ();
@@ -29,9 +28,6 @@ ok( $tmp_dir->stat, "$tmp_dir exists for testing" );
 
 my $server = MetaCPAN::TestServer->new;
 $server->setup;
-
-my $config = get_config();
-$config->{es} = $server->es_client;
 
 my $mod_faker = 'Module::Faker::Dist::WithPerl';
 eval "require $mod_faker" or die $@;    ## no critic (StringyEval)
