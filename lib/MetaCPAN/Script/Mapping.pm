@@ -145,7 +145,7 @@ sub index_update {
     my @patch_types      = sort keys %{$patch_mapping};
     my $dep              = $self->index->deployment_statement;
     my $existing_mapping = delete $dep->{mappings};
-    my $mapping          = +{ map { $_ => $patch_mapping->{$_} } @patch_types };
+    my $mapping = +{ map { $_ => $patch_mapping->{$_} } @patch_types };
 
     log_info {"Updating mapping for index: $name"};
 
