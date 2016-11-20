@@ -21,22 +21,20 @@ sub simple : Chained('/search/index') : PathPart('simple') : Args(0) {
 
 sub expanded : Chained('/search/index') : PathPart('expanded') : Args(0) {
     my ( $self, $c ) = @_;
-    my $args  = $c->req->params;
-    my $query = $args->{q};
+    my $args = $c->req->params;
 
     my $model   = $c->model('Search');
-    my $results = $model->search_expanded($query);
+    my $results = $model->search_expanded( @{$args}{qw( q from size )} );
 
     $c->stash($results);
 }
 
 sub collapsed : Chained('/search/index') : PathPart('collapsed') : Args(0) {
     my ( $self, $c ) = @_;
-    my $args  = $c->req->params;
-    my $query = $args->{q};
+    my $args = $c->req->params;
 
     my $model   = $c->model('Search');
-    my $results = $model->search_collapsed($query);
+    my $results = $model->search_collapsed( @{$args}{qw( q from size )} );
 
     $c->stash($results);
 }
