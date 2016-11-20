@@ -5,8 +5,8 @@ use lib 't/lib';
 
 use CPAN::Faker 0.010;
 use Devel::Confess;
-use File::Copy;
-use MetaCPAN::Script::Tickets;
+use File::Copy qw( copy );
+use MetaCPAN::Script::Tickets ();
 use MetaCPAN::Server::Test;
 use MetaCPAN::TestHelpers qw(
     fakecpan_configs_dir
@@ -14,13 +14,10 @@ use MetaCPAN::TestHelpers qw(
     get_config
     tmp_dir
 );
-use MetaCPAN::TestServer;
+use MetaCPAN::TestServer ();
 use Module::Faker 0.015 ();    # Generates META.json.
-use Path::Class qw(dir);
 use Path::Class qw(dir file);
 use Test::More 0.96;
-use Test::More 0.96 ();
-use Test::Most;
 use URI::FromHash qw( uri );
 
 # Ensure we're starting fresh
