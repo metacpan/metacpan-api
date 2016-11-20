@@ -23,14 +23,23 @@ sub find {
                     { term => { indexed    => 1, } },
                     { term => { authorized => 1 } },
                     { term => { status     => 'latest' } },
+                    { or => [
+                        {
+                            nested => {
+                                path => "module",
+                                filter => {
+                                    and => [
+                                        { term => { "module.name" => $module } },
+                                        { term => { "module.authorized" => 1 } },
+                                    ]
+                                }
+                            }
+                        },
+                        { term => { documentation => $module } },
+                    ] },
                 ],
                 should => [
-                    {
-                        and => [
-                            { term => { documentation => $module } },
-                            { term => { pod           => $module } },
-                        ]
-                    },
+                    { term => { documentation => $module } },
                     {
                         nested => {
                             path   => 'module',
@@ -45,13 +54,13 @@ sub find {
                                 ]
                             }
                         }
-                    }
-                ],
-                minimum_should_match => 1,
+                    },
+                ]
             }
         }
         )->sort(
         [
+            '_score',
             { 'version_numified' => { order => 'desc' } },
             { 'date'             => { order => 'desc' } },
             { 'mime'             => { order => 'asc' } },
