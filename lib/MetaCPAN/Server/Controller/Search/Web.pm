@@ -1,4 +1,4 @@
-package MetaCPAN::Server::Controller::Search::WebLike;
+package MetaCPAN::Server::Controller::Search::Web;
 
 use strict;
 use warnings;
@@ -8,6 +8,10 @@ use Moose;
 BEGIN { extends 'MetaCPAN::Server::Controller' }
 
 with 'MetaCPAN::Server::Role::JSONP';
+
+# Kill default actions provided by our stupid Controller base class
+sub get { }
+sub all { }
 
 sub simple : Chained('/search/index') : PathPart('simple') : Args(0) {
     my ( $self, $c ) = @_;
