@@ -32,7 +32,7 @@ sub by_user : Path('by_user') : Args(0) {
     my ( $self, $c ) = @_;
     my @users = $c->req->read_param('user');
     $c->stash(
-        $self->es_by_key_vals( c => $c, key => 'user', vals => \@users ) );
+        $self->es_by_terms_vals( c => $c, should => +{ user => \@users } ) );
 }
 
 __PACKAGE__->meta->make_immutable;
