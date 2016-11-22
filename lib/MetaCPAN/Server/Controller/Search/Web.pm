@@ -13,6 +13,8 @@ with 'MetaCPAN::Server::Role::JSONP';
 sub get { }
 sub all { }
 
+# The simple search avoids most of the input and output aggregation and munging and is therefore easier to reason about for say search optimization.
+
 sub simple : Chained('/search/index') : PathPart('simple') : Args(0) {
     my ( $self, $c ) = @_;
     my $args = $c->req->params;
@@ -22,6 +24,8 @@ sub simple : Chained('/search/index') : PathPart('simple') : Args(0) {
 
     $c->stash($results);
 }
+
+# The web endpoint is the primary one, this handles the front-end's user-facing search
 
 sub web : Chained('/search/index') : PathPart('web') : Args(0) {
     my ( $self, $c ) = @_;
