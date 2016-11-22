@@ -39,14 +39,14 @@ sub es_query_res {
 
     my @fields;
     if ( $params->{fields} ) {
-        @fields = split /,/ => $params->{fields};
+        @fields = $c->req->read_param('fields');
     }
 
     my @sort;
     if ( $params->{sort} ) {
         @sort
             = map { /^(.*):((?:desc|asc))$/ ? { $1 => { order => $2 } } : $_ }
-            split /,/ => $params->{sort};
+            $c->req->read_param('sort');
     }
 
     $res = $res->fields( \@fields ) if @fields;

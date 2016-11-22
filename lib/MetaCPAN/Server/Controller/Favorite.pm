@@ -27,13 +27,12 @@ sub find : Path('') : Args(2) {
     } or $c->detach( '/not_found', [$@] );
 }
 
-# endpoint: /favorite/by_user?user=<csv_user_ids>[&fields=<csv_fields>][&sort=<csv_sort>][&size=N]
+# endpoint: /favorite/by_user?user=<id>[&user=<id2>][&fields=<field>][&sort=<sort_key>][&size=N]
 sub by_user : Path('by_user') : Args(0) {
     my ( $self, $c ) = @_;
-    my @users = split /,/ => $c->req->parameters->{user};
+    my @users = $c->req->read_param('user');
     $c->stash(
-        $self->es_by_key_vals( $c, 'user', \@users )
-    );
+        $self->es_by_key_vals( c => $c, key => 'user', vals => \@users ) );
 }
 
 __PACKAGE__->meta->make_immutable;
