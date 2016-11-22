@@ -8,6 +8,7 @@ use Moose;
 BEGIN { extends 'MetaCPAN::Server::Controller' }
 
 with 'MetaCPAN::Server::Role::JSONP';
+with 'MetaCPAN::Server::Role::ES::Query';
 
 __PACKAGE__->config(
     relationships => {
@@ -68,6 +69,16 @@ sub latest_by_author : Path('latest_by_author') : Args(1) {
 
     $c->stash($file);
 }
+
+# endpoint: /release/versions?distribution=<distribution>[&fields=<field>][&sort=<sort_key>][&size=N]
+sub versions : Path('versions') : Args(0) {
+    my ( $self, $c ) = @_;
+    my @dists = $c->req->read_param('distribution');
+    $c->stash(
+        $self->es_by_key_vals( c => $c, key => 'distribution', vals => \@dists )
+    );
+}
+
 
 __PACKAGE__->meta->make_immutable;
 1;
