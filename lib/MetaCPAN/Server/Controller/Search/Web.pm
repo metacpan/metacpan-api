@@ -17,10 +17,10 @@ sub simple : Chained('/search/index') : PathPart('simple') : Args(0) {
     my ( $self, $c ) = @_;
     my $args = $c->req->params;
 
-    my $model = $c->model('Search');
-    my $query = $model->build_query( $args->{q} );
+    my $model   = $c->model('Search');
+    my $results = $model->search_simple( $args->{q} );
 
-    $c->stash( $model->run_query( file => $query ) );
+    $c->stash($results);
 }
 
 sub web : Chained('/search/index') : PathPart('web') : Args(0) {
