@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Moose;
+use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
 
 BEGIN { extends 'MetaCPAN::Server::Controller' }
 
@@ -35,7 +36,8 @@ sub get : Path('') : Args(1) {
     if ( !defined $file ) {
         $c->detach( '/not_found', ['Not found'] );
     }
-    my $st = $file->{_source} || $file->{fields};
+    my $st = $file->{_source}
+        || single_valued_arrayref_to_scalar( $file->{fields} );
     if ( $st and $st->{pauseid} ) {
         $st->{release_count}
             = $c->model('CPAN::Release')

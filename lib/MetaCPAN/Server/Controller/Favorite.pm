@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Moose;
+use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
 
 BEGIN { extends 'MetaCPAN::Server::Controller' }
 
@@ -22,7 +23,8 @@ sub find : Path('') : Args(2) {
                 distribution => $distribution
             }
         );
-        $c->stash( $favorite->{_source} || $favorite->{fields} );
+        $c->stash( $favorite->{_source}
+                || single_valued_arrayref_to_scalar( $favorite->{fields} ) );
     } or $c->detach( '/not_found', [$@] );
 }
 

@@ -5,6 +5,7 @@ use warnings;
 
 use ElasticSearchX::Model::Util;
 use Moose;
+use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
 
 BEGIN { extends 'MetaCPAN::Server::Controller' }
 
@@ -42,7 +43,8 @@ sub find : Path('') {
             }
         );
         if ( $file->{_source} || $file->{fields} ) {
-            $c->stash( $file->{_source} || $file->{fields} );
+            $c->stash( $file->{_source}
+                    || single_valued_arrayref_to_scalar( $file->{fields} ) );
         }
     } or $c->detach( '/not_found', [$@] );
 }
