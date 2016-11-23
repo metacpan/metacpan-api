@@ -79,8 +79,10 @@ sub by_user : Path('by_user') : Args(0) {
 # endpoint: /author/search?key=<key>[&fields=<field>][&sort=<sort_key>][&size=N]
 sub search : Path('search') : Args(0) {
     my ( $self, $c ) = @_;
-    my $key    = $c->req->parameters->{key};
-    my $filter = +{
+    my $key = $c->req->parameters->{key};
+
+    my $filter = +{ match_all => {} };
+    $key and $filter = +{
         bool => {
             should => [
                 {
