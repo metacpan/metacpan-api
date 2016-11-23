@@ -70,15 +70,35 @@ sub latest_by_author : Path('latest_by_author') : Args(1) {
     $c->stash($file);
 }
 
-# endpoint: /release/versions?distribution=<distribution>[&fields=<field>][&sort=<sort_key>][&size=N]
+# endpoint: /release/by_name_and_author
+# params:   name=<name>&author=<author>[&fields=<field>][&sort=<sort_key>][&size=N]
+sub by_name_and_author : Path('by_name_and_author') : Args(0) {
+    my ( $self, $c )      = @_;
+    my ( $name, $author ) = @{ $c->req->parameters }{qw< name author >};
+    $c->stash(
+        $self->es_by_terms_vals(
+            c    => $c,
+            must => {
+                name   => $name,
+                author => $author,
+            }
+        )
+    );
+}
+
+# endpoint: /release/versions
+# params:   distribution=<distribution>[&fields=<field>][&sort=<sort_key>][&size=N]
 sub versions : Path('versions') : Args(0) {
     my ( $self, $c ) = @_;
     my @dists = $c->req->read_param('distribution');
     $c->stash(
-        $self->es_by_key_vals( c => $c, key => 'distribution', vals => \@dists )
+        $self->es_by_key_vals(
+            c    => $c,
+            key  => 'distribution',
+            vals => \@dists
+        )
     );
 }
-
 
 __PACKAGE__->meta->make_immutable;
 1;
