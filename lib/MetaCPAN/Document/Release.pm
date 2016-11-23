@@ -286,6 +286,8 @@ use warnings;
 use Moose;
 extends 'ElasticSearchX::Model::Document::Set';
 
+with 'MetaCPAN::Role::ES::Query';
+
 sub aggregate_status_by_author {
     my ( $self, $pauseid ) = @_;
     my $agg = $self->es->search(
@@ -416,12 +418,44 @@ sub top_uploaders {
         size => 0,
     };
 
-    return $self->es->search(
+    my $data = $self->es->search(
         {
             index => $self->index->name,
             type  => 'release',
             body  => $body,
         }
+    );
+
+    return +{
+        counts => +{
+            map { $_->{key} => $_->{doc_count} }
+                @{ $data->{aggregations}{author}{entries}{buckets} }
+        },
+        took  => $data->{took},
+        total => $data->{aggregations}{author}{total},
+    };
+}
+
+sub by_name_and_author {
+    my ( $self, $req )    = @_;
+    my ( $name, $author ) = @{ $req->parameters }{qw< name author >};
+    return $self->es_by_terms_vals(
+        req  => $req,
+        must => {
+            name   => $name,
+            author => $author,
+        },
+    );
+}
+
+sub versions {
+    my ( $self, $req ) = @_;
+    my @dists = $req->read_param('distribution');
+    return $self->es_by_terms_vals(
+        req    => $req,
+        should => {
+            distribution => \@dists,
+        },
     );
 }
 

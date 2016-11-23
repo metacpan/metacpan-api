@@ -1,4 +1,4 @@
-package MetaCPAN::Server::Role::ES::Query;
+package MetaCPAN::Role::ES::Query;
 
 use strict;
 use warnings;
@@ -9,43 +9,42 @@ use Ref::Util qw( is_arrayref is_coderef );
 
 # queries by given terms and values
 sub es_by_terms_vals {
-    my ( $self, %args ) = @_;
-    my ( $c, $cb, $should, $must ) = @args{qw< c cb should must >};
+    my ( $self,   %args ) = @_;
+    my ( $should, $must ) = delete @args{qw< should must >};
     my $filter
         = $should
         ? _filter_bool_terms_values( should => $should )
         : _filter_bool_terms_values( must   => $must );
-    return $self->es_by_filter( c => $c, cb => $cb, filter => $filter );
+    return $self->es_by_filter( %args, filter => $filter );
 }
 
 # queries by given filter
 sub es_by_filter {
     my ( $self, %args ) = @_;
-    my ( $c, $cb, $filter, $_model ) = @args{qw< c cb filter model >};
-    my $model = $_model ? $c->model($_model) : $self->model($c);
-    my $res = $model->raw->filter($filter);
-    return $self->es_query_res( c => $c, cb => $cb, res => $res );
+    my $filter = delete $args{filter};
+    my $res    = $self->raw->filter($filter);
+    return $self->es_query_res( %args, res => $res );
 }
 
 # applies generic 'size', 'sort' & 'fields' to
 # query result
 sub es_query_res {
     my ( $self, %args ) = @_;
-    my ( $c, $cb, $res ) = @args{qw< c cb res >};
-    my $params = $c->req->parameters;
+    my ( $req, $res, $cb ) = @args{qw< req res cb >};
+    my $params = $req->parameters;
 
     my $size = $params->{size} || 5000;
 
     my @fields;
     if ( $params->{fields} ) {
-        @fields = $c->req->read_param('fields');
+        @fields = $req->read_param('fields');
     }
 
     my @sort;
     if ( $params->{sort} ) {
         @sort
             = map { /^(.*):((?:desc|asc))$/ ? { $1 => { order => $2 } } : $_ }
-            $c->req->read_param('sort');
+            $req->read_param('sort');
     }
 
     $res = $res->fields( \@fields ) if @fields;

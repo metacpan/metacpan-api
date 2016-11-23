@@ -8,7 +8,6 @@ use Moose;
 BEGIN { extends 'MetaCPAN::Server::Controller' }
 
 with 'MetaCPAN::Server::Role::JSONP';
-with 'MetaCPAN::Server::Role::ES::Query';
 
 __PACKAGE__->config(
     relationships => {
@@ -63,84 +62,37 @@ sub get : Path('') : Args(1) {
 # endpoint: /author/by_id?id=<pauseid>[&fields=<field>][&sort=<sort_key>][&size=N]
 sub by_id : Path('by_id') : Args(0) {
     my ( $self, $c ) = @_;
-    my @ids = map {uc} $c->req->read_param('id');
-    $c->stash(
-        $self->es_by_terms_vals( c => $c, should => +{ pauseid => \@ids } ) );
+    my $data = $self->model($c)->raw->by_id( $c->req );
+    $c->stash($data);
 }
 
 # endpoint: /author/by_user?user=<user_id>[&fields=<field>][&sort=<sort_key>][&size=N]
 sub by_user : Path('by_user') : Args(0) {
     my ( $self, $c ) = @_;
-    my @users = $c->req->read_param('user');
-    $c->stash(
-        $self->es_by_terms_vals( c => $c, should => +{ user => \@users } ) );
+    my $data = $self->model($c)->raw->by_user( $c->req );
+    $c->stash($data);
 }
 
 # endpoint: /author/by_key?key=<key>[&fields=<field>][&sort=<sort_key>][&size=N]
 sub by_key : Path('by_key') : Args(0) {
     my ( $self, $c ) = @_;
-    my $key = $c->req->parameters->{key};
-    $key or return;
-    my $filter = +{
-        bool => {
-            should => [
-                {
-                    match => {
-                        'name.analyzed' =>
-                            { query => $key, operator => 'and' }
-                    }
-                },
-                {
-                    match => {
-                        'asciiname.analyzed' =>
-                            { query => $key, operator => 'and' }
-                    }
-                },
-                { match => { 'pauseid'    => uc($key) } },
-                { match => { 'profile.id' => lc($key) } },
-            ]
-        }
-    };
-
-    my $cb = sub {
-        my $res = shift;
-        return +{
-            results => [
-                map { +{ %{ $_->{_source} }, id => $_->{_id} } }
-                    @{ $res->{hits}{hits} }
-            ],
-            total => $res->{hits}{total} || 0,
-            took => $res->{took}
-        };
-    };
-
-    $c->stash( $self->es_by_filter( c => $c, filter => $filter, cb => $cb ) );
+    my $data = $self->model($c)->raw->by_key( $c->req );
+    $data or return;
+    $c->stash($data);
 }
 
 # endpoint: /author/top_uploaders?range=<range>[&fields=<field>][&sort=<sort_key>][&size=N]
 sub top_uploaders : Path('top_uploaders') : Args(0) {
     my ( $self, $c ) = @_;
-    my $range  = $c->req->parameters->{range};
-    my $data   = $c->model('CPAN::Release')->top_uploaders;
-    my $counts = +{ map { $_->{key} => $_->{doc_count} }
-            @{ $data->{aggregations}{author}{entries}{buckets} } };
-    my $authors = $self->es_by_terms_vals(
-        c      => $c,
-        should => { pauseid => [ keys %$counts ] }
-    );
+    my $range   = $c->req->parameters->{range};
+    my $data    = $c->model('CPAN::Release')->top_uploaders;
+    my $authors = $self->model($c)
+        ->raw->by_id_for_top_uploaders( $c->req, delete $data->{counts} );
     $c->stash(
         {
-            authors => [
-                sort { $b->{releases} <=> $a->{releases} } map {
-                    {
-                        %{ $_->{_source} },
-                            releases => $counts->{ $_->{_source}->{pauseid} }
-                    }
-                } @{ $authors->{hits}{hits} }
-            ],
-            took  => $data->{took},
-            total => $data->{aggregations}{author}{total},
-            range => $range,
+            %$data,
+            authors => $authors,
+            range   => $range,
         }
     );
 }

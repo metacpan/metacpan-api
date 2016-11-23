@@ -8,7 +8,6 @@ use Moose;
 BEGIN { extends 'MetaCPAN::Server::Controller' }
 
 with 'MetaCPAN::Server::Role::JSONP';
-with 'MetaCPAN::Server::Role::ES::Query';
 
 __PACKAGE__->config(
     relationships => {
@@ -50,40 +49,28 @@ sub get : Path('') : Args(2) {
         ['The requested field(s) could not be found'] );
 }
 
+# endpoint: /release/latest_by_author/AUTHOR
+# params:   [&fields=<field>][&sort=<sort_key>][&size=N]
 sub latest_by_author : Path('latest_by_author') : Args(1) {
     my ( $self, $c, $author ) = @_;
-    my $file = $self->model($c)->raw->latest_by_author($author);
-    $c->stash($file);
+    my $data = $self->model($c)->raw->latest_by_author($author);
+    $c->stash($data);
 }
 
 # endpoint: /release/by_name_and_author
 # params:   name=<name>&author=<author>[&fields=<field>][&sort=<sort_key>][&size=N]
 sub by_name_and_author : Path('by_name_and_author') : Args(0) {
-    my ( $self, $c )      = @_;
-    my ( $name, $author ) = @{ $c->req->parameters }{qw< name author >};
-    $c->stash(
-        $self->es_by_terms_vals(
-            c    => $c,
-            must => {
-                name   => $name,
-                author => $author,
-            }
-        )
-    );
+    my ( $self, $c ) = @_;
+    my $data = $self->model($c)->raw->by_name_and_author( $c->req );
+    $c->stash($data);
 }
 
 # endpoint: /release/versions
 # params:   distribution=<distribution>[&fields=<field>][&sort=<sort_key>][&size=N]
 sub versions : Path('versions') : Args(0) {
     my ( $self, $c ) = @_;
-    my @dists = $c->req->read_param('distribution');
-    $c->stash(
-        $self->es_by_key_vals(
-            c    => $c,
-            key  => 'distribution',
-            vals => \@dists
-        )
-    );
+    my $data = $self->model($c)->raw->versions( $c->req );
+    $c->stash($data);
 }
 
 __PACKAGE__->meta->make_immutable;

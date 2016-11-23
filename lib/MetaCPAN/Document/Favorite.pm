@@ -10,6 +10,8 @@ use DateTime;
 use MetaCPAN::Types qw(:all);
 use MetaCPAN::Util;
 
+with 'MetaCPAN::Role::ES::Query';
+
 has id => (
     is => 'ro',
     id => [qw(user distribution)],
@@ -32,6 +34,15 @@ has date => (
     isa      => 'DateTime',
     default  => sub { DateTime->now },
 );
+
+sub by_user {
+    my ( $self, $req ) = @_;
+    my @users = $req->read_param('user');
+    return $self->es_by_terms_vals(
+        req    => $req,
+        should => +{ user => \@users }
+    );
+}
 
 __PACKAGE__->meta->make_immutable;
 1;

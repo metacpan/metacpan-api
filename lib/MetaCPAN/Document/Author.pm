@@ -12,6 +12,8 @@ use MetaCPAN::Types qw(:all);
 use MooseX::Types::Structured qw(Dict Tuple Optional);
 use MetaCPAN::Util;
 
+with 'MetaCPAN::Role::ES::Query';
+
 has name => (
     is       => 'ro',
     required => 1,
@@ -137,6 +139,81 @@ sub validate {
         }
     }
     return @result;
+}
+
+sub by_id {
+    my ( $self, $req, $ids ) = @_;
+    my @ids = map {uc} ( $ids ? $ids : $req->read_param('id') );
+    return $self->es_by_terms_vals(
+        req    => $req,
+        should => {
+            pauseid => \@ids,
+        },
+    );
+}
+
+sub by_id_for_top_uploaders {
+    my ( $self, $req, $counts ) = @_;
+    my $authors = $self->by_id( $req, [ keys %$counts ] );
+    return [
+        sort { $b->{releases} <=> $a->{releases} } map {
+            {
+                %{ $_->{_source} },
+                    releases => $counts->{ $_->{_source}->{pauseid} }
+            }
+        } @{ $authors->{hits}{hits} }
+    ];
+}
+
+sub by_user {
+    my ( $self, $req ) = @_;
+    my @users = $req->read_param('user');
+    return $self->es_by_terms_vals(
+        req    => $req,
+        should => {
+            user => \@users,
+        },
+    );
+}
+
+sub by_key {
+    my ( $self, $req ) = @_;
+    my $key = $req->parameters->{key};
+    $key or return;
+
+    my $filter = +{
+        bool => {
+            should => [
+                {
+                    match => {
+                        'name.analyzed' =>
+                            { query => $key, operator => 'and' }
+                    }
+                },
+                {
+                    match => {
+                        'asciiname.analyzed' =>
+                            { query => $key, operator => 'and' }
+                    }
+                },
+                { match => { 'pauseid'    => uc($key) } },
+                { match => { 'profile.id' => lc($key) } },
+            ]
+        }
+    };
+    my $cb = sub {
+        my $res = shift;
+        return +{
+            results => [
+                map { +{ %{ $_->{_source} }, id => $_->{_id} } }
+                    @{ $res->{hits}{hits} }
+            ],
+            total => $res->{hits}{total} || 0,
+            took => $res->{took}
+        };
+    };
+
+    $self->es_by_filter( req => $req, filter => $filter, cb => $cb );
 }
 
 __PACKAGE__->meta->make_immutable;

@@ -8,7 +8,6 @@ use Moose;
 BEGIN { extends 'MetaCPAN::Server::Controller' }
 
 with 'MetaCPAN::Server::Role::JSONP';
-with 'MetaCPAN::Server::Role::ES::Query';
 
 sub find : Path('') : Args(2) {
     my ( $self, $c, $user, $distribution ) = @_;
@@ -30,9 +29,8 @@ sub find : Path('') : Args(2) {
 # endpoint: /favorite/by_user?user=<id>[&user=<id2>][&fields=<field>][&sort=<sort_key>][&size=N]
 sub by_user : Path('by_user') : Args(0) {
     my ( $self, $c ) = @_;
-    my @users = $c->req->read_param('user');
-    $c->stash(
-        $self->es_by_terms_vals( c => $c, should => +{ user => \@users } ) );
+    my $data = $self->model($c)->raw->by_user( $c->req );
+    $c->stash($data);
 }
 
 __PACKAGE__->meta->make_immutable;
