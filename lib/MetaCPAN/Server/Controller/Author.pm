@@ -76,13 +76,12 @@ sub by_user : Path('by_user') : Args(0) {
         $self->es_by_terms_vals( c => $c, should => +{ user => \@users } ) );
 }
 
-# endpoint: /author/search?key=<key>[&fields=<field>][&sort=<sort_key>][&size=N]
-sub search : Path('search') : Args(0) {
+# endpoint: /author/by_key?key=<key>[&fields=<field>][&sort=<sort_key>][&size=N]
+sub by_key : Path('by_key') : Args(0) {
     my ( $self, $c ) = @_;
     my $key = $c->req->parameters->{key};
-
-    my $filter = +{ match_all => {} };
-    $key and $filter = +{
+    $key or return;
+    my $filter = +{
         bool => {
             should => [
                 {
