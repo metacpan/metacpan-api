@@ -52,21 +52,7 @@ sub get : Path('') : Args(2) {
 
 sub latest_by_author : Path('latest_by_author') : Args(1) {
     my ( $self, $c, $author ) = @_;
-
-    my $filter = {
-        and => [
-            { term => { author => uc($author) } },
-            { term => { status => 'latest' } }
-        ]
-    };
-
-    my $file
-        = $self->model($c)->raw->filter($filter)
-        ->sort(
-        [ 'distribution', { 'version_numified' => { reverse => 1 } } ] )
-        ->fields( [qw< author distribution name status abstract date >] )
-        ->size(1000)->all;
-
+    my $file = $self->model($c)->raw->latest_by_author($author);
     $c->stash($file);
 }
 

@@ -365,6 +365,26 @@ sub find_github_based {
         { and => [ { term => { status => 'latest' } }, { or => $or } ] } );
 }
 
+sub latest_by_author {
+    my ( $self, $author ) = @_;
+
+    my $filter = {
+        and => [
+            { term => { author => uc($author) } },
+            { term => { status => 'latest' } }
+        ]
+    };
+
+    my $file
+        = $self->filter($filter)
+        ->sort(
+        [ 'distribution', { 'version_numified' => { reverse => 1 } } ] )
+        ->fields( [qw< author distribution name status abstract date >] )
+        ->size(1000)->all;
+
+    return $file;
+}
+
 sub top_uploaders {
     my ( $self, $range ) = @_;
 
