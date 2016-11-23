@@ -372,10 +372,10 @@ sub top_uploaders {
         range => {
             date => {
                 from => $range eq 'all' ? 0 : DateTime->now->subtract(
-                    $range eq 'weekly'  ? 'weeks'
-                        : $range eq 'monthly' ? 'months'
-                            : $range eq 'yearly'  ? 'years'
-                                :                       'weeks' => 1
+                      $range eq 'weekly'  ? 'weeks'
+                    : $range eq 'monthly' ? 'months'
+                    : $range eq 'yearly'  ? 'years'
+                    :                       'weeks' => 1
                 )->truncate( to => 'day' )->iso8601
             },
         }
@@ -396,11 +396,13 @@ sub top_uploaders {
         size => 0,
     };
 
-    return $self->es->search({
-        index => $self->index->name,
-        type  => 'release',
-        body  => $body,
-    });
+    return $self->es->search(
+        {
+            index => $self->index->name,
+            type  => 'release',
+            body  => $body,
+        }
+    );
 }
 
 __PACKAGE__->meta->make_immutable;
