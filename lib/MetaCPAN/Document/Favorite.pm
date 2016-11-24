@@ -44,5 +44,14 @@ sub by_user {
     );
 }
 
+sub by_distribution {
+    my ( $self, $req ) = @_;
+    my $distribution = $req->read_param('distribution');
+    return $self->es_by_terms_vals(
+        req  => $req,
+        must => +{ distribution => $distribution }
+    );
+}
+
 __PACKAGE__->meta->make_immutable;
 1;

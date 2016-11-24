@@ -35,5 +35,14 @@ sub by_user : Path('by_user') : Args(0) {
     $c->stash($data);
 }
 
+# endpoint: /favorite/by_distribution
+# params:   distribution=<distribution>
+# optional: [&fields=<field>][&sort=<sort_key>][&size=N][&page=N]
+sub by_distribution : Path('by_distribution') : Args(0) {
+    my ( $self, $c ) = @_;
+    my $data = $self->model($c)->raw->by_distribution( $c->req );
+    $c->stash($data);
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
