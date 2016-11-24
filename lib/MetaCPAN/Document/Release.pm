@@ -368,23 +368,26 @@ sub find_github_based {
 }
 
 sub latest_by_author {
-    my ( $self, $author ) = @_;
+    my ( $self, $req ) = @_;
+    my $author = $req->parameters->{'author'};
+    return $self->es_by_terms_vals(
+        req  => $req,
+        must => {
+            author => uc($author),
+            status => 'latest'
+        },
+    );
+}
 
-    my $filter = {
-        and => [
-            { term => { author => uc($author) } },
-            { term => { status => 'latest' } }
-        ]
-    };
-
-    my $file
-        = $self->filter($filter)
-        ->sort(
-        [ 'distribution', { 'version_numified' => { reverse => 1 } } ] )
-        ->fields( [qw< author distribution name status abstract date >] )
-        ->size(1000)->all;
-
-    return $file;
+sub all_by_author {
+    my ( $self, $req ) = @_;
+    my $author = $req->parameters->{'author'};
+    return $self->es_by_terms_vals(
+        req  => $req,
+        must => {
+            author => uc($author),
+        },
+    );
 }
 
 sub top_uploaders {

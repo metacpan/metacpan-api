@@ -49,11 +49,19 @@ sub get : Path('') : Args(2) {
         ['The requested field(s) could not be found'] );
 }
 
-# endpoint: /release/latest_by_author/AUTHOR
-# params:   [&fields=<field>][&sort=<sort_key>][&size=N]
-sub latest_by_author : Path('latest_by_author') : Args(1) {
-    my ( $self, $c, $author ) = @_;
-    my $data = $self->model($c)->raw->latest_by_author($author);
+# endpoint: /release/latest_by_author
+# params:   author=<pauseid>[&fields=<field>][&sort=<sort_key>][&size=N]
+sub latest_by_author : Path('latest_by_author') : Args(0) {
+    my ( $self, $c ) = @_;
+    my $data = $self->model($c)->raw->latest_by_author($c->req);
+    $c->stash($data);
+}
+
+# endpoint: /release/all_by_author
+# params:   author=<pauseid>[&fields=<field>][&sort=<sort_key>][&size=N]
+sub all_by_author : Path('all_by_author') : Args(0) {
+    my ( $self, $c ) = @_;
+    my $data = $self->model($c)->raw->all_by_author($c->req);
     $c->stash($data);
 }
 
