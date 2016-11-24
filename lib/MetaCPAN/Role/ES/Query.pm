@@ -9,12 +9,8 @@ use Ref::Util qw( is_arrayref is_coderef );
 
 # queries by given terms and values
 sub es_by_terms_vals {
-    my ( $self,   %args ) = @_;
-    my ( $should, $must ) = delete @args{qw< should must >};
-    my $filter
-        = $should
-        ? _filter_bool_terms_values( should => $should )
-        : _filter_bool_terms_values( must   => $must );
+    my ( $self, %args ) = @_;
+    my $filter = _filter_from_args( \%args );
     return $self->es_by_filter( %args, filter => $filter );
 }
 
@@ -53,6 +49,26 @@ sub es_query_res {
     $res = $cb->($res) if $cb and is_coderef($cb);
 
     return $res;
+}
+
+sub _filter_from_args {
+    my $args = shift;
+
+    my $constant_score = delete $args->{constant_score};
+    return +{
+        constant_score => +{
+            filter => _filter_from_args($constant_score)
+        }
+        }
+        if $constant_score;
+
+    my ( $should, $must ) = delete @{$args}{qw< should must >};
+    my $filter
+        = $should
+        ? _filter_bool_terms_values( should => $should )
+        : _filter_bool_terms_values( must   => $must );
+
+    return $filter;
 }
 
 sub _filter_key_multi_vals { +{ terms => {@_} } }
