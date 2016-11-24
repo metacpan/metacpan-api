@@ -26,7 +26,9 @@ sub find : Path('') : Args(2) {
     } or $c->detach( '/not_found', [$@] );
 }
 
-# endpoint: /favorite/by_user?user=<id>[&user=<id2>][&fields=<field>][&sort=<sort_key>][&size=N]
+# endpoint: /favorite/by_user
+# params:   user=<id>[&user=<id2>]...
+# optional: [&fields=<field>][&sort=<sort_key>][&size=N][&page=N]
 sub by_user : Path('by_user') : Args(0) {
     my ( $self, $c ) = @_;
     my $data = $self->model($c)->raw->by_user( $c->req );

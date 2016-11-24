@@ -50,23 +50,26 @@ sub get : Path('') : Args(2) {
 }
 
 # endpoint: /release/latest_by_author
-# params:   author=<pauseid>[&fields=<field>][&sort=<sort_key>][&size=N]
+# params:   author=<pauseid>
+# optional: [&fields=<field>][&sort=<sort_key>][&size=N][&page=N]
 sub latest_by_author : Path('latest_by_author') : Args(0) {
     my ( $self, $c ) = @_;
-    my $data = $self->model($c)->raw->latest_by_author($c->req);
+    my $data = $self->model($c)->raw->latest_by_author( $c->req );
     $c->stash($data);
 }
 
 # endpoint: /release/all_by_author
-# params:   author=<pauseid>[&fields=<field>][&sort=<sort_key>][&size=N]
+# params:   author=<pauseid>
+# optional: [&fields=<field>][&sort=<sort_key>][&size=N][&page=N]
 sub all_by_author : Path('all_by_author') : Args(0) {
     my ( $self, $c ) = @_;
-    my $data = $self->model($c)->raw->all_by_author($c->req);
+    my $data = $self->model($c)->raw->all_by_author( $c->req );
     $c->stash($data);
 }
 
 # endpoint: /release/by_name_and_author
-# params:   name=<name>&author=<author>[&fields=<field>][&sort=<sort_key>][&size=N]
+# params:   name=<name>&author=<author>
+# optional: [&fields=<field>][&sort=<sort_key>][&size=N][&page=N]
 sub by_name_and_author : Path('by_name_and_author') : Args(0) {
     my ( $self, $c ) = @_;
     my $data = $self->model($c)->raw->by_name_and_author( $c->req );
@@ -74,7 +77,8 @@ sub by_name_and_author : Path('by_name_and_author') : Args(0) {
 }
 
 # endpoint: /release/versions
-# params:   distribution=<distribution>[&fields=<field>][&sort=<sort_key>][&size=N]
+# params:   distribution=<distribution>
+# optional: [&fields=<field>][&sort=<sort_key>][&size=N][&page=N]
 sub versions : Path('versions') : Args(0) {
     my ( $self, $c ) = @_;
     my $data = $self->model($c)->raw->versions( $c->req );

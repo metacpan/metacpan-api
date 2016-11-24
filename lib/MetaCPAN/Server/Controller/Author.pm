@@ -59,21 +59,27 @@ sub get : Path('') : Args(1) {
         ['The requested field(s) could not be found'] );
 }
 
-# endpoint: /author/by_id?id=<pauseid>[&fields=<field>][&sort=<sort_key>][&size=N]
+# endpoint: /author/by_id
+# params:   id=<pauseid>
+# optional: [&fields=<field>][&sort=<sort_key>][&size=N][&page=N]
 sub by_id : Path('by_id') : Args(0) {
     my ( $self, $c ) = @_;
     my $data = $self->model($c)->raw->by_id( $c->req );
     $c->stash($data);
 }
 
-# endpoint: /author/by_user?user=<user_id>[&fields=<field>][&sort=<sort_key>][&size=N]
+# endpoint: /author/by_user
+# params:   user=<user_id>
+# optional: [&fields=<field>][&sort=<sort_key>][&size=N][&page=N]
 sub by_user : Path('by_user') : Args(0) {
     my ( $self, $c ) = @_;
     my $data = $self->model($c)->raw->by_user( $c->req );
     $c->stash($data);
 }
 
-# endpoint: /author/by_key?key=<key>[&fields=<field>][&sort=<sort_key>][&size=N]
+# endpoint: /author/by_key
+# params:   key=<key>
+# optional: [&fields=<field>][&sort=<sort_key>][&size=N][&page=N]
 sub by_key : Path('by_key') : Args(0) {
     my ( $self, $c ) = @_;
     my $data = $self->model($c)->raw->by_key( $c->req );
@@ -81,7 +87,9 @@ sub by_key : Path('by_key') : Args(0) {
     $c->stash($data);
 }
 
-# endpoint: /author/top_uploaders?range=<range>[&fields=<field>][&sort=<sort_key>][&size=N]
+# endpoint: /author/top_uploaders
+# params:   range=<range>
+# [&fields=<field>][&sort=<sort_key>][&size=N][&page=N]
 sub top_uploaders : Path('top_uploaders') : Args(0) {
     my ( $self, $c ) = @_;
     my $range   = $c->req->parameters->{range};

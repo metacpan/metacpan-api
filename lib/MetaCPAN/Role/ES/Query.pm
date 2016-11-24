@@ -29,7 +29,9 @@ sub es_query_res {
     my ( $req, $res, $cb ) = @args{qw< req res cb >};
     my $params = $req->parameters;
 
-    my $size = $params->{size} || 5000;
+    my $size = $params->{size} // 5000;
+    my $from = 0;
+    $params->{page} and $from = ( $params->{page} - 1 ) * $size;
 
     my @fields;
     if ( $params->{fields} ) {
@@ -45,6 +47,7 @@ sub es_query_res {
 
     $res = $res->fields( \@fields ) if @fields;
     $res = $res->sort( \@sort )     if @sort;
+    $res = $res->from($from)        if $from;
     $res = $res->size($size)->all;
     $res = $cb->($res) if $cb and is_coderef($cb);
 
