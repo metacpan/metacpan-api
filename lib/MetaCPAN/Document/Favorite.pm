@@ -104,5 +104,72 @@ sub recent {
     );
 }
 
+sub agg_dists_user {
+    my ( $self, $req ) = @_;
+    my $user          = $req->read_param('user');
+    my @distributions = $req->read_param('distribution');
+    return unless @distributions;
+
+    my $query = {
+        filtered => {
+            query  => { match_all => {} },
+            filter => {
+                or => [
+                    map { { term => { 'distribution' => $_ } } }
+                        @distributions
+                ]
+            }
+        }
+    };
+
+    my $aggs = {
+        favorites => {
+            terms => {
+                field => 'distribution',
+                size  => scalar @distributions,
+            },
+        }
+    };
+
+    if ($user) {
+        $aggs->{'myfavorites'} = {
+            filter       => { term => { 'user' => $user } },
+            aggregations => {
+                enteries => {
+                    terms => { field => 'distribution' }
+                }
+            }
+        };
+    }
+
+    my $data = $self->es->search(
+        index => $self->index->name,
+        type  => 'favorite',
+        body  => {
+            query => $query,
+            aggs  => $aggs,
+            size  => 0,
+        }
+    );
+
+    my $favorites = { map { $_->{key} => $_->{doc_count} }
+            @{ $data->{aggregations}->{favorites}->{buckets} } };
+
+    my $myfavorites = {};
+    if ($user) {
+        $myfavorites = {
+            map { $_->{key} => $_->{doc_count} } @{
+                $data->{aggregations}->{myfavorites}->{entries}->{buckets}
+            }
+        };
+    }
+
+    return +{
+        took        => $data->{took},
+        favorites   => $favorites,
+        myfavorites => $myfavorites,
+    };
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
