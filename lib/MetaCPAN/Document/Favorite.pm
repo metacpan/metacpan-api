@@ -44,6 +44,7 @@ with 'MetaCPAN::Role::ES::Query';
 sub by_user {
     my ( $self, $req ) = @_;
     my @users = $req->read_param('user');
+    return unless @users;
     return $self->es_by_terms_vals(
         req => $req,
         -or => +{ user => \@users }
@@ -53,6 +54,7 @@ sub by_user {
 sub by_distribution {
     my ( $self, $req ) = @_;
     my $distribution = $req->read_param('distribution');
+    return unless $distribution;
     return $self->es_by_terms_vals(
         req  => $req,
         -and => +{ distribution => $distribution }

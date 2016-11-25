@@ -192,7 +192,7 @@ sub by_user {
 sub by_key {
     my ( $self, $req ) = @_;
     my $key = $req->parameters->{key};
-    $key or return;
+    return unless $key;
 
     my $filter = +{
         bool => {

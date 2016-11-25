@@ -366,6 +366,7 @@ sub find_github_based {
 sub latest_by_author {
     my ( $self, $req ) = @_;
     my $author = $req->parameters->{'author'};
+    return unless $author;
     return $self->es_by_terms_vals(
         req  => $req,
         -and => {
@@ -378,6 +379,7 @@ sub latest_by_author {
 sub all_by_author {
     my ( $self, $req ) = @_;
     my $author = $req->parameters->{'author'};
+    return unless $author;
     return $self->es_by_terms_vals(
         req  => $req,
         -and => {
@@ -388,6 +390,7 @@ sub all_by_author {
 
 sub top_uploaders {
     my ( $self, $range ) = @_;
+    return unless $range;
 
     my $range_filter = {
         range => {
@@ -438,6 +441,7 @@ sub top_uploaders {
 sub by_name_and_author {
     my ( $self, $req )    = @_;
     my ( $name, $author ) = @{ $req->parameters }{qw< name author >};
+    return unless $name and $author;
     return $self->es_by_terms_vals(
         req  => $req,
         -and => {
@@ -450,6 +454,7 @@ sub by_name_and_author {
 sub versions {
     my ( $self, $req ) = @_;
     my @dists = $req->read_param('distribution');
+    return unless @dists;
     return $self->es_by_terms_vals(
         req => $req,
         -or => {
@@ -500,6 +505,7 @@ sub recent {
 sub modules {
     my ( $self,   $req )     = @_;
     my ( $author, $release ) = @{ $req->parameters }{qw< author release >};
+    return unless $author and $release;
     my $query = {
         filtered => {
             query  => { match_all => {} },
