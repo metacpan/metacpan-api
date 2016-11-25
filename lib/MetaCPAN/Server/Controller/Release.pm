@@ -49,15 +49,6 @@ sub get : Path('') : Args(2) {
         ['The requested field(s) could not be found'] );
 }
 
-# endpoint: /release/latest_by_author
-# params:   author=<pauseid>
-# optional: [&fields=<field>][&sort=<sort_key>][&size=N][&page=N]
-sub latest_by_author : Path('latest_by_author') : Args(0) {
-    my ( $self, $c ) = @_;
-    my $data = $self->model($c)->raw->latest_by_author( $c->req );
-    $c->stash($data);
-}
-
 # endpoint: /release/all_by_author
 # params:   author=<pauseid>
 # optional: [&fields=<field>][&sort=<sort_key>][&size=N][&page=N]
@@ -76,12 +67,21 @@ sub by_name_and_author : Path('by_name_and_author') : Args(0) {
     $c->stash($data);
 }
 
-# endpoint: /release/versions
+# endpoint: /release/latest_by_author
+# params:   author=<pauseid>
+# optional: [&fields=<field>][&sort=<sort_key>][&size=N][&page=N]
+sub latest_by_author : Path('latest_by_author') : Args(0) {
+    my ( $self, $c ) = @_;
+    my $data = $self->model($c)->raw->latest_by_author( $c->req );
+    $c->stash($data);
+}
+
+# endpoint: /release/modules
 # params:   distribution=<distribution>
 # optional: [&fields=<field>][&sort=<sort_key>][&size=N][&page=N]
-sub versions : Path('versions') : Args(0) {
+sub modules : Path('modules') : Args(0) {
     my ( $self, $c ) = @_;
-    my $data = $self->model($c)->raw->versions( $c->req );
+    my $data = $self->model($c)->raw->modules( $c->req );
     $c->stash($data);
 }
 
@@ -91,6 +91,15 @@ sub versions : Path('versions') : Args(0) {
 sub recent : Path('recent') : Args(0) {
     my ( $self, $c ) = @_;
     my $data = $self->model($c)->raw->recent( $c->req );
+    $c->stash($data);
+}
+
+# endpoint: /release/versions
+# params:   distribution=<distribution>
+# optional: [&fields=<field>][&sort=<sort_key>][&size=N][&page=N]
+sub versions : Path('versions') : Args(0) {
+    my ( $self, $c ) = @_;
+    my $data = $self->model($c)->raw->versions( $c->req );
     $c->stash($data);
 }
 

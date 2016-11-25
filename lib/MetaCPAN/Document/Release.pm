@@ -501,5 +501,69 @@ sub recent {
     );
 }
 
+sub modules {
+    my ( $self,   $req )     = @_;
+    my ( $author, $release ) = @{ $req->parameters }{qw< author release >};
+    my $query = {
+        filtered => {
+            query  => { match_all => {} },
+            filter => {
+                and => [
+                    { term => { release   => $release } },
+                    { term => { author    => $author } },
+                    { term => { directory => 0 } },
+                    {
+                        or => [
+                            {
+                                and => [
+                                    {
+                                        exists => {
+                                            field => 'module.name'
+                                        }
+                                    },
+                                    {
+                                        term => {
+                                            'module.indexed' => 1
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                and => [
+                                    {
+                                        range => { slop => { gt => 0 } }
+                                    },
+                                    {
+                                        exists => {
+                                            field => 'pod.analyzed'
+                                        }
+                                    },
+                                    {
+                                        term => { 'indexed' => 1 }
+                                    },
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    };
+
+    my $res = $self->es->search(
+        index => $self->index->name,
+        type  => 'file',
+        body  => {
+            query   => $query,
+            size    => 999,
+            sort    => [ 'documentation', 'path' ],
+            _source => [ "module", "abstract" ],
+            fields  => [
+                qw< author authorized distribution documentation indexed path pod_lines release status >
+            ],
+        }
+    );
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
