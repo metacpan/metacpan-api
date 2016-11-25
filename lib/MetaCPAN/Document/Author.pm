@@ -12,8 +12,6 @@ use MetaCPAN::Types qw(:all);
 use MooseX::Types::Structured qw(Dict Tuple Optional);
 use MetaCPAN::Util;
 
-with 'MetaCPAN::Role::ES::Query';
-
 has name => (
     is       => 'ro',
     required => 1,

@@ -1,10 +1,6 @@
 package MetaCPAN::Document::File;
 
-use strict;
-use warnings;
-use utf8;
-
-use Moose;
+use MetaCPAN::Moose;
 use ElasticSearchX::Model::Document;
 
 use Encode;
@@ -939,6 +935,16 @@ sub full_path {
     my $self = shift;
     return join( '/', $self->author, $self->release, $self->path );
 }
+
+__PACKAGE__->meta->make_immutable;
+
+
+package MetaCPAN::Document::File::Set;
+
+use MetaCPAN::Moose;
+extends 'ElasticSearchX::Model::Document::Set';
+
+with 'MetaCPAN::Role::ES::Query';
 
 sub dir {
     my ( $self, $req ) = @_;
