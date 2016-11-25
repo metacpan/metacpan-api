@@ -462,5 +462,44 @@ sub versions {
     );
 }
 
+sub _filter_not_backpan {
+    return +{
+        constant_score => {
+            filter => {
+                and => [
+                    @_,
+                    {
+                        not =>
+                            { filter => { term => { status => 'backpan' } } }
+                    },
+                ]
+            }
+        }
+    };
+}
+
+sub recent {
+    my ( $self, $req ) = @_;
+    my ( $type, $page, $size ) = @{ $req->parameters }{qw< type page size >};
+    $type //= "";
+
+    my $query
+        = $type eq 'n' ? _filter_not_backpan( { term => { first => 1 } } )
+        : $type eq 'a' ? { match_all => {} }
+        :                _filter_not_backpan();
+
+    my $res = $self->es->search(
+        index => $self->index->name,
+        type  => 'release',
+        body  => {
+            query  => $query,
+            fields => [qw< name author status abstract date distribution >],
+            sort   => [ { 'date' => { order => 'desc' } } ],
+            ( $size ? ( size => $size ) : () ),
+            ( $page ? ( from => ( $page - 1 ) * $size ) : () ),
+        }
+    );
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
