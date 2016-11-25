@@ -39,8 +39,8 @@ sub by_user {
     my ( $self, $req ) = @_;
     my @users = $req->read_param('user');
     return $self->es_by_terms_vals(
-        req    => $req,
-        should => +{ user => \@users }
+        req => $req,
+        -or => +{ user => \@users }
     );
 }
 
@@ -49,7 +49,7 @@ sub by_distribution {
     my $distribution = $req->read_param('distribution');
     return $self->es_by_terms_vals(
         req  => $req,
-        must => +{ distribution => $distribution }
+        -and => +{ distribution => $distribution }
     );
 }
 

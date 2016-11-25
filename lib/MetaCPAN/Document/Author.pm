@@ -145,8 +145,8 @@ sub by_id {
     my ( $self, $req, $ids ) = @_;
     my @ids = map {uc} ( $ids ? $ids : $req->read_param('id') );
     return $self->es_by_terms_vals(
-        req    => $req,
-        should => {
+        req => $req,
+        -or => {
             pauseid => \@ids,
         },
     );
@@ -169,8 +169,8 @@ sub by_user {
     my ( $self, $req ) = @_;
     my @users = $req->read_param('user');
     return $self->es_by_terms_vals(
-        req    => $req,
-        should => {
+        req => $req,
+        -or => {
             user => \@users,
         },
     );

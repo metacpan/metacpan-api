@@ -947,7 +947,7 @@ sub dir {
     my @path = split m{/}, $dir;
     return $self->es_by_terms_vals(
         req  => $req,
-        must => +{
+        -and => +{
             author  => $author,
             release => $release,
             level   => scalar @path,

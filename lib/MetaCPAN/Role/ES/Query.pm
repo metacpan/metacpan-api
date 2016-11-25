@@ -65,11 +65,11 @@ sub _filter_from_args {
         }
         if $constant_score;
 
-    my ( $should, $must ) = delete @{$args}{qw< should must >};
+    my ( $or, $and ) = delete @{$args}{qw< -or -and >};
     my $filter
-        = $should
-        ? _filter_bool_terms_values( should => $should )
-        : _filter_bool_terms_values( must   => $must );
+        = $or
+        ? _filter_bool_terms_values( should => $or )
+        : _filter_bool_terms_values( must   => $and );
 
     return $filter;
 }

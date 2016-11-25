@@ -372,7 +372,7 @@ sub latest_by_author {
     my $author = $req->parameters->{'author'};
     return $self->es_by_terms_vals(
         req  => $req,
-        must => {
+        -and => {
             author => uc($author),
             status => 'latest'
         },
@@ -384,7 +384,7 @@ sub all_by_author {
     my $author = $req->parameters->{'author'};
     return $self->es_by_terms_vals(
         req  => $req,
-        must => {
+        -and => {
             author => uc($author),
         },
     );
@@ -444,7 +444,7 @@ sub by_name_and_author {
     my ( $name, $author ) = @{ $req->parameters }{qw< name author >};
     return $self->es_by_terms_vals(
         req  => $req,
-        must => {
+        -and => {
             name   => $name,
             author => $author,
         },
@@ -455,8 +455,8 @@ sub versions {
     my ( $self, $req ) = @_;
     my @dists = $req->read_param('distribution');
     return $self->es_by_terms_vals(
-        req    => $req,
-        should => {
+        req => $req,
+        -or => {
             distribution => \@dists,
         },
     );
