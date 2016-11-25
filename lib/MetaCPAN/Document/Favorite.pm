@@ -33,7 +33,6 @@ has date => (
 
 __PACKAGE__->meta->make_immutable;
 
-
 package MetaCPAN::Document::Favorite::Set;
 
 use MetaCPAN::Moose;
@@ -58,6 +57,23 @@ sub by_distribution {
     return $self->es_by_terms_vals(
         req  => $req,
         -and => +{ distribution => $distribution }
+    );
+}
+
+sub recent {
+    my ( $self, $req )  = @_;
+    my ( $size, $page ) = @{ $req->parameters }{qw< size page >};
+    $size ||= 20;
+    $page ||= 1;
+    return $self->es->search(
+        index => $self->index->name,
+        type  => 'favorite',
+        body  => {
+            query => { match_all => {} },
+            size  => $size,
+            from  => ( $page - 1 ) * $size,
+            sort => [ { 'date' => { order => 'desc' } } ],
+        }
     );
 }
 

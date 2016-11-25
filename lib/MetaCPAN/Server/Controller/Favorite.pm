@@ -53,5 +53,13 @@ sub plusser_by_user : Path('plusser_by_user') : Args(0) {
     $c->stash($data);
 }
 
+# endpoint: /favorite/recent
+# optional: [&fields=<field>][&sort=<sort_key>][&size=N][&page=N]
+sub recent : Path('recent') : Args(0) {
+    my ( $self, $c ) = @_;
+    my $data = $self->model($c)->raw->recent( $c->req );
+    $c->stash($data);
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
