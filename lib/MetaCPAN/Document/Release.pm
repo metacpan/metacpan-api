@@ -1,9 +1,7 @@
 package MetaCPAN::Document::Release;
 
-use strict;
-use warnings;
+use MetaCPAN::Moose;
 
-use Moose;
 use ElasticSearchX::Model::Document;
 use DateTime;
 
@@ -278,12 +276,10 @@ sub set_first {
 
 __PACKAGE__->meta->make_immutable;
 
+
 package MetaCPAN::Document::Release::Set;
 
-use strict;
-use warnings;
-
-use Moose;
+use MetaCPAN::Moose;
 extends 'ElasticSearchX::Model::Document::Set';
 
 with 'MetaCPAN::Role::ES::Query';

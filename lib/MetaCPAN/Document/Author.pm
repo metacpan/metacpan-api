@@ -141,6 +141,16 @@ sub validate {
     return @result;
 }
 
+__PACKAGE__->meta->make_immutable;
+
+
+package MetaCPAN::Document::Author::Set;
+
+use MetaCPAN::Moose;
+extends 'ElasticSearchX::Model::Document::Set';
+
+with 'MetaCPAN::Role::ES::Query';
+
 sub by_id {
     my ( $self, $req, $ids ) = @_;
     my @ids = map {uc} ( $ids ? $ids : $req->read_param('id') );

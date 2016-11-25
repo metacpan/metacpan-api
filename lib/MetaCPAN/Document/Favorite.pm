@@ -1,16 +1,12 @@
 package MetaCPAN::Document::Favorite;
 
-use strict;
-use warnings;
+use MetaCPAN::Moose;
 
-use Moose;
 use ElasticSearchX::Model::Document;
 
 use DateTime;
 use MetaCPAN::Types qw(:all);
 use MetaCPAN::Util;
-
-with 'MetaCPAN::Role::ES::Query';
 
 has id => (
     is => 'ro',
@@ -34,6 +30,16 @@ has date => (
     isa      => 'DateTime',
     default  => sub { DateTime->now },
 );
+
+__PACKAGE__->meta->make_immutable;
+
+
+package MetaCPAN::Document::Favorite::Set;
+
+use MetaCPAN::Moose;
+extends 'ElasticSearchX::Model::Document::Set';
+
+with 'MetaCPAN::Role::ES::Query';
 
 sub by_user {
     my ( $self, $req ) = @_;
