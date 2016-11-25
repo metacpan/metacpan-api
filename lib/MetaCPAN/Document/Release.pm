@@ -276,7 +276,6 @@ sub set_first {
 
 __PACKAGE__->meta->make_immutable;
 
-
 package MetaCPAN::Document::Release::Set;
 
 use MetaCPAN::Moose;

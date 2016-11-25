@@ -44,6 +44,14 @@ sub by_distribution : Path('by_distribution') : Args(0) {
     $c->stash($data);
 }
 
+# endpoint: /favorite/leaderboard
+# optional: [&size=N]
+sub leaderboard : Path('leaderboard') : Args(0) {
+    my ( $self, $c ) = @_;
+    my $data = $self->model($c)->raw->leaderboard( $c->req );
+    $c->stash($data);
+}
+
 # endpoint: /favorite/plusser_by_user
 # params:   user=<user>
 # optional: [&fields=<field>][&sort=<sort_key>][&size=N][&page=N]

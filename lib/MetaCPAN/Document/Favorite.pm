@@ -60,6 +60,33 @@ sub by_distribution {
     );
 }
 
+sub leaderboard {
+    my ( $self, $req ) = @_;
+    my $size = $req->parameters->{'size'};
+    $size ||= 600;
+
+    my $data = $self->es->search(
+        index => $self->index->name,
+        type  => 'favorite',
+        body  => {
+            query => { match_all => {} },
+            size  => 0,
+            aggs  => {
+                leaderboard =>
+                    { terms => { field => 'distribution', size => $size } }
+            },
+        }
+    );
+
+    return +{
+        leaders => [
+            @{ $data->{aggregations}->{leaderboard}->{buckets} }[ 0 .. 99 ]
+        ],
+        took  => $data->{took},
+        total => $data->{hits}->{total},
+    };
+}
+
 sub recent {
     my ( $self, $req )  = @_;
     my ( $size, $page ) = @{ $req->parameters }{qw< size page >};

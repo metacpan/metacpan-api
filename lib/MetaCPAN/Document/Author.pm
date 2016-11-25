@@ -143,7 +143,6 @@ sub validate {
 
 __PACKAGE__->meta->make_immutable;
 
-
 package MetaCPAN::Document::Author::Set;
 
 use MetaCPAN::Moose;
