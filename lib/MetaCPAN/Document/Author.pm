@@ -154,6 +154,7 @@ with 'MetaCPAN::Role::ES::Query';
 sub by_id {
     my ( $self, $req, $ids ) = @_;
     my @ids = map {uc} ( $ids ? $ids : $req->read_param('id') );
+    return unless @ids;
     return $self->es_by_terms_vals(
         req => $req,
         -or => {
@@ -165,6 +166,7 @@ sub by_id {
 sub by_id_for_top_uploaders {
     my ( $self, $req, $counts ) = @_;
     my $authors = $self->by_id( $req, [ keys %$counts ] );
+    return unless $authors;
     return [
         sort { $b->{releases} <=> $a->{releases} } map {
             {
@@ -178,6 +180,7 @@ sub by_id_for_top_uploaders {
 sub by_user {
     my ( $self, $req ) = @_;
     my @users = $req->read_param('user');
+    return unless @users;
     return $self->es_by_terms_vals(
         req => $req,
         -or => {
@@ -224,6 +227,16 @@ sub by_key {
     };
 
     $self->es_by_filter( req => $req, filter => $filter, cb => $cb );
+}
+
+sub plusser_by_user {
+    my ( $self, $req ) = @_;
+    my @users = $req->read_param('user');
+    return unless @users;
+    return $self->es_by_terms_vals(
+        req => $req,
+        -or => +{ user => \@users }
+    );
 }
 
 __PACKAGE__->meta->make_immutable;

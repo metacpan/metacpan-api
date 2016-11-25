@@ -44,5 +44,14 @@ sub by_distribution : Path('by_distribution') : Args(0) {
     $c->stash($data);
 }
 
+# endpoint: /favorite/plusser_by_user
+# params:   user=<user>
+# optional: [&fields=<field>][&sort=<sort_key>][&size=N][&page=N]
+sub plusser_by_user : Path('plusser_by_user') : Args(0) {
+    my ( $self, $c ) = @_;
+    my $data = $c->model('CPAN::Author')->raw->plusser_by_user( $c->req );
+    $c->stash($data);
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
