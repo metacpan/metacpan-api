@@ -8,7 +8,7 @@ use version;
 
 use Digest::SHA1;
 use Encode;
-use Ref::Util qw( is_arrayref );
+use Ref::Util qw( is_arrayref is_hashref );
 use Sub::Exporter -setup => {
     exports => [
         'author_dir',      'digest',
@@ -137,6 +137,7 @@ sub single_valued_arrayref_to_scalar {
     $fields ||= [];
     my %fields_to_extract = map { $_ => 1 } @{$fields};
     foreach my $hash ( @{$array} ) {
+        next unless is_hashref($hash);
         foreach my $field ( %{$hash} ) {
             next if ( $has_fields and not $fields_to_extract{$field} );
             my $value = $hash->{$field};
