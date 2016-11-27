@@ -73,7 +73,7 @@ test_psgi app, sub {
         elsif ( $k =~ /fields/ ) {
             is_deeply(
                 $json,
-                { documentation => ['Moose'], name => ['Moose.pm'] },
+                { documentation => 'Moose', name => 'Moose.pm' },
                 'controller proxies field query parameter to ES'
             );
         }

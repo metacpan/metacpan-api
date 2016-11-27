@@ -82,7 +82,8 @@ sub get : Path('') : Args(1) {
     if ( !defined $file ) {
         $c->detach( '/not_found', ['Not found'] );
     }
-    $c->stash( $file->{_source} || $file->{fields} )
+    $c->stash( $file->{_source}
+            || single_valued_arrayref_to_scalar( $file->{fields} ) )
         || $c->detach( '/not_found',
         ['The requested field(s) could not be found'] );
 }
@@ -149,8 +150,12 @@ sub join : ActionClass('Deserialize') {
         my $data
             = $is_get
             ? [ $c->stash ]
-            : [ map { $_->{_source} || $_->{fields} }
-                @{ $c->stash->{hits}->{hits} } ];
+            : [
+            map {
+                $_->{_source}
+                    || single_valued_arrayref_to_scalar( $_->{fields} )
+            } @{ $c->stash->{hits}->{hits} }
+            ];
         my @ids = List::MoreUtils::uniq grep {defined}
             map { ref $cself eq 'CODE' ? $cself->($_) : $_->{$cself} } @$data;
         my $filter = { terms => { $config->{foreign} => [@ids] } };

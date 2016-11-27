@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Moose;
+use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
 
 BEGIN { extends 'MetaCPAN::Server::Controller::File' }
 
@@ -15,7 +16,8 @@ sub get : Path('') : Args(1) {
     if ( !defined $file ) {
         $c->detach( '/not_found', [] );
     }
-    $c->stash( $file->{_source} || $file->{fields} )
+    $c->stash( $file->{_source}
+            || single_valued_arrayref_to_scalar( $file->{fields} ) )
         || $c->detach( '/not_found',
         ['The requested field(s) could not be found'] );
 }
