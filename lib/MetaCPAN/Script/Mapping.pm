@@ -6,9 +6,6 @@ use warnings;
 use Log::Contextual qw( :log );
 use Moose;
 use MetaCPAN::Types qw( Bool Str );
-use Term::ANSIColor qw( colored );
-use IO::Interactive qw( is_interactive );
-use IO::Prompt;
 use Cpanel::JSON::XS qw( decode_json );
 
 use constant {
@@ -133,7 +130,7 @@ sub index_delete {
     my $name = $self->delete_index;
 
     $self->_check_index_exists( $name, EXPECTED );
-    $self->_prompt("Index $name will be deleted !!!");
+    $self->are_you_sure("Index $name will be deleted !!!");
 
     log_info {"Deleting index: $name"};
     $self->es->indices->delete( index => $name );
@@ -144,7 +141,7 @@ sub index_update {
     my $name = $self->update_index;
 
     $self->_check_index_exists( $name, EXPECTED );
-    $self->_prompt("Index $name will be updated !!!");
+    $self->are_you_sure("Index $name will be updated !!!");
 
     die "update_index requires patch_mapping\n"
         unless $self->patch_mapping;
@@ -310,25 +307,10 @@ sub types_list {
 sub delete_mapping {
     my $self = shift;
 
-    $self->_prompt(
+    $self->are_you_sure(
         'this will delete EVERYTHING and re-create the (empty) indexes');
     log_info {"Putting mapping to ElasticSearch server"};
     $self->model->deploy( delete => $self->delete );
-}
-
-sub _prompt {
-    my ( $self, $msg ) = @_;
-
-    if (is_interactive) {
-        print colored( ['bold red'], "*** Warning ***: $msg" ), "\n";
-        my $answer = prompt
-            'Are you sure you want to do this (type "YES" to confirm) ? ';
-        if ( $answer ne 'YES' ) {
-            print "bye.\n";
-            exit 0;
-        }
-        print "alright then...\n";
-    }
 }
 
 __PACKAGE__->meta->make_immutable;
