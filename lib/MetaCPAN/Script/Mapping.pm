@@ -95,12 +95,20 @@ has delete_index => (
     documentation => 'delete an existing index',
 );
 
+has delete_from_type => (
+    is            => 'ro',
+    isa           => Str,
+    default       => "",
+    documentation => 'delete data from an existing type',
+);
+
 sub run {
     my $self = shift;
     $self->index_create   if $self->create_index;
     $self->index_delete   if $self->delete_index;
     $self->index_update   if $self->update_index;
     $self->copy_index     if $self->copy_to_index;
+    $self->type_empty     if $self->delete_from_type;
     $self->types_list     if $self->list_types;
     $self->delete_mapping if $self->delete;
 }
@@ -258,6 +266,38 @@ sub copy_index {
             }
         );
     }
+
+    $bulk->flush;
+}
+
+sub type_empty {
+    my $self = shift;
+
+    my $bulk = $self->es->bulk_helper(
+        index     => $self->index->name,
+        type      => $self->delete_from_type,
+        max_count => 500,
+    );
+
+    my $scroll = $self->es()->scroll_helper(
+        search_type => 'scan',
+        size        => 250,
+        scroll      => '10m',
+        index       => $self->index->name,
+        type        => $self->delete_from_type,
+        body        => { query => { match_all => {} } },
+    );
+
+    my @ids;
+    while ( my $search = $scroll->next ) {
+        push @ids => $search->{_id};
+
+        if ( @ids == 500 ) {
+            $bulk->delete_ids(@ids);
+            @ids = ();
+        }
+    }
+    $bulk->delete_ids(@ids);
 
     $bulk->flush;
 }
