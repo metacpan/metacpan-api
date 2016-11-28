@@ -6,9 +6,6 @@ use warnings;
 use Log::Contextual qw( :log );
 use Moose;
 use MetaCPAN::Types qw( Bool Str );
-use Term::ANSIColor qw( colored );
-use IO::Interactive qw( is_interactive );
-use IO::Prompt;
 use Cpanel::JSON::XS qw( decode_json );
 
 use constant {
@@ -95,12 +92,20 @@ has delete_index => (
     documentation => 'delete an existing index',
 );
 
+has delete_from_type => (
+    is            => 'ro',
+    isa           => Str,
+    default       => "",
+    documentation => 'delete data from an existing type',
+);
+
 sub run {
     my $self = shift;
     $self->index_create   if $self->create_index;
     $self->index_delete   if $self->delete_index;
     $self->index_update   if $self->update_index;
     $self->copy_index     if $self->copy_to_index;
+    $self->type_empty     if $self->delete_from_type;
     $self->types_list     if $self->list_types;
     $self->delete_mapping if $self->delete;
 }
@@ -125,7 +130,7 @@ sub index_delete {
     my $name = $self->delete_index;
 
     $self->_check_index_exists( $name, EXPECTED );
-    $self->_prompt("Index $name will be deleted !!!");
+    $self->are_you_sure("Index $name will be deleted !!!");
 
     log_info {"Deleting index: $name"};
     $self->es->indices->delete( index => $name );
@@ -136,7 +141,7 @@ sub index_update {
     my $name = $self->update_index;
 
     $self->_check_index_exists( $name, EXPECTED );
-    $self->_prompt("Index $name will be updated !!!");
+    $self->are_you_sure("Index $name will be updated !!!");
 
     die "update_index requires patch_mapping\n"
         unless $self->patch_mapping;
@@ -262,6 +267,38 @@ sub copy_index {
     $bulk->flush;
 }
 
+sub type_empty {
+    my $self = shift;
+
+    my $bulk = $self->es->bulk_helper(
+        index     => $self->index->name,
+        type      => $self->delete_from_type,
+        max_count => 500,
+    );
+
+    my $scroll = $self->es()->scroll_helper(
+        search_type => 'scan',
+        size        => 250,
+        scroll      => '10m',
+        index       => $self->index->name,
+        type        => $self->delete_from_type,
+        body        => { query => { match_all => {} } },
+    );
+
+    my @ids;
+    while ( my $search = $scroll->next ) {
+        push @ids => $search->{_id};
+
+        if ( @ids == 500 ) {
+            $bulk->delete_ids(@ids);
+            @ids = ();
+        }
+    }
+    $bulk->delete_ids(@ids);
+
+    $bulk->flush;
+}
+
 sub types_list {
     my $self = shift;
     print "$_\n" for sort keys %{ $self->index->types };
@@ -270,25 +307,10 @@ sub types_list {
 sub delete_mapping {
     my $self = shift;
 
-    $self->_prompt(
+    $self->are_you_sure(
         'this will delete EVERYTHING and re-create the (empty) indexes');
     log_info {"Putting mapping to ElasticSearch server"};
     $self->model->deploy( delete => $self->delete );
-}
-
-sub _prompt {
-    my ( $self, $msg ) = @_;
-
-    if (is_interactive) {
-        print colored( ['bold red'], "*** Warning ***: $msg" ), "\n";
-        my $answer = prompt
-            'Are you sure you want to do this (type "YES" to confirm) ? ';
-        if ( $answer ne 'YES' ) {
-            print "bye.\n";
-            exit 0;
-        }
-        print "alright then...\n";
-    }
 }
 
 __PACKAGE__->meta->make_immutable;

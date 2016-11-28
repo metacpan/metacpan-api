@@ -31,6 +31,13 @@ has author_fh => (
 
 sub run {
     my $self = shift;
+
+    # check we are using a dedicated index, prompts if not
+    my $index = $self->index->name;
+    $self->are_you_sure(
+        "Author script is run against a non-author specific index: $index !!!"
+    ) unless $index =~ /author/;
+
     $self->index_authors;
     $self->index->refresh;
 }

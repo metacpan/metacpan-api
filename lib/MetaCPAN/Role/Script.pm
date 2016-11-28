@@ -9,6 +9,9 @@ use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Model;
 use MetaCPAN::Types qw(:all);
 use MetaCPAN::Queue ();
+use Term::ANSIColor qw( colored );
+use IO::Interactive qw( is_interactive );
+use IO::Prompt;
 
 use Carp ();
 
@@ -174,6 +177,21 @@ before run => sub {
 
     #Dlog_debug {"Connected to $_"} $self->remote;
 };
+
+sub are_you_sure {
+    my ( $self, $msg ) = @_;
+
+    if (is_interactive) {
+        print colored( ['bold red'], "*** Warning ***: $msg" ), "\n";
+        my $answer = prompt
+            'Are you sure you want to do this (type "YES" to confirm) ? ';
+        if ( $answer ne 'YES' ) {
+            print "bye.\n";
+            exit 0;
+        }
+        print "alright then...\n";
+    }
+}
 
 1;
 
