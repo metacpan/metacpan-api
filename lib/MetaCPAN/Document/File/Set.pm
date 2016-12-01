@@ -31,7 +31,7 @@ sub find {
                                     filter => {
                                         and => [
                                             {
-                                                term => {
+                                                match => {
                                                     "module.name" => $module
                                                 }
                                             },
@@ -55,7 +55,7 @@ sub find {
                             path   => 'module',
                             filter => {
                                 and => [
-                                    { term => { 'module.name' => $module } },
+                                    { match => { 'module.name' => $module } },
                                     {
                                         exists => {
                                             field => 'module.associated_pod'
@@ -243,9 +243,9 @@ sub find_download_url {
             filter     => {
                 bool => {
                     must => [
-                        { term => { 'module.authorized' => 1 } },
-                        { term => { 'module.indexed'    => 1 } },
-                        { term => { 'module.name'       => $module } },
+                        { term  => { 'module.authorized' => 1 } },
+                        { term  => { 'module.indexed'    => 1 } },
+                        { match => { 'module.name'       => $module } },
                         (
                             exists $version_filters->{must}
                             ? @{ $version_filters->{must} }
@@ -391,7 +391,7 @@ sub history {
                                 must => [
                                     { term => { "module.authorized" => 1 } },
                                     { term => { "module.indexed"    => 1 } },
-                                    { term => { "module.name" => $module } },
+                                    { match => { "module.name" => $module } },
                                 ]
                             }
                         }

@@ -53,7 +53,7 @@ sub mapping {
            },
            "documentation" : {
               "ignore_above" : 2048,
-              "index" : "not_analyzed",
+              "index" : "analyzed",
               "fields" : {
                  "analyzed" : {
                     "store" : true,
@@ -112,7 +112,7 @@ sub mapping {
                  },
                  "name" : {
                     "ignore_above" : 2048,
-                    "index" : "not_analyzed",
+                    "index" : "analyzed",
                     "fields" : {
                        "analyzed" : {
                           "store" : true,
