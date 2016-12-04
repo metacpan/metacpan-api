@@ -7,6 +7,12 @@ sub mapping {
     '{
         "dynamic" : false,
         "properties" : {
+           "suggest": {
+              "type" : "completion",
+              "analyzer" : "simple",
+              "search_analyzer" : "simple",
+              "payloads" : true
+           },
            "pod" : {
               "index" : "no",
               "fields" : {
@@ -82,6 +88,10 @@ sub mapping {
                     "store" : true,
                     "type" : "string",
                     "analyzer" : "camelcase"
+                 },
+                 "raw" : {
+                    "type" : "string",
+                    "index" : "not_analyzed"
                  }
               },
               "type" : "string"
@@ -131,6 +141,10 @@ sub mapping {
                           "store" : true,
                           "type" : "string",
                           "analyzer" : "camelcase"
+                       },
+                       "raw" : {
+                          "type" : "string",
+                          "index" : "not_analyzed"
                        }
                     },
                     "type" : "string"

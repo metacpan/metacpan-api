@@ -13,9 +13,7 @@ test_psgi app, sub {
         ok( my $res = $cb->( GET '/search/autocomplete?q=Multiple::Modu' ),
             'GET' );
         my $json = decode_json_ok($res);
-
-        my $got = [ map { $_->{fields}{documentation} }
-                @{ $json->{hits}{hits} } ];
+        my $got  = $json->{suggestions};
 
         is_deeply $got, [
             qw(
