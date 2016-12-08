@@ -18,9 +18,8 @@ sub run {
         = map { ( my $key = $_ ) =~ s/^MetaCPAN::Script:://; lc($key) => $_ }
         plugins;
     die "Usage: metacpan [command] [args]" unless ($class);
-    Module::Runtime::require_module( $plugins{$class} );
 
-    my $config = $self->config;
+    my $config = $self->_build_config;
 
     foreach my $logger ( @{ $config->{logger} || [] } ) {
         my $path = $logger->{filename} or next;
@@ -29,6 +28,7 @@ sub run {
             or File::Path::mkpath($path);
     }
 
+    Module::Runtime::require_module( $plugins{$class} );
     my $obj = $plugins{$class}->new_with_options;
     $obj->run;
 }
