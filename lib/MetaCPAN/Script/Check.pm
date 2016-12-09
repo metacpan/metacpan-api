@@ -93,9 +93,9 @@ sub check_modules {
                     query  => { match_all => {} },
                     filter => {
                         and => [
-                            { term => { 'module.name' => $pkg } },
-                            { term => { 'authorized'  => 'true' } },
-                            { term => { 'maturity'    => 'released' } },
+                            { match => { 'module.name' => $pkg } },
+                            { term  => { 'authorized'  => 'true' } },
+                            { term  => { 'maturity'    => 'released' } },
                         ],
                     },
                 );

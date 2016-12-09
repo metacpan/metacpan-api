@@ -255,7 +255,8 @@ sub import_archive {
             push( @provides, $_->name ) if $_->indexed && $_->authorized;
         }
         $file->clear_module if ( $file->is_pod_file );
-        $file->documentation;
+        $file->documentation;    # force build
+        $file->suggest;          # force build
         log_trace {"reindexing file $file->{path}"};
         $bulk->put($file);
         if ( !$document->has_abstract && $file->abstract ) {

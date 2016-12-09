@@ -9,6 +9,18 @@ use MetaCPAN::Types qw( Bool Str );
 use Cpanel::JSON::XS qw( decode_json );
 use DateTime;
 
+use MetaCPAN::Script::Mapping::DeployStatement;
+use MetaCPAN::Script::Mapping::Cpan::Author;
+use MetaCPAN::Script::Mapping::Cpan::Distribution;
+use MetaCPAN::Script::Mapping::Cpan::Favorite;
+use MetaCPAN::Script::Mapping::Cpan::File;
+use MetaCPAN::Script::Mapping::Cpan::Mirror;
+use MetaCPAN::Script::Mapping::Cpan::Rating;
+use MetaCPAN::Script::Mapping::Cpan::Release;
+use MetaCPAN::Script::Mapping::User::Account;
+use MetaCPAN::Script::Mapping::User::Identity;
+use MetaCPAN::Script::Mapping::User::Session;
+
 use constant {
     EXPECTED     => 1,
     NOT_EXPECTED => 0,
@@ -109,7 +121,7 @@ sub run {
     $self->copy_index     if $self->copy_to_index;
     $self->type_empty     if $self->delete_from_type;
     $self->types_list     if $self->list_types;
-    $self->delete_mapping if $self->delete;
+    $self->deploy_mapping if $self->delete;
 }
 
 sub _check_index_exists {
@@ -134,6 +146,11 @@ sub index_delete {
     $self->_check_index_exists( $name, EXPECTED );
     $self->are_you_sure("Index $name will be deleted !!!");
 
+    $self->_index_delete($name);
+}
+
+sub _index_delete {
+    my ( $self, $name ) = @_;
     log_info {"Deleting index: $name"};
     $self->es->indices->delete( index => $name );
 }
@@ -346,13 +363,85 @@ sub types_list {
     print "$_\n" for sort keys %{ $self->index->types };
 }
 
-sub delete_mapping {
-    my $self = shift;
+sub deploy_mapping {
+    my $self     = shift;
+    my $es       = $self->es;
+    my $idx_cpan = 'cpan_v1_01';
+    my $idx_user = 'user';
 
     $self->are_you_sure(
         'this will delete EVERYTHING and re-create the (empty) indexes');
-    log_info {"Putting mapping to ElasticSearch server"};
-    $self->model->deploy( delete => $self->delete );
+
+    # delete cpan (aliased) + user indices
+
+    $self->_index_delete($idx_user)
+        if $es->indices->exists( index => $idx_user );
+    $self->_index_delete($idx_cpan)
+        if $es->indices->exists( index => $idx_cpan );
+
+    # create new indices
+
+    my $dep = decode_json MetaCPAN::Script::Mapping::DeployStatement::mapping;
+
+    log_info {"Creating index: user"};
+    $es->indices->create( index => $idx_user, body => $dep );
+
+    log_info {"Creating index: $idx_cpan"};
+    $es->indices->create( index => $idx_cpan, body => $dep );
+
+    # create type mappings
+
+    my %mappings = (
+        $idx_cpan => {
+            author =>
+                decode_json(MetaCPAN::Script::Mapping::Cpan::Author::mapping),
+            distribution =>
+                decode_json( MetaCPAN::Script::Mapping::Cpan::Distribution::mapping
+                ),
+            favorite =>
+                decode_json( MetaCPAN::Script::Mapping::Cpan::Favorite::mapping
+                ),
+            file =>
+                decode_json(MetaCPAN::Script::Mapping::Cpan::File::mapping),
+            rating =>
+                decode_json(MetaCPAN::Script::Mapping::Cpan::Rating::mapping),
+            release =>
+                decode_json( MetaCPAN::Script::Mapping::Cpan::Release::mapping
+                ),
+        },
+        $idx_user => {
+            account =>
+                decode_json( MetaCPAN::Script::Mapping::User::Account::mapping
+                ),
+            identity =>
+                decode_json( MetaCPAN::Script::Mapping::User::Identity::mapping
+                ),
+            session =>
+                decode_json( MetaCPAN::Script::Mapping::User::Session::mapping
+                ),
+        },
+    );
+
+    for my $idx ( sort keys %mappings ) {
+        for my $type ( sort keys %{ $mappings{$idx} } ) {
+            log_info {"Adding mapping: $idx/$type"};
+            $es->indices->put_mapping(
+                index => $idx,
+                type  => $type,
+                body  => { $type => $mappings{$idx}{$type} },
+            );
+        }
+    }
+
+    # create alias
+    $es->indices->put_alias(
+        index => $idx_cpan,
+        name  => 'cpan',
+    );
+
+    # done
+    log_info {"Done."};
+    1;
 }
 
 __PACKAGE__->meta->make_immutable;

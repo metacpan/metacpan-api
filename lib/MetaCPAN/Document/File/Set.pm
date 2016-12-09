@@ -2,6 +2,8 @@ package MetaCPAN::Document::File::Set;
 
 use Moose;
 
+use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
+
 extends 'ElasticSearchX::Model::Document::Set';
 
 my @ROGUE_DISTRIBUTIONS = qw(
@@ -31,7 +33,7 @@ sub find {
                                     filter => {
                                         and => [
                                             {
-                                                term => {
+                                                match => {
                                                     "module.name" => $module
                                                 }
                                             },
@@ -55,7 +57,7 @@ sub find {
                             path   => 'module',
                             filter => {
                                 and => [
-                                    { term => { 'module.name' => $module } },
+                                    { match => { 'module.name' => $module } },
                                     {
                                         exists => {
                                             field => 'module.associated_pod'
@@ -243,9 +245,9 @@ sub find_download_url {
             filter     => {
                 bool => {
                     must => [
-                        { term => { 'module.authorized' => 1 } },
-                        { term => { 'module.indexed'    => 1 } },
-                        { term => { 'module.name'       => $module } },
+                        { term  => { 'module.authorized' => 1 } },
+                        { term  => { 'module.indexed'    => 1 } },
+                        { match => { 'module.name'       => $module } },
                         (
                             exists $version_filters->{must}
                             ? @{ $version_filters->{must} }
@@ -391,7 +393,7 @@ sub history {
                                 must => [
                                     { term => { "module.authorized" => 1 } },
                                     { term => { "module.indexed"    => 1 } },
-                                    { term => { "module.name" => $module } },
+                                    { match => { "module.name" => $module } },
                                 ]
                             }
                         }
@@ -442,37 +444,54 @@ sub autocomplete {
     my $query = join( q{ }, @terms );
     return $self unless $query;
 
-    return $self->search_type('dfs_query_then_fetch')->query(
+    my $suggestions
+        = $self->search_type('dfs_query_then_fetch')->es->suggest(
         {
-            filtered => {
-                query => {
-                    multi_match => {
-                        query    => $query,
-                        type     => 'most_fields',
-                        fields   => [ 'documentation', 'documentation.*' ],
-                        analyzer => 'camelcase',
-                        minimum_should_match => '80%'
-                    },
-                },
+            index => $self->index->name,
+            body  => {
+                documentation => {
+                    text       => $query,
+                    completion => {
+                        field => "suggest",
+                        size  => 50,
+                    }
+                }
+            },
+        }
+        );
+
+    my @docs
+        = map { $_->{text} } @{ $suggestions->{documentation}[0]{options} };
+
+    my $data = $self->es->search(
+        {
+            index => $self->index->name,
+            type  => 'file',
+            body  => {
+                query  => { match_all => {} },
                 filter => {
                     bool => {
                         must => [
-                            { exists => { field      => 'documentation' } },
-                            { term   => { status     => 'latest' } },
-                            { term   => { indexed    => 1 } },
-                            { term   => { authorized => 1 } }
-                        ],
-                        must_not => [
-                            {
-                                terms =>
-                                    { distribution => \@ROGUE_DISTRIBUTIONS }
-                            },
+                            { term  => { indexed             => 1 } },
+                            { term  => { authorized          => 1 } },
+                            { term  => { status              => 'latest' } },
+                            { terms => { 'documentation.raw' => \@docs } },
                         ],
                     }
                 }
-            }
+            },
+            fields => ['documentation'],
+            size   => 10
         }
-    )->sort( [ '_score', 'documentation' ] );
+    );
+
+    return +{
+        suggestions => [
+            sort { length($a) <=> length($b) || $a cmp $b }
+                map { $_->{fields}{documentation}[0] }
+                @{ $data->{hits}{hits} }
+        ]
+    };
 }
 
 __PACKAGE__->meta->make_immutable;

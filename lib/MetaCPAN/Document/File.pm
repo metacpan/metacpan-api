@@ -363,6 +363,33 @@ sub _build_documentation {
     return undef;
 }
 
+=head2 suggest
+
+Autocomplete suggester data.
+
+=cut
+
+has suggest => (
+    is      => 'ro',
+    lazy    => 1,
+    builder => '_build_suggest',
+);
+
+sub _build_suggest {
+    my $self = shift;
+    my $doc  = $self->documentation;
+    return unless $doc;
+
+    my $weight = 1000 - length($doc);
+    $weight = 0 if $weight < 0;
+
+    return {
+        input   => [$doc],
+        payload => { doc_name => $doc },
+        weight  => $weight
+    };
+}
+
 =head2 indexed
 
 B<Default 0>
