@@ -1,7 +1,6 @@
 package MetaCPAN::Script::CPANTesters;
 
-use strict;
-use warnings;
+use MetaCPAN::Moose;
 
 use DBI ();
 use File::Spec::Functions qw(catfile);
@@ -11,7 +10,6 @@ use IO::Uncompress::Bunzip2 qw(bunzip2);
 use LWP::UserAgent ();
 use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Types qw( Bool File Uri );
-use Moose;
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt::Dashes';
 

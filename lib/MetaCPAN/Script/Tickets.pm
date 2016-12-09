@@ -1,7 +1,6 @@
 package MetaCPAN::Script::Tickets;
 
-use strict;
-use warnings;
+use MetaCPAN::Moose;
 use namespace::autoclean;
 
 # Some issue with rt.cpan.org's cert
@@ -13,7 +12,6 @@ use LWP::UserAgent;
 use List::MoreUtils qw(uniq);
 use List::Util qw(sum);
 use Log::Contextual qw( :log :dlog );
-use Moose;
 use Parse::CSV;
 use Pithub;
 use URI::Escape qw(uri_escape);

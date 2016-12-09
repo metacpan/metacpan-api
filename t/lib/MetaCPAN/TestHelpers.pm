@@ -99,7 +99,7 @@ sub get_config {
 
         # build_config expects test to be t/*.t
         local $FindBin::RealBin = dir( undef, checkout_root(), 't' );
-        MetaCPAN::Script::Runner->build_config;
+        MetaCPAN::Script::Runner->new->config;
     };
     return $config;
 }

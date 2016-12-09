@@ -1,11 +1,9 @@
 package MetaCPAN::Script::Pagerank;
 
-use strict;
-use warnings;
+use MetaCPAN::Moose;
 
 use Graph::Centrality::Pagerank;
 use Log::Contextual qw( :log );
-use Moose;
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 

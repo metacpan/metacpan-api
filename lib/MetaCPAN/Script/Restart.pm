@@ -1,16 +1,11 @@
 package MetaCPAN::Script::Restart;
 
-use strict;
-use warnings;
-
-use Moose;
+use MetaCPAN::Moose;
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
 sub run {
     shift->es->restart(
-
-        #    nodes       => multi,
         delay => '5s'    # optional
     );
 }

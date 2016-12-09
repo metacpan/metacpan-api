@@ -1,12 +1,10 @@
 package MetaCPAN::Script::PerlMongers;
 
-use strict;
-use warnings;
+use MetaCPAN::Moose;
 use feature 'say';
 
 use Data::Dump qw( dump );
 use Find::Lib '../lib';
-use Moose;
 use WWW::Mechanize::Cached;
 use WWW::Mechanize;
 use XML::Simple;

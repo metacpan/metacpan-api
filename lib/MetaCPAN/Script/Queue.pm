@@ -1,10 +1,8 @@
 package MetaCPAN::Script::Queue;
 
-use strict;
-use warnings;
+use MetaCPAN::Moose;
 
 use MetaCPAN::Types qw( Dir File );
-use Moose;
 use Path::Iterator::Rule ();
 
 has dir => (

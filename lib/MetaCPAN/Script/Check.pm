@@ -1,11 +1,9 @@
 package MetaCPAN::Script::Check;
 
-use strict;
-use warnings;
+use MetaCPAN::Moose;
 
 use File::Spec::Functions qw(catfile);
 use Log::Contextual qw( :log );
-use Moose;
 use MetaCPAN::Types qw( Bool Int Str );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';

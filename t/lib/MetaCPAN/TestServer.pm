@@ -2,15 +2,15 @@ package MetaCPAN::TestServer;
 
 use MetaCPAN::Moose;
 
-use CPAN::Repository::Perms;
-use MetaCPAN::Script::Author;
+use MetaCPAN::Script::Author      ();
 use MetaCPAN::Script::CPANTesters ();
-use MetaCPAN::Script::Latest;
-use MetaCPAN::Script::First;
-use MetaCPAN::Script::Mapping;
-use MetaCPAN::Script::Release;
-use MetaCPAN::Server ();
-use MetaCPAN::TestHelpers qw( get_config fakecpan_dir );
+use MetaCPAN::Script::First       ();
+use MetaCPAN::Script::Latest      ();
+use MetaCPAN::Script::Mapping     ();
+use MetaCPAN::Script::Permission  ();
+use MetaCPAN::Script::Release     ();
+use MetaCPAN::Server              ();
+use MetaCPAN::TestHelpers qw( fakecpan_dir );
 use MetaCPAN::Types qw( Dir HashRef Str );
 use Search::Elasticsearch;
 use Search::Elasticsearch::TestServer;
@@ -29,13 +29,6 @@ has es_server => (
     isa     => 'Search::Elasticsearch::TestServer',
     lazy    => 1,
     builder => '_build_es_server',
-);
-
-has _config => (
-    is      => 'ro',
-    isa     => HashRef,
-    lazy    => 1,
-    builder => '_build_config',
 );
 
 has _es_home => (
@@ -58,17 +51,6 @@ sub setup {
 
     $self->es_client;
     $self->put_mappings;
-}
-
-sub _build_config {
-    my $self = shift;
-
-    # don't know why get_config is not imported by this point
-    my $config = MetaCPAN::TestHelpers::get_config();
-
-    $config->{es}   = $self->es_client;
-    $config->{cpan} = $self->_cpan_dir;
-    return $config;
 }
 
 sub _build_es_home {
@@ -160,9 +142,9 @@ sub put_mappings {
     my $self = shift;
 
     local @ARGV = qw(mapping --delete);
-    ok( MetaCPAN::Script::Mapping->new_with_options( $self->_config )->run,
-        'put mapping' );
-    $self->wait_for_es();
+
+    ok( MetaCPAN::Script::Mapping->new_with_options->run, 'put mapping' );
+    $self->wait_for_es;
 }
 
 sub index_releases {
@@ -171,33 +153,27 @@ sub index_releases {
 
     local @ARGV = ( 'release',
         $ENV{MC_RELEASE} ? $ENV{MC_RELEASE} : $self->_cpan_dir );
-    ok(
-        MetaCPAN::Script::Release->new_with_options( %{ $self->_config },
-            %args )->run,
-        'index releases'
-    );
+    ok( MetaCPAN::Script::Release->new_with_options(%args)->run,
+        'index releases' );
 }
 
 sub set_latest {
     my $self = shift;
     local @ARGV = ('latest');
-    ok( MetaCPAN::Script::Latest->new_with_options( $self->_config )->run,
-        'latest' );
+    ok( MetaCPAN::Script::Latest->new_with_options->run, 'latest' );
 }
 
 sub set_first {
     my $self = shift;
     local @ARGV = ('first');
-    ok( MetaCPAN::Script::First->new_with_options( $self->_config )->run,
-        'first' );
+    ok( MetaCPAN::Script::First->new_with_options->run, 'first' );
 }
 
 sub index_authors {
     my $self = shift;
 
     local @ARGV = ('author');
-    ok( MetaCPAN::Script::Author->new_with_options( $self->_config )->run,
-        'index authors' );
+    ok( MetaCPAN::Script::Author->new_with_options->run, 'index authors' );
 }
 
 # Right now this test requires you to have an internet connection.  If we can
@@ -207,11 +183,15 @@ sub index_cpantesters {
     my $self = shift;
 
     local @ARGV = ( 'cpantesters', '--force-refresh' );
-    ok(
-        MetaCPAN::Script::CPANTesters->new_with_options( $self->_config )
-            ->run,
-        'index authors'
-    );
+    ok( MetaCPAN::Script::CPANTesters->new_with_options->run,
+        'index authors' );
+}
+
+sub index_permissions {
+    my $self = shift;
+
+    ok( MetaCPAN::Script::Permission->new_with_options->run,
+        'index permissions' );
 }
 
 sub prepare_user_test_data {

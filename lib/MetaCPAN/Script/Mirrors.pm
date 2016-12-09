@@ -1,13 +1,11 @@
 package MetaCPAN::Script::Mirrors;
 
-use strict;
-use warnings;
+use MetaCPAN::Moose;
 
 use Cpanel::JSON::XS ();
 use LWP::UserAgent;
 use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Document::Mirror;
-use Moose;
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 

@@ -1,10 +1,8 @@
 package MetaCPAN::Script::Session;
 
-use strict;
-use warnings;
+use MetaCPAN::Moose;
 
 use DateTime;
-use Moose;
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 

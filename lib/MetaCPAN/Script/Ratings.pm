@@ -1,12 +1,10 @@
 package MetaCPAN::Script::Ratings;
 
-use strict;
-use warnings;
+use MetaCPAN::Moose;
 
 use Digest::MD5    ();
 use LWP::UserAgent ();
 use Log::Contextual qw( :log :dlog );
-use Moose;
 use Parse::CSV ();
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';

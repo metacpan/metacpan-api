@@ -1,11 +1,9 @@
 package MetaCPAN::Script::Query;
 
-use strict;
-use warnings;
+use MetaCPAN::Moose;
 
 use Data::DPath qw(dpath);
 use Cpanel::JSON::XS;
-use Moose;
 use MooseX::Aliases;
 use YAML::Syck qw(Dump);
 use MetaCPAN::Types qw( Str );

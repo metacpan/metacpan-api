@@ -2,10 +2,8 @@ package MetaCPAN::Script::ReindexDist;
 
 # ABSTRACT: Reindex all releases of a distribution
 
-use strict;
-use warnings;
+use MetaCPAN::Moose;
 
-use Moose;
 use MetaCPAN::Types qw( ArrayRef Bool Str );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';

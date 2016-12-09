@@ -1,13 +1,14 @@
 package MetaCPAN::Script::Mapping;
 
-use strict;
-use warnings;
+use MetaCPAN::Moose;
 
-use Log::Contextual qw( :log );
-use Moose;
-use MetaCPAN::Types qw( Bool Str );
 use Cpanel::JSON::XS qw( decode_json );
-use DateTime;
+use DateTime ();
+use IO::Interactive qw( is_interactive );
+use IO::Prompt qw( prompt );
+use Log::Contextual qw( :log );
+use MetaCPAN::Types qw( Bool Str );
+use Term::ANSIColor qw( colored );
 
 use constant {
     EXPECTED     => 1,
@@ -33,7 +34,7 @@ has list_types => (
 has create_index => (
     is            => 'ro',
     isa           => Str,
-    default       => "",
+    predicate     => '_has_create_index',
     documentation => 'create a new empty index (copy mappings)',
 );
 
@@ -47,7 +48,7 @@ has update_index => (
 has patch_mapping => (
     is            => 'ro',
     isa           => Str,
-    default       => "{}",
+    predicate     => '_has_patch_mapping',
     documentation => 'type mapping patches',
 );
 
@@ -61,14 +62,14 @@ has skip_existing_mapping => (
 has copy_to_index => (
     is            => 'ro',
     isa           => Str,
-    default       => "",
+    predicate     => '_has_copy_to_index',
     documentation => 'index to copy type to',
 );
 
 has copy_type => (
     is            => 'ro',
     isa           => Str,
-    default       => "",
+    predicate     => '_has_copy_type',
     documentation => 'type to copy',
 );
 
@@ -76,6 +77,7 @@ has copy_query => (
     is            => 'ro',
     isa           => Str,
     default       => "",
+    predicate     => '_has_copy_query',
     documentation => 'match query (default: monthly time slices, '
         . ' if provided must be a valid json query OR "match_all")',
 );
@@ -90,7 +92,7 @@ has reindex => (
 has delete_index => (
     is            => 'ro',
     isa           => Str,
-    default       => "",
+    predicate     => '_has_delete_index',
     documentation => 'delete an existing index',
 );
 
@@ -103,8 +105,9 @@ has delete_from_type => (
 
 sub run {
     my $self = shift;
-    $self->index_create   if $self->create_index;
-    $self->index_delete   if $self->delete_index;
+    $self->copy_index     if $self->_has_copy_to_index;
+    $self->index_create   if $self->_has_create_index;
+    $self->index_delete   if $self->_has_delete_index;
     $self->index_update   if $self->update_index;
     $self->copy_index     if $self->copy_to_index;
     $self->type_empty     if $self->delete_from_type;
@@ -174,9 +177,11 @@ sub index_create {
     my $dst_idx = $self->create_index;
     $self->_check_index_exists( $dst_idx, NOT_EXPECTED );
 
-    my $patch_mapping    = decode_json $self->patch_mapping;
-    my @patch_types      = sort keys %{$patch_mapping};
-    my $dep              = $self->index->deployment_statement;
+    die 'patch_mapping required' unless $self->_has_patch_mapping;
+
+    my $patch_mapping = decode_json( $self->patch_mapping );
+    my @patch_types   = sort keys %{$patch_mapping};
+    my $dep           = $self->index->deployment_statement;
     my $existing_mapping = delete $dep->{mappings};
     my $mapping = $self->skip_existing_mapping ? +{} : $existing_mapping;
 
@@ -228,6 +233,8 @@ sub index_create {
 
 sub copy_index {
     my $self = shift;
+    die "can't copy without a type\n" unless $self->_has_copy_type;
+    my $type = $self->copy_type;
 
     $self->_check_index_exists( $self->copy_to_index, EXPECTED );
     $self->copy_type or die "can't copy without a type\n";
@@ -353,6 +360,21 @@ sub delete_mapping {
         'this will delete EVERYTHING and re-create the (empty) indexes');
     log_info {"Putting mapping to ElasticSearch server"};
     $self->model->deploy( delete => $self->delete );
+}
+
+sub _prompt {
+    my ( $self, $msg ) = @_;
+
+    if (is_interactive) {
+        print colored( ['bold red'], "*** Warning ***: $msg" ), "\n";
+        my $answer = prompt
+            'Are you sure you want to do this (type "YES" to confirm) ? ';
+        if ( $answer ne 'YES' ) {
+            print "bye.\n";
+            exit 0;
+        }
+        print "alright then...\n";
+    }
 }
 
 __PACKAGE__->meta->make_immutable;

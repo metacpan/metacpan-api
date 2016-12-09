@@ -25,6 +25,9 @@ env:
     - USE_CPANFILE_SNAPSHOT=true
     - USE_CPANFILE_SNAPSHOT=false
 
+matrix:
+  allow_failures:
+    - env: USE_CPANFILE_SNAPSHOT=false
 
 before_install:
   - sudo service elasticsearch stop && curl -O -L https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-2.3.0.deb && sudo dpkg -i --force-confnew elasticsearch-2.3.0.deb && sudo service elasticsearch start
