@@ -10,13 +10,13 @@ use Cpanel::JSON::XS qw( decode_json );
 use DateTime;
 
 use MetaCPAN::Script::Mapping::DeployStatement;
-use MetaCPAN::Script::Mapping::Cpan::Author;
-use MetaCPAN::Script::Mapping::Cpan::Distribution;
-use MetaCPAN::Script::Mapping::Cpan::Favorite;
-use MetaCPAN::Script::Mapping::Cpan::File;
-use MetaCPAN::Script::Mapping::Cpan::Mirror;
-use MetaCPAN::Script::Mapping::Cpan::Rating;
-use MetaCPAN::Script::Mapping::Cpan::Release;
+use MetaCPAN::Script::Mapping::CPAN::Author;
+use MetaCPAN::Script::Mapping::CPAN::Distribution;
+use MetaCPAN::Script::Mapping::CPAN::Favorite;
+use MetaCPAN::Script::Mapping::CPAN::File;
+use MetaCPAN::Script::Mapping::CPAN::Mirror;
+use MetaCPAN::Script::Mapping::CPAN::Rating;
+use MetaCPAN::Script::Mapping::CPAN::Release;
 use MetaCPAN::Script::Mapping::User::Account;
 use MetaCPAN::Script::Mapping::User::Identity;
 use MetaCPAN::Script::Mapping::User::Session;
@@ -391,19 +391,19 @@ sub deploy_mapping {
     my %mappings = (
         $idx_cpan => {
             author =>
-                decode_json(MetaCPAN::Script::Mapping::Cpan::Author::mapping),
+                decode_json(MetaCPAN::Script::Mapping::CPAN::Author::mapping),
             distribution =>
-                decode_json( MetaCPAN::Script::Mapping::Cpan::Distribution::mapping
+                decode_json( MetaCPAN::Script::Mapping::CPAN::Distribution::mapping
                 ),
             favorite =>
-                decode_json( MetaCPAN::Script::Mapping::Cpan::Favorite::mapping
+                decode_json( MetaCPAN::Script::Mapping::CPAN::Favorite::mapping
                 ),
             file =>
-                decode_json(MetaCPAN::Script::Mapping::Cpan::File::mapping),
+                decode_json(MetaCPAN::Script::Mapping::CPAN::File::mapping),
             rating =>
-                decode_json(MetaCPAN::Script::Mapping::Cpan::Rating::mapping),
+                decode_json(MetaCPAN::Script::Mapping::CPAN::Rating::mapping),
             release =>
-                decode_json( MetaCPAN::Script::Mapping::Cpan::Release::mapping
+                decode_json( MetaCPAN::Script::Mapping::CPAN::Release::mapping
                 ),
         },
         $idx_user => {

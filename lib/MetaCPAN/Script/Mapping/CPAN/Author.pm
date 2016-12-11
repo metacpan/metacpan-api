@@ -1,4 +1,4 @@
-package MetaCPAN::Script::Mapping::Cpan::Author;
+package MetaCPAN::Script::Mapping::CPAN::Author;
 
 use strict;
 use warnings;

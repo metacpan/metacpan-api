@@ -1,4 +1,4 @@
-package MetaCPAN::Script::Mapping::Cpan::Release;
+package MetaCPAN::Script::Mapping::CPAN::Release;
 
 use strict;
 use warnings;

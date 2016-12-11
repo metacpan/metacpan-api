@@ -1,4 +1,4 @@
-package MetaCPAN::Script::Mapping::Cpan::Rating;
+package MetaCPAN::Script::Mapping::CPAN::Rating;
 
 use strict;
 use warnings;

@@ -1,4 +1,4 @@
-package MetaCPAN::Script::Mapping::Cpan::Mirror;
+package MetaCPAN::Script::Mapping::CPAN::Mirror;
 
 use strict;
 use warnings;

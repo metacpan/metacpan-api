@@ -1,4 +1,4 @@
-package MetaCPAN::Script::Mapping::Cpan::Favorite;
+package MetaCPAN::Script::Mapping::CPAN::Favorite;
 
 use strict;
 use warnings;
