@@ -511,10 +511,10 @@ sub autocomplete_using_suggester {
                 filter => {
                     bool => {
                         must => [
-                            { term  => { indexed             => 1 } },
-                            { term  => { authorized          => 1 } },
-                            { term  => { status              => 'latest' } },
-                            { terms => { 'documentation.raw' => \@docs } },
+                            { term  => { indexed         => 1 } },
+                            { term  => { authorized      => 1 } },
+                            { term  => { status          => 'latest' } },
+                            { terms => { 'documentation' => \@docs } },
                         ],
                     }
                 }
