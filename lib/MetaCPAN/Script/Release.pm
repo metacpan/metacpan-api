@@ -256,6 +256,7 @@ sub import_archive {
         }
         $file->clear_module if ( $file->is_pod_file );
         $file->documentation;
+        $file->suggest;
         log_trace {"reindexing file $file->{path}"};
         $bulk->put($file);
         if ( !$document->has_abstract && $file->abstract ) {
