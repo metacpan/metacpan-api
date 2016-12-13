@@ -367,8 +367,8 @@ sub list_types {
 }
 
 sub deploy_mapping {
-    my $self     = shift;
-    my $es       = $self->es;
+    my $self       = shift;
+    my $es         = $self->es;
     my $cpan_index = 'cpan_v1_01';
     my $user_index = 'user';
 
@@ -384,7 +384,8 @@ sub deploy_mapping {
 
     # create new indices
 
-    my $dep = decode_json( MetaCPAN::Script::Mapping::DeployStatement::mapping );
+    my $dep
+        = decode_json(MetaCPAN::Script::Mapping::DeployStatement::mapping);
 
     log_info {"Creating index: user"};
     $es->indices->create( index => $user_index, body => $dep );
