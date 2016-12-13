@@ -371,7 +371,7 @@ Autocomplete info for documentation.
 
 has suggest => (
     is      => 'ro',
-    isa     => Maybe [HashRef],
+#    isa     => Maybe [HashRef], # remarked: breaks the suggester
     lazy    => 1,
     builder => '_build_suggest',
 );
@@ -379,7 +379,8 @@ has suggest => (
 sub _build_suggest {
     my $self = shift;
     my $doc  = $self->documentation;
-    return +{} unless $doc;
+#    return +{} unless $doc; # remarked because of 'isa'
+    return unless $doc;
 
     my $weight = 1000 - length($doc);
     $weight = 0 if $weight < 0;
