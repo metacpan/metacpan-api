@@ -3,6 +3,8 @@ package MetaCPAN::Script::Snapshot;
 use strict;
 use warnings;
 
+use Log::Contextual qw( :log );
+
 use MetaCPAN::Types qw( Bool Int Str File );
 use Moose;
 use DateTime;
@@ -10,17 +12,17 @@ use Try::Tiny;
 use Sys::Hostname;
 use HTTP::Tiny;
 use Cpanel::JSON::XS;
+use DDP;
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt::Dashes';
 
 my $hostname = hostname;
-
 my $mode = $hostname =~ /dev/ ? 'testing' : 'production';
 
 # So we dont' break production
 my $bucket = "mc-${mode}-backups";
 
-my $repository_name = 'bar';
+my $repository_name = 'our_backups';
 
 ## Modes
 has setup => (
@@ -35,6 +37,12 @@ has snap => (
     documentation => 'Perform a snapshot',
 );
 
+has list => (
+    is            => 'ro',
+    isa           => Bool,
+    documentation => 'List saved snapshots',
+);
+
 has restore => (
     is            => 'ro',
     isa           => Bool,
@@ -42,17 +50,23 @@ has restore => (
 );
 
 ## Options
-has name => (
+has snap_stub => (
     is  => 'ro',
     isa => 'Str',
     documentation =>
-        'Name of snapshot ( e.g full, user etc ), used with dateformat to create the actual name in ES',
+        'Stub of snapshot name ( e.g full, user etc ), used with dateformat to create the actual name in S3',
 );
 
 has date_format => (
     is            => 'ro',
     isa           => 'Str',
-    documentation => 'strftime format to add to snapshot name',
+    documentation => 'strftime format to add to snapshot name (eg %Y-%m-%d)',
+);
+
+has snap_name => (
+    is            => 'ro',
+    isa           => 'Str',
+    documentation => 'Full name of snapshot to restore',
 );
 
 has host => (
@@ -64,10 +78,11 @@ has host => (
 
 # Note: can take wild cards https://www.elastic.co/guide/en/elasticsearch/reference/2.4/multi-index.html
 has indices => (
-    is            => 'ro',
-    isa           => 'ArrayRef',
-    default       => sub { ['user'] },
-    documentation => 'Which indices to snapshot, defaults to "user" only',
+    is      => 'ro',
+    isa     => 'ArrayRef',
+    default => sub { ['*'] },
+    documentation =>
+        'Which indices to snapshot, defaults to "*" (all), can take wild cards - "*v100*"',
 );
 
 ## Internal attributes
@@ -89,7 +104,7 @@ has aws_secret => (
 has http_client => (
     is      => 'ro',
     lazy    => 1,
-    builder => '_build__http_client',
+    builder => '_build_http_client',
     traits  => ['NoGetopt'],
 );
 
@@ -106,9 +121,10 @@ sub run {
     die "es_aws_s3_access_key not in config" unless $self->aws_key;
     die "es_aws_s3_secret not in config"     unless $self->aws_secret;
 
-    return $self->run_setup    if $self->setup;
-    return $self->run_restore  if $self->restore;
-    return $self->run_snapshot if $self->snap;
+    return $self->run_list_snaps if $self->list;
+    return $self->run_setup      if $self->setup;
+    return $self->run_snapshot   if $self->snap;
+    return $self->run_restore    if $self->restore;
 
     die "setup, restore or snap argument required";
 }
@@ -116,36 +132,52 @@ sub run {
 sub run_snapshot {
     my $self = shift;
 
-    my $now = DateTime->now;
+    $self->snap_stub   || die 'Missing snap-stub';
+    $self->date_format || die 'Missing date-format (e.g. %Y-%m-%d)';
 
-    #    my $strftime_format = '%Y-%m'; #$self->format;
-    my $date = $now->strftime( $self->date_format );
-    warn $date;
-    my $snap_name = $self->name . '_' . $date;
+    my $date      = DateTime->now->strftime( $self->date_format );
+    my $snap_name = $self->snap_stub . '_' . $date;
 
     my $indices = join ',', @{ $self->indices };
-
     my $data = {
         "indices"              => $indices,
         "ignore_unavailable"   => 0,
         "include_global_state" => 1
     };
 
+    log_debug { 'snapping: ' . $snap_name };
+    log_debug { 'with indices: ' . $indices };
+
     my $path = "${repository_name}/${snap_name}";
 
-    die $path;
-
     my $response = $self->_request( 'put', $path, $data );
+    return $response;
 
-    log_info {'done'};
+}
+
+sub run_list_snaps {
+    my $self = shift;
+
+    my $path = "${repository_name}/_all";
+    my $response = $self->_request( 'get', $path, {} );
+
+    my $data = eval { decode_json $response->{content} };
+
+    foreach my $snapshot ( @{ $data->{snapshots} || [] } ) {
+        log_info { $snapshot->{snapshot} }
+        log_debug { np($snapshot) }
+    }
+
+    return $response;
+
 }
 
 sub run_restore {
     my $self = shift;
 
-    log_info {'restore'};
+    my $snap_name = $self->snap_name;
 
-    $self->are_you_sure('WARNING stuff will happen!');
+    $self->are_you_sure('Restoring... will rename indices to restored_XX');
 
     # This is a safetly feature, we can always
     # create aliases to point to them if required
@@ -155,18 +187,19 @@ sub run_restore {
         "rename_replacement" => 'restored_$1'
     };
 
-    # FIXME: snap_name
-    my $path = "${repository_name}/nightly_full/_restore";
+    my $path = "${repository_name}/${snap_name}/_restore";
 
     my $response = $self->_request( 'post', $path, $data );
 
-    log_info {'done'};
+    log_info { 'restoring: ' . $snap_name } if $response;
+
+    return $response;
 }
 
 sub run_setup {
     my $self = shift;
 
-    log_info {'setup'};
+    log_debug { 'setup: ' . $repository_name };
 
     my $data = {
         "type"     => "s3",
@@ -185,7 +218,7 @@ sub run_setup {
     my $path = "${repository_name}";
 
     my $response = $self->_request( 'put', $path, $data );
-
+    return $response;
 }
 
 sub _request {
@@ -198,9 +231,17 @@ sub _request {
     my $response = $self->http_client->$method( $url, { content => $json } );
 
     if ( !$response->{success} && length $response->{content} ) {
-        my $resp_json = decode_json $response->{content};
-        use DDP;
-        p $resp_json;
+
+        log_error { 'Problem requesting ' . $url };
+
+        my $resp_json = eval { decode_json $response->{content} };
+        if ( my $error = $@ ) {
+            log_error { 'Error msg: ' . $response->{content} }
+        }
+        else {
+            log_error { 'Error response: ' . np($resp_json) }
+        }
+        return 0;
     }
     return $response;
 }
@@ -216,20 +257,33 @@ MetaCPAN::Script::Snapshot - Snapshot (and restore) ElasticSearch indices
 
 =head1 SYNOPSIS
 
+# Setup
  $ bin/metacpan snapshot --setup (only needed once)
 
- $ bin/metacpan snapshot --snap --name full --strftime '%Y-%m-%d'
+# Snapshot all indexes daily
+ $ bin/metacpan snapshot --snap --snap-stub full --date-format %Y-%m-%d
 
- $ bin/metacpan snapshot --restore --name full_2016-12-01
+# List what has been snapshotted
+ $ bin/metacpan snapshot --list
 
- $ bin/metacpan snapshot --snap --name user --strftime '%Y-%m-%d_%H-%m'
+# restore (indices are renamed from `foo` to `restored_foo`)
+ $ bin/metacpan snapshot --restore --snap-name full_2016-12-01
 
- $ bin/metacpan snapshot --restore --name user_2016-12-01_12-22
+Another example..
+
+# Snapshot just user* indexes hourly and restore
+ $ bin/metacpan snapshot --snap --indices 'user*' --snap-stub user --strftime '%Y-%m-%d-%H'
+ $ bin/metacpan snapshot --restore --snap-name user_2016-12-01-12
 
 
 =head1 DESCRIPTION
 
 Tell elasticsearch to setup (only needed once), snap or
 restore from backups stored in AWS S3.
+
+You will need to run --setup on any box you wish to restore to
+
+You will need es_aws_s3_access_key and es_aws_s3_secret setup
+in your local metacpan_server_local.conf
 
 =cut
