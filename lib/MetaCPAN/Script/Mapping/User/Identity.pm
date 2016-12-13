@@ -7,12 +7,12 @@ sub mapping {
     '{
         "dynamic" : false,
         "properties" : {
-           "name" : {
+           "key" : {
               "ignore_above" : 2048,
               "index" : "not_analyzed",
               "type" : "string"
            },
-           "key" : {
+           "name" : {
               "ignore_above" : 2048,
               "index" : "not_analyzed",
               "type" : "string"

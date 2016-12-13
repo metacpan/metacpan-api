@@ -7,121 +7,17 @@ sub mapping {
     '{
         "dynamic" : false,
         "properties" : {
-           "profile" : {
-              "include_in_root" : true,
-              "dynamic" : false,
-              "type" : "nested",
-              "properties" : {
-                 "name" : {
-                    "ignore_above" : 2048,
-                    "index" : "not_analyzed",
-                    "type" : "string"
-                 },
-                 "id" : {
-                    "ignore_above" : 2048,
-                    "index" : "not_analyzed",
-                    "fields" : {
-                       "analyzed" : {
-                          "store" : true,
-                          "fielddata" : {
-                             "format" : "disabled"
-                          },
-                          "type" : "string",
-                          "analyzer" : "simple"
-                       }
-                    },
-                    "type" : "string"
-                 }
-              }
-           },
-           "website" : {
-              "ignore_above" : 2048,
-              "index" : "not_analyzed",
-              "type" : "string"
-           },
-           "email" : {
-              "ignore_above" : 2048,
-              "index" : "not_analyzed",
-              "type" : "string"
-           },
-           "city" : {
-              "ignore_above" : 2048,
-              "index" : "not_analyzed",
-              "type" : "string"
-           },
-           "user" : {
-              "ignore_above" : 2048,
-              "index" : "not_analyzed",
-              "type" : "string"
-           },
-           "updated" : {
-              "format" : "strict_date_optional_time||epoch_millis",
-              "type" : "date"
-           },
-           "pauseid" : {
-              "ignore_above" : 2048,
-              "index" : "not_analyzed",
-              "type" : "string"
-           },
-           "country" : {
-              "ignore_above" : 2048,
-              "index" : "not_analyzed",
-              "type" : "string"
-           },
-           "gravatar_url" : {
-              "ignore_above" : 2048,
-              "index" : "not_analyzed",
-              "type" : "string"
-           },
-           "location" : {
-              "type" : "geo_point"
-           },
-           "donation" : {
-              "dynamic" : true,
-              "properties" : {
-                 "name" : {
-                    "ignore_above" : 2048,
-                    "index" : "not_analyzed",
-                    "type" : "string"
-                 },
-                 "id" : {
-                    "ignore_above" : 2048,
-                    "index" : "not_analyzed",
-                    "type" : "string"
-                 }
-              }
-           },
            "asciiname" : {
-              "ignore_above" : 2048,
-              "index" : "not_analyzed",
               "fields" : {
                  "analyzed" : {
-                    "store" : true,
+                    "analyzer" : "standard",
                     "fielddata" : {
                        "format" : "disabled"
                     },
-                    "type" : "string",
-                    "analyzer" : "standard"
-                 }
-              },
-              "type" : "string"
-           },
-           "name" : {
-              "ignore_above" : 2048,
-              "index" : "not_analyzed",
-              "fields" : {
-                 "analyzed" : {
                     "store" : true,
-                    "fielddata" : {
-                       "format" : "disabled"
-                    },
-                    "type" : "string",
-                    "analyzer" : "standard"
+                    "type" : "string"
                  }
               },
-              "type" : "string"
-           },
-           "region" : {
               "ignore_above" : 2048,
               "index" : "not_analyzed",
               "type" : "string"
@@ -141,10 +37,20 @@ sub mapping {
                  }
               }
            },
-           "perlmongers" : {
+           "city" : {
+              "ignore_above" : 2048,
+              "index" : "not_analyzed",
+              "type" : "string"
+           },
+           "country" : {
+              "ignore_above" : 2048,
+              "index" : "not_analyzed",
+              "type" : "string"
+           },
+           "donation" : {
               "dynamic" : true,
               "properties" : {
-                 "url" : {
+                 "id" : {
                     "ignore_above" : 2048,
                     "index" : "not_analyzed",
                     "type" : "string"
@@ -155,6 +61,100 @@ sub mapping {
                     "type" : "string"
                  }
               }
+           },
+           "email" : {
+              "ignore_above" : 2048,
+              "index" : "not_analyzed",
+              "type" : "string"
+           },
+           "gravatar_url" : {
+              "ignore_above" : 2048,
+              "index" : "not_analyzed",
+              "type" : "string"
+           },
+           "location" : {
+              "type" : "geo_point"
+           },
+           "name" : {
+              "fields" : {
+                 "analyzed" : {
+                    "analyzer" : "standard",
+                    "fielddata" : {
+                       "format" : "disabled"
+                    },
+                    "store" : true,
+                    "type" : "string"
+                 }
+              },
+              "ignore_above" : 2048,
+              "index" : "not_analyzed",
+              "type" : "string"
+           },
+           "pauseid" : {
+              "ignore_above" : 2048,
+              "index" : "not_analyzed",
+              "type" : "string"
+           },
+           "perlmongers" : {
+              "dynamic" : true,
+              "properties" : {
+                 "name" : {
+                    "ignore_above" : 2048,
+                    "index" : "not_analyzed",
+                    "type" : "string"
+                 },
+                 "url" : {
+                    "ignore_above" : 2048,
+                    "index" : "not_analyzed",
+                    "type" : "string"
+                 }
+              }
+           },
+           "profile" : {
+              "dynamic" : false,
+              "include_in_root" : true,
+              "properties" : {
+                 "id" : {
+                    "fields" : {
+                       "analyzed" : {
+                          "analyzer" : "simple",
+                          "fielddata" : {
+                             "format" : "disabled"
+                          },
+                          "store" : true,
+                          "type" : "string"
+                       }
+                    },
+                    "ignore_above" : 2048,
+                    "index" : "not_analyzed",
+                    "type" : "string"
+                 },
+                 "name" : {
+                    "ignore_above" : 2048,
+                    "index" : "not_analyzed",
+                    "type" : "string"
+                 }
+              },
+              "type" : "nested"
+           },
+           "region" : {
+              "ignore_above" : 2048,
+              "index" : "not_analyzed",
+              "type" : "string"
+           },
+           "updated" : {
+              "format" : "strict_date_optional_time||epoch_millis",
+              "type" : "date"
+           },
+           "user" : {
+              "ignore_above" : 2048,
+              "index" : "not_analyzed",
+              "type" : "string"
+           },
+           "website" : {
+              "ignore_above" : 2048,
+              "index" : "not_analyzed",
+              "type" : "string"
            }
         }
      }';

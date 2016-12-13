@@ -7,19 +7,14 @@ sub mapping {
     '{
         "dynamic" : false,
         "properties" : {
-           "date" : {
-              "format" : "strict_date_optional_time||epoch_millis",
-              "type" : "date"
-           },
-           "release" : {
-              "ignore_above" : 2048,
-              "index" : "not_analyzed",
-              "type" : "string"
-           },
            "author" : {
               "ignore_above" : 2048,
               "index" : "not_analyzed",
               "type" : "string"
+           },
+           "date" : {
+              "format" : "strict_date_optional_time||epoch_millis",
+              "type" : "date"
            },
            "details" : {
               "dynamic" : false,
@@ -31,9 +26,6 @@ sub mapping {
                  }
               }
            },
-           "rating" : {
-              "type" : "float"
-           },
            "distribution" : {
               "ignore_above" : 2048,
               "index" : "not_analyzed",
@@ -42,15 +34,23 @@ sub mapping {
            "helpful" : {
               "dynamic" : false,
               "properties" : {
-                 "value" : {
-                    "type" : "boolean"
-                 },
                  "user" : {
                     "ignore_above" : 2048,
                     "index" : "not_analyzed",
                     "type" : "string"
+                 },
+                 "value" : {
+                    "type" : "boolean"
                  }
               }
+           },
+           "rating" : {
+              "type" : "float"
+           },
+           "release" : {
+              "ignore_above" : 2048,
+              "index" : "not_analyzed",
+              "type" : "string"
            },
            "user" : {
               "ignore_above" : 2048,
