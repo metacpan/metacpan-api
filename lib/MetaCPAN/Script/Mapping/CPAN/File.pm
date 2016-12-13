@@ -271,6 +271,12 @@ sub mapping {
               "index" : "not_analyzed",
               "type" : "string"
            },
+           "suggest": {
+              "analyzer" : "simple",
+              "payloads" : true,
+              "search_analyzer" : "simple",
+              "type" : "completion"
+           },
            "version" : {
               "ignore_above" : 2048,
               "index" : "not_analyzed",
