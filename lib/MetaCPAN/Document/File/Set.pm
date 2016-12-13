@@ -475,5 +475,63 @@ sub autocomplete {
     )->sort( [ '_score', 'documentation' ] );
 }
 
+# this method will replace 'sub autocomplete' after the
+# mapping + data is fully deployed.
+# -- Mickey
+sub autocomplete_using_suggester {
+    my ( $self, @terms ) = @_;
+    my $query = join( q{ }, @terms );
+    return $self unless $query;
+
+    my $suggestions
+        = $self->search_type('dfs_query_then_fetch')->es->suggest(
+        {
+            index => $self->index->name,
+            body  => {
+                documentation => {
+                    text       => $query,
+                    completion => {
+                        field => "suggest",
+                        size  => 50,
+                    }
+                }
+            },
+        }
+        );
+
+    my @docs
+        = map { $_->{text} } @{ $suggestions->{documentation}[0]{options} };
+
+    my $data = $self->es->search(
+        {
+            index => $self->index->name,
+            type  => 'file',
+            body  => {
+                query  => { match_all => {} },
+                filter => {
+                    bool => {
+                        must => [
+                            { term  => { indexed             => 1 } },
+                            { term  => { authorized          => 1 } },
+                            { term  => { status              => 'latest' } },
+                            { terms => { 'documentation.raw' => \@docs } },
+                        ],
+                    }
+                }
+            },
+            fields => ['documentation'],
+            size   => 10
+        }
+    );
+
+    return +{
+        suggestions => [
+            sort { length($a) <=> length($b) || $a cmp $b }
+                map { $_->{fields}{documentation}[0] }
+                @{ $data->{hits}{hits} }
+        ]
+    };
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
