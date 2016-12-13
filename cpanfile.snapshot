@@ -5220,20 +5220,20 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       HTTP::Tiny 0
       Moose::Role 0
-  MooseX-Getopt-0.70
-    pathname: D/DR/DROLSKY/MooseX-Getopt-0.70.tar.gz
+  MooseX-Getopt-0.71
+    pathname: E/ET/ETHER/MooseX-Getopt-0.71.tar.gz
     provides:
-      MooseX::Getopt 0.70
-      MooseX::Getopt::Basic 0.70
-      MooseX::Getopt::Dashes 0.70
-      MooseX::Getopt::GLD 0.70
-      MooseX::Getopt::Meta::Attribute 0.70
-      MooseX::Getopt::Meta::Attribute::NoGetopt 0.70
-      MooseX::Getopt::Meta::Attribute::Trait 0.70
-      MooseX::Getopt::Meta::Attribute::Trait::NoGetopt 0.70
-      MooseX::Getopt::OptionTypeMap 0.70
-      MooseX::Getopt::ProcessedArgv 0.70
-      MooseX::Getopt::Strict 0.70
+      MooseX::Getopt 0.71
+      MooseX::Getopt::Basic 0.71
+      MooseX::Getopt::Dashes 0.71
+      MooseX::Getopt::GLD 0.71
+      MooseX::Getopt::Meta::Attribute 0.71
+      MooseX::Getopt::Meta::Attribute::NoGetopt 0.71
+      MooseX::Getopt::Meta::Attribute::Trait 0.71
+      MooseX::Getopt::Meta::Attribute::Trait::NoGetopt 0.71
+      MooseX::Getopt::OptionTypeMap 0.71
+      MooseX::Getopt::ProcessedArgv 0.71
+      MooseX::Getopt::Strict 0.71
     requirements:
       Carp 0
       Getopt::Long 2.37
