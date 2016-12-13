@@ -126,7 +126,7 @@ sub run {
     $self->update_index   if $self->arg_update_index;
     $self->copy_type      if $self->copy_to_index;
     $self->empty_type     if $self->delete_from_type;
-    $self->list_types     if $self->list_types;
+    $self->list_types     if $self->arg_list_types;
     $self->deploy_mapping if $self->arg_deploy_mapping;
 }
 
