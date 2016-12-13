@@ -102,7 +102,7 @@ requires 'MooseX::Aliases';
 requires 'MooseX::Attribute::Deflator', '2.1.5';
 requires 'MooseX::ChainedAccessors';
 requires 'MooseX::ClassAttribute';
-requires 'MooseX::Getopt';
+requires 'MooseX::Getopt', '0.71';
 requires 'MooseX::Getopt::Dashes';
 requires 'MooseX::Getopt::OptionTypeMap';
 requires 'MooseX::Fastly::Role', '0.02';

@@ -28,28 +28,32 @@ use constant {
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
-has delete => (
+has arg_deploy_mapping => (
+    init_arg      => 'delete',
     is            => 'ro',
     isa           => Bool,
     default       => 0,
     documentation => 'delete index if it exists already',
 );
 
-has list_types => (
+has arg_list_types => (
+    init_arg      => 'list_types',
     is            => 'ro',
     isa           => Bool,
     default       => 0,
     documentation => 'list available index type names',
 );
 
-has create_index => (
+has arg_create_index => (
+    init_arg      => 'create_index',
     is            => 'ro',
     isa           => Str,
     default       => "",
     documentation => 'create a new empty index (copy mappings)',
 );
 
-has update_index => (
+has arg_update_index => (
+    init_arg      => 'update_index',
     is            => 'ro',
     isa           => Str,
     default       => "",
@@ -77,7 +81,8 @@ has copy_to_index => (
     documentation => 'index to copy type to',
 );
 
-has copy_type => (
+has arg_copy_type => (
+    init_arg      => 'copy_type',
     is            => 'ro',
     isa           => Str,
     default       => "",
@@ -99,7 +104,8 @@ has reindex => (
     documentation => 'reindex data from source index for exact mapping types',
 );
 
-has delete_index => (
+has arg_delete_index => (
+    init_arg      => 'delete_index',
     is            => 'ro',
     isa           => Str,
     default       => "",
@@ -115,13 +121,13 @@ has delete_from_type => (
 
 sub run {
     my $self = shift;
-    $self->index_create   if $self->create_index;
-    $self->index_delete   if $self->delete_index;
-    $self->index_update   if $self->update_index;
-    $self->type_copy      if $self->copy_to_index;
-    $self->type_empty     if $self->delete_from_type;
-    $self->types_list     if $self->list_types;
-    $self->deploy_mapping if $self->delete;
+    $self->create_index   if $self->arg_create_index;
+    $self->delete_index   if $self->arg_delete_index;
+    $self->update_index   if $self->arg_update_index;
+    $self->copy_type      if $self->copy_to_index;
+    $self->empty_type     if $self->delete_from_type;
+    $self->list_types     if $self->arg_list_types;
+    $self->deploy_mapping if $self->arg_deploy_mapping;
 }
 
 sub _check_index_exists {
@@ -139,25 +145,25 @@ sub _check_index_exists {
     }
 }
 
-sub index_delete {
+sub delete_index {
     my $self = shift;
-    my $name = $self->delete_index;
+    my $name = $self->arg_delete_index;
 
     $self->_check_index_exists( $name, EXPECTED );
     $self->are_you_sure("Index $name will be deleted !!!");
 
-    $self->_index_delete($name);
+    $self->_delete_index($name);
 }
 
-sub _index_delete {
+sub _delete_index {
     my ( $self, $name ) = @_;
     log_info {"Deleting index: $name"};
     $self->es->indices->delete( index => $name );
 }
 
-sub index_update {
+sub update_index {
     my $self = shift;
-    my $name = $self->update_index;
+    my $name = $self->arg_update_index;
 
     $self->_check_index_exists( $name, EXPECTED );
     $self->are_you_sure("Index $name will be updated !!!");
@@ -185,10 +191,10 @@ sub index_update {
     log_info {"Done."};
 }
 
-sub index_create {
+sub create_index {
     my $self = shift;
 
-    my $dst_idx = $self->create_index;
+    my $dst_idx = $self->arg_create_index;
     $self->_check_index_exists( $dst_idx, NOT_EXPECTED );
 
     my $patch_mapping    = decode_json $self->patch_mapping;
@@ -227,7 +233,7 @@ sub index_create {
             )
         {
             log_info {"Re-indexing data to index $dst_idx from type: $type"};
-            $self->type_copy( $dst_idx, $type );
+            $self->copy_type( $dst_idx, $type );
         }
     }
 
@@ -238,12 +244,12 @@ sub index_create {
     if @patch_types;
 }
 
-sub type_copy {
+sub copy_type {
     my ( $self, $index, $type ) = @_;
     $index //= $self->copy_to_index;
 
     $self->_check_index_exists( $index, EXPECTED );
-    $type //= $self->copy_type;
+    $type //= $self->arg_copy_type;
     $type or die "can't copy without a type\n";
 
     my $arg_query = $self->copy_query;
@@ -323,7 +329,7 @@ sub _copy_slice {
     $bulk->flush;
 }
 
-sub type_empty {
+sub empty_type {
     my $self = shift;
 
     my $bulk = $self->es->bulk_helper(
@@ -355,41 +361,42 @@ sub type_empty {
     $bulk->flush;
 }
 
-sub types_list {
+sub list_types {
     my $self = shift;
     print "$_\n" for sort keys %{ $self->index->types };
 }
 
 sub deploy_mapping {
-    my $self     = shift;
-    my $es       = $self->es;
-    my $idx_cpan = 'cpan_v1_01';
-    my $idx_user = 'user';
+    my $self       = shift;
+    my $es         = $self->es;
+    my $cpan_index = 'cpan_v1_01';
+    my $user_index = 'user';
 
     $self->are_you_sure(
         'this will delete EVERYTHING and re-create the (empty) indexes');
 
     # delete cpan (aliased) + user indices
 
-    $self->_index_delete($idx_user)
-        if $es->indices->exists( index => $idx_user );
-    $self->_index_delete($idx_cpan)
-        if $es->indices->exists( index => $idx_cpan );
+    $self->_delete_index($user_index)
+        if $es->indices->exists( index => $user_index );
+    $self->_delete_index($cpan_index)
+        if $es->indices->exists( index => $cpan_index );
 
     # create new indices
 
-    my $dep = decode_json MetaCPAN::Script::Mapping::DeployStatement::mapping;
+    my $dep
+        = decode_json(MetaCPAN::Script::Mapping::DeployStatement::mapping);
 
     log_info {"Creating index: user"};
-    $es->indices->create( index => $idx_user, body => $dep );
+    $es->indices->create( index => $user_index, body => $dep );
 
-    log_info {"Creating index: $idx_cpan"};
-    $es->indices->create( index => $idx_cpan, body => $dep );
+    log_info {"Creating index: $cpan_index"};
+    $es->indices->create( index => $cpan_index, body => $dep );
 
     # create type mappings
 
     my %mappings = (
-        $idx_cpan => {
+        $cpan_index => {
             author =>
                 decode_json(MetaCPAN::Script::Mapping::CPAN::Author::mapping),
             distribution =>
@@ -406,7 +413,7 @@ sub deploy_mapping {
                 decode_json( MetaCPAN::Script::Mapping::CPAN::Release::mapping
                 ),
         },
-        $idx_user => {
+        $user_index => {
             account =>
                 decode_json( MetaCPAN::Script::Mapping::User::Account::mapping
                 ),
@@ -432,7 +439,7 @@ sub deploy_mapping {
 
     # create alias
     $es->indices->put_alias(
-        index => $idx_cpan,
+        index => $cpan_index,
         name  => 'cpan',
     );
 

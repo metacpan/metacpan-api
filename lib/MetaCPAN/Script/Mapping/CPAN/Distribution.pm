@@ -7,37 +7,44 @@ sub mapping {
     '{
         "dynamic" : false,
         "properties" : {
-           "river" : {
-              "dynamic" : true,
-              "properties" : {
-                 "immediate" : {
-                    "type" : "integer"
-                 },
-                 "bucket" : {
-                    "type" : "integer"
-                 },
-                 "total" : {
-                    "type" : "integer"
-                 }
-              }
-           },
-           "name" : {
-              "ignore_above" : 2048,
-              "index" : "not_analyzed",
-              "type" : "string"
-           },
            "bugs" : {
               "dynamic" : true,
               "properties" : {
-                 "rt" : {
+                 "github" : {
                     "dynamic" : true,
                     "properties" : {
+                       "active" : {
+                          "type" : "integer"
+                       },
+                       "closed" : {
+                          "type" : "integer"
+                       },
+                       "open" : {
+                          "type" : "integer"
+                       },
                        "source" : {
                           "ignore_above" : 2048,
                           "index" : "not_analyzed",
                           "type" : "string"
+                       }
+                    }
+                 },
+                 "rt" : {
+                    "dynamic" : true,
+                    "properties" : {
+                       "active" : {
+                          "type" : "integer"
                        },
                        "closed" : {
+                          "type" : "integer"
+                       },
+                       "new" : {
+                          "type" : "integer"
+                       },
+                       "open" : {
+                          "type" : "integer"
+                       },
+                       "patched" : {
                           "type" : "integer"
                        },
                        "rejected" : {
@@ -46,41 +53,34 @@ sub mapping {
                        "resolved" : {
                           "type" : "integer"
                        },
-                       "active" : {
-                          "type" : "integer"
-                       },
-                       "patched" : {
-                          "type" : "integer"
-                       },
-                       "stalled" : {
-                          "type" : "integer"
-                       },
-                       "open" : {
-                          "type" : "integer"
-                       },
-                       "new" : {
-                          "type" : "integer"
-                       }
-                    }
-                 },
-                 "github" : {
-                    "dynamic" : true,
-                    "properties" : {
                        "source" : {
                           "ignore_above" : 2048,
                           "index" : "not_analyzed",
                           "type" : "string"
                        },
-                       "open" : {
-                          "type" : "integer"
-                       },
-                       "closed" : {
-                          "type" : "integer"
-                       },
-                       "active" : {
+                       "stalled" : {
                           "type" : "integer"
                        }
                     }
+                 }
+              }
+           },
+           "name" : {
+              "ignore_above" : 2048,
+              "index" : "not_analyzed",
+              "type" : "string"
+           },
+           "river" : {
+              "dynamic" : true,
+              "properties" : {
+                 "bucket" : {
+                    "type" : "integer"
+                 },
+                 "immediate" : {
+                    "type" : "integer"
+                 },
+                 "total" : {
+                    "type" : "integer"
                  }
               }
            }

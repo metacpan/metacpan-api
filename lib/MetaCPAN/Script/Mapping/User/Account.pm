@@ -10,24 +10,6 @@ sub mapping {
         },
         "dynamic" : "false",
         "properties" : {
-           "looks_human" : {
-              "type" : "boolean"
-           },
-           "identity" : {
-              "dynamic" : "false",
-              "properties" : {
-                 "name" : {
-                    "ignore_above" : 2048,
-                    "index" : "not_analyzed",
-                    "type" : "string"
-                 },
-                 "key" : {
-                    "ignore_above" : 2048,
-                    "index" : "not_analyzed",
-                    "type" : "string"
-                 }
-              }
-           },
            "access_token" : {
               "dynamic" : "true",
               "properties" : {
@@ -43,19 +25,37 @@ sub mapping {
                  }
               }
            },
+           "code" : {
+              "ignore_above" : 2048,
+              "index" : "not_analyzed",
+              "type" : "string"
+           },
            "id" : {
               "ignore_above" : 2048,
               "index" : "not_analyzed",
               "type" : "string"
            },
+           "identity" : {
+              "dynamic" : "false",
+              "properties" : {
+                 "key" : {
+                    "ignore_above" : 2048,
+                    "index" : "not_analyzed",
+                    "type" : "string"
+                 },
+                 "name" : {
+                    "ignore_above" : 2048,
+                    "index" : "not_analyzed",
+                    "type" : "string"
+                 }
+              }
+           },
+           "looks_human" : {
+              "type" : "boolean"
+           },
            "passed_captcha" : {
               "format" : "strict_date_optional_time||epoch_millis",
               "type" : "date"
-           },
-           "code" : {
-              "ignore_above" : 2048,
-              "index" : "not_analyzed",
-              "type" : "string"
            }
         }
      }';
