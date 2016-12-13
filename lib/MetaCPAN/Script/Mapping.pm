@@ -106,7 +106,7 @@ sub run {
     $self->index_create   if $self->create_index;
     $self->index_delete   if $self->delete_index;
     $self->index_update   if $self->update_index;
-    $self->copy_index     if $self->copy_to_index;
+    $self->type_copy      if $self->copy_to_index;
     $self->type_empty     if $self->delete_from_type;
     $self->types_list     if $self->list_types;
     $self->delete_mapping if $self->delete;
@@ -210,12 +210,7 @@ sub index_create {
             )
         {
             log_info {"Re-indexing data to index $dst_idx from type: $type"};
-            my $bulk = $self->es->bulk_helper(
-                index => $dst_idx,
-                type  => $type,
-            );
-            $bulk->reindex( source => { index => $self->index->name }, );
-            $bulk->flush;
+            $self->type_copy( $dst_idx, $type );
         }
     }
 
@@ -226,16 +221,18 @@ sub index_create {
     if @patch_types;
 }
 
-sub copy_index {
-    my $self = shift;
+sub type_copy {
+    my ( $self, $index, $type ) = @_;
+    $index //= $self->copy_to_index;
 
-    $self->_check_index_exists( $self->copy_to_index, EXPECTED );
-    $self->copy_type or die "can't copy without a type\n";
+    $self->_check_index_exists( $index, EXPECTED );
+    $type //= $self->copy_type;
+    $type or die "can't copy without a type\n";
 
     my $arg_query = $self->copy_query;
     my $query
         = $arg_query eq 'match_all'
-        ? '{"match_all":{}}'
+        ? +{ match_all => {} }
         : undef;
 
     if ( $arg_query and !$query ) {
@@ -248,7 +245,7 @@ sub copy_index {
         };
     }
 
-    return $self->_copy_slice($query) if $query;
+    return $self->_copy_slice( $query, $index, $type ) if $query;
 
     # else ... do copy by monthly slices
 
@@ -264,7 +261,7 @@ sub copy_index {
 
         log_info {"copying data for month: $gte"};
         eval {
-            $self->_copy_slice($q);
+            $self->_copy_slice( $q, $index, $type );
             1;
         } or do {
             my $err = $@ || 'zombie error';
@@ -274,14 +271,14 @@ sub copy_index {
 }
 
 sub _copy_slice {
-    my ( $self, $query ) = @_;
+    my ( $self, $query, $index, $type ) = @_;
 
     my $scroll = $self->es()->scroll_helper(
         search_type => 'scan',
         size        => 250,
         scroll      => '10m',
         index       => $self->index->name,
-        type        => $self->copy_type,
+        type        => $type,
         body        => {
             query => {
                 filtered => {
@@ -292,8 +289,8 @@ sub _copy_slice {
     );
 
     my $bulk = $self->es->bulk_helper(
-        index     => $self->copy_to_index,
-        type      => $self->copy_type,
+        index     => $index,
+        type      => $type,
         max_count => 500,
     );
 
