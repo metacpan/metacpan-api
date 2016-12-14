@@ -11,11 +11,11 @@ use MetaCPAN::Types qw( Bool Int );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
-has age => (
+has days => (
     is            => 'ro',
     isa           => Int,
     default       => 1,
-    documentation => 'number of days back to cover.',
+    documentation => 'number of days interval / back to cover.',
 );
 
 has all => (
@@ -33,12 +33,18 @@ sub run {
         my $end_time = DateTime->now->add( months => 1 );
 
         while ( $dt < $end_time ) {
-            my $gte = $dt->strftime("%Y-%m");
-            $dt->add( months => 1 );
-            my $lt = $dt->strftime("%Y-%m");
+            my $gte = $dt->strftime("%Y-%m-%d");
+            if ( my $d = $self->days ) {
+                $dt->add( days => $d );
+                log_info {"updating suggest data for $d days from: $gte"};
+            }
+            else {
+                $dt->add( months => 1 );
+                log_info {"updating suggest data for month: $gte"};
+            }
 
+            my $lt = $dt->strftime("%Y-%m-%d");
             my $range = +{ range => { date => { gte => $gte, lt => $lt } } };
-            log_info {"updating suggest data for month: $gte"};
             $self->_update_slice($range);
         }
     }
