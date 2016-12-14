@@ -3,16 +3,14 @@ package MetaCPAN::Script::Snapshot;
 use strict;
 use warnings;
 
+use Cpanel::JSON::XS qw(encode_json decode_json);
+use DateTime ();
+use DDP qw(np);
+use HTTP::Tiny ();
 use Log::Contextual qw( :log );
-
-use MetaCPAN::Types qw( Bool Int Str File );
+use MetaCPAN::Types qw( Bool Int Str File ArrayRef );
 use Moose;
-use DateTime;
-use Try::Tiny;
-use Sys::Hostname;
-use HTTP::Tiny;
-use Cpanel::JSON::XS;
-use DDP;
+use Sys::Hostname qw(hostname);
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt::Dashes';
 
@@ -28,50 +26,54 @@ my $repository_name = 'our_backups';
 has setup => (
     is            => 'ro',
     isa           => Bool,
+    default       => 0,
     documentation => 'Setup the connection with ES',
 );
 
 has snap => (
     is            => 'ro',
     isa           => Bool,
+    default       => 0,
     documentation => 'Perform a snapshot',
 );
 
 has list => (
     is            => 'ro',
     isa           => Bool,
+    default       => 0,
     documentation => 'List saved snapshots',
 );
 
 has restore => (
     is            => 'ro',
     isa           => Bool,
+    default       => 0,
     documentation => 'Perform a restore',
 );
 
 ## Options
 has snap_stub => (
     is  => 'ro',
-    isa => 'Str',
+    isa => Str,
     documentation =>
         'Stub of snapshot name ( e.g full, user etc ), used with dateformat to create the actual name in S3',
 );
 
 has date_format => (
     is            => 'ro',
-    isa           => 'Str',
+    isa           => Str,
     documentation => 'strftime format to add to snapshot name (eg %Y-%m-%d)',
 );
 
 has snap_name => (
     is            => 'ro',
-    isa           => 'Str',
+    isa           => Str,
     documentation => 'Full name of snapshot to restore',
 );
 
 has host => (
     is            => 'ro',
-    isa           => 'Str',
+    isa           => Str,
     default       => 'http://localhost:9200',
     documentation => 'ES host, defaults to: http://localhost:9200',
 );
@@ -79,7 +81,7 @@ has host => (
 # Note: can take wild cards https://www.elastic.co/guide/en/elasticsearch/reference/2.4/multi-index.html
 has indices => (
     is      => 'ro',
-    isa     => 'ArrayRef',
+    isa     => ArrayRef,
     default => sub { ['*'] },
     documentation =>
         'Which indices to snapshot, defaults to "*" (all), can take wild cards - "*v100*"',
@@ -140,9 +142,9 @@ sub run_snapshot {
 
     my $indices = join ',', @{ $self->indices };
     my $data = {
-        "indices"              => $indices,
         "ignore_unavailable"   => 0,
-        "include_global_state" => 1
+        "include_global_state" => 1,
+        "indices"              => $indices,
     };
 
     log_debug { 'snapping: ' . $snap_name };
@@ -152,7 +154,6 @@ sub run_snapshot {
 
     my $response = $self->_request( 'put', $path, $data );
     return $response;
-
 }
 
 sub run_list_snaps {
@@ -169,7 +170,6 @@ sub run_list_snaps {
     }
 
     return $response;
-
 }
 
 sub run_restore {
@@ -179,12 +179,12 @@ sub run_restore {
 
     $self->are_you_sure('Restoring... will rename indices to restored_XX');
 
-    # This is a safetly feature, we can always
+    # This is a safety feature, we can always
     # create aliases to point to them if required
     # just make sure there is enough disk space
     my $data = {
         "rename_pattern"     => '(.+)',
-        "rename_replacement" => 'restored_$1'
+        "rename_replacement" => 'restored_$1',
     };
 
     my $path = "${repository_name}/${snap_name}/_restore";
@@ -204,14 +204,14 @@ sub run_setup {
     my $data = {
         "type"     => "s3",
         "settings" => {
-            "bucket"                 => $bucket,
-            "region"                 => "us-east",
-            "protocol"               => "https",
             "access_key"             => $self->aws_key,
+            "bucket"                 => $bucket,
+            "canned_acl"             => "private",
+            "protocol"               => "https",
+            "region"                 => "us-east",
             "secret_key"             => $self->aws_secret,
             "server_side_encryption" => 1,
             "storage_class"          => "standard",
-            "canned_acl"             => "private",
         }
     };
 
@@ -226,7 +226,7 @@ sub _request {
 
     my $url = $self->host . '/_snapshot/' . $path;
 
-    my $json = encode_json $data;
+    my $json = encode_json($data);
 
     my $response = $self->http_client->$method( $url, { content => $json } );
 
@@ -234,12 +234,12 @@ sub _request {
 
         log_error { 'Problem requesting ' . $url };
 
-        my $resp_json = eval { decode_json $response->{content} };
-        if ( my $error = $@ ) {
-            log_error { 'Error msg: ' . $response->{content} }
-        }
-        else {
+        try {
+            my $resp_json = decode_json( $response->{content} );
             log_error { 'Error response: ' . np($resp_json) }
+        }
+        catch {
+            log_error { 'Error msg: ' . $response->{content} }
         }
         return 0;
     }
@@ -253,7 +253,7 @@ __END__
 
 =head1 NAME
 
-MetaCPAN::Script::Snapshot - Snapshot (and restore) ElasticSearch indices
+MetaCPAN::Script::Snapshot - Snapshot (and restore) Elasticsearch indices
 
 =head1 SYNOPSIS
 
