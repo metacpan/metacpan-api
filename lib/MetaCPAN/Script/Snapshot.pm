@@ -5,7 +5,7 @@ use warnings;
 
 use Cpanel::JSON::XS qw(encode_json decode_json);
 use DateTime ();
-use DDP qw(np);
+use DDP;
 use HTTP::Tiny ();
 use Log::Contextual qw( :log );
 use MetaCPAN::Types qw( Bool Int Str File ArrayRef );
