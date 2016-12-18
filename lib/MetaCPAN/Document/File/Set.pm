@@ -499,28 +499,48 @@ sub autocomplete_using_suggester {
         }
         );
 
-    my @docs
-        = map { $_->{text} } @{ $suggestions->{documentation}[0]{options} };
+    my %docs;
+
+    for my $suggest ( @{ $suggestions->{documentation}[0]{options} } ) {
+        next if exists $docs{ $suggest->{text} };
+        $docs{ $suggest->{text} } = $suggest->{score};
+    }
 
     my $data = $self->es->search(
         {
             index => $self->index->name,
             type  => 'file',
             body  => {
-                query  => { match_all => {} },
+                query => {
+                    filtered => {
+                        query => {
+                            function_score => {
+                                script_score => {
+                                    script => {
+                                        lang => 'groovy',
+                                        file =>
+                                            'prefer_shorter_module_names_400',
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
                 filter => {
                     bool => {
                         must => [
-                            { term  => { indexed         => 1 } },
-                            { term  => { authorized      => 1 } },
-                            { term  => { status          => 'latest' } },
-                            { terms => { 'documentation' => \@docs } },
+                            { term => { indexed    => 1 } },
+                            { term => { authorized => 1 } },
+                            { term => { status     => 'latest' } },
+                            {
+                                terms => { 'documentation' => [ keys %docs ] }
+                            },
                         ],
                     }
-                }
+                },
             },
             fields => ['documentation'],
-            size   => 10
+            size   => 10,
         }
     );
 
