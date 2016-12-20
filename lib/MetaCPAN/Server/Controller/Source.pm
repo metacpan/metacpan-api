@@ -40,9 +40,19 @@ sub get : Chained('index') : PathPart('') : Args {
         $c->stash->{path} = $file;
 
         # Add X-Content-Type header, for fastly to rewrite on st.aticpan.org
-        $c->res->header( 'X-Content-Type' => Plack::MIME->mime_type($file)
-                || 'text/plain' );
-        $c->res->content_type('text/plain');
+        my $type = Plack::MIME->mime_type($file) || 'text/plain';
+        $c->res->header( 'X-Content-Type' => $type );
+        if ( $type =~ m{^image/} ) {
+            $c->res->content_type($type);
+        }
+        elsif ( $type
+            =~ m{^(?:text/.*|application/javascript|application/json)$} )
+        {
+            $c->res->content_type('text/plain');
+        }
+        else {
+            $c->res->content_type('application/octet-stream');
+        }
         $c->res->body( $file->openr );
     }
 }
