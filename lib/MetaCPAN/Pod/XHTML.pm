@@ -74,6 +74,7 @@ sub idify {
     $t = decode_entities($t);
     $t =~ s/^\s+//;
     $t =~ s/\s+$//;
+    $t =~ s/[\s-]+/-/g;
 
     return $self->url_encode($t)
         if $for_link;
@@ -91,6 +92,7 @@ sub id_extras {
     $t = decode_entities($t);
     $t =~ s/^\s+//;
     $t =~ s/\s+$//;
+    $t =~ s/[\s-]+/-/g;
 
     # $full will be our preferred linking style, without much filtering
     # $first will be the first word, often a method/function name
