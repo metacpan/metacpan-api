@@ -67,6 +67,7 @@ requires 'FindBin';
 requires 'Git::Helpers';
 requires 'Graph::Centrality::Pagerank';
 requires 'Gravatar::URL';
+requires 'HTML::Entities';
 requires 'HTML::TokeParser::Simple';
 requires 'HTTP::Request::Common';
 requires 'Hash::Merge::Simple';
