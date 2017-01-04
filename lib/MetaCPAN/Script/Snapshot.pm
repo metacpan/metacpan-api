@@ -204,14 +204,16 @@ sub run_setup {
     my $data = {
         "type"     => "s3",
         "settings" => {
-            "access_key"             => $self->aws_key,
-            "bucket"                 => $bucket,
-            "canned_acl"             => "private",
-            "protocol"               => "https",
-            "region"                 => "us-east",
-            "secret_key"             => $self->aws_secret,
-            "server_side_encryption" => 1,
-            "storage_class"          => "standard",
+            "access_key"                 => $self->aws_key,
+            "bucket"                     => $bucket,
+            "canned_acl"                 => "private",
+            "max_restore_bytes_per_sec"  => '500mb',
+            "max_snapshot_bytes_per_sec" => '500mb',
+            "protocol"                   => "https",
+            "region"                     => "us-east",
+            "secret_key"                 => $self->aws_secret,
+            "server_side_encryption"     => 1,
+            "storage_class"              => "standard",
         }
     };
 
@@ -272,9 +274,23 @@ MetaCPAN::Script::Snapshot - Snapshot (and restore) Elasticsearch indices
 Another example..
 
 # Snapshot just user* indexes hourly and restore
- $ bin/metacpan snapshot --snap --indices 'user*' --snap-stub user --strftime '%Y-%m-%d-%H'
+ $ bin/metacpan snapshot --snap --indices 'user*' --snap-stub user --date-format '%Y-%m-%d-%H'
  $ bin/metacpan snapshot --restore --snap-name user_2016-12-01-12
 
+Also useful:
+
+See status of snapshot...
+
+ curl localhost:9200/_snapshot/our_backups/SNAP-NAME/_status
+
+Add an alias to the restored index
+
+ curl -X POST 'localhost:9200/_aliases' -d '
+    {
+        "actions" : [
+            { "add" : { "index" : "restored_user", "alias" : "user" } }
+        ]
+    }'
 
 =head1 DESCRIPTION
 
