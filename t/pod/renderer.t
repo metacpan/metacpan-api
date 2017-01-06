@@ -21,7 +21,7 @@ EOF
 
 {
     my $html = <<'EOF';
-<h1 id="DESCRIPTION-Plack">DESCRIPTION <a href="https://metacpan.org/pod/Plack">Plack</a></h1>
+<h1 id="DESCRIPTION-Plack"><a id="DESCRIPTION"></a>DESCRIPTION <a href="https://metacpan.org/pod/Plack">Plack</a></h1>
 
 EOF
 
