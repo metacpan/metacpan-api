@@ -133,8 +133,11 @@ while ( my ( $k, $v ) = each %tests ) {
     my $res  = $test->request( GET $path );
     ok( $res, "GET $path" );
     is( $res->code, 200, 'code 200' );
-    unlike( $res->content, qr/<div[^>]*id="pod-errors"/,
-        'no POD errors section' );
+    unlike(
+        $res->content,
+        qr/<div[^>]*class="pod-errors"/,
+        'no POD errors section'
+    );
 
 }
 
@@ -143,8 +146,11 @@ while ( my ( $k, $v ) = each %tests ) {
     my $res  = $test->request( GET $path);
     ok( $res, "GET $path" );
     is( $res->code, 200, 'code 200' );
-    like( $res->content, qr/<div[^>]*id="pod-errors"/,
-        'got POD errors section' );
+    like(
+        $res->content,
+        qr/<div[^>]*class="pod-errors"/,
+        'got POD errors section'
+    );
 
     my @err = $res->content =~ m{<dd.*?>(.*?)</dd>}sg;
     is( scalar(@err), 2, 'two parse errors listed ' );
