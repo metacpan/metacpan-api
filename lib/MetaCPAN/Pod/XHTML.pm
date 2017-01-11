@@ -24,7 +24,7 @@ sub resolve_pod_page_link {
     }
     my ( $prefix, $postfix ) = map +( defined $_ ? $_ : '' ),
         $self->perldoc_url_prefix, $self->perldoc_url_postfix;
-    return $self->encode_entities( $prefix . $module . $postfix . $section );
+    return $prefix . $module . $postfix . $section;
 }
 
 sub _end_head {
@@ -33,7 +33,8 @@ sub _end_head {
     $self->{more_ids} = [ $self->id_extras($head_name) ];
     $self->SUPER::_end_head(@_);
     my $index_entry = $self->{'to_index'}[-1];
-    $index_entry->[1] = $self->url_encode( $index_entry->[1] );
+    $index_entry->[1] = $self->encode_entities(
+        $self->url_encode( decode_entities( $index_entry->[1] ) ) );
     return;
 }
 
