@@ -24,7 +24,7 @@ sub resolve_pod_page_link {
     }
     my ( $prefix, $postfix ) = map +( defined $_ ? $_ : '' ),
         $self->perldoc_url_prefix, $self->perldoc_url_postfix;
-    return $self->encode_entities( $prefix . $module . $postfix . $section );
+    return $prefix . $module . $postfix . $section;
 }
 
 sub _end_head {
