@@ -33,7 +33,8 @@ sub _end_head {
     $self->{more_ids} = [ $self->id_extras($head_name) ];
     $self->SUPER::_end_head(@_);
     my $index_entry = $self->{'to_index'}[-1];
-    $index_entry->[1] = $self->url_encode( $index_entry->[1] );
+    $index_entry->[1] = $self->encode_entities(
+        $self->url_encode( decode_entities( $index_entry->[1] ) ) );
     return;
 }
 
