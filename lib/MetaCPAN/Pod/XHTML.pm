@@ -160,11 +160,11 @@ sub _emit_custom_errata {
 
     $self->{'scratch'} = $tag->(
         'div',
-        { id => "pod-errors" },
-        $tag->( 'p', { class => 'title' }, "$error_count POD Error$s" ),
+        { class => "pod-errors" },
+        $tag->( 'p', "$error_count POD Error$s" ),
         $tag->(
             'div',
-            { id => "pod-error-detail" },
+            { class => "pod-errors-detail" },
             $tag->(
                 'p',
                 'The following errors were encountered while parsing the POD:'
