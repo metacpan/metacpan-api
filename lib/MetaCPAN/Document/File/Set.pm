@@ -76,7 +76,7 @@ sub find {
             { 'mime'             => { order => 'asc' } },
             { 'stat.mtime'       => { order => 'desc' } }
         ]
-        )->size(100)->all;
+        )->search_type('dfs_query_then_fetch')->size(100)->all;
 
     my ($file) = grep {
         grep { $_->indexed && $_->authorized && $_->name eq $module }
@@ -308,7 +308,8 @@ sub find_download_url {
     }
 
     return $self->size(1)->query($query)
-        ->source( [ 'download_url', 'date', 'status' ] )->sort( \@sort );
+        ->source( [ 'download_url', 'date', 'status' ] )
+        ->search_type('dfs_query_then_fetch')->sort( \@sort );
 }
 
 sub _version_filters {
