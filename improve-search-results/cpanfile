@@ -1,0 +1,6 @@
+requires 'perl', '5.010';
+
+requires 'Mojolicious', 7.23;
+requires 'Mojolicious::Lite', 0;
+requires 'Mojo::Pg', 2.35;
+
