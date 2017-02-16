@@ -8,6 +8,8 @@ use Moose;
 
 BEGIN { extends 'Catalyst::Controller::REST' }
 
+with 'MetaCPAN::Role::Fastly';
+
 __PACKAGE__->config(
     json_options => { relaxed => 1, allow_nonref => 1 },
     default      => 'text/html',
