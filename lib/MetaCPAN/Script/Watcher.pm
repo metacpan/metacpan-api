@@ -29,8 +29,6 @@ my $latest = 0;
 
 my @segments = qw(1h 6h 1d 1W 1M 1Q 1Y Z);
 
-#my @segments = qw(1Y);
-
 sub run {
     my $self = shift;
     while (1) {
