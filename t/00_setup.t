@@ -5,8 +5,8 @@ use lib 't/lib';
 
 use CPAN::Faker 0.010;
 use Devel::Confess;
-use File::Copy;
-use MetaCPAN::Script::Tickets;
+use File::Copy qw( copy );
+use MetaCPAN::Script::Tickets ();
 use MetaCPAN::Server::Test;
 use MetaCPAN::TestHelpers qw(
     fakecpan_configs_dir
@@ -14,13 +14,11 @@ use MetaCPAN::TestHelpers qw(
     get_config
     tmp_dir
 );
-use MetaCPAN::TestServer;
+use MetaCPAN::TestServer ();
 use Module::Faker 0.015 ();    # Generates META.json.
-use Path::Class qw(dir);
 use Path::Class qw(dir file);
 use Test::More 0.96;
-use Test::More 0.96 ();
-use Test::Most;
+use URI::FromHash qw( uri );
 
 # Ensure we're starting fresh
 my $tmp_dir = tmp_dir();
@@ -55,7 +53,7 @@ my $cpan = CPAN::Faker->new(
 ok( $cpan->make_cpan, 'make fake cpan' );
 $fakecpan_dir->subdir('authors')->mkpath;
 
-# do some changes to 06perms.txt
+# make some changes to 06perms.txt
 {
     my $perms_file = $fakecpan_dir->subdir('modules')->file('06perms.txt');
     my $perms      = $perms_file->slurp;
@@ -79,6 +77,7 @@ copy( $src_dir->file('author-1.0.json'),
 
 copy( $src_dir->file('bugs.tsv'), $fakecpan_dir->file('bugs.tsv') );
 
+$server->index_permissions;
 $server->index_releases;
 $server->set_latest;
 $server->set_first;
@@ -89,12 +88,15 @@ $server->index_cpantesters;
 ok(
     MetaCPAN::Script::Tickets->new_with_options(
         {
-            %{$config},
-            rt_summary_url => 'file://'
-                . $fakecpan_dir->file('bugs.tsv')->absolute,
-            github_issues => 'file://'
-                . $fakecpan_dir->subdir('github')->absolute
-                . '/%s/%s.json?per_page=100',
+            rt_summary_url => uri(
+                scheme => 'file',
+                path => $fakecpan_dir->file('bugs.tsv')->absolute->stringify,
+            ),
+            github_issues => uri(
+                scheme => 'file',
+                path   => $fakecpan_dir->subdir('github')->absolute->stringify
+                    . '/%s/%s.json?per_page=100'
+            ),
         }
         )->run,
     'tickets'

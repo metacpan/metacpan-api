@@ -1,15 +1,12 @@
 package MetaCPAN::Script::Permission;
 
-use strict;
-use warnings;
-
 use Moose;
-with 'MooseX::Getopt', 'MetaCPAN::Role::Script';
 
 use Log::Contextual qw( :log );
-use PAUSE::Permissions;
+use MetaCPAN::Document::Permission ();
+use PAUSE::Permissions             ();
 
-use MetaCPAN::Document::Permission;
+with 'MooseX::Getopt', 'MetaCPAN::Role::Script';
 
 =head1 SYNOPSIS
 
@@ -27,23 +24,42 @@ sub run {
 sub index_permissions {
     my $self = shift;
 
-    my $file_path = $self->cpan . '/modules/06perms.txt';
-    my $pp        = PAUSE::Permissions->new( path => $file_path );
-    my $type      = $self->index->type('permission');
-    my $bulk      = $self->model->bulk( size => 100 );
+    my $file_path
+        = $self->cpan->subdir('modules')->file('06perms.txt')->absolute;
+    my $pp = PAUSE::Permissions->new( path => $file_path );
 
-    my $iterator = $pp->module_iterator();
-    while ( my $mp = $iterator->next_module ) {
-        my $put = { module => $mp->name };
-        $put->{owner}          = $mp->owner          if $mp->owner;
-        $put->{co_maintainers} = $mp->co_maintainers if $mp->co_maintainers;
-        $bulk->put( $type->new_document($put) );
+    my $bulk_helper = $self->es->bulk_helper(
+        index => $self->index->name,
+        type  => 'permission',
+    );
+
+    my $iterator = $pp->module_iterator;
+    while ( my $perms = $iterator->next_module ) {
+
+        # This method does a "return sort @foo", so it can't be called in the
+        # ternary since it always returns false in that context.
+        # https://github.com/neilb/PAUSE-Permissions/pull/16
+
+        my @co_maints = $perms->co_maintainers;
+        my $doc       = {
+            @co_maints
+            ? ( co_maintainers => \@co_maints )
+            : (),
+            module_name => $perms->name,
+            owner       => $perms->owner,
+        };
+
+        $bulk_helper->update(
+            {
+                id            => $perms->name,
+                doc           => $doc,
+                doc_as_upsert => 1,
+            }
+        );
     }
 
-    $bulk->commit;
-
-    $self->index->refresh;
-    log_info {'done'};
+    $bulk_helper->flush;
+    log_info {'finished indexing 06perms'};
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -61,6 +77,6 @@ Parse out CPAN author permissions.
 =head2 index_authors
 
 Adds/updates all ownership and maintenance permissions in the CPAN index to
-ElasticSearch.
+Elasticsearch.
 
 =cut

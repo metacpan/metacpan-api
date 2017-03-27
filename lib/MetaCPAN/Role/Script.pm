@@ -201,6 +201,6 @@ __END__
 
 =head1 SYNOPSIS
 
-Roles which should be available to all modules
+Roles which should be available to all modules.
 
 =cut
