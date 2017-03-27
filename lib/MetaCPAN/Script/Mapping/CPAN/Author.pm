@@ -47,6 +47,9 @@ sub mapping {
               "index" : "not_analyzed",
               "type" : "string"
            },
+           "is_pause_custodial_account" : {
+              "type" : "boolean"
+           },
            "donation" : {
               "dynamic" : true,
               "properties" : {

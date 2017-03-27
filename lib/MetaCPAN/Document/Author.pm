@@ -92,6 +92,12 @@ has updated => (
     isa => 'DateTime',
 );
 
+has is_pause_custodial_account => (
+    is      => 'ro',
+    isa     => Bool,
+    default => 0,
+);
+
 sub _build_gravatar_url {
     my $self = shift;
 

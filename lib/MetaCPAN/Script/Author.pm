@@ -96,6 +96,9 @@ sub index_authors {
                 grep {$_} @{ $put->{website} }
         ];
 
+        $put->{is_pause_custodial_account} = 1
+            if $name and $name =~ /\(PAUSE Custodial Account\)/;
+
         # Now check the format we have is actually correct
         my @errors = MetaCPAN::Document::Author->validate($put);
         next if scalar @errors;
