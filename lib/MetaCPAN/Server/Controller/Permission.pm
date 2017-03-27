@@ -1,10 +1,7 @@
 package MetaCPAN::Server::Controller::Permission;
 
-use strict;
-use warnings;
-use namespace::autoclean;
-
 use Moose;
+use namespace::autoclean;
 
 BEGIN { extends 'MetaCPAN::Server::Controller' }
 

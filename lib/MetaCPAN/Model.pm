@@ -1,10 +1,8 @@
 package MetaCPAN::Model;
 
-use strict;
-use warnings;
-
 # load order important
 use Moose;
+
 use ElasticSearchX::Model;
 
 analyzer lowercase => (

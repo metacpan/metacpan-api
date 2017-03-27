@@ -4,9 +4,9 @@ use strict;
 use warnings;
 
 use HTTP::Request::Common qw(POST GET DELETE);
+use MetaCPAN::Server ();
 use Plack::Test;
 use Test::More;
-use MetaCPAN::Server;
 
 use base 'Exporter';
 our @EXPORT = qw(

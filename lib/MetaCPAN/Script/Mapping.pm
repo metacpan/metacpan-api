@@ -1,25 +1,24 @@
 package MetaCPAN::Script::Mapping;
 
-use strict;
-use warnings;
-
-use Log::Contextual qw( :log );
 use Moose;
-use MetaCPAN::Types qw( Bool Str );
-use Cpanel::JSON::XS qw( decode_json );
-use DateTime;
 
-use MetaCPAN::Script::Mapping::DeployStatement;
-use MetaCPAN::Script::Mapping::CPAN::Author;
-use MetaCPAN::Script::Mapping::CPAN::Distribution;
-use MetaCPAN::Script::Mapping::CPAN::Favorite;
-use MetaCPAN::Script::Mapping::CPAN::File;
-use MetaCPAN::Script::Mapping::CPAN::Mirror;
-use MetaCPAN::Script::Mapping::CPAN::Rating;
-use MetaCPAN::Script::Mapping::CPAN::Release;
-use MetaCPAN::Script::Mapping::User::Account;
-use MetaCPAN::Script::Mapping::User::Identity;
-use MetaCPAN::Script::Mapping::User::Session;
+use Cpanel::JSON::XS qw( decode_json );
+use DateTime ();
+use IO::Interactive qw( is_interactive );
+use IO::Prompt qw( prompt );
+use Log::Contextual qw( :log );
+use MetaCPAN::Script::Mapping::CPAN::Author       ();
+use MetaCPAN::Script::Mapping::CPAN::Distribution ();
+use MetaCPAN::Script::Mapping::CPAN::Favorite     ();
+use MetaCPAN::Script::Mapping::CPAN::File         ();
+use MetaCPAN::Script::Mapping::CPAN::Mirror       ();
+use MetaCPAN::Script::Mapping::CPAN::Rating       ();
+use MetaCPAN::Script::Mapping::CPAN::Release      ();
+use MetaCPAN::Script::Mapping::DeployStatement    ();
+use MetaCPAN::Script::Mapping::User::Account      ();
+use MetaCPAN::Script::Mapping::User::Identity     ();
+use MetaCPAN::Script::Mapping::User::Session      ();
+use MetaCPAN::Types qw( Bool Str );
 
 use constant {
     EXPECTED     => 1,
