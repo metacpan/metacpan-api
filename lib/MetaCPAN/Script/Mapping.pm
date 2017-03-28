@@ -12,6 +12,7 @@ use MetaCPAN::Script::Mapping::CPAN::Distribution ();
 use MetaCPAN::Script::Mapping::CPAN::Favorite     ();
 use MetaCPAN::Script::Mapping::CPAN::File         ();
 use MetaCPAN::Script::Mapping::CPAN::Mirror       ();
+use MetaCPAN::Script::Mapping::CPAN::Permission   ();
 use MetaCPAN::Script::Mapping::CPAN::Rating       ();
 use MetaCPAN::Script::Mapping::CPAN::Release      ();
 use MetaCPAN::Script::Mapping::DeployStatement    ();
@@ -406,6 +407,9 @@ sub deploy_mapping {
                 ),
             file =>
                 decode_json(MetaCPAN::Script::Mapping::CPAN::File::mapping),
+            permission =>
+                decode_json(MetaCPAN::Script::Mapping::CPAN::Permission::mapping
+                ),
             rating =>
                 decode_json(MetaCPAN::Script::Mapping::CPAN::Rating::mapping),
             release =>
