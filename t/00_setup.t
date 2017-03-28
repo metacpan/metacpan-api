@@ -88,6 +88,7 @@ $server->index_cpantesters;
 ok(
     MetaCPAN::Script::Tickets->new_with_options(
         {
+            %{$config},
             rt_summary_url => uri(
                 scheme => 'file',
                 path => $fakecpan_dir->file('bugs.tsv')->absolute->stringify,
