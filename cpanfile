@@ -195,4 +195,5 @@ test_requires 'Test::Routine::Util', '0';
 test_requires 'Test::Vars';
 
 author_requires 'Code::TidyAll', '>= 0.47';
+author_requires 'Code::TidyAll::Plugin::UniqueLines';
 author_requires 'Plack::Middleware::Rewrite';
