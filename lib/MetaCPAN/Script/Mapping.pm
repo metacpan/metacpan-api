@@ -408,7 +408,7 @@ sub deploy_mapping {
             file =>
                 decode_json(MetaCPAN::Script::Mapping::CPAN::File::mapping),
             permission =>
-                decode_json(MetaCPAN::Script::Mapping::CPAN::Permission::mapping
+                decode_json( MetaCPAN::Script::Mapping::CPAN::Permission::mapping
                 ),
             rating =>
                 decode_json(MetaCPAN::Script::Mapping::CPAN::Rating::mapping),
