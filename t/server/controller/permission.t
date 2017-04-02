@@ -12,23 +12,39 @@ $server->index_permissions;
 test_psgi app, sub {
     my $cb = shift;
 
-    my $module_name = 'CPAN::Test::Dummy::Perl5::VersionBump';
-    ok( my $res = $cb->( GET "/permission/$module_name" ),
-        "GET $module_name" );
-    is( $res->code, 200, '200 OK' );
+    {
+        my $module_name = 'CPAN::Test::Dummy::Perl5::VersionBump';
+        ok( my $res = $cb->( GET "/permission/$module_name" ),
+            "GET $module_name" );
+        is( $res->code, 200, '200 OK' );
 
-   # The fakecpan 06perms doesn't have any authors who have co-maint, so can't
-   # test that right now.
+        is_deeply(
+            decode_json( $res->content ),
+            {
+                co_maintainers => ['OALDERS'],
+                module_name    => $module_name,
+                owner          => 'MIYAGAWA',
+            },
+            'Owned by MIYAGAWA, OALDERS has co-maint'
+        );
+    }
 
-    is_deeply(
-        decode_json( $res->content ),
-        {
-            co_maintainers => ['OALDERS'],
-            module_name    => $module_name,
-            owner          => 'MIYAGAWA',
-        },
-        'Owned by MIYAGAWA'
-    );
+    # Pod::Examples,RWSTAUNER,f
+    {
+        my $module_name = 'Pod::Examples';
+        ok( my $res = $cb->( GET "/permission/$module_name" ),
+            "GET $module_name" );
+        is( $res->code, 200, '200 OK' );
+
+        is_deeply(
+            decode_json( $res->content ),
+            {
+                module_name => $module_name,
+                owner       => 'RWSTAUNER',
+            },
+            'Owned by RWSTAUNER, no co-maint'
+        );
+    }
 };
 
 done_testing;
