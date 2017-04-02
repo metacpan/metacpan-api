@@ -3,7 +3,8 @@ package MetaCPAN::Server;
 use Moose;
 
 ## no critic (Modules::RequireEndWithOne)
-use Catalyst qw( +MetaCPAN::Role::Fastly::Catalyst );
+use Catalyst qw( +MetaCPAN::Role::Fastly::Catalyst ), '-Log=warn,error,fatal';
+use Log::Log4perl::Catalyst;
 
 use CatalystX::RoleApplicator;
 use File::Temp qw( tempdir );
@@ -72,6 +73,9 @@ __PACKAGE__->config(
         },
     }
 );
+
+__PACKAGE__->log( Log::Log4perl::Catalyst->new( undef, autoflush => 1 ) );
+
 __PACKAGE__->setup(
     qw(
         Static::Simple
