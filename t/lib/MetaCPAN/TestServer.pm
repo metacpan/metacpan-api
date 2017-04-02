@@ -219,8 +219,12 @@ sub index_permissions {
     my $self = shift;
 
     ok(
-        MetaCPAN::Script::Permission->new_with_options( %{ $self->_config },
-            cpan => MetaCPAN::DarkPAN->new->base_dir, )->run,
+        MetaCPAN::Script::Permission->new_with_options(
+            %{ $self->_config },
+
+            # Eventually maybe move this to use the DarkPAN 06perms
+            #cpan => MetaCPAN::DarkPAN->new->base_dir,
+            )->run,
         'index permissions'
     );
 }

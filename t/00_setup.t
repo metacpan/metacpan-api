@@ -60,6 +60,11 @@ $fakecpan_dir->subdir('authors')->mkpath;
     $perms =~ s/^Some,LOCAL,f$/Some,MO,f/m;
     my $fh = $perms_file->openw;
     print $fh $perms;
+
+    # Temporary hack.  Remove after DarkPAN 06perms generation is fixed.
+    print $fh 'CPAN::Test::Dummy::Perl5::VersionBump,MIYAGAWA,f', "\n";
+    print $fh 'CPAN::Test::Dummy::Perl5::VersionBump,OALDERS,c',  "\n";
+
     close $fh;
 }
 
