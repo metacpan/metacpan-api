@@ -22,12 +22,11 @@ has base_dir => (
 sub run {
     my $self = shift;
 
-    my $dir = dir( 't', 'var', 'darkpan' );
-    $dir->mkpath;
+    $self->base_dir->mkpath;
 
     my $base_uri = 'http://cpan.metacpan.org';
 
-    my $injector = OrePAN2::Injector->new( directory => $dir );
+    my $injector = OrePAN2::Injector->new( directory => $self->base_dir );
 
     # Add this one to test handling of Meta file parse warnings
     # MLEHMANN => ['AnyEvent-4.232.tar.gz'],
@@ -63,7 +62,7 @@ sub run {
     }
 
     my $orepan = OrePAN2::Indexer->new(
-        directory => $dir,
+        directory => $self->base_dir,
         metacpan  => 1,
     );
     $orepan->make_index( no_compress => 1, );
