@@ -1166,6 +1166,19 @@ DISTRIBUTIONS
       strict 0
       vars 0
       warnings 0
+  Code-TidyAll-Plugin-UniqueLines-0.000002
+    pathname: O/OA/OALDERS/Code-TidyAll-Plugin-UniqueLines-0.000002.tar.gz
+    provides:
+      Code::TidyAll::Plugin::UniqueLines 0.000002
+    requirements:
+      Code::TidyAll::Plugin 0
+      ExtUtils::MakeMaker 0
+      List::Uniq 0
+      Module::Build 0.28
+      Moo 0
+      perl 5.006
+      strict 0
+      warnings 0
   Compress-Bzip2-2.24
     pathname: R/RU/RURBAN/Compress-Bzip2-2.24.tar.gz
     provides:
@@ -3887,6 +3900,11 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
+  List-Uniq-0.20
+    pathname: J/JF/JFITZ/List-Uniq-0.20.tar.gz
+    provides:
+      List::Uniq 0.20
+    requirements:
   Log-Any-1.040
     pathname: D/DA/DAGOLDEN/Log-Any-1.040.tar.gz
     provides:

@@ -2,15 +2,16 @@ package MetaCPAN::TestServer;
 
 use MetaCPAN::Moose;
 
-use CPAN::Repository::Perms;
-use MetaCPAN::Script::Author;
+use MetaCPAN::DarkPAN             ();
+use MetaCPAN::Script::Author      ();
 use MetaCPAN::Script::CPANTesters ();
-use MetaCPAN::Script::Latest;
-use MetaCPAN::Script::First;
-use MetaCPAN::Script::Mapping;
-use MetaCPAN::Script::Release;
-use MetaCPAN::Server ();
-use MetaCPAN::TestHelpers qw( get_config fakecpan_dir );
+use MetaCPAN::Script::First       ();
+use MetaCPAN::Script::Latest      ();
+use MetaCPAN::Script::Mapping     ();
+use MetaCPAN::Script::Permission  ();
+use MetaCPAN::Script::Release     ();
+use MetaCPAN::Server              ();
+use MetaCPAN::TestHelpers qw( fakecpan_dir );
 use MetaCPAN::Types qw( Dir HashRef Str );
 use Search::Elasticsearch;
 use Search::Elasticsearch::TestServer;
@@ -211,6 +212,20 @@ sub index_cpantesters {
         MetaCPAN::Script::CPANTesters->new_with_options( $self->_config )
             ->run,
         'index authors'
+    );
+}
+
+sub index_permissions {
+    my $self = shift;
+
+    ok(
+        MetaCPAN::Script::Permission->new_with_options(
+            %{ $self->_config },
+
+            # Eventually maybe move this to use the DarkPAN 06perms
+            #cpan => MetaCPAN::DarkPAN->new->base_dir,
+            )->run,
+        'index permissions'
     );
 }
 

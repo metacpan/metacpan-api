@@ -1,25 +1,25 @@
 package MetaCPAN::Script::Mapping;
 
-use strict;
-use warnings;
-
-use Log::Contextual qw( :log );
 use Moose;
-use MetaCPAN::Types qw( Bool Str );
-use Cpanel::JSON::XS qw( decode_json );
-use DateTime;
 
-use MetaCPAN::Script::Mapping::DeployStatement;
-use MetaCPAN::Script::Mapping::CPAN::Author;
-use MetaCPAN::Script::Mapping::CPAN::Distribution;
-use MetaCPAN::Script::Mapping::CPAN::Favorite;
-use MetaCPAN::Script::Mapping::CPAN::File;
-use MetaCPAN::Script::Mapping::CPAN::Mirror;
-use MetaCPAN::Script::Mapping::CPAN::Rating;
-use MetaCPAN::Script::Mapping::CPAN::Release;
-use MetaCPAN::Script::Mapping::User::Account;
-use MetaCPAN::Script::Mapping::User::Identity;
-use MetaCPAN::Script::Mapping::User::Session;
+use Cpanel::JSON::XS qw( decode_json );
+use DateTime ();
+use IO::Interactive qw( is_interactive );
+use IO::Prompt qw( prompt );
+use Log::Contextual qw( :log );
+use MetaCPAN::Script::Mapping::CPAN::Author       ();
+use MetaCPAN::Script::Mapping::CPAN::Distribution ();
+use MetaCPAN::Script::Mapping::CPAN::Favorite     ();
+use MetaCPAN::Script::Mapping::CPAN::File         ();
+use MetaCPAN::Script::Mapping::CPAN::Mirror       ();
+use MetaCPAN::Script::Mapping::CPAN::Permission   ();
+use MetaCPAN::Script::Mapping::CPAN::Rating       ();
+use MetaCPAN::Script::Mapping::CPAN::Release      ();
+use MetaCPAN::Script::Mapping::DeployStatement    ();
+use MetaCPAN::Script::Mapping::User::Account      ();
+use MetaCPAN::Script::Mapping::User::Identity     ();
+use MetaCPAN::Script::Mapping::User::Session      ();
+use MetaCPAN::Types qw( Bool Str );
 
 use constant {
     EXPECTED     => 1,
@@ -407,6 +407,9 @@ sub deploy_mapping {
                 ),
             file =>
                 decode_json(MetaCPAN::Script::Mapping::CPAN::File::mapping),
+            permission =>
+                decode_json( MetaCPAN::Script::Mapping::CPAN::Permission::mapping
+                ),
             rating =>
                 decode_json(MetaCPAN::Script::Mapping::CPAN::Rating::mapping),
             release =>
@@ -446,6 +449,21 @@ sub deploy_mapping {
     # done
     log_info {"Done."};
     1;
+}
+
+sub _prompt {
+    my ( $self, $msg ) = @_;
+
+    if (is_interactive) {
+        print colored( ['bold red'], "*** Warning ***: $msg" ), "\n";
+        my $answer = prompt
+            'Are you sure you want to do this (type "YES" to confirm) ? ';
+        if ( $answer ne 'YES' ) {
+            print "bye.\n";
+            exit 0;
+        }
+        print "alright then...\n";
+    }
 }
 
 __PACKAGE__->meta->make_immutable;
