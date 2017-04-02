@@ -2,6 +2,7 @@ package MetaCPAN::TestServer;
 
 use MetaCPAN::Moose;
 
+use MetaCPAN::DarkPAN             ();
 use MetaCPAN::Script::Author      ();
 use MetaCPAN::Script::CPANTesters ();
 use MetaCPAN::Script::First       ();
@@ -218,7 +219,8 @@ sub index_permissions {
     my $self = shift;
 
     ok(
-        MetaCPAN::Script::Permission->new_with_options( $self->_config )->run,
+        MetaCPAN::Script::Permission->new_with_options( %{ $self->_config },
+            cpan => MetaCPAN::DarkPAN->new->base_dir, )->run,
         'index permissions'
     );
 }
