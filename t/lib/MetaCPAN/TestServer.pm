@@ -8,6 +8,7 @@ use MetaCPAN::Script::CPANTesters ();
 use MetaCPAN::Script::First       ();
 use MetaCPAN::Script::Latest      ();
 use MetaCPAN::Script::Mapping     ();
+use MetaCPAN::Script::Packages    ();
 use MetaCPAN::Script::Permission  ();
 use MetaCPAN::Script::Release     ();
 use MetaCPAN::Server              ();
@@ -226,6 +227,20 @@ sub index_permissions {
             #cpan => MetaCPAN::DarkPAN->new->base_dir,
             )->run,
         'index permissions'
+    );
+}
+
+sub index_packages {
+    my $self = shift;
+
+    ok(
+        MetaCPAN::Script::Packages->new_with_options(
+            %{ $self->_config },
+
+            # Eventually maybe move this to use the DarkPAN 06perms
+            #cpan => MetaCPAN::DarkPAN->new->base_dir,
+            )->run,
+        'index packages'
     );
 }
 
