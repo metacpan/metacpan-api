@@ -158,7 +158,7 @@ sub author_config {
 
     my $mtime = DateTime->from_epoch( epoch => $file->stat->mtime );
 
-    if ( $dates->{$pauseid} && $dates->{$pauseid} >= $mtime ) {
+    if ( $dates->{$pauseid} && $dates->{$pauseid} > $mtime ) {
         log_debug {"Skipping $pauseid (newer version in index)"};
         return undef;
     }
