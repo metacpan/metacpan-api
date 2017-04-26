@@ -61,7 +61,12 @@ sub index_authors {
         } map { $_->{_source} } @{ $dates->{hits}->{hits} }
     };
 
-    my $bulk = $self->model->bulk( size => 100 );
+    my $bulk = $self->es->bulk_helper(
+        index     => $self->index->name,
+        type      => 'author',
+        max_count => 250,
+        timeout   => '25m',
+    );
 
     my @author_ids_to_purge;
 
@@ -127,8 +132,15 @@ sub index_authors {
         push @author_ids_to_purge, $put->{pauseid};
 
         # Only try put if this is a valid format
-        $bulk->put($author);
+        $bulk->update(
+            {
+                id            => $pauseid,
+                doc           => $put,
+                doc_as_upsert => 1,
+            }
+        );
     }
+    $bulk->flush;
     $self->index->refresh;
 
     $self->purge_author_key(@author_ids_to_purge);
@@ -158,7 +170,7 @@ sub author_config {
 
     my $mtime = DateTime->from_epoch( epoch => $file->stat->mtime );
 
-    if ( $dates->{$pauseid} && $dates->{$pauseid} >= $mtime ) {
+    if ( $dates->{$pauseid} && $dates->{$pauseid} > $mtime ) {
         log_debug {"Skipping $pauseid (newer version in index)"};
         return undef;
     }
@@ -175,7 +187,7 @@ sub author_config {
         = { map { $_ => $author->{$_} }
             qw(name asciiname profile blog perlmongers donation email website city region country location extra)
         };
-    $author->{updated} = $mtime;
+    $author->{updated} = $mtime->iso8601;
     return $author;
 }
 

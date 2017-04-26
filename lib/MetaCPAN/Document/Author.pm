@@ -89,7 +89,7 @@ has extra => (
 
 has updated => (
     is  => 'ro',
-    isa => 'DateTime',
+    isa => Str,
 );
 
 has is_pause_custodial_account => (
