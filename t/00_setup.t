@@ -83,6 +83,7 @@ copy( $src_dir->file('author-1.0.json'),
 copy( $src_dir->file('bugs.tsv'), $fakecpan_dir->file('bugs.tsv') );
 
 $server->index_permissions;
+$server->index_packages;
 $server->index_releases;
 $server->set_latest;
 $server->set_first;
