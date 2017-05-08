@@ -74,14 +74,10 @@ sub _build_section {
 has abstract => (
     required => 1,
     is       => 'ro',
-
-    # isa is commented as it affect the type mapping
-    # see https://github.com/metacpan/metacpan-api/pull/484
-    # -- Mickey
-    # isa => Maybe[Str],
-    lazy    => 1,
-    builder => '_build_abstract',
-    index   => 'analyzed',
+    isa      => Maybe [Str],
+    lazy     => 1,
+    builder  => '_build_abstract',
+    index    => 'analyzed',
 );
 
 sub _build_abstract {
@@ -300,12 +296,8 @@ set to C<undef>.
 =cut
 
 has documentation => (
-    is => 'ro',
-
-    # isa is commented as it affect the type mapping
-    # see https://github.com/metacpan/metacpan-api/pull/484
-    # -- Mickey
-    # isa => Maybe [Str],
+    is        => 'ro',
+    isa       => Maybe [Str],
     lazy      => 1,
     index     => 'analyzed',
     builder   => '_build_documentation',

@@ -32,9 +32,11 @@ my @ROGUE_DISTRIBUTIONS
     = qw(kurila perl_debug perl_mlb perl-5.005_02+apache1.3.3+modperl pod2texi perlbench spodcxx Bundle-Everything);
 
 sub _not_rogue {
-    my @rogue_dists
-        = map { { term => { 'distribution' => $_ } } } @ROGUE_DISTRIBUTIONS;
-    return { not => { filter => { or => \@rogue_dists } } };
+    return {
+        not => {
+            filter => { terms => { distribution => \@ROGUE_DISTRIBUTIONS } }
+        }
+    };
 }
 
 sub search_simple {
@@ -168,17 +170,8 @@ sub _search_collapsed {
             size  => 5000,
             query => {
                 filtered => {
-                    filter => {
-                        and => [
-                            {
-                                or => [
-                                    map {
-                                        { term => { 'distribution' => $_ } }
-                                    } @distributions
-                                ]
-                            }
-                        ]
-                    }
+                    filter =>
+                        { terms => { 'distribution' => \@distributions } }
                 }
             }
         }
@@ -383,9 +376,7 @@ sub _build_search_descriptions_query {
         query => {
             filtered => {
                 query  => { match_all => {} },
-                filter => {
-                    or => [ map { { term => { id => $_ } } } @ids ]
-                }
+                filter => { terms     => { id => \@ids } },
             }
         },
         fields => [qw(description id)],
@@ -418,13 +409,8 @@ sub _build_search_favorites_query {
         size  => 0,
         query => {
             filtered => {
-                query  => { match_all => {} },
-                filter => {
-                    or => [
-                        map { { term => { 'distribution' => $_ } } }
-                            @distributions
-                    ]
-                }
+                query => { match_all => {} },
+                filter => { terms => { distribution => \@distributions } },
             }
         },
         aggregations => {

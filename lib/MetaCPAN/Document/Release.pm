@@ -313,13 +313,7 @@ sub aggregate_status_by_author {
 
 sub find_depending_on {
     my ( $self, $modules ) = @_;
-    return $self->filter(
-        {
-            or => [
-                map { { term => { 'dependency.module' => $_ } } } @$modules
-            ]
-        }
-    );
+    return $self->filter( { terms => { 'dependency.module' => $modules } } );
 }
 
 sub find {
@@ -347,21 +341,29 @@ sub predecessor {
 }
 
 sub find_github_based {
-    my $or = [
-
-#        { prefix => { "resources.homepage"       => 'http://github.com/' } },
-#        { prefix => { "resources.homepage"       => 'https://github.com/' } },
-#        { prefix => { "resources.repository.web" => 'http://github.com/' } },
-#        { prefix => { "resources.repository.web" => 'https://github.com/' } },
-#        { prefix => { "resources.repository.url" => 'http://github.com/' } },
-#        { prefix => { "resources.repository.url" => 'https://github.com/' } },
-#        { prefix => { "resources.repository.url" => 'git://github.com/' } },
-        { prefix => { "resources.bugtracker.web" => 'http://github.com/' } },
-        { prefix => { "resources.bugtracker.web" => 'https://github.com/' } },
-    ];
-    shift    #->fields([qw(resources)])
-        ->filter(
-        { and => [ { term => { status => 'latest' } }, { or => $or } ] } );
+    shift->filter(
+        {
+            and => [
+                { term => { status => 'latest' } },
+                {
+                    or => [
+                        {
+                            prefix => {
+                                "resources.bugtracker.web" =>
+                                    'http://github.com/'
+                            }
+                        },
+                        {
+                            prefix => {
+                                "resources.bugtracker.web" =>
+                                    'https://github.com/'
+                            }
+                        },
+                    ]
+                }
+            ]
+        }
+    );
 }
 
 __PACKAGE__->meta->make_immutable;
