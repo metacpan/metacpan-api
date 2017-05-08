@@ -25,6 +25,8 @@ test_psgi app, sub {
                 version     => '0.02',
                 file =>
                     'M/MI/MIYAGAWA/CPAN-Test-Dummy-Perl5-VersionBump-0.02.tar.gz',
+                author       => 'MIYAGAWA',
+                distribution => 'CPAN-Test-Dummy-Perl5-VersionBump',
             },
             'Has the correct 02packages info'
         );

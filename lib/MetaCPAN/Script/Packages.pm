@@ -6,6 +6,7 @@ use Log::Contextual qw( :log );
 use MetaCPAN::Document::Packages ();
 use Parse::CPAN::Packages::Fast  ();
 use IO::Uncompress::Gunzip       ();
+use CPAN::DistnameInfo           ();
 
 with 'MooseX::Getopt', 'MetaCPAN::Role::Script';
 
@@ -55,11 +56,14 @@ sub index_packages {
         chomp($line);
 
         my ( $name, $version, $file ) = split /\s+/ => $line;
+        my $distinfo = CPAN::DistnameInfo->new($file);
 
         my $doc = +{
-            module_name => $name,
-            version     => $version,
-            file        => $file,
+            module_name  => $name,
+            version      => $version,
+            file         => $file,
+            author       => $distinfo->cpanid,
+            distribution => $distinfo->dist,
         };
 
         $bulk_helper->update(

@@ -12,6 +12,16 @@ sub mapping {
               "index" : "not_analyzed",
               "type" : "string"
            },
+           "distribution" : {
+              "ignore_above" : 2048,
+              "index" : "not_analyzed",
+              "type" : "string"
+           },
+           "author" : {
+              "ignore_above" : 2048,
+              "index" : "not_analyzed",
+              "type" : "string"
+           },
            "version" : {
               "ignore_above" : 2048,
               "index" : "not_analyzed",
