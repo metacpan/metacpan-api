@@ -313,7 +313,13 @@ sub aggregate_status_by_author {
 
 sub find_depending_on {
     my ( $self, $modules ) = @_;
-    return $self->filter( { terms => { 'dependency.module' => $modules } } );
+    return $self->filter(
+        {
+            or => [
+                map { { term => { 'dependency.module' => $_ } } } @$modules
+            ]
+        }
+    );
 }
 
 sub find {
