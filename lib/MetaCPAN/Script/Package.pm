@@ -63,6 +63,7 @@ sub index_packages {
             file         => $file,
             author       => $distinfo->cpanid,
             distribution => $distinfo->dist,
+            dist_version => $distinfo->version,
         };
 
         $bulk_helper->update(
