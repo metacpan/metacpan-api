@@ -32,6 +32,20 @@ test_psgi app, sub {
             'Has the correct 02packages info'
         );
     }
+
+    {
+        my $dist = 'File-Changes-UTF8';
+        ok( my $res = $cb->( GET "/package/modules/$dist" ),
+            "GET modules/$dist" );
+        is( $res->code, 200, '200 OK' );
+        is_deeply(
+            decode_json( $res->content ),
+            {
+                modules => ['File::Changes::UTF8'],
+            },
+            'Can list modules of latest release'
+        );
+    }
 };
 
 done_testing;
