@@ -1,12 +1,11 @@
-package MetaCPAN::Script::Packages;
+package MetaCPAN::Script::Package;
 
 use Moose;
 
 use Log::Contextual qw( :log );
-use MetaCPAN::Document::Packages ();
-use Parse::CPAN::Packages::Fast  ();
-use IO::Uncompress::Gunzip       ();
-use CPAN::DistnameInfo           ();
+use MetaCPAN::Document::Package ();
+use IO::Uncompress::Gunzip      ();
+use CPAN::DistnameInfo          ();
 
 with 'MooseX::Getopt', 'MetaCPAN::Role::Script';
 
@@ -47,7 +46,7 @@ sub index_packages {
 
     my $bulk_helper = $self->es->bulk_helper(
         index => $self->index->name,
-        type  => 'packages',
+        type  => 'package',
     );
 
     # read the rest of the file line-by-line (too big to slurp)
@@ -64,6 +63,7 @@ sub index_packages {
             file         => $file,
             author       => $distinfo->cpanid,
             distribution => $distinfo->dist,
+            dist_version => $distinfo->version,
         };
 
         $bulk_helper->update(
@@ -86,10 +86,10 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 SYNOPSIS
 
-Parse out CPAN packages details.
+Parse out CPAN package details (02packages.details).
 
-    my $packages = MetaCPAN::Script::Packages->new;
-    my $result   = $packages->index_packages;
+    my $package = MetaCPAN::Script::Package->new;
+    my $result  = $package->index_packages;
 
 =head2 index_packages
 

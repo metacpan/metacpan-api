@@ -1,4 +1,4 @@
-package MetaCPAN::Script::Mapping::CPAN::Packages;
+package MetaCPAN::Script::Mapping::CPAN::Package;
 
 use strict;
 use warnings;
@@ -13,6 +13,11 @@ sub mapping {
               "type" : "string"
            },
            "distribution" : {
+              "ignore_above" : 2048,
+              "index" : "not_analyzed",
+              "type" : "string"
+           },
+           "dist_version" : {
               "ignore_above" : 2048,
               "index" : "not_analyzed",
               "type" : "string"

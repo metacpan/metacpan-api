@@ -8,7 +8,7 @@ use MetaCPAN::Script::CPANTesters ();
 use MetaCPAN::Script::First       ();
 use MetaCPAN::Script::Latest      ();
 use MetaCPAN::Script::Mapping     ();
-use MetaCPAN::Script::Packages    ();
+use MetaCPAN::Script::Package     ();
 use MetaCPAN::Script::Permission  ();
 use MetaCPAN::Script::Release     ();
 use MetaCPAN::Server              ();
@@ -234,7 +234,7 @@ sub index_packages {
     my $self = shift;
 
     ok(
-        MetaCPAN::Script::Packages->new_with_options(
+        MetaCPAN::Script::Package->new_with_options(
             %{ $self->_config },
 
             # Eventually maybe move this to use the DarkPAN 06perms

@@ -1,4 +1,4 @@
-package MetaCPAN::Document::Packages;
+package MetaCPAN::Document::Package;
 
 use MetaCPAN::Moose;
 
