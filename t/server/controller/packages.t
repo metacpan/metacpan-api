@@ -14,7 +14,7 @@ test_psgi app, sub {
 
     {
         my $module_name = 'CPAN::Test::Dummy::Perl5::VersionBump';
-        ok( my $res = $cb->( GET "/packages/$module_name" ),
+        ok( my $res = $cb->( GET "/package/$module_name" ),
             "GET $module_name" );
         is( $res->code, 200, '200 OK' );
 
