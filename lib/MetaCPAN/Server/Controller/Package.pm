@@ -1,4 +1,4 @@
-package MetaCPAN::Server::Controller::Packages;
+package MetaCPAN::Server::Controller::Package;
 
 use Moose;
 use namespace::autoclean;
