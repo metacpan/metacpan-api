@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Moose;
+use Ref::Util qw();
 use ElasticSearchX::Model::Document;
 
 use MetaCPAN::Types qw(:all);
@@ -370,6 +371,138 @@ sub find_github_based {
             ]
         }
     );
+}
+
+sub get_contributors {
+    my ( $self, $dist ) = @_;
+
+    my $query = +{
+        query => {
+            bool => {
+                must => [
+                    { term => { distribution => $dist } },
+                    { term => { status       => 'latest' } },
+                ],
+            },
+        }
+    };
+
+    my $res = $self->es->search(
+        index => $self->index->name,
+        type  => 'release',
+        body  => {
+            query   => $query,
+            size    => 999,
+            _source => [qw< author metadata.author metadata.x_contributors >],
+        }
+    );
+
+    my $release  = $res->{hits}{hits}[0]{_source};
+    my $contribs = $release->{metadata}{x_contributors} || [];
+    my $authors  = $release->{metadata}{author} || [];
+
+    for ( \( $contribs, $authors ) ) {
+
+        # If a sole contributor is a string upgrade it to an array...
+        $$_ = [$$_]
+            if !ref $$_;
+
+        # but if it's any other kind of value don't die trying to parse it.
+        $$_ = []
+            unless Ref::Util::is_arrayref($$_);
+    }
+    $authors = [ grep { $_ ne 'unknown' } @$authors ];
+
+    my $author = $self->es->get(
+        index => $self->index->name,
+        type  => 'author',
+        id    => $release->{author},
+    );
+
+    my $author_email = $author->{_source}{email};
+    my $author_info  = {
+        email => [
+            lc "$release->{author}\@cpan.org",
+            (
+                Ref::Util::is_arrayref($author_email)
+                ? @{$author_email}
+                : $author_email
+            ),
+        ],
+        name         => $author->{_source}{name},
+        gravatar_url => $author->{_source}{gravatar_url},
+    };
+    my %seen = map { $_ => $author_info }
+        ( @{ $author_info->{email} }, $author_info->{name}, );
+
+    my @contribs = map {
+        my $name = $_;
+        my $email;
+        if ( $name =~ s/\s*<([^<>]+@[^<>]+)>// ) {
+            $email = $1;
+        }
+        my $info;
+        my $dupe;
+        if ( $email and $info = $seen{$email} ) {
+            $dupe = 1;
+        }
+        elsif ( $info = $seen{$name} ) {
+            $dupe = 1;
+        }
+        else {
+            $info = {
+                name  => $name,
+                email => [],
+            };
+        }
+        $seen{$name} ||= $info;
+        if ($email) {
+            push @{ $info->{email} }, $email
+                unless grep { $_ eq $email } @{ $info->{email} };
+            $seen{$email} ||= $info;
+        }
+        $dupe ? () : $info;
+    } ( @$authors, @$contribs );
+
+    for my $contrib (@contribs) {
+
+        # heuristic to autofill pause accounts
+        if ( !$contrib->{pauseid} ) {
+            my ($pauseid)
+                = map { /^(.*)\@cpan\.org$/ ? $1 : () }
+                @{ $contrib->{email} };
+            $contrib->{pauseid} = uc $pauseid
+                if $pauseid;
+        }
+    }
+
+    my $contrib_query = +{
+        query => {
+            terms => {
+                pauseid =>
+                    [ map { $_->{pauseid} ? $_->{pauseid} : () } @contribs ]
+            }
+        }
+    };
+
+    my $contrib_authors = $self->es->search(
+        index => $self->index->name,
+        type  => 'author',
+        body  => {
+            query   => $contrib_query,
+            size    => 999,
+            _source => [qw< pauseid gravatar_url >],
+        }
+    );
+
+    my %id2url = map { $_->{_source}{pauseid} => $_->{_source}{gravatar_url} }
+        @{ $contrib_authors->{hits}{hits} };
+    for my $contrib (@contribs) {
+        $contrib->{gravatar_url} = $id2url{ $contrib->{pauseid} }
+            if exists $id2url{ $contrib->{pauseid} };
+    }
+
+    return { contributors => \@contribs };
 }
 
 __PACKAGE__->meta->make_immutable;

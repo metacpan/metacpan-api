@@ -52,5 +52,11 @@ sub get : Path('') : Args(2) {
         ['The requested field(s) could not be found'] );
 }
 
+sub contributors : Path('contributors') : Args(1) {
+    my ( $self, $c, $name ) = @_;
+    my $data = $self->model($c)->raw->get_contributors($name);
+    $c->stash($data);
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
