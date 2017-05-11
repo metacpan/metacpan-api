@@ -147,6 +147,103 @@ sub validate {
 
 __PACKAGE__->meta->make_immutable;
 
+package MetaCPAN::Document::Author::Set;
+
+use MetaCPAN::Moose;
+extends 'ElasticSearchX::Model::Document::Set';
+
+with 'MetaCPAN::Role::ES::Query';
+
+sub by_id {
+    my ( $self, $req, $ids ) = @_;
+    my @ids = map {uc} ( $ids ? $ids : $req->read_param('id') );
+    return unless @ids;
+    return $self->es_by_terms_vals(
+        req => $req,
+        -or => {
+            pauseid => \@ids,
+        },
+    );
+}
+
+sub by_id_for_top_uploaders {
+    my ( $self, $req, $counts ) = @_;
+    my $authors = $self->by_id( $req, [ keys %$counts ] );
+    return unless $authors;
+    return [
+        sort { $b->{releases} <=> $a->{releases} } map {
+            {
+                %{ $_->{_source} },
+                    releases => $counts->{ $_->{_source}->{pauseid} }
+            }
+        } @{ $authors->{hits}{hits} }
+    ];
+}
+
+sub by_user {
+    my ( $self, $req ) = @_;
+    my @users = $req->read_param('user');
+    return unless @users;
+    return $self->es_by_terms_vals(
+        req => $req,
+        -or => {
+            user => \@users,
+        },
+    );
+}
+
+sub by_key {
+    my ( $self, $req ) = @_;
+    my $key = $req->parameters->{key};
+    return unless $key;
+
+    my $filter = +{
+        bool => {
+            should => [
+                {
+                    match => {
+                        'name.analyzed' =>
+                            { query => $key, operator => 'and' }
+                    }
+                },
+                {
+                    match => {
+                        'asciiname.analyzed' =>
+                            { query => $key, operator => 'and' }
+                    }
+                },
+                { match => { 'pauseid'    => uc($key) } },
+                { match => { 'profile.id' => lc($key) } },
+            ]
+        }
+    };
+    my $cb = sub {
+        my $res = shift;
+        return +{
+            results => [
+                map { +{ %{ $_->{_source} }, id => $_->{_id} } }
+                    @{ $res->{hits}{hits} }
+            ],
+            total => $res->{hits}{total} || 0,
+            took => $res->{took}
+        };
+    };
+
+    $self->es_by_filter( req => $req, filter => $filter, cb => $cb );
+}
+
+sub plusser_by_user {
+    my ( $self, $req ) = @_;
+    my @users = $req->read_param('user');
+    return unless @users;
+    return $self->es_by_terms_vals(
+        req => $req,
+        -or => +{ user => \@users }
+    );
+}
+
+__PACKAGE__->meta->make_immutable;
+
 1;
 
 =pod

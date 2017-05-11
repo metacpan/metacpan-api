@@ -1,10 +1,6 @@
 package MetaCPAN::Document::File;
 
-use strict;
-use warnings;
-use utf8;
-
-use Moose;
+use MetaCPAN::Moose;
 use ElasticSearchX::Model::Document;
 
 use Encode;
@@ -961,6 +957,35 @@ Concatenate L</author>, L</release> and L</path>.
 sub full_path {
     my $self = shift;
     return join( '/', $self->author, $self->release, $self->path );
+}
+
+__PACKAGE__->meta->make_immutable;
+
+
+package MetaCPAN::Document::File::Set;
+
+use MetaCPAN::Moose;
+extends 'ElasticSearchX::Model::Document::Set';
+
+with 'MetaCPAN::Role::ES::Query';
+
+sub dir {
+    my ( $self, $req ) = @_;
+    my ( $author, $release, $dir )
+        = @{ $req->parameters }{qw< author release >};
+    my @path = split m{/}, $dir;
+    return $self->es_by_terms_vals(
+        req  => $req,
+        -and => +{
+            author  => $author,
+            release => $release,
+            level   => scalar @path,
+            prefix  => {
+                path => $dir
+            }
+        }
+    );
+
 }
 
 __PACKAGE__->meta->make_immutable;

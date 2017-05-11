@@ -49,4 +49,13 @@ sub find : Path('') {
     } or $c->detach( '/not_found', [$@] );
 }
 
+# endpoint: /file/dir
+# params:   dir=<dir>&author=<pauseid>&release=<name>
+# optional: [&fields=<field>][&sort=<sort_key>][&size=N][&page=N]
+sub dir : Path('dir') : Args(0) {
+    my ( $self, $c ) = @_;
+    my $data = $self->model($c)->raw->dir( $c->req );
+    $c->stash($data);
+}
+
 1;

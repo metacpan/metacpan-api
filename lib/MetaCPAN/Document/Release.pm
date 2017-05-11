@@ -1,10 +1,9 @@
 package MetaCPAN::Document::Release;
 
-use strict;
-use warnings;
+use MetaCPAN::Moose;
 
-use Moose;
 use ElasticSearchX::Model::Document;
+use DateTime;
 
 use MetaCPAN::Types qw(:all);
 use MetaCPAN::Util qw( numify_version );
@@ -279,11 +278,10 @@ __PACKAGE__->meta->make_immutable;
 
 package MetaCPAN::Document::Release::Set;
 
-use strict;
-use warnings;
-
-use Moose;
+use MetaCPAN::Moose;
 extends 'ElasticSearchX::Model::Document::Set';
+
+with 'MetaCPAN::Role::ES::Query';
 
 sub aggregate_status_by_author {
     my ( $self, $pauseid ) = @_;
@@ -368,6 +366,210 @@ sub find_github_based {
                     ]
                 }
             ]
+        }
+    );
+}
+
+sub latest_by_author {
+    my ( $self, $req ) = @_;
+    my $author = $req->parameters->{'author'};
+    return unless $author;
+    return $self->es_by_terms_vals(
+        req  => $req,
+        -and => {
+            author => uc($author),
+            status => 'latest'
+        },
+    );
+}
+
+sub all_by_author {
+    my ( $self, $req ) = @_;
+    my $author = $req->parameters->{'author'};
+    return unless $author;
+    return $self->es_by_terms_vals(
+        req  => $req,
+        -and => {
+            author => uc($author),
+        },
+    );
+}
+
+sub top_uploaders {
+    my ( $self, $range ) = @_;
+    return unless $range;
+
+    my $range_filter = {
+        range => {
+            date => {
+                from => $range eq 'all' ? 0 : DateTime->now->subtract(
+                      $range eq 'weekly'  ? 'weeks'
+                    : $range eq 'monthly' ? 'months'
+                    : $range eq 'yearly'  ? 'years'
+                    :                       'weeks' => 1
+                )->truncate( to => 'day' )->iso8601
+            },
+        }
+    };
+
+    my $body = +{
+        query        => { match_all => {} },
+        aggregations => {
+            author => {
+                aggregations => {
+                    entries => {
+                        terms => { field => 'author', size => 50 }
+                    }
+                },
+                filter => $range_filter,
+            },
+        },
+        size => 0,
+    };
+
+    my $data = $self->es->search(
+        {
+            index => $self->index->name,
+            type  => 'release',
+            body  => $body,
+        }
+    );
+
+    return +{
+        counts => +{
+            map { $_->{key} => $_->{doc_count} }
+                @{ $data->{aggregations}{author}{entries}{buckets} }
+        },
+        took  => $data->{took},
+        total => $data->{aggregations}{author}{total},
+    };
+}
+
+sub by_name_and_author {
+    my ( $self, $req )    = @_;
+    my ( $name, $author ) = @{ $req->parameters }{qw< name author >};
+    return unless $name and $author;
+    return $self->es_by_terms_vals(
+        req  => $req,
+        -and => {
+            name   => $name,
+            author => $author,
+        },
+    );
+}
+
+sub versions {
+    my ( $self, $req ) = @_;
+    my @dists = $req->read_param('distribution');
+    return unless @dists;
+    return $self->es_by_terms_vals(
+        req => $req,
+        -or => {
+            distribution => \@dists,
+        },
+    );
+}
+
+sub _filter_not_backpan {
+    return +{
+        constant_score => {
+            filter => {
+                and => [
+                    @_,
+                    {
+                        not =>
+                            { filter => { term => { status => 'backpan' } } }
+                    },
+                ]
+            }
+        }
+    };
+}
+
+sub recent {
+    my ( $self, $req ) = @_;
+    my ( $type, $page, $size ) = @{ $req->parameters }{qw< type page size >};
+    $type //= "";
+
+    my $query
+        = $type eq 'n' ? _filter_not_backpan( { term => { first => 1 } } )
+        : $type eq 'a' ? { match_all => {} }
+        :                _filter_not_backpan();
+
+    my $res = $self->es->search(
+        index => $self->index->name,
+        type  => 'release',
+        body  => {
+            query  => $query,
+            fields => [qw< name author status abstract date distribution >],
+            sort   => [ { 'date' => { order => 'desc' } } ],
+            ( $size ? ( size => $size ) : () ),
+            ( $page ? ( from => ( $page - 1 ) * $size ) : () ),
+        }
+    );
+}
+
+sub modules {
+    my ( $self,   $req )     = @_;
+    my ( $author, $release ) = @{ $req->parameters }{qw< author release >};
+    return unless $author and $release;
+    my $query = {
+        filtered => {
+            query  => { match_all => {} },
+            filter => {
+                and => [
+                    { term => { release   => $release } },
+                    { term => { author    => $author } },
+                    { term => { directory => 0 } },
+                    {
+                        or => [
+                            {
+                                and => [
+                                    {
+                                        exists => {
+                                            field => 'module.name'
+                                        }
+                                    },
+                                    {
+                                        term => {
+                                            'module.indexed' => 1
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                and => [
+                                    {
+                                        range => { slop => { gt => 0 } }
+                                    },
+                                    {
+                                        exists => {
+                                            field => 'pod.analyzed'
+                                        }
+                                    },
+                                    {
+                                        term => { 'indexed' => 1 }
+                                    },
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    };
+
+    my $res = $self->es->search(
+        index => $self->index->name,
+        type  => 'file',
+        body  => {
+            query   => $query,
+            size    => 999,
+            sort    => [ 'documentation', 'path' ],
+            _source => [ "module", "abstract" ],
+            fields  => [
+                qw< author authorized distribution documentation indexed path pod_lines release status >
+            ],
         }
     );
 }
