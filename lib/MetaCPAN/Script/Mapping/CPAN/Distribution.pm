@@ -70,6 +70,16 @@ sub mapping {
               "index" : "not_analyzed",
               "type" : "string"
            },
+           "external_package" : {
+              "dynamic" : true,
+              "properties" : {
+                 "debian" : {
+                    "ignore_above" : 2048,
+                    "index" : "not_analyzed",
+                    "type" : "string"
+                 }
+              }
+           },
            "river" : {
               "dynamic" : true,
               "properties" : {
