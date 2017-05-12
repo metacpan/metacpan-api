@@ -5,6 +5,7 @@ use MetaCPAN::Moose;
 use Const::Fast qw( const );
 use Log::Contextual qw( :log :dlog );
 
+use Cpanel::JSON::XS;
 use Hash::Merge qw( merge );
 use List::Util qw( sum uniq );
 use MetaCPAN::Types qw( Object Str );
@@ -250,124 +251,46 @@ sub _collapse_results {
 sub build_query {
     my ( $self, $search_term, $params ) = @_;
     $params //= {};
-    ( my $clean = $search_term ) =~ s/::/ /g;
 
-    my $negative
-        = { term => { 'mime' => { value => 'text/x-script.perl' } } };
+    #    ( my $clean = $search_term ) =~ s/::/ /g;
 
-    my $positive = {
-        bool => {
-            should => [
+    my $json = do { local $/; <DATA>; };
+    my $structure = decode_json $json;
 
-                # exact matches result in a huge boost
-                {
-                    term => {
-                        'documentation' => {
-                            value => $search_term,
-                            boost => 20,
-                        }
-                    }
-                },
-                {
-                    term => {
-                        'module.name' => {
-                            value => $search_term,
-                            boost => 20,
-                        }
-                    }
-                },
+    my $multi_match = $structure->{query}->{bool}->{must}    #
+        ->{function_score}->{query}->{function_score}->{query}->{boosting}
+        ->{positive}->{multi_match};
 
-            # take the maximum score from the module name and the abstract/pod
-                {
-                    dis_max => {
-                        queries => [
-                            {
-                                query_string => {
-                                    fields => [
-                                        qw(documentation.analyzed^2 module.name.analyzed^2 distribution.analyzed),
-                                        qw(documentation.camelcase module.name.camelcase distribution.camelcase)
-                                    ],
-                                    query                  => $clean,
-                                    boost                  => 3,
-                                    default_operator       => 'AND',
-                                    allow_leading_wildcard => 0,
-                                    use_dis_max            => 1,
+    $multi_match->{query}  = $search_term;
+    $multi_match->{fields} = [
 
-                                }
-                            },
-                            {
-                                query_string => {
-                                    fields =>
-                                        [qw(abstract.analyzed pod.analyzed)],
-                                    query                  => $clean,
-                                    default_operator       => 'AND',
-                                    allow_leading_wildcard => 0,
-                                    use_dis_max            => 1,
+        # boost by 20
+        'documentation^20',
+        'module.name^20',
 
-                                }
-                            }
-                        ]
-                    }
-                }
+        # boost by 2
+        'documentation.analyzed^2',
+        'module.name.analyzed^2',
 
-            ]
-        }
-    };
+        # normal boost
+        'distribution.analyzed',
+        'documentation.camelcase',
+        'module.name.camelcase',
+        'distribution.camelcase',
+        'abstract.analyzed',
+        'pod.analyze'
+    ];
+
+    $structure->{query}->{bool}->{must_not}->[0]->{terms}->{distribution} = [
+        'kurila',   'perl_debug',
+        'perl_mlb', 'perl-5.005_02+apache1.3.3+modperl',
+        'pod2texi', 'perlbench',
+        'spodcxx',  'Bundle-Everything'
+    ];
 
     my $search = merge(
-        $params,
+        $structure,
         {
-            query => {
-                filtered => {
-                    query => {
-                        function_score => {
-
-                            # prefer shorter module names
-                            script_score => {
-                                script => {
-                                    lang => 'groovy',
-                                    file => 'prefer_shorter_module_names_400',
-                                },
-                            },
-                            query => {
-                                boosting => {
-                                    negative_boost => 0.5,
-                                    negative       => $negative,
-                                    positive       => $positive
-                                }
-                            }
-                        }
-                    },
-                    filter => {
-                        and => [
-                            $self->_not_rogue,
-                            { term => { status       => 'latest' } },
-                            { term => { 'authorized' => 1 } },
-                            { term => { 'indexed'    => 1 } },
-                            {
-                                or => [
-                                    {
-                                        and => [
-                                            {
-                                                exists => {
-                                                    field => 'module.name'
-                                                }
-                                            },
-                                            {
-                                                term =>
-                                                    { 'module.indexed' => 1 }
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        exists => { field => 'documentation' }
-                                    },
-                                ]
-                            }
-                        ]
-                    }
-                }
-            },
             _source => "module",
             fields  => [
                 qw(
@@ -523,3 +446,100 @@ sub _extract_and_inflate_results {
 
 1;
 
+## THIS IS THE QUERY and we fill in the gaps
+
+__DATA__
+{
+  "query": {
+    "bool": {
+      "must": {
+        "function_score": {
+          "query": {
+            "function_score": {
+              "query": {
+                "boosting": {
+                  "positive": {
+                    "multi_match": {
+                      "query": "--->  QUERY_STRING_GOES_HERE  <----",
+                      "type": "cross_fields",
+                      "fields": [
+                        " --->  PUT IN fields to boost on <--- "
+                      ]
+                    }
+                  },
+                  "negative": {
+                    "term": {
+                      "mime": {
+                        "value": "text/x-script.perl"
+                      }
+                    }
+                  },
+                  "negative_boost": 0.5
+                }
+              },
+              "script_score": {
+                "script": {
+                  "file": "prefer_shorter_module_names_400",
+                  "lang": "groovy"
+                }
+              }
+            }
+          }
+        }
+      },
+      "must_not": [
+        {
+          "terms": {
+            "distribution": [
+                " // ----> PUT IN dists to ignore because they are dodgy <--- "
+            ]
+          }
+        }
+      ],
+      "filter": [
+        {
+          "term": {
+            "status": "latest"
+          }
+        },
+        {
+          "term": {
+            "authorized": 1
+          }
+        },
+        {
+          "term": {
+            "indexed": 1
+          }
+        },
+        {
+          "bool": {
+            "should": [
+              {
+                "exists": {
+                  "field": "documentation"
+                }
+              },
+              {
+                "bool": {
+                  "must": [
+                    {
+                      "exists": {
+                        "field": "module.name"
+                      }
+                    },
+                    {
+                      "term": {
+                        "module.indexed": 1
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
