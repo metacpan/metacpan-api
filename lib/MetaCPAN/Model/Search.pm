@@ -471,11 +471,11 @@ sub _build_search_favorites_query {
 sub search_favorites {
     my ( $self, @distributions ) = @_;
 
-    my $favorites = {};
+    my %favorites = ();
 
     # If there are no distributions this will build a query with an empty
     # filter and ES will return a parser error... so just skip it.
-    return $favorites unless @distributions;
+    return \%favorites unless @distributions;
 
     @distributions = uniq @distributions;
 
@@ -485,12 +485,12 @@ sub search_favorites {
     if ( $es_results->{hits}->{total} ) {
 
         # only proceed when we have results
-        $favorites
+        %favorites
             = map { $_->{key} => $_->{doc_count} }
             @{ $es_results->{aggregations}->{favorites}->{buckets} };
     }
 
-    return $favorites;
+    return \%favorites;
 }
 
 sub _extract_and_inflate_results {
