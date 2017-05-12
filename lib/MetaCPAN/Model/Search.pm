@@ -1,12 +1,9 @@
 package MetaCPAN::Model::Search;
 
-use Moose;
-
-use v5.10;
+use MetaCPAN::Moose;
 
 use Const::Fast qw( const );
 use Log::Contextual qw( :log :dlog );
-use MooseX::StrictConstructor;
 
 use Hash::Merge qw( merge );
 use List::Util qw( sum uniq );
