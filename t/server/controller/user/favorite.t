@@ -61,8 +61,7 @@ test_psgi app, sub {
     is( $res->code, 200, 'found' );
 
     my $faves = $search->search_favorites('Moose');
-
-    is_deeply( $faves->{favorites}, { Moose => 1 }, 'search_favorites' );
+    is_deeply( $faves, { Moose => 1 }, 'search_favorites' );
 
     my $json = decode_json_ok($res);
     is( $json->{user}, $user->{id}, 'user is ' . $user->{id} );
