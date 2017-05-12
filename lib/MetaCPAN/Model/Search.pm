@@ -5,10 +5,14 @@ use MetaCPAN::Moose;
 use Const::Fast qw( const );
 use Log::Contextual qw( :log :dlog );
 
+use Cpanel::JSON::XS;
 use Hash::Merge qw( merge );
 use List::Util qw( sum uniq );
 use MetaCPAN::Types qw( Object Str );
 use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
+
+# Read in here to share
+my $json = do { local $/; <DATA>; };
 
 has es => (
     is       => 'ro',
@@ -107,17 +111,24 @@ sub _search_expanded {
     # Everything after this will fail (slowly and silently) without results.
     return {} unless @distributions;
 
-    my $results
-        = $self->_extract_and_inflate_results( $es_results, \@distributions );
+    # Lookup favs and extract results from es (adding in favs)
+    my $favorites = $self->search_favorites( \@distributions );
+    my $results = $self->_extract_results_add_favs( $es_results, $favorites );
 
-    my $return = {
+    # Add descriptions
+    my @ids = map { $_->{id} } @{$results};
+    my $descriptions = $self->search_descriptions( \@ids );
+
+    map { $_->{description} = $descriptions->{results}->{ $_->{id} } }
+        @{$results};
+
+    return {
 
         # results is array ref to be consistent with the collapsed version
         results   => [ map { [$_] } @$results ],
         total     => $es_results->{hits}->{total},
         collapsed => \0,
     };
-    return $return;
 }
 
 sub _search_collapsed {
@@ -194,19 +205,13 @@ sub _search_collapsed {
         {
             # we will probably never hit that limit, since we are
             # searching in $page_size=20 distributions max
-            size  => 5000,
+            size  => 1000,
             query => {
-                filtered => {
-                    filter => {
-                        and => [
-                            {
-                                or => [
-                                    map {
-                                        { term => { 'distribution' => $_ } }
-                                    } @distributions
-                                ]
-                            }
-                        ]
+                bool => {
+                    should => {
+                        terms => {
+                            distribution => \@distributions,
+                        }
                     }
                 }
             }
@@ -214,19 +219,23 @@ sub _search_collapsed {
     );
     my $es_dist_results = $self->run_query( file => $es_query );
 
+    # Look up fav and description info
+    my $favorites = $self->search_favorites( \@distributions );
     my $results
-        = $self->_extract_and_inflate_results( $es_dist_results,
-        \@distributions );
-
-    # Would be nice to do this before the _extract which has overhead
+        = $self->_extract_results_add_favs( $es_dist_results, $favorites );
     $results = $self->_collapse_results($results);
 
-    my $return = {
+    # Sort out descriptions
+    my @ids = map { $_->[0]{id} } @$results;
+    my $descriptions = $self->search_descriptions( \@ids );
+    map { $_->[0]{description} = $descriptions->{results}{ $_->[0]{id} } }
+        @{$results};
+
+    return {
         results   => $results,
         total     => $total,
         collapsed => \1,
     };
-    return $return;
 }
 
 sub _collapse_results {
@@ -252,124 +261,44 @@ sub _collapse_results {
 sub build_query {
     my ( $self, $search_term, $params ) = @_;
     $params //= {};
-    ( my $clean = $search_term ) =~ s/::/ /g;
 
-    my $negative
-        = { term => { 'mime' => { value => 'text/x-script.perl' } } };
+    #    ( my $clean = $search_term ) =~ s/::/ /g;
+    my $structure = decode_json $json;
 
-    my $positive = {
-        bool => {
-            should => [
+    my $multi_match = $structure->{query}->{bool}->{must}->[0]    #
+        ->{function_score}->{query}->{function_score}->{query}->{boosting}
+        ->{positive}->{multi_match};
 
-                # exact matches result in a huge boost
-                {
-                    term => {
-                        'documentation' => {
-                            value => $search_term,
-                            boost => 20,
-                        }
-                    }
-                },
-                {
-                    term => {
-                        'module.name' => {
-                            value => $search_term,
-                            boost => 20,
-                        }
-                    }
-                },
+    $multi_match->{query}  = $search_term;
+    $multi_match->{fields} = [
 
-            # take the maximum score from the module name and the abstract/pod
-                {
-                    dis_max => {
-                        queries => [
-                            {
-                                query_string => {
-                                    fields => [
-                                        qw(documentation.analyzed^2 module.name.analyzed^2 distribution.analyzed),
-                                        qw(documentation.camelcase module.name.camelcase distribution.camelcase)
-                                    ],
-                                    query                  => $clean,
-                                    boost                  => 3,
-                                    default_operator       => 'AND',
-                                    allow_leading_wildcard => 0,
-                                    use_dis_max            => 1,
+        # boost by 20
+        'documentation^20',
+        'module.name^20',
 
-                                }
-                            },
-                            {
-                                query_string => {
-                                    fields =>
-                                        [qw(abstract.analyzed pod.analyzed)],
-                                    query                  => $clean,
-                                    default_operator       => 'AND',
-                                    allow_leading_wildcard => 0,
-                                    use_dis_max            => 1,
+        # boost by 2
+        'documentation.analyzed^2',
+        'module.name.analyzed^2',
 
-                                }
-                            }
-                        ]
-                    }
-                }
+        # normal boost
+        'distribution.analyzed',
+        'documentation.camelcase',
+        'module.name.camelcase',
+        'distribution.camelcase',
+        'abstract.analyzed',
+        'pod.analyze'
+    ];
 
-            ]
-        }
-    };
+    $structure->{query}->{bool}->{must_not}->[0]->{terms}->{distribution} = [
+        'kurila',   'perl_debug',
+        'perl_mlb', 'perl-5.005_02+apache1.3.3+modperl',
+        'pod2texi', 'perlbench',
+        'spodcxx',  'Bundle-Everything'
+    ];
 
     my $search = merge(
-        $params,
+        $structure,
         {
-            query => {
-                filtered => {
-                    query => {
-                        function_score => {
-
-                            # prefer shorter module names
-                            script_score => {
-                                script => {
-                                    lang => 'groovy',
-                                    file => 'prefer_shorter_module_names_400',
-                                },
-                            },
-                            query => {
-                                boosting => {
-                                    negative_boost => 0.5,
-                                    negative       => $negative,
-                                    positive       => $positive
-                                }
-                            }
-                        }
-                    },
-                    filter => {
-                        and => [
-                            $self->_not_rogue,
-                            { term => { status       => 'latest' } },
-                            { term => { 'authorized' => 1 } },
-                            { term => { 'indexed'    => 1 } },
-                            {
-                                or => [
-                                    {
-                                        and => [
-                                            {
-                                                exists => {
-                                                    field => 'module.name'
-                                                }
-                                            },
-                                            {
-                                                term =>
-                                                    { 'module.indexed' => 1 }
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        exists => { field => 'documentation' }
-                                    },
-                                ]
-                            }
-                        ]
-                    }
-                }
-            },
             _source => "module",
             fields  => [
                 qw(
@@ -390,6 +319,9 @@ sub build_query {
         }
     );
 
+    # Now add in the optional params
+    $search = merge( $search, $params );
+
     # Ensure our requested fields are unique so that Elasticsearch doesn't
     # return us the same value multiple times in an unexpected arrayref.
     $search->{fields} = [ uniq @{ $search->{fields} || [] } ];
@@ -407,25 +339,29 @@ sub run_query {
 }
 
 sub _build_search_descriptions_query {
-    my ( $self, @ids ) = @_;
+    my ( $self, $ids ) = @_;
     my $es_query = {
         query => {
-            filtered => {
-                query => { match_all => {} },
-                filter => { or => [ map { { term => { id => $_ } } } @ids ] }
+            bool => {
+                should => {
+                    terms => {
+                        id => $ids,
+                    }
+                }
             }
         },
         fields => [qw(description id)],
-        size   => scalar @ids,
+        size   => scalar @{$ids},
     };
     return $es_query;
 }
 
 sub search_descriptions {
-    my ( $self, @ids ) = @_;
-    return {} unless @ids;
+    my ( $self, $ids ) = @_;
 
-    my $es_query = $self->_build_search_descriptions_query(@ids);
+    return {} unless @{$ids};
+
+    my $es_query = $self->_build_search_descriptions_query($ids);
     my $es_results = $self->run_query( file => $es_query );
 
     my $results = {
@@ -440,18 +376,16 @@ sub search_descriptions {
 }
 
 sub _build_search_favorites_query {
-    my ( $self, @distributions ) = @_;
+    my ( $self, $distributions ) = @_;
 
     my $es_query = {
         size  => 0,
         query => {
-            filtered => {
-                query  => { match_all => {} },
-                filter => {
-                    or => [
-                        map { { term => { 'distribution' => $_ } } }
-                            @distributions
-                    ]
+            bool => {
+                should => {
+                    terms => {
+                        distribution => $distributions,
+                    }
                 }
             }
         },
@@ -459,7 +393,7 @@ sub _build_search_favorites_query {
             favorites => {
                 terms => {
                     field => 'distribution',
-                    size  => scalar @distributions,
+                    size  => scalar @{$distributions},
                 },
             },
         }
@@ -468,18 +402,17 @@ sub _build_search_favorites_query {
     return $es_query;
 }
 
+# NOTE: assumes $distributions is uniq already
 sub search_favorites {
-    my ( $self, @distributions ) = @_;
+    my ( $self, $distributions ) = @_;
 
     my %favorites = ();
 
     # If there are no distributions this will build a query with an empty
     # filter and ES will return a parser error... so just skip it.
-    return \%favorites unless @distributions;
+    return \%favorites unless @{$distributions};
 
-    @distributions = uniq @distributions;
-
-    my $es_query = $self->_build_search_favorites_query(@distributions);
+    my $es_query = $self->_build_search_favorites_query($distributions);
     my $es_results = $self->run_query( favorite => $es_query );
 
     if ( $es_results->{hits}->{total} ) {
@@ -493,31 +426,19 @@ sub search_favorites {
     return \%favorites;
 }
 
-sub _extract_and_inflate_results {
-    my ( $self, $results, $distributions ) = @_;
-
-    my $favorites = $self->search_favorites( @{$distributions} );
-
-    my @ids = map {
-        single_valued_arrayref_to_scalar( $_->{fields} );
-        $_->{fields}->{id}
-    } @{ $results->{hits}->{hits} };
-
-    my $descriptions = $self->search_descriptions(@ids);
+sub _extract_results_add_favs {
+    my ( $self, $results, $favorites ) = @_;
 
     return [
         map {
             my $res = $_;
             single_valued_arrayref_to_scalar( $res->{fields} );
-            my $dist = $res->{fields}{distribution};
             +{
                 %{ $res->{fields} },
                 %{ $res->{_source} },
-                abstract  => $res->{fields}{'abstract.analyzed'},
+                abstract  => delete $res->{fields}->{'abstract.analyzed'},
                 score     => $res->{_score},
-                favorites => $favorites->{$dist} || 0,
-                description =>
-                    $descriptions->{results}->{ $res->{fields}->{id} },
+                favorites => $favorites->{ $res->{fields}->{distribution} },
                 }
         } @{ $results->{hits}{hits} }
     ];
@@ -525,3 +446,102 @@ sub _extract_and_inflate_results {
 
 1;
 
+## THIS IS THE QUERY and we fill in the gaps
+
+__DATA__
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+        "function_score": {
+          "query": {
+            "function_score": {
+              "query": {
+                "boosting": {
+                  "positive": {
+                    "multi_match": {
+                      "query": "--->  QUERY_STRING_GOES_HERE  <----",
+                      "type": "cross_fields",
+                      "fields": [
+                        " --->  PUT IN fields to boost on <--- "
+                      ]
+                    }
+                  },
+                  "negative": {
+                    "term": {
+                      "mime": {
+                        "value": "text/x-script.perl"
+                      }
+                    }
+                  },
+                  "negative_boost": 0.5
+                }
+              },
+              "script_score": {
+                "script": {
+                  "file": "prefer_shorter_module_names_400",
+                  "lang": "groovy"
+                }
+              }
+            }
+          }
+        }
+      }
+      ],
+      "must_not": [
+        {
+          "terms": {
+            "distribution": [
+                " // ----> PUT IN dists to ignore because they are dodgy <--- "
+            ]
+          }
+        }
+      ],
+      "filter": [
+        {
+          "term": {
+            "status": "latest"
+          }
+        },
+        {
+          "term": {
+            "authorized": 1
+          }
+        },
+        {
+          "term": {
+            "indexed": 1
+          }
+        },
+        {
+          "bool": {
+            "should": [
+              {
+                "exists": {
+                  "field": "documentation"
+                }
+              },
+              {
+                "bool": {
+                  "must": [
+                    {
+                      "exists": {
+                        "field": "module.name"
+                      }
+                    },
+                    {
+                      "term": {
+                        "module.indexed": 1
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
