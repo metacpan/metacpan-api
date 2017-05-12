@@ -4,6 +4,7 @@ use Moose;
 
 use v5.10;
 
+use Const::Fast qw( const );
 use Log::Contextual qw( :log :dlog );
 use MooseX::StrictConstructor;
 
@@ -27,9 +28,9 @@ has index => (
     required => 1,
 );
 
-my $RESULTS_PER_RUN = 200;
-my @ROGUE_DISTRIBUTIONS
-    = qw(kurila perl_debug perl_mlb perl-5.005_02+apache1.3.3+modperl pod2texi perlbench spodcxx Bundle-Everything);
+const my $RESULTS_PER_RUN => 200;
+const my @ROGUE_DISTRIBUTIONS =>
+    qw(kurila perl_debug perl_mlb perl-5.005_02+apache1.3.3+modperl pod2texi perlbench spodcxx Bundle-Everything);
 
 sub _not_rogue {
     my @rogue_dists
