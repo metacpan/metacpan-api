@@ -61,6 +61,7 @@ ok( $search->_not_rogue, '_not_rogue' );
     );
 }
 
+# favorites are also tested in t/server/controller/user/favorite.t
 is_deeply( $search->search_favorites, {},
     'empty hashref when no distributions' );
 is_deeply( $search->search_favorites('Pod-Pm')->{favorites},
@@ -68,4 +69,5 @@ is_deeply( $search->search_favorites('Pod-Pm')->{favorites},
 
 is_deeply( $search->search_descriptions,
     {}, 'empty hashref when no ids for descriptions' );
+
 done_testing();

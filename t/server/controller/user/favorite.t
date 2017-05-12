@@ -1,9 +1,16 @@
 use strict;
 use warnings;
 
-use MetaCPAN::Server::Test;
+use MetaCPAN::Server::Test qw( app DELETE GET POST test_psgi );
 use MetaCPAN::TestHelpers;
+use MetaCPAN::TestServer ();
 use Test::More;
+
+my $server = MetaCPAN::TestServer->new;
+my $search = MetaCPAN::Model::Search->new(
+    es    => $server->es_client,
+    index => 'cpan',
+);
 
 test_psgi app, sub {
     my $cb = shift;
@@ -52,6 +59,10 @@ test_psgi app, sub {
     ok( my $location = $res->header('location'), 'location header set' );
     ok( $res = $cb->( GET $location ), "GET $location" );
     is( $res->code, 200, 'found' );
+
+    my $faves = $search->search_favorites('Moose');
+
+    is_deeply( $faves->{favorites}, { Moose => 1 }, 'search_favorites' );
 
     my $json = decode_json_ok($res);
     is( $json->{user}, $user->{id}, 'user is ' . $user->{id} );
