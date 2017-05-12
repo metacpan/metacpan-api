@@ -505,5 +505,34 @@ sub get_contributors {
     return { contributors => \@contribs };
 }
 
+sub get_files {
+    my ( $self, $release, $files ) = @_;
+
+    my $query = +{
+        query => {
+            bool => {
+                must => [
+                    { term  => { release => $release } },
+                    { terms => { name    => $files } }
+                ],
+            }
+        }
+    };
+
+    my $ret = $self->es->search(
+        index => $self->index->name,
+        type  => 'file',
+        body  => {
+            query   => $query,
+            size    => 999,
+            _source => [qw< name path >],
+        }
+    );
+
+    return {} unless @{ $ret->{hits}{hits} };
+
+    return { files => [ map { $_->{_source} } @{ $ret->{hits}{hits} } ] };
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
