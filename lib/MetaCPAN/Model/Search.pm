@@ -42,6 +42,24 @@ sub search_simple {
     return $results;
 }
 
+=head2 search_web
+
+  search_web( $search_term, $from, $page_size, $collapsed );
+
+- search_term:
+   - can be unqualified string e.g. 'paging'
+   - can be author e.g: 'author:LLAP'
+   - can be module e.g.: 'module:Data::Pageset'
+   - can be distribution e.g.: 'dist:Data-Pageset'
+
+- from: where in result set to start, int
+
+- page_size: number of results per page, int
+
+- collapsed: whether to merge results by dist or not
+
+=cut
+
 sub search_web {
     my ( $self, $search_term, $from, $page_size, $collapsed ) = @_;
     $page_size //= 20;
