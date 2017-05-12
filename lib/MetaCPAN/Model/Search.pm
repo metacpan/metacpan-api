@@ -110,14 +110,13 @@ sub _search_expanded {
     my $results
         = $self->_extract_and_inflate_results( $es_results, \@distributions );
 
-    my $return = {
+    return {
 
         # results is array ref to be consistent with the collapsed version
         results   => [ map { [$_] } @$results ],
         total     => $es_results->{hits}->{total},
         collapsed => \0,
     };
-    return $return;
 }
 
 sub _search_collapsed {
@@ -221,12 +220,11 @@ sub _search_collapsed {
     # Would be nice to do this before the _extract which has overhead
     $results = $self->_collapse_results($results);
 
-    my $return = {
+    return {
         results   => $results,
         total     => $total,
         collapsed => \1,
     };
-    return $return;
 }
 
 sub _collapse_results {
