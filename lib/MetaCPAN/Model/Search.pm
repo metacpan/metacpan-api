@@ -11,11 +11,9 @@ use MetaCPAN::Types qw( Object Str );
 use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
 
 has es => (
-    is      => 'ro',
-    isa     => Object,
-    handles => {
-        _run_query => 'search',
-    },
+    is       => 'ro',
+    isa      => Object,
+    handles  => { _run_query => 'search', },
     required => 1,
 );
 
@@ -113,6 +111,8 @@ sub _search_expanded {
         = $self->_extract_and_inflate_results( $es_results, \@distributions );
 
     my $return = {
+
+        # results is array ref to be consistent with the collapsed version
         results   => [ map { [$_] } @$results ],
         total     => $es_results->{hits}->{total},
         collapsed => \0,
@@ -124,11 +124,11 @@ sub _search_collapsed {
     my ( $self, $search_term, $from, $page_size ) = @_;
 
     my $total;
+    my @distributions;
+    my $es_results;
+
     my $run  = 1;
     my $hits = 0;
-    my @distributions;
-    my $process_or_repeat;
-    my $es_results;
     do {
         # We need to scan enough modules to build up a sufficient number of
         # distributions to fill the results to the number requested
@@ -138,20 +138,31 @@ sub _search_collapsed {
             fields => [qw(distribution)],
         };
 
-        # On the first request also fetch the number of total distributions
-        # that match the query so that can be reported to the user. There is
-        # no need to do it on each iteration though, once is enough.
-        $es_query_opts->{aggregations}
-            = {
-            count => { terms => { size => 999, field => 'distribution' } }
-            }
-            if $run == 1;
-        my $es_query = $self->build_query( $search_term, $es_query_opts );
+        if ( $run == 1 ) {
 
+          # On the first request also fetch the number of total distributions
+          # that match the query so that can be reported to the user. There is
+          # no need to do it on each iteration though, once is enough.
+
+            $es_query_opts->{aggregations}
+                = {
+                count => { terms => { size => 999, field => 'distribution' } }
+                };
+
+        }
+
+        # Build the query and fetch results
+        my $es_query = $self->build_query( $search_term, $es_query_opts );
         $es_results = $self->run_query( file => $es_query );
-        $total = @{ $es_results->{aggregations}->{count}->{buckets} || [] }
-            if $run == 1;
+
+        if ( $run == 1 ) {
+            $total
+                = @{ $es_results->{aggregations}->{count}->{buckets} || [] };
+        }
+
         $hits = @{ $es_results->{hits}->{hits} || [] };
+
+        # Flatten results down to unique dists
         @distributions = uniq(
             @distributions,
             map {
@@ -159,6 +170,8 @@ sub _search_collapsed {
                 $_->{fields}->{distribution}
             } @{ $es_results->{hits}->{hits} }
         );
+
+        # Keep track
         $run++;
         } while ( @distributions < $page_size + $from
         && $es_results->{hits}->{total}
@@ -226,6 +239,9 @@ sub _collapse_results {
             unless ( $collapsed{$distribution} );
         push( @{ $collapsed{$distribution}->{results} }, $result );
     }
+
+    # We return array ref because the results have matching modules
+    # grouped by distribution
     return [
         map      { $collapsed{$_}->{results} }
             sort { $collapsed{$a}->{position} <=> $collapsed{$b}->{position} }
@@ -340,9 +356,8 @@ sub build_query {
                                                 }
                                             },
                                             {
-                                                term => {
-                                                    'module.indexed' => 1
-                                                }
+                                                term =>
+                                                    { 'module.indexed' => 1 }
                                             }
                                         ]
                                     },
@@ -396,10 +411,8 @@ sub _build_search_descriptions_query {
     my $query = {
         query => {
             filtered => {
-                query  => { match_all => {} },
-                filter => {
-                    or => [ map { { term => { id => $_ } } } @ids ]
-                }
+                query => { match_all => {} },
+                filter => { or => [ map { { term => { id => $_ } } } @ids ] }
             }
         },
         fields => [qw(description id)],
