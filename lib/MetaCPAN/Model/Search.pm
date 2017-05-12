@@ -116,9 +116,8 @@ sub _search_expanded {
     map { $_->{description} = $descriptions->{results}->{ $_->{id} } }
         @{$results};
     my $return = {
-        results => [ map { [$_] } @$results ],
-        total   => $data->{hits}->{total},
-        took      => sum( grep {defined} $data->{took}, $favorites->{took} ),
+        results   => [ map { [$_] } @$results ],
+        total     => $data->{hits}->{total},
         collapsed => \0,
     };
     return $return;
@@ -127,7 +126,6 @@ sub _search_expanded {
 sub _search_collapsed {
     my ( $self, $search_term, $from, $page_size ) = @_;
 
-    my $took = 0;
     my $total;
     my $run  = 1;
     my $hits = 0;
@@ -154,7 +152,6 @@ sub _search_collapsed {
         my $es_query = $self->build_query( $search_term, $es_query_opts );
 
         $data = $self->run_query( file => $es_query );
-        $took += $data->{took} || 0;
         $total = @{ $data->{aggregations}->{count}->{buckets} || [] }
             if $run == 1;
         $hits = @{ $data->{hits}->{hits} || [] };
@@ -206,18 +203,15 @@ sub _search_collapsed {
     );
     my $results = $self->run_query( file => $es_query );
 
-    $took += sum( grep {defined} $results->{took}, $favorites->{took} );
     $results = $self->_extract_results( $results, $favorites );
     $results = $self->_collapse_results($results);
     my @ids = map { $_->[0]{id} } @$results;
     $data = {
         results   => $results,
         total     => $total,
-        took      => $took,
         collapsed => \1,
     };
     my $descriptions = $self->search_descriptions(@ids);
-    $data->{took} += $descriptions->{took} || 0;
     map { $_->[0]{description} = $descriptions->{results}{ $_->[0]{id} } }
         @{ $data->{results} };
     return $data;
@@ -427,7 +421,6 @@ sub search_descriptions {
                 map { single_valued_arrayref_to_scalar( $_->{fields} ) }
                 @{ $data->{hits}->{hits} }
         },
-        took => $data->{took}
     };
     return $results;
 }
@@ -473,7 +466,6 @@ sub search_favorites {
     my $data = $self->run_query( favorite => $query );
 
     my $results = {
-        took      => $data->{took},
         favorites => {
             map { $_->{key} => $_->{doc_count} }
                 @{ $data->{aggregations}->{favorites}->{buckets} }
