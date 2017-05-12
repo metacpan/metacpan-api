@@ -408,7 +408,7 @@ sub run_query {
 
 sub _build_search_descriptions_query {
     my ( $self, @ids ) = @_;
-    my $query = {
+    my $es_query = {
         query => {
             filtered => {
                 query => { match_all => {} },
@@ -418,15 +418,15 @@ sub _build_search_descriptions_query {
         fields => [qw(description id)],
         size   => scalar @ids,
     };
-    return $query;
+    return $es_query;
 }
 
 sub search_descriptions {
     my ( $self, @ids ) = @_;
     return {} unless @ids;
 
-    my $query      = $self->_build_search_descriptions_query(@ids);
-    my $es_results = $self->run_query( file => $query );
+    my $es_query   = $self->_build_search_descriptions_query(@ids);
+    my $es_results = $self->run_query( file => $es_query );
     my $results    = {
         results => {
             map { $_->{id} => $_->{description} }
@@ -434,13 +434,14 @@ sub search_descriptions {
                 @{ $es_results->{hits}->{hits} }
         },
     };
+
     return $results;
 }
 
 sub _build_search_favorites_query {
     my ( $self, @distributions ) = @_;
 
-    my $query = {
+    my $es_query = {
         size  => 0,
         query => {
             filtered => {
@@ -463,24 +464,32 @@ sub _build_search_favorites_query {
         }
     };
 
-    return $query;
+    return $es_query;
 }
 
 sub search_favorites {
     my ( $self, @distributions ) = @_;
-    @distributions = uniq @distributions;
+
+    my $favorites = {};
 
     # If there are no distributions this will build a query with an empty
     # filter and ES will return a parser error... so just skip it.
-    return {} unless @distributions;
+    return $favorites unless @distributions;
+
+    @distributions = uniq @distributions;
 
     my $es_query = $self->_build_search_favorites_query(@distributions);
     my $es_results = $self->run_query( favorite => $es_query );
 
-    my $favorites
-        = map { $_->{key} => $_->{doc_count} }
-        @{ $es_results->{aggregations}->{favorites}->{buckets} }
-        return $favorites;
+    if ( $es_results->{hits}->{total} ) {
+
+        # only proceed when we have results
+        $favorites
+            = map { $_->{key} => $_->{doc_count} }
+            @{ $es_results->{aggregations}->{favorites}->{buckets} };
+    }
+
+    return $favorites;
 }
 
 sub _extract_and_inflate_results {
@@ -488,7 +497,11 @@ sub _extract_and_inflate_results {
 
     my $favorites = $self->search_favorites( @{$distributions} );
 
-    my @ids = map { $_->{fields}->{id} } @{ $results->{hits}->{hits} };
+    my @ids = map {
+        single_valued_arrayref_to_scalar( $_->{fields} );
+        $_->{fields}->{id}
+    } @{ $results->{hits}->{hits} };
+
     my $descriptions = $self->search_descriptions(@ids);
 
     return [
@@ -501,9 +514,9 @@ sub _extract_and_inflate_results {
                 %{ $res->{_source} },
                 abstract  => $res->{fields}{'abstract.analyzed'},
                 score     => $res->{_score},
-                favorites => $favorites->{$dist},
+                favorites => $favorites->{$dist} || 0,
                 description =>
-                    $descriptions->{results}->{ $res->{fields}{id} },
+                    $descriptions->{results}->{ $res->{fields}->{id} },
                 }
         } @{ $results->{hits}{hits} }
     ];
