@@ -87,8 +87,9 @@ sub search_web {
 sub _search_expanded {
     my ( $self, $search_term, $from, $page_size ) = @_;
 
-    # When used for a distribution or module search, the limit is included in
-    # thl query and ES does the right thing.
+    # Used for distribution and module searches, the limit is included in
+    # the query and ES does the right thing (because we are not collapsing
+    # results by distribution).
     my $es_query = $self->build_query(
         $search_term,
         {
@@ -97,7 +98,6 @@ sub _search_expanded {
         }
     );
 
-    #return $es_query;
     my $es_results = $self->run_query( file => $es_query );
 
     my @distributions = uniq
@@ -461,16 +461,13 @@ sub search_favorites {
     # filter and ES will return a parser error... so just skip it.
     return {} unless @distributions;
 
-    my $query = $self->_build_search_favorites_query(@distributions);
-    my $es_results = $self->run_query( favorite => $query );
+    my $es_query = $self->_build_search_favorites_query(@distributions);
+    my $es_results = $self->run_query( favorite => $es_query );
 
-    my $results = {
-        favorites => {
-            map { $_->{key} => $_->{doc_count} }
-                @{ $es_results->{aggregations}->{favorites}->{buckets} }
-        },
-    };
-    return $results;
+    my $favorites
+        = map { $_->{key} => $_->{doc_count} }
+        @{ $es_results->{aggregations}->{favorites}->{buckets} }
+        return $favorites;
 }
 
 sub _extract_and_inflate_results {
@@ -489,10 +486,9 @@ sub _extract_and_inflate_results {
             +{
                 %{ $res->{fields} },
                 %{ $res->{_source} },
-                abstract   => $res->{fields}{'abstract.analyzed'},
-                score      => $res->{_score},
-                favorites  => $favorites->{favorites}{$dist},
-                myfavorite => $favorites->{myfavorites}{$dist},
+                abstract  => $res->{fields}{'abstract.analyzed'},
+                score     => $res->{_score},
+                favorites => $favorites->{$dist},
                 description =>
                     $descriptions->{results}->{ $res->{fields}{id} },
                 }
