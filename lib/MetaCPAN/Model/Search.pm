@@ -425,9 +425,10 @@ sub search_descriptions {
     my ( $self, @ids ) = @_;
     return {} unless @ids;
 
-    my $es_query   = $self->_build_search_descriptions_query(@ids);
+    my $es_query = $self->_build_search_descriptions_query(@ids);
     my $es_results = $self->run_query( file => $es_query );
-    my $results    = {
+
+    my $results = {
         results => {
             map { $_->{id} => $_->{description} }
                 map { single_valued_arrayref_to_scalar( $_->{fields} ) }
