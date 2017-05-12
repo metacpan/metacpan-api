@@ -8,6 +8,7 @@ use ElasticSearchX::Model::Document;
 
 # load order not important
 use Gravatar::URL ();
+use MetaCPAN::Document::Author::Set;
 use MetaCPAN::Types qw(:all);
 use MooseX::Types::Structured qw(Dict Tuple Optional);
 use MetaCPAN::Util;
@@ -143,6 +144,13 @@ sub validate {
         }
     }
     return @result;
+}
+
+sub search_for_author {
+    my ( $self, @terms ) = @_;
+    my $query = join( q{}, @terms );
+    return $self unless $query;
+    $self->MetaCPAN::Document::Author::Set->authorsearch($query);
 }
 
 __PACKAGE__->meta->make_immutable;
