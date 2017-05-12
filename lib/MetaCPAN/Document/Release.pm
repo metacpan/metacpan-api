@@ -374,14 +374,14 @@ sub find_github_based {
 }
 
 sub get_contributors {
-    my ( $self, $dist ) = @_;
+    my ( $self, $author_name, $release_name ) = @_;
 
     my $query = +{
         query => {
             bool => {
                 must => [
-                    { term => { distribution => $dist } },
-                    { term => { status       => 'latest' } },
+                    { term => { name   => $release_name } },
+                    { term => { author => $author_name } },
                 ],
             },
         }
@@ -393,7 +393,7 @@ sub get_contributors {
         body  => {
             query   => $query,
             size    => 999,
-            _source => [qw< author metadata.author metadata.x_contributors >],
+            _source => [qw< metadata.author metadata.x_contributors >],
         }
     );
 
@@ -416,21 +416,25 @@ sub get_contributors {
     my $author = $self->es->get(
         index => $self->index->name,
         type  => 'author',
-        id    => $release->{author},
+        id    => $author_name,
     );
 
-    my $author_email = $author->{_source}{email};
-    my $author_info  = {
+    my $author_email        = $author->{_source}{email};
+    my $author_gravatar_url = $author->{_source}{gravatar_url};
+
+    my $author_info = {
         email => [
-            lc "$release->{author}\@cpan.org",
+            lc "$author_name\@cpan.org",
             (
-                Ref::Util::is_arrayref($author_email)
-                ? @{$author_email}
+                Ref::Util::is_arrayref($author_email) ? @{$author_email}
                 : $author_email
             ),
         ],
-        name         => $author->{_source}{name},
-        gravatar_url => $author->{_source}{gravatar_url},
+        name => $author_name,
+        (
+            $author_gravatar_url ? ( gravatar_url => $author_gravatar_url )
+            : ()
+        ),
     };
     my %seen = map { $_ => $author_info }
         ( @{ $author_info->{email} }, $author_info->{name}, );
@@ -498,6 +502,7 @@ sub get_contributors {
     my %id2url = map { $_->{_source}{pauseid} => $_->{_source}{gravatar_url} }
         @{ $contrib_authors->{hits}{hits} };
     for my $contrib (@contribs) {
+        next unless $contrib->{pauseid};
         $contrib->{gravatar_url} = $id2url{ $contrib->{pauseid} }
             if exists $id2url{ $contrib->{pauseid} };
     }

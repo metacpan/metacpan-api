@@ -52,9 +52,9 @@ sub get : Path('') : Args(2) {
         ['The requested field(s) could not be found'] );
 }
 
-sub contributors : Path('contributors') : Args(1) {
-    my ( $self, $c, $name ) = @_;
-    my $data = $self->model($c)->raw->get_contributors($name);
+sub contributors : Path('contributors') : Args(2) {
+    my ( $self, $c, $author, $release ) = @_;
+    my $data = $self->model($c)->raw->get_contributors( $author, $release );
     $c->stash($data);
 }
 
