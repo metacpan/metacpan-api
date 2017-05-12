@@ -58,5 +58,14 @@ sub contributors : Path('contributors') : Args(2) {
     $c->stash($data);
 }
 
+sub files : Path('files') : Args(1) {
+    my ( $self, $c, $name ) = @_;
+    my $files = $c->req->params->{files};
+    return unless $files;
+    my @files = split /,/, $files;
+    my $data = $self->model($c)->raw->get_files( $name, \@files );
+    $c->stash($data);
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
