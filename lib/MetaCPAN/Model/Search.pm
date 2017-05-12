@@ -98,26 +98,23 @@ sub _search_expanded {
     );
 
     #return $es_query;
-    my $data = $self->run_query( file => $es_query );
+    my $es_results = $self->run_query( file => $es_query );
 
     my @distributions = uniq
         map {
         single_valued_arrayref_to_scalar( $_->{fields} );
         $_->{fields}->{distribution}
-        } @{ $data->{hits}->{hits} };
+        } @{ $es_results->{hits}->{hits} };
 
     # Everything after this will fail (slowly and silently) without results.
     return {} unless @distributions;
 
-    my @ids          = map { $_->{fields}->{id} } @{ $data->{hits}->{hits} };
-    my $descriptions = $self->search_descriptions(@ids);
-    my $favorites    = $self->search_favorites(@distributions);
-    my $results      = $self->_extract_results( $data, $favorites );
-    map { $_->{description} = $descriptions->{results}->{ $_->{id} } }
-        @{$results};
+    my $results
+        = $self->_extract_and_inflate_results( $es_results, \@distributions );
+
     my $return = {
         results   => [ map { [$_] } @$results ],
-        total     => $data->{hits}->{total},
+        total     => $es_results->{hits}->{total},
         collapsed => \0,
     };
     return $return;
@@ -131,7 +128,7 @@ sub _search_collapsed {
     my $hits = 0;
     my @distributions;
     my $process_or_repeat;
-    my $data;
+    my $es_results;
     do {
         # We need to scan enough modules to build up a sufficient number of
         # distributions to fill the results to the number requested
@@ -151,21 +148,22 @@ sub _search_collapsed {
             if $run == 1;
         my $es_query = $self->build_query( $search_term, $es_query_opts );
 
-        $data = $self->run_query( file => $es_query );
-        $total = @{ $data->{aggregations}->{count}->{buckets} || [] }
+        $es_results = $self->run_query( file => $es_query );
+        $total = @{ $es_results->{aggregations}->{count}->{buckets} || [] }
             if $run == 1;
-        $hits = @{ $data->{hits}->{hits} || [] };
+        $hits = @{ $es_results->{hits}->{hits} || [] };
         @distributions = uniq(
             @distributions,
             map {
                 single_valued_arrayref_to_scalar( $_->{fields} );
                 $_->{fields}->{distribution}
-            } @{ $data->{hits}->{hits} }
+            } @{ $es_results->{hits}->{hits} }
         );
         $run++;
         } while ( @distributions < $page_size + $from
-        && $data->{hits}->{total}
-        && $data->{hits}->{total} > $hits + ( $run - 2 ) * $RESULTS_PER_RUN );
+        && $es_results->{hits}->{total}
+        && $es_results->{hits}->{total}
+        > $hits + ( $run - 2 ) * $RESULTS_PER_RUN );
 
     # Avoid "splice() offset past end of array" warning.
     @distributions
@@ -178,11 +176,11 @@ sub _search_collapsed {
 
     # Now that we know which distributions are going to be displayed on the
     # results page, fetch the details about those distributions
-    my $favorites = $self->search_favorites(@distributions);
-    my $es_query  = $self->build_query(
+    my $es_query = $self->build_query(
         $search_term,
         {
-# we will probably never hit that limit, since we are searching in $page_size=20 distributions max
+            # we will probably never hit that limit, since we are
+            # searching in $page_size=20 distributions max
             size  => 5000,
             query => {
                 filtered => {
@@ -201,20 +199,21 @@ sub _search_collapsed {
             }
         }
     );
-    my $results = $self->run_query( file => $es_query );
+    my $es_dist_results = $self->run_query( file => $es_query );
 
-    $results = $self->_extract_results( $results, $favorites );
+    my $results
+        = $self->_extract_and_inflate_results( $es_dist_results,
+        \@distributions );
+
+    # Would be nice to do this before the _extract which has overhead
     $results = $self->_collapse_results($results);
-    my @ids = map { $_->[0]{id} } @$results;
-    $data = {
+
+    my $return = {
         results   => $results,
         total     => $total,
         collapsed => \1,
     };
-    my $descriptions = $self->search_descriptions(@ids);
-    map { $_->[0]{description} = $descriptions->{results}{ $_->[0]{id} } }
-        @{ $data->{results} };
-    return $data;
+    return $return;
 }
 
 sub _collapse_results {
@@ -413,13 +412,13 @@ sub search_descriptions {
     my ( $self, @ids ) = @_;
     return {} unless @ids;
 
-    my $query   = $self->_build_search_descriptions_query(@ids);
-    my $data    = $self->run_query( file => $query );
-    my $results = {
+    my $query      = $self->_build_search_descriptions_query(@ids);
+    my $es_results = $self->run_query( file => $query );
+    my $results    = {
         results => {
             map { $_->{id} => $_->{description} }
                 map { single_valued_arrayref_to_scalar( $_->{fields} ) }
-                @{ $data->{hits}->{hits} }
+                @{ $es_results->{hits}->{hits} }
         },
     };
     return $results;
@@ -463,19 +462,25 @@ sub search_favorites {
     return {} unless @distributions;
 
     my $query = $self->_build_search_favorites_query(@distributions);
-    my $data = $self->run_query( favorite => $query );
+    my $es_results = $self->run_query( favorite => $query );
 
     my $results = {
         favorites => {
             map { $_->{key} => $_->{doc_count} }
-                @{ $data->{aggregations}->{favorites}->{buckets} }
+                @{ $es_results->{aggregations}->{favorites}->{buckets} }
         },
     };
     return $results;
 }
 
-sub _extract_results {
-    my ( $self, $results, $favorites ) = @_;
+sub _extract_and_inflate_results {
+    my ( $self, $results, $distributions ) = @_;
+
+    my $favorites = $self->search_favorites( @{$distributions} );
+
+    my @ids = map { $_->{fields}->{id} } @{ $results->{hits}->{hits} };
+    my $descriptions = $self->search_descriptions(@ids);
+
     return [
         map {
             my $res = $_;
@@ -488,6 +493,8 @@ sub _extract_results {
                 score      => $res->{_score},
                 favorites  => $favorites->{favorites}{$dist},
                 myfavorite => $favorites->{myfavorites}{$dist},
+                description =>
+                    $descriptions->{results}->{ $res->{fields}{id} },
                 }
         } @{ $results->{hits}{hits} }
     ];
