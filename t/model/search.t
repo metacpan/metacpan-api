@@ -62,6 +62,16 @@ ok( $search->_not_rogue, '_not_rogue' );
 }
 
 {
+    my $module  = 'Binary::Data::WithPod';
+    my $results = $search->search_web($module);
+    is(
+        $results->{results}->[0]->[0]->{description},
+        'razzberry pudding',
+        'description included in results'
+    );
+}
+
+{
     my $id      = 'JatCtNR2RGjcBIs1Y5C_zTzNcXU';
     my $results = $search->search_descriptions($id);
     is_deeply( $results->{results}, { $id => 'TBD' }, 'search_descriptions' );
