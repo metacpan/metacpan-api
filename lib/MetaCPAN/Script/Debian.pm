@@ -8,6 +8,7 @@ use DBI                   ();
 use Email::Sender::Simple ();
 use Email::Simple         ();
 use List::MoreUtils qw( uniq );
+use Log::Contextual qw( :log );
 
 use MetaCPAN::Types qw( HashRef Str );
 
@@ -103,6 +104,33 @@ sub run {
             body => $email_body,
         );
         Email::Sender::Simple->send($email);
+
+        log_debug { "Sending email to " . $self->email_to . ":" };
+        log_debug {"Email body:"};
+        log_debug {$email_body};
+    }
+
+    my $scroll = $self->es->scroll_helper(
+        index  => $self->index->name,
+        type   => 'distribution',
+        scroll => '10m',
+        body   => {
+            query => { exists => { field => "external_package.debian" } }
+        },
+    );
+
+    my @to_remove;
+
+    while ( my $s = $scroll->next ) {
+        my $name = $s->{_source}{name};
+
+        if ( exists $dist{$name} ) {
+            delete $dist{$name}
+                if $dist{$name} eq $s->{_source}{external_package}{debian};
+        }
+        else {
+            push @to_remove => $name;
+        }
     }
 
     my $bulk = $self->es->bulk_helper(
@@ -118,12 +146,27 @@ sub run {
         );
         next unless $exists;
 
+        log_debug {"adding $d"};
         $bulk->update(
             {
                 id  => $d,
                 doc => +{
                     'external_package' => {
                         debian => $dist{$d}
+                    }
+                }
+            }
+        );
+    }
+
+    for my $d (@to_remove) {
+        log_debug {"removing $d"};
+        $bulk->update(
+            {
+                id  => $d,
+                doc => +{
+                    'external_package' => {
+                        debian => undef
                     }
                 }
             }
@@ -149,9 +192,11 @@ sub dist_for {
         my $query
             = { term => { 'distribution.lowercase' => $alias{$1} // $1 } };
 
-        my $res = $self->index->type('release')->filter($query)->raw->all;
-        return $res->{hits}{hits}[0]{_source}{distribution}
-            if exists $res->{hits}{hits} and @{ $res->{hits}{hits} } == 1;
+        my $res = $self->index->type('release')->filter($query)
+            ->sort( [ { date => { order => "desc" } } ] )->raw->first;
+
+        return $res->{_source}{distribution}
+            if $res;
     }
 
     return;
