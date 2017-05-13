@@ -15,9 +15,6 @@ env:
     # We use a non-standard port to avoid trashing production
     # but travis will have it running on the standard port.
     - ES=localhost:9200
-    # Carton --deployment only works on the same version of perl
-    # that the snapshot was built from.
-    - DEPLOYMENT_PERL_VERSION=5.22
 
     # Instantiate Catalyst models using metacpan_server_testing.conf
     - METACPAN_SERVER_CONFIG_LOCAL_SUFFIX=testing
@@ -45,13 +42,14 @@ before_install:
 
   - cpanm -n Devel::Cover::Report::Coveralls
   - cpanm -n Carton
+  - cpanm -n App::cpm
 
   # Carton refuses to update Safe.pm to the version specified in the cpanfile and the
   # version that's core in 5.16 is too old (it fails to work with Devel::Cover).
   - cpanm -n Safe@2.35
 
 install:
-  - 'carton install `test "${TRAVIS_PERL_VERSION}" = "${DEPLOYMENT_PERL_VERSION}" && test "${USE_CPANFILE_SNAPSHOT}" = "true" && echo " --deployment"`'
+  - 'cpm install `test "${USE_CPANFILE_SNAPSHOT}" = "false" && echo " --resolver metadb"`'
 
 before_script:
   - "perl -i -pe 's/(servers :)9900/localhost:9200/' metacpan_server_testing.conf"
