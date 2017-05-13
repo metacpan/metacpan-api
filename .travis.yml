@@ -29,15 +29,19 @@ matrix:
   allow_failures:
     - env: USE_CPANFILE_SNAPSHOT=false
 
+# libgmp-dev required by Net::OpenID::Consumer
+# postgresql-server-dev-all is required by DBD::Pg
+
+addons:
+  apt:
+    packages:
+    - libgmp-dev
+    - postgresql-server-dev-all
+
 before_install:
   - sudo service elasticsearch stop && curl -O -L https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-2.4.3.deb && sudo dpkg -i --force-confnew elasticsearch-2.4.3.deb && sudo service elasticsearch start
 
-  # Run update to make libgmp-dev findable (Required by Net::OpenID::Consumer)
-  # postgresql-server-dev-all is required by DBD::Pg
-  - sudo apt-get install libgmp-dev postgresql-server-dev-all
-
   - sudo service elasticsearch restart
-  - pwd
 
   - cpanm -n Devel::Cover::Report::Coveralls
   - cpanm -n Carton
