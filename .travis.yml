@@ -15,9 +15,6 @@ env:
     # We use a non-standard port to avoid trashing production
     # but travis will have it running on the standard port.
     - ES=localhost:9200
-    # Carton --deployment only works on the same version of perl
-    # that the snapshot was built from.
-    - DEPLOYMENT_PERL_VERSION=5.22
 
     # Instantiate Catalyst models using metacpan_server_testing.conf
     - METACPAN_SERVER_CONFIG_LOCAL_SUFFIX=testing
@@ -29,25 +26,30 @@ matrix:
   allow_failures:
     - env: USE_CPANFILE_SNAPSHOT=false
 
+# libgmp-dev required by Net::OpenID::Consumer
+# postgresql-server-dev-all is required by DBD::Pg
+
+addons:
+  apt:
+    packages:
+    - libgmp-dev
+    - postgresql-server-dev-all
+
 before_install:
   - sudo service elasticsearch stop && curl -O -L https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-2.4.3.deb && sudo dpkg -i --force-confnew elasticsearch-2.4.3.deb && sudo service elasticsearch start
 
-  # Run update to make libgmp-dev findable (Required by Net::OpenID::Consumer)
-  # postgresql-server-dev-all is required by DBD::Pg
-  - sudo apt-get install libgmp-dev postgresql-server-dev-all
-
   - sudo service elasticsearch restart
-  - pwd
 
-  - cpanm -n Devel::Cover::Report::Coveralls
+  #- cpanm -n Devel::Cover::Report::Coveralls
   - cpanm -n Carton
+  - cpanm -n App::cpm
 
   # Carton refuses to update Safe.pm to the version specified in the cpanfile and the
   # version that's core in 5.16 is too old (it fails to work with Devel::Cover).
   - cpanm -n Safe@2.35
 
 install:
-  - 'carton install `test "${TRAVIS_PERL_VERSION}" = "${DEPLOYMENT_PERL_VERSION}" && test "${USE_CPANFILE_SNAPSHOT}" = "true" && echo " --deployment"`'
+  - 'cpm install `test "${USE_CPANFILE_SNAPSHOT}" = "false" && echo " --resolver metadb" || echo " --resolver snapshot"`'
 
 before_script:
   - "perl -i -pe 's/(servers :)9900/localhost:9200/' metacpan_server_testing.conf"
@@ -55,14 +57,19 @@ before_script:
 script:
   # Devel::Cover isn't in the cpanfile
   # but if it's installed into the global dirs this should work.
-  # NOTE: No '-r' for prove; 't/fakecpan.t' does the recursion for us.
-  - HARNESS_PERL_SWITCHES=-MDevel::Cover=+ignore,local carton exec prove -It/lib -lvr t
+  #- HARNESS_PERL_SWITCHES=-MDevel::Cover=+ignore,local carton exec prove -It/lib -lr -j 2 t
+  - carton exec prove -It/lib -lr -j 2 t
 
 after_success:
-  - cover -report coveralls
+#  - cover -report coveralls
 
 #after_failure:
 #  - cat ~/.cpanm/build.log
 
 services:
   - elasticsearch
+
+# caching /local should save about 5 minutes in module install time
+cache:
+  directories:
+    - local

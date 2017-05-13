@@ -174,6 +174,8 @@ requires 'version', '0.9901';
 requires 'warnings';
 
 test_requires 'App::Prove';
+test_requires 'Code::TidyAll', '>= 0.47';
+test_requires 'Code::TidyAll::Plugin::UniqueLines';
 test_requires 'CPAN::Faker', '0.010';
 test_requires 'Devel::Confess';
 test_requires 'Module::Faker', '0.015';
@@ -194,6 +196,4 @@ test_requires 'Test::Routine', '0.012';
 test_requires 'Test::Routine::Util', '0';
 test_requires 'Test::Vars';
 
-author_requires 'Code::TidyAll', '>= 0.47';
-author_requires 'Code::TidyAll::Plugin::UniqueLines';
 author_requires 'Plack::Middleware::Rewrite';
