@@ -447,6 +447,8 @@ sub _extract_results_add_favs {
 1;
 
 ## THIS IS THE QUERY and we fill in the gaps
+## NOTE the 'AND' operator, you also use `minimum_should_match: "80%"` instead
+## We get slow down when too many results
 
 __DATA__
 {
@@ -463,6 +465,7 @@ __DATA__
                     "multi_match": {
                       "query": "--->  QUERY_STRING_GOES_HERE  <----",
                       "type": "cross_fields",
+                      "operator": "AND",
                       "fields": [
                         " --->  PUT IN fields to boost on <--- "
                       ]
