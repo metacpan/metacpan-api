@@ -67,3 +67,8 @@ after_success:
 
 services:
   - elasticsearch
+
+# caching /local should save about 5 minutes in module install time
+cache:
+  directories:
+    - local
