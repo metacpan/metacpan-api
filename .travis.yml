@@ -40,7 +40,7 @@ before_install:
 
   - sudo service elasticsearch restart
 
-  - cpanm -n Devel::Cover::Report::Coveralls
+  #- cpanm -n Devel::Cover::Report::Coveralls
   - cpanm -n Carton
   - cpanm -n App::cpm
 
@@ -57,10 +57,11 @@ before_script:
 script:
   # Devel::Cover isn't in the cpanfile
   # but if it's installed into the global dirs this should work.
-  - HARNESS_PERL_SWITCHES=-MDevel::Cover=+ignore,local carton exec prove -It/lib -lr -j 2 t
+  #- HARNESS_PERL_SWITCHES=-MDevel::Cover=+ignore,local carton exec prove -It/lib -lr -j 2 t
+  - carton exec prove -It/lib -lr -j 2 t
 
 after_success:
-  - cover -report coveralls
+#  - cover -report coveralls
 
 #after_failure:
 #  - cat ~/.cpanm/build.log
