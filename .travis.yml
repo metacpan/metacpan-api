@@ -49,7 +49,7 @@ before_install:
   - cpanm -n Safe@2.35
 
 install:
-  - 'cpm install `test "${USE_CPANFILE_SNAPSHOT}" = "false" && echo " --resolver metadb"`'
+  - 'cpm install `test "${USE_CPANFILE_SNAPSHOT}" = "false" && echo " --resolver metadb" || echo " --resolver snapshot"`'
 
 before_script:
   - "perl -i -pe 's/(servers :)9900/localhost:9200/' metacpan_server_testing.conf"
