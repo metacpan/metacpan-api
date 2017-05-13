@@ -332,10 +332,12 @@ sub _copy_slice {
 
 sub empty_type {
     my $self = shift;
+    my $type = $self->delete_from_type;
+    log_info {"Emptying type: $type"};
 
     my $bulk = $self->es->bulk_helper(
         index     => $self->index->name,
-        type      => $self->delete_from_type,
+        type      => $type,
         max_count => 500,
     );
 
@@ -344,14 +346,14 @@ sub empty_type {
         size        => 250,
         scroll      => '10m',
         index       => $self->index->name,
-        type        => $self->delete_from_type,
+        type        => $type,
         body        => { query => { match_all => {} } },
     );
 
     my @ids;
     while ( my $search = $scroll->next ) {
         push @ids => $search->{_id};
-
+        log_debug { "deleting id=" . $search->{_id} };
         if ( @ids == 500 ) {
             $bulk->delete_ids(@ids);
             @ids = ();
@@ -486,11 +488,10 @@ __END__
  # bin/metacpan mapping --update_index xxx --patch_mapping '{...mapping...}'
  # bin/metacpan mapping --copy_to_index xxx --copy_type release
  # bin/metacpan mapping --copy_to_index xxx --copy_type release --copy_query '{"range":{"date":{"gte":"2016-01","lt":"2017-01"}}}'
+ # bin/metacpan mapping --delete_from_type xxx   # empty the type
 
 =head1 DESCRIPTION
 
 This is the index mapping handling script.
 Used rarely, but carries the most important task of setting
 the index and mapping the types.
-
-=cut
