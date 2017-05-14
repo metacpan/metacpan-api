@@ -2,10 +2,11 @@ package MetaCPAN::Script::Package;
 
 use Moose;
 
+use CPAN::DistnameInfo     ();
+use IO::Uncompress::Gunzip ();
 use Log::Contextual qw( :log );
 use MetaCPAN::Document::Package ();
-use IO::Uncompress::Gunzip      ();
-use CPAN::DistnameInfo          ();
+use MetaCPAN::Types qw( Bool );
 
 with 'MooseX::Getopt', 'MetaCPAN::Role::Script';
 
@@ -14,6 +15,12 @@ with 'MooseX::Getopt', 'MetaCPAN::Role::Script';
 Loads 02packages.details info into db.
 
 =cut
+
+has clean_up => (
+    is      => 'ro',
+    isa     => Bool,
+    default => 0,
+);
 
 sub run {
     my $self = shift;
@@ -44,10 +51,13 @@ sub index_packages {
     }
     log_debug {$meta};
 
-    my $bulk_helper = $self->es->bulk_helper(
+    my $bulk = $self->es->bulk_helper(
         index => $self->index->name,
         type  => 'package',
     );
+
+    my %seen;
+    log_debug {"adding data"};
 
     # read the rest of the file line-by-line (too big to slurp)
     while ( my $line = <$fh> ) {
@@ -66,17 +76,47 @@ sub index_packages {
             dist_version => $distinfo->version,
         };
 
-        $bulk_helper->update(
+        $bulk->update(
             {
                 id            => $name,
                 doc           => $doc,
                 doc_as_upsert => 1,
             }
         );
-    }
 
-    $bulk_helper->flush;
+        $seen{$name} = 1;
+    }
+    $bulk->flush;
+
+    $self->run_cleanup( $bulk, \%seen ) if $self->clean_up;
+
     log_info {'finished indexing 02packages.details'};
+}
+
+sub run_cleanup {
+    my ( $self, $bulk, $seen ) = @_;
+
+    log_debug {"checking package data to remove"};
+
+    my $scroll = $self->es->scroll_helper(
+        index  => $self->index->name,
+        type   => 'package',
+        scroll => '30m',
+        body   => { query => { match_all => {} } },
+    );
+
+    my @remove;
+    my $count = $scroll->total;
+    while ( my $p = $scroll->next ) {
+        my $id = $p->{_id};
+        unless ( exists $seen->{$id} ) {
+            push @remove, $id;
+            log_debug {"removed $id"};
+        }
+        log_debug { $count . " left to check" } if --$count % 10000 == 0;
+    }
+    $bulk->delete_ids(@remove);
+    $bulk->flush;
 }
 
 __PACKAGE__->meta->make_immutable;
