@@ -39,8 +39,9 @@ test_psgi app, sub {
         is_deeply(
             decode_json( $res->content ),
             {
-                module_name => $module_name,
-                owner       => 'RWSTAUNER',
+                co_maintainers => [],
+                module_name    => $module_name,
+                owner          => 'RWSTAUNER',
             },
             'Owned by RWSTAUNER, no co-maint'
         );
