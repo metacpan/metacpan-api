@@ -1,5 +1,11 @@
 ---
 seq:
     - seq: t/0*.t
+
+    # If t/server/controller/user/favorite.t this runs too late then the
+    # looks_human test will fail.  We should probably reset the user data, but
+    # this is a quicker fix for now.
+
+    - seq: t/server/controller/user/favorite.t
     - par:
         - t/**.t
