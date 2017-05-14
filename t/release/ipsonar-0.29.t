@@ -22,7 +22,7 @@ test_release(
 
         # This is kind of a SKIP.  This may be an actual bug which we want to
         # investigate later.
-        tests => undef,
+        #tests => undef,
     }
 );
 
