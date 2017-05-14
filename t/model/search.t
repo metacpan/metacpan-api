@@ -72,8 +72,8 @@ ok( $search->_not_rogue, '_not_rogue' );
 }
 
 {
-    my $id      = 'JatCtNR2RGjcBIs1Y5C_zTzNcXU';
-    my $results = $search->search_descriptions($id);
+    my $id = 'JatCtNR2RGjcBIs1Y5C_zTzNcXU';
+    my $results = $search->search_descriptions( [$id] );
     is_deeply( $results->{results}, { $id => 'TBD' }, 'search_descriptions' );
 }
 
@@ -81,7 +81,8 @@ ok( $search->_not_rogue, '_not_rogue' );
 is_deeply( $search->search_favorites, {},
     'empty hashref when no distributions' );
 
-is_deeply( $search->search_favorites('Pod-Pm'), {}, 'no favorites found' );
+is_deeply( $search->search_favorites( ['Pod-Pm'] ), {},
+    'no favorites found' );
 
 is_deeply( $search->search_descriptions,
     {}, 'empty hashref when no ids for descriptions' );

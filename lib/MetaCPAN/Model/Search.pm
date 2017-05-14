@@ -517,6 +517,7 @@ sub _build_search_descriptions_query {
 sub search_descriptions {
     my ( $self, $ids ) = @_;
 
+    $ids //= [];
     return {} unless @{$ids};
 
     my $es_query = $self->_build_search_descriptions_query($ids);
@@ -563,6 +564,7 @@ sub _build_search_favorites_query {
 # NOTE: assumes $distributions is uniq already
 sub search_favorites {
     my ( $self, $distributions ) = @_;
+    $distributions //= [];
 
     my %favorites = ();
 
