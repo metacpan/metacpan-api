@@ -4,7 +4,6 @@ use strict;
 use warnings;
 
 use Cpanel::JSON::XS ();
-use LWP::UserAgent;
 use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Document::Mirror;
 use Moose;
@@ -19,7 +18,6 @@ sub run {
 
 sub index_mirrors {
     my $self = shift;
-    my $ua   = LWP::UserAgent->new;
     log_info { 'Getting mirrors.json file from ' . $self->cpan };
 
     my $json = $self->cpan->file( 'indices', 'mirrors.json' )->slurp;

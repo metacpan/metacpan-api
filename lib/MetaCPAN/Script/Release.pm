@@ -10,7 +10,6 @@ BEGIN {
 use CPAN::DistnameInfo ();
 use File::Find::Rule;
 use File::stat ();
-use LWP::UserAgent;
 use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Util;
 use MetaCPAN::Model::Release;
@@ -112,15 +111,12 @@ sub run {
                 MetaCPAN::Util::author_dir( $d->cpanid ),
                 $d->filename,
             );
-            my $ua = LWP::UserAgent->new(
-                parse_head => 0,
-                env_proxy  => 1,
-                agent      => 'metacpan',
-                timeout    => 30,
-            );
             $file->dir->mkpath;
             log_info {"Downloading $_"};
-            $ua->mirror( $_, $file );
+
+            $self->ua->parse_head(0);
+            $self->ua->timeout(30);
+            $self->ua->mirror( $_, $file );
             if ( -e $file ) {
                 push( @files, $file );
             }

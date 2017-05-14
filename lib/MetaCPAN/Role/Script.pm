@@ -148,6 +148,8 @@ sub _build_ua {
             : $ua->proxy( [qw<http https>], $proxy );
     }
 
+    $ua->agent('MetaCPAN');
+
     return $ua;
 }
 
