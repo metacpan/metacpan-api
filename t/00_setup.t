@@ -20,6 +20,16 @@ use Path::Class qw(dir file);
 use Test::More 0.96;
 use URI::FromHash qw( uri );
 
+BEGIN {
+  # We test parsing bad YAML.  This attempt emits a noisy warning which is not
+  # helpful in test output, so we'll suppress it here.
+    $SIG{__WARN__} = sub {
+        my $msg = shift;
+        return if $msg =~ m{found a duplicate key};
+        warn $msg;
+    };
+}
+
 # Ensure we're starting fresh
 my $tmp_dir = tmp_dir();
 $tmp_dir->rmtree;
