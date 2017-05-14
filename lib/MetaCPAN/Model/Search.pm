@@ -596,7 +596,7 @@ sub _extract_results_add_favs {
             +{
                 %{ $res->{fields} },
                 %{ $res->{_source} },
-                abstract  => delete $res->{fields}->{'abstract.analyzed'},
+                abstract  => $res->{fields}->{'abstract.analyzed'},
                 score     => $res->{_score},
                 favorites => $favorites->{ $res->{fields}->{distribution} },
                 }
