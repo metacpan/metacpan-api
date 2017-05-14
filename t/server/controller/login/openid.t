@@ -12,9 +12,15 @@ use Test::OpenID::Server;
 use Test::Routine;
 use Test::Routine::Util;
 
-with qw(
-    MetaCPAN::Tests::UserAgent
-);
+with 'MetaCPAN::Tests::UserAgent';
+
+BEGIN {
+    $SIG{__WARN__} = sub {
+        my $msg = shift;
+        return if $msg =~ m{NEXT};
+        warn $msg;
+    };
+}
 
 my $openid_server = Test::OpenID::Server->new;
 my $url           = $openid_server->started_ok('start server');
