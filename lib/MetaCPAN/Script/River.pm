@@ -5,7 +5,6 @@ use namespace::autoclean;
 
 use Cpanel::JSON::XS qw( decode_json );
 use Log::Contextual qw( :log :dlog );
-use LWP::UserAgent ();
 use MetaCPAN::Types qw( ArrayRef Str Uri);
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
@@ -16,12 +15,6 @@ has river_url => (
     coerce   => 1,
     required => 1,
     default  => 'http://neilb.org/river-of-cpan.json.gz',
-);
-
-has _ua => (
-    is      => 'ro',
-    isa     => 'LWP::UserAgent',
-    default => sub { LWP::UserAgent->new( agent => 'MetaCPAN' ) },
 );
 
 sub run {
@@ -49,7 +42,8 @@ sub index_river_summaries {
 
 sub retrieve_river_summaries {
     my $self = shift;
-    my $resp = $self->_ua->get( $self->river_url );
+
+    my $resp = $self->ua->get( $self->river_url );
 
     $self->handle_error( $resp->status_line ) unless $resp->is_success;
 

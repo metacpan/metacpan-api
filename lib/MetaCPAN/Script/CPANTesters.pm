@@ -8,7 +8,6 @@ use File::Spec::Functions qw(catfile);
 use File::Temp qw(tempdir);
 use File::stat qw(stat);
 use IO::Uncompress::Bunzip2 qw(bunzip2);
-use LWP::UserAgent ();
 use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Types qw( Bool File Uri );
 use Moose;
@@ -75,12 +74,11 @@ sub index_reports {
     my $self = shift;
 
     my $es = $self->model->es;
-    my $ua = LWP::UserAgent->new;
 
     log_info { 'Mirroring ' . $self->db };
     my $db = $self->mirror_file;
 
-    $ua->mirror( $self->db, "$db.bz2" ) unless $self->skip_download;
+    $self->ua->mirror( $self->db, "$db.bz2" ) unless $self->skip_download;
 
     if ( -e $db && stat($db)->mtime >= stat("$db.bz2")->mtime ) {
         log_info {'DB hasn\'t been modified'};
