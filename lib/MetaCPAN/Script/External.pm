@@ -10,6 +10,7 @@ use Log::Contextual qw( :log );
 use MetaCPAN::Types qw( Str );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt',
+    'MetaCPAN::Script::Role::External::Cygwin',
     'MetaCPAN::Script::Role::External::Debian';
 
 #    'MetaCPAN::Script::Role::External::Fedora';
@@ -31,6 +32,7 @@ sub run {
     my $ret;
 
     $ret = $self->run_debian if $self->external_source eq 'debian';
+    $ret = $self->run_cygwin if $self->external_source eq 'cygwin';
 
     my $email_body = $ret->{errors_email_body};
     if ($email_body) {
