@@ -92,7 +92,7 @@ sub profile_PUT {
         gravatar_url profile blog
         donation city region country
         location extra perlmongers);
-    $profile->{updated} = DateTime->now;
+    $profile->{updated} = DateTime->now->iso8601;
     my @errors = $c->model('CPAN::Author')->new_document->validate($profile);
 
     if (@errors) {
