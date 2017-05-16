@@ -78,7 +78,15 @@ sub mapping : Path('_mapping') {
 
 sub get : Path('') : Args(1) {
     my ( $self, $c, $id ) = @_;
-    my $file = $self->model($c)->raw->get($id);
+    my $model;
+
+    # get a model without exploding when the request
+    # is for a non-existing type
+    eval {
+        $model = $self->model($c);
+        1;
+    } or return;
+    my $file = $model->raw->get($id);
     if ( !defined $file ) {
         $c->detach( '/not_found', ['Not found'] );
     }
