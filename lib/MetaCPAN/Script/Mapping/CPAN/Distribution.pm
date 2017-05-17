@@ -73,6 +73,11 @@ sub mapping {
            "external_package" : {
               "dynamic" : true,
               "properties" : {
+                 "cygwin" : {
+                    "ignore_above" : 2048,
+                    "index" : "not_analyzed",
+                    "type" : "string"
+                 },
                  "debian" : {
                     "ignore_above" : 2048,
                     "index" : "not_analyzed",
