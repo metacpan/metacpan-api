@@ -318,7 +318,15 @@ sub _version_filters {
     return () unless $version;
 
     if ( $version =~ s/^==\s*// ) {
-        return +{ must => [ { term => { 'module.version' => $version } } ] };
+        return +{
+            must => [
+                {
+                    term => {
+                        'module.version_numified' => $self->_numify($version)
+                    }
+                }
+            ]
+        };
     }
     elsif ( $version =~ /^[<>!]=?\s*/ ) {
         my %ops = qw(< lt <= lte > gt >= gte);
