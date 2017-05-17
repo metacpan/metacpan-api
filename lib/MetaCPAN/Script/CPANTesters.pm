@@ -49,7 +49,7 @@ has _bulk => (
     isa     => 'Search::Elasticsearch::Bulk',
     lazy    => 1,
     default => sub {
-        $_[0]->model->es->bulk_helper(
+        $_[0]->es->bulk_helper(
             index => $_[0]->index->name,
             type  => 'release'
         );
@@ -73,7 +73,7 @@ sub run {
 sub index_reports {
     my $self = shift;
 
-    my $es = $self->model->es;
+    my $es = $self->es;
 
     log_info { 'Mirroring ' . $self->db };
     my $db = $self->mirror_file;

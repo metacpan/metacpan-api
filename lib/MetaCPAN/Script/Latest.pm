@@ -171,7 +171,7 @@ sub run {
         }
     }
 
-    my $bulk = $self->model->es->bulk_helper(
+    my $bulk = $self->es->bulk_helper(
         index => $self->index->name,
         type  => 'file'
     );
