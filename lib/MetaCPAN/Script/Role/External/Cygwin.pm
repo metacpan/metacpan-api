@@ -58,12 +58,15 @@ MIRROR: {
                 map s/\n+/ /gr, split /^([a-z]+): /m, $desc;
             $attr{category} = [ split / /, $attr{category} ];
             next if grep /^(Debug|_obsolete)$/, @{ $attr{category} };
-            $ret->{ $pkg =~ s/^perl-//r } = $pkg;
+            $ret->{dist}{ $pkg =~ s/^perl-//r } = $pkg;
         }
     }
     $self->ua->timeout($timeout);
 
-    log_debug { sprintf "Found %d cygwin-CPAN packages", scalar keys %$ret };
+    log_debug {
+        sprintf "Found %d cygwin-CPAN packages",
+            scalar keys %{ $ret->{dist} }
+    };
 
     return $ret;
 }
