@@ -19,7 +19,8 @@ use Moose;
 use PerlIO::gzip;
 use Try::Tiny qw( catch try );
 
-with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
+with 'MetaCPAN::Role::Script', 'MooseX::Getopt',
+    'MetaCPAN::Script::Role::Contributor';
 
 has latest => (
     is            => 'ro',
@@ -287,6 +288,10 @@ sub import_archive {
         local @ARGV = ( qw(latest --distribution), $document->distribution );
         MetaCPAN::Script::Runner->run;
     }
+
+    my $contrib_data = $self->get_cpan_author_contributors( $document->author,
+        $document->name, $document->distribution );
+    $self->update_release_contirbutors($contrib_data);
 }
 
 sub _build_cpan_files_list {

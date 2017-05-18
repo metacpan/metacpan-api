@@ -20,6 +20,7 @@ use MetaCPAN::Script::Mapping::DeployStatement    ();
 use MetaCPAN::Script::Mapping::User::Account      ();
 use MetaCPAN::Script::Mapping::User::Identity     ();
 use MetaCPAN::Script::Mapping::User::Session      ();
+use MetaCPAN::Script::Mapping::Contributor        ();
 use MetaCPAN::Types qw( Bool Str );
 
 use constant {
@@ -412,6 +413,11 @@ sub deploy_mapping {
                 decode_json( MetaCPAN::Script::Mapping::User::Session::mapping
                 ),
         },
+        contributor => {
+            contributor =>
+                decode_json( MetaCPAN::Script::Mapping::Contributor::mapping
+                ),
+        }
     );
 
     my $deploy_statement
