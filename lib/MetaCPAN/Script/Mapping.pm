@@ -371,32 +371,10 @@ sub list_types {
 
 sub deploy_mapping {
     my $self       = shift;
-    my $es         = $self->es;
     my $cpan_index = 'cpan_v1_01';
-    my $user_index = 'user';
 
     $self->are_you_sure(
         'this will delete EVERYTHING and re-create the (empty) indexes');
-
-    # delete cpan (aliased) + user indices
-
-    $self->_delete_index($user_index)
-        if $es->indices->exists( index => $user_index );
-    $self->_delete_index($cpan_index)
-        if $es->indices->exists( index => $cpan_index );
-
-    # create new indices
-
-    my $dep
-        = decode_json(MetaCPAN::Script::Mapping::DeployStatement::mapping);
-
-    log_info {"Creating index: user"};
-    $es->indices->create( index => $user_index, body => $dep );
-
-    log_info {"Creating index: $cpan_index"};
-    $es->indices->create( index => $cpan_index, body => $dep );
-
-    # create type mappings
 
     my %mappings = (
         $cpan_index => {
@@ -422,7 +400,8 @@ sub deploy_mapping {
                 decode_json( MetaCPAN::Script::Mapping::CPAN::Release::mapping
                 ),
         },
-        $user_index => {
+
+        user => {
             account =>
                 decode_json( MetaCPAN::Script::Mapping::User::Account::mapping
                 ),
@@ -435,7 +414,19 @@ sub deploy_mapping {
         },
     );
 
+    my $deploy_statement
+        = decode_json(MetaCPAN::Script::Mapping::DeployStatement::mapping);
+
+    my $es = $self->es;
+
+    # recreate the indices and apply the mapping
+
     for my $idx ( sort keys %mappings ) {
+        $self->_delete_index($idx) if $es->indices->exists( index => $idx );
+
+        log_info {"Creating index: $idx"};
+        $es->indices->create( index => $idx, body => $deploy_statement );
+
         for my $type ( sort keys %{ $mappings{$idx} } ) {
             log_info {"Adding mapping: $idx/$type"};
             $es->indices->put_mapping(
@@ -447,6 +438,7 @@ sub deploy_mapping {
     }
 
     # create alias
+
     $es->indices->put_alias(
         index => $cpan_index,
         name  => 'cpan',
