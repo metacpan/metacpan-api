@@ -539,5 +539,49 @@ sub get_files {
     return { files => [ map { $_->{_source} } @{ $ret->{hits}{hits} } ] };
 }
 
+sub requires {
+    my ( $self, $module, $page, $page_size, $sort ) = @_;
+    $page      //= 1;
+    $page_size //= 20;
+    $sort      //= { date => 'desc' };
+
+    my $query = {
+        query => {
+            filtered => {
+                query  => { 'match_all' => {} },
+                filter => {
+                    and => [
+                        { term => { 'status'     => 'latest' } },
+                        { term => { 'authorized' => 1 } },
+                        {
+                            term => {
+                                'dependency.module' => $module
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    };
+
+    my $ret = $self->es->search(
+        index => $self->index->name,
+        type  => 'release',
+        body  => {
+            query => $query,
+            from  => $page * $page_size - $page_size,
+            size  => $page_size,
+            sort  => [$sort],
+        }
+    );
+    return {} unless $ret->{hits}{total};
+
+    return +{
+        data => [ map { $_->{_source} } @{ $ret->{hits}{hits} } ],
+        total => $ret->{hits}{total},
+        took  => $ret->{took}
+    };
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
