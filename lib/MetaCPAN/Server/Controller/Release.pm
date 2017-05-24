@@ -67,5 +67,13 @@ sub files : Path('files') : Args(1) {
     $c->stash($data);
 }
 
+sub requires : Path('requires') : Args(1) {
+    my ( $self, $c, $module ) = @_;
+    my @params = @{ $c->req->params }{qw< page page_size sort >};
+    my $data = $self->model($c)->raw->requires( $module, @params );
+    return unless $data;
+    $c->stash($data);
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
