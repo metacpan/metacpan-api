@@ -4,9 +4,11 @@ use strict;
 use warnings;
 
 use Moose;
+
+use Log::Contextual qw( :log );
 use Ref::Util qw( is_arrayref );
 
-use MetaCPAN::Types qw( Bool HashRef Str );
+use MetaCPAN::Types qw( Bool HashRef Int Str );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt',
     'MetaCPAN::Script::Role::Contributor';
@@ -30,6 +32,12 @@ has release => (
     isa => Str,
     documentation =>
         'update contributors for a single release (format: author/release_name)',
+);
+
+has age => (
+    is            => 'ro',
+    isa           => Int,
+    documentation => 'update contributors for a given number of days back',
 );
 
 has author_release => (
@@ -67,6 +75,8 @@ sub run {
             ]
         }
         }
+        : $self->age
+        ? { range => { date => { gte => sprintf( 'now-%dd', $self->age ) } } }
         : return;
 
     my $timeout = $self->all ? '60m' : '5m';
@@ -89,6 +99,7 @@ sub run {
             $r->{fields}{distribution}[0],
         );
         next unless is_arrayref($contrib_data);
+        log_debug { 'adding release ' . $r->{fields}{name}[0] };
         push @data => @{$contrib_data};
     }
 
