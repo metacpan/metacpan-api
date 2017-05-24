@@ -7,7 +7,6 @@ use MetaCPAN::TestServer;
 use Test::More;
 
 my $server = MetaCPAN::TestServer->new;
-$server->index_packages;
 
 test_psgi app, sub {
     my $cb = shift;

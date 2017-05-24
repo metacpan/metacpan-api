@@ -413,6 +413,14 @@ sub get_contributors {
     }
     $authors = [ grep { $_ ne 'unknown' } @$authors ];
 
+    # this check is against a failure in tests (because fake author)
+    return
+        unless $self->es->exists(
+        index => $self->index->name,
+        type  => 'author',
+        id    => $author_name,
+        );
+
     my $author = $self->es->get(
         index => $self->index->name,
         type  => 'author',
