@@ -61,4 +61,11 @@ sub get : Path('') : Args(1) {
         ['The requested field(s) could not be found'] );
 }
 
+sub by_user : Path('by_user') : Args(1) {
+    my ( $self, $c, $user ) = @_;
+    my $data = $self->model($c)->raw->by_user($user);
+    $data or return;
+    $c->stash($data);
+}
+
 1;
