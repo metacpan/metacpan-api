@@ -147,6 +147,39 @@ sub validate {
 
 __PACKAGE__->meta->make_immutable;
 
+package MetaCPAN::Document::Author::Set;
+
+use strict;
+use warnings;
+
+use Moose;
+extends 'ElasticSearchX::Model::Document::Set';
+
+use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
+
+sub by_user {
+    my ( $self, $users ) = @_;
+
+    my $authors = $self->es->search(
+        index => $self->index->name,
+        type  => 'author',
+        body  => {
+            query  => { term => { user => $users } },
+            size   => 100,
+            fields => [qw( user pauseid )],
+        }
+    );
+    return {} unless $authors->{hits}{total};
+
+    my @authors = map {
+        single_valued_arrayref_to_scalar( $_->{fields} );
+        $_->{fields}
+    } @{ $authors->{hits}{hits} };
+
+    return { authors => \@authors };
+}
+
+__PACKAGE__->meta->make_immutable;
 1;
 
 =pod
