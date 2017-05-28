@@ -67,7 +67,6 @@ sub run_debian {
         # map Debian source package to CPAN distro
         while ( my ( $source, $url ) = $sth->fetchrow ) {
             next if $skip{$source};
-            $self->dist_for( $source, $url );
             if ( my $dist = $self->dist_for( $source, $url ) ) {
                 $ret->{dist}{$dist} = $source;
             }
