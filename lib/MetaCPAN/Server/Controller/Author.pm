@@ -61,9 +61,20 @@ sub get : Path('') : Args(1) {
         ['The requested field(s) could not be found'] );
 }
 
+# /author/by_user/USER_ID
 sub by_user : Path('by_user') : Args(1) {
     my ( $self, $c, $user ) = @_;
     my $data = $self->model($c)->raw->by_user($user);
+    $data or return;
+    $c->stash($data);
+}
+
+# /author/by_user?user=USER_ID1&user=USER_ID2...
+sub by_users : Path('by_user') : Args(0) {
+    my ( $self, $c ) = @_;
+    my @users = $c->req->param('user');
+    return unless @users;
+    my $data = $self->model($c)->raw->by_user( \@users );
     $data or return;
     $c->stash($data);
 }

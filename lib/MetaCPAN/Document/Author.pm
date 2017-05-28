@@ -155,16 +155,19 @@ use warnings;
 use Moose;
 extends 'ElasticSearchX::Model::Document::Set';
 
+use Ref::Util qw( is_arrayref );
+
 use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
 
 sub by_user {
     my ( $self, $users ) = @_;
+    $users = [$users] unless is_arrayref($users);
 
     my $authors = $self->es->search(
         index => $self->index->name,
         type  => 'author',
         body  => {
-            query  => { term => { user => $users } },
+            query  => { terms => { user => $users } },
             size   => 100,
             fields => [qw( user pauseid )],
         }
