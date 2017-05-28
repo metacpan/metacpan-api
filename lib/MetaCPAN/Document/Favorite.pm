@@ -47,7 +47,7 @@ use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
 
 sub by_user {
     my ( $self, $user, $size ) = @_;
-    $size ||= 250;
+    $size ||= 1000;
 
     my $favs = $self->es->search(
         index => $self->index->name,
