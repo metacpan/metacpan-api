@@ -55,7 +55,7 @@ sub by_user {
         body  => {
             query  => { term => { user => $user } },
             size   => $size,
-            fields => [qw( date distribution )],
+            fields => [qw( author date distribution )],
             sort   => [      { date    => 'desc' } ],
         }
     );
