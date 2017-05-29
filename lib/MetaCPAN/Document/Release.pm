@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Moose;
+use DateTime qw();
 use Ref::Util qw();
 use ElasticSearchX::Model::Document;
 
@@ -589,6 +590,78 @@ sub requires {
         total => $ret->{hits}{total},
         took  => $ret->{took}
     };
+}
+
+sub _activity_filters {
+    my ( $self, $params, $start ) = @_;
+    my ( $author, $distribution, $module, $new_dists )
+        = @{$params}{qw( author distribution module new_dists )};
+
+    my @filters
+        = ( { range => { date => { from => $start->epoch . '000' } } } );
+
+    push @filters, +{ term => { author => uc($author) } }
+        if $author;
+
+    push @filters, +{ term => { distribution => $distribution } }
+        if $distribution;
+
+    push @filters, +{ term => { 'dependency.module' => $module } }
+        if $module;
+
+    if ( $new_dists and $new_dists eq 'n' ) {
+        push @filters,
+            (
+            +{ term  => { first  => 1 } },
+            +{ terms => { status => [qw( cpan latest )] } },
+            );
+    }
+
+    return +{ bool => { must => \@filters } };
+}
+
+sub activity {
+    my ( $self, $params ) = @_;
+    my $res = $params->{res} // '1w';
+
+    my $start
+        = DateTime->now->truncate( to => 'month' )->subtract( months => 23 );
+
+    my $filters = $self->_activity_filters( $params, $start );
+
+    my $body = {
+        query        => { match_all => {} },
+        aggregations => {
+            histo => {
+                filter       => $filters,
+                aggregations => {
+                    entries => {
+                        date_histogram =>
+                            { field => 'date', interval => $res },
+                    }
+                }
+            }
+        },
+        size => 0,
+    };
+
+    my $ret = $self->es->search(
+        index => $self->index->name,
+        type  => 'release',
+        body  => $body,
+    );
+
+    my $data = { map { $_->{key} => $_->{doc_count} }
+            @{ $ret->{aggregations}{histo}{entries}{buckets} } };
+
+    my $line = [
+        map {
+            $data->{ $start->clone->add( months => $_ )->epoch . '000' }
+                || 0
+        } ( 0 .. 23 )
+    ];
+
+    return { activity => $line };
 }
 
 __PACKAGE__->meta->make_immutable;
