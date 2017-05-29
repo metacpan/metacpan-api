@@ -82,6 +82,11 @@ sub mapping {
                     "ignore_above" : 2048,
                     "index" : "not_analyzed",
                     "type" : "string"
+                 },
+                 "fedora" : {
+                    "ignore_above" : 2048,
+                    "index" : "not_analyzed",
+                    "type" : "string"
                  }
               }
            },
