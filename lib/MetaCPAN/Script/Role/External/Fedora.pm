@@ -24,7 +24,7 @@ sub run_fedora {
     # loop over the results to build @packages
     while ( $options->{page} <= $total ) {
         $uri->query_form($options);
-        log_debug { "Fetching $uri" };
+        log_debug {"Fetching $uri"};
         my $res = $self->ua->get($uri);
         die "Failed to fetch $uri: " . $res->status_line if !$res->is_success;
         my $pkgdb = decode_json $res->decoded_content;
