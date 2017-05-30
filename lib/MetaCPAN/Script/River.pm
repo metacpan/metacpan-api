@@ -27,17 +27,27 @@ sub run {
 
 sub index_river_summaries {
     my ( $self, $summaries ) = @_;
-    $self->index->refresh;
-    my $dists = $self->index->type('distribution');
-    my $bulk = $self->index->bulk( size => 300 );
-    for my $summary (@$summaries) {
+
+    my $bulk = $self->es->bulk_helper(
+        index => $self->index->name,
+        type  => 'distribution',
+    );
+
+    for my $summary ( @{$summaries} ) {
         my $dist = delete $summary->{dist};
-        my $doc  = $dists->get($dist);
-        $doc ||= $dists->new_document( { name => $dist } );
-        $doc->_set_river($summary);
-        $bulk->put($doc);
+
+        $bulk->update(
+            {
+                id  => $dist,
+                doc => {
+                    name  => $dist,
+                    river => $summary,
+                },
+                doc_as_upsert => 1,
+            }
+        );
     }
-    $bulk->commit;
+    $bulk->flush;
 }
 
 sub retrieve_river_summaries {
