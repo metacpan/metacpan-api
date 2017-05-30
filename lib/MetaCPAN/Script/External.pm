@@ -76,6 +76,7 @@ sub update {
 
     while ( my $s = $scroll->next ) {
         my $name = $s->{_source}{name};
+        next unless $name;
 
         if ( exists $dist->{$name} ) {
             delete $dist->{$name}
@@ -93,13 +94,6 @@ sub update {
     );
 
     for my $d ( keys %{$dist} ) {
-        my $exists = $self->es->exists(
-            index => $self->index->name,
-            type  => 'distribution',
-            id    => $d,
-        );
-        next unless $exists;
-
         log_debug {"[$external_source] adding $d"};
         $bulk->update(
             {
@@ -108,7 +102,8 @@ sub update {
                     'external_package' => {
                         $external_source => $dist->{$d}
                     }
-                }
+                },
+                doc_as_upsert => 1,
             }
         );
     }
