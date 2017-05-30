@@ -61,7 +61,7 @@ sub run_fedora {
     for my $pkg (@packages) {
         my ( $source, $url ) = ( $pkg->{name}, $pkg->{upstream_url} );
         next if $skip{$source};
-        if ( my $dist = $self->dist_for( $source, $url ) ) {
+        if ( my $dist = $self->dist_for_fedora( $source, $url ) ) {
             $ret->{dist}{$dist} = $source;
         }
         else { push @failures => [ $source, $url ]; }
@@ -80,7 +80,7 @@ sub run_fedora {
     return $ret;
 }
 
-sub dist_for {
+sub dist_for_fedora {
     my ( $self, $source, $url ) = @_;
     state $dist_re = qr{https?://
                         (?:(?:www\.)?metacpan\.org/release
