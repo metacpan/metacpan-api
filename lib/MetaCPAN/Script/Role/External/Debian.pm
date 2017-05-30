@@ -67,7 +67,7 @@ sub run_debian {
         # map Debian source package to CPAN distro
         while ( my ( $source, $url ) = $sth->fetchrow ) {
             next if $skip{$source};
-            if ( my $dist = $self->dist_for( $source, $url ) ) {
+            if ( my $dist = $self->dist_for_debian( $source, $url ) ) {
                 $ret->{dist}{$dist} = $source;
             }
             else {
@@ -84,7 +84,7 @@ sub run_debian {
     return $ret;
 }
 
-sub dist_for {
+sub dist_for_debian {
     my ( $self, $source, $url ) = @_;
 
     my %alias = (
