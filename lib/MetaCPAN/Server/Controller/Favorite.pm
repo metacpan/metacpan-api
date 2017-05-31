@@ -30,7 +30,8 @@ sub find : Path('') : Args(2) {
 
 sub by_user : Path('by_user') : Args(1) {
     my ( $self, $c, $user ) = @_;
-    my $data = $self->model($c)->raw->by_user($user);
+    my $size = $c->req->param('size') || 250;
+    my $data = $self->model($c)->raw->by_user( $user, $size );
     $data or return;
     $c->stash($data);
 }
