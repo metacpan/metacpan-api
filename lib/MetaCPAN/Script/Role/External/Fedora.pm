@@ -87,7 +87,7 @@ sub dist_for_fedora {
                              |search\.cpan\.org/(?:dist|~\w+))
                         /([^/]+)/?}x;
 
-    if ( $url =~ $dist_re ) {
+    if ( $url && $url =~ $dist_re ) {
         return $1;
     }
     elsif ( $source =~ /^perl-(.*)/ ) {
