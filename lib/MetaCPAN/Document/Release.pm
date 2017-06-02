@@ -285,6 +285,9 @@ use strict;
 use warnings;
 
 use Moose;
+
+use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
+
 extends 'ElasticSearchX::Model::Document::Set';
 
 sub aggregate_status_by_author {
@@ -662,6 +665,37 @@ sub activity {
     ];
 
     return { activity => $line };
+}
+
+sub latest_by_author {
+    my ( $self, $pauseid ) = @_;
+
+    my $body = {
+        query => {
+            bool => {
+                must => [
+                    { term => { author => uc($pauseid) } },
+                    { term => { status => 'latest' } }
+                ]
+            }
+        },
+        sort =>
+            [ 'distribution', { 'version_numified' => { reverse => 1 } } ],
+        fields => [qw(author distribution name status abstract date)],
+        size   => 1000,
+    };
+
+    my $ret = $self->es->search(
+        index => $self->index->name,
+        type  => 'release',
+        body  => $body,
+    );
+    return unless $ret->{hits}{total};
+
+    my $data = [ map { $_->{fields} } @{ $ret->{hits}{hits} } ];
+    single_valued_arrayref_to_scalar($data);
+
+    return { took => $ret->{took}, releases => $data };
 }
 
 __PACKAGE__->meta->make_immutable;

@@ -75,5 +75,12 @@ sub requires : Path('requires') : Args(1) {
     $c->stash($data);
 }
 
+sub latest_by_author : Path('latest_by_author') : Args(1) {
+    my ( $self, $c, $pauseid ) = @_;
+    my $data = $self->model($c)->raw->latest_by_author($pauseid);
+    return unless $data;
+    $c->stash($data);
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
