@@ -49,4 +49,11 @@ sub find : Path('') {
     } or $c->detach( '/not_found', [$@] );
 }
 
+sub dir : Path('dir') {
+    my ( $self, $c, @path ) = @_;
+    my $data = $self->model($c)->dir(@path);
+    return unless $data;
+    $c->stash($data);
+}
+
 1;

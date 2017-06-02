@@ -2,6 +2,8 @@ package MetaCPAN::Document::File::Set;
 
 use Moose;
 
+use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
+
 extends 'ElasticSearchX::Model::Document::Set';
 
 my @ROGUE_DISTRIBUTIONS = qw(
@@ -560,6 +562,45 @@ sub autocomplete_using_suggester {
                 @{ $data->{hits}{hits} }
         ]
     };
+}
+
+sub dir {
+    my ( $self, $author, $release, @path ) = @_;
+
+    my $body = {
+        query => {
+            bool => {
+                must => [
+                    { term => { 'level'   => scalar @path } },
+                    { term => { 'author'  => $author } },
+                    { term => { 'release' => $release } },
+                    {
+                        prefix => {
+                            'path' => join( q{/}, @path, q{} )
+                        }
+                    },
+                ]
+            },
+        },
+        size   => 999,
+        fields => [
+            qw(name stat.mtime path stat.size directory slop documentation mime)
+        ],
+    };
+
+    my $data = $self->es->search(
+        {
+            index => $self->index->name,
+            type  => 'file',
+            body  => $body,
+        }
+    );
+    return unless $data->{hits}{total};
+
+    my $dir = [ map { $_->{fields} } @{ $data->{hits}{hits} } ];
+    single_valued_arrayref_to_scalar($dir);
+
+    return { dir => $dir };
 }
 
 __PACKAGE__->meta->make_immutable;
