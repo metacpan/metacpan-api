@@ -36,5 +36,14 @@ sub by_user : Path('by_user') : Args(1) {
     $c->stash($data);
 }
 
+sub recent : Path('recent') : Args(0) {
+    my ( $self, $c ) = @_;
+    my $page = $c->req->param('page') || 1;
+    my $size = $c->req->param('size') || 100;
+    my $data = $self->model($c)->raw->recent( $page, $size );
+    $data or return;
+    $c->stash($data);
+}
+
 __PACKAGE__->meta->make_immutable;
 1;

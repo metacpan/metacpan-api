@@ -101,5 +101,31 @@ sub by_user {
     return { favorites => \@favs, took => $took };
 }
 
+sub recent {
+    my ( $self, $page, $size ) = @_;
+    $page //= 1;
+    $size //= 100;
+
+    my $favs = $self->es->search(
+        index => $self->index->name,
+        type  => 'favorite',
+        body  => {
+            size  => $size,
+            from  => ( $page - 1 ) * $size,
+            query => { match_all => {} },
+            sort  => [ { 'date' => { order => 'desc' } } ]
+        }
+    );
+    return {} unless $favs->{hits}{total};
+
+    my @favs = map { $_->{_source} } @{ $favs->{hits}{hits} };
+
+    return +{
+        favorites => \@favs,
+        took      => $favs->{took},
+        total     => $favs->{total}
+    };
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
