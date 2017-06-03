@@ -698,5 +698,34 @@ sub latest_by_author {
     return { took => $ret->{took}, releases => $data };
 }
 
+sub all_by_author {
+    my ( $self, $author, $size, $page ) = @_;
+    $size //= 100;
+    $page //= 1;
+
+    my $body = {
+        query => { term => { author => uc($author) } },
+        sort  => [      { date      => 'desc' } ],
+        fields => [qw(author distribution name status abstract date)],
+        size   => $size,
+        from   => ( $page - 1 ) * $size,
+    };
+    my $ret = $self->es->search(
+        index => $self->index->name,
+        type  => 'release',
+        body  => $body,
+    );
+    return unless $ret->{hits}{total};
+
+    my $data = [ map { $_->{fields} } @{ $ret->{hits}{hits} } ];
+    single_valued_arrayref_to_scalar($data);
+
+    return {
+        took     => $ret->{took},
+        releases => $data,
+        total    => $ret->{hits}{total}
+    };
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
