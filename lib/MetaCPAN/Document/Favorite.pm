@@ -127,5 +127,33 @@ sub recent {
     };
 }
 
+sub leaderboard {
+    my $self = shift;
+
+    my $body = {
+        size         => 0,
+        query        => { match_all => {} },
+        aggregations => {
+            leaderboard =>
+                { terms => { field => 'distribution', size => 600 }, },
+        },
+    };
+
+    my $ret = $self->es->search(
+        index => $self->index->name,
+        type  => 'favorite',
+        body  => $body,
+    );
+
+    my @leaders
+        = @{ $ret->{aggregations}{leaderboard}{buckets} }[ 0 .. 99 ];
+
+    return {
+        leaderboard => \@leaders,
+        took        => $ret->{took},
+        total       => $ret->{total}
+    };
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
