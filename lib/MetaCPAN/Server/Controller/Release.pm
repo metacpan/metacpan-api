@@ -82,5 +82,13 @@ sub latest_by_author : Path('latest_by_author') : Args(1) {
     $c->stash($data);
 }
 
+sub all_by_author : Path('all_by_author') : Args(1) {
+    my ( $self, $c, $pauseid ) = @_;
+    my @params = @{ $c->req->params }{qw< page page_size >};
+    my $data = $self->model($c)->raw->all_by_author( $pauseid, @params );
+    return unless $data;
+    $c->stash($data);
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
