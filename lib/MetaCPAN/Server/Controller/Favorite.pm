@@ -45,5 +45,12 @@ sub recent : Path('recent') : Args(0) {
     $c->stash($data);
 }
 
+sub leaderboard : Path('leaderboard') : Args(0) {
+    my ( $self, $c ) = @_;
+    my $data = $self->model($c)->raw->leaderboard();
+    $data or return;
+    $c->stash($data);
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
