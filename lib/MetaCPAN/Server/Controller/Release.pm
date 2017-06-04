@@ -90,5 +90,12 @@ sub all_by_author : Path('all_by_author') : Args(1) {
     $c->stash($data);
 }
 
+sub versions : Path('versions') : Args(1) {
+    my ( $self, $c, $dist ) = @_;
+    my $data = $self->model($c)->raw->versions($dist);
+    return unless $data;
+    $c->stash($data);
+}
+
 __PACKAGE__->meta->make_immutable;
 1;

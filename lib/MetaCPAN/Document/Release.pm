@@ -727,5 +727,28 @@ sub all_by_author {
     };
 }
 
+sub versions {
+    my ( $self, $dist ) = @_;
+
+    my $body = {
+        query => { term => { distribution => $dist } },
+        size  => 250,
+        sort  => [      { date            => 'desc' } ],
+        fields => [qw( name date author version status maturity authorized )],
+    };
+
+    my $ret = $self->es->search(
+        index => $self->index->name,
+        type  => 'release',
+        body  => $body,
+    );
+    return unless $ret->{hits}{total};
+
+    my $data = [ map { $_->{fields} } @{ $ret->{hits}{hits} } ];
+    single_valued_arrayref_to_scalar($data);
+
+    return { releases => $data };
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
