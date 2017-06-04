@@ -58,7 +58,7 @@ sudo bin/elasticsearch -f -Des.http.port=9900 -Des.cluster.name=testing
 ```
 Then run the test suite:
 ```sh
-cd /home/metacpan/api.metacpan.org
+cd /home/metacpan/metacpan-api
 ./bin/prove t
 ```
 The test suite has to pass all tests.
@@ -130,9 +130,3 @@ IRC logs can be found here:
 [http://irclog.perlgeek.de/metacpan/today](http://irclog.perlgeek.de/metacpan/today)
 (Thanks to [Moritz Lenz](http://moritz.faui2k3.org/) for making this service
 available)
-
-Mailing List
-------------
-
-Our mailing list is open to all:
-[http://groups.google.com/group/cpan-api](http://groups.google.com/group/cpan-api) 
