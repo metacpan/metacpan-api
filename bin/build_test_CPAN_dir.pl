@@ -26,7 +26,7 @@ my $injector = OrePAN2::Injector->new( directory => $CPAN_DIR, );
 
 my $es = ElasticSearch->new(
     no_refresh => 1,
-    servers    => 'api.metacpan.org',
+    servers    => 'fastapi.metacpan.org',
 
     # trace_calls => \*STDOUT,
 );

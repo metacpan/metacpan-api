@@ -267,8 +267,8 @@ out ES information.
 
 This can then be accessed here:
 
-http://api.metacpan.org/distribution/Moose
-http://api.metacpan.org/distribution/HTTP-BrowserDetect
+http://fastapi.metacpan.org/v1/distribution/Moose
+http://fastapi.metacpan.org/v1/distribution/HTTP-BrowserDetect
 
 =cut
 
