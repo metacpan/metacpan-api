@@ -750,5 +750,50 @@ sub versions {
     return { releases => $data };
 }
 
+sub top_uploaders {
+    my ( $self, $range ) = @_;
+    my $range_filter = {
+        range => {
+            date => {
+                from => $range eq 'all' ? 0 : DateTime->now->subtract(
+                      $range eq 'weekly'  ? 'weeks'
+                    : $range eq 'monthly' ? 'months'
+                    : $range eq 'yearly'  ? 'years'
+                    :                       'weeks' => 1
+                )->truncate( to => 'day' )->iso8601
+            },
+        }
+    };
+
+    my $body = {
+        query        => { match_all => {} },
+        aggregations => {
+            author => {
+                aggregations => {
+                    entries => {
+                        terms => { field => 'author', size => 50 }
+                    }
+                },
+                filter => $range_filter,
+            },
+        },
+        size => 0,
+    };
+
+    my $ret = $self->es->search(
+        index => $self->index->name,
+        type  => 'release',
+        body  => $body,
+    );
+
+    my $counts = { map { $_->{key} => $_->{doc_count} }
+            @{ $ret->{aggregations}{author}{entries}{buckets} } };
+
+    return {
+        counts => $counts,
+        took   => $ret->{took}
+    };
+}
+
 __PACKAGE__->meta->make_immutable;
 1;

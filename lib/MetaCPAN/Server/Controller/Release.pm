@@ -97,5 +97,13 @@ sub versions : Path('versions') : Args(1) {
     $c->stash($data);
 }
 
+sub top_uploaders : Path('top_uploaders') : Args() {
+    my ( $self, $c ) = @_;
+    my $range = $c->req->param('range') || 'weekly';
+    my $data = $self->model($c)->raw->top_uploaders($range);
+    return unless $data;
+    $c->stash($data);
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
