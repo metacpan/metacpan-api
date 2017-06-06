@@ -69,9 +69,11 @@ sub by_modules {
     my ( $self, $modules ) = @_;
     $modules = [$modules] unless is_arrayref($modules);
 
+    my @modules = map +{ term => { module_name => $_ } }, @{$modules};
+
     my $body = {
         query => {
-            terms => { module_name => $modules },
+            bool => { should => \@modules }
         },
         size => 1_000,
     };
