@@ -36,6 +36,13 @@ sub by_user : Path('by_user') : Args(1) {
     $c->stash($data);
 }
 
+sub users_by_distribution : Path('users_by_distribution') : Args(1) {
+    my ( $self, $c, $distribution ) = @_;
+    my $data = $self->model($c)->raw->users_by_distribution($distribution);
+    $data or return;
+    $c->stash($data);
+}
+
 sub recent : Path('recent') : Args(0) {
     my ( $self, $c ) = @_;
     my $page = $c->req->param('page') || 1;
