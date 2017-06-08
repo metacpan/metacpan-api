@@ -101,6 +101,27 @@ sub by_user {
     return { favorites => \@favs, took => $took };
 }
 
+sub users_by_distribution {
+    my ( $self, $distribution ) = @_;
+
+    my $favs = $self->es->search(
+        index => $self->index->name,
+        type  => 'favorite',
+        body  => {
+            query   => { term => { distribution => $distribution } },
+            _source => ['user'],
+            size    => 1000,
+        }
+    );
+    return {} unless $favs->{hits}{total};
+
+    my @plusser_users = map { $_->{_source}{user} } @{ $favs->{hits}{hits} };
+
+    single_valued_arrayref_to_scalar( \@plusser_users );
+
+    return { users => \@plusser_users };
+}
+
 sub recent {
     my ( $self, $page, $size ) = @_;
     $page //= 1;
