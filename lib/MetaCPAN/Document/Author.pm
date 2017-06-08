@@ -167,16 +167,15 @@ sub by_user {
         index => $self->index->name,
         type  => 'author',
         body  => {
-            query  => { terms => { user => $users } },
-            size   => 100,
-            fields => [qw( user pauseid )],
+            query => { terms => { user => $users } },
+            size  => 100,
         }
     );
     return {} unless $authors->{hits}{total};
 
     my @authors = map {
-        single_valued_arrayref_to_scalar( $_->{fields} );
-        $_->{fields}
+        single_valued_arrayref_to_scalar( $_->{_source} );
+        $_->{_source}
     } @{ $authors->{hits}{hits} };
 
     return { authors => \@authors };
