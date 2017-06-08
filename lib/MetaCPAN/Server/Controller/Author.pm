@@ -61,6 +61,15 @@ sub get : Path('') : Args(1) {
         ['The requested field(s) could not be found'] );
 }
 
+# /author/search?q=QUERY
+sub qsearch : Path('search') : Args(0) {
+    my ( $self,  $c )    = @_;
+    my ( $query, $from ) = @{ $c->req->params }{qw( q from )};
+    my $data = $self->model($c)->raw->search( $query, $from );
+    $data or return;
+    $c->stash($data);
+}
+
 # /author/by_user/USER_ID
 sub by_user : Path('by_user') : Args(1) {
     my ( $self, $c, $user ) = @_;
