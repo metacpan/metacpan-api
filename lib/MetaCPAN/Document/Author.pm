@@ -181,6 +181,53 @@ sub by_user {
     return { authors => \@authors };
 }
 
+sub search {
+    my ( $self, $query, $from ) = @_;
+
+    my $body = {
+        query => {
+            bool => {
+                should => [
+                    {
+                        match => {
+                            'name.analyzed' =>
+                                { query => $query, operator => 'and' }
+                        }
+                    },
+                    {
+                        match => {
+                            'asciiname.analyzed' =>
+                                { query => $query, operator => 'and' }
+                        }
+                    },
+                    { match => { 'pauseid'    => uc($query) } },
+                    { match => { 'profile.id' => lc($query) } },
+                ]
+            }
+        },
+        size => 10,
+        from => $from || 0,
+    };
+
+    my $ret = $self->es->search(
+        index => $self->index->name,
+        type  => 'author',
+        body  => $body,
+    );
+    return {} unless $ret->{hits}{total};
+
+    my @authors = map {
+        single_valued_arrayref_to_scalar( $_->{_source} );
+        +{ %{ $_->{_source} }, id => $_->{_id} }
+    } @{ $ret->{hits}{hits} };
+
+    return +{
+        authors => \@authors,
+        took    => $ret->{took},
+        total   => $ret->{hits}{total},
+    };
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
 
