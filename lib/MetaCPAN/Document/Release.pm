@@ -551,50 +551,6 @@ sub get_files {
     return { files => [ map { $_->{_source} } @{ $ret->{hits}{hits} } ] };
 }
 
-sub requires {
-    my ( $self, $module, $page, $page_size, $sort ) = @_;
-    $page      //= 1;
-    $page_size //= 20;
-    $sort      //= { date => 'desc' };
-
-    my $query = {
-        query => {
-            filtered => {
-                query  => { 'match_all' => {} },
-                filter => {
-                    and => [
-                        { term => { 'status'     => 'latest' } },
-                        { term => { 'authorized' => 1 } },
-                        {
-                            term => {
-                                'dependency.module' => $module
-                            }
-                        }
-                    ]
-                }
-            }
-        }
-    };
-
-    my $ret = $self->es->search(
-        index => $self->index->name,
-        type  => 'release',
-        body  => {
-            query => $query,
-            from  => $page * $page_size - $page_size,
-            size  => $page_size,
-            sort  => [$sort],
-        }
-    );
-    return {} unless $ret->{hits}{total};
-
-    return +{
-        data => [ map { $_->{_source} } @{ $ret->{hits}{hits} } ],
-        total => $ret->{hits}{total},
-        took  => $ret->{took}
-    };
-}
-
 sub _activity_filters {
     my ( $self, $params, $start ) = @_;
     my ( $author, $distribution, $module, $new_dists )
@@ -793,6 +749,168 @@ sub top_uploaders {
         counts => $counts,
         took   => $ret->{took}
     };
+}
+
+sub requires {
+    my ( $self, $module, $page, $page_size, $sort ) = @_;
+    $page      //= 1;
+    $page_size //= 20;
+    $sort      //= { date => 'desc' };
+
+    my $query = {
+        query => {
+            filtered => {
+                query  => { 'match_all' => {} },
+                filter => {
+                    and => [
+                        { term => { 'status'     => 'latest' } },
+                        { term => { 'authorized' => 1 } },
+                        {
+                            term => {
+                                'dependency.module' => $module
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    };
+
+    my $ret = $self->es->search(
+        index => $self->index->name,
+        type  => 'release',
+        body  => {
+            query => $query,
+            from  => $page * $page_size - $page_size,
+            size  => $page_size,
+            sort  => [$sort],
+        }
+    );
+    return {} unless $ret->{hits}{total};
+
+    return +{
+        data => [ map { $_->{_source} } @{ $ret->{hits}{hits} } ],
+        total => $ret->{hits}{total},
+        took  => $ret->{took}
+    };
+}
+
+sub reverse_dependencies {
+    my ( $self, $distribution, $page, $page_size, $sort ) = @_;
+
+    # get the latest release of given distribution
+    my $release = $self->_get_latest_release($distribution) || return;
+
+    # get (authorized/indexed) modules provided by the release
+    my $modules = $self->_get_provided_modules($release) || return;
+
+    # get releases depended on those modules
+    my $depended
+        = $self->_get_depended_releases( $modules, $page, $page_size, $sort )
+        || return;
+
+    my $data = [ map [ @{$_}{qw( name author date )} ], @{$depended} ];
+    single_valued_arrayref_to_scalar($data);
+    return +{ data => $data };
+}
+
+sub _get_latest_release {
+    my ( $self, $distribution ) = @_;
+
+    my $release = $self->es->search(
+        index => $self->index->name,
+        type  => 'release',
+        body  => {
+            query => {
+                bool => {
+                    must => [
+                        { term => { distribution => $distribution } },
+                        { term => { status       => 'latest' } },
+                        { term => { authorized   => 1 } },
+                    ]
+                },
+            },
+            fields => [qw< name author >],
+        },
+    );
+    return unless $release->{hits}{total};
+
+    my ($release_info) = map { $_->{fields} } @{ $release->{hits}{hits} };
+    single_valued_arrayref_to_scalar($release_info);
+
+    return +{
+        name   => $release_info->{name},
+        author => $release_info->{author},
+    };
+}
+
+sub _get_provided_modules {
+    my ( $self, $release ) = @_;
+
+    my $provided_modules = $self->es->search(
+        index => $self->index->name,
+        type  => 'file',
+        body  => {
+            query => {
+                bool => {
+                    must => [
+                        { term => { 'release' => $release->{name} } },
+                        { term => { 'author'  => $release->{author} } },
+                        { term => { 'module.authorized' => 1 } },
+                        { term => { 'module.indexed'    => 1 } },
+                    ]
+                }
+            },
+            size => 999,
+        }
+    );
+    return unless $provided_modules->{hits}{total};
+
+    return [
+        map { $_->{name} }
+            grep { $_->{indexed} && $_->{authorized} }
+            map { @{ $_->{_source}{module} } }
+            @{ $provided_modules->{hits}{hits} }
+    ];
+}
+
+sub _get_depended_releases {
+    my ( $self, $modules, $page, $page_size, $sort ) = @_;
+    $sort //= { date => 'desc' };
+    $page //= 1;
+    $page_size //= 50;
+
+    # because 'terms' doesn't work properly
+    my $filter_modules = {
+        bool => {
+            should => [
+                map +{ term => { 'dependency.module' => $_ } },
+                @{$modules}
+            ]
+        }
+    };
+
+    my $depended = $self->es->search(
+        index => $self->index->name,
+        type  => 'release',
+        body  => {
+            query => {
+                bool => {
+                    must => [
+                        $filter_modules,
+                        { term => { status     => 'latest' } },
+                        { term => { authorized => 1 } },
+                    ]
+                }
+            },
+            size => $page_size,
+            from => $page * $page_size - $page_size,
+            sort => $sort,
+        }
+    );
+    return unless $depended->{hits}{total};
+
+    return [ map { $_->{_source} } @{ $depended->{hits}{hits} } ];
 }
 
 __PACKAGE__->meta->make_immutable;

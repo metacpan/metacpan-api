@@ -67,6 +67,7 @@ sub files : Path('files') : Args(1) {
     $c->stash($data);
 }
 
+# TODO: remove after deployed in Controller::ReverseDependencies
 sub requires : Path('requires') : Args(1) {
     my ( $self, $c, $module ) = @_;
     my @params = @{ $c->req->params }{qw< page page_size sort >};
