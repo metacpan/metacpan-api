@@ -809,9 +809,7 @@ sub reverse_dependencies {
         = $self->_get_depended_releases( $modules, $page, $page_size, $sort )
         || return;
 
-    my $data = [ map [ @{$_}{qw( name author date )} ], @{$depended} ];
-    single_valued_arrayref_to_scalar($data);
-    return +{ data => $data };
+    return +{ data => $depended };
 }
 
 sub _get_latest_release {
