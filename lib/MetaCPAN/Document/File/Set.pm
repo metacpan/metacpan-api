@@ -112,25 +112,6 @@ sub find_pod {
     }
 }
 
-# return files that contain modules that match the given dist
-# NOTE: these still need to be filtered by authorized/indexed
-# TODO: test that we are getting the correct version (latest)
-sub find_provided_by {
-    my ( $self, $release ) = @_;
-    return $self->filter(
-        {
-            bool => {
-                must => [
-                    { term => { 'release'           => $release->{name} } },
-                    { term => { 'author'            => $release->{author} } },
-                    { term => { 'module.authorized' => 1 } },
-                    { term => { 'module.indexed'    => 1 } },
-                ]
-            }
-        }
-    )->size(999)->all;
-}
-
 sub documented_modules {
     my ( $self, $release ) = @_;
     return $self->filter(
@@ -169,18 +150,6 @@ sub documented_modules {
             ],
         }
     )->size(999);
-}
-
-# filter find_provided_by results for indexed/authorized modules
-# and return a list of package names
-sub find_module_names_provided_by {
-    my ( $self, $release ) = @_;
-    my $mods = $self->inflate(0)->find_provided_by($release);
-    return (
-        map { $_->{name} }
-        grep { $_->{indexed} && $_->{authorized} }
-        map { @{ $_->{_source}->{module} } } @{ $mods->{hits}->{hits} }
-    );
 }
 
 =head2 find_download_url

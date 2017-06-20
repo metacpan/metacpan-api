@@ -316,17 +316,6 @@ sub aggregate_status_by_author {
     return \%ret;
 }
 
-sub find_depending_on {
-    my ( $self, $modules ) = @_;
-    return $self->filter(
-        {
-            or => [
-                map { { term => { 'dependency.module' => $_ } } } @$modules
-            ]
-        }
-    );
-}
-
 sub find {
     my ( $self, $name ) = @_;
     return $self->filter(
