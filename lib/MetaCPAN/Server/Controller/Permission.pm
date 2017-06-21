@@ -23,8 +23,12 @@ sub by_module : Path('by_module') : Args(1) {
 
 sub by_modules : Path('by_module') : Args(0) {
     my ( $self, $c ) = @_;
-    my @modules = $c->req->param('module');
-    my $data    = $self->model($c)->raw->by_modules( \@modules );
+    my $modules
+        = $c->req->body_data
+        ? $c->req->body_data->{module}
+        : [ $c->req->param('module') ];
+    return unless $modules and @{$modules};
+    my $data = $self->model($c)->raw->by_modules($modules);
     return unless $data;
     $c->stash($data);
 }
