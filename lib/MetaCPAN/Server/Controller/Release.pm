@@ -106,5 +106,13 @@ sub top_uploaders : Path('top_uploaders') : Args() {
     $c->stash($data);
 }
 
+sub interesting_files : Path('interesting_files') : Args(2) {
+    my ( $self, $c, $author, $release ) = @_;
+    my $data
+        = $c->model('CPAN::File')->interesting_files( $author, $release );
+    return unless $data;
+    $c->stash($data);
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
