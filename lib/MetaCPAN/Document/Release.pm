@@ -692,7 +692,11 @@ sub versions {
     my $data = [ map { $_->{fields} } @{ $ret->{hits}{hits} } ];
     single_valued_arrayref_to_scalar($data);
 
-    return { releases => $data };
+    return {
+        releases => $data,
+        total    => $ret->{hits}{total},
+        took     => $ret->{took}
+    };
 }
 
 sub top_uploaders {
