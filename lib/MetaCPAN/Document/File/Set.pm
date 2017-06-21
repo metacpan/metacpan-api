@@ -676,7 +676,11 @@ sub interesting_files {
     my $files = [ map { $_->{fields} } @{ $data->{hits}{hits} } ];
     single_valued_arrayref_to_scalar($files);
 
-    return { files => $files };
+    return {
+        files => $files,
+        total => $data->{hits}{total},
+        took  => $data->{took}
+    };
 }
 
 __PACKAGE__->meta->make_immutable;
