@@ -67,11 +67,10 @@ sub files : Path('files') : Args(1) {
     $c->stash($data);
 }
 
-# TODO: remove after deployed in Controller::ReverseDependencies
-sub requires : Path('requires') : Args(1) {
-    my ( $self, $c, $module ) = @_;
-    my @params = @{ $c->req->params }{qw< page page_size sort >};
-    my $data = $self->model($c)->raw->requires( $module, @params );
+sub recent : Path('recent') : Args(0) {
+    my ( $self, $c ) = @_;
+    my @params = @{ $c->req->params }{qw( page page_size type )};
+    my $data   = $self->model($c)->raw->recent(@params);
     return unless $data;
     $c->stash($data);
 }
@@ -85,7 +84,7 @@ sub latest_by_author : Path('latest_by_author') : Args(1) {
 
 sub all_by_author : Path('all_by_author') : Args(1) {
     my ( $self, $c, $pauseid ) = @_;
-    my @params = @{ $c->req->params }{qw< page page_size >};
+    my @params = @{ $c->req->params }{qw( page page_size )};
     my $data = $self->model($c)->raw->all_by_author( $pauseid, @params );
     return unless $data;
     $c->stash($data);
