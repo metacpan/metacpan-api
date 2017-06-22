@@ -904,5 +904,61 @@ sub _get_depended_releases {
     return [ map { $_->{_source} } @{ $depended->{hits}{hits} } ];
 }
 
+sub recent {
+    my ( $self, $page, $page_size, $type ) = @_;
+    my $query;
+
+    if ( $type eq 'n' ) {
+        $query = {
+            constant_score => {
+                filter => {
+                    bool => {
+                        must => [
+                            { term  => { first  => 1 } },
+                            { terms => { status => [qw< cpan latest >] } },
+                        ]
+                    }
+                }
+            }
+        };
+    }
+    elsif ( $type eq 'a' ) {
+        $query = { match_all => {} };
+    }
+    else {
+        $query = {
+            constant_score => {
+                filter => {
+                    terms => { status => [qw< cpan latest >] }
+                }
+            }
+        };
+    }
+
+    my $body = {
+        size   => $page_size,
+        from   => ( $page - 1 ) * $page_size,
+        query  => $query,
+        fields => [qw(name author status abstract date distribution)],
+        sort   => [ { 'date' => { order => 'desc' } } ]
+    };
+
+    my $ret = $self->es->search(
+        index => $self->index->name,
+        type  => 'release',
+        body  => $body,
+    );
+    return unless $ret->{hits}{total};
+
+    my $data = [ map { $_->{fields} } @{ $ret->{hits}{hits} } ];
+    single_valued_arrayref_to_scalar($data);
+
+    return {
+        releases => $data,
+        total    => $ret->{hits}{total},
+        took     => $ret->{took}
+    };
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
