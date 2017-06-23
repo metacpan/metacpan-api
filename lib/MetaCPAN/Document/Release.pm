@@ -612,6 +612,43 @@ sub activity {
     return { activity => $line };
 }
 
+sub latest_by_distribution {
+    my ( $self, $distribution ) = @_;
+
+    my $body = {
+        query => {
+            bool => {
+                must => [
+                    {
+                        term => {
+                            'distribution' => $distribution
+                        }
+                    },
+                    { term => { status => 'latest' } }
+                ]
+            }
+        },
+        sort => [ { date => 'desc' } ],
+        size => 1
+    };
+
+    my $ret = $self->es->search(
+        index => $self->index->name,
+        type  => 'release',
+        body  => $body,
+    );
+    return unless $ret->{hits}{total};
+
+    my $data = [ map { $_->{_source} } @{ $ret->{hits}{hits} } ];
+    single_valued_arrayref_to_scalar($data);
+
+    return {
+        took     => $ret->{took},
+        releases => $data,
+        total    => $ret->{hits}{total}
+    };
+}
+
 sub latest_by_author {
     my ( $self, $pauseid ) = @_;
 

@@ -75,6 +75,13 @@ sub recent : Path('recent') : Args(0) {
     $c->stash($data);
 }
 
+sub latest_by_distribution : Path('latest_by_distribution') : Args(1) {
+    my ( $self, $c, $dist ) = @_;
+    my $data = $self->model($c)->raw->latest_by_distribution($dist);
+    return unless $data;
+    $c->stash($data);
+}
+
 sub latest_by_author : Path('latest_by_author') : Args(1) {
     my ( $self, $c, $pauseid ) = @_;
     my $data = $self->model($c)->raw->latest_by_author($pauseid);
