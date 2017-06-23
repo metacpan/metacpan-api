@@ -960,5 +960,98 @@ sub recent {
     };
 }
 
+sub modules {
+    my ( $self, $author, $release ) = @_;
+
+    my $body = {
+        query => {
+            bool => {
+                must => [
+                    { term => { release   => $release } },
+                    { term => { author    => $author } },
+                    { term => { directory => 0 } },
+                    {
+                        bool => {
+                            should => [
+                                {
+                                    bool => {
+                                        must => [
+                                            {
+                                                exists => {
+                                                    field => 'module.name'
+                                                }
+                                            },
+                                            {
+                                                term =>
+                                                    { 'module.indexed' => 1 }
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    bool => {
+                                        must => [
+                                            {
+                                                range => {
+                                                    slop => { gt => 0 }
+                                                }
+                                            },
+                                            {
+                                                exists => {
+                                                    field => 'pod.analyzed'
+                                                }
+                                            },
+                                            {
+                                                term => { 'indexed' => 1 }
+                                            },
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        size => 999,
+
+        # Sort by documentation name; if there isn't one, sort by path.
+        sort => [ 'documentation', 'path' ],
+
+        _source => [ "module", "abstract" ],
+
+        fields => [
+            qw(
+                author
+                authorized
+                distribution
+                documentation
+                indexed
+                path
+                pod_lines
+                release
+                status
+                )
+        ],
+    };
+
+    my $ret = $self->es->search(
+        index => $self->index->name,
+        type  => 'file',
+        body  => $body,
+    );
+    return unless $ret->{hits}{total};
+
+    my @files = map { single_valued_arrayref_to_scalar($_) }
+        map +{ %{ $_->{fields} }, %{ $_->{_source} } },
+        @{ $ret->{hits}{hits} };
+
+    return {
+        files => \@files,
+        total => $ret->{hits}{total},
+        took  => $ret->{took}
+    };
+}
+
 __PACKAGE__->meta->make_immutable;
 1;

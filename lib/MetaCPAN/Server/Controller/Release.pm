@@ -67,6 +67,13 @@ sub files : Path('files') : Args(1) {
     $c->stash($data);
 }
 
+sub modules : Path('modules') : Args(2) {
+    my ( $self, $c, $author, $name ) = @_;
+    my $data = $self->model($c)->raw->modules( $author, $name );
+    return unless $data;
+    $c->stash($data);
+}
+
 sub recent : Path('recent') : Args(0) {
     my ( $self, $c ) = @_;
     my @params = @{ $c->req->params }{qw( page page_size type )};
