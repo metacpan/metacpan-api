@@ -122,6 +122,59 @@ sub users_by_distribution {
     return { users => \@plusser_users };
 }
 
+sub agg_by_distributions {
+    my ( $self, $distributions, $user ) = @_;
+    return unless $distributions;
+
+    my $body = {
+        size  => 0,
+        query => {
+            terms => { 'distribution' => $distributions }
+        },
+        aggregations => {
+            favorites => {
+                terms => {
+                    field => 'distribution',
+                    size  => scalar @{$distributions},
+                },
+            },
+            $user
+            ? (
+                myfavorites => {
+                    filter       => { term => { 'user' => $user } },
+                    aggregations => {
+                        enteries => {
+                            terms => { field => 'distribution' }
+                        }
+                    }
+                }
+                )
+            : (),
+        }
+    };
+
+    my $ret = $self->es->search(
+        index => $self->index->name,
+        type  => 'favorite',
+        body  => $body,
+    );
+
+    my @favorites = map { $_->{key} => $_->{doc_count} }
+        @{ $ret->{aggregations}{favorites}{buckets} };
+
+    my @myfavorites;
+    if ($user) {
+        @myfavorites = map { $_->{key} => $_->{doc_count} }
+            @{ $ret->{aggregations}{myfavorites}{entries}{buckets} };
+    }
+
+    return {
+        favorites   => \@favorites,
+        myfavorites => \@myfavorites,
+        took        => $ret->{took},
+    };
+}
+
 sub recent {
     my ( $self, $page, $size ) = @_;
     $page //= 1;
