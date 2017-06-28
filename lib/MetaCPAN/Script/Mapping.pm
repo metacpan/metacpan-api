@@ -389,6 +389,8 @@ sub deploy_mapping {
                 ),
             file =>
                 decode_json(MetaCPAN::Script::Mapping::CPAN::File::mapping),
+            mirror =>
+                decode_json(MetaCPAN::Script::Mapping::CPAN::Mirror::mapping),
             permission =>
                 decode_json( MetaCPAN::Script::Mapping::CPAN::Permission::mapping
                 ),
