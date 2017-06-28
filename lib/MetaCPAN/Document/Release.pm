@@ -670,13 +670,13 @@ sub latest_by_distribution {
     );
     return unless $ret->{hits}{total};
 
-    my $data = [ map { $_->{_source} } @{ $ret->{hits}{hits} } ];
+    my $data = $ret->{hits}{hits}[0]{_source};
     single_valued_arrayref_to_scalar($data);
 
     return {
-        took     => $ret->{took},
-        releases => $data,
-        total    => $ret->{hits}{total}
+        release => $data,
+        took    => $ret->{took},
+        total   => $ret->{hits}{total}
     };
 }
 
