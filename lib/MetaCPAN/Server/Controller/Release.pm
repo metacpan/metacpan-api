@@ -89,6 +89,14 @@ sub by_author_and_name : Path('by_author_and_name') : Args(2) {
     $c->stash($data);
 }
 
+sub by_author : Path('by_author') : Args(1) {
+    my ( $self, $c, $pauseid ) = @_;
+    my $size = $c->req->param('size');
+    my $data = $self->model($c)->raw->by_author( $pauseid, $size );
+    return unless $data;
+    $c->stash($data);
+}
+
 sub latest_by_distribution : Path('latest_by_distribution') : Args(1) {
     my ( $self, $c, $dist ) = @_;
     my $data = $self->model($c)->raw->latest_by_distribution($dist);

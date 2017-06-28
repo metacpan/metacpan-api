@@ -643,6 +643,44 @@ sub by_author_and_name {
     };
 }
 
+sub by_author {
+    my ( $self, $pauseid, $size ) = @_;
+    $size //= 1000;
+
+    my $body = {
+        query => {
+            bool => {
+                must => [
+                    { terms => { status => [qw< cpan latest >] } },
+                    ( $pauseid ? { term => { author => $pauseid } } : () ),
+                ],
+            }
+        },
+        sort =>
+            [ 'distribution', { 'version_numified' => { reverse => 1 } } ],
+        _source => [
+            qw( abstract author authorized date distribution license metadata.version resources.repository status tests )
+        ],
+        size => $size,
+    };
+
+    my $ret = $self->es->search(
+        index => $self->index->name,
+        type  => 'release',
+        body  => $body,
+    );
+    return unless $ret->{hits}{total};
+
+    my $data = [ map { $_->{_source} } @{ $ret->{hits}{hits} } ];
+    single_valued_arrayref_to_scalar($data);
+
+    return {
+        releases => $data,
+        total    => $ret->{hits}{total},
+        took     => $ret->{took}
+    };
+}
+
 sub latest_by_distribution {
     my ( $self, $distribution ) = @_;
 
