@@ -20,7 +20,7 @@ my %tests = (
             'content_type=application/json content_type=application',
         surrogate_control => undef,
     },
-    '/mirror/_search?q=*' => {
+    '/mirror/search?q=*' => {
         code          => 200,
         cache_control => 'private',
         surrogate_key =>
@@ -31,7 +31,8 @@ my %tests = (
 
 test_psgi app, sub {
     my $cb = shift;
-    while ( my ( $k, $v ) = each %tests ) {
+    for my $k ( sort keys %tests ) {
+        my $v = $tests{$k};
         ok( my $res = $cb->( GET $k), "GET $k" );
         is( $res->code, $v->{code}, "code " . $v->{code} );
         is(
