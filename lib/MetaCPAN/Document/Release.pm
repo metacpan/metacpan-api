@@ -633,13 +633,13 @@ sub by_author_and_name {
     );
     return unless $ret->{hits}{total};
 
-    my $data = [ map { $_->{_source} } @{ $ret->{hits}{hits} } ];
+    my $data = $ret->{hits}{hits}[0]{_source};
     single_valued_arrayref_to_scalar($data);
 
     return {
-        took     => $ret->{took},
-        releases => $data,
-        total    => $ret->{hits}{total}
+        took    => $ret->{took},
+        release => $data,
+        total   => $ret->{hits}{total}
     };
 }
 
