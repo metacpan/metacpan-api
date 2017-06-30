@@ -14,8 +14,6 @@ RUN apt-get update && \
     cpm install -L /carton && \
     rm -fr /root/.cpanm /root/.perl-cpm /var/cache/apt/lists/* /tmp/*
 
-COPY . /metacpan-api
-
 RUN chown -R metacpan-api:users /metacpan-api /carton /CPAN
 
 VOLUME /carton
