@@ -159,18 +159,18 @@ sub agg_by_distributions {
         body  => $body,
     );
 
-    my @favorites = map { $_->{key} => $_->{doc_count} }
+    my %favorites = map { $_->{key} => $_->{doc_count} }
         @{ $ret->{aggregations}{favorites}{buckets} };
 
-    my @myfavorites;
+    my %myfavorites;
     if ($user) {
-        @myfavorites = map { $_->{key} => $_->{doc_count} }
+        %myfavorites = map { $_->{key} => $_->{doc_count} }
             @{ $ret->{aggregations}{myfavorites}{entries}{buckets} };
     }
 
     return {
-        favorites   => \@favorites,
-        myfavorites => \@myfavorites,
+        favorites   => \%favorites,
+        myfavorites => \%myfavorites,
         took        => $ret->{took},
     };
 }
