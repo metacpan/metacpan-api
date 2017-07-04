@@ -93,13 +93,13 @@ sub by_distributions {
     );
     return unless $ret->{hits}{total};
 
-    my $data = [ map { $_->{key} => $_->{ratings_dist} }
-            @{ $ret->{aggregations}{ratings}{buckets} } ];
+    my %distributions = map { $_->{key} => $_->{ratings_dist} }
+        @{ $ret->{aggregations}{ratings}{buckets} };
 
     return {
-        releases => $data,
-        total    => $ret->{hits}{total},
-        took     => $ret->{took}
+        distributions => \%distributions,
+        total         => $ret->{hits}{total},
+        took          => $ret->{took}
     };
 }
 
