@@ -159,6 +159,35 @@ use Ref::Util qw( is_arrayref );
 
 use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
 
+sub by_ids {
+    my ( $self, $ids ) = @_;
+
+    map {uc} @{$ids};
+
+    my $body = {
+        query => {
+            constant_score => {
+                filter => { ids => { values => $ids } }
+            }
+        },
+        size => scalar @{$ids},
+    };
+
+    my $authors = $self->es->search(
+        index => $self->index->name,
+        type  => 'author',
+        body  => $body,
+    );
+    return {} unless $authors->{hits}{total};
+
+    my @authors = map {
+        single_valued_arrayref_to_scalar( $_->{_source} );
+        $_->{_source}
+    } @{ $authors->{hits}{hits} };
+
+    return { authors => \@authors };
+}
+
 sub by_user {
     my ( $self, $users ) = @_;
     $users = [$users] unless is_arrayref($users);

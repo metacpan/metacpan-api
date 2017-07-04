@@ -70,6 +70,20 @@ sub qsearch : Path('search') : Args(0) {
     $c->stash($data);
 }
 
+# /author/by_ids?id=PAUSE_ID1&id=PAUSE_ID2...
+sub by_ids : Path('by_ids') : Args(0) {
+    my ( $self, $c ) = @_;
+    my $body_data = $c->req->body_data;
+    my $ids
+        = $body_data
+        ? $body_data->{id}
+        : [ $c->req->param('id') ];
+    return unless $ids and @{$ids};
+    my $data = $self->model($c)->raw->by_ids($ids);
+    $data or return;
+    $c->stash($data);
+}
+
 # /author/by_user/USER_ID
 sub by_user : Path('by_user') : Args(1) {
     my ( $self, $c, $user ) = @_;
