@@ -1148,8 +1148,10 @@ sub modules {
     );
     return unless $ret->{hits}{total};
 
-    my @files = map { single_valued_arrayref_to_scalar($_) }
-        map +{ %{ $_->{fields} }, %{ $_->{_source} } },
+    my @files = map +{
+        %{ ( single_valued_arrayref_to_scalar( $_->{fields} ) )[0] },
+        %{ $_->{_source} }
+        },
         @{ $ret->{hits}{hits} };
 
     return {
