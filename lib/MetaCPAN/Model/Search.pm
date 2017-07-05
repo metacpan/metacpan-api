@@ -44,6 +44,16 @@ sub search_simple {
     return $results;
 }
 
+sub search_for_first_result {
+    my ( $self, $query ) = @_;
+    my $es_query = $self->build_query($query);
+    my $results = $self->run_query( file => $es_query );
+    return unless $results->{hits}{total};
+    my $data = $results->{hits}{hits}[0];
+    single_valued_arrayref_to_scalar( $data->{fields} );
+    return $data->{fields};
+}
+
 sub search_web {
     my ( $self, $query, $from, $page_size, $collapsed ) = @_;
     $page_size //= 20;
