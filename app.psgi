@@ -1,12 +1,6 @@
 use strict;
 use warnings;
 
-# prevent output buffering when in Docker containers (e.g. in docker-compose)
-if ( -e "/.dockerenv" ) {
-    STDERR->autoflush;
-    STDOUT->autoflush;
-}
-
 use FindBin;
 use lib "$FindBin::RealBin/lib";
 use Catalyst::Middleware::Stash 'stash';
