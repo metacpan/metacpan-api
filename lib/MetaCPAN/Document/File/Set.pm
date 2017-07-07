@@ -627,6 +627,7 @@ sub interesting_files {
                                                             ToDo
                                                             Todo
                                                             cpanfile
+                                                            alienfile
                                                             dist.ini
                                                             minil.toml
                                                             )
