@@ -36,6 +36,11 @@ addons:
     - postgresql-server-dev-all
 
 before_install:
+  - sudo mkdir /etc/elasticsearch/scripts
+  - sudo curl -o /etc/elasticsearch/scripts/prefer_shorter_module_names_400.groovy https://raw.githubusercontent.com/metacpan/metacpan-puppet/master/modules/metacpan_elasticsearch/files/etc/scripts/prefer_shorter_module_names_400.groovy
+  - sudo chown -R elasticsearch.elasticsearch /etc/elasticsearch/scripts
+  - sudo apt-get install tree
+  - tree /etc/elasticsearch
   - sudo service elasticsearch stop && curl -O -L https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-2.4.3.deb && sudo dpkg -i --force-confnew elasticsearch-2.4.3.deb && sudo service elasticsearch start
 
   - sudo service elasticsearch restart

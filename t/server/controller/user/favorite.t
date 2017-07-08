@@ -1,9 +1,16 @@
 use strict;
 use warnings;
 
-use MetaCPAN::Server::Test;
+use MetaCPAN::Server::Test qw( app DELETE GET POST test_psgi );
 use MetaCPAN::TestHelpers;
+use MetaCPAN::TestServer ();
 use Test::More;
+
+my $server = MetaCPAN::TestServer->new;
+my $search = MetaCPAN::Model::Search->new(
+    es    => $server->es_client,
+    index => 'cpan',
+);
 
 test_psgi app, sub {
     my $cb = shift;
@@ -34,6 +41,9 @@ test_psgi app, sub {
         'got correct access_token'
     );
 
+    my $faves = $search->search_favorites( ['Moose'] );
+    my $moose_current_fave_count = $faves->{Moose};
+
     ok(
         my $res = $cb->(
             POST '/user/favorite?access_token=testing',
@@ -52,6 +62,10 @@ test_psgi app, sub {
     ok( my $location = $res->header('location'), 'location header set' );
     ok( $res = $cb->( GET $location ), "GET $location" );
     is( $res->code, 200, 'found' );
+
+    # Use this to see if there are any favs on
+    my $faves = $search->search_favorites( ['Moose'] );
+    is( $faves->{Moose}, ( $moose_current_fave_count + 1 ), 'fav saved' );
 
     my $json = decode_json_ok($res);
     is( $json->{user}, $user->{id}, 'user is ' . $user->{id} );
