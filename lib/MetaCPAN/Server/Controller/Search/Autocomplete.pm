@@ -14,15 +14,7 @@ has '+type' => ( default => 'file' );
 
 sub get : Local : Path('') : Args(0) {
     my ( $self, $c ) = @_;
-    my $model = $self->model($c);
-    $model = $model->fields( [qw(documentation release author distribution)] )
-        unless $model->fields;
-    my $data
-        = $model->autocomplete( $c->req->param("q") )->source(0)->raw->all;
-
-    single_valued_arrayref_to_scalar( $_->{fields} )
-        for @{ $data->{hits}{hits} };
-
+    my $data = $self->model($c)->autocomplete( $c->req->param("q") );
     $c->stash($data);
 }
 
