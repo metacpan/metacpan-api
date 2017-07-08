@@ -91,7 +91,7 @@ sub dist_for_fedora {
         return $1;
     }
     elsif ( $source =~ /^perl-(.*)/ ) {
-        print "ES search for $source / $1\n";
+        log_debug {"ES search for $source / $1\n"};
         my $query = { term => { 'distribution.lowercase' => $1 } };
 
         my $res = $self->index->type('release')->filter($query)
