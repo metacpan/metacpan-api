@@ -318,7 +318,7 @@ sub aggregate_status_by_author {
 
 sub find {
     my ( $self, $name ) = @_;
-    return $self->filter(
+    my $file = $self->filter(
         {
             and => [
                 { term => { distribution => $name } },
@@ -326,6 +326,11 @@ sub find {
             ]
         }
     )->sort( [ { date => 'desc' } ] )->first;
+    return unless $file;
+
+    my $data = $file->{_source}
+        || single_valued_arrayref_to_scalar( $file->{fields} );
+    return $data;
 }
 
 sub predecessor {

@@ -13,7 +13,7 @@ sub modules : Path('modules') : Args(1) {
     my $last = $c->model('CPAN::Release')->raw->find($dist);
     return unless $last;
     my $data
-        = $self->model($c)->get_modules( $dist, $last->{_source}{version} );
+        = $self->model($c)->get_modules( $dist, $last->{version} );
     $c->stash($data);
 }
 
