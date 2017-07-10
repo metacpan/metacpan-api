@@ -62,6 +62,7 @@ my $cpan = CPAN::Faker->new(
 
 ok( $cpan->make_cpan, 'make fake cpan' );
 $fakecpan_dir->subdir('authors')->mkpath;
+$fakecpan_dir->subdir('indices')->mkpath;
 
 # make some changes to 06perms.txt
 {
@@ -92,6 +93,9 @@ copy( $src_dir->file('author-1.0.json'),
 
 copy( $src_dir->file('bugs.tsv'), $fakecpan_dir->file('bugs.tsv') );
 
+copy( $src_dir->file('mirrors.json'),
+    $fakecpan_dir->file(qw(indices mirrors.json)) );
+
 $server->index_permissions;
 $server->index_packages;
 $server->index_releases;
@@ -100,6 +104,7 @@ $server->set_first;
 $server->index_authors;
 $server->prepare_user_test_data;
 $server->index_cpantesters;
+$server->index_mirrors;
 
 ok(
     MetaCPAN::Script::Tickets->new_with_options(

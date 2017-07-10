@@ -8,6 +8,7 @@ use MetaCPAN::Script::CPANTesters ();
 use MetaCPAN::Script::First       ();
 use MetaCPAN::Script::Latest      ();
 use MetaCPAN::Script::Mapping     ();
+use MetaCPAN::Script::Mirrors     ();
 use MetaCPAN::Script::Package     ();
 use MetaCPAN::Script::Permission  ();
 use MetaCPAN::Script::Release     ();
@@ -212,8 +213,16 @@ sub index_cpantesters {
     ok(
         MetaCPAN::Script::CPANTesters->new_with_options( $self->_config )
             ->run,
-        'index authors'
+        'index cpantesters'
     );
+}
+
+sub index_mirrors {
+    my $self = shift;
+
+    local @ARGV = ('mirrors');
+    ok( MetaCPAN::Script::Mirrors->new_with_options( $self->_config )->run,
+        'index mirrors' );
 }
 
 sub index_permissions {
