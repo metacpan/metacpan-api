@@ -431,7 +431,7 @@ sub autocomplete {
     my $query = join( q{ }, @terms );
     return $self unless $query;
 
-    return $self->search_type('dfs_query_then_fetch')->query(
+    my $data = $self->search_type('dfs_query_then_fetch')->query(
         {
             filtered => {
                 query => {
@@ -462,6 +462,16 @@ sub autocomplete {
             }
         }
     )->sort( [ '_score', 'documentation' ] );
+
+    $data = $data->fields( [qw(documentation release author distribution)] )
+        unless $self->fields;
+
+    $data = $data->source(0)->raw->all;
+
+    single_valued_arrayref_to_scalar( $_->{fields} )
+        for @{ $data->{hits}{hits} };
+
+    return $data;
 }
 
 # this method will replace 'sub autocomplete' after the
