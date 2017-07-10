@@ -278,9 +278,18 @@ sub find_download_url {
         };
     }
 
-    return $self->size(1)->query($query)
+    my $res
+        = $self->size(1)->query($query)
         ->source( [ 'download_url', 'date', 'status' ] )
-        ->search_type('dfs_query_then_fetch')->sort( \@sort );
+        ->search_type('dfs_query_then_fetch')->sort( \@sort )->raw->all;
+    return unless $res->{hits}{total};
+
+    my $hit = $res->{hits}{hits}[0];
+
+    return +{
+        %{ $hit->{_source} },
+        %{ $hit->{inner_hits}{module}{hits}{hits}[0]{_source} },
+    };
 }
 
 sub _version_filters {
