@@ -15,10 +15,15 @@ sub by_distributions : Path('by_distributions') : Args(0) {
         = $c->req->body_data
         ? $c->req->body_data->{distribution}
         : [ $c->req->param('distribution') ];
-    return unless $distributions and @{$distributions};
+    $c->detach( '/bad_request', ['No distributions requested'] )
+        unless $distributions and @{$distributions};
+
     my $data = $self->model($c)->raw->by_distributions($distributions);
-    return unless $data;
-    $c->stash($data);
+
+    $data
+        ? $c->stash($data)
+        : $c->detach( '/not_found',
+        ['The requested info could not be found'] );
 }
 
 1;
