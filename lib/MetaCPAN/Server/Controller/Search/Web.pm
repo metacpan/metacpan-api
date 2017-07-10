@@ -25,6 +25,18 @@ sub simple : Chained('/search/index') : PathPart('simple') : Args(0) {
     $c->stash($results);
 }
 
+# returns the contents of the first result of a query similar to
+# the one done by 'search_simple'
+sub first : Chained('/search/index') : PathPart('first') : Args(0) {
+    my ( $self, $c ) = @_;
+    my $args = $c->req->params;
+
+    my $model   = $c->model('Search');
+    my $results = $model->search_for_first_result( $args->{q} );
+
+    $c->stash($results) if $results;
+}
+
 # The web endpoint is the primary one, this handles the front-end's user-facing search
 
 sub web : Chained('/search/index') : PathPart('web') : Args(0) {
