@@ -12,8 +12,8 @@ with 'MetaCPAN::Server::Role::JSONP';
 
 sub get : Path('') : Args(2) {
     my ( $self, $c, $author, $name ) = @_;
-    my $data
-        = $self->model($c)->raw->find_release_contributors( $author, $name );
+
+    my $data = $self->model($c)->find_release_contributors( $author, $name );
 
     $data
         ? $c->stash($data)
@@ -23,7 +23,8 @@ sub get : Path('') : Args(2) {
 
 sub by_pauseid : Path('by_pauseid') : Args(1) {
     my ( $self, $c, $pauseid ) = @_;
-    my $data = $self->model($c)->raw->find_author_contributions($pauseid);
+
+    my $data = $self->model($c)->find_author_contributions($pauseid);
 
     $data
         ? $c->stash($data)

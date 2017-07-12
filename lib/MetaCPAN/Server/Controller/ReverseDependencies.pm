@@ -24,7 +24,8 @@ sub dist : Path('dist') : Args(1) {
 sub module : Path('module') : Args(1) {
     my ( $self, $c, $module ) = @_;
     my @params = @{ $c->req->params }{qw< page page_size sort >};
-    my $data = $c->model('CPAN::Release')->raw->requires( $module, @params );
+
+    my $data = $c->model('CPAN::Release')->requires( $module, @params );
 
     $data
         ? $c->stash($data)

@@ -11,8 +11,9 @@ with 'MetaCPAN::Server::Role::JSONP';
 
 sub by_distributions : Path('by_distributions') : Args(0) {
     my ( $self, $c ) = @_;
+
     my $data = $self->model($c)
-        ->raw->by_distributions( $c->read_param('distribution') );
+        ->by_distributions( $c->read_param('distribution') );
 
     $data
         ? $c->stash($data)

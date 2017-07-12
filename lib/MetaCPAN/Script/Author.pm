@@ -52,7 +52,7 @@ sub index_authors {
 
     log_debug {"Getting last update dates"};
     my $dates
-        = $type->inflate(0)->filter( { exists => { field => 'updated' } } )
+        = $type->raw->filter( { exists => { field => 'updated' } } )
         ->size(10000)->all;
     $dates = {
         map {

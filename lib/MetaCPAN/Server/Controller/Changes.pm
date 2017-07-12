@@ -107,7 +107,7 @@ sub get : Chained('index') : PathPart('') : Args(2) {
 
 sub find : Chained('index') : PathPart('') : Args(1) {
     my ( $self, $c, $name ) = @_;
-    my $release = eval { $c->model('CPAN::Release')->raw->find($name); }
+    my $release = eval { $c->model('CPAN::Release')->find($name); }
         or $c->detach( '/not_found', [] );
 
     $c->forward( 'get', [ @$release{qw( author name )} ] );

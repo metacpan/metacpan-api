@@ -70,7 +70,7 @@ sub profile : Local : ActionClass('REST') {
         $self->status_not_found( $c, message => 'Profile doesn\'t exist' );
         $c->detach;
     }
-    my $profile = $c->model('CPAN::Author')->inflate(0)->get( $pause->key );
+    my $profile = $c->model('CPAN::Author')->raw->get( $pause->key );
     $c->stash->{profile} = $profile->{_source};
 }
 

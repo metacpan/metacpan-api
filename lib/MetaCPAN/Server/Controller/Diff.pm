@@ -33,11 +33,9 @@ sub release : Chained('index') : PathPart('release') : Args(1) {
 
     my ( $latest, $previous );
     try {
-        $latest
-            = $c->model('CPAN::Release')->inflate(0)->find($name);
+        $latest = $c->model('CPAN::Release')->raw->find($name);
         $previous
-            = $c->model('CPAN::Release')->inflate(0)->predecessor($name)
-            ->{_source};
+            = $c->model('CPAN::Release')->raw->predecessor($name)->{_source};
     }
     catch {
         $c->detach('/not_found');
@@ -58,7 +56,7 @@ sub file : Chained('index') : PathPart('file') : Args(2) {
         = map { [ @$_{qw(author release path)} ] }
         map {
         my $file = $_;
-        try { $c->model('CPAN::File')->inflate(0)->get($file)->{_source}; }
+        try { $c->model('CPAN::File')->raw->get($file)->{_source}; }
             or $c->detach('/not_found');
         } ( $source, $target );
 
