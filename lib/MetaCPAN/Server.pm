@@ -114,6 +114,12 @@ if ( $ENV{PLACK_ENV} && $ENV{PLACK_ENV} eq 'development' ) {
     );
 }
 
+# prevent output buffering when in Docker containers (e.g. in docker-compose)
+if ( -e "/.dockerenv" and __PACKAGE__->log->isa('Catalyst::Log') ) {
+    STDERR->autoflush;
+    STDOUT->autoflush;
+}
+
 sub to_app {
     return $app;
 }

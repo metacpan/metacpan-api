@@ -13,12 +13,12 @@
 /Makefile.old
 /blib
 /etc/metacpan_local.pl
-/local/
 /pm_to_blib
 /t/var/darkpan/
 /t/var/log/
 /t/var/tmp/
 /var
 cover_db/
+local/
 metacpan_server_local.conf
 perltidy.LOG
