@@ -50,91 +50,129 @@ sub get : Path('') : Args(2) {
 sub contributors : Path('contributors') : Args(2) {
     my ( $self, $c, $author, $release ) = @_;
     my $data = $self->model($c)->raw->get_contributors( $author, $release );
-    $c->stash($data);
+
+    $data
+        ? $c->stash($data)
+        : $c->detach( '/not_found',
+        ['The requested info could not be found'] );
 }
 
 sub files : Path('files') : Args(1) {
     my ( $self, $c, $name ) = @_;
     my $files = $c->req->params->{files};
-    return unless $files;
+    $c->detach( '/bad_request', ['No files requested'] ) unless $files;
     my @files = split /,/, $files;
     my $data = $self->model($c)->raw->get_files( $name, \@files );
-    $c->stash($data);
+
+    $data
+        ? $c->stash($data)
+        : $c->detach( '/not_found',
+        ['The requested info could not be found'] );
 }
 
 sub modules : Path('modules') : Args(2) {
     my ( $self, $c, $author, $name ) = @_;
     my $data = $self->model($c)->raw->modules( $author, $name );
-    return unless $data;
-    $c->stash($data);
+
+    $data
+        ? $c->stash($data)
+        : $c->detach( '/not_found',
+        ['The requested info could not be found'] );
 }
 
 sub recent : Path('recent') : Args(0) {
     my ( $self, $c ) = @_;
     my @params = @{ $c->req->params }{qw( page page_size type )};
     my $data   = $self->model($c)->raw->recent(@params);
-    return unless $data;
-    $c->stash($data);
+
+    $data
+        ? $c->stash($data)
+        : $c->detach( '/not_found',
+        ['The requested info could not be found'] );
 }
 
 sub by_author_and_name : Path('by_author_and_name') : Args(2) {
     my ( $self, $c, $author, $name ) = @_;
     my $data = $self->model($c)->raw->by_author_and_name( $author, $name );
-    return unless $data;
-    $c->stash($data);
+
+    $data
+        ? $c->stash($data)
+        : $c->detach( '/not_found',
+        ['The requested info could not be found'] );
 }
 
 sub by_author : Path('by_author') : Args(1) {
     my ( $self, $c, $pauseid ) = @_;
     my $size = $c->req->param('size');
     my $data = $self->model($c)->raw->by_author( $pauseid, $size );
-    return unless $data;
-    $c->stash($data);
+
+    $data
+        ? $c->stash($data)
+        : $c->detach( '/not_found',
+        ['The requested info could not be found'] );
 }
 
 sub latest_by_distribution : Path('latest_by_distribution') : Args(1) {
     my ( $self, $c, $dist ) = @_;
     my $data = $self->model($c)->raw->latest_by_distribution($dist);
-    return unless $data;
-    $c->stash($data);
+
+    $data
+        ? $c->stash($data)
+        : $c->detach( '/not_found',
+        ['The requested info could not be found'] );
 }
 
 sub latest_by_author : Path('latest_by_author') : Args(1) {
     my ( $self, $c, $pauseid ) = @_;
     my $data = $self->model($c)->raw->latest_by_author($pauseid);
-    return unless $data;
-    $c->stash($data);
+
+    $data
+        ? $c->stash($data)
+        : $c->detach( '/not_found',
+        ['The requested info could not be found'] );
 }
 
 sub all_by_author : Path('all_by_author') : Args(1) {
     my ( $self, $c, $pauseid ) = @_;
     my @params = @{ $c->req->params }{qw( page page_size )};
     my $data = $self->model($c)->raw->all_by_author( $pauseid, @params );
-    return unless $data;
-    $c->stash($data);
+
+    $data
+        ? $c->stash($data)
+        : $c->detach( '/not_found',
+        ['The requested info could not be found'] );
 }
 
 sub versions : Path('versions') : Args(1) {
     my ( $self, $c, $dist ) = @_;
     my $data = $self->model($c)->raw->versions($dist);
-    return unless $data;
-    $c->stash($data);
+
+    $data
+        ? $c->stash($data)
+        : $c->detach( '/not_found',
+        ['The requested info could not be found'] );
 }
 
 sub top_uploaders : Path('top_uploaders') : Args() {
     my ( $self, $c ) = @_;
     my $range = $c->req->param('range') || 'weekly';
     my $data = $self->model($c)->raw->top_uploaders($range);
-    return unless $data;
-    $c->stash($data);
+
+    $data
+        ? $c->stash($data)
+        : $c->detach( '/not_found',
+        ['The requested info could not be found'] );
 }
 
 sub interesting_files : Path('interesting_files') : Args(2) {
     my ( $self, $c, $author, $release ) = @_;
     my $data
         = $c->model('CPAN::File')->interesting_files( $author, $release );
-    return unless $data;
-    $c->stash($data);
+
+    $data
+        ? $c->stash($data)
+        : $c->detach( '/not_found',
+        ['The requested info could not be found'] );
 }
 
 __PACKAGE__->meta->make_immutable;

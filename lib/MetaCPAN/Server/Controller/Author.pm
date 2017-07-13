@@ -66,8 +66,11 @@ sub qsearch : Path('search') : Args(0) {
     my ( $self,  $c )    = @_;
     my ( $query, $from ) = @{ $c->req->params }{qw( q from )};
     my $data = $self->model($c)->raw->search( $query, $from );
-    $data or return;
-    $c->stash($data);
+
+    $data
+        ? $c->stash($data)
+        : $c->detach( '/not_found',
+        ['The requested info could not be found'] );
 }
 
 # /author/by_ids?id=PAUSE_ID1&id=PAUSE_ID2...
@@ -78,28 +81,38 @@ sub by_ids : Path('by_ids') : Args(0) {
         = $body_data
         ? $body_data->{id}
         : [ $c->req->param('id') ];
-    return unless $ids and @{$ids};
+    $c->detach( '/bad_request', ['No ids requested'] )
+        unless $ids and @{$ids};
     my $data = $self->model($c)->raw->by_ids($ids);
-    $data or return;
-    $c->stash($data);
+
+    $data
+        ? $c->stash($data)
+        : $c->detach( '/not_found',
+        ['The requested info could not be found'] );
 }
 
 # /author/by_user/USER_ID
 sub by_user : Path('by_user') : Args(1) {
     my ( $self, $c, $user ) = @_;
     my $data = $self->model($c)->raw->by_user($user);
-    $data or return;
-    $c->stash($data);
+
+    $data
+        ? $c->stash($data)
+        : $c->detach( '/not_found',
+        ['The requested info could not be found'] );
 }
 
 # /author/by_user?user=USER_ID1&user=USER_ID2...
 sub by_users : Path('by_user') : Args(0) {
     my ( $self, $c ) = @_;
     my @users = $c->req->param('user');
-    return unless @users;
+    $c->detach( '/bad_request', ['No users requested'] ) unless @users;
     my $data = $self->model($c)->raw->by_user( \@users );
-    $data or return;
-    $c->stash($data);
+
+    $data
+        ? $c->stash($data)
+        : $c->detach( '/not_found',
+        ['The requested info could not be found'] );
 }
 
 1;

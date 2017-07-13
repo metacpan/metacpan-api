@@ -14,15 +14,21 @@ sub get : Path('') : Args(2) {
     my ( $self, $c, $author, $name ) = @_;
     my $data
         = $self->model($c)->raw->find_release_contributors( $author, $name );
-    return unless $data;
-    $c->stash($data);
+
+    $data
+        ? $c->stash($data)
+        : $c->detach( '/not_found',
+        ['The requested info could not be found'] );
 }
 
 sub by_pauseid : Path('by_pauseid') : Args(1) {
     my ( $self, $c, $pauseid ) = @_;
     my $data = $self->model($c)->raw->find_author_contributions($pauseid);
-    return unless $data;
-    $c->stash($data);
+
+    $data
+        ? $c->stash($data)
+        : $c->detach( '/not_found',
+        ['The requested info could not be found'] );
 }
 
 1;
