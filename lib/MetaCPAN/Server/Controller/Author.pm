@@ -105,9 +105,16 @@ sub by_user : Path('by_user') : Args(1) {
 # /author/by_user?user=USER_ID1&user=USER_ID2...
 sub by_users : Path('by_user') : Args(0) {
     my ( $self, $c ) = @_;
-    my @users = $c->req->param('user');
-    $c->detach( '/bad_request', ['No users requested'] ) unless @users;
-    my $data = $self->model($c)->raw->by_user( \@users );
+
+    my $body_data = $c->req->body_data;
+    my $users
+        = $body_data
+        ? $body_data->{user}
+        : [ $c->req->param('user') ];
+    $c->detach( '/bad_request', ['No users requested'] )
+        unless $users and @{$users};
+
+    my $data = $self->model($c)->raw->by_user($users);
 
     $data
         ? $c->stash($data)
