@@ -146,6 +146,16 @@ sub read_param {
     return $params;
 }
 
+# a controller method to either stash given data or detach
+# with a not_found message
+sub stash_or_detach {
+    my ( $c, $data ) = @_;
+    $data
+        ? $c->stash($data)
+        : $c->detach( '/not_found',
+        ['The requested info could not be found'] );
+}
+
 1;
 
 __END__

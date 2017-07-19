@@ -63,51 +63,28 @@ sub get : Path('') : Args(1) {
 
 # /author/search?q=QUERY
 sub qsearch : Path('search') : Args(0) {
-    my ( $self,  $c )    = @_;
-    my ( $query, $from ) = @{ $c->req->params }{qw( q from )};
-
-    my $data = $self->model($c)->search( $query, $from );
-
-    $data
-        ? $c->stash($data)
-        : $c->detach( '/not_found',
-        ['The requested info could not be found'] );
+    my ( $self, $c ) = @_;
+    $c->stash_or_detach(
+        $self->model($c)->search( @{ $c->req->params }{qw( q from )} ) );
 }
 
 # /author/by_ids?id=PAUSE_ID1&id=PAUSE_ID2...
 sub by_ids : Path('by_ids') : Args(0) {
     my ( $self, $c ) = @_;
-
-    my $data = $self->model($c)->by_ids( $c->read_param('id') );
-
-    $data
-        ? $c->stash($data)
-        : $c->detach( '/not_found',
-        ['The requested info could not be found'] );
+    $c->stash_or_detach( $self->model($c)->by_ids( $c->read_param('id') ) );
 }
 
 # /author/by_user/USER_ID
 sub by_user : Path('by_user') : Args(1) {
     my ( $self, $c, $user ) = @_;
-
-    my $data = $self->model($c)->by_user($user);
-
-    $data
-        ? $c->stash($data)
-        : $c->detach( '/not_found',
-        ['The requested info could not be found'] );
+    $c->stash_or_detach( $self->model($c)->by_user($user) );
 }
 
 # /author/by_user?user=USER_ID1&user=USER_ID2...
 sub by_users : Path('by_user') : Args(0) {
     my ( $self, $c ) = @_;
-
-    my $data = $self->model($c)->by_user( $c->read_param('user') );
-
-    $data
-        ? $c->stash($data)
-        : $c->detach( '/not_found',
-        ['The requested info could not be found'] );
+    $c->stash_or_detach(
+        $self->model($c)->by_user( $c->read_param('user') ) );
 }
 
 1;

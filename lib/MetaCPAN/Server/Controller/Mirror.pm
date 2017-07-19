@@ -11,13 +11,7 @@ with 'MetaCPAN::Server::Role::JSONP';
 
 sub search : Path('search') : Args(0) {
     my ( $self, $c ) = @_;
-
-    my $data = $self->model($c)->search( $c->req->param('q') );
-
-    $data
-        ? $c->stash($data)
-        : $c->detach( '/not_found',
-        ['The requested info could not be found'] );
+    $c->stash_or_detach( $self->model($c)->search( $c->req->param('q') ) );
 }
 
 1;

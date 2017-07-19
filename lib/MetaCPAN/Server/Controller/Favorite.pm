@@ -30,63 +30,39 @@ sub find : Path('') : Args(2) {
 
 sub by_user : Path('by_user') : Args(1) {
     my ( $self, $c, $user ) = @_;
-    my $size = $c->req->param('size') || 250;
-
-    my $data = $self->model($c)->by_user( $user, $size );
-
-    $data
-        ? $c->stash($data)
-        : $c->detach( '/not_found',
-        ['The requested info could not be found'] );
+    $c->stash_or_detach(
+        $self->model($c)->by_user( $user, $c->req->param('size') || 250 ) );
 }
 
 sub users_by_distribution : Path('users_by_distribution') : Args(1) {
     my ( $self, $c, $distribution ) = @_;
-
-    my $data = $self->model($c)->users_by_distribution($distribution);
-
-    $data
-        ? $c->stash($data)
-        : $c->detach( '/not_found',
-        ['The requested info could not be found'] );
+    $c->stash_or_detach(
+        $self->model($c)->users_by_distribution($distribution) );
 }
 
 sub recent : Path('recent') : Args(0) {
     my ( $self, $c ) = @_;
-    my $page = $c->req->param('page') || 1;
-    my $size = $c->req->param('size') || 100;
-
-    my $data = $self->model($c)->recent( $page, $size );
-
-    $data
-        ? $c->stash($data)
-        : $c->detach( '/not_found',
-        ['The requested info could not be found'] );
+    $c->stash_or_detach(
+        $self->model($c)->recent(
+            $c->req->param('page') || 1,
+            $c->req->param('size') || 100
+        )
+    );
 }
 
 sub leaderboard : Path('leaderboard') : Args(0) {
     my ( $self, $c ) = @_;
-
-    my $data = $self->model($c)->leaderboard();
-
-    $data
-        ? $c->stash($data)
-        : $c->detach( '/not_found',
-        ['The requested info could not be found'] );
+    $c->stash_or_detach( $self->model($c)->leaderboard() );
 }
 
 sub agg_by_distributions : Path('agg_by_distributions') : Args(0) {
     my ( $self, $c ) = @_;
-
-    my $distributions = $c->read_param('distribution');
-    my $user          = $c->req->param('user');           # optional
-    my $data
-        = $self->model($c)->agg_by_distributions( $distributions, $user );
-
-    $data
-        ? $c->stash($data)
-        : $c->detach( '/not_found',
-        ['The requested info could not be found'] );
+    $c->stash_or_detach(
+        $self->model($c)->agg_by_distributions(
+            $c->read_param('distribution'),
+            $c->req->param('user')    # optional
+        )
+    );
 }
 
 __PACKAGE__->meta->make_immutable;

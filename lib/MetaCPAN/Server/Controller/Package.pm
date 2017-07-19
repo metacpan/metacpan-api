@@ -14,14 +14,8 @@ sub modules : Path('modules') : Args(1) {
     my $last = $c->model('CPAN::Release')->find($dist);
     $c->detach( '/not_found', ["Cannot find last release for $dist"] )
         unless $last;
-
-    my $data
-        = $self->model($c)->get_modules( $dist, $last->{version} );
-
-    $data
-        ? $c->stash($data)
-        : $c->detach( '/not_found',
-        ['The requested info could not be found'] );
+    $c->stash_or_detach(
+        $self->model($c)->get_modules( $dist, $last->{version} ) );
 }
 
 __PACKAGE__->meta->make_immutable;
