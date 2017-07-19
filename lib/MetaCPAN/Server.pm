@@ -9,6 +9,7 @@ use CatalystX::RoleApplicator;
 use File::Temp qw( tempdir );
 use Plack::Middleware::ReverseProxy;
 use Plack::Middleware::ServerStatus::Lite;
+use Ref::Util qw( is_arrayref );
 
 extends 'Catalyst';
 
@@ -122,6 +123,27 @@ if ( -e "/.dockerenv" and __PACKAGE__->log->isa('Catalyst::Log') ) {
 
 sub to_app {
     return $app;
+}
+
+# a controller method to read a given parameter key which will be read
+# from either the URL (query parameter) or from the (JSON) deserialized
+# request body (not both, 'body' parameters take precedence).
+# the returned output is an arrayref containing the parameter values.
+sub read_param {
+    my ( $c, $key ) = @_;
+
+    my $body_data = $c->req->body_data;
+    my $params
+        = $body_data
+        ? $body_data->{$key}
+        : [ $c->req->param($key) ];
+
+    $params = [$params] unless is_arrayref($params);
+
+    $c->detach( '/bad_request', ["Missing param: $key"] )
+        unless $params and @{$params};
+
+    return $params;
 }
 
 1;
