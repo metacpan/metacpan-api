@@ -145,7 +145,7 @@ sub skip {
                 { term => { author  => $author } },
             ]
         }
-    )->inflate(0)->count;
+    )->raw->count;
 }
 
 sub index_release {
@@ -182,7 +182,7 @@ sub reindex_release {
                 { term => { archive => $info->filename } },
             ]
         }
-    )->inflate(0)->first;
+    )->raw->first;
     return unless ($release);
     log_info {"Moving $release->{_source}->{name} to BackPAN"};
 

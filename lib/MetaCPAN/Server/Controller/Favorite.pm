@@ -31,7 +31,8 @@ sub find : Path('') : Args(2) {
 sub by_user : Path('by_user') : Args(1) {
     my ( $self, $c, $user ) = @_;
     my $size = $c->req->param('size') || 250;
-    my $data = $self->model($c)->raw->by_user( $user, $size );
+
+    my $data = $self->model($c)->by_user( $user, $size );
 
     $data
         ? $c->stash($data)
@@ -41,7 +42,8 @@ sub by_user : Path('by_user') : Args(1) {
 
 sub users_by_distribution : Path('users_by_distribution') : Args(1) {
     my ( $self, $c, $distribution ) = @_;
-    my $data = $self->model($c)->raw->users_by_distribution($distribution);
+
+    my $data = $self->model($c)->users_by_distribution($distribution);
 
     $data
         ? $c->stash($data)
@@ -53,7 +55,8 @@ sub recent : Path('recent') : Args(0) {
     my ( $self, $c ) = @_;
     my $page = $c->req->param('page') || 1;
     my $size = $c->req->param('size') || 100;
-    my $data = $self->model($c)->raw->recent( $page, $size );
+
+    my $data = $self->model($c)->recent( $page, $size );
 
     $data
         ? $c->stash($data)
@@ -63,7 +66,8 @@ sub recent : Path('recent') : Args(0) {
 
 sub leaderboard : Path('leaderboard') : Args(0) {
     my ( $self, $c ) = @_;
-    my $data = $self->model($c)->raw->leaderboard();
+
+    my $data = $self->model($c)->leaderboard();
 
     $data
         ? $c->stash($data)
@@ -73,10 +77,11 @@ sub leaderboard : Path('leaderboard') : Args(0) {
 
 sub agg_by_distributions : Path('agg_by_distributions') : Args(0) {
     my ( $self, $c ) = @_;
+
     my $distributions = $c->read_param('distribution');
     my $user          = $c->read_param('user');
-    my $data          = $self->model($c)
-        ->raw->agg_by_distributions( $distributions, $user );
+    my $data
+        = $self->model($c)->agg_by_distributions( $distributions, $user );
 
     $data
         ? $c->stash($data)

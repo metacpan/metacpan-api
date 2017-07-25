@@ -11,7 +11,7 @@ with 'MetaCPAN::Server::Role::JSONP';
 
 sub get : Path('') : Args(0) {
     my ( $self, $c ) = @_;
-    my $data = $c->model('CPAN::Release')->raw->activity( $c->req->params );
+    my $data = $c->model('CPAN::Release')->activity( $c->req->params );
 
     $data
         ? $c->stash($data)

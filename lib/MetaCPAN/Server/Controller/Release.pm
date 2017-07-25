@@ -21,7 +21,7 @@ __PACKAGE__->config(
 
 sub find : Path('') : Args(1) {
     my ( $self, $c, $name ) = @_;
-    my $file = $self->model($c)->raw->find($name);
+    my $file = $self->model($c)->find($name);
     $c->detach( '/not_found', [] ) unless $file;
     $c->stash($file);
 }
@@ -49,7 +49,8 @@ sub get : Path('') : Args(2) {
 
 sub contributors : Path('contributors') : Args(2) {
     my ( $self, $c, $author, $release ) = @_;
-    my $data = $self->model($c)->raw->get_contributors( $author, $release );
+
+    my $data = $self->model($c)->get_contributors( $author, $release );
 
     $data
         ? $c->stash($data)
@@ -62,7 +63,8 @@ sub files : Path('files') : Args(1) {
     my $files = $c->req->params->{files};
     $c->detach( '/bad_request', ['No files requested'] ) unless $files;
     my @files = split /,/, $files;
-    my $data = $self->model($c)->raw->get_files( $name, \@files );
+
+    my $data = $self->model($c)->get_files( $name, \@files );
 
     $data
         ? $c->stash($data)
@@ -72,7 +74,8 @@ sub files : Path('files') : Args(1) {
 
 sub modules : Path('modules') : Args(2) {
     my ( $self, $c, $author, $name ) = @_;
-    my $data = $self->model($c)->raw->modules( $author, $name );
+
+    my $data = $self->model($c)->modules( $author, $name );
 
     $data
         ? $c->stash($data)
@@ -83,7 +86,8 @@ sub modules : Path('modules') : Args(2) {
 sub recent : Path('recent') : Args(0) {
     my ( $self, $c ) = @_;
     my @params = @{ $c->req->params }{qw( page page_size type )};
-    my $data   = $self->model($c)->raw->recent(@params);
+
+    my $data = $self->model($c)->recent(@params);
 
     $data
         ? $c->stash($data)
@@ -93,7 +97,8 @@ sub recent : Path('recent') : Args(0) {
 
 sub by_author_and_name : Path('by_author_and_name') : Args(2) {
     my ( $self, $c, $author, $name ) = @_;
-    my $data = $self->model($c)->raw->by_author_and_name( $author, $name );
+
+    my $data = $self->model($c)->by_author_and_name( $author, $name );
 
     $data
         ? $c->stash($data)
@@ -104,7 +109,8 @@ sub by_author_and_name : Path('by_author_and_name') : Args(2) {
 sub by_author : Path('by_author') : Args(1) {
     my ( $self, $c, $pauseid ) = @_;
     my $size = $c->req->param('size');
-    my $data = $self->model($c)->raw->by_author( $pauseid, $size );
+
+    my $data = $self->model($c)->by_author( $pauseid, $size );
 
     $data
         ? $c->stash($data)
@@ -114,7 +120,8 @@ sub by_author : Path('by_author') : Args(1) {
 
 sub latest_by_distribution : Path('latest_by_distribution') : Args(1) {
     my ( $self, $c, $dist ) = @_;
-    my $data = $self->model($c)->raw->latest_by_distribution($dist);
+
+    my $data = $self->model($c)->latest_by_distribution($dist);
 
     $data
         ? $c->stash($data)
@@ -124,7 +131,8 @@ sub latest_by_distribution : Path('latest_by_distribution') : Args(1) {
 
 sub latest_by_author : Path('latest_by_author') : Args(1) {
     my ( $self, $c, $pauseid ) = @_;
-    my $data = $self->model($c)->raw->latest_by_author($pauseid);
+
+    my $data = $self->model($c)->latest_by_author($pauseid);
 
     $data
         ? $c->stash($data)
@@ -135,7 +143,8 @@ sub latest_by_author : Path('latest_by_author') : Args(1) {
 sub all_by_author : Path('all_by_author') : Args(1) {
     my ( $self, $c, $pauseid ) = @_;
     my @params = @{ $c->req->params }{qw( page page_size )};
-    my $data = $self->model($c)->raw->all_by_author( $pauseid, @params );
+
+    my $data = $self->model($c)->all_by_author( $pauseid, @params );
 
     $data
         ? $c->stash($data)
@@ -145,7 +154,8 @@ sub all_by_author : Path('all_by_author') : Args(1) {
 
 sub versions : Path('versions') : Args(1) {
     my ( $self, $c, $dist ) = @_;
-    my $data = $self->model($c)->raw->versions($dist);
+
+    my $data = $self->model($c)->versions($dist);
 
     $data
         ? $c->stash($data)
@@ -156,7 +166,8 @@ sub versions : Path('versions') : Args(1) {
 sub top_uploaders : Path('top_uploaders') : Args() {
     my ( $self, $c ) = @_;
     my $range = $c->req->param('range') || 'weekly';
-    my $data = $self->model($c)->raw->top_uploaders($range);
+
+    my $data = $self->model($c)->top_uploaders($range);
 
     $data
         ? $c->stash($data)

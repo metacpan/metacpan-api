@@ -65,7 +65,8 @@ sub get : Path('') : Args(1) {
 sub qsearch : Path('search') : Args(0) {
     my ( $self,  $c )    = @_;
     my ( $query, $from ) = @{ $c->req->params }{qw( q from )};
-    my $data = $self->model($c)->raw->search( $query, $from );
+
+    my $data = $self->model($c)->search( $query, $from );
 
     $data
         ? $c->stash($data)
@@ -76,7 +77,8 @@ sub qsearch : Path('search') : Args(0) {
 # /author/by_ids?id=PAUSE_ID1&id=PAUSE_ID2...
 sub by_ids : Path('by_ids') : Args(0) {
     my ( $self, $c ) = @_;
-    my $data = $self->model($c)->raw->by_ids( $c->read_param('id') );
+
+    my $data = $self->model($c)->by_ids( $c->read_param('id') );
 
     $data
         ? $c->stash($data)
@@ -87,7 +89,8 @@ sub by_ids : Path('by_ids') : Args(0) {
 # /author/by_user/USER_ID
 sub by_user : Path('by_user') : Args(1) {
     my ( $self, $c, $user ) = @_;
-    my $data = $self->model($c)->raw->by_user($user);
+
+    my $data = $self->model($c)->by_user($user);
 
     $data
         ? $c->stash($data)
@@ -98,7 +101,8 @@ sub by_user : Path('by_user') : Args(1) {
 # /author/by_user?user=USER_ID1&user=USER_ID2...
 sub by_users : Path('by_user') : Args(0) {
     my ( $self, $c ) = @_;
-    my $data = $self->model($c)->raw->by_user( $c->read_param('user') );
+
+    my $data = $self->model($c)->by_user( $c->read_param('user') );
 
     $data
         ? $c->stash($data)

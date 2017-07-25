@@ -160,7 +160,7 @@ sub run {
                         { term => { author  => $d->cpanid } },
                     ]
                 }
-            )->inflate(0)->count;
+            )->raw->count;
             if ($count) {
                 log_info {"Skipping $file"};
                 next;

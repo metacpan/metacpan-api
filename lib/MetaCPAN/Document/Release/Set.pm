@@ -44,7 +44,7 @@ sub find {
                 { term => { status       => 'latest' } }
             ]
         }
-    )->sort( [ { date => 'desc' } ] )->first;
+    )->sort( [ { date => 'desc' } ] )->raw->first;
     return unless $file;
 
     my $data = $file->{_source}

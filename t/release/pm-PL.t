@@ -35,7 +35,7 @@ is( $pm->module->[0]->version,
     my $files
         = $idx->type('file')
         ->filter( { term => { release => 'uncommon-sense-0.01' }, } )
-        ->inflate(0)->size(20)->all->{hits}->{hits};
+        ->raw->size(20)->all->{hits}->{hits};
     $files = [ map { $_->{_source} } @$files ];
 
     is_deeply(
