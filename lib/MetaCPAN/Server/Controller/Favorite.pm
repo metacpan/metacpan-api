@@ -73,21 +73,9 @@ sub leaderboard : Path('leaderboard') : Args(0) {
 
 sub agg_by_distributions : Path('agg_by_distributions') : Args(0) {
     my ( $self, $c ) = @_;
-    my $body_data = $c->req->body_data;
-
-    my $distributions
-        = $body_data
-        ? $body_data->{distribution}
-        : [ $c->req->param('distribution') ];
-    $c->detach( '/bad_request', ['No distributions requested'] )
-        unless $distributions and @{$distributions};
-
-    my $user
-        = $body_data
-        ? $body_data->{user}
-        : $c->req->param('user');
-
-    my $data = $self->model($c)
+    my $distributions = $c->read_param('distribution');
+    my $user          = $c->read_param('user');
+    my $data          = $self->model($c)
         ->raw->agg_by_distributions( $distributions, $user );
 
     $data

@@ -76,14 +76,7 @@ sub qsearch : Path('search') : Args(0) {
 # /author/by_ids?id=PAUSE_ID1&id=PAUSE_ID2...
 sub by_ids : Path('by_ids') : Args(0) {
     my ( $self, $c ) = @_;
-    my $body_data = $c->req->body_data;
-    my $ids
-        = $body_data
-        ? $body_data->{id}
-        : [ $c->req->param('id') ];
-    $c->detach( '/bad_request', ['No ids requested'] )
-        unless $ids and @{$ids};
-    my $data = $self->model($c)->raw->by_ids($ids);
+    my $data = $self->model($c)->raw->by_ids( $c->read_param('id') );
 
     $data
         ? $c->stash($data)
@@ -105,16 +98,7 @@ sub by_user : Path('by_user') : Args(1) {
 # /author/by_user?user=USER_ID1&user=USER_ID2...
 sub by_users : Path('by_user') : Args(0) {
     my ( $self, $c ) = @_;
-
-    my $body_data = $c->req->body_data;
-    my $users
-        = $body_data
-        ? $body_data->{user}
-        : [ $c->req->param('user') ];
-    $c->detach( '/bad_request', ['No users requested'] )
-        unless $users and @{$users};
-
-    my $data = $self->model($c)->raw->by_user($users);
+    my $data = $self->model($c)->raw->by_user( $c->read_param('user') );
 
     $data
         ? $c->stash($data)

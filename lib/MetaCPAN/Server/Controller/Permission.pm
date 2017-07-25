@@ -29,14 +29,7 @@ sub by_module : Path('by_module') : Args(1) {
 
 sub by_modules : Path('by_module') : Args(0) {
     my ( $self, $c ) = @_;
-    my $modules
-        = $c->req->body_data
-        ? $c->req->body_data->{module}
-        : [ $c->req->param('module') ];
-    $c->detach( '/bad_request', ['No modules requested'] )
-        unless $modules and @{$modules};
-
-    my $data = $self->model($c)->raw->by_modules($modules);
+    my $data = $self->model($c)->raw->by_modules( $c->read_param('module') );
 
     $data
         ? $c->stash($data)
