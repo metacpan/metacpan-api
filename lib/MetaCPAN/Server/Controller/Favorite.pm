@@ -79,7 +79,7 @@ sub agg_by_distributions : Path('agg_by_distributions') : Args(0) {
     my ( $self, $c ) = @_;
 
     my $distributions = $c->read_param('distribution');
-    my $user          = $c->read_param('user');
+    my $user          = $c->req->param('user');           # optional
     my $data
         = $self->model($c)->agg_by_distributions( $distributions, $user );
 
