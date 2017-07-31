@@ -627,12 +627,9 @@ sub reverse_dependencies {
     # get (authorized/indexed) modules provided by the release
     my $modules = $self->_get_provided_modules($release) || return;
 
-    # get releases depended on those modules
-    my $depended
-        = $self->_get_depended_releases( $modules, $page, $page_size, $sort )
-        || return;
-
-    return +{ data => $depended };
+    # return releases depended on those modules
+    return $self->_get_depended_releases( $modules, $page, $page_size,
+        $sort );
 }
 
 sub _get_latest_release {
@@ -731,7 +728,11 @@ sub _get_depended_releases {
     );
     return unless $depended->{hits}{total};
 
-    return [ map { $_->{_source} } @{ $depended->{hits}{hits} } ];
+    return +{
+        data => [ map { $_->{_source} } @{ $depended->{hits}{hits} } ],
+        total => $depended->{hits}{total},
+        took  => $depended->{took},
+    };
 }
 
 sub recent {
