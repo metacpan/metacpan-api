@@ -51,12 +51,7 @@ sub find : Path('') {
 
 sub dir : Path('dir') {
     my ( $self, $c, @path ) = @_;
-    my $data = $self->model($c)->dir(@path);
-
-    $data
-        ? $c->stash($data)
-        : $c->detach( '/not_found',
-        ['The requested info could not be found'] );
+    $c->stash_or_detach( $self->model($c)->dir(@path) );
 }
 
 1;

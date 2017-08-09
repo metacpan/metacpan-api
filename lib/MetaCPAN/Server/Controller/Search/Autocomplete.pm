@@ -14,8 +14,8 @@ has '+type' => ( default => 'file' );
 
 sub get : Local : Path('') : Args(0) {
     my ( $self, $c ) = @_;
-    my $data = $self->model($c)->autocomplete( $c->req->param("q") );
-    $c->stash($data);
+    $c->stash_or_detach(
+        $self->model($c)->autocomplete( $c->req->param("q") ) );
 }
 
 # this method will replace 'sub get' after the suggester
@@ -24,9 +24,9 @@ sub get : Local : Path('') : Args(0) {
 # -- Mickey
 sub _get : Local : Path('/_get') : Args(0) {
     my ( $self, $c ) = @_;
-    my $data = $self->model($c)
-        ->autocomplete_using_suggester( $c->req->param("q") );
-    $c->stash($data);
+    $c->stash_or_detach(
+        $self->model($c)->autocomplete_using_suggester( $c->req->param("q") )
+    );
 }
 
 1;
