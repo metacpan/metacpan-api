@@ -87,6 +87,7 @@ sub by_author : Path('by_author') : Args(1) {
 sub latest_by_distribution : Path('latest_by_distribution') : Args(1) {
     my ( $self, $c, $dist ) = @_;
     $c->add_dist_key($dist);
+    $c->cdn_max_age('1y');
     $c->stash_or_detach( $self->model($c)->latest_by_distribution($dist) );
 }
 
@@ -105,6 +106,7 @@ sub all_by_author : Path('all_by_author') : Args(1) {
 sub versions : Path('versions') : Args(1) {
     my ( $self, $c, $dist ) = @_;
     $c->add_dist_key($dist);
+    $c->cdn_max_age('1y');
     $c->stash_or_detach( $self->model($c)->versions($dist) );
 }
 
