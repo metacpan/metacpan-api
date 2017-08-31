@@ -26,25 +26,13 @@ sub find : Path('') : Args(1) {
     $c->stash($file);
 }
 
+# TODO: remove /release/by_author_and_name once merged and used by WEB
 sub get : Path('') : Args(2) {
     my ( $self, $c, $author, $name ) = @_;
-
     $c->add_author_key($author);
     $c->cdn_max_age('1y');
-
-    my $file = $self->model($c)->raw->get(
-        {
-            author => $author,
-            name   => $name,
-        }
-    );
-    if ( !defined $file ) {
-        $c->detach( '/not_found', [] );
-    }
-    $c->stash( $file->{_source}
-            || single_valued_arrayref_to_scalar( $file->{fields} ) )
-        || $c->detach( '/not_found',
-        ['The requested field(s) could not be found'] );
+    $c->stash_or_detach(
+        $self->model($c)->raw->by_author_and_name( $author, $name ) );
 }
 
 sub contributors : Path('contributors') : Args(2) {
