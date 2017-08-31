@@ -28,37 +28,11 @@ __PACKAGE__->config(
 # https://fastapi.metacpan.org/v1/author/LLAP
 sub get : Path('') : Args(1) {
     my ( $self, $c, $id ) = @_;
-
     $c->add_author_key($id);
     $c->cdn_max_age('1y');
-
     my $file = $self->model($c)->raw->get($id);
-    if ( !defined $file ) {
-        $c->detach( '/not_found', ['Not found'] );
-    }
-    my $st = $file->{_source}
-        || single_valued_arrayref_to_scalar( $file->{fields} );
-    if ( $st and $st->{pauseid} ) {
-        $st->{release_count}
-            = $c->model('CPAN::Release')
-            ->aggregate_status_by_author( $st->{pauseid} );
-
-        my ( $id_2, $id_1 ) = $id =~ /^((\w)\w)/;
-        $st->{links} = {
-            cpan_directory => "http://cpan.org/authors/id/$id_1/$id_2/$id",
-            backpan_directory =>
-                "https://cpan.metacpan.org/authors/id/$id_1/$id_2/$id",
-            cpants => "http://cpants.cpanauthors.org/author/$id",
-            cpantesters_reports =>
-                "http://cpantesters.org/author/$id_1/$id.html",
-            cpantesters_matrix => "http://matrix.cpantesters.org/?author=$id",
-            metacpan_explorer =>
-                "https://explorer.metacpan.org/?url=/author/$id",
-        };
-    }
-    $c->stash($st)
-        || $c->detach( '/not_found',
-        ['The requested field(s) could not be found'] );
+    $c->stash_or_detach(
+        $c->model('CPAN::Release')->author_status( $id, $file ) );
 }
 
 # /author/search?q=QUERY
