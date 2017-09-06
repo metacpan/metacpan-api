@@ -3,6 +3,7 @@ package MetaCPAN::Document::File::Set;
 use Moose;
 
 use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
+use Ref::Util qw( is_hashref );
 
 extends 'ElasticSearchX::Model::Document::Set';
 
@@ -716,54 +717,51 @@ sub find_changes_files {
     );
 
     # use $c->model b/c we can't let any filters apply here
-    my $file = eval {
-        $self->raw->filter(
-            {
-                and => [
-                    { term => { release => $release } },
-                    { term => { author  => $author } },
-                    {
-                        or => [
+    my $file = $self->raw->filter(
+        {
+            and => [
+                { term => { release => $release } },
+                { term => { author  => $author } },
+                {
+                    or => [
 
-                            # if it's a perl release, get perldelta
-                            {
-                                and => [
-                                    { term => { distribution => 'perl' } },
-                                    {
-                                        term => {
-                                            'name' => 'perldelta.pod'
-                                        }
-                                    },
-                                ]
-                            },
+                        # if it's a perl release, get perldelta
+                        {
+                            and => [
+                                { term => { distribution => 'perl' } },
+                                {
+                                    term => {
+                                        'name' => 'perldelta.pod'
+                                    }
+                                },
+                            ]
+                        },
 
                       # otherwise look for one of these candidates in the root
-                            {
-                                and => [
-                                    { term => { level     => 0 } },
-                                    { term => { directory => 0 } },
-                                    {
-                                        or => [
-                                            map {
-                                                { term => { 'name' => $_ } }
-                                            } @candidates
-                                        ]
-                                    }
-                                ]
-                            }
-                        ],
-                    }
-                ]
-            }
-            )->size(1)
+                        {
+                            and => [
+                                { term => { level     => 0 } },
+                                { term => { directory => 0 } },
+                                {
+                                    or => [
+                                        map { { term => { 'name' => $_ } } }
+                                            @candidates
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                }
+            ]
+        }
+        )->size(1)
 
-           # HACK: Sort by level/desc to put pod/perldeta.pod first (if found)
-           # otherwise sort root files by name and select the first.
-            ->sort( [ { level => 'desc' }, { name => 'asc' } ] )
-            ->first->{_source};
-    };
+        # HACK: Sort by level/desc to put pod/perldeta.pod first (if found)
+        # otherwise sort root files by name and select the first.
+        ->sort( [ { level => 'desc' }, { name => 'asc' } ] )->first;
 
-    return $file;
+    return unless is_hashref($file);
+    return $file->{_source};
 }
 
 __PACKAGE__->meta->make_immutable;

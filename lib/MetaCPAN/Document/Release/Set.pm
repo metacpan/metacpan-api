@@ -13,15 +13,15 @@ sub author_status {
     my ( $self, $id, $file ) = @_;
     return unless $id and $file;
 
-    my $st = $file->{_source}
+    my $status = $file->{_source}
         || single_valued_arrayref_to_scalar( $file->{fields} );
 
-    if ( $st and $st->{pauseid} ) {
-        $st->{release_count}
-            = $self->aggregate_status_by_author( $st->{pauseid} );
+    if ( $status and $status->{pauseid} ) {
+        $status->{release_count}
+            = $self->aggregate_status_by_author( $status->{pauseid} );
 
         my ( $id_2, $id_1 ) = $id =~ /^((\w)\w)/;
-        $st->{links} = {
+        $status->{links} = {
             cpan_directory => "http://cpan.org/authors/id/$id_1/$id_2/$id",
             backpan_directory =>
                 "https://cpan.metacpan.org/authors/id/$id_1/$id_2/$id",
@@ -34,7 +34,7 @@ sub author_status {
         };
     }
 
-    return $st;
+    return $status;
 }
 
 sub aggregate_status_by_author {
