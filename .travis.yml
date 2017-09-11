@@ -20,13 +20,14 @@ env:
     - METACPAN_SERVER_CONFIG_LOCAL_SUFFIX=testing
 
     - DEVEL_COVER_OPTIONS="-ignore,^local/"
+    - PERL_CARTON_PATH=$TRAVIS_BUILD_DIR/local
   matrix:
-    - CPAN_RESOLVER=metadb
+    - CPAN_RESOLVER=metadb PERL_CARTON_PATH=$TRAVIS_BUILD_DIR/no-snapshot HARNESS_VERBOSE=1
     - CPAN_RESOLVER=snapshot
 
 matrix:
   allow_failures:
-    - env: CPAN_RESOLVER=metadb
+    - env: CPAN_RESOLVER=metadb PERL_CARTON_PATH=$TRAVIS_BUILD_DIR/no-snapshot HARNESS_VERBOSE=1
   fast_finish: true
 
 addons:
@@ -52,7 +53,7 @@ before_install:
   - cpanm -n Safe@2.35
 
 install:
-  - cpm install --resolver $CPAN_RESOLVER --workers $(test-jobs)
+  - cpm install -L $PERL_CARTON_PATH --resolver $CPAN_RESOLVER --workers $(test-jobs)
 
 before_script:
   - "perl -i -pe 's/(servers :)9900/localhost:9200/' metacpan_server_testing.conf"
