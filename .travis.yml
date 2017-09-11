@@ -20,15 +20,15 @@ env:
     - METACPAN_SERVER_CONFIG_LOCAL_SUFFIX=testing
 
     - DEVEL_COVER_OPTIONS="-ignore,^local/"
+    - PERL_CARTON_PATH=$TRAVIS_BUILD_DIR/local
   matrix:
-    - USE_CPANFILE_SNAPSHOT=true
-    - USE_CPANFILE_SNAPSHOT=false
+    - CPAN_RESOLVER=metadb PERL_CARTON_PATH=$TRAVIS_BUILD_DIR/no-snapshot HARNESS_VERBOSE=1
+    - CPAN_RESOLVER=snapshot
 
 matrix:
   allow_failures:
-    - env: USE_CPANFILE_SNAPSHOT=false
+    - env: CPAN_RESOLVER=metadb PERL_CARTON_PATH=$TRAVIS_BUILD_DIR/no-snapshot HARNESS_VERBOSE=1
   fast_finish: true
-
 
 addons:
   apt:
@@ -53,14 +53,14 @@ before_install:
   - cpanm -n Safe@2.35
 
 install:
-  - 'cpm install `test "${USE_CPANFILE_SNAPSHOT}" = "false" && echo " --resolver metadb" || echo " --resolver snapshot"`'
+  - cpm install -L $PERL_CARTON_PATH --resolver $CPAN_RESOLVER --workers $(test-jobs)
 
 before_script:
   - "perl -i -pe 's/(servers :)9900/localhost:9200/' metacpan_server_testing.conf"
   - coverage-setup
 
 script:
-  - carton exec prove -lr -j$(test-jobs) t
+  - carton exec prove -It/lib -lr -j$(test-jobs) t
 
 after_success:
   - coverage-report
