@@ -75,3 +75,4 @@ services:
 cache:
   directories:
     - local
+    - ~/perl5
