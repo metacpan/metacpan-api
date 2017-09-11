@@ -37,8 +37,10 @@ addons:
     - postgresql-server-dev-all
 
 before_install:
-  - sudo service elasticsearch stop && curl -O -L https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-2.4.3.deb && sudo dpkg -i --force-confnew elasticsearch-2.4.3.deb && sudo service elasticsearch start
+  - git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers
+  - source ~/travis-perl-helpers/init
 
+  - sudo service elasticsearch stop && curl -O -L https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-2.4.3.deb && sudo dpkg -i --force-confnew elasticsearch-2.4.3.deb && sudo service elasticsearch start
   - sudo service elasticsearch restart
 
   #- cpanm -n Devel::Cover::Report::Coveralls
@@ -56,10 +58,7 @@ before_script:
   - "perl -i -pe 's/(servers :)9900/localhost:9200/' metacpan_server_testing.conf"
 
 script:
-  # Devel::Cover isn't in the cpanfile
-  # but if it's installed into the global dirs this should work.
-  #- HARNESS_PERL_SWITCHES=-MDevel::Cover=+ignore,local carton exec prove -It/lib -lr -j 2 t
-  - carton exec prove -It/lib -lr -j 2 t
+  - carton exec prove -lr -j$(test-jobs) t
 
 after_success:
 #  - cover -report coveralls
