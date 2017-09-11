@@ -18,6 +18,8 @@ env:
 
     # Instantiate Catalyst models using metacpan_server_testing.conf
     - METACPAN_SERVER_CONFIG_LOCAL_SUFFIX=testing
+
+    - DEVEL_COVER_OPTIONS="-ignore,^local/"
   matrix:
     - USE_CPANFILE_SNAPSHOT=true
     - USE_CPANFILE_SNAPSHOT=false
@@ -43,7 +45,6 @@ before_install:
   - sudo service elasticsearch stop && curl -O -L https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-2.4.3.deb && sudo dpkg -i --force-confnew elasticsearch-2.4.3.deb && sudo service elasticsearch start
   - sudo service elasticsearch restart
 
-  #- cpanm -n Devel::Cover::Report::Coveralls
   - cpanm -n Carton
   - cpanm -n App::cpm
 
@@ -56,12 +57,13 @@ install:
 
 before_script:
   - "perl -i -pe 's/(servers :)9900/localhost:9200/' metacpan_server_testing.conf"
+  - coverage-setup
 
 script:
   - carton exec prove -lr -j$(test-jobs) t
 
 after_success:
-#  - cover -report coveralls
+  - coverage-report
 
 #after_failure:
 #  - cat ~/.cpanm/build.log
