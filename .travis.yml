@@ -25,6 +25,7 @@ env:
 matrix:
   allow_failures:
     - env: USE_CPANFILE_SNAPSHOT=false
+  fast_finish: true
 
 # libgmp-dev required by Net::OpenID::Consumer
 # postgresql-server-dev-all is required by DBD::Pg
