@@ -1198,7 +1198,6 @@ DISTRIBUTIONS
       Config::Any::XML undef
       Config::Any::YAML undef
     requirements:
-      Config::General 2.47
       Module::Pluggable::Object 3.6
   Config-General-2.63
     pathname: T/TL/TLINDEN/Config-General-2.63.tar.gz
@@ -4843,12 +4842,13 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       Module::Runtime 0.014
-  MooX-Types-MooseLike-Numeric-1.02
-    pathname: M/MA/MATEU/MooX-Types-MooseLike-Numeric-1.02.tar.gz
+  MooX-Types-MooseLike-Numeric-1.03
+    pathname: M/MA/MATEU/MooX-Types-MooseLike-Numeric-1.03.tar.gz
     provides:
-      MooX::Types::MooseLike::Numeric 1.02
+      MooX::Types::MooseLike::Numeric 1.03
     requirements:
       ExtUtils::MakeMaker 0
+      Moo 1.004002
       MooX::Types::MooseLike 0.23
       Test::Fatal 0.003
       Test::More 0.96
@@ -5329,10 +5329,10 @@ DISTRIBUTIONS
       Test::Exception 0
       Test::More 0
       namespace::clean 0
-  MooseX-Fastly-Role-0.03
-    pathname: L/LL/LLAP/MooseX-Fastly-Role-0.03.tar.gz
+  MooseX-Fastly-Role-0.04
+    pathname: L/LL/LLAP/MooseX-Fastly-Role-0.04.tar.gz
     provides:
-      MooseX::Fastly::Role 0.03
+      MooseX::Fastly::Role 0.04
     requirements:
       Carp 0
       ExtUtils::MakeMaker 0

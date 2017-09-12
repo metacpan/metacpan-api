@@ -106,7 +106,7 @@ requires 'MooseX::ClassAttribute';
 requires 'MooseX::Getopt', '0.71';
 requires 'MooseX::Getopt::Dashes';
 requires 'MooseX::Getopt::OptionTypeMap';
-requires 'MooseX::Fastly::Role', '0.02';
+requires 'MooseX::Fastly::Role', '0.04';
 requires 'MooseX::StrictConstructor';
 requires 'MooseX::Types';
 requires 'MooseX::Types::Common::String';
