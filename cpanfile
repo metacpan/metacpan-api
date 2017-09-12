@@ -184,6 +184,7 @@ test_requires 'Config::General';
 test_requires 'File::Copy';
 test_requires 'HTTP::Cookies';
 test_requires 'LWP::ConsoleLogger::Easy';
+test_requires 'MetaCPAN::Client', '>=', '2.017000';
 test_requires 'Plack::Test::Agent';
 test_requires 'Test::Aggregate::Nested', '0.371';
 test_requires 'Test::Code::TidyAll';
