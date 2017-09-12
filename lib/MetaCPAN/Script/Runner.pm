@@ -3,8 +3,8 @@ package MetaCPAN::Script::Runner;
 use strict;
 use warnings;
 
-use Config::JFDI;
-use File::Path ();
+use Config::ZOMG ();
+use File::Path   ();
 use Hash::Merge::Simple qw(merge);
 use IO::Interactive qw(is_interactive);
 use Module::Pluggable search_path => ['MetaCPAN::Script'];
@@ -32,22 +32,22 @@ sub run {
 }
 
 sub build_config {
-    my $config = Config::JFDI->new(
+    my $config = Config::ZOMG->new(
         name => 'metacpan',
         path => 'etc'
-    )->get;
+    )->load;
     if ( $ENV{HARNESS_ACTIVE} ) {
-        my $tconf = Config::JFDI->new(
+        my $tconf = Config::ZOMG->new(
             name => 'metacpan',
             file => 'etc/metacpan_testing.pl'
-        )->get;
+        )->load;
         $config = merge $config, $tconf;
     }
     elsif ( is_interactive() ) {
-        my $iconf = Config::JFDI->new(
+        my $iconf = Config::ZOMG->new(
             name => 'metacpan',
             file => 'etc/metacpan_interactive.pl'
-        )->get;
+        )->load;
         $config = merge $config, $iconf;
     }
     return $config;
