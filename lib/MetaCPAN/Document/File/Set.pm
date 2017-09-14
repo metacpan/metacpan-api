@@ -620,6 +620,7 @@ sub interesting_files {
                                                             CHANGES
                                                             CONTRIBUTING
                                                             CONTRIBUTING.md
+                                                            COPYING
                                                             COPYRIGHT
                                                             CREDITS
                                                             ChangeLog
