@@ -36,15 +36,15 @@ sub _not_rogue {
 }
 
 sub search_simple {
-    my ( $self, $query ) = @_;
-    my $es_query = $self->build_query($query);
+    my ( $self, $search_term ) = @_;
+    my $es_query = $self->build_query($search_term);
     my $results = $self->run_query( file => $es_query );
     return $results;
 }
 
 sub search_for_first_result {
-    my ( $self, $query ) = @_;
-    my $es_query = $self->build_query($query);
+    my ( $self, $search_term ) = @_;
+    my $es_query = $self->build_query($search_term);
     my $results = $self->run_query( file => $es_query );
     return unless $results->{hits}{total};
     my $data = $results->{hits}{hits}[0];
@@ -53,31 +53,33 @@ sub search_for_first_result {
 }
 
 sub search_web {
-    my ( $self, $query, $from, $page_size, $collapsed ) = @_;
+    my ( $self, $search_term, $from, $page_size, $collapsed ) = @_;
     $page_size //= 20;
     $from      //= 0;
 
     # munge the query
     # these would be nicer if we had variable-length lookbehinds...
-    $query =~ s{(^|\s)author:([a-zA-Z]+)(?=\s|$)}{$1author:\U$2\E}g;
-    $query =~ s/(^|\s)dist(ribution)?:([\w-]+)(?=\s|$)/$1distribution:$3/g;
-    $query =~ s/(^|\s)module:(\w[\w:]*)(?=\s|$)/$1module.name.analyzed:$2/g;
+    $search_term =~ s{(^|\s)author:([a-zA-Z]+)(?=\s|$)}{$1author:\U$2\E}g;
+    $search_term
+        =~ s/(^|\s)dist(ribution)?:([\w-]+)(?=\s|$)/$1distribution:$3/g;
+    $search_term
+        =~ s/(^|\s)module:(\w[\w:]*)(?=\s|$)/$1module.name.analyzed:$2/g;
 
     my $results
-        = $collapsed // $query !~ /(distribution|module\.name\S*):/
-        ? $self->_search_collapsed( $query, $from, $page_size )
-        : $self->_search_expanded( $query, $from, $page_size );
+        = $collapsed // $search_term !~ /(distribution|module\.name\S*):/
+        ? $self->_search_collapsed( $search_term, $from, $page_size )
+        : $self->_search_expanded( $search_term, $from, $page_size );
 
     return $results;
 }
 
 sub _search_expanded {
-    my ( $self, $query, $from, $page_size ) = @_;
+    my ( $self, $search_term, $from, $page_size ) = @_;
 
     # When used for a distribution or module search, the limit is included in
     # thl query and ES does the right thing.
     my $es_query = $self->build_query(
-        $query,
+        $search_term,
         {
             size => $page_size,
             from => $from
@@ -112,7 +114,7 @@ sub _search_expanded {
 }
 
 sub _search_collapsed {
-    my ( $self, $query, $from, $page_size ) = @_;
+    my ( $self, $search_term, $from, $page_size ) = @_;
 
     my $took = 0;
     my $total;
@@ -138,7 +140,7 @@ sub _search_collapsed {
             count => { terms => { size => 999, field => 'distribution' } }
             }
             if $run == 1;
-        my $es_query = $self->build_query( $query, $es_query_opts );
+        my $es_query = $self->build_query( $search_term, $es_query_opts );
 
         $data = $self->run_query( file => $es_query );
         $took += $data->{took} || 0;
@@ -170,7 +172,7 @@ sub _search_collapsed {
     # results page, fetch the details about those distributions
     my $favorites = $self->search_favorites(@distributions);
     my $es_query  = $self->build_query(
-        $query,
+        $search_term,
         {
 # we will probably never hit that limit, since we are searching in $page_size=20 distributions max
             size  => 5000,
@@ -228,9 +230,9 @@ sub _collapse_results {
 }
 
 sub build_query {
-    my ( $self, $query, $params ) = @_;
+    my ( $self, $search_term, $params ) = @_;
     $params //= {};
-    ( my $clean = $query ) =~ s/::/ /g;
+    ( my $clean = $search_term ) =~ s/::/ /g;
 
     my $negative
         = { term => { 'mime' => { value => 'text/x-script.perl' } } };
@@ -243,7 +245,7 @@ sub build_query {
                 {
                     term => {
                         'documentation' => {
-                            value => $query,
+                            value => $search_term,
                             boost => 20,
                         }
                     }
@@ -251,7 +253,7 @@ sub build_query {
                 {
                     term => {
                         'module.name' => {
-                            value => $query,
+                            value => $search_term,
                             boost => 20,
                         }
                     }
@@ -376,11 +378,11 @@ sub build_query {
 }
 
 sub run_query {
-    my ( $self, $type, $query ) = @_;
+    my ( $self, $type, $es_query ) = @_;
     return $self->_run_query(
         index => $self->index,
         type  => $type,
-        body  => $query,
+        body  => $es_query,
     );
 }
 
