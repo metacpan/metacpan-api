@@ -2,8 +2,6 @@ package MetaCPAN::Model::Search;
 
 use Moose;
 
-use v5.10;
-
 use Log::Contextual qw( :log :dlog );
 use MooseX::StrictConstructor;
 
@@ -53,13 +51,34 @@ sub search_for_first_result {
     return $data->{fields};
 }
 
+=head2 search_web
+
+  search_web( $search_term, $from, $page_size, $collapsed );
+
+- search_term:
+   - can be unqualified string e.g. 'paging'
+   - can be author e.g: 'author:LLAP'
+   - can be module e.g.: 'module:Data::Pageset'
+   - can be distribution e.g.: 'dist:Data-Pageset'
+
+- from: where in result set to start, int
+
+- page_size: number of results per page, int
+
+- collapsed: whether to merge results by dist or not
+
+=cut
+
 sub search_web {
     my ( $self, $search_term, $from, $page_size, $collapsed ) = @_;
     $page_size //= 20;
     $from      //= 0;
 
-    # munge the query
+    # munge the search_term
     # these would be nicer if we had variable-length lookbehinds...
+    # Allow q = 'author:LLAP' or 'module:Data::Page' or 'dist:'
+    # We are mapping to correct ES fields here - wonder if ANYONE
+    # uses these?!?!?!
     $search_term    #
         =~ s{(^|\s)author:([a-zA-Z]+)(?=\s|$)}{$1author:\U$2\E}g;
     $search_term
@@ -78,8 +97,9 @@ sub search_web {
 sub _search_expanded {
     my ( $self, $search_term, $from, $page_size ) = @_;
 
-    # When used for a distribution or module search, the limit is included in
-    # thl query and ES does the right thing.
+    # Used for distribution and module searches, the limit is included in
+    # the query and ES does the right thing (because we are not collapsing
+    # results by distribution).
     my $es_query = $self->build_query(
         $search_term,
         {
@@ -89,27 +109,32 @@ sub _search_expanded {
     );
 
     #return $es_query;
-    my $data = $self->run_query( file => $es_query );
+    my $es_results = $self->run_query( file => $es_query );
 
     my @distributions = uniq
         map {
         single_valued_arrayref_to_scalar( $_->{fields} );
         $_->{fields}->{distribution}
-        } @{ $data->{hits}->{hits} };
+        } @{ $es_results->{hits}->{hits} };
 
     # Everything after this will fail (slowly and silently) without results.
     return {} unless @distributions;
 
-    my @ids          = map { $_->{fields}->{id} } @{ $data->{hits}->{hits} };
+    # Lookup favs and extract results from es (adding in favs)
+    my $favorites = $self->search_favorites(@distributions);
+    my $results = $self->_extract_results_add_favs( $es_results, $favorites );
+
+    # Add descriptions
+    my @ids = map { $_->{id} } @{$results};
     my $descriptions = $self->search_descriptions(@ids);
-    my $favorites    = $self->search_favorites(@distributions);
-    my $results      = $self->_extract_results( $data, $favorites );
+
     map { $_->{description} = $descriptions->{results}->{ $_->{id} } }
         @{$results};
+
     my $return = {
         results => [ map { [$_] } @$results ],
-        total   => $data->{hits}->{total},
-        took      => sum( grep {defined} $data->{took}, $favorites->{took} ),
+        total   => $es_results->{hits}->{total},
+        took => sum( grep {defined} $es_results->{took}, $favorites->{took} ),
         collapsed => \0,
     };
     return $return;
@@ -198,7 +223,7 @@ sub _search_collapsed {
     my $results = $self->run_query( file => $es_query );
 
     $took += sum( grep {defined} $results->{took}, $favorites->{took} );
-    $results = $self->_extract_results( $results, $favorites );
+    $results = $self->_extract_results_add_favs( $results, $favorites );
     $results = $self->_collapse_results($results);
     my @ids = map { $_->[0]{id} } @$results;
     $data = {
@@ -473,20 +498,19 @@ sub search_favorites {
     return $results;
 }
 
-sub _extract_results {
+sub _extract_results_add_favs {
     my ( $self, $results, $favorites ) = @_;
+
     return [
         map {
             my $res = $_;
             single_valued_arrayref_to_scalar( $res->{fields} );
-            my $dist = $res->{fields}{distribution};
             +{
                 %{ $res->{fields} },
                 %{ $res->{_source} },
-                abstract   => $res->{fields}{'abstract.analyzed'},
-                score      => $res->{_score},
-                favorites  => $favorites->{favorites}{$dist},
-                myfavorite => $favorites->{myfavorites}{$dist},
+                abstract  => delete $res->{fields}->{'abstract.analyzed'},
+                score     => $res->{_score},
+                favorites => $favorites->{ $res->{fields}->{distribution} },
                 }
         } @{ $results->{hits}{hits} }
     ];
