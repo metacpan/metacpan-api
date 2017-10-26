@@ -1,7 +1,8 @@
 package MetaCPAN::Model::Search;
 
-use Moose;
+use MetaCPAN::Moose;
 
+use Const::Fast qw( const );
 use Log::Contextual qw( :log :dlog );
 use MooseX::StrictConstructor;
 
@@ -23,9 +24,9 @@ has index => (
     required => 1,
 );
 
-my $RESULTS_PER_RUN = 200;
-my @ROGUE_DISTRIBUTIONS
-    = qw(kurila perl_debug perl_mlb perl-5.005_02+apache1.3.3+modperl pod2texi perlbench spodcxx Bundle-Everything);
+const my $RESULTS_PER_RUN => 200;
+const my @ROGUE_DISTRIBUTIONS =>
+    qw(kurila perl_debug perl_mlb perl-5.005_02+apache1.3.3+modperl pod2texi perlbench spodcxx Bundle-Everything);
 
 sub _not_rogue {
     my @rogue_dists
@@ -36,17 +37,17 @@ sub _not_rogue {
 sub search_simple {
     my ( $self, $search_term ) = @_;
     my $es_query = $self->build_query($search_term);
-    my $results = $self->run_query( file => $es_query );
-    return $results;
+    my $es_results = $self->run_query( file => $es_query );
+    return $es_results;
 }
 
 sub search_for_first_result {
     my ( $self, $search_term ) = @_;
     my $es_query = $self->build_query($search_term);
-    my $results = $self->run_query( file => $es_query );
-    return unless $results->{hits}{total};
+    my $es_results = $self->run_query( file => $es_query );
+    return unless $es_results->{hits}{total};
 
-    my $data = $results->{hits}{hits}[0];
+    my $data = $es_results->{hits}{hits}[0];
     single_valued_arrayref_to_scalar( $data->{fields} );
     return $data->{fields};
 }
@@ -232,27 +233,31 @@ sub _search_collapsed {
             }
         }
     );
-    my $results = $self->run_query( file => $es_query );
+    my $es_dist_results = $self->run_query( file => $es_query );
 
+    # Look up favs and add to extracted results
     my $favorites = $self->search_favorites(@distributions);
-    $took += sum( grep {defined} $results->{took}, $favorites->{took} );
-
-    $results = $self->_extract_results_add_favs( $results, $favorites );
+    my $results
+        = $self->_extract_results_add_favs( $es_dist_results, $favorites );
     $results = $self->_collapse_results($results);
+
+    # Add descriptions, but only after collapsed as is slow
     my @ids = map { $_->[0]{id} } @$results;
-    my $data = {
+    my $descriptions = $self->search_descriptions(@ids);
+    map { $_->[0]{description} = $descriptions->{results}{ $_->[0]{id} } }
+        @{$results};
+
+    # Calculate took from sum of all ES searches
+    $took += sum( grep {defined} $es_dist_results->{took},
+        $favorites->{took}, $descriptions->{took} );
+
+    return {
         results   => $results,
         total     => $total,
         took      => $took,
         collapsed => \1,
     };
 
-    my $descriptions = $self->search_descriptions(@ids);
-    $data->{took} += $descriptions->{took} || 0;
-    map { $_->[0]{description} = $descriptions->{results}{ $_->[0]{id} } }
-        @{ $data->{results} };
-
-    return $data;
 }
 
 sub _collapse_results {
@@ -265,6 +270,9 @@ sub _collapse_results {
             unless ( $collapsed{$distribution} );
         push( @{ $collapsed{$distribution}->{results} }, $result );
     }
+
+    # We return array ref because the results have matching modules
+    # grouped by distribution
     return [
         map      { $collapsed{$_}->{results} }
             sort { $collapsed{$a}->{position} <=> $collapsed{$b}->{position} }
@@ -515,7 +523,7 @@ sub search_favorites {
 }
 
 sub _extract_results_add_favs {
-    my ( $self, $results, $favorites ) = @_;
+    my ( $self, $es_results, $favorites ) = @_;
 
     return [
         map {
@@ -528,7 +536,7 @@ sub _extract_results_add_favs {
                 score     => $res->{_score},
                 favorites => $favorites->{ $res->{fields}->{distribution} },
                 }
-        } @{ $results->{hits}{hits} }
+        } @{ $es_results->{hits}{hits} }
     ];
 }
 
