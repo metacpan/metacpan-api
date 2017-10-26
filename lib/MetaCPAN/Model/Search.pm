@@ -160,21 +160,30 @@ sub _search_collapsed {
             fields => [qw(distribution)],
         };
 
-        # On the first request also fetch the number of total distributions
-        # that match the query so that can be reported to the user. There is
-        # no need to do it on each iteration though, once is enough.
-        $es_query_opts->{aggregations}
-            = {
-            count => { terms => { size => 999, field => 'distribution' } }
-            }
-            if $run == 1;
-        my $es_query = $self->build_query( $search_term, $es_query_opts );
+        if ( $run == 1 ) {
 
+          # On the first request also fetch the number of total distributions
+          # that match the query so that can be reported to the user. There is
+          # no need to do it on each iteration though, once is enough.
+
+            $es_query_opts->{aggregations}
+                = {
+                count => { terms => { size => 999, field => 'distribution' } }
+                };
+        }
+
+        my $es_query = $self->build_query( $search_term, $es_query_opts );
         $es_results = $self->run_query( file => $es_query );
         $took += $es_results->{took} || 0;
-        $total = @{ $es_results->{aggregations}->{count}->{buckets} || [] }
-            if $run == 1;
+
+        if ( $run == 1 ) {
+            $total
+                = @{ $es_results->{aggregations}->{count}->{buckets} || [] };
+        }
+
         $hits = @{ $es_results->{hits}->{hits} || [] };
+
+        # Flatten results down to unique dists
         @distributions = uniq(
             @distributions,
             map {
@@ -182,6 +191,8 @@ sub _search_collapsed {
                 $_->{fields}->{distribution}
             } @{ $es_results->{hits}->{hits} }
         );
+
+        # Keep track
         $run++;
         } while ( @distributions < $page_size + $from
         && $es_results->{hits}->{total}
@@ -199,8 +210,7 @@ sub _search_collapsed {
 
     # Now that we know which distributions are going to be displayed on the
     # results page, fetch the details about those distributions
-    my $favorites = $self->search_favorites(@distributions);
-    my $es_query  = $self->build_query(
+    my $es_query = $self->build_query(
         $search_term,
         {
 # we will probably never hit that limit, since we are searching in $page_size=20 distributions max
@@ -224,7 +234,9 @@ sub _search_collapsed {
     );
     my $results = $self->run_query( file => $es_query );
 
+    my $favorites = $self->search_favorites(@distributions);
     $took += sum( grep {defined} $results->{took}, $favorites->{took} );
+
     $results = $self->_extract_results_add_favs( $results, $favorites );
     $results = $self->_collapse_results($results);
     my @ids = map { $_->[0]{id} } @$results;
@@ -234,10 +246,12 @@ sub _search_collapsed {
         took      => $took,
         collapsed => \1,
     };
+
     my $descriptions = $self->search_descriptions(@ids);
     $data->{took} += $descriptions->{took} || 0;
     map { $_->[0]{description} = $descriptions->{results}{ $_->[0]{id} } }
         @{ $data->{results} };
+
     return $data;
 }
 
