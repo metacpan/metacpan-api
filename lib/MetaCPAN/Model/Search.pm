@@ -143,13 +143,14 @@ sub _search_expanded {
 sub _search_collapsed {
     my ( $self, $search_term, $from, $page_size ) = @_;
 
-    my $took = 0;
     my $total;
+    my @distributions;
+    my $es_results;
+
     my $run  = 1;
     my $hits = 0;
-    my @distributions;
-    my $process_or_repeat;
-    my $data;
+    my $took = 0;
+
     do {
         # We need to scan enough modules to build up a sufficient number of
         # distributions to fill the results to the number requested
@@ -169,22 +170,23 @@ sub _search_collapsed {
             if $run == 1;
         my $es_query = $self->build_query( $search_term, $es_query_opts );
 
-        $data = $self->run_query( file => $es_query );
-        $took += $data->{took} || 0;
-        $total = @{ $data->{aggregations}->{count}->{buckets} || [] }
+        $es_results = $self->run_query( file => $es_query );
+        $took += $es_results->{took} || 0;
+        $total = @{ $es_results->{aggregations}->{count}->{buckets} || [] }
             if $run == 1;
-        $hits = @{ $data->{hits}->{hits} || [] };
+        $hits = @{ $es_results->{hits}->{hits} || [] };
         @distributions = uniq(
             @distributions,
             map {
                 single_valued_arrayref_to_scalar( $_->{fields} );
                 $_->{fields}->{distribution}
-            } @{ $data->{hits}->{hits} }
+            } @{ $es_results->{hits}->{hits} }
         );
         $run++;
         } while ( @distributions < $page_size + $from
-        && $data->{hits}->{total}
-        && $data->{hits}->{total} > $hits + ( $run - 2 ) * $RESULTS_PER_RUN );
+        && $es_results->{hits}->{total}
+        && $es_results->{hits}->{total}
+        > $hits + ( $run - 2 ) * $RESULTS_PER_RUN );
 
     # Avoid "splice() offset past end of array" warning.
     @distributions
@@ -226,7 +228,7 @@ sub _search_collapsed {
     $results = $self->_extract_results_add_favs( $results, $favorites );
     $results = $self->_collapse_results($results);
     my @ids = map { $_->[0]{id} } @$results;
-    $data = {
+    my $data = {
         results   => $results,
         total     => $total,
         took      => $took,
@@ -435,15 +437,15 @@ sub search_descriptions {
         took         => 0,
     } unless @ids;
 
-    my $es_query = $self->_build_search_descriptions_query(@ids);
-    my $data     = $self->run_query( file => $es_query );
-    my $results  = {
+    my $es_query   = $self->_build_search_descriptions_query(@ids);
+    my $es_results = $self->run_query( file => $es_query );
+    my $results    = {
         results => {
             map { $_->{id} => $_->{description} }
                 map { single_valued_arrayref_to_scalar( $_->{fields} ) }
-                @{ $data->{hits}->{hits} }
+                @{ $es_results->{hits}->{hits} }
         },
-        took => $data->{took}
+        took => $es_results->{took}
     };
     return $results;
 }
@@ -486,13 +488,13 @@ sub search_favorites {
     return {} unless @distributions;
 
     my $es_query = $self->_build_search_favorites_query(@distributions);
-    my $data = $self->run_query( favorite => $es_query );
+    my $es_results = $self->run_query( favorite => $es_query );
 
     my $results = {
-        took      => $data->{took},
+        took      => $es_results->{took},
         favorites => {
             map { $_->{key} => $_->{doc_count} }
-                @{ $data->{aggregations}->{favorites}->{buckets} }
+                @{ $es_results->{aggregations}->{favorites}->{buckets} }
         },
     };
     return $results;
