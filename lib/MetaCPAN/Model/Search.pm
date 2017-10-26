@@ -13,11 +13,9 @@ use MetaCPAN::Types qw( Object Str );
 use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
 
 has es => (
-    is      => 'ro',
-    isa     => Object,
-    handles => {
-        _run_query => 'search',
-    },
+    is       => 'ro',
+    isa      => Object,
+    handles  => { _run_query => 'search', },
     required => 1,
 );
 
@@ -336,9 +334,8 @@ sub build_query {
                                                 }
                                             },
                                             {
-                                                term => {
-                                                    'module.indexed' => 1
-                                                }
+                                                term =>
+                                                    { 'module.indexed' => 1 }
                                             }
                                         ]
                                     },
@@ -392,10 +389,8 @@ sub _build_search_descriptions_query {
     my $query = {
         query => {
             filtered => {
-                query  => { match_all => {} },
-                filter => {
-                    or => [ map { { term => { id => $_ } } } @ids ]
-                }
+                query => { match_all => {} },
+                filter => { or => [ map { { term => { id => $_ } } } @ids ] }
             }
         },
         fields => [qw(description id)],
@@ -406,7 +401,10 @@ sub _build_search_descriptions_query {
 
 sub search_descriptions {
     my ( $self, @ids ) = @_;
-    return {} unless @ids;
+    return {
+        descriptions => {},
+        took         => 0,
+    } unless @ids;
 
     my $query   = $self->_build_search_descriptions_query(@ids);
     my $data    = $self->run_query( file => $query );
