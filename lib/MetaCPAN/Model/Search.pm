@@ -47,6 +47,7 @@ sub search_for_first_result {
     my $es_query = $self->build_query($search_term);
     my $results = $self->run_query( file => $es_query );
     return unless $results->{hits}{total};
+
     my $data = $results->{hits}{hits}[0];
     single_valued_arrayref_to_scalar( $data->{fields} );
     return $data->{fields};
@@ -59,7 +60,8 @@ sub search_web {
 
     # munge the query
     # these would be nicer if we had variable-length lookbehinds...
-    $search_term =~ s{(^|\s)author:([a-zA-Z]+)(?=\s|$)}{$1author:\U$2\E}g;
+    $search_term    #
+        =~ s{(^|\s)author:([a-zA-Z]+)(?=\s|$)}{$1author:\U$2\E}g;
     $search_term
         =~ s/(^|\s)dist(ribution)?:([\w-]+)(?=\s|$)/$1distribution:$3/g;
     $search_term
@@ -388,7 +390,7 @@ sub run_query {
 
 sub _build_search_descriptions_query {
     my ( $self, @ids ) = @_;
-    my $query = {
+    my $es_query = {
         query => {
             filtered => {
                 query => { match_all => {} },
@@ -398,7 +400,7 @@ sub _build_search_descriptions_query {
         fields => [qw(description id)],
         size   => scalar @ids,
     };
-    return $query;
+    return $es_query;
 }
 
 sub search_descriptions {
@@ -408,9 +410,9 @@ sub search_descriptions {
         took         => 0,
     } unless @ids;
 
-    my $query   = $self->_build_search_descriptions_query(@ids);
-    my $data    = $self->run_query( file => $query );
-    my $results = {
+    my $es_query = $self->_build_search_descriptions_query(@ids);
+    my $data     = $self->run_query( file => $es_query );
+    my $results  = {
         results => {
             map { $_->{id} => $_->{description} }
                 map { single_valued_arrayref_to_scalar( $_->{fields} ) }
@@ -424,7 +426,7 @@ sub search_descriptions {
 sub _build_search_favorites_query {
     my ( $self, @distributions ) = @_;
 
-    my $query = {
+    my $es_query = {
         size  => 0,
         query => {
             filtered => {
@@ -447,7 +449,7 @@ sub _build_search_favorites_query {
         }
     };
 
-    return $query;
+    return $es_query;
 }
 
 sub search_favorites {
@@ -458,8 +460,8 @@ sub search_favorites {
     # filter and ES will return a parser error... so just skip it.
     return {} unless @distributions;
 
-    my $query = $self->_build_search_favorites_query(@distributions);
-    my $data = $self->run_query( favorite => $query );
+    my $es_query = $self->_build_search_favorites_query(@distributions);
+    my $data = $self->run_query( favorite => $es_query );
 
     my $results = {
         took      => $data->{took},
