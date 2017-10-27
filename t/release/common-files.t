@@ -1,9 +1,9 @@
-use Test::More;
 use strict;
 use warnings;
 
-use lib 't/lib';
+use Cpanel::JSON::XS ();
 use MetaCPAN::TestHelpers;
+use Test::More;
 
 test_release(
     {
@@ -16,8 +16,8 @@ test_release(
             'lib/Common/Files.pm' => [
                 {
                     name             => 'Common::Files',
-                    indexed          => 'true',
-                    authorized       => 'true',
+                    indexed          => Cpanel::JSON::XS::true(),
+                    authorized       => Cpanel::JSON::XS::true(),
                     version          => '1.1',
                     version_numified => 1.1,
                     associated_pod =>

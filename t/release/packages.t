@@ -1,6 +1,7 @@
 use strict;
 use warnings;
 
+use Cpanel::JSON::XS ();
 use MetaCPAN::Server::Test;
 use MetaCPAN::TestHelpers;
 use Test::More;
@@ -19,8 +20,8 @@ test_release(
             'lib/Packages.pm' => [
                 {
                     name             => 'Packages',
-                    indexed          => 'true',
-                    authorized       => 'true',
+                    indexed          => Cpanel::JSON::XS::true(),
+                    authorized       => Cpanel::JSON::XS::true(),
                     version          => '1.103',
                     version_numified => 1.103,
                     associated_pod =>
@@ -30,8 +31,8 @@ test_release(
             'lib/Packages/BOM.pm' => [
                 {
                     name             => 'Packages::BOM',
-                    indexed          => 'true',
-                    authorized       => 'true',
+                    indexed          => Cpanel::JSON::XS::true(),
+                    authorized       => Cpanel::JSON::XS::true(),
                     version          => 0.04,
                     version_numified => 0.04,
                     associated_pod =>
