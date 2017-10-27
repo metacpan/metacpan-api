@@ -26,62 +26,9 @@ sub get : Chained('index') : PathPart('') : Args(2) {
     $c->add_author_key($author);
     $c->cdn_max_age('1y');
 
-    # find the most likely file
-    # TODO: should we do this when the release is indexed
-    # and store the result as { 'changes_file' => $name }
-
-    my @candidates = qw(
-        CHANGES Changes ChangeLog Changelog CHANGELOG NEWS
-    );
-
-    my $file = eval {
-
-        # use $c->model b/c we can't let any filters apply here
-        my $files = $c->model('CPAN::File')->raw->filter(
-            {
-                and => [
-                    { term => { release => $release } },
-                    { term => { author  => $author } },
-                    {
-                        or => [
-
-                            # if it's a perl release, get perldelta
-                            {
-                                and => [
-                                    { term => { distribution => 'perl' } },
-                                    {
-                                        term => {
-                                            'name' => 'perldelta.pod'
-                                        }
-                                    },
-                                ]
-                            },
-
-                      # otherwise look for one of these candidates in the root
-                            {
-                                and => [
-                                    { term => { level     => 0 } },
-                                    { term => { directory => 0 } },
-                                    {
-                                        or => [
-                                            map {
-                                                { term => { 'name' => $_ } }
-                                            } @candidates
-                                        ]
-                                    }
-                                ]
-                            }
-                        ],
-                    }
-                ]
-            }
-            )->size(1)
-
-           # HACK: Sort by level/desc to put pod/perldeta.pod first (if found)
-           # otherwise sort root files by name and select the first.
-            ->sort( [ { level => 'desc' }, { name => 'asc' } ] )
-            ->first->{_source};
-    } or $c->detach( '/not_found', [] );
+    my $file
+        = $c->model('CPAN::File')->find_changes_files( $author, $release );
+    $file or $c->detach( '/not_found', [] );
 
     my $source = $c->model('Source')->path( @$file{qw(author release path)} )
         or $c->detach( '/not_found', [] );
