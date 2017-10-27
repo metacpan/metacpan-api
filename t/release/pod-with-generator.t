@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use lib 't/lib';
+use Cpanel::JSON::XS ();
 use MetaCPAN::TestHelpers;
 use Test::More;
 
@@ -17,8 +17,8 @@ test_release(
             'lib/Pod/With/Generator.pm' => [
                 {
                     name             => 'Pod::With::Generator',
-                    indexed          => 'true',
-                    authorized       => 'true',
+                    indexed          => Cpanel::JSON::XS::true(),
+                    authorized       => Cpanel::JSON::XS::true(),
                     version          => '1',
                     version_numified => 1,
                     associated_pod =>
