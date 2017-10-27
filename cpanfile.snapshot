@@ -903,12 +903,12 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Moose 0.73
       MooseX::RelatedClassRoles 0.003
-  Class-Accessor-0.34
-    pathname: K/KA/KASEI/Class-Accessor-0.34.tar.gz
+  Class-Accessor-0.51
+    pathname: K/KA/KASEI/Class-Accessor-0.51.tar.gz
     provides:
-      Class::Accessor 0.34
-      Class::Accessor::Fast 0.34
-      Class::Accessor::Faster 0.34
+      Class::Accessor 0.51
+      Class::Accessor::Fast 0.51
+      Class::Accessor::Faster 0.51
     requirements:
       ExtUtils::MakeMaker 0
       base 1.01
@@ -1085,39 +1085,40 @@ DISTRIBUTIONS
       strict 0
       vars 0
       warnings 0
-  Code-TidyAll-0.65
-    pathname: D/DR/DROLSKY/Code-TidyAll-0.65.tar.gz
+  Code-TidyAll-0.69
+    pathname: D/DR/DROLSKY/Code-TidyAll-0.69.tar.gz
     provides:
-      Code::TidyAll 0.65
-      Code::TidyAll::Cache 0.65
-      Code::TidyAll::CacheModel 0.65
-      Code::TidyAll::CacheModel::Shared 0.65
-      Code::TidyAll::Config::INI::Reader 0.65
-      Code::TidyAll::Git::Precommit 0.65
-      Code::TidyAll::Git::Prereceive 0.65
-      Code::TidyAll::Git::Util 0.65
-      Code::TidyAll::Plugin 0.65
-      Code::TidyAll::Plugin::CSSUnminifier 0.65
-      Code::TidyAll::Plugin::JSBeautify 0.65
-      Code::TidyAll::Plugin::JSHint 0.65
-      Code::TidyAll::Plugin::JSLint 0.65
-      Code::TidyAll::Plugin::JSON 0.65
-      Code::TidyAll::Plugin::MasonTidy 0.65
-      Code::TidyAll::Plugin::PHPCodeSniffer 0.65
-      Code::TidyAll::Plugin::PerlCritic 0.65
-      Code::TidyAll::Plugin::PerlTidy 0.65
-      Code::TidyAll::Plugin::PerlTidySweet 0.65
-      Code::TidyAll::Plugin::PodChecker 0.65
-      Code::TidyAll::Plugin::PodSpell 0.65
-      Code::TidyAll::Plugin::PodTidy 0.65
-      Code::TidyAll::Plugin::SortLines 0.65
-      Code::TidyAll::Result 0.65
-      Code::TidyAll::Role::HasIgnore 0.65
-      Code::TidyAll::Role::Tempdir 0.65
-      Code::TidyAll::SVN::Precommit 0.65
-      Code::TidyAll::SVN::Util 0.65
-      Code::TidyAll::Util::Zglob 0.65
-      Test::Code::TidyAll 0.65
+      Code::TidyAll 0.69
+      Code::TidyAll::Cache 0.69
+      Code::TidyAll::CacheModel 0.69
+      Code::TidyAll::CacheModel::Shared 0.69
+      Code::TidyAll::Config::INI::Reader 0.69
+      Code::TidyAll::Git::Precommit 0.69
+      Code::TidyAll::Git::Prereceive 0.69
+      Code::TidyAll::Git::Util 0.69
+      Code::TidyAll::Plugin 0.69
+      Code::TidyAll::Plugin::CSSUnminifier 0.69
+      Code::TidyAll::Plugin::JSBeautify 0.69
+      Code::TidyAll::Plugin::JSHint 0.69
+      Code::TidyAll::Plugin::JSLint 0.69
+      Code::TidyAll::Plugin::JSON 0.69
+      Code::TidyAll::Plugin::MasonTidy 0.69
+      Code::TidyAll::Plugin::PHPCodeSniffer 0.69
+      Code::TidyAll::Plugin::PerlCritic 0.69
+      Code::TidyAll::Plugin::PerlTidy 0.69
+      Code::TidyAll::Plugin::PerlTidySweet 0.69
+      Code::TidyAll::Plugin::PodChecker 0.69
+      Code::TidyAll::Plugin::PodSpell 0.69
+      Code::TidyAll::Plugin::PodTidy 0.69
+      Code::TidyAll::Plugin::SortLines 0.69
+      Code::TidyAll::Result 0.69
+      Code::TidyAll::Role::HasIgnore 0.69
+      Code::TidyAll::Role::RunsCommand 0.69
+      Code::TidyAll::Role::Tempdir 0.69
+      Code::TidyAll::SVN::Precommit 0.69
+      Code::TidyAll::SVN::Util 0.69
+      Code::TidyAll::Util::Zglob 0.69
+      Test::Code::TidyAll 0.69
     requirements:
       Capture::Tiny 0
       Config::INI::Reader 0
@@ -1144,7 +1145,7 @@ DISTRIBUTIONS
       Path::Tiny 0.098
       Scalar::Util 0
       Scope::Guard 0
-      Specio 0.30
+      Specio 0.40
       Specio::Declare 0
       Specio::Library::Builtins 0
       Specio::Library::Numeric 0
@@ -1198,6 +1199,7 @@ DISTRIBUTIONS
       Config::Any::XML undef
       Config::Any::YAML undef
     requirements:
+      Config::General 2.47
       Module::Pluggable::Object 3.6
   Config-General-2.63
     pathname: T/TL/TLINDEN/Config-General-2.63.tar.gz
@@ -1270,10 +1272,10 @@ DISTRIBUTIONS
       Module::Build::Tiny 0.035
       URI::Escape 0
       perl 5.008001
-  Cpanel-JSON-XS-3.0235
-    pathname: R/RU/RURBAN/Cpanel-JSON-XS-3.0235.tar.gz
+  Cpanel-JSON-XS-3.0239
+    pathname: R/RU/RURBAN/Cpanel-JSON-XS-3.0239.tar.gz
     provides:
-      Cpanel::JSON::XS 3.0235
+      Cpanel::JSON::XS 3.0239
     requirements:
       ExtUtils::MakeMaker 0
       Pod::Text 2.08
@@ -1291,11 +1293,11 @@ DISTRIBUTIONS
       Test::Requires 0
       XSLoader 0.02
       perl 5.0080001
-  DBD-Pg-3.6.2
-    pathname: T/TU/TURNSTEP/DBD-Pg-3.6.2.tar.gz
+  DBD-Pg-3.7.0
+    pathname: T/TU/TURNSTEP/DBD-Pg-3.7.0.tar.gz
     provides:
-      Bundle::DBD::Pg v3.6.2
-      DBD::Pg v3.6.2
+      Bundle::DBD::Pg v3.7.0
+      DBD::Pg v3.7.0
     requirements:
       DBI 1.614
       ExtUtils::MakeMaker 6.11
@@ -3638,17 +3640,17 @@ DISTRIBUTIONS
       Term::ReadKey 0
       Test::More 0
       Want 0
-  IO-Socket-SSL-2.051
-    pathname: S/SU/SULLR/IO-Socket-SSL-2.051.tar.gz
+  IO-Socket-SSL-2.052
+    pathname: S/SU/SULLR/IO-Socket-SSL-2.052.tar.gz
     provides:
-      IO::Socket::SSL 2.051
+      IO::Socket::SSL 2.052
       IO::Socket::SSL::Intercept 2.014
-      IO::Socket::SSL::OCSP_Cache 2.051
-      IO::Socket::SSL::OCSP_Resolver 2.051
+      IO::Socket::SSL::OCSP_Cache 2.052
+      IO::Socket::SSL::OCSP_Resolver 2.052
       IO::Socket::SSL::PublicSuffix undef
-      IO::Socket::SSL::SSL_Context 2.051
-      IO::Socket::SSL::SSL_HANDLE 2.051
-      IO::Socket::SSL::Session_Cache 2.051
+      IO::Socket::SSL::SSL_Context 2.052
+      IO::Socket::SSL::SSL_HANDLE 2.052
+      IO::Socket::SSL::Session_Cache 2.052
       IO::Socket::SSL::Utils 2.014
     requirements:
       ExtUtils::MakeMaker 0
@@ -3897,19 +3899,19 @@ DISTRIBUTIONS
       List::Compare::Multiple::Accelerated 0.53
     requirements:
       ExtUtils::MakeMaker 0
-  List-MoreUtils-0.425
-    pathname: R/RE/REHSACK/List-MoreUtils-0.425.tar.gz
+  List-MoreUtils-0.426
+    pathname: R/RE/REHSACK/List-MoreUtils-0.426.tar.gz
     provides:
-      List::MoreUtils 0.425
-      List::MoreUtils::PP 0.425
+      List::MoreUtils 0.426
+      List::MoreUtils::PP 0.426
     requirements:
       Exporter::Tiny 0.038
       ExtUtils::MakeMaker 0
-      List::MoreUtils::XS 0.423
-  List-MoreUtils-XS-0.423
-    pathname: R/RE/REHSACK/List-MoreUtils-XS-0.423.tar.gz
+      List::MoreUtils::XS 0.426
+  List-MoreUtils-XS-0.426
+    pathname: R/RE/REHSACK/List-MoreUtils-XS-0.426.tar.gz
     provides:
-      List::MoreUtils::XS 0.423
+      List::MoreUtils::XS 0.426
     requirements:
       Carp 0
       ExtUtils::MakeMaker 0
@@ -3954,24 +3956,24 @@ DISTRIBUTIONS
     requirements:
       Exporter 5.57
       Module::Build 0.4004
-  Log-Any-1.049
-    pathname: P/PR/PREACTION/Log-Any-1.049.tar.gz
+  Log-Any-1.701
+    pathname: P/PR/PREACTION/Log-Any-1.701.tar.gz
     provides:
-      Log::Any 1.049
-      Log::Any::Adapter 1.049
-      Log::Any::Adapter::Base 1.049
-      Log::Any::Adapter::File 1.049
-      Log::Any::Adapter::Null 1.049
-      Log::Any::Adapter::Stderr 1.049
-      Log::Any::Adapter::Stdout 1.049
-      Log::Any::Adapter::Syslog 1.049
-      Log::Any::Adapter::Test 1.049
-      Log::Any::Adapter::Util 1.049
-      Log::Any::Manager 1.049
-      Log::Any::Proxy 1.049
-      Log::Any::Proxy::Null 1.049
-      Log::Any::Proxy::Test 1.049
-      Log::Any::Test 1.049
+      Log::Any 1.701
+      Log::Any::Adapter 1.701
+      Log::Any::Adapter::Base 1.701
+      Log::Any::Adapter::File 1.701
+      Log::Any::Adapter::Null 1.701
+      Log::Any::Adapter::Stderr 1.701
+      Log::Any::Adapter::Stdout 1.701
+      Log::Any::Adapter::Syslog 1.701
+      Log::Any::Adapter::Test 1.701
+      Log::Any::Adapter::Util 1.701
+      Log::Any::Manager 1.701
+      Log::Any::Proxy 1.701
+      Log::Any::Proxy::Null 1.701
+      Log::Any::Proxy::Test 1.701
+      Log::Any::Test 1.701
     requirements:
       B 0
       Carp 0
@@ -3979,7 +3981,10 @@ DISTRIBUTIONS
       Exporter 0
       ExtUtils::MakeMaker 0
       Fcntl 0
+      File::Basename 0
+      FindBin 0
       IO::File 0
+      Storable 0
       Sys::Syslog 0
       Test::Builder 0
       constant 0
@@ -4006,27 +4011,27 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Moo 1.003
       Scalar::Util 0
-  Log-Dispatch-2.66
-    pathname: D/DR/DROLSKY/Log-Dispatch-2.66.tar.gz
+  Log-Dispatch-2.67
+    pathname: D/DR/DROLSKY/Log-Dispatch-2.67.tar.gz
     provides:
-      Log::Dispatch 2.66
-      Log::Dispatch::ApacheLog 2.66
-      Log::Dispatch::Base 2.66
-      Log::Dispatch::Code 2.66
-      Log::Dispatch::Email 2.66
-      Log::Dispatch::Email::MIMELite 2.66
-      Log::Dispatch::Email::MailSend 2.66
-      Log::Dispatch::Email::MailSender 2.66
-      Log::Dispatch::Email::MailSendmail 2.66
-      Log::Dispatch::File 2.66
-      Log::Dispatch::File::Locked 2.66
-      Log::Dispatch::Handle 2.66
-      Log::Dispatch::Null 2.66
-      Log::Dispatch::Output 2.66
-      Log::Dispatch::Screen 2.66
-      Log::Dispatch::Syslog 2.66
-      Log::Dispatch::Types 2.66
-      Log::Dispatch::Vars 2.66
+      Log::Dispatch 2.67
+      Log::Dispatch::ApacheLog 2.67
+      Log::Dispatch::Base 2.67
+      Log::Dispatch::Code 2.67
+      Log::Dispatch::Email 2.67
+      Log::Dispatch::Email::MIMELite 2.67
+      Log::Dispatch::Email::MailSend 2.67
+      Log::Dispatch::Email::MailSender 2.67
+      Log::Dispatch::Email::MailSendmail 2.67
+      Log::Dispatch::File 2.67
+      Log::Dispatch::File::Locked 2.67
+      Log::Dispatch::Handle 2.67
+      Log::Dispatch::Null 2.67
+      Log::Dispatch::Output 2.67
+      Log::Dispatch::Screen 2.67
+      Log::Dispatch::Syslog 2.67
+      Log::Dispatch::Types 2.67
+      Log::Dispatch::Vars 2.67
     requirements:
       Carp 0
       Devel::GlobalDestruction 0
@@ -4138,33 +4143,33 @@ DISTRIBUTIONS
       Log::Message 0
       Test::More 0
       if 0
-  MCE-1.829
-    pathname: M/MA/MARIOROY/MCE-1.829.tar.gz
+  MCE-1.831
+    pathname: M/MA/MARIOROY/MCE-1.831.tar.gz
     provides:
-      MCE 1.829
-      MCE::Candy 1.829
-      MCE::Core::Input::Generator 1.829
-      MCE::Core::Input::Handle 1.829
-      MCE::Core::Input::Iterator 1.829
-      MCE::Core::Input::Request 1.829
-      MCE::Core::Input::Sequence 1.829
-      MCE::Core::Manager 1.829
-      MCE::Core::Validation 1.829
-      MCE::Core::Worker 1.829
-      MCE::Flow 1.829
-      MCE::Grep 1.829
-      MCE::Loop 1.829
-      MCE::Map 1.829
-      MCE::Mutex 1.829
-      MCE::Mutex::Channel 1.829
-      MCE::Mutex::Flock 1.829
-      MCE::Queue 1.829
-      MCE::Relay 1.829
-      MCE::Signal 1.829
-      MCE::Step 1.829
-      MCE::Stream 1.829
-      MCE::Subs 1.829
-      MCE::Util 1.829
+      MCE 1.831
+      MCE::Candy 1.831
+      MCE::Core::Input::Generator 1.831
+      MCE::Core::Input::Handle 1.831
+      MCE::Core::Input::Iterator 1.831
+      MCE::Core::Input::Request 1.831
+      MCE::Core::Input::Sequence 1.831
+      MCE::Core::Manager 1.831
+      MCE::Core::Validation 1.831
+      MCE::Core::Worker 1.831
+      MCE::Flow 1.831
+      MCE::Grep 1.831
+      MCE::Loop 1.831
+      MCE::Map 1.831
+      MCE::Mutex 1.831
+      MCE::Mutex::Channel 1.831
+      MCE::Mutex::Flock 1.831
+      MCE::Queue 1.831
+      MCE::Relay 1.831
+      MCE::Signal 1.831
+      MCE::Step 1.831
+      MCE::Stream 1.831
+      MCE::Subs 1.831
+      MCE::Util 1.831
     requirements:
       Carp 0
       ExtUtils::MakeMaker 0
@@ -4263,28 +4268,28 @@ DISTRIBUTIONS
       Fennec::Lite 0
       Test::Exception 0
       Test::More 0
-  MetaCPAN-Client-2.017000
-    pathname: M/MI/MICKEY/MetaCPAN-Client-2.017000.tar.gz
+  MetaCPAN-Client-2.018000
+    pathname: M/MI/MICKEY/MetaCPAN-Client-2.018000.tar.gz
     provides:
-      MetaCPAN::Client 2.017000
-      MetaCPAN::Client::Author 2.017000
-      MetaCPAN::Client::Distribution 2.017000
-      MetaCPAN::Client::DownloadURL 2.017000
-      MetaCPAN::Client::Favorite 2.017000
-      MetaCPAN::Client::File 2.017000
-      MetaCPAN::Client::Mirror 2.017000
-      MetaCPAN::Client::Module 2.017000
-      MetaCPAN::Client::Package 2.017000
-      MetaCPAN::Client::Permission 2.017000
-      MetaCPAN::Client::Pod 2.017000
-      MetaCPAN::Client::Rating 2.017000
-      MetaCPAN::Client::Release 2.017000
-      MetaCPAN::Client::Request 2.017000
-      MetaCPAN::Client::ResultSet 2.017000
-      MetaCPAN::Client::Role::Entity 2.017000
-      MetaCPAN::Client::Role::HasUA 2.017000
-      MetaCPAN::Client::Scroll 2.017000
-      MetaCPAN::Client::Types 2.017000
+      MetaCPAN::Client 2.018000
+      MetaCPAN::Client::Author 2.018000
+      MetaCPAN::Client::Distribution 2.018000
+      MetaCPAN::Client::DownloadURL 2.018000
+      MetaCPAN::Client::Favorite 2.018000
+      MetaCPAN::Client::File 2.018000
+      MetaCPAN::Client::Mirror 2.018000
+      MetaCPAN::Client::Module 2.018000
+      MetaCPAN::Client::Package 2.018000
+      MetaCPAN::Client::Permission 2.018000
+      MetaCPAN::Client::Pod 2.018000
+      MetaCPAN::Client::Rating 2.018000
+      MetaCPAN::Client::Release 2.018000
+      MetaCPAN::Client::Request 2.018000
+      MetaCPAN::Client::ResultSet 2.018000
+      MetaCPAN::Client::Role::Entity 2.018000
+      MetaCPAN::Client::Role::HasUA 2.018000
+      MetaCPAN::Client::Scroll 2.018000
+      MetaCPAN::Client::Types 2.018000
     requirements:
       Carp 0
       ExtUtils::MakeMaker 7.1101
@@ -4328,13 +4333,13 @@ DISTRIBUTIONS
       Moose::Role 0
       MooseX::Fastly::Role 0.01
       Net::Fastly 1.05
-  Minion-7.05
-    pathname: S/SR/SRI/Minion-7.05.tar.gz
+  Minion-7.09
+    pathname: S/SR/SRI/Minion-7.09.tar.gz
     provides:
       LinkCheck undef
       LinkCheck::Controller::Links undef
       LinkCheck::Task::CheckLinks undef
-      Minion 7.05
+      Minion 7.09
       Minion::Backend undef
       Minion::Backend::Pg undef
       Minion::Command::minion undef
@@ -4342,6 +4347,7 @@ DISTRIBUTIONS
       Minion::Command::minion::worker undef
       Minion::Job undef
       Minion::Worker undef
+      Minion::_Guard 7.09
       Mojolicious::Plugin::Minion undef
     requirements:
       ExtUtils::MakeMaker 0
@@ -4577,10 +4583,10 @@ DISTRIBUTIONS
       if 0
       perl 5.00503
       strict 0
-  Module-Runtime-0.015
-    pathname: Z/ZE/ZEFRAM/Module-Runtime-0.015.tar.gz
+  Module-Runtime-0.016
+    pathname: Z/ZE/ZEFRAM/Module-Runtime-0.016.tar.gz
     provides:
-      Module::Runtime 0.015
+      Module::Runtime 0.016
     requirements:
       Module::Build 0
       Test::More 0.41
@@ -4636,8 +4642,8 @@ DISTRIBUTIONS
       URI::db 0.15
       URI::file 4.21
       perl 5.010001
-  Mojolicious-7.46
-    pathname: S/SR/SRI/Mojolicious-7.46.tar.gz
+  Mojolicious-7.48
+    pathname: S/SR/SRI/Mojolicious-7.48.tar.gz
     provides:
       Mojo undef
       Mojo::Asset undef
@@ -4705,7 +4711,7 @@ DISTRIBUTIONS
       Mojo::UserAgent::Transactor undef
       Mojo::Util undef
       Mojo::WebSocket undef
-      Mojolicious 7.46
+      Mojolicious 7.48
       Mojolicious::Command undef
       Mojolicious::Command::cgi undef
       Mojolicious::Command::cpanify undef
@@ -5649,11 +5655,11 @@ DISTRIBUTIONS
       Net::CIDR::Lite::Span 0.21
     requirements:
       ExtUtils::MakeMaker 0
-  Net-DNS-1.12
-    pathname: N/NL/NLNETLABS/Net-DNS-1.12.tar.gz
+  Net-DNS-1.13
+    pathname: N/NL/NLNETLABS/Net-DNS-1.13.tar.gz
     provides:
-      Net::DNS 1.12
-      Net::DNS::Domain 1561
+      Net::DNS 1.13
+      Net::DNS::Domain 1603
       Net::DNS::DomainName 1558
       Net::DNS::DomainName1035 1558
       Net::DNS::DomainName2535 1558
@@ -5661,53 +5667,53 @@ DISTRIBUTIONS
       Net::DNS::Mailbox 1527
       Net::DNS::Mailbox1035 1527
       Net::DNS::Mailbox2535 1527
-      Net::DNS::Nameserver 1558
+      Net::DNS::Nameserver 1593
       Net::DNS::Packet 1584
-      Net::DNS::Parameters 1571
+      Net::DNS::Parameters 1598
       Net::DNS::Question 1530
-      Net::DNS::RR 1569
-      Net::DNS::RR::A 1528
-      Net::DNS::RR::AAAA 1528
-      Net::DNS::RR::AFSDB 1528
-      Net::DNS::RR::APL 1548
-      Net::DNS::RR::APL::Item 1548
-      Net::DNS::RR::CAA 1561
+      Net::DNS::RR 1597
+      Net::DNS::RR::A 1597
+      Net::DNS::RR::AAAA 1597
+      Net::DNS::RR::AFSDB 1597
+      Net::DNS::RR::APL 1597
+      Net::DNS::RR::APL::Item 1597
+      Net::DNS::RR::CAA 1597
       Net::DNS::RR::CDNSKEY 1586
       Net::DNS::RR::CDS 1586
-      Net::DNS::RR::CERT 1582
-      Net::DNS::RR::CNAME 1528
-      Net::DNS::RR::CSYNC 1561
-      Net::DNS::RR::DHCID 1567
+      Net::DNS::RR::CERT 1597
+      Net::DNS::RR::CNAME 1597
+      Net::DNS::RR::CSYNC 1597
+      Net::DNS::RR::DHCID 1597
       Net::DNS::RR::DLV 1528
-      Net::DNS::RR::DNAME 1528
-      Net::DNS::RR::DNSKEY 1586
-      Net::DNS::RR::DS 1586
-      Net::DNS::RR::EUI48 1528
-      Net::DNS::RR::EUI64 1528
+      Net::DNS::RR::DNAME 1597
+      Net::DNS::RR::DNSKEY 1597
+      Net::DNS::RR::DS 1597
+      Net::DNS::RR::EUI48 1597
+      Net::DNS::RR::EUI64 1597
       Net::DNS::RR::GPOS 1528
-      Net::DNS::RR::HINFO 1528
-      Net::DNS::RR::HIP 1528
-      Net::DNS::RR::IPSECKEY 1552
-      Net::DNS::RR::ISDN 1528
+      Net::DNS::RR::HINFO 1597
+      Net::DNS::RR::HIP 1597
+      Net::DNS::RR::IPSECKEY 1597
+      Net::DNS::RR::ISDN 1597
       Net::DNS::RR::KEY 1528
-      Net::DNS::RR::KX 1528
-      Net::DNS::RR::L32 1528
-      Net::DNS::RR::L64 1528
-      Net::DNS::RR::LOC 1528
-      Net::DNS::RR::LP 1528
+      Net::DNS::RR::KX 1597
+      Net::DNS::RR::L32 1597
+      Net::DNS::RR::L64 1597
+      Net::DNS::RR::LOC 1597
+      Net::DNS::RR::LP 1597
       Net::DNS::RR::MB 1528
       Net::DNS::RR::MG 1528
-      Net::DNS::RR::MINFO 1528
+      Net::DNS::RR::MINFO 1597
       Net::DNS::RR::MR 1528
-      Net::DNS::RR::MX 1528
-      Net::DNS::RR::NAPTR 1528
-      Net::DNS::RR::NID 1528
-      Net::DNS::RR::NS 1528
-      Net::DNS::RR::NSEC 1528
-      Net::DNS::RR::NSEC3 1567
-      Net::DNS::RR::NSEC3PARAM 1528
+      Net::DNS::RR::MX 1597
+      Net::DNS::RR::NAPTR 1597
+      Net::DNS::RR::NID 1597
+      Net::DNS::RR::NS 1597
+      Net::DNS::RR::NSEC 1597
+      Net::DNS::RR::NSEC3 1597
+      Net::DNS::RR::NSEC3PARAM 1597
       Net::DNS::RR::NULL 1528
-      Net::DNS::RR::OPENPGPKEY 1528
+      Net::DNS::RR::OPENPGPKEY 1597
       Net::DNS::RR::OPT 1578
       Net::DNS::RR::OPT::CHAIN 1578
       Net::DNS::RR::OPT::CLIENT_SUBNET 1578
@@ -5719,25 +5725,25 @@ DISTRIBUTIONS
       Net::DNS::RR::OPT::N3U 1578
       Net::DNS::RR::OPT::PADDING 1578
       Net::DNS::RR::OPT::TCP_KEEPALIVE 1578
-      Net::DNS::RR::PTR 1528
-      Net::DNS::RR::PX 1528
-      Net::DNS::RR::RP 1528
-      Net::DNS::RR::RRSIG 1582
-      Net::DNS::RR::RT 1528
-      Net::DNS::RR::SIG 1582
-      Net::DNS::RR::SMIMEA 1571
-      Net::DNS::RR::SOA 1546
-      Net::DNS::RR::SPF 1528
-      Net::DNS::RR::SRV 1528
-      Net::DNS::RR::SSHFP 1528
+      Net::DNS::RR::PTR 1597
+      Net::DNS::RR::PX 1597
+      Net::DNS::RR::RP 1597
+      Net::DNS::RR::RRSIG 1597
+      Net::DNS::RR::RT 1597
+      Net::DNS::RR::SIG 1597
+      Net::DNS::RR::SMIMEA 1597
+      Net::DNS::RR::SOA 1597
+      Net::DNS::RR::SPF 1593
+      Net::DNS::RR::SRV 1597
+      Net::DNS::RR::SSHFP 1597
       Net::DNS::RR::TKEY 1528
-      Net::DNS::RR::TLSA 1528
-      Net::DNS::RR::TSIG 1567
-      Net::DNS::RR::TXT 1528
-      Net::DNS::RR::URI 1528
-      Net::DNS::RR::X25 1528
-      Net::DNS::Resolver 1590
-      Net::DNS::Resolver::Base 1588
+      Net::DNS::RR::TLSA 1597
+      Net::DNS::RR::TSIG 1597
+      Net::DNS::RR::TXT 1597
+      Net::DNS::RR::URI 1597
+      Net::DNS::RR::X25 1597
+      Net::DNS::Resolver 1598
+      Net::DNS::Resolver::Base 1595
       Net::DNS::Resolver::MSWin32 1568
       Net::DNS::Resolver::Recurse 1555
       Net::DNS::Resolver::UNIX 1573
@@ -5745,7 +5751,7 @@ DISTRIBUTIONS
       Net::DNS::Resolver::cygwin 1568
       Net::DNS::Resolver::os2 1568
       Net::DNS::Resolver::os390 1579
-      Net::DNS::Text 1561
+      Net::DNS::Text 1601
       Net::DNS::Update 1571
       Net::DNS::ZoneFile 1526
       Net::DNS::ZoneFile::Generator 1526
@@ -7106,12 +7112,12 @@ DISTRIBUTIONS
       perl 5.008001
       strict 0
       warnings 0
-  Plack-Middleware-RemoveRedundantBody-0.05
-    pathname: S/SW/SWEETKID/Plack-Middleware-RemoveRedundantBody-0.05.tar.gz
+  Plack-Middleware-RemoveRedundantBody-0.06
+    pathname: S/SW/SWEETKID/Plack-Middleware-RemoveRedundantBody-0.06.tar.gz
     provides:
-      Plack::Middleware::RemoveRedundantBody 0.04
+      Plack::Middleware::RemoveRedundantBody 0.06
     requirements:
-      ExtUtils::MakeMaker 6.30
+      ExtUtils::MakeMaker 0
       Plack::Middleware 0
       Plack::Util 0
       parent 0
@@ -7423,10 +7429,10 @@ DISTRIBUTIONS
       Scalar::Util 0
       Sub::Quote 2.000001
       Text::Balanced 2.00
-  Safe-Isa-1.000006
-    pathname: H/HA/HAARG/Safe-Isa-1.000006.tar.gz
+  Safe-Isa-1.000008
+    pathname: E/ET/ETHER/Safe-Isa-1.000008.tar.gz
     provides:
-      Safe::Isa 1.000006
+      Safe::Isa 1.000008
     requirements:
       Exporter 5.57
       ExtUtils::MakeMaker 0
@@ -8171,80 +8177,79 @@ DISTRIBUTIONS
       Test::Builder::Module 0
       Test::More 0.88
       perl 5.008_001
-  Test-Simple-1.302096
-    pathname: E/EX/EXODIST/Test-Simple-1.302096.tar.gz
+  Test-Simple-1.302106
+    pathname: E/EX/EXODIST/Test-Simple-1.302106.tar.gz
     provides:
-      Test2 1.302096
-      Test2::API 1.302096
-      Test2::API::Breakage 1.302096
-      Test2::API::Context 1.302096
-      Test2::API::Instance 1.302096
-      Test2::API::Stack 1.302096
-      Test2::Event 1.302096
-      Test2::Event::Bail 1.302096
-      Test2::Event::Diag 1.302096
-      Test2::Event::Encoding 1.302096
-      Test2::Event::Exception 1.302096
-      Test2::Event::Fail 1.302096
-      Test2::Event::Generic 1.302096
-      Test2::Event::Note 1.302096
-      Test2::Event::Ok 1.302096
-      Test2::Event::Pass 1.302096
-      Test2::Event::Plan 1.302096
-      Test2::Event::Skip 1.302096
-      Test2::Event::Subtest 1.302096
-      Test2::Event::TAP::Version 1.302096
-      Test2::Event::Waiting 1.302096
-      Test2::EventFacet 1.302096
-      Test2::EventFacet::About 1.302096
-      Test2::EventFacet::Amnesty 1.302096
-      Test2::EventFacet::Assert 1.302096
-      Test2::EventFacet::Control 1.302096
-      Test2::EventFacet::Error 1.302096
-      Test2::EventFacet::Info 1.302096
-      Test2::EventFacet::Meta 1.302096
-      Test2::EventFacet::Parent 1.302096
-      Test2::EventFacet::Plan 1.302096
-      Test2::EventFacet::Trace 1.302096
-      Test2::Formatter 1.302096
-      Test2::Formatter::TAP 1.302096
-      Test2::Hub 1.302096
-      Test2::Hub::Interceptor 1.302096
-      Test2::Hub::Interceptor::Terminator 1.302096
-      Test2::Hub::Subtest 1.302096
-      Test2::IPC 1.302096
-      Test2::IPC::Driver 1.302096
-      Test2::IPC::Driver::Files 1.302096
-      Test2::Tools::Tiny 1.302096
-      Test2::Util 1.302096
-      Test2::Util::ExternalMeta 1.302096
-      Test2::Util::Facets2Legacy 1.302096
-      Test2::Util::HashBase 0.005
-      Test2::Util::Trace 1.302096
-      Test::Builder 1.302096
-      Test::Builder::Formatter 1.302096
-      Test::Builder::IO::Scalar 2.113
-      Test::Builder::Module 1.302096
-      Test::Builder::Tester 1.302096
-      Test::Builder::Tester::Color 1.302096
-      Test::Builder::Tester::Tie 1.302096
-      Test::Builder::TodoDiag 1.302096
-      Test::More 1.302096
-      Test::Simple 1.302096
-      Test::Tester 1.302096
-      Test::Tester::Capture 1.302096
-      Test::Tester::CaptureRunner 1.302096
-      Test::Tester::Delegate 1.302096
-      Test::use::ok 1.302096
-      ok 1.302096
+      Test2 1.302106
+      Test2::API 1.302106
+      Test2::API::Breakage 1.302106
+      Test2::API::Context 1.302106
+      Test2::API::Instance 1.302106
+      Test2::API::Stack 1.302106
+      Test2::Event 1.302106
+      Test2::Event::Bail 1.302106
+      Test2::Event::Diag 1.302106
+      Test2::Event::Encoding 1.302106
+      Test2::Event::Exception 1.302106
+      Test2::Event::Fail 1.302106
+      Test2::Event::Generic 1.302106
+      Test2::Event::Note 1.302106
+      Test2::Event::Ok 1.302106
+      Test2::Event::Pass 1.302106
+      Test2::Event::Plan 1.302106
+      Test2::Event::Skip 1.302106
+      Test2::Event::Subtest 1.302106
+      Test2::Event::TAP::Version 1.302106
+      Test2::Event::Waiting 1.302106
+      Test2::EventFacet 1.302106
+      Test2::EventFacet::About 1.302106
+      Test2::EventFacet::Amnesty 1.302106
+      Test2::EventFacet::Assert 1.302106
+      Test2::EventFacet::Control 1.302106
+      Test2::EventFacet::Error 1.302106
+      Test2::EventFacet::Info 1.302106
+      Test2::EventFacet::Meta 1.302106
+      Test2::EventFacet::Parent 1.302106
+      Test2::EventFacet::Plan 1.302106
+      Test2::EventFacet::Trace 1.302106
+      Test2::Formatter 1.302106
+      Test2::Formatter::TAP 1.302106
+      Test2::Hub 1.302106
+      Test2::Hub::Interceptor 1.302106
+      Test2::Hub::Interceptor::Terminator 1.302106
+      Test2::Hub::Subtest 1.302106
+      Test2::IPC 1.302106
+      Test2::IPC::Driver 1.302106
+      Test2::IPC::Driver::Files 1.302106
+      Test2::Tools::Tiny 1.302106
+      Test2::Util 1.302106
+      Test2::Util::ExternalMeta 1.302106
+      Test2::Util::Facets2Legacy 1.302106
+      Test2::Util::HashBase 1.302106
+      Test2::Util::Trace 1.302106
+      Test::Builder 1.302106
+      Test::Builder::Formatter 1.302106
+      Test::Builder::IO::Scalar 2.114
+      Test::Builder::Module 1.302106
+      Test::Builder::Tester 1.302106
+      Test::Builder::Tester::Color 1.302106
+      Test::Builder::Tester::Tie 1.302106
+      Test::Builder::TodoDiag 1.302106
+      Test::More 1.302106
+      Test::Simple 1.302106
+      Test::Tester 1.302106
+      Test::Tester::Capture 1.302106
+      Test::Tester::CaptureRunner 1.302106
+      Test::Tester::Delegate 1.302106
+      Test::use::ok 1.302106
+      ok 1.302106
     requirements:
       ExtUtils::MakeMaker 0
       File::Spec 0
       File::Temp 0
-      PerlIO 0
       Scalar::Util 1.13
       Storable 0
-      perl 5.008001
+      perl 5.006002
       utf8 0
   Test-SubCalls-1.09
     pathname: A/AD/ADAMK/Test-SubCalls-1.09.tar.gz
@@ -8365,10 +8370,10 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  Text-CSV_XS-1.31
-    pathname: H/HM/HMBRAND/Text-CSV_XS-1.31.tgz
+  Text-CSV_XS-1.33
+    pathname: H/HM/HMBRAND/Text-CSV_XS-1.33.tgz
     provides:
-      Text::CSV_XS 1.31
+      Text::CSV_XS 1.33
     requirements:
       Config 0
       DynaLoader 0
@@ -9187,36 +9192,33 @@ DISTRIBUTIONS
       utf8 0
       vars 0
       warnings 0
-  libwww-perl-6.26
-    pathname: O/OA/OALDERS/libwww-perl-6.26.tar.gz
+  libwww-perl-6.27
+    pathname: O/OA/OALDERS/libwww-perl-6.27.tar.gz
     provides:
-      LWP 6.26
-      LWP::Authen::Basic 6.26
-      LWP::Authen::Digest 6.26
-      LWP::Authen::Ntlm 6.26
-      LWP::ConnCache 6.26
-      LWP::Debug 6.26
-      LWP::Debug::TraceHTTP 6.26
-      LWP::Debug::TraceHTTP::Socket 6.26
-      LWP::DebugFile 6.26
-      LWP::MemberMixin 6.26
-      LWP::Protocol 6.26
-      LWP::Protocol::MyFTP 6.26
-      LWP::Protocol::cpan 6.26
-      LWP::Protocol::data 6.26
-      LWP::Protocol::file 6.26
-      LWP::Protocol::ftp 6.26
-      LWP::Protocol::gopher 6.26
-      LWP::Protocol::http 6.26
-      LWP::Protocol::http::Socket 6.26
-      LWP::Protocol::http::SocketMethods 6.26
-      LWP::Protocol::loopback 6.26
-      LWP::Protocol::mailto 6.26
-      LWP::Protocol::nntp 6.26
-      LWP::Protocol::nogo 6.26
-      LWP::RobotUA 6.26
-      LWP::Simple 6.26
-      LWP::UserAgent 6.26
+      LWP 6.27
+      LWP::Authen::Basic 6.27
+      LWP::Authen::Digest 6.27
+      LWP::Authen::Ntlm 6.27
+      LWP::ConnCache 6.27
+      LWP::Debug 6.27
+      LWP::Debug::TraceHTTP 6.27
+      LWP::DebugFile 6.27
+      LWP::MemberMixin 6.27
+      LWP::Protocol 6.27
+      LWP::Protocol::MyFTP 6.27
+      LWP::Protocol::cpan 6.27
+      LWP::Protocol::data 6.27
+      LWP::Protocol::file 6.27
+      LWP::Protocol::ftp 6.27
+      LWP::Protocol::gopher 6.27
+      LWP::Protocol::http 6.27
+      LWP::Protocol::loopback 6.27
+      LWP::Protocol::mailto 6.27
+      LWP::Protocol::nntp 6.27
+      LWP::Protocol::nogo 6.27
+      LWP::RobotUA 6.27
+      LWP::Simple 6.27
+      LWP::UserAgent 6.27
       libwww::perl undef
     requirements:
       Digest::MD5 0
