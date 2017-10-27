@@ -49,8 +49,9 @@ subtest 'archive extraction' => sub {
 
     my $dir = $archive->extract;
     for my $file ( keys %want ) {
-        my $digest = sha1_hex( $dir->file($file)->slurp );
-        is $digest, $want{$file}, "content of $file";
+        my $contents = $dir->file($file)->slurp;
+        my $digest   = sha1_hex($contents);
+        is( $digest, $want{$file}, "content of $file" ) || diag $contents;
     }
 };
 
