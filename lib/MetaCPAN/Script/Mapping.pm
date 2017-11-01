@@ -4,8 +4,6 @@ use Moose;
 
 use Cpanel::JSON::XS qw( decode_json );
 use DateTime ();
-use IO::Interactive qw( is_interactive );
-use IO::Prompt qw( prompt );
 use Log::Contextual qw( :log );
 use MetaCPAN::Script::Mapping::CPAN::Author       ();
 use MetaCPAN::Script::Mapping::CPAN::Distribution ();
@@ -455,21 +453,6 @@ sub deploy_mapping {
     # done
     log_info {"Done."};
     1;
-}
-
-sub _prompt {
-    my ( $self, $msg ) = @_;
-
-    if (is_interactive) {
-        print colored( ['bold red'], "*** Warning ***: $msg" ), "\n";
-        my $answer = prompt
-            'Are you sure you want to do this (type "YES" to confirm) ? ';
-        if ( $answer ne 'YES' ) {
-            print "bye.\n";
-            exit 0;
-        }
-        print "alright then...\n";
-    }
 }
 
 __PACKAGE__->meta->make_immutable;
