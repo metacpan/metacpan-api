@@ -7,6 +7,7 @@ use Moose;
 use Encoding::FixLatin ();
 use IPC::Run3;
 use MetaCPAN::Types qw( ArrayRef );
+use File::Spec;
 
 has git => (
     is       => 'ro',
@@ -41,13 +42,6 @@ has relative => (
     required => 1,
 );
 
-# NOTE: Found this in the git(1) change log (cd676a513672eeb9663c6d4de276a1c860a4b879):
-#  > [--relative] is inherently incompatible with --no-index, which is a
-#  > bolted-on hack that does not have much to do with git
-#  > itself.  I didn't bother checking and erroring out on the
-#  > combined use of the options, but probably I should.
-# So if that ever stops working we'll have to strip the prefix from the paths ourselves.
-
 sub _build_raw {
     my $self = shift;
     my $raw  = q[];
@@ -55,9 +49,7 @@ sub _build_raw {
         [
             $self->git,
             qw(diff --no-renames -z --no-index -u --no-color --numstat),
-            '--relative=' . $self->relative,
-            $self->source,
-            $self->target
+            $self->source, $self->target
         ],
         undef,
         \$raw
@@ -85,6 +77,8 @@ sub _build_structured {
     my @lines = split( /\0/, $self->numstat );
 
     while ( my $line = shift @lines ) {
+        my $source = File::Spec->abs2rel( shift @lines, $self->relative );
+        my $target = File::Spec->abs2rel( shift @lines, $self->relative );
         my ( $insertions, $deletions ) = split( /\t/, $line );
         my $segment = q[];
         while ( my $diff = shift @raw ) {
@@ -94,13 +88,13 @@ sub _build_structured {
                 if $diff =~ /[^\x00-\x7f]/;
 
             $segment .= $diff . "\n";
-            last if ( $raw[0] && $raw[0] =~ /^diff --git a\//m );
+            last if ( $raw[0] && $raw[0] =~ /^diff --git .\//m );
         }
         push(
             @structured,
             {
-                source     => shift @lines,
-                target     => shift @lines,
+                source     => $source,
+                target     => $target,
                 insertions => $insertions,
                 deletions  => $deletions,
                 diff       => $segment,
