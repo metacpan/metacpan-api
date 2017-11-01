@@ -9,6 +9,34 @@ use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
 
 extends 'ElasticSearchX::Model::Document::Set';
 
+sub author_status {
+    my ( $self, $id, $file ) = @_;
+    return unless $id and $file;
+
+    my $status = $file->{_source}
+        || single_valued_arrayref_to_scalar( $file->{fields} );
+
+    if ( $status and $status->{pauseid} ) {
+        $status->{release_count}
+            = $self->aggregate_status_by_author( $status->{pauseid} );
+
+        my ( $id_2, $id_1 ) = $id =~ /^((\w)\w)/;
+        $status->{links} = {
+            cpan_directory => "http://cpan.org/authors/id/$id_1/$id_2/$id",
+            backpan_directory =>
+                "https://cpan.metacpan.org/authors/id/$id_1/$id_2/$id",
+            cpants => "http://cpants.cpanauthors.org/author/$id",
+            cpantesters_reports =>
+                "http://cpantesters.org/author/$id_1/$id.html",
+            cpantesters_matrix => "http://matrix.cpantesters.org/?author=$id",
+            metacpan_explorer =>
+                "https://explorer.metacpan.org/?url=/author/$id",
+        };
+    }
+
+    return $status;
+}
+
 sub aggregate_status_by_author {
     my ( $self, $pauseid ) = @_;
     my $agg = $self->es->search(

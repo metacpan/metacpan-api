@@ -3,6 +3,7 @@ package MetaCPAN::Document::File::Set;
 use Moose;
 
 use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
+use Ref::Util qw( is_hashref );
 
 extends 'ElasticSearchX::Model::Document::Set';
 
@@ -702,6 +703,65 @@ sub interesting_files {
         total => $data->{hits}{total},
         took  => $data->{took}
     };
+}
+
+sub find_changes_files {
+    my ( $self, $author, $release ) = @_;
+
+    # find the most likely file
+    # TODO: should we do this when the release is indexed
+    # and store the result as { 'changes_file' => $name }
+
+    my @candidates = qw(
+        CHANGES Changes ChangeLog Changelog CHANGELOG NEWS
+    );
+
+    # use $c->model b/c we can't let any filters apply here
+    my $file = $self->raw->filter(
+        {
+            and => [
+                { term => { release => $release } },
+                { term => { author  => $author } },
+                {
+                    or => [
+
+                        # if it's a perl release, get perldelta
+                        {
+                            and => [
+                                { term => { distribution => 'perl' } },
+                                {
+                                    term => {
+                                        'name' => 'perldelta.pod'
+                                    }
+                                },
+                            ]
+                        },
+
+                      # otherwise look for one of these candidates in the root
+                        {
+                            and => [
+                                { term => { level     => 0 } },
+                                { term => { directory => 0 } },
+                                {
+                                    or => [
+                                        map { { term => { 'name' => $_ } } }
+                                            @candidates
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                }
+            ]
+        }
+        )->size(1)
+
+        # HACK: Sort by level/desc to put pod/perldeta.pod first (if found)
+        # otherwise sort root files by name and select the first.
+        ->sort( [ { level => 'desc' }, { name => 'asc' } ] )->first;
+
+    return unless is_hashref($file);
+    return $file->{_source};
 }
 
 __PACKAGE__->meta->make_immutable;
