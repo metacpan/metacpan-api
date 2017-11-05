@@ -42,15 +42,16 @@ subtest 'archive extraction' => sub {
             '/authors/id/L/LO/LOCAL/Some-1.00-TRIAL.tar.gz')
     );
 
-    ok !$archive->is_impolite;
-    ok !$archive->is_naughty;
+    ok( !$archive->is_impolite, 'not impolite' );
+    ok( !$archive->is_naughty,  'not naughty' );
 
-    cmp_bag $archive->files, [ keys %want ];
+    cmp_bag( $archive->files, [ keys %want ], 'have wanted files' );
 
     my $dir = $archive->extract;
     for my $file ( keys %want ) {
-        my $digest = sha1_hex( $dir->file($file)->slurp );
-        is $digest, $want{$file}, "content of $file";
+        my $contents = $dir->file($file)->slurp;
+        my $digest   = sha1_hex($contents);
+        is( $digest, $want{$file}, "content of $file" ) || diag $contents;
     }
 };
 

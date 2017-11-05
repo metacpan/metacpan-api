@@ -2,9 +2,9 @@ package MetaCPAN::Role::HasConfig;
 
 use Moose::Role;
 
-use MetaCPAN::Types qw(HashRef);
-
 use FindBin;
+use Config::ZOMG ();
+use MetaCPAN::Types qw(HashRef);
 
 # Done like this so can be required by a roles
 sub config {
@@ -20,10 +20,10 @@ has _config => (
 
 sub _build_config {
     my $self = shift;
-    return Config::JFDI->new(
+    return Config::ZOMG->new(
         name => 'metacpan_server',
         path => "$FindBin::RealBin/..",
-    )->get;
+    )->load;
 }
 
 1;

@@ -1,8 +1,6 @@
 use strict;
 use warnings;
 
-use lib 't/lib';
-
 use Devel::Confess;
 use MetaCPAN::DarkPAN;
 use MetaCPAN::TestServer;

@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use lib 't/lib';
+use Cpanel::JSON::XS ();
 use MetaCPAN::TestHelpers;
 use Test::More;
 
@@ -17,8 +17,8 @@ test_release(
             'lib/Pod/With/Data/Token.pm' => [
                 {
                     name             => 'Pod::With::Data::Token',
-                    indexed          => 'true',
-                    authorized       => 'true',
+                    indexed          => Cpanel::JSON::XS::true(),
+                    authorized       => Cpanel::JSON::XS::true(),
                     version          => '0.01',
                     version_numified => 0.01,
                     associated_pod =>

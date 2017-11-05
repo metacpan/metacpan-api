@@ -1,6 +1,7 @@
 use strict;
 use warnings;
 
+use Cpanel::JSON::XS ();
 use MetaCPAN::Server::Test;
 use MetaCPAN::TestHelpers;
 use Test::More;
@@ -16,8 +17,8 @@ test_release(
                     name             => 'File::Duplicates',
                     version          => '0.991',
                     version_numified => '0.991',
-                    authorized       => 'true',
-                    indexed          => 'true',
+                    authorized       => Cpanel::JSON::XS::true(),
+                    indexed          => Cpanel::JSON::XS::true(),
                     associated_pod   => undef,
                 }
             ],
@@ -26,8 +27,8 @@ test_release(
                     name             => 'File::lib::File::Duplicates',
                     version          => '0.992',
                     version_numified => '0.992',
-                    authorized       => 'true',
-                    indexed          => 'true',
+                    authorized       => Cpanel::JSON::XS::true(),
+                    indexed          => Cpanel::JSON::XS::true(),
                     associated_pod   => undef,
                 }
             ],
@@ -36,7 +37,7 @@ test_release(
                     name             => 'Dupe',
                     version          => '0.993',
                     version_numified => '0.993',
-                    authorized       => 'true',
+                    authorized       => Cpanel::JSON::XS::true(),
                     indexed          => 0,
                     associated_pod   => undef,
                 }
@@ -46,16 +47,16 @@ test_release(
                     name             => 'DupeX::Dupe',
                     version          => '0.994',
                     version_numified => '0.994',
-                    authorized       => 'true',
-                    indexed          => 'true',
+                    authorized       => Cpanel::JSON::XS::true(),
+                    indexed          => Cpanel::JSON::XS::true(),
                     associated_pod   => undef,
                 },
                 {
                     name             => 'DupeX::Dupe::X',
                     version          => '0.995',
                     version_numified => '0.995',
-                    authorized       => 'true',
-                    indexed          => 'true',
+                    authorized       => Cpanel::JSON::XS::true(),
+                    indexed          => Cpanel::JSON::XS::true(),
                     associated_pod   => undef,
                 }
             ],

@@ -18,29 +18,33 @@ env:
 
     # Instantiate Catalyst models using metacpan_server_testing.conf
     - METACPAN_SERVER_CONFIG_LOCAL_SUFFIX=testing
+
+    - DEVEL_COVER_OPTIONS="-ignore,^local/"
+    - PERL_CARTON_PATH=$TRAVIS_BUILD_DIR/local
   matrix:
-    - USE_CPANFILE_SNAPSHOT=true
-    - USE_CPANFILE_SNAPSHOT=false
+    - CPAN_RESOLVER=metadb PERL_CARTON_PATH=$TRAVIS_BUILD_DIR/no-snapshot HARNESS_VERBOSE=1
+    - CPAN_RESOLVER=snapshot
 
 matrix:
   allow_failures:
-    - env: USE_CPANFILE_SNAPSHOT=false
-
-# libgmp-dev required by Net::OpenID::Consumer
-# postgresql-server-dev-all is required by DBD::Pg
+    - env: CPAN_RESOLVER=metadb PERL_CARTON_PATH=$TRAVIS_BUILD_DIR/no-snapshot HARNESS_VERBOSE=1
+  fast_finish: true
 
 addons:
   apt:
     packages:
+    # libgmp-dev required by Net::OpenID::Consumer
     - libgmp-dev
+    # postgresql-server-dev-all is required by DBD::Pg
     - postgresql-server-dev-all
 
 before_install:
-  - sudo service elasticsearch stop && curl -O -L https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-2.4.3.deb && sudo dpkg -i --force-confnew elasticsearch-2.4.3.deb && sudo service elasticsearch start
+  - git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers
+  - source ~/travis-perl-helpers/init
 
+  - sudo service elasticsearch stop && curl -O -L https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-2.4.3.deb && sudo dpkg -i --force-confnew elasticsearch-2.4.3.deb && sudo service elasticsearch start
   - sudo service elasticsearch restart
 
-  #- cpanm -n Devel::Cover::Report::Coveralls
   - cpanm -n Carton
   - cpanm -n App::cpm
 
@@ -49,19 +53,17 @@ before_install:
   - cpanm -n Safe@2.35
 
 install:
-  - 'cpm install `test "${USE_CPANFILE_SNAPSHOT}" = "false" && echo " --resolver metadb" || echo " --resolver snapshot"`'
+  - cpm install -L $PERL_CARTON_PATH --resolver $CPAN_RESOLVER --workers $(test-jobs)
 
 before_script:
   - "perl -i -pe 's/(servers :)9900/localhost:9200/' metacpan_server_testing.conf"
+  - coverage-setup
 
 script:
-  # Devel::Cover isn't in the cpanfile
-  # but if it's installed into the global dirs this should work.
-  #- HARNESS_PERL_SWITCHES=-MDevel::Cover=+ignore,local carton exec prove -It/lib -lr -j 2 t
-  - carton exec prove -It/lib -lr -j 2 t
+  - carton exec prove -It/lib -lr -j$(test-jobs) t
 
 after_success:
-#  - cover -report coveralls
+  - coverage-report
 
 #after_failure:
 #  - cat ~/.cpanm/build.log
@@ -73,3 +75,4 @@ services:
 cache:
   directories:
     - local
+    - ~/perl5

@@ -1,9 +1,8 @@
-use Test::More;
 use strict;
 use warnings;
 
-use lib 't/lib';
 use MetaCPAN::TestHelpers;
+use Test::More;
 
 test_release(
     {
