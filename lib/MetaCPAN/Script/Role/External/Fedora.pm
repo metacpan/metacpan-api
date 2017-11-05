@@ -5,7 +5,7 @@ use Moose::Role;
 use namespace::autoclean;
 
 use URI;
-use JSON qw( decode_json );
+use Cpanel::JSON::XS qw( decode_json );
 use Log::Contextual qw( :log );
 
 sub run_fedora {
