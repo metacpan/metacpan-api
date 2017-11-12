@@ -15,7 +15,9 @@ sub dist : Path('dist') : Args(1) {
     my ( $self, $c, $dist ) = @_;
     $c->stash_or_detach(
         $c->model('CPAN::Release')->reverse_dependencies(
-            $dist, @{ $c->req->params }{qw< page page_size sort >}
+            $dist,
+            @{ $c->req->params }{qw< page page_size >},
+            $c->read_param('sort')->[0]
         )
     );
 }
@@ -24,7 +26,9 @@ sub module : Path('module') : Args(1) {
     my ( $self, $c, $module ) = @_;
     $c->stash_or_detach(
         $c->model('CPAN::Release')->requires(
-            $module, @{ $c->req->params }{qw< page page_size sort >}
+            $module,
+            @{ $c->req->params }{qw< page page_size >},
+            $c->read_param('sort')->[0]
         )
     );
 }
