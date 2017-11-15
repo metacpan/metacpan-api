@@ -722,9 +722,15 @@ sub _get_provided_modules {
 
 sub _get_depended_releases {
     my ( $self, $modules, $page, $page_size, $sort ) = @_;
-    $sort //= { date => 'desc' };
-    $page //= 1;
+    $page      //= 1;
     $page_size //= 50;
+
+    if ( $sort =~ /^(\w+):(asc|desc)$/ ) {
+        $sort = { $1 => $2 };
+    }
+    else {
+        $sort = { date => 'desc' };
+    }
 
     # because 'terms' doesn't work properly
     my $filter_modules = {
