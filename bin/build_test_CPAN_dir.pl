@@ -8,7 +8,6 @@ use strict;
 use warnings;
 use ElasticSearch;
 use LWP::Simple qw(mirror is_success is_redirect);
-use Path::Class;
 use OrePAN2 0.07;
 use OrePAN2::Injector;
 use OrePAN2::Indexer;
