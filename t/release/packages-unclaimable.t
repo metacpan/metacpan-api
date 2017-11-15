@@ -1,6 +1,7 @@
 use strict;
 use warnings;
 
+use Cpanel::JSON::XS ();
 use IO::String;
 use List::MoreUtils qw(uniq);
 use MetaCPAN::Server::Test;
@@ -23,8 +24,8 @@ test_release(
             'lib/Packages/Unclaimable.pm' => [
                 {
                     name             => 'Packages::Unclaimable',
-                    indexed          => 'true',
-                    authorized       => 'true',
+                    indexed          => Cpanel::JSON::XS::true(),
+                    authorized       => Cpanel::JSON::XS::true(),
                     version          => 2,
                     version_numified => 2,
                     associated_pod =>
