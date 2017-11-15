@@ -7,7 +7,7 @@ use MetaCPAN::Types qw(AbsFile AbsDir);
 use Types::Standard qw(ArrayRef Bool Str);
 
 use Archive::Any;
-use Carp;
+use Carp qw( croak );
 use File::Temp  ();
 use Path::Class ();
 use Digest::file qw( digest_file_hex );
