@@ -9,7 +9,6 @@ use File::Temp qw(tempdir);
 use File::stat qw(stat);
 use IO::Uncompress::Bunzip2 qw(bunzip2);
 use Log::Contextual qw( :log :dlog );
-use MetaCPAN::Types qw( File );
 use Types::URI qw( Uri );
 use Types::Standard qw( Bool );
 use ElasticSearchX::Model::Document::Types qw(ESBulk);
@@ -34,9 +33,9 @@ has force_refresh => (
 # XXX move path to config
 has mirror_file => (
     is      => 'ro',
-    isa     => File,
+    isa     => Path,
     default => sub {
-        shift->home->file( 'var', ( $ENV{HARNESS_ACTIVE} ? 't' : () ),
+        shift->home->child( 'var', ( $ENV{HARNESS_ACTIVE} ? 't' : () ),
             'tmp', 'cpantesters.db' );
     },
     coerce => 1,
@@ -63,7 +62,7 @@ has _bulk => (
 sub _build_db {
     my $self = shift;
     return $ENV{HARNESS_ACTIVE}
-        ? $self->home->file('t/var/cpantesters-release-fake.db.bz2')
+        ? $self->home->child('t/var/cpantesters-release-fake.db.bz2')
         : 'http://devel.cpantesters.org/release/release.db.bz2';
 }
 

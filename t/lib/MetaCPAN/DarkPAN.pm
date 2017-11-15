@@ -4,16 +4,16 @@ use MetaCPAN::Moose;
 
 use CPAN::Repository::Perms;
 use MetaCPAN::TestHelpers qw( get_config );
-use MetaCPAN::Types qw( Dir );
+use MetaCPAN::Types qw( Path );
 use MetaCPAN::Util qw( author_dir );
 use OrePAN2::Indexer;
 use OrePAN2::Injector;
-use Path::Class qw( dir );
+use Path::Tiny qw( path );
 use URI::FromHash qw( uri_object );
 
 has base_dir => (
     is      => 'ro',
-    isa     => Dir,
+    isa     => Path,
     lazy    => 1,
     coerce  => 1,
     default => 't/var/darkpan',
@@ -95,7 +95,7 @@ sub _write_06perms {
         }
     }
 
-    my $modules_dir = $self->base_dir->subdir('modules');
+    my $modules_dir = $self->base_dir->child('modules');
     $modules_dir->mkpath;
 
     my $content = $perms->generate_content;
@@ -103,7 +103,7 @@ sub _write_06perms {
     # work around bug in generate_content()
     $content =~ s{,f}{,f\n}g;
 
-    $modules_dir->file('06perms.txt')->spew($content);
+    $modules_dir->child('06perms.txt')->spew($content);
 }
 
 __PACKAGE__->meta->make_immutable;

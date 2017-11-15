@@ -3,20 +3,20 @@ package MetaCPAN::Script::Queue;
 use strict;
 use warnings;
 
-use MetaCPAN::Types qw( Dir File );
+use MetaCPAN::Types qw( Path );
 use Moose;
 use Path::Iterator::Rule ();
 
 has dir => (
     is        => 'ro',
-    isa       => Dir,
+    isa       => Path,
     predicate => '_has_dir',
     coerce    => 1,
 );
 
 has file => (
     is        => 'ro',
-    isa       => File,
+    isa       => Path,
     predicate => '_has_file',
     coerce    => 1,
 );

@@ -154,7 +154,7 @@ sub author_config {
 
     my $fallback = $dates->{$pauseid} ? undef : {};
 
-    my $dir = $self->cpan->subdir( 'authors',
+    my $dir = $self->cpan->child( 'authors',
         MetaCPAN::Util::author_dir($pauseid) );
 
     my @files;
@@ -162,10 +162,10 @@ sub author_config {
 
     # Get the most recent version
     my ($file)
-        = sort { $dir->file($b)->stat->mtime <=> $dir->file($a)->stat->mtime }
+        = sort { $dir->child($b)->stat->mtime <=> $dir->child($a)->stat->mtime }
         grep {m/author-.*?\.json/} readdir($dh);
     return $fallback unless ($file);
-    $file = $dir->file($file);
+    $file = $dir->child($file);
     return $fallback if !-e $file;
 
     my $mtime = DateTime->from_epoch( epoch => $file->stat->mtime );

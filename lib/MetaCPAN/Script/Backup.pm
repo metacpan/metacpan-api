@@ -9,7 +9,7 @@ use DateTime;
 use IO::Zlib ();
 use Cpanel::JSON::XS;
 use Log::Contextual qw( :log :dlog );
-use MetaCPAN::Types qw( File );
+use MetaCPAN::Types qw( Path );
 use Types::Standard qw( Bool Int Str );
 use Moose;
 use Try::Tiny;
@@ -51,7 +51,7 @@ has dry_run => (
 
 has restore => (
     is            => 'ro',
-    isa           => File,
+    isa           => Path,
     coerce        => 1,
     documentation => 'Restore a backup',
 );
@@ -70,8 +70,8 @@ sub run {
         grep {defined} $self->index->name,
         $self->type );
 
-    my $file = $self->home->subdir(qw(var backup))->file("$filename.json.gz");
-    $file->dir->mkpath unless ( -e $file->dir );
+    my $file = $self->home->child( qw(var backup), "$filename.json.gz" );
+    $file->parent->mkpath unless ( -e $file->parent );
     my $fh = IO::Zlib->new( "$file", 'wb4' );
 
     my $scroll = $es->scroll_helper(
@@ -192,8 +192,8 @@ sub run_purge {
     my $self = shift;
 
     my $now = DateTime->now;
-    $self->home->subdir(qw(var backup))->recurse(
-        callback => sub {
+    $self->home->child(qw(var backup))->visit(
+        sub {
             my $file = shift;
             return if ( $file->is_dir );
 
@@ -212,7 +212,8 @@ sub run_purge {
                 if ( $self->dry_run );
                 $file->remove;
             }
-        }
+        },
+        { recurse => 1 }
     );
 }
 

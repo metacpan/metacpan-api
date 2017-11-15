@@ -11,7 +11,6 @@ use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Util;
 use MetaCPAN::Model::Release ();
 use MetaCPAN::Script::Runner ();
-use MetaCPAN::Types qw( Dir );
 use Types::Standard qw( Bool HashRef Int Str );
 use Moose;
 use PerlIO::gzip;
@@ -151,7 +150,7 @@ sub run {
             my $d = CPAN::DistnameInfo->new($_);
 
             # XXX move path to config file
-            my $file = $self->home->file(
+            my $file = $self->home->child(
                 (
                     'var', ( $ENV{HARNESS_ACTIVE} ? 't' : () ),
                     'tmp', 'http', 'authors'
@@ -159,7 +158,7 @@ sub run {
                 MetaCPAN::Util::author_dir( $d->cpanid ),
                 $d->filename,
             );
-            $file->dir->mkpath;
+            $file->parent->mkpath;
             log_info {"Downloading $_"};
 
             $self->ua->parse_head(0);
@@ -391,7 +390,7 @@ sub import_archive {
 
 sub _build_cpan_files_list {
     my $self = shift;
-    my $ls   = $self->cpan->file(qw(indices find-ls.gz));
+    my $ls   = $self->cpan->child(qw(indices find-ls.gz));
     unless ( -e $ls ) {
         log_error {"File $ls does not exist"};
         exit;
@@ -422,7 +421,7 @@ sub detect_status {
 
 sub _build_perms {
     my $self = shift;
-    my $file = $self->cpan->file(qw(modules 06perms.txt));
+    my $file = $self->cpan->child(qw(modules 06perms.txt));
     my %authors;
     if ( -e $file ) {
         log_debug { "parsing ", $file };
@@ -439,7 +438,7 @@ sub _build_perms {
         log_warn {"$file could not be found."};
     }
 
-    my $packages = $self->cpan->file(qw(modules 02packages.details.txt.gz));
+    my $packages = $self->cpan->child(qw(modules 02packages.details.txt.gz));
     if ( -e $packages ) {
         log_debug { "parsing ", $packages };
         open my $fh, "<:gzip", $packages;

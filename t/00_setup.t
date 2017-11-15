@@ -14,7 +14,7 @@ use MetaCPAN::TestHelpers qw(
 );
 use MetaCPAN::TestServer ();
 use Module::Faker 0.015 ();    # Generates META.json.
-use Path::Class qw(dir file);
+use Path::Tiny qw( path );
 use Test::More 0.96;
 use URI::FromHash qw( uri );
 
