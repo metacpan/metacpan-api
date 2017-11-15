@@ -8,7 +8,7 @@ use MetaCPAN::Script::Runner;
 use MetaCPAN::TestHelpers qw( fakecpan_dir get_config );
 use Test::More;
 
-my $authordir = fakecpan_dir->file('authors/id/L/LO/LOCAL');
+my $authordir = fakecpan_dir->path('authors/id/L/LO/LOCAL');
 
 my $config = get_config();
 
@@ -42,7 +42,7 @@ foreach my $test (
     my $extract_dir = $release->extract;
     foreach my $file (@$files) {
         ok(
-            -e $extract_dir->file( $name, $file ),
+            -e $extract_dir->child( $name, $file ),
             "meta file $file exists in $name"
         );
     }

@@ -3,14 +3,16 @@ use warnings;
 use lib 't/lib';
 
 use Devel::Confess;
-use MetaCPAN::DarkPAN;
-use MetaCPAN::TestServer;
-use MetaCPAN::Tests::Controller::Search::DownloadURL;
+use MetaCPAN::DarkPAN                                ();
+use MetaCPAN::Tests::Controller::Search::DownloadURL ();
 use Test::More;
 use Test::RequiresInternet ( 'cpan.metacpan.org' => 80 );
 
 my $darkpan = MetaCPAN::DarkPAN->new;
-my $server  = MetaCPAN::TestServer->new( cpan_dir => $darkpan->base_dir );
+$darkpan->base_dir;    # create dir
+
+require MetaCPAN::TestServer;
+my $server = MetaCPAN::TestServer->new( cpan_dir => $darkpan->base_dir );
 
 # create DarkPAN
 $darkpan->run;

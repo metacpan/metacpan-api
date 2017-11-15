@@ -69,7 +69,7 @@ sub run {
         grep {defined} $self->index->name,
         $self->type );
 
-    my $file = $self->home->subdir(qw(var backup))->file("$filename.json.gz");
+    my $file = $self->home->child( 'var', 'backup', "$filename.json.gz" );
     $file->dir->mkpath unless ( -e $file->dir );
     my $fh = IO::Zlib->new( "$file", 'wb4' );
 
@@ -191,8 +191,8 @@ sub run_purge {
     my $self = shift;
 
     my $now = DateTime->now;
-    $self->home->subdir(qw(var backup))->recurse(
-        callback => sub {
+    $self->home->child(qw(var backup))->visit(
+        sub {
             my $file = shift;
             return if ( $file->is_dir );
 
@@ -211,7 +211,8 @@ sub run_purge {
                 if ( $self->dry_run );
                 $file->remove;
             }
-        }
+        },
+        { recurse => 1 }
     );
 }
 

@@ -15,7 +15,7 @@ use MetaCPAN::Types qw(ArrayRef AbsFile Str);
 use MetaCPAN::Util qw( fix_version);
 use Module::Metadata 1.000012 ();    # Improved package detection.
 use MooseX::StrictConstructor;
-use Path::Class ();
+use Path::Tiny qw(path);
 use Parse::PMFile;
 use Try::Tiny qw( catch try );
 
@@ -337,10 +337,7 @@ sub _build_files {
     my $extract_dir = $self->extract;
     File::Find::find(
         sub {
-            my $child
-                = -d $File::Find::name
-                ? Path::Class::Dir->new($File::Find::name)
-                : Path::Class::File->new($File::Find::name);
+            my $child = path($File::Find::name);
             return if $self->_is_broken_file($File::Find::name);
             my $relative = $child->relative($extract_dir);
             my $stat     = do {

@@ -20,7 +20,7 @@ sub index_mirrors {
     my $self = shift;
     log_info { 'Getting mirrors.json file from ' . $self->cpan };
 
-    my $json = $self->cpan->file( 'indices', 'mirrors.json' )->slurp;
+    my $json = $self->cpan->child( 'indices', 'mirrors.json' )->slurp;
     my $type = $self->index->type('mirror');
 
     # Clear out everything in the index

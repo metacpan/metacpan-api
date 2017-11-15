@@ -39,7 +39,8 @@ has force => (
 
 sub _build_packages {
     return Parse::CPAN::Packages::Fast->new(
-        shift->cpan->file(qw(modules 02packages.details.txt.gz))->stringify );
+        shift->cpan->child(qw(modules 02packages.details.txt.gz))
+            ->stringify );
 }
 
 sub _queue_latest {

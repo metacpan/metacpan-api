@@ -4,18 +4,15 @@ use lib 't/lib';
 
 use CPAN::Faker 0.010;
 use Devel::Confess;
-use File::Copy qw( copy );
 use MetaCPAN::Script::Tickets ();
-use MetaCPAN::Server::Test;
 use MetaCPAN::TestHelpers qw(
     fakecpan_configs_dir
     fakecpan_dir
     get_config
     tmp_dir
 );
-use MetaCPAN::TestServer ();
 use Module::Faker 0.015 ();    # Generates META.json.
-use Path::Class qw(dir file);
+use Path::Tiny qw( path );
 use Test::More 0.96;
 use URI::FromHash qw( uri );
 
@@ -31,11 +28,12 @@ BEGIN {
 
 # Ensure we're starting fresh
 my $tmp_dir = tmp_dir();
-$tmp_dir->rmtree;
-$tmp_dir->mkpath;
+$tmp_dir->remove_tree( { safe => 0 } );
 
-ok( $tmp_dir->stat, "$tmp_dir exists for testing" );
+my $fakecpan_dir = fakecpan_dir();    # recreates dir
 
+# Require this module *after* the directories have been set up
+require MetaCPAN::TestServer;
 my $server = MetaCPAN::TestServer->new;
 $server->setup;
 
@@ -45,28 +43,24 @@ $config->{es} = $server->es_client;
 my $mod_faker = 'Module::Faker::Dist::WithPerl';
 eval "require $mod_faker" or die $@;    ## no critic (StringyEval)
 
-my $fakecpan_dir = fakecpan_dir();
-$fakecpan_dir->rmtree;
-$fakecpan_dir = fakecpan_dir();         # recreate dir
-
 my $fakecpan_configs = fakecpan_configs_dir();
 
 my $cpan = CPAN::Faker->new(
     {
-        source     => $fakecpan_configs->subdir('configs')->stringify,
+        source     => $fakecpan_configs->child('configs')->stringify,
         dest       => $fakecpan_dir->stringify,
         dist_class => $mod_faker,
     }
 );
 
 ok( $cpan->make_cpan, 'make fake cpan' );
-$fakecpan_dir->subdir('authors')->mkpath;
-$fakecpan_dir->subdir('indices')->mkpath;
+$fakecpan_dir->child('authors')->mkpath;
+$fakecpan_dir->child('indices')->mkpath;
 
 # make some changes to 06perms.txt
 {
-    my $perms_file = $fakecpan_dir->subdir('modules')->file('06perms.txt');
-    my $perms      = $perms_file->slurp;
+    my $perms_file = $fakecpan_dir->child( 'modules', '06perms.txt' );
+    my $perms = $perms_file->slurp;
     $perms =~ s/^Some,LOCAL,f$/Some,MO,f/m;
     my $fh = $perms_file->openw;
     print $fh $perms;
@@ -84,16 +78,16 @@ local $Parse::PMFile::VERBOSE = $ENV{TEST_VERBOSE} ? 9 : 0;
 
 my $src_dir = $fakecpan_configs;
 
-$src_dir->file('00whois.xml')
-    ->copy_to( $fakecpan_dir->file(qw(authors 00whois.xml)) );
+$src_dir->child('00whois.xml')
+    ->copy( $fakecpan_dir->child( 'authors', '00whois.xml' ) );
 
-copy( $src_dir->file('author-1.0.json'),
-    $fakecpan_dir->file(qw(authors id M MO MO author-1.0.json)) );
+$src_dir->child('author-1.0.json')
+    ->copy( $fakecpan_dir->child(qw(authors id M MO MO author-1.0.json)) );
 
-copy( $src_dir->file('bugs.tsv'), $fakecpan_dir->file('bugs.tsv') );
+$src_dir->child('bugs.tsv')->copy( $fakecpan_dir->child('bugs.tsv') );
 
-copy( $src_dir->file('mirrors.json'),
-    $fakecpan_dir->file(qw(indices mirrors.json)) );
+$src_dir->child('mirrors.json')
+    ->copy( $fakecpan_dir->child(qw(indices mirrors.json)) );
 
 $server->index_permissions;
 $server->index_packages;
@@ -113,11 +107,11 @@ ok(
             %{$config},
             rt_summary_url => uri(
                 scheme => 'file',
-                path => $fakecpan_dir->file('bugs.tsv')->absolute->stringify,
+                path => $fakecpan_dir->child('bugs.tsv')->absolute->stringify,
             ),
             github_issues => uri(
                 scheme => 'file',
-                path   => $fakecpan_dir->subdir('github')->absolute->stringify
+                path   => $fakecpan_dir->child('github')->absolute->stringify
                     . '/%s/%s.json?per_page=100'
             ),
         }

@@ -8,7 +8,7 @@ use MetaCPAN::Types qw( Dir );
 use MetaCPAN::Util qw( author_dir );
 use OrePAN2::Indexer;
 use OrePAN2::Injector;
-use Path::Class qw( dir );
+use Path::Tiny qw( path );
 use URI::FromHash qw( uri_object );
 
 has base_dir => (
@@ -16,8 +16,15 @@ has base_dir => (
     isa     => Dir,
     lazy    => 1,
     coerce  => 1,
-    default => 't/var/darkpan',
+    builder => '_build_base_dir',
 );
+
+sub _build_base_dir {
+    my $self = shift;
+    my $dir  = path('t/var/darkpan');
+    $dir->mkpath;
+    return $dir;
+}
 
 sub run {
     my $self = shift;
@@ -95,7 +102,7 @@ sub _write_06perms {
         }
     }
 
-    my $modules_dir = $self->base_dir->subdir('modules');
+    my $modules_dir = $self->base_dir->child('modules');
     $modules_dir->mkpath;
 
     my $content = $perms->generate_content;
@@ -103,7 +110,7 @@ sub _write_06perms {
     # work around bug in generate_content()
     $content =~ s{,f}{,f\n}g;
 
-    $modules_dir->file('06perms.txt')->spew($content);
+    $modules_dir->child('06perms.txt')->spew($content);
 }
 
 __PACKAGE__->meta->make_immutable;

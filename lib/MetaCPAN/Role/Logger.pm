@@ -5,7 +5,7 @@ use Moose::Role;
 use MetaCPAN::Types qw(:all);
 use Log::Contextual qw( set_logger );
 use Log::Log4perl ':easy';
-use Path::Class ();
+use Path::Tiny qw( path );
 
 has level => (
     is            => 'ro',
@@ -58,7 +58,7 @@ sub _build_logger {
         if ( $c->{class} =~ /Appender::File$/ && $c->{filename} ) {
 
             # Create the log file's parent directory if necessary.
-            Path::Class::File->new( $c->{filename} )->parent->mkpath;
+            path( $c->{filename} )->parent->mkpath;
         }
 
         my $app = Log::Log4perl::Appender->new( $c->{class}, %$c );
