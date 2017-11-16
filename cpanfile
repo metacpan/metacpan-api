@@ -30,7 +30,6 @@ requires 'CatalystX::RoleApplicator';
 requires 'CatalystX::Fastly::Role::Response', '0.06';
 requires 'CPAN::Repository::Perms';
 requires 'Config::ZOMG', '>=', '1.000000';
-requires 'Config::JFDI';
 requires 'Const::Fast';
 requires 'Cpanel::JSON::XS', '3.0115';
 requires 'Cwd';
