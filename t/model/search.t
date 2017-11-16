@@ -6,6 +6,8 @@ use MetaCPAN::TestServer    ();
 use Test::More;
 use Test::Deep;
 
+plan skip_all => "Travis ES bad" if $ENV{TRAVIS};
+
 # Just use this to get an es object.
 my $server = MetaCPAN::TestServer->new;
 my $search = MetaCPAN::Model::Search->new(
