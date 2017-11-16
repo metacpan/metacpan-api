@@ -8,6 +8,8 @@ in=t/var/tmp/cpantesters-release.db
 out=t/var/cpantesters-release-fake.db
 table=release
 
+mkdir -p t/var/tmp
+
 download_original () {
     test -s "$in" || \
         wget -O "$in.bz2" "$url"
@@ -49,6 +51,7 @@ populate_db () {
     dist_version 'IPsonar' '0.29'
     dist_version 'weblint' '++-1.15'
     dist_version 'WWW-Tumblr' ''
+    dist_version 'WWW-Mechanize' '1.77-TRIAL'
 
     # Add records for our fake dists.
     fake_dist 'Some' '1.00-TRIAL' 4 3 2 1
