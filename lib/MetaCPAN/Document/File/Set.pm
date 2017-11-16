@@ -4,6 +4,7 @@ use Moose;
 
 use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
 use Ref::Util qw( is_hashref );
+use List::Util qw( max uniq );
 
 extends 'ElasticSearchX::Model::Document::Set';
 
@@ -502,8 +503,8 @@ sub autocomplete_using_suggester {
     my %docs;
 
     for my $suggest ( @{ $suggestions->{documentation}[0]{options} } ) {
-        next if exists $docs{ $suggest->{text} };
-        $docs{ $suggest->{text} } = $suggest->{score};
+        $docs{ $suggest->{text} } = max grep {defined}
+            ( $docs{ $suggest->{text} }, $suggest->{score} );
     }
 
     my $data = $self->es->search(
@@ -512,21 +513,6 @@ sub autocomplete_using_suggester {
             type  => 'file',
             body  => {
                 query => {
-                    filtered => {
-                        query => {
-                            function_score => {
-                                script_score => {
-                                    script => {
-                                        lang => 'groovy',
-                                        file =>
-                                            'prefer_shorter_module_names_400',
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
-                filter => {
                     bool => {
                         must => [
                             { term => { indexed    => 1 } },
@@ -536,21 +522,27 @@ sub autocomplete_using_suggester {
                                 terms => { 'documentation' => [ keys %docs ] }
                             },
                         ],
+                        must_not => [
+                            {
+                                terms =>
+                                    { distribution => \@ROGUE_DISTRIBUTIONS }
+                            },
+                        ],
                     }
                 },
             },
             fields => ['documentation'],
-            size   => 10,
+            size   => 50,
         }
     );
 
-    return +{
-        suggestions => [
-            sort { length($a) <=> length($b) || $a cmp $b }
-                map { $_->{fields}{documentation}[0] }
-                @{ $data->{hits}{hits} }
-        ]
-    };
+    my @got = sort {
+               $docs{$b} <=> $docs{$a}
+            || length($a) <=> length($b)
+            || $a cmp $b
+        } uniq
+        map { $_->{fields}{documentation}[0] } @{ $data->{hits}{hits} };
+    return +{ suggestions => [ grep {defined} @got[ 0 .. 9 ] ] };
 }
 
 sub dir {
