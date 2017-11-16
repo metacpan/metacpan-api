@@ -42,6 +42,20 @@ before_install:
   - git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers
   - source ~/travis-perl-helpers/init
 
+  - sudo mkdir -p /etc/elasticsearch/scripts/ && sudo mkdir /tmp/es && sudo chmod 777 /tmp/es
+
+  - sudo curl -O -L https://github.com/metacpan/metacpan-puppet/raw/master/modules/metacpan_elasticsearch/files/etc/scripts/prefer_shorter_module_names_100.groovy > /tmp/es/prefer_shorter_module_names_100.groovy
+
+  - sudo curl -O -L https://github.com/metacpan/metacpan-puppet/raw/master/modules/metacpan_elasticsearch/files/etc/scripts/prefer_shorter_module_names_400.groovy > /tmp/es/prefer_shorter_module_names_400.groovy
+
+  - sudo curl -O -L https://github.com/metacpan/metacpan-puppet/raw/master/modules/metacpan_elasticsearch/files/etc/scripts/status_is_latest.groovy > /tmp/es/status_is_latest.groovy
+
+  - sudo curl -O -L https://github.com/metacpan/metacpan-puppet/raw/master/modules/metacpan_elasticsearch/files/etc/scripts/score_version_numified.groovy > /tmp/es/score_version_numified.groovy
+
+  - sudo cp /tmp/es/* /etc/elasticsearch/scripts/
+
+  - sudo service elasticsearch stop && curl -O -L https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-2.4.3.deb && sudo dpkg -i --force-confnew elasticsearch-2.4.3.deb && sudo service elasticsearch start
+
   - sudo service elasticsearch stop && curl -O -L https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-2.4.3.deb && sudo dpkg -i --force-confnew elasticsearch-2.4.3.deb && sudo service elasticsearch start
   - sudo service elasticsearch restart
 
