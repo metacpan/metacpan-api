@@ -606,7 +606,8 @@ sub requires {
     my ( $self, $module, $page, $page_size, $sort ) = @_;
     $page      //= 1;
     $page_size //= 20;
-    $sort      //= { date => 'desc' };
+
+    _fix_sort_value( \$sort );
 
     my $query = {
         query => {
@@ -720,17 +721,25 @@ sub _get_provided_modules {
     ];
 }
 
+sub _fix_sort_value {
+    my $sort = shift;
+
+    if ( ${$sort} =~ /^(\w+):(asc|desc)$/ ) {
+        ${$sort} = { $1 => $2 };
+    }
+    else {
+        ${$sort} = { date => 'desc' };
+    }
+
+    return;
+}
+
 sub _get_depended_releases {
     my ( $self, $modules, $page, $page_size, $sort ) = @_;
     $page      //= 1;
     $page_size //= 50;
 
-    if ( $sort =~ /^(\w+):(asc|desc)$/ ) {
-        $sort = { $1 => $2 };
-    }
-    else {
-        $sort = { date => 'desc' };
-    }
+    _fix_sort_value( \$sort );
 
     # because 'terms' doesn't work properly
     my $filter_modules = {
