@@ -4,7 +4,7 @@ use warnings;
 use MetaCPAN::Model::Search ();
 use MetaCPAN::TestServer    ();
 use Test::More;
-use Test::Deep qw(cmp_deeply);
+use Test::Deep qw(cmp_deeply ignore);
 
 plan skip_all =>
     "Travis ES bad, see https://travis-ci.org/metacpan/metacpan-api/jobs/301092129"
