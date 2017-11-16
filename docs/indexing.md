@@ -104,6 +104,15 @@ Defaults to true.  Set to false by MetaCPAN::Script::Release if any of the
 Modules (via Files) in the Release are marked unauthorized but indexed.
 
 
+### release.status and file.status
+
+Release status is "cpan" by default.  When a file is deleted, its status
+changes to "backpan".  MetaCPAN::Script::Latest is in charge of marking
+Releases as "latest" when they're in PAUSE's 02packages file (and demoting
+previous "latest" Releases back to "cpan").  The status field of Files is just
+a copy of their Release's status (I **think**).
+
+
 
 ## Notes on timing/ordering
 
