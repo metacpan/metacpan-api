@@ -1,21 +1,19 @@
-package    ## no critic (Package)
-    Captcha::Mock;
-
 use strict;
 use warnings;
+use lib 't/lib';
 
-sub check_answer {
-    return { is_valid => $_[4], error => 'error' };
+{
+    package    ## no critic (Package)
+        Captcha::Mock;
+
+    sub check_answer {
+        return { is_valid => $_[4], error => 'error' };
+    }
+
+    sub new {
+        bless {}, shift;
+    }
 }
-
-sub new {
-    bless {}, shift;
-}
-
-package main;
-
-use strict;
-use warnings;
 
 use MetaCPAN::Server::Test;
 use MetaCPAN::TestHelpers;

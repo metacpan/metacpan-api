@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use lib 't/lib';
 
 use FindBin;
 use MetaCPAN::Model::Release;

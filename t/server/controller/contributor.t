@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use lib 't/lib';
 
 use Cpanel::JSON::XS qw( decode_json );
 use MetaCPAN::Server::Test;

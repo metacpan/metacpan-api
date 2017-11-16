@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use lib 't/lib';
 
 use Git::Helpers qw( checkout_root );
 use MetaCPAN::Script::River  ();

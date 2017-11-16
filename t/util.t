@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use lib 't/lib';
 
 use CPAN::Meta;
 use MetaCPAN::Util qw( extract_section numify_version strip_pod );

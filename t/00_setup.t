@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use lib 't/lib';
 
 use CPAN::Faker 0.010;
 use Devel::Confess;

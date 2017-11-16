@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use lib 't/lib';
 
 use File::Temp ();
 use LWP::Simple qw(getstore);

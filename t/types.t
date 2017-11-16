@@ -1,6 +1,7 @@
 use Test::Most;
 use strict;
 use warnings;
+use lib 't/lib';
 use MetaCPAN::Types qw(:all);
 
 is_deeply(

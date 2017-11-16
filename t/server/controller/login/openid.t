@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use lib 't/lib';
 use utf8;
 
 package # Test::Routine's run_me (in main) doesn't mix well with Test::Aggregate.

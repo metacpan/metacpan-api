@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use lib 't/lib';
 
 use Encode;
 use MetaCPAN::Server::Test;

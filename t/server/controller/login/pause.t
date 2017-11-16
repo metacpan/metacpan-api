@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use lib 't/lib';
 use utf8;
 
 use Encode qw( encode is_utf8 FB_CROAK LEAVE_SRC );

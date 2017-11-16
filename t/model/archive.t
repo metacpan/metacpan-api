@@ -2,6 +2,7 @@
 
 use strict;
 use warnings;
+use lib 't/lib';
 
 use MetaCPAN::TestHelpers qw( fakecpan_dir );
 use Test::Most;
