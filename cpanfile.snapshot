@@ -16,17 +16,6 @@ DISTRIBUTIONS
       Algorithm::Diff::_impl 1.1903
     requirements:
       ExtUtils::MakeMaker 0
-  Any-Moose-0.26
-    pathname: E/ET/ETHER/Any-Moose-0.26.tar.gz
-    provides:
-      Any::Moose 0.26
-    requirements:
-      Carp 0
-      ExtUtils::MakeMaker 0
-      Moose 0
-      perl 5.006_002
-      strict 0
-      warnings 0
   Any-URI-Escape-0.01
     pathname: P/PH/PHRED/Any-URI-Escape-0.01.tar.gz
     provides:
@@ -584,14 +573,6 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       Test::Exception 0
-  Carp-Clan-Share-0.013
-    pathname: R/RK/RKRIMEN/Carp-Clan-Share-0.013.tar.gz
-    provides:
-      Carp::Clan::Share 0.013
-    requirements:
-      Carp::Clan 0
-      ExtUtils::MakeMaker 6.42
-      Test::More 0
   Catalyst-Action-REST-1.20
     pathname: J/JJ/JJNAPIORK/Catalyst-Action-REST-1.20.tar.gz
     provides:
@@ -1234,26 +1215,6 @@ DISTRIBUTIONS
       Mixin::Linewise::Writers 0
       strict 0
       warnings 0
-  Config-JFDI-0.065
-    pathname: R/RO/ROKR/Config-JFDI-0.065.tar.gz
-    provides:
-      Config::JFDI 0.065
-      Config::JFDI::Carp undef
-      Config::JFDI::Source::Loader undef
-    requirements:
-      Any::Moose 0
-      Carp::Clan::Share 0
-      Clone 0
-      Config::Any 0
-      Config::General 0
-      Data::Visitor 0.24
-      ExtUtils::MakeMaker 6.31
-      Getopt::Usaginator 0
-      Hash::Merge::Simple 0
-      List::MoreUtils 0
-      Path::Class 0
-      Sub::Install 0
-      Test::Most 0
   Config-Tiny-2.23
     pathname: R/RS/RSAVAGE/Config-Tiny-2.23.tgz
     provides:
@@ -2802,6 +2763,51 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
+  ExtUtils-MakeMaker-7.30
+    pathname: B/BI/BINGOS/ExtUtils-MakeMaker-7.30.tar.gz
+    provides:
+      ExtUtils::Command 7.30
+      ExtUtils::Command::MM 7.30
+      ExtUtils::Liblist 7.30
+      ExtUtils::Liblist::Kid 7.30
+      ExtUtils::MM 7.30
+      ExtUtils::MM_AIX 7.30
+      ExtUtils::MM_Any 7.30
+      ExtUtils::MM_BeOS 7.30
+      ExtUtils::MM_Cygwin 7.30
+      ExtUtils::MM_DOS 7.30
+      ExtUtils::MM_Darwin 7.30
+      ExtUtils::MM_MacOS 7.30
+      ExtUtils::MM_NW5 7.30
+      ExtUtils::MM_OS2 7.30
+      ExtUtils::MM_QNX 7.30
+      ExtUtils::MM_UWIN 7.30
+      ExtUtils::MM_Unix 7.30
+      ExtUtils::MM_VMS 7.30
+      ExtUtils::MM_VOS 7.30
+      ExtUtils::MM_Win32 7.30
+      ExtUtils::MM_Win95 7.30
+      ExtUtils::MY 7.30
+      ExtUtils::MakeMaker 7.30
+      ExtUtils::MakeMaker::Config 7.30
+      ExtUtils::MakeMaker::Locale 7.30
+      ExtUtils::MakeMaker::_version 7.30
+      ExtUtils::MakeMaker::charstar 7.30
+      ExtUtils::MakeMaker::version 7.30
+      ExtUtils::MakeMaker::version::regex 7.30
+      ExtUtils::MakeMaker::version::vpp 7.30
+      ExtUtils::Mkbootstrap 7.30
+      ExtUtils::Mksymlists 7.30
+      ExtUtils::testlib 7.30
+      MM 7.30
+      MY 7.30
+    requirements:
+      Data::Dumper 0
+      Encode 0
+      File::Basename 0
+      File::Spec 0.8
+      Pod::Man 0
+      perl 5.006
   ExtUtils-MakeMaker-CPANfile-0.07
     pathname: I/IS/ISHIGAKI/ExtUtils-MakeMaker-CPANfile-0.07.tar.gz
     provides:
@@ -3107,16 +3113,6 @@ DISTRIBUTIONS
       overload 0
       strict 0
       warnings 0
-  Getopt-Usaginator-0.0012
-    pathname: R/RO/ROKR/Getopt-Usaginator-0.0012.tar.gz
-    provides:
-      Getopt::Usaginator 0.0012
-    requirements:
-      ExtUtils::MakeMaker 6.31
-      File::Spec 0
-      IPC::Open3 0
-      Package::Pkg 0.0014
-      Test::Most 0
   Git-Helpers-0.000004
     pathname: O/OA/OALDERS/Git-Helpers-0.000004.tar.gz
     provides:
@@ -3472,6 +3468,22 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 6.36
       Socket 1.94
       Test::More 0
+  HTTP-Tiny-0.070
+    pathname: D/DA/DAGOLDEN/HTTP-Tiny-0.070.tar.gz
+    provides:
+      HTTP::Tiny 0.070
+    requirements:
+      Carp 0
+      ExtUtils::MakeMaker 6.17
+      Fcntl 0
+      IO::Socket 0
+      MIME::Base64 0
+      Socket 0
+      Time::Local 0
+      bytes 0
+      perl 5.006
+      strict 0
+      warnings 0
   Hash-Merge-0.200
     pathname: R/RE/REHSACK/Hash-Merge-0.200.tar.gz
     provides:
@@ -4188,33 +4200,43 @@ DISTRIBUTIONS
       Fennec::Lite 0
       Test::Exception 0
       Test::More 0
-  MetaCPAN-Client-1.014000
-    pathname: X/XS/XSAWYERX/MetaCPAN-Client-1.014000.tar.gz
+  MetaCPAN-Client-2.018000
+    pathname: M/MI/MICKEY/MetaCPAN-Client-2.018000.tar.gz
     provides:
-      MetaCPAN::Client 1.014000
-      MetaCPAN::Client::Author 1.014000
-      MetaCPAN::Client::Distribution 1.014000
-      MetaCPAN::Client::Favorite 1.014000
-      MetaCPAN::Client::File 1.014000
-      MetaCPAN::Client::Mirror 1.014000
-      MetaCPAN::Client::Module 1.014000
-      MetaCPAN::Client::Pod 1.014000
-      MetaCPAN::Client::Rating 1.014000
-      MetaCPAN::Client::Release 1.014000
-      MetaCPAN::Client::Request 1.014000
-      MetaCPAN::Client::ResultSet 1.014000
-      MetaCPAN::Client::Role::Entity 1.014000
+      MetaCPAN::Client 2.018000
+      MetaCPAN::Client::Author 2.018000
+      MetaCPAN::Client::Distribution 2.018000
+      MetaCPAN::Client::DownloadURL 2.018000
+      MetaCPAN::Client::Favorite 2.018000
+      MetaCPAN::Client::File 2.018000
+      MetaCPAN::Client::Mirror 2.018000
+      MetaCPAN::Client::Module 2.018000
+      MetaCPAN::Client::Package 2.018000
+      MetaCPAN::Client::Permission 2.018000
+      MetaCPAN::Client::Pod 2.018000
+      MetaCPAN::Client::Rating 2.018000
+      MetaCPAN::Client::Release 2.018000
+      MetaCPAN::Client::Request 2.018000
+      MetaCPAN::Client::ResultSet 2.018000
+      MetaCPAN::Client::Role::Entity 2.018000
+      MetaCPAN::Client::Role::HasUA 2.018000
+      MetaCPAN::Client::Scroll 2.018000
+      MetaCPAN::Client::Types 2.018000
     requirements:
       Carp 0
-      ExtUtils::MakeMaker 0
-      HTTP::Tiny 0
+      ExtUtils::MakeMaker 7.1101
+      HTTP::Tiny 0.056
+      IO::Socket::SSL 1.42
       JSON::MaybeXS 0
+      JSON::PP 0
       Moo 0
       Moo::Role 0
+      Net::SSLeay 1.49
+      Ref::Util 0
       Safe::Isa 0
-      Search::Elasticsearch 2.02
-      Try::Tiny 0
-      perl 5.008
+      Type::Tiny 0
+      URI::Escape 0
+      perl 5.010
       strict 0
       warnings 0
   MetaCPAN-Moose-0.000002
@@ -5481,6 +5503,23 @@ DISTRIBUTIONS
       Test::More 0.96
       strict 0
       warnings 0
+  MooseX-Types-Path-Tiny-0.012
+    pathname: E/ET/ETHER/MooseX-Types-Path-Tiny-0.012.tar.gz
+    provides:
+      MooseX::Types::Path::Tiny 0.012
+    requirements:
+      Module::Build::Tiny 0.034
+      Moose 2
+      MooseX::Getopt 0
+      MooseX::Types 0
+      MooseX::Types::Moose 0
+      MooseX::Types::Stringlike 0
+      Path::Tiny 0
+      if 0
+      namespace::autoclean 0
+      perl 5.006
+      strict 0
+      warnings 0
   MooseX-Types-Stringlike-0.003
     pathname: D/DA/DAGOLDEN/MooseX-Types-Stringlike-0.003.tar.gz
     provides:
@@ -6286,20 +6325,6 @@ DISTRIBUTIONS
       namespace::autoclean 0
       strict 0
       warnings 0
-  Package-Pkg-0.0020
-    pathname: R/RO/ROKR/Package-Pkg-0.0020.tar.gz
-    provides:
-      Package::Pkg 0.0020
-      Package::Pkg::Lexicon undef
-      Package::Pkg::Loader undef
-    requirements:
-      Class::Load 0
-      Clone 0
-      ExtUtils::MakeMaker 6.30
-      Mouse 0
-      Sub::Install 0
-      Test::Most 0
-      Try::Tiny 0
   Package-Stash-0.37
     pathname: D/DO/DOY/Package-Stash-0.37.tar.gz
     provides:
