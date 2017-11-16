@@ -6,7 +6,7 @@ use lib 't/lib';
 
 use MetaCPAN::TestHelpers qw( fakecpan_dir );
 use Test::Most;
-use Digest::SHA1 qw( sha1_hex );
+use Digest::SHA qw( sha1_hex );
 
 my $CLASS = 'MetaCPAN::Model::Archive';
 require_ok $CLASS;

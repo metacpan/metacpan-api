@@ -43,7 +43,7 @@ requires 'DateTime', '1.24';
 requires 'DateTime::Format::ISO8601';
 requires 'Devel::ArgNames';
 requires 'Digest::MD5';
-requires 'Digest::SHA1';
+requires 'Digest::SHA';
 requires 'EV';
 requires 'ElasticSearchX::Model', '1.0.2';
 requires 'Email::Address';

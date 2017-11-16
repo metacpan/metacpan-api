@@ -18,7 +18,7 @@ package Catalyst::Plugin::OAuth2::Provider::Controller;
 use Moose;
 BEGIN { extends 'Catalyst::Controller' }
 
-use Digest::SHA1;
+use Digest::SHA;
 use Cpanel::JSON::XS;
 use URI;
 
@@ -125,7 +125,7 @@ sub bad_request {
 }
 
 sub _build_code {
-    my $digest = Digest::SHA1::sha1_base64( rand() . $$ . {} . time );
+    my $digest = Digest::SHA::sha1_base64( rand() . $$ . {} . time );
     $digest =~ tr/[+\/]/-_/;
     return $digest;
 }

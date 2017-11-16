@@ -6,7 +6,7 @@ use strict;
 use warnings;
 use version;
 
-use Digest::SHA1;
+use Digest::SHA;
 use Encode;
 use Ref::Util qw( is_arrayref is_hashref );
 use Sub::Exporter -setup => {
@@ -20,13 +20,13 @@ use Sub::Exporter -setup => {
 };
 
 sub digest {
-    my $digest = Digest::SHA1::sha1_base64( join( "\0", grep {defined} @_ ) );
+    my $digest = Digest::SHA::sha1_base64( join( "\0", grep {defined} @_ ) );
     $digest =~ tr/[+\/]/-_/;
     return $digest;
 }
 
 sub generate_sid {
-    Digest::SHA1::sha1_hex( rand() . $$ . {} . time );
+    Digest::SHA::sha1_hex( rand() . $$ . {} . time );
 }
 
 sub numify_version {
@@ -161,7 +161,7 @@ __END__
 This function will digest the passed parameters to a 32 byte string and makes it url safe.
 It consists of the characters A-Z, a-z, 0-9, - and _.
 
-The digest is built using L<Digest::SHA1>.
+The digest is built using L<Digest::SHA>.
 
 =head2 single_valued_arrayref_to_scalar
 
