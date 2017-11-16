@@ -12,4 +12,4 @@ seq:
 
     - seq: t/server/controller/user/favorite.t
     - par:
-        - t/**.t
+          - t/**.t
