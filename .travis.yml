@@ -20,14 +20,14 @@ env:
     - METACPAN_SERVER_CONFIG_LOCAL_SUFFIX=testing
 
     - DEVEL_COVER_OPTIONS="-ignore,^local/"
-    - PERL_CARTON_PATH=$TRAVIS_BUILD_DIR/local
+    - PERL_CARTON_PATH=$HOME/local
   matrix:
-    - CPAN_RESOLVER=metadb PERL_CARTON_PATH=$TRAVIS_BUILD_DIR/no-snapshot HARNESS_VERBOSE=1
+    - CPAN_RESOLVER=metadb PERL_CARTON_PATH=$HOME/no-snapshot HARNESS_VERBOSE=1
     - CPAN_RESOLVER=snapshot
 
 matrix:
   allow_failures:
-    - env: CPAN_RESOLVER=metadb PERL_CARTON_PATH=$TRAVIS_BUILD_DIR/no-snapshot HARNESS_VERBOSE=1
+    - env: CPAN_RESOLVER=metadb PERL_CARTON_PATH=$HOME/no-snapshot HARNESS_VERBOSE=1
   fast_finish: true
 
 addons:
@@ -91,3 +91,10 @@ cache:
   directories:
     - local
     - ~/perl5
+
+addons:
+  artifacts:
+    debug: true
+    s3_region: "us-east-1"
+    paths:
+    - $TRAVIS_BUILD_DIR/cpanfile.snapshot
