@@ -498,8 +498,7 @@ sub autocomplete {
 # mapping + data is fully deployed.
 # -- Mickey
 sub autocomplete_using_suggester {
-    my ( $self, @terms ) = @_;
-    my $query = join( q{ }, @terms );
+    my ( $self, $query ) = @_;
     return $self unless $query;
 
     my $result_size = 10;
