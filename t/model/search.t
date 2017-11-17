@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use lib 't/lib';
 
 use MetaCPAN::Model::Search ();
 use MetaCPAN::TestServer    ();
