@@ -4,9 +4,27 @@ use Moose;
 
 use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
 use Ref::Util qw( is_hashref );
-use List::Util qw( max uniq );
+use List::Util qw( max );
+
+use MetaCPAN::Query::Favorite;
 
 extends 'ElasticSearchX::Model::Document::Set';
+
+has query_favorite => (
+    is      => 'ro',
+    isa     => 'MetaCPAN::Query::Favorite',
+    lazy    => 1,
+    builder => '_build_query_favorite',
+    handles => [qw< agg_by_distributions >],
+);
+
+sub _build_query_favorite {
+    my $self = shift;
+    return MetaCPAN::Query::Favorite->new(
+        es         => $self->es,
+        index_name => $self->index->name,
+    );
+}
 
 my @ROGUE_DISTRIBUTIONS = qw(
     Bundle-Everything
@@ -484,6 +502,9 @@ sub autocomplete_using_suggester {
     my $query = join( q{ }, @terms );
     return $self unless $query;
 
+    my $result_size = 10;
+    my $search_size = 50;
+
     my $suggestions
         = $self->search_type('dfs_query_then_fetch')->es->suggest(
         {
@@ -493,7 +514,7 @@ sub autocomplete_using_suggester {
                     text       => $query,
                     completion => {
                         field => "suggest",
-                        size  => 50,
+                        size  => $search_size,
                     }
                 }
             },
@@ -531,18 +552,28 @@ sub autocomplete_using_suggester {
                     }
                 },
             },
-            fields => ['documentation'],
-            size   => 50,
+            fields => [ 'documentation', 'distribution' ],
+            size   => $search_size,
         }
     );
 
-    my @got = sort {
-               $docs{$b} <=> $docs{$a}
+    my %valid = map {
+        ( $_->{fields}{documentation}[0] => $_->{fields}{distribution}[0] )
+    } @{ $data->{hits}{hits} };
+
+    my $favorites
+        = $self->agg_by_distributions( [ values %valid ] )->{favorites};
+
+    my @sorted = sort {
+               $favorites->{ $valid{$b} } <=> $favorites->{ $valid{$a} }
+            || $docs{$b} <=> $docs{$a}
             || length($a) <=> length($b)
             || $a cmp $b
-        } uniq
-        map { $_->{fields}{documentation}[0] } @{ $data->{hits}{hits} };
-    return +{ suggestions => [ grep {defined} @got[ 0 .. 9 ] ] };
+        }
+        keys %valid;
+    return +{
+        suggestions => [ grep {defined} @sorted[ 0 .. $result_size ] ]
+    };
 }
 
 sub dir {
