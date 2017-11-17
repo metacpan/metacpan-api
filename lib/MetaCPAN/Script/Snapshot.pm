@@ -4,7 +4,8 @@ use strict;
 use warnings;
 
 use Cpanel::JSON::XS qw(encode_json decode_json);
-use DateTime ();
+use DateTime                  ();
+use DateTime::Format::ISO8601 ();
 use DDP;
 use HTTP::Tiny ();
 use Log::Contextual qw( :log );
@@ -49,6 +50,13 @@ has restore => (
     isa           => Bool,
     default       => 0,
     documentation => 'Perform a restore',
+);
+
+has purge_old => (
+    is            => 'ro',
+    isa           => Bool,
+    default       => 0,
+    documentation => 'Perform a purge of old indices',
 );
 
 ## Options
@@ -112,7 +120,9 @@ has http_client => (
 
 sub _build_http_client {
     return HTTP::Tiny->new(
-        default_headers => { 'Accept' => 'application/json' }, );
+        default_headers => { 'Accept' => 'application/json' },
+        timeout         => 120,       # list can be slow
+    );
 }
 
 ## Method selector
@@ -126,9 +136,9 @@ sub run {
     return $self->run_list_snaps if $self->list;
     return $self->run_setup      if $self->setup;
     return $self->run_snapshot   if $self->snap;
-    return $self->run_restore    if $self->restore;
+    return $self->run_purge_old  if $self->purge_old;
 
-    die "setup, restore or snap argument required";
+    die "setup, restore, purge-old or snap argument required";
 }
 
 sub run_snapshot {
@@ -170,6 +180,42 @@ sub run_list_snaps {
     }
 
     return $response;
+}
+
+sub run_purge_old {
+    my $self = shift;
+
+    my $keep_all_after = DateTime->now->subtract( days => 30 );
+
+    # fetch the current list
+    my $path     = "${repository_name}/_all";
+    my $response = $self->_request( 'get', $path, {} );
+    my $data     = eval { decode_json $response->{content} };
+
+    my %to_delete;
+    foreach my $snapshot ( @{ $data->{snapshots} || [] } ) {
+
+        my $snap_date = DateTime::Format::ISO8601->parse_datetime(
+            $snapshot->{start_time} );
+        my $recent_so_keep = DateTime->compare( $snap_date, $keep_all_after );
+
+        # keep 1st of each month
+        next if $snap_date->day eq '1';
+
+        # keep anything that is recent (as per $keep_all_after)
+        next if $recent_so_keep eq '1';
+
+        # we want to delete it then
+        $to_delete{ $snapshot->{snapshot} } = 1;
+
+    }
+
+    foreach my $snap ( sort keys %to_delete ) {
+        my $path = "${repository_name}/${snap}";
+        log_info {"Deleting ${path}"};
+        my $response = $self->_request( 'delete', $path, {} );
+    }
+
 }
 
 sub run_restore {
@@ -270,6 +316,9 @@ MetaCPAN::Script::Snapshot - Snapshot (and restore) Elasticsearch indices
 
 # restore (indices are renamed from `foo` to `restored_foo`)
  $ bin/metacpan snapshot --restore --snap-name full_2016-12-01
+
+# purge anything older than 30 days and not created on the 1st of a month
+ $ bin/metacpan snapshot --purge-old
 
 Another example..
 
