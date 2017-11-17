@@ -523,7 +523,8 @@ sub autocomplete_suggester {
             ( $docs{ $suggest->{text} }, $suggest->{score} );
     }
 
-    my $data = $self->es->search(
+    my @fields = (qw(documentation distribution author release));
+    my $data   = $self->es->search(
         {
             index => $self->index->name,
             type  => 'file',
@@ -547,25 +548,31 @@ sub autocomplete_suggester {
                     }
                 },
             },
-            fields => [ 'documentation', 'distribution' ],
+            fields => \@fields,
             size   => $search_size,
         }
     );
 
     my %valid = map {
-        ( $_->{fields}{documentation}[0] => $_->{fields}{distribution}[0] )
+        my $got = $_->{fields};
+        my %record;
+        @record{@fields} = map { $got->{$_}[0] } @fields;
+        $record{name} = delete $record{documentation};    # rename
+        ( $_->{fields}{documentation}[0] => \%record );
     } @{ $data->{hits}{hits} };
 
     # remove any exact match, it will be added later
-    my $exact;
-    $exact = $query if defined delete $valid{$query};
+    my $exact = delete $valid{$query};
 
     my $favorites
-        = $self->agg_by_distributions( [ values %valid ] )->{favorites};
+        = $self->agg_by_distributions(
+        [ map { $_->{distribution} } values %valid ] )->{favorites};
 
     no warnings 'uninitialized';
-    my @sorted = sort {
-               $favorites->{ $valid{$b} } <=> $favorites->{ $valid{$a} }
+    my @sorted = map { $valid{$_} }
+        sort {
+        $favorites->{ $valid{$b}->{name} }
+            <=> $favorites->{ $valid{$a}->{name} }
             || $docs{$b} <=> $docs{$a}
             || length($a) <=> length($b)
             || $a cmp $b
