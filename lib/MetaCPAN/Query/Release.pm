@@ -172,6 +172,26 @@ sub get_contributors {
                 @{ $contrib->{email} };
             $contrib->{pauseid} = uc $pauseid
                 if $pauseid;
+
+        }
+
+        # check if contributor's email points to a registered author
+        if ( !$contrib->{pauseid} ) {
+            for my $email ( @{ $contrib->{email} } ) {
+                my $check_author = $self->es->search(
+                    index => $self->index_name,
+                    type  => 'author',
+                    body  => {
+                        query => { term => { email => $email } },
+                        size  => 10,
+                    }
+                );
+
+                if ( $check_author->{hits}{total} ) {
+                    $contrib->{pauseid}
+                        = uc $check_author->{hits}{hits}[0]{_source}{pauseid};
+                }
+            }
         }
     }
 
