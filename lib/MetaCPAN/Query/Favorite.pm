@@ -1,6 +1,6 @@
 package MetaCPAN::Query::Favorite;
 
-use Moose;
+use MetaCPAN::Moose;
 
 use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
 
@@ -190,6 +190,5 @@ sub users_by_distribution {
     return { users => \@plusser_users };
 }
 
-no Moose;
 __PACKAGE__->meta->make_immutable;
 1;

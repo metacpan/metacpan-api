@@ -1,6 +1,6 @@
 package MetaCPAN::Query::File;
 
-use Moose;
+use MetaCPAN::Moose;
 
 with 'MetaCPAN::Query::Role::Common';
 
@@ -156,6 +156,5 @@ sub interesting_files {
     };
 }
 
-no Moose;
 __PACKAGE__->meta->make_immutable;
 1;

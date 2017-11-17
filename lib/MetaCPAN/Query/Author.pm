@@ -1,6 +1,6 @@
 package MetaCPAN::Query::Author;
 
-use Moose;
+use MetaCPAN::Moose;
 
 use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
 use Ref::Util qw( is_arrayref );
@@ -105,6 +105,5 @@ sub search {
     };
 }
 
-no Moose;
 __PACKAGE__->meta->make_immutable;
 1;

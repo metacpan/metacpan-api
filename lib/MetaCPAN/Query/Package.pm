@@ -1,6 +1,6 @@
 package MetaCPAN::Query::Package;
 
-use Moose;
+use MetaCPAN::Moose;
 
 with 'MetaCPAN::Query::Role::Common';
 
@@ -33,6 +33,5 @@ sub get_modules {
     return +{ modules => [ map { $_->{_source}{module_name} } @{$hits} ] };
 }
 
-no Moose;
 __PACKAGE__->meta->make_immutable;
 1;

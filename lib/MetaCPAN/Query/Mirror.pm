@@ -1,6 +1,6 @@
 package MetaCPAN::Query::Mirror;
 
-use Moose;
+use MetaCPAN::Moose;
 
 with 'MetaCPAN::Query::Role::Common';
 
@@ -70,6 +70,5 @@ sub search {
     };
 }
 
-no Moose;
 __PACKAGE__->meta->make_immutable;
 1;

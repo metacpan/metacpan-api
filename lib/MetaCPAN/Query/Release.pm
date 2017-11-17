@@ -1,6 +1,6 @@
 package MetaCPAN::Query::Release;
 
-use Moose;
+use MetaCPAN::Moose;
 
 use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
 
@@ -871,6 +871,5 @@ sub modules {
     };
 }
 
-no Moose;
 __PACKAGE__->meta->make_immutable;
 1;

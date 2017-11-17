@@ -1,6 +1,6 @@
 package MetaCPAN::Query::Permission;
 
-use Moose;
+use MetaCPAN::Moose;
 
 use Ref::Util qw( is_arrayref );
 
@@ -66,6 +66,5 @@ sub by_modules {
     return { permissions => $data };
 }
 
-no Moose;
 __PACKAGE__->meta->make_immutable;
 1;

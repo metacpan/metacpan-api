@@ -1,6 +1,6 @@
 package MetaCPAN::Query::Contributor;
 
-use Moose;
+use MetaCPAN::Moose;
 
 use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
 
@@ -53,6 +53,5 @@ sub find_author_contributions {
     };
 }
 
-no Moose;
 __PACKAGE__->meta->make_immutable;
 1;
