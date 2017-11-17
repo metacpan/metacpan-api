@@ -91,3 +91,10 @@ cache:
   directories:
     - local
     - ~/perl5
+
+addons:
+  artifacts:
+    debug: true
+    s3_region: "us-east-1"
+    paths:
+    - $TRAVIS_BUILD_DIR/cpanfile.snapshot
