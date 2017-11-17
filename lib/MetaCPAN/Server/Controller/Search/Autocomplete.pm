@@ -18,15 +18,10 @@ sub get : Local : Path('') : Args(0) {
         $self->model($c)->autocomplete( $c->req->param("q") ) );
 }
 
-# this method will replace 'sub get' after the suggester
-# mapping + data is fully deployed and metacpan-web
-# is fully tested against it.
-# -- Mickey
-sub _get : Local : Path('/_get') : Args(0) {
+sub suggest : Local : Path('/suggest') : Args(0) {
     my ( $self, $c ) = @_;
     $c->stash_or_detach(
-        $self->model($c)->autocomplete_using_suggester( $c->req->param("q") )
-    );
+        $self->model($c)->autocomplete_suggester( $c->req->param("q") ) );
 }
 
 1;

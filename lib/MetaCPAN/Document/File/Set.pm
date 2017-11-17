@@ -494,10 +494,7 @@ sub autocomplete {
     return $data;
 }
 
-# this method will replace 'sub autocomplete' after the
-# mapping + data is fully deployed.
-# -- Mickey
-sub autocomplete_using_suggester {
+sub autocomplete_suggester {
     my ( $self, $query ) = @_;
     return $self unless $query;
 
