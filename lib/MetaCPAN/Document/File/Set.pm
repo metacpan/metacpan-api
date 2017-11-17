@@ -560,6 +560,8 @@ sub autocomplete_using_suggester {
         ( $_->{fields}{documentation}[0] => $_->{fields}{distribution}[0] )
     } @{ $data->{hits}{hits} };
 
+    my $exact = delete $valid{$query};
+
     my $favorites
         = $self->agg_by_distributions( [ values %valid ] )->{favorites};
 
@@ -570,9 +572,8 @@ sub autocomplete_using_suggester {
             || $a cmp $b
         }
         keys %valid;
-    return +{
-        suggestions => [ grep {defined} @sorted[ 0 .. $result_size ] ]
-    };
+    return +{ suggestions =>
+            [ grep {defined} ( $exact, @sorted[ 0 .. $result_size ] ) ] };
 }
 
 sub dir {
