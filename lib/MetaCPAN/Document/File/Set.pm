@@ -501,7 +501,6 @@ sub autocomplete_using_suggester {
     my ( $self, $query ) = @_;
     return $self unless $query;
 
-    my $result_size = 10;
     my $search_size = 50;
 
     my $suggestions
@@ -572,8 +571,8 @@ sub autocomplete_using_suggester {
             || $a cmp $b
         }
         keys %valid;
-    return +{ suggestions =>
-            [ grep {defined} ( $exact, @sorted[ 0 .. $result_size ] ) ] };
+
+    return +{ suggestions => [ grep {defined} ( $exact, @sorted ) ] };
 }
 
 sub dir {
