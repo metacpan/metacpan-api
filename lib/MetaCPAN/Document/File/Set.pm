@@ -559,11 +559,14 @@ sub autocomplete_using_suggester {
         ( $_->{fields}{documentation}[0] => $_->{fields}{distribution}[0] )
     } @{ $data->{hits}{hits} };
 
-    my $exact = delete $valid{$query};
+    # remove any exact match, it will be added later
+    my $exact;
+    $exact = $query if defined delete $valid{$query};
 
     my $favorites
         = $self->agg_by_distributions( [ values %valid ] )->{favorites};
 
+    no warnings 'uninitialized';
     my @sorted = sort {
                $favorites->{ $valid{$b} } <=> $favorites->{ $valid{$a} }
             || $docs{$b} <=> $docs{$a}
