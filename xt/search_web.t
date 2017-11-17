@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use lib 't/lib';
 
 # USE `bin/prove_live` to run this
 # READ the README.txt in this dir
