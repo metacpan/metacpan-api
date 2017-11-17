@@ -1,0 +1,16 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+
+my $server = shift;
+
+my $timeout = 30;
+while ($timeout--) {
+    if (!system "curl -s '$server' 2>/dev/null 1>&2") {
+        exit 0;
+    }
+    sleep 1;
+}
+
+print STDERR "Timed out starting elasticsearch!\n";
+exit 1;

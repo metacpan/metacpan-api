@@ -71,6 +71,7 @@ install:
 
 before_script:
   - "perl -i -pe 's/(servers :)9900/localhost:9200/' metacpan_server_testing.conf"
+  - bin/wait-for-open http://localhost:9200/
   - coverage-setup
 
 script:
