@@ -7894,21 +7894,6 @@ DISTRIBUTIONS
       Test2::API 1.302075
       strict 0
       warnings 0
-  Test-Aggregate-0.375
-    pathname: R/RW/RWSTAUNER/Test-Aggregate-0.375.tar.gz
-    provides:
-      Test::Aggregate 0.375
-      Test::Aggregate::Base 0.375
-      Test::Aggregate::Builder 0.375
-      Test::Aggregate::Nested 0.375
-    requirements:
-      ExtUtils::MakeMaker 0
-      FindBin 1.47
-      Test::Harness 3.09
-      Test::Most 0.21
-      Test::NoWarnings 0
-      Test::Simple 0.94
-      Test::Trap 0
   Test-Compile-v1.3.0
     pathname: E/EG/EGILES/Test-Compile-v1.3.0.tar.gz
     provides:
