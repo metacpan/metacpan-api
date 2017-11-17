@@ -1,57 +1,25 @@
 package MetaCPAN::Document::Contributor::Set;
 
-use strict;
-use warnings;
-
 use Moose;
+
+use MetaCPAN::Query::Contributor;
 
 extends 'ElasticSearchX::Model::Document::Set';
 
-sub find_release_contributors {
-    my ( $self, $author, $name ) = @_;
+has query_contributor => (
+    is      => 'ro',
+    isa     => 'MetaCPAN::Query::Contributor',
+    lazy    => 1,
+    builder => '_build_query_contributor',
+    handles => [qw< find_author_contributions find_release_contributors >],
+);
 
-    my $query = +{
-        bool => {
-            must => [
-                { term => { release_author => $author } },
-                { term => { release_name   => $name } },
-            ]
-        }
-    };
-
-    my $res = $self->es->search(
-        index => 'contributor',
-        type  => 'contributor',
-        body  => {
-            query => $query,
-            size  => 999,
-        }
+sub _build_query_contributor {
+    my $self = shift;
+    return MetaCPAN::Query::Contributor->new(
+        es         => $self->es,
+        index_name => 'contributor',
     );
-    $res->{hits}{total} or return {};
-
-    return +{
-        contributors => [ map { $_->{_source} } @{ $res->{hits}{hits} } ]
-    };
-}
-
-sub find_author_contributions {
-    my ( $self, $pauseid ) = @_;
-
-    my $query = +{ term => { pauseid => $pauseid } };
-
-    my $res = $self->es->search(
-        index => 'contributor',
-        type  => 'contributor',
-        body  => {
-            query => $query,
-            size  => 999,
-        }
-    );
-    $res->{hits}{total} or return {};
-
-    return +{
-        contributors => [ map { $_->{_source} } @{ $res->{hits}{hits} } ]
-    };
 }
 
 __PACKAGE__->meta->make_immutable;

@@ -7,5 +7,4 @@ has es => ( is => 'ro', );
 
 has index_name => ( is => 'ro', );
 
-no Moose::Role;
 1;

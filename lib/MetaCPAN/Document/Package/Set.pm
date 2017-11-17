@@ -1,39 +1,25 @@
 package MetaCPAN::Document::Package::Set;
 
-use strict;
-use warnings;
-
 use Moose;
+
+use MetaCPAN::Query::Package;
 
 extends 'ElasticSearchX::Model::Document::Set';
 
-sub get_modules {
-    my ( $self, $dist, $ver ) = @_;
+has query_package => (
+    is      => 'ro',
+    isa     => 'MetaCPAN::Query::Package',
+    lazy    => 1,
+    builder => '_build_query_package',
+    handles => [qw< get_modules >],
+);
 
-    my $query = +{
-        query => {
-            bool => {
-                must => [
-                    { term => { distribution => $dist } },
-                    { term => { dist_version => $ver } },
-                ],
-            }
-        }
-    };
-
-    my $res = $self->es->search(
-        index => $self->index->name,
-        type  => 'package',
-        body  => {
-            query   => $query,
-            size    => 999,
-            _source => [qw< module_name >],
-        }
+sub _build_query_package {
+    my $self = shift;
+    return MetaCPAN::Query::Package->new(
+        es         => $self->es,
+        index_name => $self->index->name,
     );
-
-    my $hits = $res->{hits}{hits};
-    return [] unless @{$hits};
-    return +{ modules => [ map { $_->{_source}{module_name} } @{$hits} ] };
 }
 
 __PACKAGE__->meta->make_immutable;
