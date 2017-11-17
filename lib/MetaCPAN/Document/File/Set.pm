@@ -571,8 +571,8 @@ sub autocomplete_suggester {
     no warnings 'uninitialized';
     my @sorted = map { $valid{$_} }
         sort {
-        $favorites->{ $valid{$b}->{name} }
-            <=> $favorites->{ $valid{$a}->{name} }
+        $favorites->{ $valid{$b}->{distribution} }
+            <=> $favorites->{ $valid{$a}->{distribution} }
             || $docs{$b} <=> $docs{$a}
             || length($a) <=> length($b)
             || $a cmp $b
