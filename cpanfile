@@ -65,6 +65,7 @@ requires 'File::Temp';
 requires 'File::stat';
 requires 'Find::Lib';
 requires 'FindBin';
+requires 'Gazelle';
 requires 'Git::Helpers';
 requires 'Graph::Centrality::Pagerank';
 requires 'Gravatar::URL';
