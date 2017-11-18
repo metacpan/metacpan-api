@@ -47,7 +47,7 @@ sub index_favorites {
             size        => 500,
             body        => {
                 query => {
-                    range => { date => { gte => sprintf( 'now-%dd', $age ) } }
+                    range => { date => { gte => sprintf( 'now-%dh', $age ) } }
                 }
             }
         );
