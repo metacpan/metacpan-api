@@ -133,8 +133,10 @@ sub index_favorites {
         if ( $self->queue ) {
             $self->_add_to_queue(
                 index_favorite => [
-                    '--distribution', $dist,
-                    ( $self->count ? ( '--count', $self->count ) : () )
+                    '--distribution',
+                    $dist,
+                    '--count',
+                    ( $self->count ? $self->count : $dist_fav_count{$dist} )
                 ] => { priority => 0 }
             );
 
