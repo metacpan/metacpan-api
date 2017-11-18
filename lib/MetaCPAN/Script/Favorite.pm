@@ -21,6 +21,11 @@ has age => (
         'Update distributions that were voted on in the last X minutes',
 );
 
+has distribution => (
+    is  => 'ro',
+    isa => Str,
+);
+
 sub run {
     my $self = shift;
     $self->index_favorites;
@@ -29,7 +34,6 @@ sub run {
 
 sub index_favorites {
     my $self = shift;
-    my $age  = $self->age;
 
     log_info {"Start"};
 
@@ -37,7 +41,15 @@ sub index_favorites {
     my %recent_dists;
     my $body;
 
-    if ($age) {
+    if ( $self->distribution ) {
+        $body = {
+            query => {
+                term => { distribution => $self->distribution }
+            }
+        };
+
+    }
+    elsif ( $self->age ) {
         my $favs = $self->es->scroll_helper(
             index       => $self->index->name,
             type        => 'favorite',
@@ -47,7 +59,9 @@ sub index_favorites {
             size        => 500,
             body        => {
                 query => {
-                    range => { date => { gte => sprintf( 'now-%dm', $age ) } }
+                    range => {
+                        date => { gte => sprintf( 'now-%dm', $self->age ) }
+                    }
                 }
             }
         );
