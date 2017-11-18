@@ -11,7 +11,11 @@ sub get_cpan_author_contributors {
     my $es = $self->es;
 
     my $type = $self->index->type('release');
-    my $data = $type->get_contributors( $author, $release );
+    my $data;
+    eval {
+        $data = $type->get_contributors( $author, $release );
+        1;
+    } or return [];
 
     for my $d ( @{ $data->{contributors} } ) {
         next unless exists $d->{pauseid};
