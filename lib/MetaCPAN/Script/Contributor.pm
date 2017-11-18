@@ -79,7 +79,7 @@ sub run {
         ? { range => { date => { gte => sprintf( 'now-%dd', $self->age ) } } }
         : return;
 
-    my $timeout = $self->all ? '60m' : '5m';
+    my $timeout = $self->all ? '720m' : '5m';
 
     my $scroll = $self->es->scroll_helper(
         size   => 500,
