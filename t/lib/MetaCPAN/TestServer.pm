@@ -5,6 +5,7 @@ use MetaCPAN::Moose;
 use MetaCPAN::DarkPAN                ();
 use MetaCPAN::Script::Author         ();
 use MetaCPAN::Script::CPANTestersAPI ();
+use MetaCPAN::Script::Favorite       ();
 use MetaCPAN::Script::First          ();
 use MetaCPAN::Script::Latest         ();
 use MetaCPAN::Script::Mapping        ();
@@ -250,6 +251,20 @@ sub index_packages {
             #cpan => MetaCPAN::DarkPAN->new->base_dir,
             )->run,
         'index packages'
+    );
+}
+
+sub index_favorite {
+    my $self = shift;
+
+    ok(
+        MetaCPAN::Script::Favorite->new_with_options(
+            %{ $self->_config },
+
+            # Eventually maybe move this to use the DarkPAN 06perms
+            #cpan => MetaCPAN::DarkPAN->new->base_dir,
+            )->run,
+        'index favorite'
     );
 }
 
