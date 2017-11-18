@@ -18,7 +18,7 @@ has age => (
     is  => 'ro',
     isa => Int,
     documentation =>
-        'Update distributions that were voted on in the last X hours',
+        'Update distributions that were voted on in the last X minutes',
 );
 
 sub run {
@@ -47,7 +47,7 @@ sub index_favorites {
             size        => 500,
             body        => {
                 query => {
-                    range => { date => { gte => sprintf( 'now-%dh', $age ) } }
+                    range => { date => { gte => sprintf( 'now-%dm', $age ) } }
                 }
             }
         );
@@ -86,15 +86,15 @@ sub index_favorites {
 
     log_info {"Done counting favs for all dists"};
 
-    my $bulk = $self->es->bulk_helper(
-        index     => $self->index->name,
-        type      => 'file',
-        max_count => 250,
-        timeout   => '6000m',
-    );
-
     for my $dist ( keys %dist_fav_count ) {
         log_info {"Dist $dist"};
+
+        my $bulk = $self->es->bulk_helper(
+            index     => $self->index->name,
+            type      => 'file',
+            max_count => 250,
+            timeout   => '120m',
+        );
 
         my $files = $self->es->scroll_helper(
             index       => $self->index->name,
@@ -121,9 +121,9 @@ sub index_favorites {
                 }
             );
         }
-    }
 
-    $bulk->flush;
+        $bulk->flush;
+    }
 }
 
 __PACKAGE__->meta->make_immutable;
