@@ -33,6 +33,9 @@ sub startup {
 
     $self->minion->add_task(
         index_latest => $self->_gen_index_task_sub('latest') );
+
+    $self->minion->add_task(
+        index_favorite => $self->_gen_index_task_sub('favorite') );
 }
 
 sub _gen_index_task_sub {

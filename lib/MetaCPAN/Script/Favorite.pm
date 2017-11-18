@@ -4,7 +4,7 @@ use Moose;
 
 use Log::Contextual qw( :log );
 
-use MetaCPAN::Types qw( Int Str );
+use MetaCPAN::Types qw( Bool Int Str );
 
 with 'MooseX::Getopt', 'MetaCPAN::Role::Script';
 
@@ -13,6 +13,13 @@ with 'MooseX::Getopt', 'MetaCPAN::Role::Script';
 Updates the dist_fav_count field in 'file' by the count of ++ in 'favorite'
 
 =cut
+
+has queue => (
+    is            => 'ro',
+    isa           => Bool,
+    default       => 0,
+    documentation => 'Use the queue for updates',
+);
 
 has age => (
     is  => 'ro',
@@ -121,42 +128,54 @@ sub index_favorites {
     # Update fav counts for files per distributions
 
     for my $dist ( keys %dist_fav_count ) {
-        log_debug {"Dist $dist"};
 
-        my $bulk = $self->es->bulk_helper(
-            index     => $self->index->name,
-            type      => 'file',
-            max_count => 250,
-            timeout   => '120m',
-        );
-
-        my $files = $self->es->scroll_helper(
-            index       => $self->index->name,
-            type        => 'file',
-            search_type => 'scan',
-            scroll      => '15s',
-            fields      => [qw< id >],
-            size        => 500,
-            body        => {
-                query => { term => { distribution => $dist } }
-            },
-        );
-
-        while ( my $file = $files->next ) {
-            my $id  = $file->{fields}{id}[0];
-            my $cnt = $dist_fav_count{$dist};
-
-            log_debug {"Updating file id $id with fav_count $cnt"};
-
-            $bulk->update(
-                {
-                    id  => $file->{fields}{id}[0],
-                    doc => { dist_fav_count => $cnt },
-                }
+        if ( $self->queue ) {
+            $self->_add_to_queue(
+                index_favorite => [
+                    '--distribution', $dist,
+                    ( $self->count ? ( '--count', $self->count ) : () )
+                ]
             );
-        }
 
-        $bulk->flush;
+        }
+        else {
+            log_debug {"Dist $dist"};
+
+            my $bulk = $self->es->bulk_helper(
+                index     => $self->index->name,
+                type      => 'file',
+                max_count => 250,
+                timeout   => '120m',
+            );
+
+            my $files = $self->es->scroll_helper(
+                index       => $self->index->name,
+                type        => 'file',
+                search_type => 'scan',
+                scroll      => '15s',
+                fields      => [qw< id >],
+                size        => 500,
+                body        => {
+                    query => { term => { distribution => $dist } }
+                },
+            );
+
+            while ( my $file = $files->next ) {
+                my $id  = $file->{fields}{id}[0];
+                my $cnt = $dist_fav_count{$dist};
+
+                log_debug {"Updating file id $id with fav_count $cnt"};
+
+                $bulk->update(
+                    {
+                        id  => $file->{fields}{id}[0],
+                        doc => { dist_fav_count => $cnt },
+                    }
+                );
+            }
+
+            $bulk->flush;
+        }
     }
 }
 
