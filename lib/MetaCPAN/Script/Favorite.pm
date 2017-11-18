@@ -10,7 +10,7 @@ with 'MooseX::Getopt', 'MetaCPAN::Role::Script';
 
 =head1 SYNOPSIS
 
-Updates the fav_count field in 'file' by the count of ++ in 'favorite'
+Updates the dist_fav_count field in 'file' by the count of ++ in 'favorite'
 
 =cut
 
@@ -117,7 +117,7 @@ sub index_favorites {
             $bulk->update(
                 {
                     id  => $file->{fields}{id}[0],
-                    doc => { fav_count => $cnt },
+                    doc => { dist_fav_count => $cnt },
                 }
             );
         }
