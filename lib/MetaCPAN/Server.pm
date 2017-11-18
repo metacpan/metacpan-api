@@ -10,7 +10,7 @@ use CatalystX::RoleApplicator;
 use File::Temp qw( tempdir );
 use Plack::Middleware::ReverseProxy;
 use Plack::Middleware::ServerStatus::Lite;
-use Ref::Util qw( is_arrayref );
+use Ref::Util qw( is_arrayref is_hashref );
 use Plack::Builder;
 
 extends 'Catalyst';
@@ -156,7 +156,7 @@ sub read_param {
 # with a not_found message
 sub stash_or_detach {
     my ( $c, $data ) = @_;
-    $data
+    $data and is_hashref($data)
         ? $c->stash($data)
         : $c->detach( '/not_found',
         ['The requested info could not be found'] );
