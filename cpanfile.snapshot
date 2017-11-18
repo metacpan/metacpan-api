@@ -813,6 +813,7 @@ DISTRIBUTIONS
       MooseX::Emulate::Class::Accessor::Fast 0.00903
       MooseX::Getopt 0.48
       MooseX::MethodAttributes::Role::AttrContainer::Inheritable 0.24
+      MooseX::Role::WithOverloading 0.09
       Path::Class 0.09
       Plack 0.9991
       Plack::Middleware::Conditional 0
@@ -2633,7 +2634,6 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       Mail::Address 0
-      Net::DNS 0
       Scalar::Util 0
       Test::More 0
       perl 5.006
@@ -3110,6 +3110,21 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       File::Spec 0
       Test::More 0
+  Gazelle-0.46
+    pathname: K/KA/KAZEBURO/Gazelle-0.46.tar.gz
+    provides:
+      Gazelle 0.46
+      Plack::Handler::Gazelle 0.46
+    requirements:
+      Devel::CheckCompiler 0.04
+      Guard 0
+      Module::Build 0.38
+      Parallel::Prefork 0.18
+      Plack 1.0037
+      Server::Starter 0
+      Stream::Buffered 0
+      Try::Tiny 0
+      perl 5.008001
   Getopt-Long-Descriptive-0.100
     pathname: R/RJ/RJBS/Getopt-Long-Descriptive-0.100.tar.gz
     provides:
@@ -3229,6 +3244,12 @@ DISTRIBUTIONS
       URI::Escape 0
       parent 0
       perl v5.6.0
+  Guard-1.023
+    pathname: M/ML/MLEHMANN/Guard-1.023.tar.gz
+    provides:
+      Guard 1.023
+    requirements:
+      ExtUtils::MakeMaker 0
   HTML-Form-6.03
     pathname: G/GA/GAAS/HTML-Form-6.03.tar.gz
     provides:
@@ -3676,7 +3697,6 @@ DISTRIBUTIONS
       IO::Socket::SSL::Utils 2.014
     requirements:
       ExtUtils::MakeMaker 0
-      Mozilla::CA 0
       Net::SSLeay 1.46
       Scalar::Util 0
   IO-String-1.08
@@ -3685,6 +3705,15 @@ DISTRIBUTIONS
       IO::String 1.08
     requirements:
       ExtUtils::MakeMaker 0
+  IO-Tty-1.12
+    pathname: T/TO/TODDR/IO-Tty-1.12.tar.gz
+    provides:
+      IO::Pty 1.12
+      IO::Tty 1.12
+      IO::Tty::Constant undef
+    requirements:
+      ExtUtils::MakeMaker 0
+      Test::More 0
   IO-stringy-2.111
     pathname: D/DS/DSKOLL/IO-stringy-2.111.tar.gz
     provides:
@@ -3713,6 +3742,7 @@ DISTRIBUTIONS
       IPC::Run::Win32Pump 0.96
     requirements:
       ExtUtils::MakeMaker 0
+      IO::Pty 1.08
       Test::More 0.47
   IPC-Run3-0.048
     pathname: R/RJ/RJBS/IPC-Run3-0.048.tar.gz
@@ -3722,6 +3752,12 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Test::More 0.31
       Time::HiRes 0
+  IPC-Signal-1.00
+    pathname: R/RO/ROSCH/IPC-Signal-1.00.tar.gz
+    provides:
+      IPC::Signal 1.00
+    requirements:
+      ExtUtils::MakeMaker 0
   IPC-System-Simple-1.25
     pathname: P/PJ/PJF/IPC-System-Simple-1.25.tar.gz
     provides:
@@ -3778,6 +3814,7 @@ DISTRIBUTIONS
       JSON::MaybeXS 1.003009
     requirements:
       Carp 0
+      Cpanel::JSON::XS 2.3310
       ExtUtils::CBuilder 0.27
       ExtUtils::MakeMaker 0
       File::Spec 0
@@ -4354,13 +4391,13 @@ DISTRIBUTIONS
       Moose::Role 0
       MooseX::Fastly::Role 0.01
       Net::Fastly 1.05
-  Minion-7.09
-    pathname: S/SR/SRI/Minion-7.09.tar.gz
+  Minion-8.0
+    pathname: S/SR/SRI/Minion-8.0.tar.gz
     provides:
       LinkCheck undef
       LinkCheck::Controller::Links undef
       LinkCheck::Task::CheckLinks undef
-      Minion 7.09
+      Minion 8.0
       Minion::Backend undef
       Minion::Backend::Pg undef
       Minion::Command::minion undef
@@ -4368,11 +4405,12 @@ DISTRIBUTIONS
       Minion::Command::minion::worker undef
       Minion::Job undef
       Minion::Worker undef
-      Minion::_Guard 7.09
+      Minion::_Guard 8.0
       Mojolicious::Plugin::Minion undef
+      Mojolicious::Plugin::Minion::Admin undef
     requirements:
       ExtUtils::MakeMaker 0
-      Mojolicious 7.29
+      Mojolicious 7.56
       perl 5.010001
   Minion-Backend-SQLite-2.004
     pathname: D/DB/DBOOK/Minion-Backend-SQLite-2.004.tar.gz
@@ -5456,6 +5494,30 @@ DISTRIBUTIONS
       perl 5.008001
       strict 0
       warnings 0
+  MooseX-Role-WithOverloading-0.17
+    pathname: E/ET/ETHER/MooseX-Role-WithOverloading-0.17.tar.gz
+    provides:
+      MooseX::Role::WithOverloading 0.17
+      MooseX::Role::WithOverloading::Meta::Role 0.17
+      MooseX::Role::WithOverloading::Meta::Role::Application 0.17
+      MooseX::Role::WithOverloading::Meta::Role::Application::Composite 0.17
+      MooseX::Role::WithOverloading::Meta::Role::Application::Composite::ToClass 0.17
+      MooseX::Role::WithOverloading::Meta::Role::Application::Composite::ToInstance 0.17
+      MooseX::Role::WithOverloading::Meta::Role::Application::Composite::ToRole 0.17
+      MooseX::Role::WithOverloading::Meta::Role::Application::FixOverloadedRefs 0.17
+      MooseX::Role::WithOverloading::Meta::Role::Application::ToClass 0.17
+      MooseX::Role::WithOverloading::Meta::Role::Application::ToInstance 0.17
+      MooseX::Role::WithOverloading::Meta::Role::Application::ToRole 0.17
+      MooseX::Role::WithOverloading::Meta::Role::Composite 0.17
+    requirements:
+      ExtUtils::MakeMaker 0
+      Moose 0.94
+      Moose::Exporter 0
+      Moose::Role 1.15
+      aliased 0
+      namespace::autoclean 0.16
+      namespace::clean 0.19
+      perl 5.006
   MooseX-StrictConstructor-0.21
     pathname: D/DR/DROLSKY/MooseX-StrictConstructor-0.21.tar.gz
     provides:
@@ -6440,6 +6502,22 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       perl 5.008001
+  Parallel-Prefork-0.18
+    pathname: K/KA/KAZUHO/Parallel-Prefork-0.18.tar.gz
+    provides:
+      Parallel::Prefork 0.18
+      Parallel::Prefork::SpareWorkers undef
+      Parallel::Prefork::SpareWorkers::Scoreboard undef
+    requirements:
+      Class::Accessor::Lite 0.04
+      ExtUtils::MakeMaker 6.59
+      List::MoreUtils 0
+      Proc::Wait3 0.03
+      Scope::Guard 0
+      Signal::Mask 0
+      Test::Requires 0
+      Test::SharedFork 0
+      perl 5.008001
   Parallel-Scoreboard-0.08
     pathname: K/KA/KAZUHO/Parallel-Scoreboard-0.08.tar.gz
     provides:
@@ -7344,6 +7422,12 @@ DISTRIBUTIONS
       perl 5.008
       strict 0
       warnings 0
+  Proc-Wait3-0.05
+    pathname: C/CT/CTILMES/Proc-Wait3-0.05.tar.gz
+    provides:
+      Proc::Wait3 0.05
+    requirements:
+      ExtUtils::MakeMaker 0
   Readonly-2.05
     pathname: S/SA/SANKO/Readonly-2.05.tar.gz
     provides:
@@ -7570,6 +7654,27 @@ DISTRIBUTIONS
       URI 0
       namespace::clean 0
       overload 0
+      strict 0
+      warnings 0
+  Server-Starter-0.33
+    pathname: K/KA/KAZUHO/Server-Starter-0.33.tar.gz
+    provides:
+      Server::Starter 0.33
+      Server::Starter::Guard undef
+    requirements:
+      ExtUtils::CBuilder 0
+      Module::Build 0.4005
+      perl 5.008
+  Signal-Mask-0.008
+    pathname: L/LE/LEONT/Signal-Mask-0.008.tar.gz
+    provides:
+      Signal::Mask 0.008
+      Signal::Pending 0.008
+    requirements:
+      Carp 0
+      ExtUtils::MakeMaker 6.30
+      IPC::Signal 0
+      POSIX 0
       strict 0
       warnings 0
   Sort-Naturally-1.03
