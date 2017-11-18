@@ -104,6 +104,7 @@ $server->index_authors;
 $server->prepare_user_test_data;
 $server->index_cpantesters;
 $server->index_mirrors;
+$server->index_favorite;
 
 ok(
     MetaCPAN::Script::Tickets->new_with_options(
