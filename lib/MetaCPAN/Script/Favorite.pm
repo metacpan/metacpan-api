@@ -22,12 +22,26 @@ has age => (
 );
 
 has distribution => (
+    is            => 'ro',
+    isa           => Str,
+    documentation => 'Update only a given distribution',
+);
+
+has count => (
     is  => 'ro',
-    isa => Str,
+    isa => Int,
+    documentation =>
+        'Update this count to a given distribution (will only work with "--distribution"',
 );
 
 sub run {
     my $self = shift;
+
+    if ( $self->count and !$self->distribution ) {
+        die
+            "Cannot set count in a distribution search mode, this flag only applies to a single distribution. please use together with --distribution DIST";
+    }
+
     $self->index_favorites;
     $self->index->refresh;
 }
@@ -35,9 +49,6 @@ sub run {
 sub index_favorites {
     my $self = shift;
 
-    log_info {"Start"};
-
-    my %dist_fav_count;
     my %recent_dists;
     my $body;
 
@@ -83,25 +94,34 @@ sub index_favorites {
 
     # get total fav counts for distributions
 
-    my $favs = $self->es->scroll_helper(
-        index       => $self->index->name,
-        type        => 'favorite',
-        search_type => 'scan',
-        scroll      => '30s',
-        fields      => [qw< distribution >],
-        size        => 500,
-        ( body => $body ) x !!$body,
-    );
+    my %dist_fav_count;
 
-    while ( my $fav = $favs->next ) {
-        my $dist = $fav->{fields}{distribution}[0];
-        $dist_fav_count{$dist}++ if $dist;
+    if ( $self->count ) {
+        $dist_fav_count{ $self->distribution } = $self->count;
+    }
+    else {
+        my $favs = $self->es->scroll_helper(
+            index       => $self->index->name,
+            type        => 'favorite',
+            search_type => 'scan',
+            scroll      => '30s',
+            fields      => [qw< distribution >],
+            size        => 500,
+            ( body => $body ) x !!$body,
+        );
+
+        while ( my $fav = $favs->next ) {
+            my $dist = $fav->{fields}{distribution}[0];
+            $dist_fav_count{$dist}++ if $dist;
+        }
+
+        log_debug {"Done counting favs for distributions"};
     }
 
-    log_info {"Done counting favs for all dists"};
+    # Update fav counts for files per distributions
 
     for my $dist ( keys %dist_fav_count ) {
-        log_info {"Dist $dist"};
+        log_debug {"Dist $dist"};
 
         my $bulk = $self->es->bulk_helper(
             index     => $self->index->name,
@@ -126,7 +146,7 @@ sub index_favorites {
             my $id  = $file->{fields}{id}[0];
             my $cnt = $dist_fav_count{$dist};
 
-            log_info {"Updating file id $id with fav_count $cnt"};
+            log_debug {"Updating file id $id with fav_count $cnt"};
 
             $bulk->update(
                 {
