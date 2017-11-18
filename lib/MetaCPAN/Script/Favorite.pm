@@ -137,7 +137,7 @@ sub index_favorites {
                     $dist,
                     '--count',
                     ( $self->count ? $self->count : $dist_fav_count{$dist} )
-                ] => { priority => 0 }
+                ] => { priority => 0, attempts => 10 }
             );
 
         }
