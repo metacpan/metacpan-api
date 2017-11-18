@@ -4,8 +4,6 @@ use MetaCPAN::Moose;
 
 use Ref::Util qw( is_arrayref );
 
-use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
-
 with 'MetaCPAN::Query::Role::Common';
 
 sub by_author {

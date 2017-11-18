@@ -2,6 +2,8 @@ package MetaCPAN::Query::File;
 
 use MetaCPAN::Moose;
 
+use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
+
 with 'MetaCPAN::Query::Role::Common';
 
 sub dir {

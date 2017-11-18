@@ -2,8 +2,6 @@ package MetaCPAN::Query::Contributor;
 
 use MetaCPAN::Moose;
 
-use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
-
 with 'MetaCPAN::Query::Role::Common';
 
 sub find_release_contributors {
