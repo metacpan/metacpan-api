@@ -28,9 +28,9 @@ sub get_modules {
         }
     );
 
-    my $hits = $res->{hits}{hits};
-    return [] unless @{$hits};
-    return +{ modules => [ map { $_->{_source}{module_name} } @{$hits} ] };
+    return unless $res->{hits}{total};
+    return +{ modules =>
+            [ map { $_->{_source}{module_name} } @{ $res->{hits}{hits} } ] };
 }
 
 __PACKAGE__->meta->make_immutable;
