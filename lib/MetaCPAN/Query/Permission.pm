@@ -39,6 +39,7 @@ sub by_author {
 sub by_modules {
     my ( $self, $modules ) = @_;
     $modules = [$modules] unless is_arrayref($modules);
+    return unless @{$modules};
 
     my @modules = map +{ term => { module_name => $_ } }, @{$modules};
 
