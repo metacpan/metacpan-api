@@ -128,6 +128,7 @@ sub index_favorites {
     # Update fav counts for files per distributions
 
     for my $dist ( keys %dist_fav_count ) {
+        log_debug {"Dist $dist"};
 
         if ( $self->queue ) {
             $self->_add_to_queue(
@@ -139,8 +140,6 @@ sub index_favorites {
 
         }
         else {
-            log_debug {"Dist $dist"};
-
             my $bulk = $self->es->bulk_helper(
                 index     => $self->index->name,
                 type      => 'file',
