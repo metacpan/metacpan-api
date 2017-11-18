@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/metacpan/metacpan-api.png?branch=master)](https://travis-ci.org/metacpan/metacpan-api)
-[![Coverage Status](https://coveralls.io/repos/metacpan/metacpan-api/badge.png)](https://coveralls.io/r/metacpan/metacpan-api)
+[![Build Status](https://travis-ci.org/metacpan/metacpan-api.svg?branch=master)](https://travis-ci.org/metacpan/metacpan-api)
+[![Coverage Status](https://coveralls.io/repos/metacpan/metacpan-api/badge.svg)](https://coveralls.io/r/metacpan/metacpan-api)
 
 A Web Service for the CPAN
 ==========================
