@@ -21,11 +21,12 @@ has queue => (
     documentation => 'Use the queue for updates',
 );
 
-has report_missing => (
-    is            => 'ro',
-    isa           => Bool,
-    default       => 0,
-    documentation => 'Report distributions that are missing from "file"',
+has check_missing => (
+    is      => 'ro',
+    isa     => Bool,
+    default => 0,
+    documentation =>
+        'Report distributions that are missing from "file" or queue jobs if "--queue" specified',
 );
 
 has age => (
@@ -33,6 +34,12 @@ has age => (
     isa => Int,
     documentation =>
         'Update distributions that were voted on in the last X minutes',
+);
+
+has limit => (
+    is            => 'ro',
+    isa           => Int,
+    documentation => 'Limit number of results',
 );
 
 has distribution => (
@@ -56,9 +63,9 @@ sub run {
             "Cannot set count in a distribution search mode, this flag only applies to a single distribution. please use together with --distribution DIST";
     }
 
-    if ( $self->report_missing and $self->distribution ) {
+    if ( $self->check_missing and $self->distribution ) {
         die
-            "report_missing doesn't work in filtered mode - please remove other flags";
+            "check_missing doesn't work in filtered mode - please remove other flags";
     }
 
     $self->index_favorites;
@@ -91,7 +98,8 @@ sub index_favorites {
                     range => {
                         date => { gte => sprintf( 'now-%dm', $self->age ) }
                     }
-                }
+                },
+                ( $self->size ? ( size => $self->size ) : () )
             }
         );
 
@@ -140,7 +148,7 @@ sub index_favorites {
 
     # Report missing distributions if requested
 
-    if ( $self->report_missing ) {
+    if ( $self->check_missing ) {
         my %missing;
 
         my $files = $self->es->scroll_helper(
@@ -162,10 +170,35 @@ sub index_favorites {
 
         while ( my $file = $files->next ) {
             my $dist = $file->{fields}{distribution}[0];
-            $missing{$dist} = 1 if exists $dist_fav_count{$dist};
+            next if exists $missing{$dist} or exists $dist_fav_count{$dist};
+
+            if ( $self->queue ) {
+                log_debug {"Queueing: $dist"};
+
+                $self->_add_to_queue(
+                    index_favorite => [
+                        '--distribution',
+                        $dist,
+                        '--count',
+                        (
+                              $self->count
+                            ? $self->count
+                            : $dist_fav_count{$dist}
+                        )
+                    ] => { priority => 0, attempts => 10 }
+                );
+            }
+            else {
+                log_debug {"Found missing: $dist"};
+            }
+
+            $missing{$dist} = 1;
+            last if $self->limit and scalar( keys %missing ) >= $self->limit;
         }
 
-        print "$_\n" for sort keys %missing;
+        unless ( $self->queue ) {
+            print "$_\n" for sort keys %missing;
+        }
 
         return;
     }
