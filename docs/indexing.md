@@ -113,6 +113,27 @@ previous "latest" Releases back to "cpan").  The status field of Files is just
 a copy of their Release's status (I **think**).
 
 
+### release.version and file.version
+
+Release version comes the version field of the META.json/yaml file (via
+CPAN::Meta), if such a file exists.  If not, then the version in the release
+archive filename (via CPAN::DistnameInfo), normalized by a custom function, is
+used.  Failing even that, then "0" is used.
+
+File versions are from the version parsed out of the _release archive's
+filename_, normalized by a custom function.  Note that this version may not
+match the release's version if there's a META file containing a version which
+doesn't match the archive filename.  (Yes, there are examples of this.  Yes,
+it's partially their fault.)
+
+### module.version
+
+Module versions come from either the META provides data or are statically
+parsed out of the source.  Modules which are `PL_FILES` (`.pm.PL`) have their
+version extracted with Parse::PMFile.  All other `.pm` files are parsed with
+Module::Metadata.
+
+
 
 ## Notes on timing/ordering
 
