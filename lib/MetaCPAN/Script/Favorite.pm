@@ -21,6 +21,13 @@ has queue => (
     documentation => 'Use the queue for updates',
 );
 
+has report_missing => (
+    is            => 'ro',
+    isa           => Bool,
+    default       => 0,
+    documentation => 'Report distributions that are missing from "file"',
+);
+
 has age => (
     is  => 'ro',
     isa => Int,
@@ -49,6 +56,11 @@ sub run {
             "Cannot set count in a distribution search mode, this flag only applies to a single distribution. please use together with --distribution DIST";
     }
 
+    if ( $self->report_missing and $self->distribution ) {
+        die
+            "report_missing doesn't work in filtered mode - please remove other flags";
+    }
+
     $self->index_favorites;
     $self->index->refresh;
 }
@@ -56,7 +68,6 @@ sub run {
 sub index_favorites {
     my $self = shift;
 
-    my %recent_dists;
     my $body;
 
     if ( $self->distribution ) {
@@ -83,6 +94,8 @@ sub index_favorites {
                 }
             }
         );
+
+        my %recent_dists;
 
         while ( my $fav = $favs->next ) {
             my $dist = $fav->{fields}{distribution}[0];
@@ -123,6 +136,38 @@ sub index_favorites {
         }
 
         log_debug {"Done counting favs for distributions"};
+    }
+
+    # Report missing distributions if requested
+
+    if ( $self->report_missing ) {
+        my %missing;
+
+        my $files = $self->es->scroll_helper(
+            index       => $self->index->name,
+            type        => 'file',
+            search_type => 'scan',
+            scroll      => '15m',
+            fields      => [qw< id distribution >],
+            size        => 500,
+            body        => {
+                query => {
+                    bool => {
+                        must_not =>
+                            { range => { dist_fav_count => { gte => 1 } } }
+                    }
+                }
+            },
+        );
+
+        while ( my $file = $files->next ) {
+            my $dist = $file->{fields}{distribution}[0];
+            $missing{$dist} = 1 if exists $dist_fav_count{$dist};
+        }
+
+        print "$_\n" for sort keys %missing;
+
+        return;
     }
 
     # Update fav counts for files per distributions
