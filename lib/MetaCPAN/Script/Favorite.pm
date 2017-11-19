@@ -193,9 +193,8 @@ sub index_favorites {
             last if $self->limit and scalar( keys %missing ) >= $self->limit;
         }
 
-        unless ( $self->queue ) {
-            print "$_\n" for sort keys %missing;
-        }
+        my $total_missing = scalar( keys %missing );
+        log_debug {"Total missing: $total_missing"} unless $self->queue;
 
         return;
     }
