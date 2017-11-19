@@ -42,12 +42,12 @@ sub index_packages {
 
     my $fh = $self->_get_02packages_fh;
 
-    # read first 9 lines (meta info)
+    # read header block (meta info), which is separated from the records by a
+    # blank line.
     my $meta = "Meta info:\n";
-    for ( 0 .. 8 ) {
-        chomp( my $line = <$fh> );
-        next unless $line;
-        $meta .= "$line\n";
+    while (<$fh>) {
+        last if /^$/;
+        $meta .= $_;
     }
     log_debug {$meta};
 
