@@ -175,18 +175,15 @@ sub index_favorites {
             if ( $self->queue ) {
                 log_debug {"Queueing: $dist"};
 
-                $self->_add_to_queue(
-                    index_favorite => [
-                        '--distribution',
-                        $dist,
-                        '--count',
-                        (
-                              $self->count
-                            ? $self->count
-                            : $dist_fav_count{$dist}
-                        )
-                    ] => { priority => 0, attempts => 10 }
-                );
+                my @count_flag;
+                if ( $self->count or $dist_fav_count{$dist} ) {
+                    @count_flag = ( '--count',
+                        $self->count || $dist_fav_count{$dist} );
+                }
+
+                $self->_add_to_queue( index_favorite =>
+                        [ '--distribution', $dist, @count_flag ] =>
+                        { priority => 0, attempts => 10 } );
             }
             else {
                 log_debug {"Found missing: $dist"};
