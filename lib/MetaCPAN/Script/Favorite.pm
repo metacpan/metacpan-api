@@ -154,6 +154,10 @@ sub index_favorites {
 
     if ( $self->check_missing ) {
         my %missing;
+        my @age_filter;
+        if ( $self->age ) {
+            @age_filter = ( must => [$age_filter] );
+        }
 
         my $files = $self->es->scroll_helper(
             index       => $self->index->name,
@@ -168,7 +172,7 @@ sub index_favorites {
                         must_not => [
                             { range => { dist_fav_count => { gte => 1 } } }
                         ],
-                        ( $self->age ? must => [$age_filter] : () ),
+                        @age_filter,
                     }
                 }
             },
