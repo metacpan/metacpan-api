@@ -76,6 +76,14 @@ sub index_favorites {
     my $self = shift;
 
     my $body;
+    my $age_filter;
+    if ( $self->age ) {
+        $age_filter = {
+            range => {
+                date => { gte => sprintf( 'now-%dm', $self->age ) }
+            }
+        };
+    }
 
     if ( $self->distribution ) {
         $body = {
@@ -94,11 +102,7 @@ sub index_favorites {
             fields      => [qw< distribution >],
             size        => 500,
             body        => {
-                query => {
-                    range => {
-                        date => { gte => sprintf( 'now-%dm', $self->age ) }
-                    }
-                },
+                query => $age_filter,
                 ( $self->limit ? ( size => $self->limit ) : () )
             }
         );
@@ -161,8 +165,10 @@ sub index_favorites {
             body        => {
                 query => {
                     bool => {
-                        must_not =>
+                        must_not => [
                             { range => { dist_fav_count => { gte => 1 } } }
+                        ],
+                        ( $self->age ? must => [$age_filter] : () ),
                     }
                 }
             },
