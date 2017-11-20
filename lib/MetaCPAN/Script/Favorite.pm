@@ -170,6 +170,7 @@ sub index_favorites {
 
         while ( my $file = $files->next ) {
             my $dist = $file->{fields}{distribution}[0];
+            next unless $dist;
             next if exists $missing{$dist} or exists $dist_fav_count{$dist};
 
             if ( $self->queue ) {
