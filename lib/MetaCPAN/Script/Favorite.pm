@@ -99,7 +99,7 @@ sub index_favorites {
                         date => { gte => sprintf( 'now-%dm', $self->age ) }
                     }
                 },
-                ( $self->size ? ( size => $self->size ) : () )
+                ( $self->limit ? ( size => $self->limit ) : () )
             }
         );
 
