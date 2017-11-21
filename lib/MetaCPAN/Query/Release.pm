@@ -569,7 +569,7 @@ sub requires {
     $page      //= 1;
     $page_size //= 20;
 
-    _fix_sort_value( \$sort );
+    $sort = _fix_sort_value($sort);
 
     my $query = {
         query => {
@@ -686,14 +686,12 @@ sub _get_provided_modules {
 sub _fix_sort_value {
     my $sort = shift;
 
-    if ( ${$sort} =~ /^(\w+):(asc|desc)$/ ) {
-        ${$sort} = { $1 => $2 };
+    if ( $sort && $sort =~ /^(\w+):(asc|desc)$/ ) {
+        return { $1 => $2 };
     }
     else {
-        ${$sort} = { date => 'desc' };
+        return { date => 'desc' };
     }
-
-    return;
 }
 
 sub _get_depended_releases {
@@ -701,7 +699,7 @@ sub _get_depended_releases {
     $page      //= 1;
     $page_size //= 50;
 
-    _fix_sort_value( \$sort );
+    $sort = _fix_sort_value($sort);
 
     # because 'terms' doesn't work properly
     my $filter_modules = {
