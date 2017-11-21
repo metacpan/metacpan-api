@@ -169,7 +169,7 @@ sub read_param {
 # with a not_found message
 sub stash_or_detach {
     my ( $c, $data ) = @_;
-    $data and is_hashref($data)
+    ( $data and is_hashref($data) )
         ? $c->stash($data)
         : $c->detach( '/not_found',
         ['The requested info could not be found'] );
