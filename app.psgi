@@ -43,9 +43,10 @@ use lib "$root_dir/lib";
 
 use MetaCPAN::Server;
 
+STDERR->autoflush;
+
 # prevent output buffering when in Docker containers (e.g. in docker-compose)
 if ( -e "/.dockerenv" and MetaCPAN::Server->log->isa('Catalyst::Log') ) {
-    STDERR->autoflush;
     STDOUT->autoflush;
 }
 
