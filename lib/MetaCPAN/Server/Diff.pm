@@ -77,10 +77,15 @@ sub _build_structured {
     my @lines = split( /\0/, $self->numstat );
 
     while ( my $line = shift @lines ) {
-        my $source = File::Spec->abs2rel( shift @lines, $self->relative );
-        my $target = File::Spec->abs2rel( shift @lines, $self->relative );
+        my $source = shift @lines;
+        my $target = shift @lines;
+        $source = $target if $source eq '/dev/null';
+        $target = $source if $target eq '/dev/null';
+        $source = File::Spec->abs2rel( $source, $self->relative );
+        $target = File::Spec->abs2rel( $target, $self->relative );
         my ( $insertions, $deletions ) = split( /\t/, $line );
         my $segment = q[];
+
         while ( my $diff = shift @raw ) {
 
             # only run it through if non-ascii bytes are found
