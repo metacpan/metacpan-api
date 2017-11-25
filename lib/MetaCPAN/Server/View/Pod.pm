@@ -11,10 +11,12 @@ extends 'Catalyst::View';
 sub process {
     my ( $self, $c ) = @_;
 
-    my $content       = $c->res->body || $c->stash->{source};
+    my $content = $c->res->has_body ? $c->res->body : $c->stash->{source};
     my $link_mappings = $c->stash->{link_mappings};
     my $url_prefix    = $c->stash->{url_prefix};
-    $content = eval { join( q{}, $content->getlines ) };
+    if ( ref $content ) {
+        $content = do { local $/; <$content> };
+    }
 
     my ( $body, $content_type );
     my $accept = eval { $c->req->preferred_content_type } || 'text/html';
