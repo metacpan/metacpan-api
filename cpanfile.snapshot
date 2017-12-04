@@ -4378,6 +4378,13 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
+  MetaCPAN-Pod-XHTML-0.001001
+    pathname: H/HA/HAARG/MetaCPAN-Pod-XHTML-0.001001.tar.gz
+    provides:
+      MetaCPAN::Pod::XHTML 0.001001
+    requirements:
+      ExtUtils::MakeMaker 0
+      Pod::Simple::XHTML 0
   MetaCPAN-Role-0.06
     pathname: L/LL/LLAP/MetaCPAN-Role-0.06.tar.gz
     provides:
