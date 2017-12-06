@@ -186,7 +186,8 @@ sub documented_modules {
                 },
             ],
         }
-    )->size(999);
+        )->size(999)
+        ->source( [qw(name module path documentation distribution)] )->all;
 }
 
 =head2 find_download_url
