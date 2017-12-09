@@ -43,11 +43,8 @@ sub get : Path('') : Args(1) {
 
 sub find_dist_links {
     my ( $self, $c, $author, $release, $permalinks ) = @_;
-    my $module_query
-        = $c->model('CPAN::File')
-        ->documented_modules( { name => $release, author => $author } )
-        ->source( [qw(name module path documentation distribution)] );
-    my @modules = $module_query->all;
+    my @modules = $c->model('CPAN::File')
+        ->documented_modules( { name => $release, author => $author } );
 
     my $links = {};
 
