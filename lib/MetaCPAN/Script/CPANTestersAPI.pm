@@ -23,7 +23,7 @@ sub _build_url {
     $ENV{HARNESS_ACTIVE}
         ? 'file:'
         . $self->home->file('t/var/cpantesters-release-api-fake.json')
-        : 'http://api.cpantesters.org/v3/release';
+        : 'http://api-2.cpantesters.org/v3/release';
 }
 
 has _bulk => (
