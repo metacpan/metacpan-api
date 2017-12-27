@@ -119,7 +119,7 @@ ok(
                 { match_phrase => { documentation => 'Moose' } }
             ]
         }
-        )->first,
+    )->first,
     'get Moose.pm'
 );
 

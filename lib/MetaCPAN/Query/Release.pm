@@ -469,8 +469,8 @@ sub all_by_author {
     $page //= 1;
 
     my $body = {
-        query => { term => { author => uc($author) } },
-        sort  => [      { date      => 'desc' } ],
+        query  => { term => { author => uc($author) } },
+        sort   => [      { date      => 'desc' } ],
         fields => [qw(author distribution name status abstract date)],
         size   => $size,
         from   => ( $page - 1 ) * $size,
@@ -496,9 +496,9 @@ sub versions {
     my ( $self, $dist ) = @_;
 
     my $body = {
-        query => { term => { distribution => $dist } },
-        size  => 250,
-        sort  => [      { date            => 'desc' } ],
+        query  => { term => { distribution => $dist } },
+        size   => 250,
+        sort   => [      { date            => 'desc' } ],
         fields => [qw( name date author version status maturity authorized )],
     };
 

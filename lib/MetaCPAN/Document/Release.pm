@@ -270,7 +270,7 @@ sub set_first {
           # since this feature has not been around when last reindexed
             ]
         }
-        )->count
+    )->count
         ? 0
         : 1;
 

@@ -120,7 +120,7 @@ ok(
                     . '/%s/%s.json?per_page=100'
             ),
         }
-        )->run,
+    )->run,
     'tickets'
 );
 

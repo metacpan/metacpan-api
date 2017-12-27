@@ -235,7 +235,7 @@ sub index_permissions {
 
             # Eventually maybe move this to use the DarkPAN 06perms
             #cpan => MetaCPAN::DarkPAN->new->base_dir,
-            )->run,
+        )->run,
         'index permissions'
     );
 }
@@ -249,7 +249,7 @@ sub index_packages {
 
             # Eventually maybe move this to use the DarkPAN 06perms
             #cpan => MetaCPAN::DarkPAN->new->base_dir,
-            )->run,
+        )->run,
         'index packages'
     );
 }
@@ -263,7 +263,7 @@ sub index_favorite {
 
             # Eventually maybe move this to use the DarkPAN 06perms
             #cpan => MetaCPAN::DarkPAN->new->base_dir,
-            )->run,
+        )->run,
         'index favorite'
     );
 }

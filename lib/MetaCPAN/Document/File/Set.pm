@@ -107,7 +107,7 @@ sub find {
                 ]
             }
         }
-        )->sort(
+    )->sort(
         [
             '_score',
             { 'version_numified' => { order => 'desc' } },
@@ -115,7 +115,7 @@ sub find {
             { 'mime'             => { order => 'asc' } },
             { 'stat.mtime'       => { order => 'desc' } }
         ]
-        )->search_type('dfs_query_then_fetch')->size(100)->all;
+    )->search_type('dfs_query_then_fetch')->size(100)->all;
 
     my ($file) = grep {
         grep { $_->indexed && $_->authorized && $_->name eq $module }
@@ -186,7 +186,7 @@ sub documented_modules {
                 },
             ],
         }
-        )->size(999)
+    )->size(999)
         ->source( [qw(name module path documentation distribution)] )->all;
 }
 
@@ -649,7 +649,7 @@ sub find_changes_files {
                 }
             ]
         }
-        )->size(1)
+    )->size(1)
 
         # HACK: Sort by level/desc to put pod/perldeta.pod first (if found)
         # otherwise sort root files by name and select the first.
