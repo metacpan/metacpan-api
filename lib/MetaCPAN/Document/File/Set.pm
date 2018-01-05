@@ -120,7 +120,7 @@ sub find {
     my ($file) = grep {
         grep { $_->indexed && $_->authorized && $_->name eq $module }
             @{ $_->module || [] }
-        } grep { !$_->documentation || $_->documentation eq $module }
+    } grep { !$_->documentation || $_->documentation eq $module }
         @candidates;
 
     $file ||= shift @candidates;

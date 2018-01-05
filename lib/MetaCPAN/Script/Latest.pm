@@ -105,7 +105,7 @@ sub run {
                 ]
             }
         }
-    )
+        )
         ->source(
         [qw< author date distribution module.name release status >] )
         ->size(100)->raw->scroll;
