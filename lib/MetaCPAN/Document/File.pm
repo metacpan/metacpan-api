@@ -32,6 +32,21 @@ sub BUILD {
 
 =head1 PROPERTIES
 
+=head2 deprecated
+
+Indicates file deprecation (the abstract contains "DEPRECATED" or "DEPRECIATED",
+or the x_deprecated flag is included in the corresponding "provides" entry in distribution metadata);
+it is also set if the entire release is marked deprecated (see L<MetaCPAN::Document::Release#deprecated>).
+
+=cut
+
+has deprecated => (
+    is      => 'ro',
+    isa     => Bool,
+    default => 0,
+    writer  => '_set_deprecated',
+);
+
 =head2 abstract
 
 Abstract of the documentation (if any). This is built by parsing the

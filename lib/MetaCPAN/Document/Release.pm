@@ -104,6 +104,14 @@ This is an ArrayRef of modules that are included in this release.
 
 =cut
 
+=head2 deprecated
+
+This is a boolean indicating whether the release is marked as deprecated
+(the main module's ABSTRACT contains "DEPRECATED" or "DEPRECIATED",
+or the x_deprecated flag is set in metadata)
+
+=cut
+
 has provides => (
     is     => 'ro',
     isa    => ArrayRef [Str],
@@ -241,6 +249,13 @@ has changes_file => (
     is     => 'ro',
     isa    => Str,
     writer => '_set_changes_file',
+);
+
+has deprecated => (
+    is      => 'ro',
+    isa     => Bool,
+    default => sub {0},
+    writer  => '_set_deprecated',
 );
 
 sub _build_download_url {

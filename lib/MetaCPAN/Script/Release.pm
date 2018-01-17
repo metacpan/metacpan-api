@@ -237,6 +237,15 @@ sub import_archive {
             = [ @{ $associated_pod{$documentation} || [] }, $_ ];
     }
 
+# check for release deprecation in abstract of release or has x_deprecated in meta
+    my $deprecated = (
+               $meta->{x_deprecated}
+            or $document->has_abstract
+            and $document->abstract =~ /DEPRECI?ATED/
+    ) ? 1 : 0;
+
+    $document->_set_deprecated($deprecated);
+
     log_debug { 'Indexing ', scalar @$modules, ' modules' };
     my $perms = $self->perms;
     my @release_unauthorized;
@@ -248,12 +257,24 @@ sub import_archive {
         push( @release_unauthorized, $file->set_authorized($perms) )
             if ( keys %$perms );
 
+        my $file_x_deprecated = 0;
+
         for ( @{ $file->module } ) {
             push( @provides, $_->name ) if $_->indexed && $_->authorized;
+            $file_x_deprecated = 1
+                if $meta->{provides}{ $_->name }{x_deprecated};
         }
+
+        # check for DEPRECATED/DEPRECIATED in abstract of file
+        $file->_set_deprecated(1)
+            if $deprecated
+            or $file_x_deprecated
+            or $file->abstract and $file->abstract =~ /DEPRECI?ATED/;
+
         $file->clear_module if ( $file->is_pod_file );
         $file->documentation;
         $file->suggest;
+
         log_trace {"reindexing file $file->{path}"};
         $bulk->put($file);
         if ( !$document->has_abstract && $file->abstract ) {
