@@ -79,9 +79,11 @@ sub find_dist_links {
 
 sub render : Path('/pod_render') {
     my ( $self, $c ) = @_;
-    my $pod = $c->req->parameters->{pod};
+    my $pod         = $c->req->parameters->{pod};
+    my $show_errors = !!$c->req->parameters->{show_errors};
     $c->res->content_type('text/x-pod');
     $c->res->body($pod);
+    $c->stash( { show_errors => $show_errors } );
     $c->forward( $c->view('Pod') );
 }
 
