@@ -71,6 +71,9 @@ sub mapping {
               },
               "type" : "nested"
            },
+           "deprecated" : {
+              "type" : "boolean"
+           },
            "distribution" : {
               "fields" : {
                  "analyzed" : {

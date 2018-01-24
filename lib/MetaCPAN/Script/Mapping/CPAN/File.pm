@@ -37,6 +37,9 @@ sub mapping {
             "type" : "date",
             "format" : "strict_date_optional_time||epoch_millis"
           },
+          "deprecated" : {
+            "type" : "boolean"
+          },
           "description" : {
             "type" : "string",
             "index" : "not_analyzed",
