@@ -50,7 +50,11 @@ sub index_reports {
     my $es = $self->es;
 
     log_info { 'Fetching ' . $self->url };
-    my $res  = $self->ua->get( $self->url );
+
+    my $res;
+    eval { $res = $self->ua->get( $self->url ) };
+    return unless $res and $res->code == 200;
+
     my $json = $res->decoded_content;
     my $data = decode_json $json;
 
