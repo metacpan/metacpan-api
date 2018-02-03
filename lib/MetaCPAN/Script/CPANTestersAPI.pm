@@ -32,8 +32,10 @@ has _bulk => (
     lazy    => 1,
     default => sub {
         $_[0]->es->bulk_helper(
-            index => $_[0]->index->name,
-            type  => 'release'
+            index     => $_[0]->index->name,
+            type      => 'release',
+            max_count => 250,
+            timeout   => '30m',
         );
     },
 );
