@@ -49,7 +49,7 @@ sub run {
         }
     }
     else {
-        my $gte = DateTime->now()->subtract( days => $self->age )
+        my $gte = DateTime->now()->subtract( days => $self->days )
             ->strftime("%Y-%m-%d");
         my $range = +{ range => { date => { gte => $gte } } };
         log_info {"updating suggest data since: $gte "};
