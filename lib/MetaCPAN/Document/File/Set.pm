@@ -516,7 +516,7 @@ sub autocomplete_suggester {
     my ( $self, $query ) = @_;
     return $self unless $query;
 
-    my $search_size = 50;
+    my $search_size = 100;
 
     my $suggestions
         = $self->search_type('dfs_query_then_fetch')->es->suggest(
