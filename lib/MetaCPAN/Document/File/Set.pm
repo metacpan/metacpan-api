@@ -541,7 +541,7 @@ sub autocomplete_suggester {
             ( $docs{ $suggest->{text} }, $suggest->{score} );
     }
 
-    my @fields = (qw(documentation distribution author release));
+    my @fields = (qw(documentation distribution author release deprecated));
     my $data   = $self->es->search(
         {
             index => $self->index->name,
@@ -589,7 +589,8 @@ sub autocomplete_suggester {
     no warnings 'uninitialized';
     my @sorted = map { $valid{$_} }
         sort {
-        $favorites->{ $valid{$b}->{distribution} }
+               $valid{$a}->{deprecated} <=> $valid{$b}->{deprecated}
+            || $favorites->{ $valid{$b}->{distribution} }
             <=> $favorites->{ $valid{$a}->{distribution} }
             || $docs{$b} <=> $docs{$a}
             || length($a) <=> length($b)
