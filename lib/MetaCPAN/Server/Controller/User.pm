@@ -14,7 +14,7 @@ with 'MetaCPAN::Role::Fastly';
 __PACKAGE__->config(
     json_options => { relaxed => 1, allow_nonref => 1 },
     default      => 'text/html',
-    map => { 'text/html' => [qw(View JSON)] },
+    map          => { 'text/html' => [qw(View JSON)] },
 );
 
 sub auto : Private {

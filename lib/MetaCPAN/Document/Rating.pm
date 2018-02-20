@@ -39,7 +39,7 @@ has helpful => (
     required => 1,
     is       => 'ro',
     isa      => ArrayRef [ Dict [ user => Str, value => Bool ] ],
-    default => sub { [] },
+    default  => sub { [] },
 );
 
 sub _build_rating {

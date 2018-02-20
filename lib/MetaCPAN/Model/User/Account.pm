@@ -64,10 +64,10 @@ has access_token => (
     is       => 'ro',
     required => 1,
     isa      => ArrayRef [ Dict [ token => Str, client => Str ] ],
-    default => sub                { [] },
-    dynamic => 1,
-    traits  => ['Array'],
-    handles => { add_access_token => 'push' },
+    default  => sub { [] },
+    dynamic  => 1,
+    traits   => ['Array'],
+    handles  => { add_access_token => 'push' },
 );
 
 =head2 passed_captcha

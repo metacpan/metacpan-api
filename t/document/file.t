@@ -266,7 +266,7 @@ AS-specific methods for Number::Phone
 1;
 END
     my $file = new_file_doc(
-        module => [ { name => 'Number::Phone::NANP::ASS', version => 1.1 } ],
+        module  => [ { name => 'Number::Phone::NANP::ASS', version => 1.1 } ],
         content => \$content,
     );
     is( $file->sloc,                                   8, '8 lines of code' );

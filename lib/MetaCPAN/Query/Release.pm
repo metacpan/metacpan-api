@@ -470,7 +470,7 @@ sub all_by_author {
 
     my $body = {
         query  => { term => { author => uc($author) } },
-        sort   => [      { date      => 'desc' } ],
+        sort   => [ { date => 'desc' } ],
         fields => [qw(author distribution name status abstract date)],
         size   => $size,
         from   => ( $page - 1 ) * $size,
@@ -498,7 +498,7 @@ sub versions {
     my $body = {
         query  => { term => { distribution => $dist } },
         size   => 250,
-        sort   => [      { date            => 'desc' } ],
+        sort   => [ { date => 'desc' } ],
         fields => [qw( name date author version status maturity authorized )],
     };
 
@@ -603,7 +603,7 @@ sub requires {
     return {} unless $ret->{hits}{total};
 
     return +{
-        data => [ map { $_->{_source} } @{ $ret->{hits}{hits} } ],
+        data  => [ map { $_->{_source} } @{ $ret->{hits}{hits} } ],
         total => $ret->{hits}{total},
         took  => $ret->{took}
     };
@@ -732,7 +732,7 @@ sub _get_depended_releases {
     return unless $depended->{hits}{total};
 
     return +{
-        data => [ map { $_->{_source} } @{ $depended->{hits}{hits} } ],
+        data  => [ map { $_->{_source} } @{ $depended->{hits}{hits} } ],
         total => $depended->{hits}{total},
         took  => $depended->{took},
     };
