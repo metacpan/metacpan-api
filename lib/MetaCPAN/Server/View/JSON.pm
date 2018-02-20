@@ -3,14 +3,12 @@ package MetaCPAN::Server::View::JSON;
 use strict;
 use warnings;
 
-use Cpanel::JSON::XS;
+use Cpanel::JSON::XS ();
 use Moose;
 
 extends 'Catalyst::View::JSON';
 
-no warnings 'redefine';
-
-sub encode_json($) {
+sub encode_json {
     my ( $self, $c, $data ) = @_;
     my $encoder
         = $c->req->looks_like_browser
