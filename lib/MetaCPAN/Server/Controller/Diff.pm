@@ -67,11 +67,11 @@ sub _do_diff {
     my ( $self, $c, $source, $target, $include_raw ) = @_;
 
     my $diff = MetaCPAN::Server::Diff->new(
-        source => $c->model('Source')->path(@$source),
-        target => $c->model('Source')->path(@$target),
+        source => scalar $c->model('Source')->path(@$source),
+        target => scalar $c->model('Source')->path(@$target),
 
         # use same dir prefix as source and target
-        relative => $c->model('Source')->base_dir,
+        relative => scalar $c->model('Source')->base_dir,
         git      => $c->config->{git}
     );
 
