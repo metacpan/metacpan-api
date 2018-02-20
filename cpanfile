@@ -52,6 +52,7 @@ requires 'Email::Simple';
 requires 'Email::Valid', '1.198';
 requires 'Encode';
 requires 'Encoding::FixLatin';
+requires 'Encoding::FixLatin::XS';
 requires 'Exporter';
 requires 'ExtUtils::HasCompiler';
 requires 'Facebook::Graph';

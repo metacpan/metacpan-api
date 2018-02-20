@@ -2653,6 +2653,14 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 6.30
       Test::More 0.90
+  Encoding-FixLatin-XS-1.01
+    pathname: G/GR/GRANTM/Encoding-FixLatin-XS-1.01.tar.gz
+    provides:
+      Encoding::FixLatin::XS 1.01
+    requirements:
+      Encoding::FixLatin 1.03
+      ExtUtils::MakeMaker 6.30
+      Test::More 0.90
   Error-0.17025
     pathname: S/SH/SHLOMIF/Error-0.17025.tar.gz
     provides:
