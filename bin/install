@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# Use this script on Vagrant to arbitrarily upgrade modules without running
+# 'vagrant provision'
+cpanm --local-lib $HOME/carton/metacpan-api $@
+
+# Rewrite the cpanfile.snapshot
+./bin/run carton
