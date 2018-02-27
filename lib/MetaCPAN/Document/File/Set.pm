@@ -283,6 +283,7 @@ sub find_download_url {
             'module.version_numified' => {
                 mode          => 'max',
                 order         => 'desc',
+                nested_path   => 'module',
                 nested_filter => $module_f->{nested}{filter}
             }
         },
