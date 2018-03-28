@@ -6,8 +6,8 @@ use lib 't/lib';
     package    ## no critic (Package)
         Captcha::Mock;
 
-    sub check_answer {
-        return { is_valid => $_[4], error => 'error' };
+    sub check_answer_v2 {
+        return { is_valid => $_[3], error => 'error' };
     }
 
     sub new {

@@ -8,7 +8,7 @@ requires 'CPAN::DistnameInfo', '0.12';
 requires 'CPAN::Meta', '2.150005'; # Avoid issues with List::Util dep under carton install.
 requires 'CPAN::Meta::Requirements', '2.140';
 requires 'CPAN::Meta::YAML', '0.018';
-requires 'Captcha::reCAPTCHA', '0.94';
+requires 'Captcha::reCAPTCHA', '0.99';
 requires 'Catalyst', '5.90103';
 requires 'Catalyst::Action::RenderView';
 requires 'Catalyst::Controller';

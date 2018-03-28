@@ -26,10 +26,10 @@ sub index_POST {
     my ( $self, $c ) = @_;
     my $user    = $c->user->obj;
     my $captcha = $self->captcha_class->new;
-    my $result  = $captcha->check_answer(
-        $self->private_key,         $c->req->address,
-        $c->req->data->{challenge}, $c->req->data->{answer},
-    );
+    my $result
+        = $captcha->check_answer_v2( $self->private_key, $c->req->address,
+        $c->req->data->{answer},
+        );
 
     if ( $result->{is_valid} ) {
         $user->_set_passed_captcha( DateTime->now );
