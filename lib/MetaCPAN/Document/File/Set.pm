@@ -580,6 +580,12 @@ sub autocomplete_suggester {
         ( $_->{fields}{documentation}[0] => \%record );
     } @{ $data->{hits}{hits} };
 
+    # normalize 'deprecated' field values to boolean (1/0) values (because ES)
+    for my $v ( values %valid ) {
+        $v->{deprecated} = 1 if $v->{deprecated} eq 'true';
+        $v->{deprecated} = 0 if $v->{deprecated} eq 'false';
+    }
+
     # remove any exact match, it will be added later
     my $exact = delete $valid{$query};
 
