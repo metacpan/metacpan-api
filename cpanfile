@@ -176,6 +176,7 @@ requires 'strictures', 1;
 requires 'utf8';
 requires 'version', '0.9901';
 requires 'warnings';
+requires 'Term::ProgressBar';
 
 test_requires 'App::Prove';
 test_requires 'CPAN::Faker', '0.010';
