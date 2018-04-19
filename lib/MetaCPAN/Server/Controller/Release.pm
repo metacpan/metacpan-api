@@ -26,7 +26,6 @@ sub find : Path('') : Args(1) {
     $c->stash($file);
 }
 
-# TODO: remove /release/by_author_and_name once merged and used by WEB
 sub get : Path('') : Args(2) {
     my ( $self, $c, $author, $name ) = @_;
     $c->add_author_key($author);
@@ -58,12 +57,6 @@ sub recent : Path('recent') : Args(0) {
     my ( $self, $c ) = @_;
     my @params = @{ $c->req->params }{qw( page page_size type )};
     $c->stash_or_detach( $self->model($c)->recent(@params) );
-}
-
-sub by_author_and_name : Path('by_author_and_name') : Args(2) {
-    my ( $self, $c, $author, $name ) = @_;
-    $c->stash_or_detach(
-        $self->model($c)->by_author_and_name( $author, $name ) );
 }
 
 sub by_author : Path('by_author') : Args(1) {
