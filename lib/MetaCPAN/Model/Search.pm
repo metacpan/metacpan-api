@@ -431,9 +431,10 @@ sub build_query {
 sub run_query {
     my ( $self, $type, $es_query ) = @_;
     return $self->_run_query(
-        index => $self->index,
-        type  => $type,
-        body  => $es_query,
+        index       => $self->index,
+        type        => $type,
+        body        => $es_query,
+        search_type => 'dfs_query_then_fetch',
     );
 }
 
