@@ -4670,20 +4670,21 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  Mojo-Pg-4.03
-    pathname: S/SR/SRI/Mojo-Pg-4.03.tar.gz
+  Mojo-Pg-4.08
+    pathname: S/SR/SRI/Mojo-Pg-4.08.tar.gz
     provides:
-      Mojo::Pg 4.03
+      Mojo::Pg 4.08
       Mojo::Pg::Database undef
       Mojo::Pg::Migrations undef
       Mojo::Pg::PubSub undef
       Mojo::Pg::Results undef
       Mojo::Pg::Transaction undef
+      SQL::Abstract::Pg undef
     requirements:
       DBD::Pg 3.005001
       ExtUtils::MakeMaker 0
       Mojolicious 7.53
-      SQL::Abstract 1.81
+      SQL::Abstract 1.85
       perl 5.010001
   Mojo-SQLite-3.000
     pathname: D/DB/DBOOK/Mojo-SQLite-3.000.tar.gz
@@ -7501,10 +7502,10 @@ DISTRIBUTIONS
     requirements:
       Exporter 5.57
       perl 5.006
-  SQL-Abstract-1.84
-    pathname: I/IL/ILMARI/SQL-Abstract-1.84.tar.gz
+  SQL-Abstract-1.85
+    pathname: I/IL/ILMARI/SQL-Abstract-1.85.tar.gz
     provides:
-      SQL::Abstract 1.84
+      SQL::Abstract 1.85
       SQL::Abstract::Test undef
       SQL::Abstract::Tree undef
     requirements:
@@ -7517,6 +7518,7 @@ DISTRIBUTIONS
       Scalar::Util 0
       Sub::Quote 2.000001
       Text::Balanced 2.00
+      perl 5.006
   Safe-Isa-1.000008
     pathname: E/ET/ETHER/Safe-Isa-1.000008.tar.gz
     provides:
