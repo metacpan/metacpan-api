@@ -4397,13 +4397,13 @@ DISTRIBUTIONS
       Moose::Role 0
       MooseX::Fastly::Role 0.01
       Net::Fastly 1.05
-  Minion-8.0
-    pathname: S/SR/SRI/Minion-8.0.tar.gz
+  Minion-9.03
+    pathname: S/SR/SRI/Minion-9.03.tar.gz
     provides:
       LinkCheck undef
       LinkCheck::Controller::Links undef
       LinkCheck::Task::CheckLinks undef
-      Minion 8.0
+      Minion 9.03
       Minion::Backend undef
       Minion::Backend::Pg undef
       Minion::Command::minion undef
@@ -4411,7 +4411,7 @@ DISTRIBUTIONS
       Minion::Command::minion::worker undef
       Minion::Job undef
       Minion::Worker undef
-      Minion::_Guard 8.0
+      Minion::_Guard 9.03
       Mojolicious::Plugin::Minion undef
       Mojolicious::Plugin::Minion::Admin undef
     requirements:

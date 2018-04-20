@@ -93,7 +93,7 @@ requires 'Log::Log4perl::Appender::ScreenColoredLevels';
 requires 'MetaCPAN::Moose';
 requires 'MetaCPAN::Pod::XHTML';
 requires 'MetaCPAN::Role', '0.06';
-requires 'Minion', '>= 5.07';
+requires 'Minion', '>= 9.03';
 requires 'Minion::Backend::SQLite';
 requires 'Module::Load';
 requires 'Module::Metadata', '1.000022';
