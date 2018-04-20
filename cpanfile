@@ -100,7 +100,7 @@ requires 'Module::Metadata', '1.000022';
 requires 'Module::Pluggable';
 requires 'Module::Runtime';
 requires 'Moose', ' >= 2.1403';
-requires 'Mojo::Pg';
+requires 'Mojo::Pg', '>= 4.08';
 requires 'Moose::Role';
 requires 'Moose::Util';
 requires 'MooseX::Aliases';
