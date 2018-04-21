@@ -77,7 +77,7 @@ sub index_cover_data {
 
             $bulk->update(
                 {
-                    id  => $dist,
+                    id  => $release,
                     doc => {
                         distribution => $dist,
                         version      => $version,
