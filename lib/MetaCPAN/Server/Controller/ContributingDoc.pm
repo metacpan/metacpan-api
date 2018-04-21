@@ -25,4 +25,6 @@ sub get : Chained('index') : PathPart('') : Args(2) {
     $c->stash($file);
 }
 
+__PACKAGE__->meta->make_immutable;
+
 1;
