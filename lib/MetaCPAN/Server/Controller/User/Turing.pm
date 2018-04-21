@@ -27,9 +27,9 @@ sub index_POST {
     my $user    = $c->user->obj;
     my $captcha = $self->captcha_class->new;
     my $result
-        = $captcha->check_answer_v2( $self->private_key, $c->req->address,
+        = $captcha->check_answer_v2( $self->private_key,
         $c->req->data->{answer},
-        );
+        $c->req->address, );
 
     if ( $result->{is_valid} ) {
         $user->_set_passed_captcha( DateTime->now );
