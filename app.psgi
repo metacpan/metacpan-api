@@ -1,14 +1,14 @@
 use strict;
 use warnings;
 
-use File::Basename;
 use Config::ZOMG;
+use File::Basename;
+use File::Path ();
+use File::Spec;
 use Log::Log4perl;
 use Path::Tiny qw( path );
 use Plack::App::Directory ();
 use Plack::App::URLMap    ();
-use File::Spec;
-use File::Path ();
 
 my $root_dir;
 my $dev_mode;
