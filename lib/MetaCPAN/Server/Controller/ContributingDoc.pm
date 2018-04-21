@@ -3,9 +3,6 @@ package MetaCPAN::Server::Controller::ContributingDoc;
 use Moose;
 use namespace::autoclean;
 
-use Encode ();
-use Try::Tiny;
-
 BEGIN { extends 'MetaCPAN::Server::Controller' }
 
 with 'MetaCPAN::Server::Role::JSONP';
