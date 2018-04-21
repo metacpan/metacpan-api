@@ -471,9 +471,11 @@ sub all_by_author {
     my $body = {
         query  => { term => { author => uc($author) } },
         sort   => [ { date => 'desc' } ],
-        fields => [qw(author distribution name status abstract date)],
-        size   => $size,
-        from   => ( $page - 1 ) * $size,
+        fields => [
+            qw(author distribution name status abstract date download_url version authorized maturity)
+        ],
+        size => $size,
+        from => ( $page - 1 ) * $size,
     };
     my $ret = $self->es->search(
         index => $self->index_name,
@@ -499,7 +501,9 @@ sub versions {
         query  => { term => { distribution => $dist } },
         size   => 250,
         sort   => [ { date => 'desc' } ],
-        fields => [qw( name date author version status maturity authorized )],
+        fields => [
+            qw( name date author version status maturity authorized download_url)
+        ],
     };
 
     my $ret = $self->es->search(
