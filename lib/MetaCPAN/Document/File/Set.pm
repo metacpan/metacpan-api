@@ -667,5 +667,42 @@ sub find_changes_files {
     return $file->{_source};
 }
 
+sub find_contributing_files {
+    my ( $self, $author, $release ) = @_;
+
+    my @candidates = qw(
+        CONTRIBUTING CONTRIBUTING.md Contributing.pod Contributing
+        HACKING HACKING.md HACKING.pod Hacking.pod Hacking
+    );
+
+    my $file = $self->raw->filter(
+        {
+            and => [
+                { term => { release => $release } },
+                { term => { author  => $author } },
+                {
+                    or => [
+                        {
+                            and => [
+                                { term => { distribution => 'perl' } },
+                                { term => { name         => 'perlhack.pod' } }
+                            ]
+                        },
+                        {
+                            or => [
+                                map { { term => { name => $_ } } }
+                                    @candidates
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    )->size(1)->first;
+
+    return unless is_hashref($file);
+    return $file->{_source};
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
