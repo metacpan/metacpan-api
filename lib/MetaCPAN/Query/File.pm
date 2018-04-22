@@ -63,7 +63,6 @@ sub interesting_files {
                                 {
                                     bool => {
                                         must => [
-                                            { term => { level => 0 } },
                                             {
                                                 terms => {
                                                     name => [
@@ -74,6 +73,9 @@ sub interesting_files {
                                                             CHANGES
                                                             CONTRIBUTING
                                                             CONTRIBUTING.md
+                                                            CONTRIBUTING.pod
+                                                            Contributing.pm
+                                                            Contributing.pod
                                                             COPYING
                                                             COPYRIGHT
                                                             CREDITS
@@ -82,6 +84,12 @@ sub interesting_files {
                                                             Changes
                                                             Copying
                                                             FAQ
+                                                            HACKING
+                                                            HACKING.md
+                                                            HACKING.pod
+                                                            Hacking.pm
+                                                            Hacking.pod
+                                                            Hacking
                                                             INSTALL
                                                             INSTALL.md
                                                             LICENCE
