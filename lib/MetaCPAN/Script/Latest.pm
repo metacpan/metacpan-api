@@ -87,25 +87,30 @@ sub run {
         ? { terms => { "module.name" => \@filter } }
         : { exists => { field => "module.name" } };
 
-    my $scroll = $self->index->type('file')->filter(
-        {
-            bool => {
-                must => [
-                    {
-                        nested => {
-                            path   => 'module',
-                            filter => { bool => { must => \@module_filters } }
-                        }
-                    },
-                    { term => { 'maturity' => 'released' } },
-                ],
-                must_not => [
-                    { term => { status       => 'backpan' } },
-                    { term => { distribution => 'perl' } }
-                ]
-            }
+    # This query will be used to produce a (scrolled) list of
+    # 'file' type records where the module.name matches the
+    # distribution name and which are released &
+    # indexed (the 'leading' module)
+    my $query = {
+        bool => {
+            must => [
+                {
+                    nested => {
+                        path   => 'module',
+                        filter => { bool => { must => \@module_filters } }
+                    }
+                },
+                { term => { 'maturity' => 'released' } },
+            ],
+            must_not => [
+                { term => { status       => 'backpan' } },
+                { term => { distribution => 'perl' } }
+            ]
         }
-        )
+    };
+
+    my $scroll
+        = $self->index->type('file')->filter($query)
         ->source(
         [qw< author date distribution module.name release status >] )
         ->size(100)->raw->scroll;
@@ -122,13 +127,13 @@ sub run {
     while ( my $file = $scroll->next ) {
         $i++;
         log_debug { "$i of " . $scroll->total } unless ( $i % 1000 );
-        my $data = $file->{_source};
+        my $file_data = $file->{_source};
 
        # Convert module name into Parse::CPAN::Packages::Fast::Package object.
         my @modules = grep {defined}
             map {
             eval { $p->package( $_->{name} ) }
-            } @{ $data->{module} };
+            } @{ $file_data->{module} };
 
         push @modules_to_purge, @modules;
 
@@ -152,21 +157,24 @@ sub run {
             # (like /\.pm\.gz$/) so distvname might not be present.
             # I assume cpanid always will be.
             if (   defined( $dist->distvname )
-                && $dist->distvname eq $data->{release}
-                && $dist->cpanid eq $data->{author} )
+                && $dist->distvname eq $file_data->{release}
+                && $dist->cpanid eq $file_data->{author} )
             {
-                my $upgrade = $upgrade{ $data->{distribution} };
+                my $upgrade = $upgrade{ $file_data->{distribution} };
 
                 # If multiple versions of a dist appear in 02packages
                 # only mark the most recent upload as latest.
                 next
-                    if ( $upgrade
-                    && $self->compare_dates( $upgrade->{date}, $data->{date} )
+                    if (
+                    $upgrade
+                    && $self->compare_dates(
+                        $upgrade->{date}, $file_data->{date}
+                    )
                     );
-                $upgrade{ $data->{distribution} } = $data;
+                $upgrade{ $file_data->{distribution} } = $file_data;
             }
-            elsif ( $data->{status} eq 'latest' ) {
-                $downgrade{ $data->{release} } = $data;
+            elsif ( $file_data->{status} eq 'latest' ) {
+                $downgrade{ $file_data->{release} } = $file_data;
             }
         }
     }
@@ -176,16 +184,16 @@ sub run {
         type  => 'file'
     );
 
-    while ( my ( $dist, $data ) = each %upgrade ) {
+    while ( my ( $dist, $file_data ) = each %upgrade ) {
 
         # Don't reindex if already marked as latest.
         # This just means that it hasn't changed (query includes 'latest').
-        next if ( !$self->force and $data->{status} eq 'latest' );
+        next if ( !$self->force and $file_data->{status} eq 'latest' );
 
-        $self->reindex( $bulk, $data, 'latest' );
+        $self->reindex( $bulk, $file_data, 'latest' );
     }
 
-    while ( my ( $release, $data ) = each %downgrade ) {
+    while ( my ( $release, $file_data ) = each %downgrade ) {
 
         # Don't downgrade if this release version is also marked as latest.
         # This could happen if a module is moved to a new dist
@@ -193,11 +201,11 @@ sub run {
         # This could also include bug fixes in our indexer, PAUSE, etc.
         next
             if ( !$self->force
-            && $upgrade{ $data->{distribution} }
-            && $upgrade{ $data->{distribution} }->{release} eq
-            $data->{release} );
+            && $upgrade{ $file_data->{distribution} }
+            && $upgrade{ $file_data->{distribution} }->{release} eq
+            $file_data->{release} );
 
-        $self->reindex( $bulk, $data, 'cpan' );
+        $self->reindex( $bulk, $file_data, 'cpan' );
     }
     $bulk->flush;
     $self->index->refresh;
