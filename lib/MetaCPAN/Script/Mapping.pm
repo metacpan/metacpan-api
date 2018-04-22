@@ -198,11 +198,11 @@ sub create_index {
     my $dst_idx = $self->arg_create_index;
     $self->_check_index_exists( $dst_idx, NOT_EXPECTED );
 
-    my $patch_mapping    = decode_json $self->patch_mapping;
-    my @patch_types      = sort keys %{$patch_mapping};
-    my $dep              = $self->index->deployment_statement;
-    my $existing_mapping = delete $dep->{mappings};
-    my $mapping = $self->skip_existing_mapping ? +{} : $existing_mapping;
+    my $patch_mapping = decode_json $self->patch_mapping;
+    my @patch_types   = sort keys %{$patch_mapping};
+    my $dep           = $self->index->deployment_statement;
+    delete $dep->{mappings};
+    my $mapping = +{};
 
     # create the new index with the copied settings
     log_info {"Creating index: $dst_idx"};
@@ -381,37 +381,37 @@ sub deploy_mapping {
             author =>
                 decode_json(MetaCPAN::Script::Mapping::CPAN::Author::mapping),
             distribution =>
-                decode_json( MetaCPAN::Script::Mapping::CPAN::Distribution::mapping
+                decode_json(MetaCPAN::Script::Mapping::CPAN::Distribution::mapping
                 ),
             favorite =>
-                decode_json( MetaCPAN::Script::Mapping::CPAN::Favorite::mapping
+                decode_json(MetaCPAN::Script::Mapping::CPAN::Favorite::mapping
                 ),
             file =>
                 decode_json(MetaCPAN::Script::Mapping::CPAN::File::mapping),
             mirror =>
                 decode_json(MetaCPAN::Script::Mapping::CPAN::Mirror::mapping),
             permission =>
-                decode_json( MetaCPAN::Script::Mapping::CPAN::Permission::mapping
+                decode_json(MetaCPAN::Script::Mapping::CPAN::Permission::mapping
                 ),
             package =>
-                decode_json( MetaCPAN::Script::Mapping::CPAN::Package::mapping
+                decode_json(MetaCPAN::Script::Mapping::CPAN::Package::mapping
                 ),
             rating =>
                 decode_json(MetaCPAN::Script::Mapping::CPAN::Rating::mapping),
             release =>
-                decode_json( MetaCPAN::Script::Mapping::CPAN::Release::mapping
+                decode_json(MetaCPAN::Script::Mapping::CPAN::Release::mapping
                 ),
         },
 
         user => {
             account =>
-                decode_json( MetaCPAN::Script::Mapping::User::Account::mapping
+                decode_json(MetaCPAN::Script::Mapping::User::Account::mapping
                 ),
             identity =>
-                decode_json( MetaCPAN::Script::Mapping::User::Identity::mapping
+                decode_json(MetaCPAN::Script::Mapping::User::Identity::mapping
                 ),
             session =>
-                decode_json( MetaCPAN::Script::Mapping::User::Session::mapping
+                decode_json(MetaCPAN::Script::Mapping::User::Session::mapping
                 ),
         },
         contributor => {
