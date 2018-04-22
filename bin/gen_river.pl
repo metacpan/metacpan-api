@@ -25,18 +25,17 @@ sub import_release_data {
     my $progress = Term::ProgressBar->new($total);
     while ( my $release = $releases->next ) {
         next unless my $module=$release->{data}->{main_module};
-        my $tx=$ua->post($cypher_url,json=> { query=> "MERGE (n { name : \"$module\" }) RETURN n" });
-        die Data::Dumper::Dumper $tx->res->json unless $tx->res->is_success;
+        my $tx=$ua->post($cypher_url,json=> { query=> "MERGE (n:Module { name : \"$module\" }) RETURN n" });
+        die Data::Dumper::Dumper $tx->res->json unless $tx->res->is_success && $tx->res->code =~ /^2/;
         my $node_id=$tx->res->json->{data}->[0]->[0]->{metadata}->{id};
         for my $dep ( @{ $release->{data}->{dependency} } ) {
             my $dep_module=$dep->{module};
-            my $dep_tx=$ua->post($cypher_url,json=> { query=> "MERGE (n { name : \"$dep_module\" }) RETURN n" });
-            die Data::Dumper::Dumper $dep_tx->res->json unless $dep_tx->res->is_success;
-            my $dep_node_id=$dep_tx->res->json->{data}->[0]->[0]->{metadata}->{id};
-            my $dep_url=$cypher_url->clone->path('/db/data/node/'.$node_id.'/relationships');
-            my $dep_to_url=$cypher_url->clone->path('/db/data/node/'.$dep_node_id);
-            my $rel_tx=$ua->post($dep_url,json=> { to => $dep_to_url, type => 'depends_on'  });
-            die Data::Dumper::Dumper $rel_tx->res->json unless $rel_tx->res->is_success && $rel_tx->res->code == 201;
+            my $dep_tx=$ua->post($cypher_url,json=> { query=> "MERGE (n:Module { name : \"$dep_module\" }) RETURN n" });
+            die Data::Dumper::Dumper $dep_tx->res->json unless $dep_tx->res->is_success && $dep_tx->res->code =~ /^2/;
+            my $rel_tx=$ua->post($cypher_url,json=> {
+                query => "MATCH (rel:Module { name: \"$module\"}), (dep:Module { name: \"$dep_module\" })".
+                         "MERGE (rel)-[r:DEPENDS_ON]->(dep)  RETURN dep.name" });
+            die Data::Dumper::Dumper $rel_tx->res->json unless $rel_tx->res->is_success && $rel_tx->res->code =~ /^2/;
         }
         $progress->update( ++$i );
    }
