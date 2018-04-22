@@ -7,7 +7,7 @@ use lib 't/lib';
         Captcha::Mock;
 
     sub check_answer_v2 {
-        return { is_valid => $_[3], error => 'error' };
+        return { is_valid => $_[2], error => 'error' };
     }
 
     sub new {
