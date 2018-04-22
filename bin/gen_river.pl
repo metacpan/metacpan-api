@@ -37,8 +37,8 @@ sub import_release_data {
             my $dep_to_url=$cypher_url->clone->path('/db/data/node/'.$dep_node_id);
             my $rel_tx=$ua->post($dep_url,json=> { to => $dep_to_url, type => 'depends_on'  });
             die Data::Dumper::Dumper $rel_tx->res->json unless $rel_tx->res->is_success && $rel_tx->res->code == 201;
-            $progress->update( ++$i );
         }
+        $progress->update( ++$i );
    }
    $progress->update($total);
 }
