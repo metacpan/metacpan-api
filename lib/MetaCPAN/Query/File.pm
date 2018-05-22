@@ -55,49 +55,61 @@ sub interesting_files {
                     { term => { release   => $release } },
                     { term => { author    => $author } },
                     { term => { directory => \0 } },
-                    { not  => { prefix    => { 'path' => 'xt/' } } },
+                    { not  => { prefix    => { 'path' => 'corpus/' } } },
+                    { not  => { prefix    => { 'path' => 'fatlib/' } } },
+                    { not  => { prefix    => { 'path' => 'inc/' } } },
+                    { not  => { prefix    => { 'path' => 'local/' } } },
+                    { not  => { prefix    => { 'path' => 'perl5/' } } },
+                    { not  => { prefix    => { 'path' => 'share/' } } },
                     { not  => { prefix    => { 'path' => 't/' } } },
+                    { not  => { prefix    => { 'path' => 'xt/' } } },
                     {
                         bool => {
                             should => [
                                 {
                                     bool => {
                                         must => [
+                                            { term => { level => 0 } },
                                             {
                                                 terms => {
                                                     name => [
                                                         qw(
+                                                            alienfile
                                                             AUTHORS
                                                             Build.PL
                                                             CHANGELOG
-                                                            CHANGES
-                                                            CONTRIBUTING
-                                                            CONTRIBUTING.md
-                                                            CONTRIBUTING.pod
-                                                            Contributing.pm
-                                                            Contributing.pod
-                                                            COPYING
-                                                            COPYRIGHT
-                                                            CREDITS
                                                             ChangeLog
                                                             Changelog
+                                                            CHANGES
                                                             Changes
+                                                            CONTRIBUTING
+                                                            CONTRIBUTING.md
+                                                            Contributing
+                                                            COPYING
                                                             Copying
+                                                            COPYRIGHT
+                                                            cpanfile
+                                                            CREDITS
+                                                            DEVELOPMENT
+                                                            DEVELOPMENT.md
+                                                            Development
+                                                            Development.md
+                                                            dist.ini
                                                             FAQ
+                                                            FAQ.md
                                                             HACKING
                                                             HACKING.md
-                                                            HACKING.pod
-                                                            Hacking.pm
-                                                            Hacking.pod
                                                             Hacking
+                                                            Hacking.md
                                                             INSTALL
                                                             INSTALL.md
                                                             LICENCE
                                                             LICENSE
                                                             MANIFEST
+                                                            Makefile.PL
                                                             META.json
                                                             META.yml
-                                                            Makefile.PL
+                                                            minil.toml
                                                             NEWS
                                                             README
                                                             README.markdown
@@ -106,12 +118,47 @@ sub interesting_files {
                                                             README.mkdn
                                                             THANKS
                                                             TODO
+                                                            TODO.md
                                                             ToDo
+                                                            ToDo.md
                                                             Todo
-                                                            cpanfile
-                                                            alienfile
-                                                            dist.ini
-                                                            minil.toml
+                                                            Todo.md
+                                                            )
+                                                    ]
+                                                }
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    bool => {
+                                        must => [
+                                            {
+                                                terms => {
+                                                    name => [
+                                                        qw(
+                                                            CONTRIBUTING.pm
+                                                            CONTRIBUTING.pod
+                                                            Contributing.pm
+                                                            Contributing.pod
+                                                            ChangeLog.pm
+                                                            ChangeLog.pod
+                                                            Changelog.pm
+                                                            Changelog.pod
+                                                            CHANGES.pm
+                                                            CHANGES.pod
+                                                            Changes.pm
+                                                            Changes.pod
+                                                            HACKING.pm
+                                                            HACKING.pod
+                                                            Hacking.pm
+                                                            Hacking.pod
+                                                            TODO.pm
+                                                            TODO.pod
+                                                            ToDo.pm
+                                                            ToDo.pod
+                                                            Todo.pm
+                                                            Todo.pod
                                                             )
                                                     ]
                                                 }
