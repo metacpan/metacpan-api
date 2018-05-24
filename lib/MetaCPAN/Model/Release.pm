@@ -267,18 +267,41 @@ sub set_main_module {
 
 }
 
-sub get_changes_file {
-    my $self          = shift;
-    my @files         = @{ $_[0] };
-    my @changes_files = qw(
-        Changelog
-        ChangeLog
-        CHANGELOG
-        Changes
-        CHANGES
-        NEWS
+my @changes_files = qw(
+    CHANGELOG
+    ChangeLog
+    Changelog
+    CHANGES
+    Changes
+    NEWS
+);
+my @exclude_dirs = qw(
+    corpus
+    fatlib
+    inc
+    local
+    perl5
+    share
+    t
+    xt
+);
+
+# this should match the same set of files as MetaCPAN::Query::File->interesting_files
+my ($changes_match) = map qr/^(?:$_)$/, join '|',
+    ( map quotemeta, @changes_files ),
+    (
+          "(?:(?!"
+        . join( '|', map "$_/", @exclude_dirs )
+        . ").*/)?(?:"
+        . join(
+        '|', map quotemeta, map +( "$_.pm", "$_.pod" ), @changes_files
+        )
+        . ')'
     );
 
+sub get_changes_file {
+    my $self  = shift;
+    my @files = @{ $_[0] };
     if ( $files[0]->distribution eq 'perl' ) {
         foreach my $file (@files) {
             if ( $file->name eq 'perldelta.pod' ) {
@@ -286,8 +309,12 @@ sub get_changes_file {
             }
         }
     }
+
+    # prioritize files in the top level but otherwise alphabetical
+    @files = sort { $a->level <=> $b->level || $a->path cmp $b->path } @files;
+
     foreach my $file (@files) {
-        return $file->path if grep { $_ eq $file->path } @changes_files;
+        return $file->path if $file->path =~ $changes_match;
     }
 }
 
