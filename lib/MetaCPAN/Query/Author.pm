@@ -105,5 +105,38 @@ sub search {
     };
 }
 
+sub prefix_search {
+    my ( $self, $query, $opts ) = @_;
+    my $size = $opts->{size} // 500;
+    my $from = $opts->{from} // 0;
+
+    my $body = {
+        query => {
+            prefix => {
+                pauseid => $query,
+            },
+        },
+        size => $size,
+        from => $from,
+    };
+
+    my $ret = $self->es->search(
+        index => $self->index_name,
+        type  => 'author',
+        body  => $body,
+    );
+
+    my @authors = map {
+        single_valued_arrayref_to_scalar( $_->{_source} );
+        +{ %{ $_->{_source} }, id => $_->{_id} }
+    } @{ $ret->{hits}{hits} };
+
+    return +{
+        authors => \@authors,
+        took    => $ret->{took},
+        total   => $ret->{hits}{total},
+    };
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
