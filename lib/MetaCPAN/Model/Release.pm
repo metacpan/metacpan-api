@@ -294,7 +294,7 @@ my ($changes_match) = map qr/^(?:$_)$/, join '|',
         . join( '|', map "$_/", @exclude_dirs )
         . ").*/)?(?:"
         . join(
-        '|', map quotemeta, map +( "$_.pm", "$_.pod" ), @changes_files
+        '|', map quotemeta, map +( "$_.pm", "$_.pod", "$_.md" ), @changes_files
         )
         . ')'
     );

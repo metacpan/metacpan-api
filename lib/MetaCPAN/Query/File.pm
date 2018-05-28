@@ -82,6 +82,7 @@ sub interesting_files {
                                                             Changelog
                                                             CHANGES
                                                             Changes
+                                                            Changes.md
                                                             CONTRIBUTING
                                                             CONTRIBUTING.md
                                                             Contributing
