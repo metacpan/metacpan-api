@@ -78,10 +78,15 @@ sub interesting_files {
                                                             AUTHORS
                                                             Build.PL
                                                             CHANGELOG
+                                                            CHANGELOG.md
                                                             ChangeLog
+                                                            ChangeLog.md
                                                             Changelog
+                                                            Changelog.md
                                                             CHANGES
+                                                            CHANGES.md
                                                             Changes
+                                                            Changes.md
                                                             CONTRIBUTING
                                                             CONTRIBUTING.md
                                                             Contributing
@@ -111,6 +116,7 @@ sub interesting_files {
                                                             META.yml
                                                             minil.toml
                                                             NEWS
+                                                            NEWS.md
                                                             README
                                                             README.markdown
                                                             README.md

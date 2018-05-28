@@ -288,7 +288,7 @@ my @exclude_dirs = qw(
 
 # this should match the same set of files as MetaCPAN::Query::File->interesting_files
 my ($changes_match) = map qr/^(?:$_)$/, join '|',
-    ( map quotemeta, @changes_files ),
+    ( map quotemeta, @changes_files, map "$_.md", @changes_files ),
     (
           "(?:(?!"
         . join( '|', map "$_/", @exclude_dirs )
