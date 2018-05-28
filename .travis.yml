@@ -67,7 +67,7 @@ before_install:
   - cpanm -n Safe@2.35
 
 install:
-  - cpm install -L $PERL_CARTON_PATH --resolver $CPAN_RESOLVER --workers $(test-jobs) || (cat ~/.perl-cpm/build.log; false)
+  - AUTHOR_TESTING=0 cpm install -L $PERL_CARTON_PATH --resolver $CPAN_RESOLVER --workers $(test-jobs) || (cat ~/.perl-cpm/build.log; false)
 
 before_script:
   - "perl -i -pe 's/(servers :)9900/localhost:9200/' metacpan_server_testing.conf"
