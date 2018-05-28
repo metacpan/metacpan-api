@@ -61,4 +61,14 @@ sub by_users : Path('by_user') : Args(0) {
         $self->model($c)->by_user( $c->read_param('user') ) );
 }
 
+# /author/by_prefix/PAUSE_ID_PREFIX
+sub by_prefix : Path('by_prefix') : Args(1) {
+    my ( $self, $c, $prefix ) = @_;
+    my ($size) = $c->read_param('size')->[0] // 500;
+    my ($from) = $c->read_param('from')->[0] // 0;
+
+    $c->stash_or_detach( $self->model($c)
+            ->prefix_search( $prefix, { size => $size, from => $from } ) );
+}
+
 1;

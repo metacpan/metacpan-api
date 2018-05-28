@@ -11,7 +11,7 @@ has query_author => (
     isa     => 'MetaCPAN::Query::Author',
     lazy    => 1,
     builder => '_build_query_author',
-    handles => [qw< by_ids by_user search >],
+    handles => [qw< by_ids by_user search prefix_search >],
 );
 
 sub _build_query_author {
