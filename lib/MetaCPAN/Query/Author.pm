@@ -45,7 +45,7 @@ sub by_user {
         type  => 'author',
         body  => {
             query => { terms => { user => $users } },
-            size  => 100,
+            size  => 500,
         }
     );
     return {} unless $authors->{hits}{total};
