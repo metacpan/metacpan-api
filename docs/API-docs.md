@@ -1,12 +1,12 @@
 # API Docs: v1
 
-For an introduction to the MetaCPAN API which requires no previous knowledge of MetaCPAN or ElasticSearch, see [the slides for "Abusing MetaCPAN for Fun and Profit"](https://www.slideshare.net/oalders/abusing-metacpan2013) or [watch the actual talk](https://www.youtube.com/watch?v=J8ymBuFlHQg).
+For an introduction to the MetaCPAN API (Application Program Interface) which requires no previous knowledge of MetaCPAN or ElasticSearch, see [the slides for "Abusing MetaCPAN for Fun and Profit"](https://www.slideshare.net/oalders/abusing-metacpan2013) or [watch the actual talk](https://www.youtube.com/watch?v=J8ymBuFlHQg). This API lets you programmatically access MetaCPAN from your own applications.
 
 There is also [a repository of examples](https://github.com/metacpan/metacpan-examples) you can play with to get up and running in a hurry.  Rather than editing this wiki page, please send pull requests for the metacpan-examples repository.  If you'd rather edit the wiki, please do, but sending the code pull requests is probably the most helpful way to approach this.
 
 _All of these URLs can be tested using the [MetaCPAN Explorer](https://explorer.metacpan.org)_
 
-To learn more about the ElasticSearch query DSL check out Clinton Gormley's [Terms of Endearment - ES Query DSL Explained] (https://www.slideshare.net/clintongormley/terms-of-endearment-the-elasticsearch-query-dsl-explained) slides.
+To learn more about the ElasticSearch query DSL (Domain-Specific Language) check out Clinton Gormley's [Terms of Endearment - ES Query DSL Explained] (https://www.slideshare.net/clintongormley/terms-of-endearment-the-elasticsearch-query-dsl-explained) slides.
 
 The query syntax is explained on ElasticSearch's [reference page](https://www.elasticsearch.org/guide/reference/query-dsl/). You can also check out this getting started tutorial about Elasticsearch [reference page](https://joelabrahamsson.com/elasticsearch-101/).
 
