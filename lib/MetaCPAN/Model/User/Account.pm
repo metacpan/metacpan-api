@@ -146,5 +146,24 @@ sub get_identities {
     return grep { $_->name eq $identity } @{ $self->identity };
 }
 
+sub remove_identity {
+    my ( $self, $identity ) = @_;
+    my $ids = $self->identities;
+    my ($id) = grep { $_->{name} eq $identity } @$ids;
+    @$ids = grep { $_->{name} ne $identity } @$ids;
+
+    if ( $identity eq 'pause' ) {
+        my $profile = $self->index->model->index('cpan')->type('author')
+            ->get( $id->{key} );
+
+        if ( $profile && $profile->user eq $self->id ) {
+            $profile->_clear_user;
+            $profile->put;
+        }
+    }
+
+    return $id;
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
