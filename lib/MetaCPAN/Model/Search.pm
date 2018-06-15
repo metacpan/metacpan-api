@@ -126,128 +126,70 @@ sub _search_expanded {
 sub _search_collapsed {
     my ( $self, $search_term, $from, $page_size ) = @_;
 
-    my $total;
-    my @distributions;
-    my $es_results;
+    my $total_size = $from + $page_size;
 
-    my $run  = 1;
-    my $hits = 0;
-    my $took = 0;
+    my $es_query_opts = {
+        size   => 0,
+        fields => [
+            qw(
+                )
+        ],
+    };
 
-    do {
-        # We need to scan enough modules to build up a sufficient number of
-        # distributions to fill the results to the number requested
-        my $es_query_opts = {
-            size => $RESULTS_PER_RUN,
-            from => ( $run - 1 ) * $RESULTS_PER_RUN,
-        };
+    my $es_query = $self->build_query( $search_term, $es_query_opts );
+    my $fields   = delete $es_query->{fields};
+    my $source   = delete $es_query->{_source};
 
-        if ( $run == 1 ) {
+    $es_query->{aggregations} = {
+        by_dist => {
+            terms => {
+                size  => $total_size,
+                field => 'distribution',
+                order => {
+                    max_score => 'desc',
+                },
+            },
+            aggregations => {
+                top_modules => {
+                    top_hits => {
+                        fields  => $fields,
+                        _source => $source,
+                        size    => 500,
+                    },
+                },
+                max_score => {
+                    max => {
+                        lang   => "expression",
+                        script => "_score",
+                    },
+                },
+            },
+        },
+        total_dists => {
+            cardinality => {
+                field => 'distribution',
+            },
+        },
+    };
 
-          # On the first request also fetch the number of total distributions
-          # that match the query so that can be reported to the user. There is
-          # no need to do it on each iteration though, once is enough.
+    my $es_results = $self->run_query( file => $es_query );
 
-            $es_query_opts->{aggregations}
-                = {
-                count => { terms => { size => 999, field => 'distribution' } }
-                };
-        }
-
-        my $es_query = $self->build_query( $search_term, $es_query_opts );
-        $es_results = $self->run_query( file => $es_query );
-        $took += $es_results->{took} || 0;
-
-        if ( $run == 1 ) {
-            $total
-                = @{ $es_results->{aggregations}->{count}->{buckets} || [] };
-        }
-
-        $hits = @{ $es_results->{hits}->{hits} || [] };
-
-        # Flatten results down to unique dists
-        @distributions = uniq(
-            @distributions,
-            map {
-                single_valued_arrayref_to_scalar( $_->{fields} );
-                $_->{fields}->{distribution}
-            } @{ $es_results->{hits}->{hits} }
-        );
-
-        # Keep track
-        $run++;
-        } while ( @distributions < $page_size + $from
-        && $es_results->{hits}->{total}
-        && $es_results->{hits}->{total}
-        > $hits + ( $run - 2 ) * $RESULTS_PER_RUN );
-
-    # Avoid "splice() offset past end of array" warning.
-    @distributions
-        = $from > @distributions
-        ? ()
-        : splice( @distributions, $from, $page_size );
-
-    # Everything else will fail (slowly and quietly) without distributions.
-    return {} unless @distributions;
-
-    # Now that we know which distributions are going to be displayed on the
-    # results page, fetch the details about those distributions
-    my $es_query = $self->build_query(
-        $search_term,
-        {
-# we will probably never hit that limit, since we are searching in $page_size=20 distributions max
-            size  => 5000,
-            query => {
-                filtered => {
-                    filter => {
-                        and => [
-                            {
-                                or => [
-                                    map {
-                                        { term => { 'distribution' => $_ } }
-                                    } @distributions
-                                ]
-                            }
-                        ]
-                    }
-                }
-            }
-        }
-    );
-    my $es_dist_results = $self->run_query( file => $es_query );
-
-    my $results = $self->_extract_results($es_dist_results);
-    $results = $self->_collapse_results($results);
-
-    $took += $es_dist_results->{took};
-
-    return {
-        results   => $results,
-        total     => $total,
-        took      => $took,
+    my $output = {
+        results   => [],
+        total     => $es_results->{aggregations}{total_dists}{value},
+        took      => $es_results->{took},
         collapsed => \1,
     };
 
-}
+    my @dists = @{ $es_results->{aggregations}{by_dist}{buckets} }
+        [ $from .. $total_size - 1 ];
 
-sub _collapse_results {
-    my ( $self, $results ) = @_;
-    my %collapsed;
-    foreach my $result (@$results) {
-        my $distribution = $result->{distribution};
-        $collapsed{$distribution}
-            = { position => scalar keys %collapsed, results => [] }
-            unless ( $collapsed{$distribution} );
-        push( @{ $collapsed{$distribution}->{results} }, $result );
-    }
+    @{ $output->{results} } = map {
+        my $dist = $_;
+        $self->_extract_results( $_->{top_modules} );
+    } @dists;
 
-    # We return array ref because the results have matching modules
-    # grouped by distribution
-    return [
-        map      { $collapsed{$_}->{results} }
-            sort { $collapsed{$a}->{position} <=> $collapsed{$b}->{position} }
-            keys %collapsed
-    ];
+    return $output;
 }
 
 sub build_query {
