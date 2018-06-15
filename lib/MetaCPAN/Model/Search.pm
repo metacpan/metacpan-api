@@ -7,7 +7,7 @@ use Log::Contextual qw( :log :dlog );
 use MooseX::StrictConstructor;
 
 use Hash::Merge qw( merge );
-use List::Util qw( sum uniq );
+use List::Util qw( min uniq );
 use MetaCPAN::Types qw( Object Str );
 use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
 
@@ -181,8 +181,10 @@ sub _search_collapsed {
         collapsed => \1,
     };
 
+    my $last = min( $total_size - 1,
+        $#{ $es_results->{aggregations}{by_dist}{buckets} } );
     my @dists = @{ $es_results->{aggregations}{by_dist}{buckets} }
-        [ $from .. $total_size - 1 ];
+        [ $from .. $last ];
 
     @{ $output->{results} } = map {
         my $dist = $_;
