@@ -109,7 +109,6 @@ sub _search_expanded {
         }
     );
 
-    #return $es_query;
     my $es_results = $self->run_query( file => $es_query );
 
     my @distributions = uniq
@@ -156,9 +155,8 @@ sub _search_collapsed {
         # We need to scan enough modules to build up a sufficient number of
         # distributions to fill the results to the number requested
         my $es_query_opts = {
-            size   => $RESULTS_PER_RUN,
-            from   => ( $run - 1 ) * $RESULTS_PER_RUN,
-            fields => [qw(distribution)],
+            size => $RESULTS_PER_RUN,
+            from => ( $run - 1 ) * $RESULTS_PER_RUN,
         };
 
         if ( $run == 1 ) {
@@ -401,21 +399,23 @@ sub build_query {
                     }
                 }
             },
-            _source => "module",
-            fields  => [
+            _source => [
+                "module",
+            ],
+            fields => [
                 qw(
-                    documentation
-                    author
                     abstract.analyzed
-                    release
-                    path
-                    status
-                    indexed
+                    author
                     authorized
-                    distribution
                     date
+                    distribution
+                    documentation
                     id
+                    indexed
+                    path
                     pod_lines
+                    release
+                    status
                     )
             ],
         }
@@ -531,10 +531,10 @@ sub _extract_results_add_favs {
             my $res = $_;
             single_valued_arrayref_to_scalar( $res->{fields} );
             +{
+                abstract => delete $res->{fields}->{'abstract.analyzed'},
                 %{ $res->{fields} },
                 %{ $res->{_source} },
-                abstract => delete $res->{fields}->{'abstract.analyzed'},
-                score    => $res->{_score},
+                score => $res->{_score},
                 favorites =>
                     $favorites->{favorites}{ $res->{fields}->{distribution} },
                 }
