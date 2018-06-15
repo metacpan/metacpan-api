@@ -72,7 +72,9 @@ sub search_for_first_result {
 =cut
 
 sub search_web {
-    my ( $self, $search_term, $from, $page_size, $collapsed ) = @_;
+    my ( $self, $search_term, $from, $page_size, $collapsed,
+        $max_collapsed_hits )
+        = @_;
     $page_size //= 20;
     $from      //= 0;
 
@@ -90,7 +92,8 @@ sub search_web {
 
     my $results
         = $collapsed // $search_term !~ /(distribution|module\.name\S*):/
-        ? $self->_search_collapsed( $search_term, $from, $page_size )
+        ? $self->_search_collapsed( $search_term, $from, $page_size,
+        $max_collapsed_hits )
         : $self->_search_expanded( $search_term, $from, $page_size );
 
     return $results;
@@ -115,8 +118,18 @@ sub _search_expanded {
     # Extract results from es
     my $results = $self->_extract_results($es_results);
 
+    $results = [
+        map {
+            {
+                hits         => [$_],
+                distribution => $_->{distribution},
+                total        => 1,
+            }
+        } @$results
+    ];
+
     my $return = {
-        results   => [ map { [$_] } @$results ],
+        results   => $results,
         total     => $es_results->{hits}->{total},
         took      => $es_results->{took},
         collapsed => Cpanel::JSON::XS::false(),
@@ -125,7 +138,9 @@ sub _search_expanded {
 }
 
 sub _search_collapsed {
-    my ( $self, $search_term, $from, $page_size ) = @_;
+    my ( $self, $search_term, $from, $page_size, $max_collapsed_hits ) = @_;
+
+    $max_collapsed_hits ||= 5;
 
     my $total_size = $from + $page_size;
 
@@ -151,11 +166,11 @@ sub _search_collapsed {
                 },
             },
             aggregations => {
-                top_modules => {
+                top_files => {
                     top_hits => {
                         fields  => $fields,
                         _source => $source,
-                        size    => 500,
+                        size    => $max_collapsed_hits,
                     },
                 },
                 max_score => {
@@ -188,8 +203,11 @@ sub _search_collapsed {
         [ $from .. $last ];
 
     @{ $output->{results} } = map {
-        my $dist = $_;
-        $self->_extract_results( $_->{top_modules} );
+        +{
+            hits         => $self->_extract_results( $_->{top_files} ),
+            distribution => $_->{key},
+            total        => $_->{doc_count},
+        };
     } @dists;
 
     return $output;
