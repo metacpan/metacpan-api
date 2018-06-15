@@ -111,18 +111,11 @@ sub _search_expanded {
 
     my $es_results = $self->run_query( file => $es_query );
 
-    my @distributions = uniq
-        map {
-        single_valued_arrayref_to_scalar( $_->{fields} );
-        $_->{fields}->{distribution}
-        } @{ $es_results->{hits}->{hits} };
-
     # Everything after this will fail (slowly and silently) without results.
-    return {} unless @distributions;
+    return {} unless @{ $es_results->{hits}{hits} };
 
-    # Lookup favs and extract results from es (adding in favs)
-    my $favorites = $self->search_favorites(@distributions);
-    my $results = $self->_extract_results_add_favs( $es_results, $favorites );
+    # Extract results from es
+    my $results = $self->_extract_results($es_results);
 
     # Add descriptions
     my @ids = map { $_->{id} } @{$results};
@@ -132,9 +125,9 @@ sub _search_expanded {
         @{$results};
 
     my $return = {
-        results => [ map { [$_] } @$results ],
-        total   => $es_results->{hits}->{total},
-        took => sum( grep {defined} $es_results->{took}, $favorites->{took} ),
+        results   => [ map { [$_] } @$results ],
+        total     => $es_results->{hits}->{total},
+        took      => $es_results->{took},
         collapsed => \0,
     };
     return $return;
@@ -233,10 +226,7 @@ sub _search_collapsed {
     );
     my $es_dist_results = $self->run_query( file => $es_query );
 
-    # Look up favs and add to extracted results
-    my $favorites = $self->search_favorites(@distributions);
-    my $results
-        = $self->_extract_results_add_favs( $es_dist_results, $favorites );
+    my $results = $self->_extract_results($es_dist_results);
     $results = $self->_collapse_results($results);
 
     # Add descriptions, but only after collapsed as is slow
@@ -247,7 +237,7 @@ sub _search_collapsed {
 
     # Calculate took from sum of all ES searches
     $took += sum( grep {defined} $es_dist_results->{took},
-        $favorites->{took}, $descriptions->{took} );
+        $descriptions->{took} );
 
     return {
         results   => $results,
@@ -408,6 +398,7 @@ sub build_query {
                     author
                     authorized
                     date
+                    dist_fav_count
                     distribution
                     documentation
                     id
@@ -473,70 +464,19 @@ sub search_descriptions {
     return $results;
 }
 
-sub _build_search_favorites_query {
-    my ( $self, @distributions ) = @_;
-
-    my $es_query = {
-        size  => 0,
-        query => {
-            filtered => {
-                query  => { match_all => {} },
-                filter => {
-                    or => [
-                        map { { term => { 'distribution' => $_ } } }
-                            @distributions
-                    ]
-                }
-            }
-        },
-        aggregations => {
-            favorites => {
-                terms => {
-                    field => 'distribution',
-                    size  => scalar @distributions,
-                },
-            },
-        }
-    };
-
-    return $es_query;
-}
-
-sub search_favorites {
-    my ( $self, @distributions ) = @_;
-    @distributions = uniq @distributions;
-
-    # If there are no distributions this will build a query with an empty
-    # filter and ES will return a parser error... so just skip it.
-    return {} unless @distributions;
-
-    my $es_query = $self->_build_search_favorites_query(@distributions);
-    my $es_results = $self->run_query( favorite => $es_query );
-
-    my $results = {
-        took      => $es_results->{took},
-        favorites => {
-            map { $_->{key} => $_->{doc_count} }
-                @{ $es_results->{aggregations}->{favorites}->{buckets} }
-        },
-    };
-    return $results;
-}
-
-sub _extract_results_add_favs {
-    my ( $self, $es_results, $favorites ) = @_;
+sub _extract_results {
+    my ( $self, $es_results ) = @_;
 
     return [
         map {
             my $res = $_;
             single_valued_arrayref_to_scalar( $res->{fields} );
             +{
-                abstract => delete $res->{fields}->{'abstract.analyzed'},
+                abstract  => delete $res->{fields}->{'abstract.analyzed'},
+                favorites => delete $res->{fields}->{dist_fav_count},
                 %{ $res->{fields} },
                 %{ $res->{_source} },
                 score => $res->{_score},
-                favorites =>
-                    $favorites->{favorites}{ $res->{fields}->{distribution} },
                 }
         } @{ $es_results->{hits}{hits} }
     ];
