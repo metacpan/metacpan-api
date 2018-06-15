@@ -111,18 +111,8 @@ sub _search_expanded {
 
     my $es_results = $self->run_query( file => $es_query );
 
-    # Everything after this will fail (slowly and silently) without results.
-    return {} unless @{ $es_results->{hits}{hits} };
-
     # Extract results from es
     my $results = $self->_extract_results($es_results);
-
-    # Add descriptions
-    my @ids = map { $_->{id} } @{$results};
-    my $descriptions = $self->search_descriptions(@ids);
-
-    map { $_->{description} = $descriptions->{results}->{ $_->{id} } }
-        @{$results};
 
     my $return = {
         results   => [ map { [$_] } @$results ],
@@ -229,15 +219,7 @@ sub _search_collapsed {
     my $results = $self->_extract_results($es_dist_results);
     $results = $self->_collapse_results($results);
 
-    # Add descriptions, but only after collapsed as is slow
-    my @ids = map { $_->[0]{id} } @$results;
-    my $descriptions = $self->search_descriptions(@ids);
-    map { $_->[0]{description} = $descriptions->{results}{ $_->[0]{id} } }
-        @{$results};
-
-    # Calculate took from sum of all ES searches
-    $took += sum( grep {defined} $es_dist_results->{took},
-        $descriptions->{took} );
+    $took += $es_dist_results->{took};
 
     return {
         results   => $results,
@@ -398,6 +380,7 @@ sub build_query {
                     author
                     authorized
                     date
+                    description
                     dist_fav_count
                     distribution
                     documentation
@@ -427,41 +410,6 @@ sub run_query {
         body        => $es_query,
         search_type => 'dfs_query_then_fetch',
     );
-}
-
-sub _build_search_descriptions_query {
-    my ( $self, @ids ) = @_;
-    my $es_query = {
-        query => {
-            filtered => {
-                query => { match_all => {} },
-                filter => { or => [ map { { term => { id => $_ } } } @ids ] }
-            }
-        },
-        fields => [qw(description id)],
-        size   => scalar @ids,
-    };
-    return $es_query;
-}
-
-sub search_descriptions {
-    my ( $self, @ids ) = @_;
-    return {
-        descriptions => {},
-        took         => 0,
-    } unless @ids;
-
-    my $es_query   = $self->_build_search_descriptions_query(@ids);
-    my $es_results = $self->run_query( file => $es_query );
-    my $results    = {
-        results => {
-            map { $_->{id} => $_->{description} }
-                map { single_valued_arrayref_to_scalar( $_->{fields} ) }
-                @{ $es_results->{hits}->{hits} }
-        },
-        took => $es_results->{took}
-    };
-    return $results;
 }
 
 sub _extract_results {
