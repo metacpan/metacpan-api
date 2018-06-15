@@ -109,33 +109,15 @@ sub _search_expanded {
         }
     );
 
-    #return $es_query;
     my $es_results = $self->run_query( file => $es_query );
 
-    my @distributions = uniq
-        map {
-        single_valued_arrayref_to_scalar( $_->{fields} );
-        $_->{fields}->{distribution}
-        } @{ $es_results->{hits}->{hits} };
-
-    # Everything after this will fail (slowly and silently) without results.
-    return {} unless @distributions;
-
-    # Lookup favs and extract results from es (adding in favs)
-    my $favorites = $self->search_favorites(@distributions);
-    my $results = $self->_extract_results_add_favs( $es_results, $favorites );
-
-    # Add descriptions
-    my @ids = map { $_->{id} } @{$results};
-    my $descriptions = $self->search_descriptions(@ids);
-
-    map { $_->{description} = $descriptions->{results}->{ $_->{id} } }
-        @{$results};
+    # Extract results from es
+    my $results = $self->_extract_results($es_results);
 
     my $return = {
-        results => [ map { [$_] } @$results ],
-        total   => $es_results->{hits}->{total},
-        took => sum( grep {defined} $es_results->{took}, $favorites->{took} ),
+        results   => [ map { [$_] } @$results ],
+        total     => $es_results->{hits}->{total},
+        took      => $es_results->{took},
         collapsed => \0,
     };
     return $return;
@@ -144,140 +126,70 @@ sub _search_expanded {
 sub _search_collapsed {
     my ( $self, $search_term, $from, $page_size ) = @_;
 
-    my $total;
-    my @distributions;
-    my $es_results;
+    my $total_size = $from + $page_size;
 
-    my $run  = 1;
-    my $hits = 0;
-    my $took = 0;
+    my $es_query_opts = {
+        size   => 0,
+        fields => [
+            qw(
+                )
+        ],
+    };
 
-    do {
-        # We need to scan enough modules to build up a sufficient number of
-        # distributions to fill the results to the number requested
-        my $es_query_opts = {
-            size   => $RESULTS_PER_RUN,
-            from   => ( $run - 1 ) * $RESULTS_PER_RUN,
-            fields => [qw(distribution)],
-        };
+    my $es_query = $self->build_query( $search_term, $es_query_opts );
+    my $fields   = delete $es_query->{fields};
+    my $source   = delete $es_query->{_source};
 
-        if ( $run == 1 ) {
+    $es_query->{aggregations} = {
+        by_dist => {
+            terms => {
+                size  => $total_size,
+                field => 'distribution',
+                order => {
+                    max_score => 'desc',
+                },
+            },
+            aggregations => {
+                top_modules => {
+                    top_hits => {
+                        fields  => $fields,
+                        _source => $source,
+                        size    => 500,
+                    },
+                },
+                max_score => {
+                    max => {
+                        lang   => "expression",
+                        script => "_score",
+                    },
+                },
+            },
+        },
+        total_dists => {
+            cardinality => {
+                field => 'distribution',
+            },
+        },
+    };
 
-          # On the first request also fetch the number of total distributions
-          # that match the query so that can be reported to the user. There is
-          # no need to do it on each iteration though, once is enough.
+    my $es_results = $self->run_query( file => $es_query );
 
-            $es_query_opts->{aggregations}
-                = {
-                count => { terms => { size => 999, field => 'distribution' } }
-                };
-        }
-
-        my $es_query = $self->build_query( $search_term, $es_query_opts );
-        $es_results = $self->run_query( file => $es_query );
-        $took += $es_results->{took} || 0;
-
-        if ( $run == 1 ) {
-            $total
-                = @{ $es_results->{aggregations}->{count}->{buckets} || [] };
-        }
-
-        $hits = @{ $es_results->{hits}->{hits} || [] };
-
-        # Flatten results down to unique dists
-        @distributions = uniq(
-            @distributions,
-            map {
-                single_valued_arrayref_to_scalar( $_->{fields} );
-                $_->{fields}->{distribution}
-            } @{ $es_results->{hits}->{hits} }
-        );
-
-        # Keep track
-        $run++;
-        } while ( @distributions < $page_size + $from
-        && $es_results->{hits}->{total}
-        && $es_results->{hits}->{total}
-        > $hits + ( $run - 2 ) * $RESULTS_PER_RUN );
-
-    # Avoid "splice() offset past end of array" warning.
-    @distributions
-        = $from > @distributions
-        ? ()
-        : splice( @distributions, $from, $page_size );
-
-    # Everything else will fail (slowly and quietly) without distributions.
-    return {} unless @distributions;
-
-    # Now that we know which distributions are going to be displayed on the
-    # results page, fetch the details about those distributions
-    my $es_query = $self->build_query(
-        $search_term,
-        {
-# we will probably never hit that limit, since we are searching in $page_size=20 distributions max
-            size  => 5000,
-            query => {
-                filtered => {
-                    filter => {
-                        and => [
-                            {
-                                or => [
-                                    map {
-                                        { term => { 'distribution' => $_ } }
-                                    } @distributions
-                                ]
-                            }
-                        ]
-                    }
-                }
-            }
-        }
-    );
-    my $es_dist_results = $self->run_query( file => $es_query );
-
-    # Look up favs and add to extracted results
-    my $favorites = $self->search_favorites(@distributions);
-    my $results
-        = $self->_extract_results_add_favs( $es_dist_results, $favorites );
-    $results = $self->_collapse_results($results);
-
-    # Add descriptions, but only after collapsed as is slow
-    my @ids = map { $_->[0]{id} } @$results;
-    my $descriptions = $self->search_descriptions(@ids);
-    map { $_->[0]{description} = $descriptions->{results}{ $_->[0]{id} } }
-        @{$results};
-
-    # Calculate took from sum of all ES searches
-    $took += sum( grep {defined} $es_dist_results->{took},
-        $favorites->{took}, $descriptions->{took} );
-
-    return {
-        results   => $results,
-        total     => $total,
-        took      => $took,
+    my $output = {
+        results   => [],
+        total     => $es_results->{aggregations}{total_dists}{value},
+        took      => $es_results->{took},
         collapsed => \1,
     };
 
-}
+    my @dists = @{ $es_results->{aggregations}{by_dist}{buckets} }
+        [ $from .. $total_size - 1 ];
 
-sub _collapse_results {
-    my ( $self, $results ) = @_;
-    my %collapsed;
-    foreach my $result (@$results) {
-        my $distribution = $result->{distribution};
-        $collapsed{$distribution}
-            = { position => scalar keys %collapsed, results => [] }
-            unless ( $collapsed{$distribution} );
-        push( @{ $collapsed{$distribution}->{results} }, $result );
-    }
+    @{ $output->{results} } = map {
+        my $dist = $_;
+        $self->_extract_results( $_->{top_modules} );
+    } @dists;
 
-    # We return array ref because the results have matching modules
-    # grouped by distribution
-    return [
-        map      { $collapsed{$_}->{results} }
-            sort { $collapsed{$a}->{position} <=> $collapsed{$b}->{position} }
-            keys %collapsed
-    ];
+    return $output;
 }
 
 sub build_query {
@@ -401,21 +313,25 @@ sub build_query {
                     }
                 }
             },
-            _source => "module",
-            fields  => [
+            _source => [
+                "module",
+            ],
+            fields => [
                 qw(
-                    documentation
-                    author
                     abstract.analyzed
-                    release
-                    path
-                    status
-                    indexed
+                    author
                     authorized
-                    distribution
                     date
+                    description
+                    dist_fav_count
+                    distribution
+                    documentation
                     id
+                    indexed
+                    path
                     pod_lines
+                    release
+                    status
                     )
             ],
         }
@@ -438,105 +354,19 @@ sub run_query {
     );
 }
 
-sub _build_search_descriptions_query {
-    my ( $self, @ids ) = @_;
-    my $es_query = {
-        query => {
-            filtered => {
-                query => { match_all => {} },
-                filter => { or => [ map { { term => { id => $_ } } } @ids ] }
-            }
-        },
-        fields => [qw(description id)],
-        size   => scalar @ids,
-    };
-    return $es_query;
-}
-
-sub search_descriptions {
-    my ( $self, @ids ) = @_;
-    return {
-        descriptions => {},
-        took         => 0,
-    } unless @ids;
-
-    my $es_query   = $self->_build_search_descriptions_query(@ids);
-    my $es_results = $self->run_query( file => $es_query );
-    my $results    = {
-        results => {
-            map { $_->{id} => $_->{description} }
-                map { single_valued_arrayref_to_scalar( $_->{fields} ) }
-                @{ $es_results->{hits}->{hits} }
-        },
-        took => $es_results->{took}
-    };
-    return $results;
-}
-
-sub _build_search_favorites_query {
-    my ( $self, @distributions ) = @_;
-
-    my $es_query = {
-        size  => 0,
-        query => {
-            filtered => {
-                query  => { match_all => {} },
-                filter => {
-                    or => [
-                        map { { term => { 'distribution' => $_ } } }
-                            @distributions
-                    ]
-                }
-            }
-        },
-        aggregations => {
-            favorites => {
-                terms => {
-                    field => 'distribution',
-                    size  => scalar @distributions,
-                },
-            },
-        }
-    };
-
-    return $es_query;
-}
-
-sub search_favorites {
-    my ( $self, @distributions ) = @_;
-    @distributions = uniq @distributions;
-
-    # If there are no distributions this will build a query with an empty
-    # filter and ES will return a parser error... so just skip it.
-    return {} unless @distributions;
-
-    my $es_query = $self->_build_search_favorites_query(@distributions);
-    my $es_results = $self->run_query( favorite => $es_query );
-
-    my $results = {
-        took      => $es_results->{took},
-        favorites => {
-            map { $_->{key} => $_->{doc_count} }
-                @{ $es_results->{aggregations}->{favorites}->{buckets} }
-        },
-    };
-    return $results;
-}
-
-sub _extract_results_add_favs {
-    my ( $self, $es_results, $favorites ) = @_;
+sub _extract_results {
+    my ( $self, $es_results ) = @_;
 
     return [
         map {
             my $res = $_;
             single_valued_arrayref_to_scalar( $res->{fields} );
             +{
+                abstract  => delete $res->{fields}->{'abstract.analyzed'},
+                favorites => delete $res->{fields}->{dist_fav_count},
                 %{ $res->{fields} },
                 %{ $res->{_source} },
-                abstract => delete $res->{fields}->{'abstract.analyzed'},
-                score    => $res->{_score},
-                favorites =>
-                    $favorites->{favorites}{ $res->{fields}->{distribution} },
+                score => $res->{_score},
                 }
         } @{ $es_results->{hits}{hits} }
     ];
