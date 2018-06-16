@@ -5,6 +5,7 @@ use MetaCPAN::Moose;
 use Const::Fast qw( const );
 use Log::Contextual qw( :log :dlog );
 use MooseX::StrictConstructor;
+use Cpanel::JSON::XS ();
 
 use Hash::Merge qw( merge );
 use List::Util qw( min uniq );
@@ -118,7 +119,7 @@ sub _search_expanded {
         results   => [ map { [$_] } @$results ],
         total     => $es_results->{hits}->{total},
         took      => $es_results->{took},
-        collapsed => \0,
+        collapsed => Cpanel::JSON::XS::false(),
     };
     return $return;
 }
@@ -178,7 +179,7 @@ sub _search_collapsed {
         results   => [],
         total     => $es_results->{aggregations}{total_dists}{value},
         took      => $es_results->{took},
-        collapsed => \1,
+        collapsed => Cpanel::JSON::XS::true(),
     };
 
     my $last = min( $total_size - 1,
