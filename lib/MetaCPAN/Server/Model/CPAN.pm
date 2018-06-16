@@ -22,13 +22,13 @@ has index => (
     default => 'cpan',
 );
 
-has servers => (
+has es_config => (
     is      => 'ro',
     default => ':9200',
 );
 
 sub _build_esx_model {
-    MetaCPAN::Model->new( es => shift->servers );
+    MetaCPAN::Model->new( es => shift->es_config );
 }
 
 sub type {

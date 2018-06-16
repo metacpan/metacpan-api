@@ -103,11 +103,12 @@ sub _build_es_server {
     my $self = shift;
 
     my $server = Search::Elasticsearch::TestServer->new(
-        conf      => [ 'cluster.name' => 'metacpan-test' ],
-        es_home   => $self->_es_home,
-        es_port   => 9700,
-        http_port => 9900,
-        instances => 1,
+        conf       => [ 'cluster.name' => 'metacpan-test' ],
+        es_home    => $self->_es_home,
+        es_port    => 9700,
+        http_port  => 9900,
+        instances  => 1,
+        es_version => '2_0',
     );
 
     diag 'Connecting to Elasticsearch on ' . $self->_es_home;
@@ -139,7 +140,8 @@ sub _build_es_client {
 
     my $es = Search::Elasticsearch->new(
         nodes => $self->_es_home,
-        ( $ENV{ES_TRACE} ? ( trace_to => [ 'File', 'es.log' ] ) : () )
+        ( $ENV{ES_TRACE} ? ( trace_to => [ 'File', 'es.log' ] ) : () ),
+        client => '2_0::Direct',
     );
 
     ok( $es, 'got ElasticSearch object' );
