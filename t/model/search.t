@@ -78,7 +78,7 @@ ok( $search->_not_rogue, '_not_rogue' );
     my $module  = 'Binary::Data::WithPod';
     my $results = $search->search_web($module);
     is(
-        $results->{results}->[0]->{hits}->[0]->{description},
+        $results->{results}->[0]->[0]->{description},
         'razzberry pudding',
         'description included in results'
     );
