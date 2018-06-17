@@ -121,7 +121,7 @@ has http_client => (
 sub _build_http_client {
     return HTTP::Tiny->new(
         default_headers => { 'Accept' => 'application/json' },
-        timeout => 120,    # list can be slow
+        timeout         => 120,       # list can be slow
     );
 }
 
@@ -224,21 +224,28 @@ sub run_restore {
 
     my $snap_name = $self->snap_name;
 
-    $self->are_you_sure('Restoring... will rename indices to restored_XX');
+    $self->are_you_sure(
+        'Restoring... will NOT rename indices as ES::Model breaks');
 
+    # IF we were not using ES::Model!..
     # This is a safety feature, we can always
     # create aliases to point to them if required
     # just make sure there is enough disk space
     my $data = {
-        "rename_pattern"     => '(.+)',
-        "rename_replacement" => 'restored_$1',
+
+        #   "rename_pattern"     => '(.+)',
+        #   "rename_replacement" => 'restored_$1',
     };
 
+    # We wait until it's actually done!
     my $path = "${repository_name}/${snap_name}/_restore";
 
     my $response = $self->_request( 'post', $path, $data );
 
-    log_info { 'restoring: ' . $snap_name } if $response;
+    log_info {
+        'restoring: ' . $snap_name . ' - see /_cat/recovery for progress'
+    }
+    if $response;
 
     return $response;
 }
@@ -333,6 +340,8 @@ See status of snapshot...
 
  curl localhost:9200/_snapshot/our_backups/SNAP-NAME/_status
 
+ curl localhost:9200/_cat/recovery
+
 Add an alias to the restored index
 
  curl -X POST 'localhost:9200/_aliases' -d '
@@ -351,5 +360,6 @@ You will need to run --setup on any box you wish to restore to
 
 You will need es_aws_s3_access_key and es_aws_s3_secret setup
 in your local metacpan_server_local.conf
+
 
 =cut
