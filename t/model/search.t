@@ -38,7 +38,7 @@ ok( $search->_not_rogue, '_not_rogue' );
 
 {
     my $collapsed_search = $search->search_web('Foo');
-    is( scalar @{ $collapsed_search->{results}->[0] },
+    is( scalar @{ $collapsed_search->{results}->[0]->{hits} },
         2, 'got results for collapsed search' );
 
     ok( $collapsed_search->{collapsed}, 'results are flagged as collapsed' );
@@ -52,9 +52,9 @@ ok( $search->_not_rogue, '_not_rogue' );
 
     ok( !$expanded->{collapsed}, 'results are flagged as expanded' );
 
-    is( $expanded->{results}->[0]->[0]->{path},
+    is( $expanded->{results}->[0]->{hits}->[0]->{path},
         'lib/Pod/Pm.pm', 'first expanded result is expected' );
-    is( $expanded->{results}->[1]->[0]->{path},
+    is( $expanded->{results}->[1]->{hits}->[0]->{path},
         'lib/Pod/Pm/NoPod.pod', 'second expanded result is expected' );
 }
 
