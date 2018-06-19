@@ -4061,6 +4061,19 @@ DISTRIBUTIONS
       constant 0
       strict 0
       warnings 0
+  Log-Any-Adapter-Log4perl-0.09
+    pathname: P/PR/PREACTION/Log-Any-Adapter-Log4perl-0.09.tar.gz
+    provides:
+      Log::Any::Adapter::Log4perl 0.09
+    requirements:
+      ExtUtils::MakeMaker 6.17
+      Log::Any::Adapter::Base 0
+      Log::Any::Adapter::Util 1.03
+      Log::Log4perl 1.32
+      base 0
+      perl 5.006
+      strict 0
+      warnings 0
   Log-Contextual-0.007001
     pathname: F/FR/FREW/Log-Contextual-0.007001.tar.gz
     provides:
