@@ -54,12 +54,11 @@ sub identity_GET {
 sub identity_DELETE {
     my ( $self, $c ) = @_;
     my ($identity) = @{ $c->req->arguments };
-    my $ids = $c->user->identity;
-    ($identity) = grep { $_->name eq $identity } @$ids;
-    if ($identity) {
-        @$ids = grep { $_->{name} ne $identity->name } @$ids;
-        $c->user->put( { refresh => 1 } );
-        $self->status_ok( $c, entity => $identity );
+    my $user = $c->user;
+    if ( $user->has_identity($identity) ) {
+        my $id = $user->remove_identity($identity);
+        $user->put( { refresh => 1 } );
+        $self->status_ok( $c, entity => $id );
     }
     else {
         $self->status_not_found( $c, message => 'Identity doesn\'t exist' );

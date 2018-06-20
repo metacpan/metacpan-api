@@ -37,8 +37,9 @@ has pauseid => (
 );
 
 has user => (
-    is     => 'ro',
-    writer => '_set_user',
+    is      => 'ro',
+    writer  => '_set_user',
+    clearer => '_clear_user',
 );
 
 has gravatar_url => (
