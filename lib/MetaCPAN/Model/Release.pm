@@ -8,6 +8,7 @@ use CPAN::DistnameInfo ();
 use CPAN::Meta         ();
 use DateTime           ();
 use File::Find         ();
+use File::Spec         ();
 use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Model::Archive;
 use MetaCPAN::Types qw(ArrayRef AbsFile Str);
@@ -485,7 +486,7 @@ sub _modules_from_meta {
     my $files    = $self->files;
     foreach my $module ( sort keys %$provides ) {
         my $data = $provides->{$module};
-        my $path = $data->{file};
+        my $path = File::Spec->canonpath( $data->{file} );
 
         # Obey no_index and take the shortest path if multiple files match.
         my ($file) = sort { length( $a->path ) <=> length( $b->path ) }
