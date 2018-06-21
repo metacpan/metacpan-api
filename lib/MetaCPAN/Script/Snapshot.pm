@@ -121,7 +121,7 @@ has http_client => (
 sub _build_http_client {
     return HTTP::Tiny->new(
         default_headers => { 'Accept' => 'application/json' },
-        timeout         => 120,       # list can be slow
+        timeout => 120,    # list can be slow
     );
 }
 
