@@ -10,7 +10,6 @@ use File::stat qw(stat);
 use IO::Uncompress::Bunzip2 qw(bunzip2);
 use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Types qw( Bool File Uri );
-use ElasticSearchX::Model::Document::Types qw(ESBulk);
 use Moose;
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt::Dashes';
@@ -47,7 +46,7 @@ has skip_download => (
 
 has _bulk => (
     is      => 'ro',
-    isa     => ESBulk,
+    isa     => 'Search::Elasticsearch::Bulk',
     lazy    => 1,
     default => sub {
         $_[0]->es->bulk_helper(
