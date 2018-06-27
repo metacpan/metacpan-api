@@ -2459,32 +2459,32 @@ DISTRIBUTIONS
       Canary::Stability 0
       ExtUtils::MakeMaker 6.52
       common::sense 0
-  ElasticSearchX-Model-2.0.0
-    pathname: O/OA/OALDERS/ElasticSearchX-Model-2.0.0.tar.gz
+  ElasticSearchX-Model-1.0.2
+    pathname: O/OA/OALDERS/ElasticSearchX-Model-1.0.2.tar.gz
     provides:
-      ElasticSearchX::Model v2.0.0
-      ElasticSearchX::Model::Bulk v2.0.0
-      ElasticSearchX::Model::Document v2.0.0
-      ElasticSearchX::Model::Document::EmbeddedRole v2.0.0
-      ElasticSearchX::Model::Document::Mapping v2.0.0
-      ElasticSearchX::Model::Document::Role v2.0.0
-      ElasticSearchX::Model::Document::Set v2.0.0
-      ElasticSearchX::Model::Document::Trait::Attribute v2.0.0
-      ElasticSearchX::Model::Document::Trait::Class v2.0.0
-      ElasticSearchX::Model::Document::Trait::Class::ID v2.0.0
-      ElasticSearchX::Model::Document::Trait::Class::Timestamp v2.0.0
-      ElasticSearchX::Model::Document::Trait::Class::Version v2.0.0
-      ElasticSearchX::Model::Document::Trait::Field::ID v2.0.0
-      ElasticSearchX::Model::Document::Trait::Field::TTL v2.0.0
-      ElasticSearchX::Model::Document::Trait::Field::Timestamp v2.0.0
-      ElasticSearchX::Model::Document::Trait::Field::Version v2.0.0
-      ElasticSearchX::Model::Document::Types v2.0.0
-      ElasticSearchX::Model::Index v2.0.0
-      ElasticSearchX::Model::Role v2.0.0
-      ElasticSearchX::Model::Scroll v2.0.0
-      ElasticSearchX::Model::Trait::Class v2.0.0
-      ElasticSearchX::Model::Tutorial v2.0.0
-      ElasticSearchX::Model::Util v2.0.0
+      ElasticSearchX::Model v1.0.2
+      ElasticSearchX::Model::Bulk v1.0.2
+      ElasticSearchX::Model::Document v1.0.2
+      ElasticSearchX::Model::Document::EmbeddedRole v1.0.2
+      ElasticSearchX::Model::Document::Mapping v1.0.2
+      ElasticSearchX::Model::Document::Role v1.0.2
+      ElasticSearchX::Model::Document::Set v1.0.2
+      ElasticSearchX::Model::Document::Trait::Attribute v1.0.2
+      ElasticSearchX::Model::Document::Trait::Class v1.0.2
+      ElasticSearchX::Model::Document::Trait::Class::ID v1.0.2
+      ElasticSearchX::Model::Document::Trait::Class::Timestamp v1.0.2
+      ElasticSearchX::Model::Document::Trait::Class::Version v1.0.2
+      ElasticSearchX::Model::Document::Trait::Field::ID v1.0.2
+      ElasticSearchX::Model::Document::Trait::Field::TTL v1.0.2
+      ElasticSearchX::Model::Document::Trait::Field::Timestamp v1.0.2
+      ElasticSearchX::Model::Document::Trait::Field::Version v1.0.2
+      ElasticSearchX::Model::Document::Types v1.0.2
+      ElasticSearchX::Model::Index v1.0.2
+      ElasticSearchX::Model::Role v1.0.2
+      ElasticSearchX::Model::Scroll v1.0.2
+      ElasticSearchX::Model::Trait::Class v1.0.2
+      ElasticSearchX::Model::Tutorial v1.0.2
+      ElasticSearchX::Model::Util v1.0.2
     requirements:
       Carp 0
       Class::Load 0
@@ -2493,10 +2493,10 @@ DISTRIBUTIONS
       DateTime::Format::ISO8601 0
       Digest::SHA1 0
       Eval::Closure 0
-      ExtUtils::MakeMaker 0
       JSON::MaybeXS 0
       List::MoreUtils 0
       List::Util 0
+      Module::Build 0.3601
       Module::Find 0
       Moose 2.02
       Moose::Exporter 0
@@ -2513,8 +2513,9 @@ DISTRIBUTIONS
       MooseX::Types::Structured 0
       Scalar::Util 0
       Search::Elasticsearch 2.02
+      Search::Elasticsearch::Bulk 0
+      Search::Elasticsearch::Scroll 0
       Sub::Exporter 0
-      perl 5.006
       strict 0
       version 0
       warnings 0
@@ -3602,14 +3603,6 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       perl 5.008001
-  Hijk-0.27
-    pathname: G/GU/GUGOD/Hijk-0.27.tar.gz
-    provides:
-      Hijk 0.27
-    requirements:
-      CPAN::Meta 0
-      ExtUtils::MakeMaker 6.36
-      Time::HiRes 0
   Hook-LexWrap-0.26
     pathname: E/ET/ETHER/Hook-LexWrap-0.26.tar.gz
     provides:
@@ -7554,54 +7547,65 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Test::More 0
       perl 5.006001
-  Search-Elasticsearch-6.00
-    pathname: D/DR/DRTECH/Search-Elasticsearch-6.00.tar.gz
+  Search-Elasticsearch-2.03
+    pathname: D/DR/DRTECH/Search-Elasticsearch-2.03.tar.gz
     provides:
-      Search::Elasticsearch 6.00
-      Search::Elasticsearch::Client::6_0 6.00
-      Search::Elasticsearch::Client::6_0::Bulk 6.00
-      Search::Elasticsearch::Client::6_0::Direct 6.00
-      Search::Elasticsearch::Client::6_0::Direct::Cat 6.00
-      Search::Elasticsearch::Client::6_0::Direct::Cluster 6.00
-      Search::Elasticsearch::Client::6_0::Direct::Indices 6.00
-      Search::Elasticsearch::Client::6_0::Direct::Ingest 6.00
-      Search::Elasticsearch::Client::6_0::Direct::Nodes 6.00
-      Search::Elasticsearch::Client::6_0::Direct::Snapshot 6.00
-      Search::Elasticsearch::Client::6_0::Direct::Tasks 6.00
-      Search::Elasticsearch::Client::6_0::Role::API 6.00
-      Search::Elasticsearch::Client::6_0::Role::Bulk 6.00
-      Search::Elasticsearch::Client::6_0::Role::Scroll 6.00
-      Search::Elasticsearch::Client::6_0::Scroll 6.00
-      Search::Elasticsearch::Client::6_0::TestServer 6.00
-      Search::Elasticsearch::Cxn::Factory 6.00
-      Search::Elasticsearch::Cxn::HTTPTiny 6.00
-      Search::Elasticsearch::Cxn::Hijk 6.00
-      Search::Elasticsearch::Cxn::LWP 6.00
-      Search::Elasticsearch::CxnPool::Sniff 6.00
-      Search::Elasticsearch::CxnPool::Static 6.00
-      Search::Elasticsearch::CxnPool::Static::NoPing 6.00
-      Search::Elasticsearch::Error 6.00
-      Search::Elasticsearch::Logger::LogAny 6.00
-      Search::Elasticsearch::Role::API 6.00
-      Search::Elasticsearch::Role::Client 6.00
-      Search::Elasticsearch::Role::Client::Direct 6.00
-      Search::Elasticsearch::Role::Cxn 6.00
-      Search::Elasticsearch::Role::CxnPool 6.00
-      Search::Elasticsearch::Role::CxnPool::Sniff 6.00
-      Search::Elasticsearch::Role::CxnPool::Static 6.00
-      Search::Elasticsearch::Role::CxnPool::Static::NoPing 6.00
-      Search::Elasticsearch::Role::Is_Sync 6.00
-      Search::Elasticsearch::Role::Logger 6.00
-      Search::Elasticsearch::Role::Serializer 6.00
-      Search::Elasticsearch::Role::Serializer::JSON 6.00
-      Search::Elasticsearch::Role::Transport 6.00
-      Search::Elasticsearch::Serializer::JSON 6.00
-      Search::Elasticsearch::Serializer::JSON::Cpanel 6.00
-      Search::Elasticsearch::Serializer::JSON::PP 6.00
-      Search::Elasticsearch::Serializer::JSON::XS 6.00
-      Search::Elasticsearch::TestServer 6.00
-      Search::Elasticsearch::Transport 6.00
-      Search::Elasticsearch::Util 6.00
+      Search::Elasticsearch 2.03
+      Search::Elasticsearch::Bulk 2.03
+      Search::Elasticsearch::Client::0_90::Direct 2.03
+      Search::Elasticsearch::Client::0_90::Direct::Cluster 2.03
+      Search::Elasticsearch::Client::0_90::Direct::Indices 2.03
+      Search::Elasticsearch::Client::1_0::Direct 2.03
+      Search::Elasticsearch::Client::1_0::Direct::Cat 2.03
+      Search::Elasticsearch::Client::1_0::Direct::Cluster 2.03
+      Search::Elasticsearch::Client::1_0::Direct::Indices 2.03
+      Search::Elasticsearch::Client::1_0::Direct::Nodes 2.03
+      Search::Elasticsearch::Client::1_0::Direct::Snapshot 2.03
+      Search::Elasticsearch::Client::2_0::Direct 2.03
+      Search::Elasticsearch::Client::2_0::Direct::Cat 2.03
+      Search::Elasticsearch::Client::2_0::Direct::Cluster 2.03
+      Search::Elasticsearch::Client::2_0::Direct::Indices 2.03
+      Search::Elasticsearch::Client::2_0::Direct::Nodes 2.03
+      Search::Elasticsearch::Client::2_0::Direct::Snapshot 2.03
+      Search::Elasticsearch::Client::2_0::Direct::Tasks 2.03
+      Search::Elasticsearch::Cxn::Factory 2.03
+      Search::Elasticsearch::Cxn::HTTPTiny 2.03
+      Search::Elasticsearch::Cxn::Hijk 2.03
+      Search::Elasticsearch::Cxn::LWP 2.03
+      Search::Elasticsearch::CxnPool::Sniff 2.03
+      Search::Elasticsearch::CxnPool::Static 2.03
+      Search::Elasticsearch::CxnPool::Static::NoPing 2.03
+      Search::Elasticsearch::Error 2.03
+      Search::Elasticsearch::Logger::LogAny 2.03
+      Search::Elasticsearch::Role::API::0_90 2.03
+      Search::Elasticsearch::Role::API::1_0 2.03
+      Search::Elasticsearch::Role::API::2_0 2.03
+      Search::Elasticsearch::Role::Bulk 2.03
+      Search::Elasticsearch::Role::Client 2.03
+      Search::Elasticsearch::Role::Client::Direct 2.03
+      Search::Elasticsearch::Role::Client::Direct::Main 2.03
+      Search::Elasticsearch::Role::Cxn 2.03
+      Search::Elasticsearch::Role::Cxn::HTTP 2.03
+      Search::Elasticsearch::Role::CxnPool 2.03
+      Search::Elasticsearch::Role::CxnPool::Sniff 2.03
+      Search::Elasticsearch::Role::CxnPool::Static 2.03
+      Search::Elasticsearch::Role::CxnPool::Static::NoPing 2.03
+      Search::Elasticsearch::Role::Is_Sync 2.03
+      Search::Elasticsearch::Role::Logger 2.03
+      Search::Elasticsearch::Role::Scroll 2.03
+      Search::Elasticsearch::Role::Serializer 2.03
+      Search::Elasticsearch::Role::Serializer::JSON 2.03
+      Search::Elasticsearch::Role::Transport 2.03
+      Search::Elasticsearch::Scroll 2.03
+      Search::Elasticsearch::Serializer::JSON 2.03
+      Search::Elasticsearch::Serializer::JSON::Cpanel 2.03
+      Search::Elasticsearch::Serializer::JSON::PP 2.03
+      Search::Elasticsearch::Serializer::JSON::XS 2.03
+      Search::Elasticsearch::TestServer 2.03
+      Search::Elasticsearch::Transport 2.03
+      Search::Elasticsearch::Util 2.03
+      Search::Elasticsearch::Util::API::Path 2.03
+      Search::Elasticsearch::Util::API::QS 2.03
     requirements:
       Any::URI::Escape 0
       Data::Dumper 0
@@ -7612,11 +7616,8 @@ DISTRIBUTIONS
       HTTP::Headers 0
       HTTP::Request 0
       HTTP::Tiny 0.043
-      IO::Compress::Deflate 0
-      IO::Compress::Gzip 0
       IO::Select 0
       IO::Socket 0
-      IO::Uncompress::Gunzip 0
       IO::Uncompress::Inflate 0
       JSON::MaybeXS 1.002002
       JSON::PP 0
@@ -7626,7 +7627,7 @@ DISTRIBUTIONS
       Log::Any::Adapter 0
       MIME::Base64 0
       Module::Runtime 0
-      Moo 2.001000
+      Moo 1.003
       Moo::Role 0
       POSIX 0
       Package::Stash 0.34
@@ -7637,37 +7638,6 @@ DISTRIBUTIONS
       URI 0
       namespace::clean 0
       overload 0
-      strict 0
-      warnings 0
-  Search-Elasticsearch-Client-2_0-5.02
-    pathname: D/DR/DRTECH/Search-Elasticsearch-Client-2_0-5.02.tar.gz
-    provides:
-      Search::Elasticsearch::Client::2_0 5.02
-      Search::Elasticsearch::Client::2_0::Bulk 5.02
-      Search::Elasticsearch::Client::2_0::Direct 5.02
-      Search::Elasticsearch::Client::2_0::Direct::Cat 5.02
-      Search::Elasticsearch::Client::2_0::Direct::Cluster 5.02
-      Search::Elasticsearch::Client::2_0::Direct::Indices 5.02
-      Search::Elasticsearch::Client::2_0::Direct::Nodes 5.02
-      Search::Elasticsearch::Client::2_0::Direct::Snapshot 5.02
-      Search::Elasticsearch::Client::2_0::Direct::Tasks 5.02
-      Search::Elasticsearch::Client::2_0::Role::API 5.02
-      Search::Elasticsearch::Client::2_0::Role::Bulk 5.02
-      Search::Elasticsearch::Client::2_0::Role::Scroll 5.02
-      Search::Elasticsearch::Client::2_0::Scroll 5.02
-      Search::Elasticsearch::Client::2_0::TestServer 5.02
-    requirements:
-      Devel::GlobalDestruction 0
-      ExtUtils::MakeMaker 0
-      Moo 0
-      Moo::Role 0
-      Search::Elasticsearch 5.02
-      Search::Elasticsearch::Role::API 0
-      Search::Elasticsearch::Role::Client::Direct 0
-      Search::Elasticsearch::Role::Is_Sync 0
-      Search::Elasticsearch::Util 0
-      Try::Tiny 0
-      namespace::clean 0
       strict 0
       warnings 0
   Server-Starter-0.33
