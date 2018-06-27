@@ -6,6 +6,7 @@ use warnings;
 use Log::Contextual qw( :log :dlog );
 use Cpanel::JSON::XS qw( decode_json );
 use MetaCPAN::Types qw( Uri );
+use ElasticSearchX::Model::Document::Types qw(ESBulk);
 use Moose;
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt::Dashes';
@@ -28,7 +29,7 @@ sub _build_url {
 
 has _bulk => (
     is      => 'ro',
-    isa     => 'Search::Elasticsearch::Bulk',
+    isa     => ESBulk,
     lazy    => 1,
     default => sub {
         $_[0]->es->bulk_helper(
