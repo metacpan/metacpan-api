@@ -540,7 +540,7 @@ sub _modules_from_files {
                     log_error {'Call to Module::Metadata timed out '};
                     die;
                 };
-                alarm(5);
+                alarm(50);
                 my $info;
                 {
                     local $SIG{__WARN__} = sub { };
