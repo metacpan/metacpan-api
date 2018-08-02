@@ -42,8 +42,8 @@ sub run_debian {
     # connect to the database
     my $dbh
         = DBI->connect(
-        "dbi:Pg:host=public-udd-mirror.xvm.mit.edu;dbname=udd",
-        'public-udd-mirror', 'public-udd-mirror' );
+        "dbi:Pg:host=udd-mirror.debian.net;dbname=udd",
+        'udd-mirror', 'udd-mirror' );
 
     # special cases
     my %skip = ( 'libbssolv-perl' => 1 );
