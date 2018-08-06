@@ -8,7 +8,7 @@ _All of these URLs can be tested using the [MetaCPAN Explorer](https://explorer.
 
 To learn more about the ElasticSearch query DSL (Domain-Specific Language) check out Clinton Gormley's [Terms of Endearment - ES Query DSL Explained] (https://www.slideshare.net/clintongormley/terms-of-endearment-the-elasticsearch-query-dsl-explained) slides.
 
-The query syntax is explained on ElasticSearch's [reference page](https://www.elasticsearch.org/guide/reference/query-dsl/). You can also check out this getting started tutorial about Elasticsearch [reference page](https://joelabrahamsson.com/elasticsearch-101/).
+The query syntax is explained on ElasticSearch's [reference page](https://www.elasticsearch.org/guide/reference/query-dsl/). You can also check out this getting started tutorial about Elasticsearch [reference page](http://joelabrahamsson.com/elasticsearch-101/).
 
 ## Being polite
 
