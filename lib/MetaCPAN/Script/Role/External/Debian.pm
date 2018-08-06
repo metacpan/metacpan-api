@@ -40,9 +40,7 @@ sub run_debian {
     my $ret  = {};
 
     # connect to the database
-    my $dbh
-        = DBI->connect(
-        "dbi:Pg:host=udd-mirror.debian.net;dbname=udd",
+    my $dbh = DBI->connect( "dbi:Pg:host=udd-mirror.debian.net;dbname=udd",
         'udd-mirror', 'udd-mirror' );
 
     # special cases
