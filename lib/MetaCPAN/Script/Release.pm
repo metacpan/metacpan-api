@@ -42,6 +42,13 @@ has skip => (
     documentation => 'skip already indexed modules (0)',
 );
 
+has force_authorized => (
+    is            => 'ro',
+    isa           => Bool,
+    default       => 0,
+    documentation => 'force authorized when indexing (0)',
+);
+
 has status => (
     is            => 'ro',
     isa           => Str,
@@ -255,12 +262,14 @@ sub import_archive {
 
      # NOTE: "The method returns a list of unauthorized, but indexed modules."
         push( @release_unauthorized, $file->set_authorized($perms) )
-            if ( keys %$perms );
+            if ( keys %$perms and !$self->force_authorized );
 
         my $file_x_deprecated = 0;
 
         for ( @{ $file->module } ) {
-            push( @provides, $_->name ) if $_->indexed && $_->authorized;
+            push( @provides, $_->name )
+                if $_->indexed
+                && ( $_->authorized || $self->force_authorized );
             $file_x_deprecated = 1
                 if $meta->{provides}{ $_->name }{x_deprecated};
         }
