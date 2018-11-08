@@ -91,6 +91,7 @@ cache:
   directories:
     - local
     - ~/perl5
+    - t/var/darkpan
 
 addons:
   artifacts:
