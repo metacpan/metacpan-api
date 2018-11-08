@@ -100,6 +100,7 @@ requires 'Module::Metadata', '1.000022';
 requires 'Module::Pluggable';
 requires 'Module::Runtime';
 requires 'Mojo::Pg', '>= 4.08';
+requires 'Mojolicious::Plugin::Web::Auth', '0.000004';
 requires 'Moose', ' >= 2.1403';
 requires 'Moose::Role';
 requires 'Moose::Util';

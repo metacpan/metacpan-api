@@ -4842,6 +4842,26 @@ DISTRIBUTIONS
       Pod::Simple 3.09
       Time::Local 1.2
       perl 5.010001
+  Mojolicious-Plugin-Web-Auth-0.15
+    pathname: H/HA/HAYAJO/Mojolicious-Plugin-Web-Auth-0.15.tar.gz
+    provides:
+      Mojolicious::Plugin::Web::Auth 0.15
+      Mojolicious::Plugin::Web::Auth::Base undef
+      Mojolicious::Plugin::Web::Auth::OAuth undef
+      Mojolicious::Plugin::Web::Auth::OAuth2 undef
+      Mojolicious::Plugin::Web::Auth::Site::Dropbox undef
+      Mojolicious::Plugin::Web::Auth::Site::Facebook undef
+      Mojolicious::Plugin::Web::Auth::Site::Github undef
+      Mojolicious::Plugin::Web::Auth::Site::Google undef
+      Mojolicious::Plugin::Web::Auth::Site::Instagram undef
+      Mojolicious::Plugin::Web::Auth::Site::Twitter undef
+      Mojolicious::Plugin::Web::Auth::Site::Yandex undef
+    requirements:
+      IO::Socket::SSL 1.77
+      Module::Build::Tiny 0.035
+      Mojolicious 3.02
+      Net::OAuth 0.28
+      perl 5.008005
   Moo-2.003003
     pathname: H/HA/HAARG/Moo-2.003003.tar.gz
     provides:
