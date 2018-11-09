@@ -20,8 +20,8 @@ To run the minion admin web interface, run the following on one of the servers:
 
 use Mojo::Base 'Mojolicious';
 
-use Config::ZOMG             ();
-use File::Temp               ();
+use Config::ZOMG ();
+use File::Temp   ();
 use List::Util qw( any );
 use MetaCPAN::Model::Search  ();
 use MetaCPAN::Script::Runner ();
@@ -58,6 +58,7 @@ sub startup {
     # TODO secret from config
     $self->secrets( [ $ENV{MOJO_SECRET} ] );
 
+    $self->static->paths( [ $self->home->child('root') ] );
 
     if ( $ENV{HARNESS_ACTIVE} ) {
         my $file = File::Temp->new( UNLINK => 1, SUFFIX => '.db' );
