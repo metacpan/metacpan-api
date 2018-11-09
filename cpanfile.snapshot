@@ -4720,8 +4720,8 @@ DISTRIBUTIONS
       URI::db 0.15
       URI::file 4.21
       perl 5.010001
-  Mojolicious-7.56
-    pathname: S/SR/SRI/Mojolicious-7.56.tar.gz
+  Mojolicious-8.06
+    pathname: S/SR/SRI/Mojolicious-8.06.tar.gz
     provides:
       Mojo undef
       Mojo::Asset undef
@@ -4741,6 +4741,7 @@ DISTRIBUTIONS
       Mojo::DOM::CSS undef
       Mojo::DOM::HTML undef
       Mojo::Date undef
+      Mojo::DynamicMethods undef
       Mojo::EventEmitter undef
       Mojo::Exception undef
       Mojo::File undef
@@ -4790,30 +4791,28 @@ DISTRIBUTIONS
       Mojo::UserAgent::Transactor undef
       Mojo::Util undef
       Mojo::WebSocket undef
-      Mojolicious 7.56
+      Mojolicious 8.06
       Mojolicious::Command undef
+      Mojolicious::Command::Author::cpanify undef
+      Mojolicious::Command::Author::generate undef
+      Mojolicious::Command::Author::generate::app undef
+      Mojolicious::Command::Author::generate::lite_app undef
+      Mojolicious::Command::Author::generate::makefile undef
+      Mojolicious::Command::Author::generate::plugin undef
+      Mojolicious::Command::Author::inflate undef
       Mojolicious::Command::cgi undef
-      Mojolicious::Command::cpanify undef
       Mojolicious::Command::daemon undef
       Mojolicious::Command::eval undef
-      Mojolicious::Command::generate undef
-      Mojolicious::Command::generate::app undef
-      Mojolicious::Command::generate::lite_app undef
-      Mojolicious::Command::generate::makefile undef
-      Mojolicious::Command::generate::plugin undef
       Mojolicious::Command::get undef
-      Mojolicious::Command::inflate undef
       Mojolicious::Command::prefork undef
       Mojolicious::Command::psgi undef
       Mojolicious::Command::routes undef
-      Mojolicious::Command::test undef
       Mojolicious::Command::version undef
       Mojolicious::Commands undef
       Mojolicious::Controller undef
       Mojolicious::Lite undef
       Mojolicious::Plugin undef
       Mojolicious::Plugin::Config undef
-      Mojolicious::Plugin::Config::Sandbox undef
       Mojolicious::Plugin::DefaultHelpers undef
       Mojolicious::Plugin::EPLRenderer undef
       Mojolicious::Plugin::EPRenderer undef
@@ -4839,9 +4838,18 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       IO::Socket::IP 0.37
       JSON::PP 2.27103
-      Pod::Simple 3.09
+      List::Util 1.41
       Time::Local 1.2
       perl 5.010001
+  Mojolicious-Plugin-MountPSGI-0.13
+    pathname: M/MR/MRAMBERG/Mojolicious-Plugin-MountPSGI-0.13.tar.gz
+    provides:
+      Mojolicious::Plugin::MountPSGI 0.13
+      Mojolicious::Plugin::MountPSGI::Proxy undef
+    requirements:
+      ExtUtils::MakeMaker 0
+      Mojolicious 7.70
+      Plack 0
   Mojolicious-Plugin-Web-Auth-0.15
     pathname: H/HA/HAYAJO/Mojolicious-Plugin-Web-Auth-0.15.tar.gz
     provides:
