@@ -2,12 +2,16 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use MetaCPAN::Queue;
 use Test::More;
 use Test::RequiresInternet ( 'cpan.metacpan.org' => 443 );
 
-my $app = MetaCPAN::Queue->new;
+use Test::Mojo;
+
+my $t   = Test::Mojo->new('MetaCPAN::API');
+my $app = $t->app;
+
 ok( $app, 'queue app' );
+isa_ok $app, 'MetaCPAN::API';
 
 my $release
     = 'https://cpan.metacpan.org/authors/id/O/OA/OALDERS/HTML-Restrict-2.2.2.tar.gz';

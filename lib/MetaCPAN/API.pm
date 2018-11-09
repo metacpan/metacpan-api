@@ -1,4 +1,4 @@
-package MetaCPAN::Queue;
+package MetaCPAN::API;
 
 =head1 DESCRIPTION
 
@@ -20,18 +20,34 @@ To run the minion admin web interface, run the following on one of the servers:
 
 use Mojo::Base 'Mojolicious';
 
-use MetaCPAN::Queue::Helper  ();
+use Config::ZOMG             ();
+use File::Temp               ();
 use MetaCPAN::Script::Runner ();
 use Try::Tiny qw( catch try );
 
 sub startup {
     my $self = shift;
 
-    # for Mojo cookies, which we won't be needing
+    unless ( $self->config->{config_override} ) {
+        $self->config(
+            Config::ZOMG->new(
+                name => 'metacpan_server',
+                path => $self->home->to_string,
+            )->load
+        );
+    }
+
+    # TODO secret from config
     $self->secrets( ['veni vidi vici'] );
 
-    my $helper = MetaCPAN::Queue::Helper->new;
-    $self->plugin( Minion => $helper->backend );
+    if ( $ENV{HARNESS_ACTIVE} ) {
+        my $file = File::Temp->new( UNLINK => 1, SUFFIX => '.db' );
+        $self->plugin( Minion => { SQLite => 'sqlite:' . $file } );
+    }
+    else {
+        $self->plugin( Minion => { Pg => $self->config->{minion_dsn} } );
+    }
+
     $self->plugin(
         'Minion::Admin' => { route => $self->routes->any('/minion') } );
     $self->plugin(
