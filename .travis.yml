@@ -89,6 +89,7 @@ services:
 # caching /local should save about 5 minutes in module install time
 cache:
   directories:
+    - $HOME/local
     - local
     - ~/perl5
 
