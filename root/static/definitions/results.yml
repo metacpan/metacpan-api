@@ -1,0 +1,67 @@
+---
+
+search_result_item:
+  type: object
+  properties:
+    description:
+      type: string
+      description:
+    documentation:
+      type: string
+      description:
+    authorized:
+      type: boolean
+    path:
+      type: string
+    author:
+      type: string
+    id:
+      type: string
+    date:
+      type: string
+    favorites:
+      type: integer
+    status:
+      type: string
+    score:
+      type: number
+    module:
+      type: array
+      items:
+        type: object
+        properties:
+          associated_pod:
+            type: string
+          indexed:
+            type: boolean
+          name:
+            type: string
+          authorized:
+            type: boolean
+          version_numified:
+            type: number
+      distribution:
+        type: string
+      indexed:
+        type: boolean,
+      pod_lines:
+        type: array
+      abstract:
+        type: string
+      release:
+        type: string
+dependency:
+  type: object
+  properties:
+    module:
+      type: string
+      # "Mojolicious",
+    phase:
+      type: string
+      # "runtime",
+    version:
+      type: string
+      # "8",
+    relationship:
+      type: string
+      # "requires"

@@ -1,0 +1,12 @@
+---
+
+q:
+  name: q
+  description: |
+    The query search term. If the search term contains a term with the
+    tags `dist:` or `module:` results will be in expanded form, otherwise
+    collapsed form.
+
+    See also `collapsed`
+  type: string
+  required: true

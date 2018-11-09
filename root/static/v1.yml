@@ -1,0 +1,178 @@
+---
+
+swagger: "2.0"
+info:
+  version: "1.0"
+  title: "MetaCPAN API"
+basePath: "/v1"
+tags:
+  - Search:
+    name: Search
+    description: MetaCPAN Search Endpoints
+  - Release:
+    name: Release
+    description: Distribution Release Endpoints
+paths:
+  /search/web:
+    get:
+      tags:
+        - Search
+      operationId: search_web
+      summary: Perform API search in the same fashion as the Web UI
+      parameters:
+        - in: query
+          $ref: "./definitions/parameters.yml#/q"
+        - in: query
+          name: from
+          description: The offset to use in the result set
+          type: integer
+          default: 0
+        - in: query
+          name: page_size
+          description: Number of results per page
+          type: integer
+          default: 20
+        - in: query
+          name: collapsed
+          description: |
+              Force a collapsed even when searching for a particular
+              distribution or module name.
+          type: boolean
+      responses:
+        200:
+          description: Search response
+          schema:
+            type: object
+            properties:
+              total:
+                type: integer
+              took:
+              collapsed:
+              results:
+                title: Results
+                type: array
+                items:
+                  type: array
+                  items:
+                    $ref: "./definitions/results.yml#/search_result_item"
+  /search/first:
+    get:
+      tags:
+        - Search
+      operationId: search_for_first
+      summary: Perform API search and return the first result (I'm Feeling Lucky)
+      parameters:
+        - in: query
+          name: q
+          description: |
+            The query search term.
+          type: string
+          required: true
+      responses:
+        200:
+          description: Search response
+          schema:
+            type: object
+            properties:
+              path:
+                type: string
+                description: Relative path to module with full name
+                  # "lib/Moo.pm",
+              authorized:
+                type: boolean
+                  # true,
+              description:
+                type: string
+                description: Module description
+                  # "\"Moo\" is an extremely light-weight Object Orientation system. It allows one to concisely define objects and roles with a convenient syntax that avoids the details of Perl's object system. \"Moo\" contains a subset of Moose and is optimised for rapid startup. \"Moo\" avoids depending on any XS modules to allow for simple deployments. The name \"Moo\" is based on the idea that it provides almost -- but not quite -- two thirds of Moose. Unlike Mouse this module does not aim at full compatibility with Moose's surface syntax, preferring instead to provide full interoperability via the metaclass inflation capabilities described in \"MOO AND MOOSE\". For a full list of the minor differences between Moose and Moo's surface syntax, see \"INCOMPATIBILITIES WITH MOOSE\".",
+              id:
+                type: string
+                  # "xnl1_tvOXN5leFY9xIUOWrAiRso",
+              distribution:
+                type: string
+                description: Name of the distribution the module is contained in
+                  # "Moo",
+              author:
+                type: string
+                description: Module author ID
+                  # "HAARG",
+              release:
+                type: string
+                description: Package name with version
+              status:
+                type: string
+                  # "latest",
+              abstract.analyzed:
+                type: string
+                description: The module's abstract as analyzed from POD
+                  # "Minimalist Object Orientation (with Moose compatibility)",
+              dist_fav_count:
+                # $ref: "./definitions/definitions.yml#/dist_fav_count"
+                type: integer
+                description: Number of times favorited
+                  # 258,
+              date:
+                type: string
+                description: date module was indexed
+                  # "2017-12-01T01:48:32",
+              documentation:
+                type: string
+                  # "Moo",
+              pod_lines:
+                type: array
+                items:
+                  type: integer
+                # [
+                #   254,
+                #   829
+                # ],
+              indexed:
+                type: boolean
+                description: Is the module indexed by PAUSE
+                  # true
+  /release/recent:
+    get:
+      tags:
+        - Release
+      operationId: release_recent
+      summary: Get recent releases
+      parameters:
+        - in: path
+          name: name
+          description: |
+            The name of the Release
+          type: string
+          required: true
+      responses:
+        200:
+          description: Release response
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              dependency:
+                type: array
+                items:
+                    $ref: "./definitions/results.yml#/dependency"
+  /release/{name}:
+    get:
+      tags:
+        - Release
+      operationId: release_by_name
+      summary: Get details about a release
+      parameters:
+        - in: path
+          name: name
+          description: |
+            The name of the Release
+          type: string
+          required: true
+      responses:
+        200:
+          description: Release response
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
