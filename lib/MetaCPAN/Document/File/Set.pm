@@ -616,7 +616,19 @@ sub find_changes_files {
     # and store the result as { 'changes_file' => $name }
 
     my @candidates = qw(
-        CHANGES Changes ChangeLog Changelog CHANGELOG NEWS
+        CHANGELOG
+        ChangeLog
+        Changelog
+        ChangeLog.pm
+        changelog.pm
+        ChangeLog.pod
+        CHANGES
+        Changes
+        CHANGES.pm
+        Changes.pm
+        CHANGES.pod
+        Changes.pod
+        NEWS
     );
 
     # use $c->model b/c we can't let any filters apply here
