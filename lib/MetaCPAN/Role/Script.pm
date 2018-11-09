@@ -8,7 +8,7 @@ use Git::Helpers qw( checkout_root );
 use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Model;
 use MetaCPAN::Types qw(:all);
-use MetaCPAN::Queue ();
+use MetaCPAN::Admin ();
 use Term::ANSIColor qw( colored );
 use IO::Interactive qw( is_interactive );
 use IO::Prompt;
@@ -91,7 +91,7 @@ has _minion => (
     isa     => 'Minion',
     lazy    => 1,
     handles => { _add_to_queue => 'enqueue', stats => 'stats', },
-    default => sub { MetaCPAN::Queue->new->minion },
+    default => sub { MetaCPAN::Admin->new->minion },
 );
 
 has queue => (

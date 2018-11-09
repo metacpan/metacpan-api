@@ -1,11 +1,12 @@
 use strict;
 use warnings;
 
-use Config::ZOMG   ();
-use File::Basename ();
-use File::Path     ();
-use File::Spec     ();
-use Log::Log4perl  ();
+use Config::ZOMG    ();
+use File::Basename  ();
+use File::Path      ();
+use File::Spec      ();
+use Log::Log4perl   ();
+use MetaCPAN::Admin ();
 use Path::Tiny qw( path );
 use Plack::App::Directory ();
 use Plack::App::URLMap    ();
@@ -60,5 +61,11 @@ my $static
 my $urlmap = Plack::App::URLMap->new;
 $urlmap->map( '/static' => $static );
 $urlmap->map( '/'       => MetaCPAN::Server->app );
+
+if ( exists $ENV{GITHUB_KEY} ) {
+    my $admin_app = MetaCPAN::Admin->new->start;
+    $urlmap->map( '/admin' => $admin_app );
+    $urlmap->map( '/auth'  => $admin_app );
+}
 
 return $urlmap->to_app;

@@ -1,0 +1,14 @@
+<form action="<%= url_for('search-identities') %>" method="POST">
+
+  <select name="identity_name">
+    <option value="facebook">Facebook</option>
+    <option value="google">Google</option>
+    <option value="github">Github</option>
+    <option value="pause">PAUSE</option>
+    <option value="twitter">Twitter</option>
+  </select>
+
+  Identity value: <input type="text" />
+  <input type="submit">
+
+</form>

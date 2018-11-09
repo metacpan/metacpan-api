@@ -1,0 +1,5 @@
+<h1>
+<center>MetaCPAN Admin</center>
+</h1>
+
+<%= content %>

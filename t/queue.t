@@ -2,15 +2,16 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use MetaCPAN::Queue;
+use MetaCPAN::Admin   ();
+use MetaCPAN::DarkPAN ();
+use Path::Tiny qw( path );
 use Test::More;
-use Test::RequiresInternet ( 'cpan.metacpan.org' => 443 );
 
-my $app = MetaCPAN::Queue->new;
+my $app = MetaCPAN::Admin->new;
 ok( $app, 'queue app' );
 
-my $release
-    = 'https://cpan.metacpan.org/authors/id/O/OA/OALDERS/HTML-Restrict-2.2.2.tar.gz';
+my $darkpan = MetaCPAN::DarkPAN->new->base_dir;
+my $release = path( $darkpan, 'authors/id/E/ET/ETHER/Try-Tiny-0.23.tar.gz' );
 
 $app->minion->enqueue( index_release => [$release] );
 $app->minion->enqueue( index_release => [ '--latest', $release ] );
