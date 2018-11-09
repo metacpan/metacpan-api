@@ -4,6 +4,7 @@ use Moose;
 
 use Log::Contextual qw( :log );
 use MetaCPAN::Types qw( Bool Str HashRef );
+use MetaCPAN::Util qw( author_dir );
 
 with 'MooseX::Getopt', 'MetaCPAN::Role::Script';
 
@@ -60,7 +61,7 @@ sub _get_scroller_release {
         index  => $self->index->name,
         type   => 'release',
         body   => { query => $query },
-        fields => [qw( name )],
+        fields => [qw( archive name )],
     );
 }
 
@@ -72,7 +73,6 @@ sub _get_scroller_rating {
         index  => $self->index->name,
         type   => 'rating',
         body   => { query => $query },
-        fields => [],
     );
 }
 
@@ -96,7 +96,6 @@ sub _get_scroller_favorite {
         index  => $self->index->name,
         type   => 'favorite',
         body   => { query => $query },
-        fields => [],
     );
 }
 
@@ -145,62 +144,46 @@ sub purge_author_releases {
     my $self = shift;
 
     if ( $self->release ) {
-        $self->purge_single_release;
-        $self->purge_files( $self->release );
+        log_info {
+            'Looking for release '
+                . $self->release
+                . ' by author '
+                . $self->author
+        };
+
+        my $query = {
+            bool => {
+                must => [
+                    { term => { author => $self->author } },
+                    { term => { name   => $self->release } }
+                ]
+            }
+        };
+
+        $self->_purge_release($query);
+        log_info { 'Finished purging release ' . $self->release };
     }
     else {
-        $self->purge_multiple_releases;
+        log_info { 'Looking all up author ' . $self->author . ' releases' };
+        my $query = { term => { author => $self->author } };
+        $self->_purge_release($query);
+        log_info { 'Finished purging releases for author ' . $self->author };
     }
 }
 
-sub purge_single_release {
-    my $self = shift;
-    log_info {
-        'Looking for release '
-            . $self->release
-            . ' by author '
-            . $self->author
-    };
-
-    my $query = {
-        bool => {
-            must => [
-                { term => { author => $self->author } },
-                { term => { name   => $self->release } }
-            ]
-        }
-    };
-
-    my $scroll = $self->_get_scroller_release($query);
-    my @remove;
-
-    while ( my $r = $scroll->next ) {
-        log_debug { 'Removing release ' . $r->{fields}{name}[0] };
-        push @remove, $r->{_id};
-    }
-
-    if (@remove) {
-        $self->bulk->{release}->delete_ids(@remove);
-        $self->bulk->{release}->flush;
-    }
-
-    log_info { 'Finished purging release ' . $self->release };
-}
-
-sub purge_multiple_releases {
-    my $self = shift;
-    log_info { 'Looking all up author ' . $self->author . ' releases' };
-
-    my $query = { term => { author => $self->author } };
+sub _purge_release {
+    my ( $self, $query ) = @_;
 
     my $scroll = $self->_get_scroller_release($query);
     my @remove_ids;
     my @remove_release_files;
+    my @remove_release_archives;
 
     while ( my $r = $scroll->next ) {
         log_debug { 'Removing release ' . $r->{fields}{name}[0] };
-        push @remove_ids,           $r->{_id};
-        push @remove_release_files, $r->{fields}{name}[0];
+        push @remove_ids,              $r->{_id};
+        push @remove_release_files,    $r->{fields}{name}[0];
+        push @remove_release_archives, $r->{fields}{archive}[0];
     }
 
     if (@remove_ids) {
@@ -209,13 +192,18 @@ sub purge_multiple_releases {
     }
 
     for my $release (@remove_release_files) {
-        $self->purge_files($release);
+        $self->_purge_files($release);
     }
 
-    log_info { 'Finished purging releases for author ' . $self->author };
+    # remove the release archive
+    for my $archive (@remove_release_archives) {
+        log_info { "Moving archive $archive to " . $self->quarantine };
+        $self->cpan->file( 'authors', author_dir( $self->author ), $archive )
+            ->move_to( $self->quarantine );
+    }
 }
 
-sub purge_files {
+sub _purge_files {
     my ( $self, $release ) = @_;
     log_info {
         'Looking for files of release '

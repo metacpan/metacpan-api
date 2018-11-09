@@ -12,6 +12,7 @@ use MetaCPAN::Queue ();
 use Term::ANSIColor qw( colored );
 use IO::Interactive qw( is_interactive );
 use IO::Prompt;
+use File::Path ();
 
 use Carp ();
 
@@ -84,6 +85,13 @@ has home => (
     lazy    => 1,
     coerce  => 1,
     default => sub { checkout_root() },
+);
+
+has quarantine => (
+    is      => 'ro',
+    isa     => Str,
+    lazy    => 1,
+    builder => '_build_quarantine',
 );
 
 has _minion => (
@@ -165,6 +173,14 @@ sub _build_cpan {
     die
         "Couldn't find a local cpan mirror. Please specify --cpan or set MINICPAN";
 
+}
+
+sub _build_quarantine {
+    my $path = "$ENV{HOME}/QUARANTINE";
+    if ( !-d $path ) {
+        File::Path::mkpath($path);
+    }
+    return $path;
 }
 
 sub remote {
