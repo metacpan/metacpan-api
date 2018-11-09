@@ -22,8 +22,25 @@ use Mojo::Base 'Mojolicious';
 
 use Config::ZOMG             ();
 use File::Temp               ();
+use MetaCPAN::Model::Search  ();
 use MetaCPAN::Script::Runner ();
+use Search::Elasticsearch    ();
 use Try::Tiny qw( catch try );
+
+has es => sub {
+    return Search::Elasticsearch->new(
+        client => '2_0::Direct',
+        nodes  => [':9200'],       #TODO config
+    );
+};
+
+has model_search => sub {
+    my $self = shift;
+    return MetaCPAN::Model::Search->new(
+        es    => $self->es,
+        index => 'cpan',
+    );
+};
 
 sub startup {
     my $self = shift;
