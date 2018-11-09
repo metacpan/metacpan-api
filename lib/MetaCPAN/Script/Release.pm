@@ -8,13 +8,13 @@ BEGIN {
 }
 
 use CPAN::DistnameInfo ();
-use File::Find::Rule;
-use File::stat ();
+use File::Find::Rule   ();
+use File::stat         ();
 use List::Util qw( uniq );
 use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Util;
-use MetaCPAN::Model::Release;
-use MetaCPAN::Script::Runner;
+use MetaCPAN::Model::Release ();
+use MetaCPAN::Script::Runner ();
 use MetaCPAN::Types qw( Bool Dir HashRef Int Str );
 use Moose;
 use PerlIO::gzip;
