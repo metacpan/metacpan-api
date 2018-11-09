@@ -10,6 +10,7 @@ BEGIN {
 use CPAN::DistnameInfo ();
 use File::Find::Rule;
 use File::stat ();
+use List::Util qw( uniq );
 use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Util;
 use MetaCPAN::Model::Release;
@@ -293,7 +294,7 @@ sub import_archive {
         }
     }
     if (@provides) {
-        $document->_set_provides( [ sort @provides ] );
+        $document->_set_provides( [ uniq sort @provides ] );
         $document->put;
     }
     $bulk->commit;
