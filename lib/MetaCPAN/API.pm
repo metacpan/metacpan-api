@@ -159,6 +159,8 @@ sub _maybe_set_up_routes {
 
     $self->plugin( 'Minion::Admin' => { route => $admin->any('/minion') } );
     $self->plugin(
+        'OpenAPI' => { url => $self->home->rel_file('root/static/v1.yml') } );
+    $self->plugin(
         MountPSGI => { '/' => $self->home->child('app.psgi')->to_string } );
 
 }

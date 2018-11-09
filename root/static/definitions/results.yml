@@ -5,10 +5,8 @@ search_result_item:
   properties:
     description:
       type: string
-      description:
     documentation:
       type: string
-      description:
     authorized:
       type: boolean
     path:
@@ -40,16 +38,16 @@ search_result_item:
             type: boolean
           version_numified:
             type: number
-      distribution:
-        type: string
-      indexed:
-        type: boolean,
-      pod_lines:
-        type: array
-      abstract:
-        type: string
-      release:
-        type: string
+    distribution:
+      type: string
+    indexed:
+      type: boolean
+    pod_lines:
+      type: array
+    abstract:
+      type: string
+    release:
+      type: string
 dependency:
   type: object
   properties:

@@ -813,6 +813,7 @@ DISTRIBUTIONS
       MooseX::Emulate::Class::Accessor::Fast 0.00903
       MooseX::Getopt 0.48
       MooseX::MethodAttributes::Role::AttrContainer::Inheritable 0.24
+      MooseX::Role::WithOverloading 0.09
       Path::Class 0.09
       Plack 0.9991
       Plack::Middleware::Conditional 0
@@ -3821,6 +3822,19 @@ DISTRIBUTIONS
       JSON::PP 2.27300
       Scalar::Util 0
       perl 5.006
+  JSON-Validator-2.15
+    pathname: J/JH/JHTHORSEN/JSON-Validator-2.15.tar.gz
+    provides:
+      JSON::Validator 2.15
+      JSON::Validator::Error undef
+      JSON::Validator::Joi undef
+      JSON::Validator::OpenAPI undef
+      JSON::Validator::OpenAPI::Dancer2 undef
+      JSON::Validator::OpenAPI::Mojolicious undef
+      JSON::Validator::Ref undef
+    requirements:
+      ExtUtils::MakeMaker 0
+      Mojolicious 7.28
   JSON-XS-3.04
     pathname: M/ML/MLEHMANN/JSON-XS-3.04.tar.gz
     provides:
@@ -4281,17 +4295,6 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       perl 5.006
-  Mac-SystemDirectory-0.10
-    pathname: E/ET/ETHER/Mac-SystemDirectory-0.10.tar.gz
-    provides:
-      Mac::SystemDirectory 0.10
-    requirements:
-      Exporter 0
-      ExtUtils::MakeMaker 0
-      XSLoader 0
-      perl 5.006
-      strict 0
-      warnings 0
   MailTools-2.19
     pathname: M/MA/MARKOV/MailTools-2.19.tar.gz
     provides:
@@ -4720,8 +4723,8 @@ DISTRIBUTIONS
       URI::db 0.15
       URI::file 4.21
       perl 5.010001
-  Mojolicious-8.06
-    pathname: S/SR/SRI/Mojolicious-8.06.tar.gz
+  Mojolicious-8.05
+    pathname: S/SR/SRI/Mojolicious-8.05.tar.gz
     provides:
       Mojo undef
       Mojo::Asset undef
@@ -4791,7 +4794,7 @@ DISTRIBUTIONS
       Mojo::UserAgent::Transactor undef
       Mojo::Util undef
       Mojo::WebSocket undef
-      Mojolicious 8.06
+      Mojolicious 8.05
       Mojolicious::Command undef
       Mojolicious::Command::Author::cpanify undef
       Mojolicious::Command::Author::generate undef
@@ -4850,6 +4853,15 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Mojolicious 7.70
       Plack 0
+  Mojolicious-Plugin-OpenAPI-2.01
+    pathname: J/JH/JHTHORSEN/Mojolicious-Plugin-OpenAPI-2.01.tar.gz
+    provides:
+      Mojolicious::Plugin::OpenAPI 2.01
+      Mojolicious::Plugin::OpenAPI::Cors undef
+      Mojolicious::Plugin::OpenAPI::Security undef
+    requirements:
+      ExtUtils::MakeMaker 0
+      JSON::Validator 2.14
   Mojolicious-Plugin-Web-Auth-0.15
     pathname: H/HA/HAYAJO/Mojolicious-Plugin-Web-Auth-0.15.tar.gz
     provides:
@@ -5540,6 +5552,30 @@ DISTRIBUTIONS
       perl 5.008001
       strict 0
       warnings 0
+  MooseX-Role-WithOverloading-0.17
+    pathname: E/ET/ETHER/MooseX-Role-WithOverloading-0.17.tar.gz
+    provides:
+      MooseX::Role::WithOverloading 0.17
+      MooseX::Role::WithOverloading::Meta::Role 0.17
+      MooseX::Role::WithOverloading::Meta::Role::Application 0.17
+      MooseX::Role::WithOverloading::Meta::Role::Application::Composite 0.17
+      MooseX::Role::WithOverloading::Meta::Role::Application::Composite::ToClass 0.17
+      MooseX::Role::WithOverloading::Meta::Role::Application::Composite::ToInstance 0.17
+      MooseX::Role::WithOverloading::Meta::Role::Application::Composite::ToRole 0.17
+      MooseX::Role::WithOverloading::Meta::Role::Application::FixOverloadedRefs 0.17
+      MooseX::Role::WithOverloading::Meta::Role::Application::ToClass 0.17
+      MooseX::Role::WithOverloading::Meta::Role::Application::ToInstance 0.17
+      MooseX::Role::WithOverloading::Meta::Role::Application::ToRole 0.17
+      MooseX::Role::WithOverloading::Meta::Role::Composite 0.17
+    requirements:
+      ExtUtils::MakeMaker 0
+      Moose 0.94
+      Moose::Exporter 0
+      Moose::Role 1.15
+      aliased 0
+      namespace::autoclean 0.16
+      namespace::clean 0.19
+      perl 5.006
   MooseX-StrictConstructor-0.21
     pathname: D/DR/DROLSKY/MooseX-StrictConstructor-0.21.tar.gz
     provides:
@@ -9211,6 +9247,15 @@ DISTRIBUTIONS
       yaml_mapping undef
       yaml_scalar undef
       yaml_sequence undef
+    requirements:
+      ExtUtils::MakeMaker 0
+      perl 5.008001
+  YAML-LibYAML-0.75
+    pathname: T/TI/TINITA/YAML-LibYAML-0.75.tar.gz
+    provides:
+      YAML::LibYAML 0.75
+      YAML::XS 0.75
+      YAML::XS::LibYAML undef
     requirements:
       ExtUtils::MakeMaker 0
       perl 5.008001
