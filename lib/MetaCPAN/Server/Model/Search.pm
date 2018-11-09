@@ -12,7 +12,7 @@ has search => (
     is      => 'ro',
     isa     => 'MetaCPAN::Model::Search',
     lazy    => 1,
-    handles => [qw( search_for_first_result search_simple search_web )],
+    handles => [qw( search_for_first_result search_web )],
     default => sub {
         my $self = shift;
         return MetaCPAN::Model::Search->new(

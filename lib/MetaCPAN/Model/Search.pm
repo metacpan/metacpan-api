@@ -35,13 +35,6 @@ sub _not_rogue {
     return { not => { filter => { or => \@rogue_dists } } };
 }
 
-sub search_simple {
-    my ( $self, $search_term ) = @_;
-    my $es_query = $self->build_query($search_term);
-    my $es_results = $self->run_query( file => $es_query );
-    return $es_results;
-}
-
 sub search_for_first_result {
     my ( $self, $search_term ) = @_;
     my $es_query = $self->build_query($search_term);
