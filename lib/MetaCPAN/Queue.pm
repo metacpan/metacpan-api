@@ -32,7 +32,10 @@ sub startup {
 
     my $helper = MetaCPAN::Queue::Helper->new;
     $self->plugin( Minion => $helper->backend );
-    $self->plugin( 'Minion::Admin' => { route => $self->routes->any('/') } );
+    $self->plugin(
+        'Minion::Admin' => { route => $self->routes->any('/minion') } );
+    $self->plugin(
+        MountPSGI => { '/' => $self->home->child('app.psgi')->to_string } );
 
     $self->minion->add_task(
         index_release => $self->_gen_index_task_sub('release') );
