@@ -132,9 +132,11 @@ sub run {
         }
         $self->purge_author_releases;
         $self->purge_favorite;
-        $self->purge_author;
-        $self->purge_contributor;
         $self->purge_rating;
+        if ( !$self->release ) {
+            $self->purge_author;
+            $self->purge_contributor;
+        }
     }
 
     $self->index->refresh;
