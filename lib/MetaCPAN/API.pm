@@ -23,8 +23,6 @@ use Mojo::Base 'Mojolicious';
 use Config::ZOMG ();
 use File::Temp   ();
 use List::Util qw( any );
-use MetaCPAN::Model::Search  ();
-use MetaCPAN::Model::User    ();
 use MetaCPAN::Script::Runner ();
 use Search::Elasticsearch    ();
 use Try::Tiny qw( catch try );
@@ -34,19 +32,6 @@ has es => sub {
         client => '2_0::Direct',
         ( $ENV{ES} ? ( nodes => [ $ENV{ES} ] ) : () ),
     );
-};
-
-has model_search => sub {
-    my $self = shift;
-    return MetaCPAN::Model::Search->new(
-        es    => $self->es,
-        index => 'cpan',
-    );
-};
-
-has model_user => sub {
-    my $self = shift;
-    return MetaCPAN::Model::User->new( es => $self->es, );
 };
 
 sub startup {
@@ -84,6 +69,7 @@ sub startup {
     $self->minion->add_task(
         index_favorite => $self->_gen_index_task_sub('favorite') );
 
+    $self->plugin('MetaCPAN::API::Plugin::Model');
     $self->_set_up_routes;
 }
 
