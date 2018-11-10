@@ -2,6 +2,10 @@
 seq:
     - seq: t/0*.t
 
+    # ensure t/script/cover.t runs before t/server/controller/cover.t
+
+    - seq: t/script/cover.t
+
     # If t/server/controller/user/favorite.t this runs too late then the
     # looks_human test will fail.  We should probably reset the user data, but
     # this is a quicker fix for now.
