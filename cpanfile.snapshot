@@ -4723,8 +4723,8 @@ DISTRIBUTIONS
       URI::db 0.15
       URI::file 4.21
       perl 5.010001
-  Mojolicious-8.05
-    pathname: S/SR/SRI/Mojolicious-8.05.tar.gz
+  Mojolicious-8.06
+    pathname: S/SR/SRI/Mojolicious-8.06.tar.gz
     provides:
       Mojo undef
       Mojo::Asset undef
@@ -4794,7 +4794,7 @@ DISTRIBUTIONS
       Mojo::UserAgent::Transactor undef
       Mojo::Util undef
       Mojo::WebSocket undef
-      Mojolicious 8.05
+      Mojolicious 8.06
       Mojolicious::Command undef
       Mojolicious::Command::Author::cpanify undef
       Mojolicious::Command::Author::generate undef
