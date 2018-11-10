@@ -20,3 +20,5 @@ produces:
 paths:
   /search/web:
     $ref: "requests/search.yml#/search_web"
+  /search/first:
+    $ref: "requests/search.yml#/search_first"
