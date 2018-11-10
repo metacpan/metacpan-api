@@ -21,7 +21,7 @@ sub first : Chained('/search/index') : PathPart('first') : Args(0) {
     my $model   = $c->model('Search');
     my $results = $model->search_for_first_result( $args->{q} );
 
-    $c->stash($results) if $results;
+    $c->stash_or_detach($results);
 }
 
 # The web endpoint is the primary one, this handles the front-end's user-facing search
