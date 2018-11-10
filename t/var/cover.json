@@ -1,0 +1,79 @@
+{
+   "Devel-GoFaster" : {
+      "0.000" : {
+         "coverage" : {
+            "total" : {
+               "branch" : "12.50",
+               "condition" : "0.00",
+               "statement" : "63.64",
+               "subroutine" : "71.43",
+               "total" : "46.51"
+            }
+         }
+      },
+      "0.001" : {
+         "coverage" : {
+            "total" : {
+               "branch" : "12.50",
+               "condition" : "0.00",
+               "statement" : "61.90",
+               "subroutine" : "71.43",
+               "total" : "45.24"
+            }
+         }
+      }
+   },
+   "Try-Tiny" : {
+      "0.22" : {
+         "coverage" : {
+            "total" : {}
+         }
+      },
+      "0.23" : {
+         "coverage" : {
+            "total" : {}
+         }
+      },
+      "0.24" : {
+         "coverage" : {
+            "total" : {}
+         }
+      },
+      "0.27" : {
+         "coverage" : {
+            "total" : {
+               "branch" : "78.95",
+               "condition" : "46.67",
+               "pod" : "100.00",
+               "statement" : "95.06",
+               "subroutine" : "100.00",
+               "total" : "86.58"
+            }
+         }
+      },
+      "0.28" : {
+         "coverage" : {
+            "total" : {
+               "branch" : "78.95",
+               "condition" : "46.67",
+               "pod" : "100.00",
+               "statement" : "95.06",
+               "subroutine" : "100.00",
+               "total" : "86.58"
+            }
+         }
+      },
+      "0.30" : {
+         "coverage" : {
+            "total" : {
+               "branch" : "78.95",
+               "condition" : "46.67",
+               "pod" : "100.00",
+               "statement" : "94.87",
+               "subroutine" : "100.00",
+               "total" : "86.30"
+            }
+         }
+      }
+   }
+}
