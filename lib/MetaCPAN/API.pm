@@ -24,6 +24,7 @@ use Config::ZOMG ();
 use File::Temp   ();
 use List::Util qw( any );
 use MetaCPAN::Model::Search  ();
+use MetaCPAN::Model::User    ();
 use MetaCPAN::Script::Runner ();
 use Search::Elasticsearch    ();
 use Try::Tiny qw( catch try );
@@ -41,6 +42,11 @@ has model_search => sub {
         es    => $self->es,
         index => 'cpan',
     );
+};
+
+has model_user => sub {
+    my $self = shift;
+    return MetaCPAN::Model::User->new( es => $self->es, );
 };
 
 sub startup {

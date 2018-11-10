@@ -30,7 +30,10 @@ subtest 'search identities' => sub {
     $t->get_ok('/admin/identity-search-form');
     $t->status_is(200);
 
-    $t->post_ok('/admin/search-identities');
+    $t->post_ok( '/admin/search-identities' => form =>
+            { name => 'pause', key => 'MO' } );
+    $t->content_like(qr/\bMO\b/);
+    $t->content_like(qr/\bpause\b/);
     $t->status_is(200);
 };
 
