@@ -1,6 +1,19 @@
 ---
 
-search_result_item:
+search_result_items:
+  type: object
+  properties:
+    distribution:
+      type: string
+    hits:
+      title: Hits
+      type: array
+      items:
+        $ref: "#/search_result_hit"
+
+    total:
+      type: integer
+search_result_hit:
   type: object
   properties:
     description:
@@ -18,7 +31,9 @@ search_result_item:
     date:
       type: string
     favorites:
-      type: integer
+      type:
+        - "integer"
+        - "null"
     status:
       type: string
     score:
