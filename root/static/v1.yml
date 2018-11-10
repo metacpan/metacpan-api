@@ -2,7 +2,7 @@
 
 swagger: "2.0"
 info:
-  version: "1.0"
+  version: "1.0.0"
   title: "MetaCPAN API"
 basePath: "/v1"
 tags:
@@ -10,6 +10,13 @@ tags:
     description: MetaCPAN Search Endpoints
   - name: Release
     description: Distribution Release Endpoints
+schemes:
+  - "http"
+  - "https"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
 paths:
   /search/web:
     $ref: "requests/search.yml#/search_web"
