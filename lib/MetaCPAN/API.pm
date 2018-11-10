@@ -32,7 +32,7 @@ use Try::Tiny qw( catch try );
 has es => sub {
     return Search::Elasticsearch->new(
         client => '2_0::Direct',
-        nodes  => [':9200'],       #TODO config
+        ( $ENV{ES} ? ( nodes => [ $ENV{ES} ] ) : () ),
     );
 };
 
