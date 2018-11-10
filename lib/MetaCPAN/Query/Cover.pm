@@ -19,7 +19,10 @@ sub find_release_coverage {
     );
     $res->{hits}{total} or return {};
 
-    return $res->{hits}{hits}[0]{_source};
+    return +{
+        %{ $res->{hits}{hits}[0]{_source} },
+        url => "http://cpancover.com/latest/$release/index.html",
+    };
 }
 
 __PACKAGE__->meta->make_immutable;
