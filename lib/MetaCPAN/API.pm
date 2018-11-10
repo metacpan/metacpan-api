@@ -61,8 +61,9 @@ sub startup {
         );
     }
 
-    # TODO secret from config
-    $self->secrets( [ $ENV{MOJO_SECRET} ] );
+    die 'need secret' unless $self->config->{secret};
+
+    $self->secrets( [ $self->config->{secret} ] );
 
     $self->static->paths( [ $self->home->child('root') ] );
 
@@ -83,7 +84,7 @@ sub startup {
     $self->minion->add_task(
         index_favorite => $self->_gen_index_task_sub('favorite') );
 
-    $self->_maybe_set_up_routes;
+    $self->_set_up_routes;
 }
 
 sub _gen_index_task_sub {
@@ -119,17 +120,16 @@ sub _gen_index_task_sub {
         }
 }
 
-sub _maybe_set_up_routes {
+sub _set_up_routes {
     my $self = shift;
-    return unless $ENV{MOJO_SECRET} && $ENV{GITHUB_KEY};
 
     my $r = $self->routes;
 
     $self->plugin(
         'Web::Auth',
         module      => 'Github',
-        key         => $ENV{GITHUB_KEY},
-        secret      => $ENV{GITHUB_SECRET},
+        key         => $self->config->{github_key},
+        secret      => $self->config->{github_secret},
         on_finished => sub {
             my ( $c, $access_token, $account_info ) = @_;
             my $login = $account_info->{login};
