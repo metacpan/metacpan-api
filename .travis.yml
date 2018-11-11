@@ -68,14 +68,13 @@ before_install:
 
 install:
   - AUTHOR_TESTING=0 cpm install -L $PERL_CARTON_PATH --resolver $CPAN_RESOLVER --workers $(test-jobs) || (tail -n 500 -f ~/.perl-cpm/build.log; false)
-  - mkdir $TRAVIS_BUILD_DIR/log
 
 before_script:
   - bin/wait-for-open http://localhost:9200/
   - coverage-setup
 
 script:
-  - carton exec prove -It/lib -lrv -j$(test-jobs) t
+  - carton exec prove -It/lib -lr -j$(test-jobs) t
 
 after_success:
   - coverage-report
@@ -100,4 +99,3 @@ addons:
     s3_region: "us-east-1"
     paths:
     - $TRAVIS_BUILD_DIR/cpanfile.snapshot
-    - $TRAVIS_BUILD_DIR/log
