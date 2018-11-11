@@ -2,16 +2,7 @@ package MetaCPAN::API::Model::User;
 
 use MetaCPAN::Moose;
 
-use MetaCPAN::Types qw( Object );
-
-#use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
-
-has es => (
-    is       => 'ro',
-    isa      => Object,
-    handles  => { _run_query => 'search', },
-    required => 1,
-);
+with 'MetaCPAN::API::Model::Role::ES';
 
 sub lookup {
     my ( $self, $name, $key ) = @_;
