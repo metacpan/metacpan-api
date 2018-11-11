@@ -53,7 +53,7 @@ before_install:
   - sudo curl -O -L https://github.com/metacpan/metacpan-puppet/raw/master/modules/metacpan_elasticsearch/files/etc/scripts/score_version_numified.groovy > /tmp/es/score_version_numified.groovy
 
   - docker pull elasticsearch:2.4-alpine
-  - docker run -d -p 127.0.0.1:9200:9200 -v /tmp/es:/etc/elasticsearch/scripts elasticsearch:2.4-alpine
+  - docker run -d -p 127.0.0.1:9200:9200 -v /tmp/es:/usr/share/elasticsearch/config/scripts elasticsearch:2.4-alpine
 
   - cpanm -n Carton
   - cpanm -n App::cpm
