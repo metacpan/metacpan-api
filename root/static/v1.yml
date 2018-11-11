@@ -8,8 +8,8 @@ basePath: "/v1"
 tags:
   - name: Search
     description: MetaCPAN Search Endpoints
-  - name: Release
-    description: Distribution Release Endpoints
+  # - name: Release
+  #   description: Distribution Release Endpoints
 schemes:
   - "http"
   - "https"
