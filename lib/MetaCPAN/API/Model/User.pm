@@ -1,9 +1,6 @@
-package MetaCPAN::Model::User;
+package MetaCPAN::API::Model::User;
 
 use MetaCPAN::Moose;
-
-use Log::Contextual qw( :log :dlog );
-use MooseX::StrictConstructor;
 
 use MetaCPAN::Types qw( Object );
 
@@ -37,6 +34,8 @@ sub lookup {
 
     return $res->{hits}{hits}[0]{_source};
 }
+
+__PACKAGE__->meta->make_immutable;
 
 1;
 

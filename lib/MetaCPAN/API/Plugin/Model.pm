@@ -6,9 +6,9 @@ use Carp ();
 
 # Models from the catalyst app
 use MetaCPAN::Model::Search ();
-use MetaCPAN::Model::User   ();
 
 # New models
+use MetaCPAN::API::Model::User     ();
 use MetaCPAN::API::Model::Download ();
 
 has app => sub { Carp::croak 'app is required' }, weak => 1;
@@ -28,7 +28,7 @@ has search => sub {
 
 has user => sub {
     my $self = shift;
-    return MetaCPAN::Model::User->new( es => $self->app->es );
+    return MetaCPAN::API::Model::User->new( es => $self->app->es );
 };
 
 sub register {

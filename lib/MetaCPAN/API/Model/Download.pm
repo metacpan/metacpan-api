@@ -1,10 +1,17 @@
 package MetaCPAN::API::Model::Download;
 
-use Mojo::Base -base;
+use MetaCPAN::Moose;
 
-use Carp ();
+use MetaCPAN::Types qw( Object );
 
-has es => sub { Carp::croak 'es is required' };
+has es => (
+    is       => 'ro',
+    isa      => Object,
+    handles  => { _run_query => 'search', },
+    required => 1,
+);
+
+__PACKAGE__->meta->make_immutable;
 
 1;
 
