@@ -7,6 +7,10 @@ use Mojo::JSON qw(true false);
 # Note: we need a release marked as status => latest
 # so we're using Versions::PkgVar for now
 # perhaps it should be smarter later and find one to try?
+#
+plan skip_all =>
+    "Travis ES bad, see https://travis-ci.org/metacpan/metacpan-api/jobs/301092129"
+    if $ENV{TRAVIS};
 
 my $t = Test::Mojo->new('MetaCPAN::API');
 
