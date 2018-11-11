@@ -52,12 +52,8 @@ before_install:
 
   - sudo curl -O -L https://github.com/metacpan/metacpan-puppet/raw/master/modules/metacpan_elasticsearch/files/etc/scripts/score_version_numified.groovy > /tmp/es/score_version_numified.groovy
 
-  - sudo cp /tmp/es/* /etc/elasticsearch/scripts/
-
-  - sudo service elasticsearch stop && curl -O -L https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-2.4.3.deb && sudo dpkg -i --force-confnew elasticsearch-2.4.3.deb && sudo service elasticsearch start
-
-  - sudo service elasticsearch stop && curl -O -L https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-2.4.3.deb && sudo dpkg -i --force-confnew elasticsearch-2.4.3.deb && sudo service elasticsearch start
-  - sudo service elasticsearch restart
+  - docker pull elasticsearch:2.4-alpine
+  - docker run -d -p 127.0.0.1:9200:9200 -v /tmp/es:/etc/elasticsearch/scripts elasticsearch:2.4-alpine
 
   - cpanm -n Carton
   - cpanm -n App::cpm
@@ -83,7 +79,7 @@ after_success:
 #  - cat ~/.cpanm/build.log
 
 services:
-  - elasticsearch
+  - docker
 
 # caching /local should save about 5 minutes in module install time
 cache:
