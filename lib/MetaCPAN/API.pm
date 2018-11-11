@@ -2,19 +2,18 @@ package MetaCPAN::API;
 
 =head1 DESCRIPTION
 
-This is not a web app.  It's purely here to manage the API's release indexing
-queue.
+This is the API web server interface.
 
     # On vagrant VM
-    ./bin/run morbo bin/queue.pl
+    ./bin/run morbo bin/api.pl
 
     # Display information on jobs in queue
-    ./bin/run bin/queue.pl minion job
+    ./bin/run bin/api.pl minion job -s
 
-To run the minion admin web interface, run the following on one of the servers:
+To run the api web server, run the following on one of the servers:
 
     # Run the daemon on a local port (tunnel to display on your browser)
-    ./bin/run bin/queue.pl daemon
+    ./bin/run bin/api.pl daemon
 
 =cut
 
