@@ -100,6 +100,7 @@ requires 'Module::Metadata', '1.000022';
 requires 'Module::Pluggable';
 requires 'Module::Runtime';
 requires 'Mojo::Pg', '>= 4.08';
+requires 'Mojolicious::Plugin::Web::Auth', '0.000004';
 requires 'Moose', ' >= 2.1403';
 requires 'Moose::Role';
 requires 'Moose::Util';
@@ -176,6 +177,9 @@ requires 'strictures', 1;
 requires 'utf8';
 requires 'version', '0.9901';
 requires 'warnings';
+requires 'Mojolicious::Plugin::MountPSGI';
+requires 'Mojolicious::Plugin::OpenAPI';
+requires 'YAML::XS', '0.67'; # Mojolicious::Plugin::OpenAPI YAML loading
 
 test_requires 'App::Prove';
 test_requires 'CPAN::Faker', '0.010';

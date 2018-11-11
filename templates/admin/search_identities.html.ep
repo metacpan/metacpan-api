@@ -1,0 +1,3 @@
+display results below:
+<%= stash('user_data')->{identity}[0]{name} %>
+<%= stash('user_data')->{identity}[0]{key} %>

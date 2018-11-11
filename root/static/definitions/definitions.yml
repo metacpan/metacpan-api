@@ -1,0 +1,5 @@
+---
+
+# Maintain names and descriptions of common attributes
+dist_fav_count:
+  description: Number of times favorited
