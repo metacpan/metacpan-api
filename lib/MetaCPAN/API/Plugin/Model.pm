@@ -10,6 +10,7 @@ use MetaCPAN::Model::Search ();
 # New models
 use MetaCPAN::API::Model::User     ();
 use MetaCPAN::API::Model::Download ();
+use MetaCPAN::API::Model::Cover    ();
 
 has app => sub { Carp::croak 'app is required' }, weak => 1;
 
@@ -31,6 +32,11 @@ has user => sub {
     return MetaCPAN::API::Model::User->new( es => $self->app->es );
 };
 
+has cover => sub {
+    my $self = shift;
+    return MetaCPAN::API::Model::Cover->new( es => $self->app->es );
+};
+
 sub register {
     my ( $plugin, $app, $conf ) = @_;
     $plugin->app($app);
@@ -39,6 +45,7 @@ sub register {
     $app->helper( 'model.download' => sub { $plugin->download } );
     $app->helper( 'model.search'   => sub { $plugin->search } );
     $app->helper( 'model.user'     => sub { $plugin->user } );
+    $app->helper( 'model.cover'    => sub { $plugin->cover } );
 }
 
 1;
