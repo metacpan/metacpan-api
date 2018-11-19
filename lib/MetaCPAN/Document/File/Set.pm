@@ -624,6 +624,8 @@ sub find_changes_files {
         ChangeLog.pod
         CHANGES
         Changes
+        CHANGES.md
+        CHANGES.markdown
         CHANGES.pm
         Changes.pm
         CHANGES.pod
