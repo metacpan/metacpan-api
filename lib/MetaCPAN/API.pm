@@ -51,13 +51,7 @@ sub startup {
 
     $self->static->paths( [ $self->home->child('root') ] );
 
-    if ( $ENV{HARNESS_ACTIVE} ) {
-        my $file = File::Temp->new( UNLINK => 1, SUFFIX => '.db' );
-        $self->plugin( Minion => { SQLite => 'sqlite:' . $file } );
-    }
-    else {
-        $self->plugin( Minion => { Pg => $self->config->{minion_dsn} } );
-    }
+    $self->plugin( Minion => $self->_build_db_params );
 
     $self->minion->add_task(
         index_release => $self->_gen_index_task_sub('release') );
@@ -169,6 +163,29 @@ sub _is_admin {
     );
 
     return any { $username eq $_ } @admins;
+}
+
+sub _build_db_params {
+    my $self = shift;
+
+    my $db_params;
+    if ( $ENV{HARNESS_ACTIVE} ) {
+        my $file = File::Temp->new( UNLINK => 1, SUFFIX => '.db' );
+        return { SQLite => 'sqlite:' . $file };
+    }
+
+    die "Unable to determine dsn from configuration"
+        unless $self->config->{minion_dsn};
+
+    if ( $self->config->{minion_dsn} =~ /^postgresql:/ ) {
+        return { Pg => $self->config->{minion_dsn} };
+    }
+
+    if ( $self->config->{minion_dsn} =~ /^sqlite:/ ) {
+        return { SQLite => $self->config->{minion_dsn} };
+    }
+
+    die "Unsupported Database in dsn: " . $self->config->{minion_dsn};
 }
 
 1;
