@@ -145,6 +145,20 @@ sub _set_up_routes {
     $self->plugin( 'Minion::Admin' => { route => $admin->any('/minion') } );
     $self->plugin(
         'OpenAPI' => { url => $self->home->rel_file('root/static/v1.yml') } );
+
+# This route is for when nginx gets updated to no longer strip the `/v1` path.
+# By retaining the `/v1` path the OpenAPI spec is picked up and passed
+# through Mojolicous.  The `rewrite` parameter is stripping the `/v1` before
+# it is passed to Catalyst allowing the previous logic to be followed.
+    $self->plugin(
+        MountPSGI => {
+            '/v1'   => $self->home->child('app.psgi')->to_string,
+            rewrite => 1
+        }
+    );
+
+# XXX Catch cases when `v1` has been stripped by nginx until migration is complete
+# XXX then this path can be removed.
     $self->plugin(
         MountPSGI => { '/' => $self->home->child('app.psgi')->to_string } );
 
