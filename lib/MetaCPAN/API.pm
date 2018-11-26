@@ -100,7 +100,7 @@ sub _gen_index_task_sub {
                 }
             );
         };
-        }
+    }
 }
 
 sub _set_up_routes {

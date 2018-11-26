@@ -186,7 +186,7 @@ sub _build_dependencies {
 sub _build_document {
     my $self = shift;
 
-    my $st = $self->file->stat;
+    my $st   = $self->file->stat;
     my $stat = { map { $_ => $st->$_ } qw(mode size mtime) };
 
     my $meta         = $self->metadata;

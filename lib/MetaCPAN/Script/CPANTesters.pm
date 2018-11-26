@@ -130,7 +130,7 @@ sub index_reports {
         $version =~ s{\+}{}g;
         $version =~ s{\A-}{};
 
-        my $release = join( '-', $row_from_db->{dist}, $version );
+        my $release     = join( '-', $row_from_db->{dist}, $version );
         my $release_doc = $releases{$release};
 
         # there's a cpantesters dist we haven't indexed

@@ -14,7 +14,7 @@ subtest 'missing required arguments' => sub {
 };
 
 subtest 'file does not exist' => sub {
-    my $file = 'hlaglhalghalghj.blah';
+    my $file    = 'hlaglhalghalghj.blah';
     my $archive = $CLASS->new( file => $file );
 
     throws_ok { $archive->files } qr{$file does not exist};

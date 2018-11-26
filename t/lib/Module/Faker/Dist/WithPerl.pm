@@ -37,7 +37,7 @@ sub _from_perl_file {
     my $data = do($filename);
 
     my $extra = ( delete $data->{X_Module_Faker} ) || {};
-    my $dist = $self->new( { %$data, %$extra } );
+    my $dist  = $self->new( { %$data, %$extra } );
 }
 
 __PACKAGE__->meta->make_immutable;

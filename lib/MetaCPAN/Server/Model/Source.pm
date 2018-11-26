@@ -54,7 +54,7 @@ sub path {
     return if -e $source_dir;  # previously extracted, but file does not exist
 
     my $author = MetaCPAN::Util::author_dir($pauseid);
-    my $http = dir( qw(var tmp http authors), $author );
+    my $http   = dir( qw(var tmp http authors), $author );
     $author = $self->cpan . "/authors/$author";
 
     my ($archive_file)

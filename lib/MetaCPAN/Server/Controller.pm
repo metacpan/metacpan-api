@@ -44,7 +44,7 @@ sub apply_request_filter {
 
     if ( my $fields = $c->req->param('fields') ) {
         my $filtered = {};
-        my @fields = split /,/, $fields;
+        my @fields   = split /,/, $fields;
         @$filtered{@fields} = @$data{@fields};
         $data = $filtered;
     }

@@ -35,7 +35,7 @@ sub numify_version {
     $version =~ s/_//g;
     if ( $version =~ s/^v//i || $version =~ tr/.// > 1 ) {
         my @parts = split /\./, $version;
-        my $n = shift @parts;
+        my $n     = shift @parts;
         return 0 unless defined $n;
         $version
             = sprintf( join( '.', '%s', ( '%03s' x @parts ) ), $n, @parts );
@@ -52,7 +52,7 @@ sub fix_version {
     $version =~ s/\.[._]+/./;
     $version =~ s/[._]*_[._]*/_/g;
     $version =~ s/\.{2,}/./g;
-    $v ||= $version =~ tr/.// > 1;
+    $v       ||= $version =~ tr/.// > 1;
     $version ||= 0;
     return ( ( $v ? 'v' : '' ) . $version );
 }

@@ -193,7 +193,7 @@ test_requires 'LWP::ConsoleLogger::Easy';
 test_requires 'MetaCPAN::Client', '>=', '2.017000';
 test_requires 'Module::Faker', '0.015';
 test_requires 'Module::Faker::Dist', '0.010';
-test_requires 'Perl::Tidy' => '20180220';
+test_requires 'Perl::Tidy' => '20181120';
 test_requires 'Plack::Test::Agent';
 test_requires 'Test::Code::TidyAll';
 test_requires 'Test::More', '0.99';

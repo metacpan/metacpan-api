@@ -121,7 +121,7 @@ subtype RiverSummary,
 
 subtype Resources,
     as Dict [
-    license => Optional [ ArrayRef [Str] ],
+    license  => Optional [ ArrayRef [Str] ],
     homepage => Optional [Str],
     bugtracker =>
         Optional [ Dict [ web => Optional [Str], mailto => Optional [Str] ] ],

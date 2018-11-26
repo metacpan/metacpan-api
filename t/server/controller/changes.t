@@ -95,7 +95,7 @@ test_psgi app, sub {
     for my $test (@tests) {
         my ( $path, $code, $name, $content, $headers ) = @{$test};
 
-        my $res = get_ok( $cb, $path, $code );
+        my $res  = get_ok( $cb, $path, $code );
         my $json = decode_json_ok($res);
 
         test_cache_headers( $res, $headers );
@@ -106,7 +106,7 @@ test_psgi app, sub {
         like $json->{content}, $content, 'file content';
 
         my @fields = qw(release name content);
-        $res = get_ok( $cb, "$path?fields=" . join( q[,], @fields ), 200 );
+        $res  = get_ok( $cb, "$path?fields=" . join( q[,], @fields ), 200 );
         $json = decode_json_ok($res);
 
         is_deeply [ sort keys %$json ], [ sort @fields ],
