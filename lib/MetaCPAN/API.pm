@@ -26,6 +26,10 @@ use MetaCPAN::Script::Runner ();
 use Search::Elasticsearch    ();
 use Try::Tiny qw( catch try );
 
+# MountPSGI doesn't set PLACK_ENV, so Plack::Util::load_psgi defaults to development.
+# Hack around that until MountPSGI is fixed.
+$ENV{PLACK_ENV} ||= $ENV{'MOJO_MODE'} || 'development';
+
 has es => sub {
     return Search::Elasticsearch->new(
         client => '2_0::Direct',
