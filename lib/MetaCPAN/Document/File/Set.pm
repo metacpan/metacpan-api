@@ -372,7 +372,7 @@ sub _version_filters {
                     term => {
                         'module.version_numified' => $self->_numify($_)
                     }
-                    }
+                }
             } @exclusion;
         }
 

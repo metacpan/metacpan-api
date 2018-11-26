@@ -16,7 +16,7 @@ use Sys::Hostname qw(hostname);
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt::Dashes';
 
 my $hostname = hostname;
-my $mode = $hostname =~ /dev/ ? 'testing' : 'production';
+my $mode     = $hostname =~ /dev/ ? 'testing' : 'production';
 
 # So we dont' break production
 my $bucket = "mc-${mode}-backups";
@@ -152,7 +152,7 @@ sub run_snapshot {
     my $snap_name = $self->snap_stub . '_' . $date;
 
     my $indices = join ',', @{ $self->indices };
-    my $data = {
+    my $data    = {
         "ignore_unavailable"   => 0,
         "include_global_state" => 1,
         "indices"              => $indices,
@@ -170,7 +170,7 @@ sub run_snapshot {
 sub run_list_snaps {
     my $self = shift;
 
-    my $path = "${repository_name}/_all";
+    my $path     = "${repository_name}/_all";
     my $response = $self->_request( 'get', $path, {} );
 
     my $data = eval { decode_json $response->{content} };

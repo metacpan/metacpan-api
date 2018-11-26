@@ -51,7 +51,7 @@ sub new_object {
 
 sub from_session {
     my ( $self, $c, $frozenuser ) = @_;
-    my $user = $self->new_object( $self->config, $c );
+    my $user     = $self->new_object( $self->config, $c );
     my $delegate = $self->handles->{from_session};
     return $user->$delegate( $c, $frozenuser );
 }
@@ -64,7 +64,7 @@ sub for_session {
 
 sub find_user {
     my ( $self, $authinfo, $c ) = @_;
-    my $user = $self->new_object( $self->config, $c );
+    my $user     = $self->new_object( $self->config, $c );
     my $delegate = $self->handles->{find_user};
     return $user->$delegate( $authinfo, $c );
 

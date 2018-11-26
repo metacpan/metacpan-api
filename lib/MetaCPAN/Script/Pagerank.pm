@@ -57,7 +57,7 @@ sub run {
     log_info {
         "Calculating PageRankg with taking $i dependencies into account";
     };
-    my $res = $pr->getPagerankOfNodes( listOfEdges => \@edges );
+    my $res  = $pr->getPagerankOfNodes( listOfEdges => \@edges );
     my @sort = sort { $res->{$b} <=> $res->{$a} } keys %$res;
     for ( 1 .. 500 ) {
         my $mod = shift @sort;

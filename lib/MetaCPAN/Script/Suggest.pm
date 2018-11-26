@@ -43,7 +43,7 @@ sub run {
                 log_info {"updating suggest data for month: $gte"};
             }
 
-            my $lt = $dt->strftime("%Y-%m-%d");
+            my $lt    = $dt->strftime("%Y-%m-%d");
             my $range = +{ range => { date => { gte => $gte, lt => $lt } } };
             $self->_update_slice($range);
         }

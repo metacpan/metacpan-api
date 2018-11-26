@@ -222,7 +222,7 @@ sub import_archive {
     my $self         = shift;
     my $archive_path = shift;
 
-    my $bulk = $self->index->bulk( size => $self->_bulk_size );
+    my $bulk  = $self->index->bulk( size => $self->_bulk_size );
     my $model = $self->_get_release_model( $archive_path, $bulk );
 
     log_debug {'Gathering modules'};

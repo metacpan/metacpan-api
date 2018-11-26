@@ -21,7 +21,7 @@ sub get_cpan_author_contributors {
         next unless exists $d->{pauseid};
 
         # skip existing records
-        my $id = digest( $d->{pauseid}, $release );
+        my $id     = digest( $d->{pauseid}, $release );
         my $exists = $es->exists(
             index => 'contributor',
             type  => 'contributor',

@@ -67,7 +67,7 @@ my $RE_SECTION = qr/^\s*(\S+)((\h+-+\h+(.+))|(\r?\n\h*\r?\n\h*(.+)))?/ms;
 sub _build_section {
     my $self = shift;
 
-    my $text = ${ $self->content };
+    my $text    = ${ $self->content };
     my $section = MetaCPAN::Util::extract_section( $text, 'NAME' );
 
     # if it's a POD file without a name section, let's try to generate
@@ -440,7 +440,7 @@ has level => (
 );
 
 sub _build_level {
-    my $self = shift;
+    my $self  = shift;
     my @level = split( /\//, $self->path );
     return @level - 1;
 }
@@ -568,7 +568,7 @@ sub _build_sloc {
     return 0 unless ( $self->is_perl_file );
 
     my @content = split( "\n", ${ $self->content } );
-    my $pods = 0;
+    my $pods    = 0;
 
     # Use pod_lines data to remove pod content from string.
     map {

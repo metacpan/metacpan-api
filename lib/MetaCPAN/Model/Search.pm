@@ -37,7 +37,7 @@ sub _not_rogue {
 
 sub search_for_first_result {
     my ( $self, $search_term ) = @_;
-    my $es_query = $self->build_query($search_term);
+    my $es_query   = $self->build_query($search_term);
     my $es_results = $self->run_query( file => $es_query );
     return unless $es_results->{hits}{total};
 
@@ -381,7 +381,7 @@ sub _extract_results {
                 %{ $res->{fields} },
                 %{ $res->{_source} },
                 score => $res->{_score},
-                }
+            }
         } @{ $es_results->{hits}{hits} }
     ];
 }

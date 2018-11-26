@@ -38,7 +38,7 @@ sub index : Path {
 sub update_user {
     my ( $self, $c, $type, $id, $data ) = @_;
     my $model = $c->model('User::Account');
-    my $user = $model->find( { name => $type, key => $id } );
+    my $user  = $model->find( { name => $type, key => $id } );
     unless ($user) {
         $user = $model->get( $c->user->id )
             if ( $c->session->{__user} );
