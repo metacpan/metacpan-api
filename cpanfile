@@ -177,7 +177,7 @@ requires 'strictures', 1;
 requires 'utf8';
 requires 'version', '0.9901';
 requires 'warnings';
-requires 'Mojolicious::Plugin::MountPSGI';
+requires 'Mojolicious::Plugin::MountPSGI', '0.14';
 requires 'Mojolicious::Plugin::OpenAPI';
 requires 'YAML::XS', '0.67'; # Mojolicious::Plugin::OpenAPI YAML loading
 
