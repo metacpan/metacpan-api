@@ -26,14 +26,17 @@ sub by_ids {
         type  => 'author',
         body  => $body,
     );
-    return {} unless $authors->{hits}{total};
 
     my @authors = map {
         single_valued_arrayref_to_scalar( $_->{_source} );
         $_->{_source}
     } @{ $authors->{hits}{hits} };
 
-    return { authors => \@authors };
+    return {
+        authors => \@authors,
+        took    => $authors->{took},
+        total   => $authors->{hits}{total},
+    };
 }
 
 sub by_user {
@@ -48,14 +51,17 @@ sub by_user {
             size  => 500,
         }
     );
-    return {} unless $authors->{hits}{total};
 
     my @authors = map {
         single_valued_arrayref_to_scalar( $_->{_source} );
         $_->{_source}
     } @{ $authors->{hits}{hits} };
 
-    return { authors => \@authors };
+    return {
+        authors => \@authors,
+        took    => $authors->{took},
+        total   => $authors->{hits}{total},
+    };
 }
 
 sub search {
@@ -91,7 +97,6 @@ sub search {
         type  => 'author',
         body  => $body,
     );
-    return {} unless $ret->{hits}{total};
 
     my @authors = map {
         single_valued_arrayref_to_scalar( $_->{_source} );
