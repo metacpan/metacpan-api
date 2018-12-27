@@ -254,6 +254,25 @@ sub get_files {
     return { files => [ map { $_->{_source} } @{ $ret->{hits}{hits} } ] };
 }
 
+sub get_checksums {
+    my ( $self, $release ) = @_;
+
+    my $query = +{ query => { term => { name => $release } } };
+
+    my $ret = $self->es->search(
+        index => $self->index_name,
+        type  => 'release',
+        body  => {
+            query   => $query,
+            size    => 1,
+            _source => [qw< checksum_md5 checksum_sha256 >],
+        }
+    );
+
+    return {} unless @{ $ret->{hits}{hits} };
+    return $ret->{hits}{hits}[0]{_source};
+}
+
 sub _activity_filters {
     my ( $self, $params, $start ) = @_;
     my ( $author, $distribution, $module, $new_dists )
