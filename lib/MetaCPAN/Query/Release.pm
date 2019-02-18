@@ -366,16 +366,22 @@ sub by_author_and_names {
         query => {
             bool => {
                 should => [
-                    map { +{
-                        query => {
-                            bool => {
-                                must => [
-                                    { term => { author => uc($_->{author}) } },
-                                    { term => { 'name' => $_->{name} } },
-                                ]
+                    map {
+                        +{
+                            query => {
+                                bool => {
+                                    must => [
+                                        {
+                                            term => {
+                                                author => uc( $_->{author} )
+                                            }
+                                        },
+                                        { term => { 'name' => $_->{name} } },
+                                    ]
+                                }
                             }
                         }
-                    } } @$releases
+                    } @$releases
                 ]
             }
         }
@@ -389,15 +395,15 @@ sub by_author_and_names {
     return unless $ret->{hits}{total};
 
     my @releases;
-    for my $hit (@{ $ret->{hits}{hits} }) {
+    for my $hit ( @{ $ret->{hits}{hits} } ) {
         my $src = $hit->{_source};
         single_valued_arrayref_to_scalar($src);
         push @releases, $src;
     }
 
     return {
-        took    => $ret->{took},
-        total   => $ret->{hits}{total},
+        took     => $ret->{took},
+        total    => $ret->{hits}{total},
         releases => \@releases,
     };
 }
