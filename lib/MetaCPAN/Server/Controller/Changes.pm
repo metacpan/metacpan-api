@@ -70,11 +70,12 @@ sub by_releases : Path('by_releases') : Args(0) {
 
     # ArrayRef[ Dict[ author => Str, name => Str ] ]
     my $arg = $c->read_param("releases");
-    my $ret = $c->model('CPAN::Release')->by_author_and_names( $arg );
+    my $ret = $c->model('CPAN::Release')->by_author_and_names($arg);
 
     my @changes;
-    for my $release (@{$ret->{releases}}) {
-        my ($author, $name, $path) = @{$release}{ qw(author name changes_file) };
+    for my $release ( @{ $ret->{releases} } ) {
+        my ( $author, $name, $path )
+            = @{$release}{qw(author name changes_file)};
         my $source = $c->model('Source')->path( $author, $name, $path ) // '';
 
         my $content;
@@ -82,21 +83,23 @@ sub by_releases : Path('by_releases') : Args(0) {
             local $/;
             $content = Encode::decode(
                 'UTF-8',
-                (scalar $source->openr->getline),
+                ( scalar $source->openr->getline ),
                 Encode::FB_CROAK | Encode::LEAVE_SRC
             );
-        } catch {
+        }
+        catch {
             $content = undef;
         };
 
-        push @changes, {
-            author => $author,
-            release => $name,
+        push @changes,
+            {
+            author       => $author,
+            release      => $name,
             changes_text => $content,
-        }
+            };
     }
 
-    $c->stash({ changes => \@changes });
+    $c->stash( { changes => \@changes } );
 }
 
 1;
