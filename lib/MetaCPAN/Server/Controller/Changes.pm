@@ -65,4 +65,38 @@ sub all : Chained('index') : PathPart('') : Args(0) {
     $c->detach('not_found');
 }
 
+sub by_releases : Path('by_releases') : Args(0) {
+    my ( $self, $c ) = @_;
+
+    # ArrayRef[ Dict[ author => Str, name => Str ] ]
+    my $arg = $c->read_param("releases");
+    my $ret = $c->model('CPAN::Release')->by_author_and_names( $arg );
+
+    my @changes;
+    for my $release (@{$ret->{releases}}) {
+        my ($author, $name, $path) = @{$release}{ qw(author name changes_file) };
+        my $source = $c->model('Source')->path( $author, $name, $path ) // '';
+
+        my $content;
+        try {
+            local $/;
+            $content = Encode::decode(
+                'UTF-8',
+                (scalar $source->openr->getline),
+                Encode::FB_CROAK | Encode::LEAVE_SRC
+            );
+        } catch {
+            $content = undef;
+        };
+
+        push @changes, {
+            author => $author,
+            release => $name,
+            changes_text => $content,
+        }
+    }
+
+    $c->stash({ changes => \@changes });
+}
+
 1;

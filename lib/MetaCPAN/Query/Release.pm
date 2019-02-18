@@ -357,6 +357,51 @@ sub by_author_and_name {
     };
 }
 
+sub by_author_and_names {
+    my ( $self, $releases ) = @_;
+
+    # $releases: ArrayRef[ Dict[ author => Str, name => Str ] ]
+
+    my $body = {
+        query => {
+            bool => {
+                should => [
+                    map { +{
+                        query => {
+                            bool => {
+                                must => [
+                                    { term => { author => uc($_->{author}) } },
+                                    { term => { 'name' => $_->{name} } },
+                                ]
+                            }
+                        }
+                    } } @$releases
+                ]
+            }
+        }
+    };
+
+    my $ret = $self->es->search(
+        index => $self->index_name,
+        type  => 'release',
+        body  => $body,
+    );
+    return unless $ret->{hits}{total};
+
+    my @releases;
+    for my $hit (@{ $ret->{hits}{hits} }) {
+        my $src = $hit->{_source};
+        single_valued_arrayref_to_scalar($src);
+        push @releases, $src;
+    }
+
+    return {
+        took    => $ret->{took},
+        total   => $ret->{hits}{total},
+        releases => \@releases,
+    };
+}
+
 sub by_author {
     my ( $self, $pauseid, $size ) = @_;
     $size //= 1000;
