@@ -24,4 +24,4 @@ USER metacpan-api:users
 
 EXPOSE 5000
 
-CMD [ "carton", "exec", "morbo", "-l", "http://*:5000", "-w", "root", "./bin/api.pl"]
+CMD [ "./wait-for-it.sh", "db:5432", "carton", "exec", "morbo", "-l", "http://*:5000", "-w", "root", "./bin/api.pl"]
