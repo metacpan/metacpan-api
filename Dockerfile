@@ -24,4 +24,4 @@ USER metacpan-api:users
 
 EXPOSE 5000
 
-CMD ["carton", "exec", "plackup", "-p", "5000", "-r"]
+CMD [ "carton", "exec", "morbo", "-l", "http://*:5000", "-w", "root", "./bin/api.pl"]
