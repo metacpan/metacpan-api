@@ -6,7 +6,7 @@ There is also [a repository of examples](https://github.com/metacpan/metacpan-ex
 
 _All of these URLs can be tested using the [MetaCPAN Explorer](https://explorer.metacpan.org)_
 
-To learn more about the ElasticSearch query DSL (Domain-Specific Language) check out Clinton Gormley's [Terms of Endearment - ES Query DSL Explained] (https://www.slideshare.net/clintongormley/terms-of-endearment-the-elasticsearch-query-dsl-explained) slides.
+To learn more about the ElasticSearch query DSL (Domain-Specific Language) check out Clinton Gormley's [Terms of Endearment - ES Query DSL Explained](https://www.slideshare.net/clintongormley/terms-of-endearment-the-elasticsearch-query-dsl-explained) slides.
 
 The query syntax is explained on ElasticSearch's [reference page](https://www.elasticsearch.org/guide/reference/query-dsl/). You can also check out this getting started tutorial about Elasticsearch [reference page](http://joelabrahamsson.com/elasticsearch-101/).
 
