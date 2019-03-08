@@ -76,20 +76,15 @@ sub by_releases : Path('by_releases') : Args(0) {
     for my $release ( @{ $ret->{releases} } ) {
         my ( $author, $name, $path )
             = @{$release}{qw(author name changes_file)};
-        my $source = $c->model('Source')->path( $author, $name, $path ) // '';
+        my $source = $c->model('Source')->path( $author, $name, $path ) or next;
 
-        my $content;
-        try {
-            local $/;
-            $content = Encode::decode(
+        my $content = try {
+            Encode::decode(
                 'UTF-8',
-                ( scalar $source->openr->getline ),
+                ( scalar $source->slurp ),
                 Encode::FB_CROAK | Encode::LEAVE_SRC
             );
-        }
-        catch {
-            $content = undef;
-        };
+        } or next;
 
         push @changes,
             {
