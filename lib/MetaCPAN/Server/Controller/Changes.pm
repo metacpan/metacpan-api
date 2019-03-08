@@ -91,6 +91,7 @@ sub by_releases : Path('by_releases') : Args(0) {
             author       => $author,
             release      => $name,
             changes_text => $content,
+            changes_file => $path,
             };
     }
 
