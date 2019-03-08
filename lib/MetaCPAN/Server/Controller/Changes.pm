@@ -76,7 +76,8 @@ sub by_releases : Path('by_releases') : Args(0) {
     for my $release ( @{ $ret->{releases} } ) {
         my ( $author, $name, $path )
             = @{$release}{qw(author name changes_file)};
-        my $source = $c->model('Source')->path( $author, $name, $path ) or next;
+        my $source = $c->model('Source')->path( $author, $name, $path )
+            or next;
 
         my $content = try {
             Encode::decode(
