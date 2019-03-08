@@ -4,6 +4,9 @@ package MetaCPAN::Model;
 use Moose;
 
 use ElasticSearchX::Model;
+use Log::Any::Adapter;
+
+Log::Any::Adapter->set('Log4perl');
 
 analyzer lowercase => (
     tokenizer => 'keyword',
