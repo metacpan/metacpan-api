@@ -68,9 +68,16 @@ sub all : Chained('index') : PathPart('') : Args(0) {
 sub by_releases : Path('by_releases') : Args(0) {
     my ( $self, $c ) = @_;
 
-    # ArrayRef[ Dict[ author => Str, name => Str ] ]
-    my $arg = $c->read_param("releases");
-    my $ret = $c->model('CPAN::Release')->by_author_and_names($arg);
+    my $ret = $c->model('CPAN::Release')->by_author_and_names([
+        map {
+            my @o = split('/', $_, 2);
+            @o != 2 ? () : (+{
+                author => $o[0],
+                name   => $o[1],
+            })
+        }
+        @{ $c->read_param("release") }
+    ]);
 
     my @changes;
     for my $release ( @{ $ret->{releases} } ) {
