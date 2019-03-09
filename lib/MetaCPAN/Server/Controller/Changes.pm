@@ -68,16 +68,17 @@ sub all : Chained('index') : PathPart('') : Args(0) {
 sub by_releases : Path('by_releases') : Args(0) {
     my ( $self, $c ) = @_;
 
-    my $ret = $c->model('CPAN::Release')->by_author_and_names([
-        map {
-            my @o = split('/', $_, 2);
-            @o != 2 ? () : (+{
-                author => $o[0],
-                name   => $o[1],
-            })
-        }
-        @{ $c->read_param("release") }
-    ]);
+    my @releases = map {
+        my @o = split( '/', $_, 2 );
+        @o == 2 ? { author => $o[0], name => $o[1] } : ();
+    } @{ $c->read_param("release") };
+
+    unless (@releases) {
+        $c->stash( { changes => [] } );
+        return;
+    }
+
+    my $ret = $c->model('CPAN::Release')->by_author_and_names( \@releases );
 
     my @changes;
     for my $release ( @{ $ret->{releases} } ) {
