@@ -20,6 +20,7 @@ has query_release => (
             author_status
             by_author
             by_author_and_name
+            by_author_and_names
             get_contributors
             get_files
             latest_by_author
