@@ -2,6 +2,7 @@ FROM perl:5.22
 
 ENV PERL_MM_USE_DEFAULT=1 PERL_CARTON_PATH=/carton
 
+COPY wait-for-it.sh /
 COPY cpanfile cpanfile.snapshot /metacpan-api/
 WORKDIR /metacpan-api
 
@@ -24,4 +25,4 @@ USER metacpan-api:users
 
 EXPOSE 5000
 
-CMD [ "./wait-for-it.sh", "db:5432", "carton", "exec", "morbo", "-l", "http://*:5000", "-w", "root", "./bin/api.pl"]
+CMD [ "/wait-for-it.sh", "db:5432", "--", "carton", "exec", "morbo", "-l", "http://*:5000", "-w", "root", "./bin/api.pl"]
