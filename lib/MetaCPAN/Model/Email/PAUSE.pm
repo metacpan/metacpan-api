@@ -9,6 +9,8 @@ use Encode                         ();
 use MetaCPAN::Types qw( Object Uri );
 use Try::Tiny qw( catch try );
 
+with('MetaCPAN::Role::HasConfig');
+
 has _author => (
     is       => 'ro',
     isa      => Object,
@@ -30,29 +32,31 @@ sub send {
         header => [
             'Content-Type' => 'text/plain; charset=utf-8',
             To             => $self->_author->{email}->[0],
-            From           => 'noreply@metacpan.org',
+            From           => 'notifications@metacpan.org',
             Subject        => 'Connect MetaCPAN with your PAUSE account',
             'MIME-Version' => '1.0',
         ],
         body => $self->email_body,
     );
 
+    my $config    = $self->config->{smtp};
     my $transport = Email::Sender::Transport::SMTP->new(
         {
-            host          => 'smtp.fastmail.com',
-            port          => 465,
-            sasl_username => 'foo',
-            sasl_password => 'bar',
+            debug         => 1,
+            host          => $config->{host},
+            port          => $config->{port},
+            sasl_username => $config->{username},
+            sasl_password => $config->{password},
+            ssl           => 1,
         }
     );
 
     my $success = 0;
     try {
-        sendmail( $email, { transport => $transport } );
-        $success = 1;
+        $success = sendmail( $email, { transport => $transport } );
     }
     catch {
-        warn $_;
+        warn 'Could not send message: ' . $_;
     };
 
     return $success;
