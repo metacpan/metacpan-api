@@ -6,8 +6,8 @@ use strict;
 use warnings;
 use version;
 
-use Digest::SHA;
-use Encode;
+use Digest::SHA qw( sha1_base64 sha1_hex );
+use Encode qw( decode_utf8 );
 use Ref::Util qw( is_arrayref is_hashref );
 use Sub::Exporter -setup => {
     exports => [
@@ -20,13 +20,13 @@ use Sub::Exporter -setup => {
 };
 
 sub digest {
-    my $digest = Digest::SHA::sha1_base64( join( "\0", grep {defined} @_ ) );
+    my $digest = sha1_base64( join( "\0", grep {defined} @_ ) );
     $digest =~ tr/[+\/]/-_/;
     return $digest;
 }
 
 sub generate_sid {
-    Digest::SHA::sha1_hex( rand() . $$ . {} . time );
+    return sha1_hex( rand . $$ . {} . time );
 }
 
 sub numify_version {
@@ -76,7 +76,7 @@ sub strip_pod {
 
 sub extract_section {
     my ( $pod, $section ) = @_;
-    eval { $pod = Encode::decode_utf8( $pod, Encode::FB_CROAK ) };
+    eval { $pod = decode_utf8( $pod, Encode::FB_CROAK ) };
     return undef
         unless ( $pod =~ /^=head1\s+$section\b(.*?)(^((\=head1)|(\=cut)))/msi
         || $pod =~ /^=head1\s+$section\b(.*)/msi );
