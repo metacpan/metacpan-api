@@ -5,8 +5,9 @@ use Moose::Role;
 use FindBin;
 use Config::ZOMG ();
 use MetaCPAN::Types qw(HashRef);
+use Module::Runtime qw( require_module );
 
-# Done like this so can be required by a roles
+# Done like this so can be required by a role
 sub config {
     return $_[0]->_config;
 }
@@ -19,11 +20,29 @@ has _config => (
 );
 
 sub _build_config {
+    my $self   = shift;
+    my $config = $self->_zomg("$FindBin::RealBin/..");
+    return $config if $config;
+
+    require_module('Git::Helpers');
+    $config = $self->_zomg( Git::Helpers::checkout_root() );
+
+    return $config if $config;
+
+    die "Couldn't find config file in $FindBin::RealBin/.. or "
+        . Git::Helpers::checkout_root();
+}
+
+sub _zomg {
     my $self = shift;
-    return Config::ZOMG->new(
+    my $path = shift;
+
+    my $config = Config::ZOMG->new(
         name => 'metacpan_server',
-        path => "$FindBin::RealBin/..",
-    )->load;
+        path => $path,
+    );
+
+    return $config->open;
 }
 
 1;
