@@ -198,6 +198,27 @@ DISTRIBUTIONS
       Array::Iterator::Reusable 0.11
     requirements:
       ExtUtils::MakeMaker 6.30
+  Authen-SASL-2.16
+    pathname: G/GB/GBARR/Authen-SASL-2.16.tar.gz
+    provides:
+      Authen::SASL 2.16
+      Authen::SASL::CRAM_MD5 2.14
+      Authen::SASL::EXTERNAL 2.14
+      Authen::SASL::Perl 2.14
+      Authen::SASL::Perl::ANONYMOUS 2.14
+      Authen::SASL::Perl::CRAM_MD5 2.14
+      Authen::SASL::Perl::DIGEST_MD5 2.14
+      Authen::SASL::Perl::EXTERNAL 2.14
+      Authen::SASL::Perl::GSSAPI 0.05
+      Authen::SASL::Perl::LOGIN 2.14
+      Authen::SASL::Perl::Layer 2.14
+      Authen::SASL::Perl::PLAIN 2.14
+    requirements:
+      Digest::HMAC_MD5 0
+      Digest::MD5 0
+      ExtUtils::MakeMaker 6.42
+      Test::More 0
+      perl 5.005
   B-Hooks-EndOfScope-0.21
     pathname: E/ET/ETHER/B-Hooks-EndOfScope-0.21.tar.gz
     provides:
@@ -310,6 +331,7 @@ DISTRIBUTIONS
       CGI::Simple::Standard 1.114
       CGI::Simple::Util 1.114
     requirements:
+      ExtUtils::MakeMaker 0
       IO::Scalar 0
       Test::More 0
   CGI-Struct-1.21
@@ -1208,6 +1230,7 @@ DISTRIBUTIONS
       Config::Any::XML undef
       Config::Any::YAML undef
     requirements:
+      Config::General 2.47
       Module::Pluggable::Object 3.6
   Config-General-2.63
     pathname: T/TL/TLINDEN/Config-General-2.63.tar.gz
@@ -3688,6 +3711,7 @@ DISTRIBUTIONS
       IO::Prompt 0.997004
       IO::Prompt::ReturnVal 0.997004
     requirements:
+      ExtUtils::MakeMaker 0
       IO::Handle 0
       Term::ReadKey 0
       Test::More 0
