@@ -5,6 +5,7 @@ use warnings;
 use namespace::autoclean;
 
 use CHI ();
+use Log::Contextual qw( :log :dlog );
 use Moose;
 use Try::Tiny qw( catch try );
 use MetaCPAN::Model::Email::PAUSE ();
@@ -56,7 +57,10 @@ sub index : Path {
 
         my $sent = $email->send;
 
-        # XXX check return value of sending
+        if ( !$sent ) {
+            log_error { 'Could not send PAUSE email to ' . $author->pauseid };
+        }
+
         $c->controller('OAuth2')->redirect( $c, success => 'mail_sent' );
     }
 }
