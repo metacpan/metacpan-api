@@ -48,6 +48,7 @@ sub index : Path {
 
         my $url = $c->request->uri->clone;
         $url->query("code=$code");
+
         my $email = MetaCPAN::Model::Email::PAUSE->new(
             author => $author,
             url    => $url,

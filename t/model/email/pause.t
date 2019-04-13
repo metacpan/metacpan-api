@@ -41,7 +41,9 @@ my $email = MetaCPAN::Model::Email::PAUSE->new(
     url    => URI->new('http://example.com'),
 );
 
-ok( $email->send, 'send email' );
+ok( $email->_email_body, 'email_body' );
+ok( $email->send,        'send email' );
+diag $email->_email_body;
 
 my @messages = Email::Sender::Simple->default_transport->deliveries;
 is( @messages, 1, '1 message sent' );

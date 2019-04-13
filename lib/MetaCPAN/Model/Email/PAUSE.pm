@@ -36,7 +36,7 @@ sub send {
             Subject        => 'Connect MetaCPAN with your PAUSE account',
             'MIME-Version' => '1.0',
         ],
-        body => $self->email_body,
+        body => $self->_email_body,
     );
 
     my $config    = $self->config->{smtp};
@@ -62,7 +62,7 @@ sub send {
     return $success;
 }
 
-sub email_body {
+sub _email_body {
     my $self = shift;
     my $name = $self->_author->name;
     my $uri  = $self->_url;
