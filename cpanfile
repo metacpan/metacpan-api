@@ -93,10 +93,10 @@ requires 'Log::Any::Adapter::Log4perl';
 requires 'Log::Contextual';
 requires 'Log::Log4perl';
 requires 'Log::Log4perl::Appender::ScreenColoredLevels';
+requires 'MIME::Base64', '3.15';
 requires 'MetaCPAN::Moose';
 requires 'MetaCPAN::Pod::XHTML';
 requires 'MetaCPAN::Role', '0.06';
-requires 'MIME::Base64', '3.15';
 requires 'Minion', '>= 9.03';
 requires 'Minion::Backend::SQLite';
 requires 'Module::Load';
@@ -104,6 +104,8 @@ requires 'Module::Metadata', '1.000022';
 requires 'Module::Pluggable';
 requires 'Module::Runtime';
 requires 'Mojo::Pg', '>= 4.08';
+requires 'Mojolicious::Plugin::MountPSGI', '0.14';
+requires 'Mojolicious::Plugin::OpenAPI';
 requires 'Mojolicious::Plugin::Web::Auth', '0.000004';
 requires 'Moose', ' >= 2.1403';
 requires 'Moose::Role';
@@ -173,6 +175,7 @@ requires 'WWW::Mechanize::Cached', '1.50';
 requires 'XML::Simple';
 requires 'YAML', '1.15';
 requires 'YAML::Syck', '1.29';
+requires 'YAML::XS', '0.67'; # Mojolicious::Plugin::OpenAPI YAML loading
 requires 'base';
 requires 'feature';
 requires 'namespace::autoclean';
@@ -181,9 +184,6 @@ requires 'strictures', 1;
 requires 'utf8';
 requires 'version', '0.9901';
 requires 'warnings';
-requires 'Mojolicious::Plugin::MountPSGI', '0.14';
-requires 'Mojolicious::Plugin::OpenAPI';
-requires 'YAML::XS', '0.67'; # Mojolicious::Plugin::OpenAPI YAML loading
 
 test_requires 'App::Prove';
 test_requires 'CPAN::Faker', '0.010';
