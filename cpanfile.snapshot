@@ -4225,6 +4225,23 @@ DISTRIBUTIONS
       File::Path 2.0606
       File::Spec 0.82
       Test::More 0.45
+  Log-Log4perl-Layout-JSON-0.56
+    pathname: M/MS/MSCHOUT/Log-Log4perl-Layout-JSON-0.56.tar.gz
+    provides:
+      Log::Log4perl::Layout::JSON 0.56
+    requirements:
+      Carp 0
+      Class::Tiny 0
+      ExtUtils::MakeMaker 0
+      JSON::MaybeXS 0
+      Log::Log4perl 0
+      Log::Log4perl::Layout 0
+      Log::Log4perl::Layout::PatternLayout 0
+      Log::Log4perl::Level 0
+      parent 0
+      perl 5.008
+      strict 0
+      warnings 0
   Log-Message-0.08
     pathname: B/BI/BINGOS/Log-Message-0.08.tar.gz
     provides:
