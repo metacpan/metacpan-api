@@ -2,9 +2,17 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use CPAN::Meta;
-use MetaCPAN::Util qw( extract_section numify_version strip_pod );
+use CPAN::Meta ();
+use MetaCPAN::Util qw(
+    extract_section
+    generate_sid
+    numify_version
+    strip_pod
+);
+
 use Test::Most;
+
+ok( generate_sid(), 'generate_sid' );
 
 {
     my %versions = (

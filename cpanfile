@@ -2,6 +2,7 @@ requires 'perl', '5.010';
 
 requires 'Archive::Any', 0.0942;
 requires 'Archive::Tar', '2.04';
+requires 'Authen::SASL', '2.16';
 requires 'BackPAN::Index', '0.42';
 requires 'CHI', '0.60';
 requires 'CPAN::DistnameInfo', '0.12';
@@ -95,6 +96,7 @@ requires 'Log::Log4perl::Appender::ScreenColoredLevels';
 requires 'MetaCPAN::Moose';
 requires 'MetaCPAN::Pod::XHTML';
 requires 'MetaCPAN::Role', '0.06';
+requires 'MIME::Base64', '3.15';
 requires 'Minion', '>= 9.03';
 requires 'Minion::Backend::SQLite';
 requires 'Module::Load';
