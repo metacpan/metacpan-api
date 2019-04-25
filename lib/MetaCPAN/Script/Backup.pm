@@ -13,8 +13,7 @@ use MetaCPAN::Types qw( Bool Int Str File );
 use Moose;
 use Try::Tiny;
 
-with 'MetaCPAN::Role::Script', 'MooseX::Getopt::Dashes',
-    'MetaCPAN::Script::Role::ES';
+with 'MetaCPAN::Role::Script', 'MooseX::Getopt::Dashes', 'MetaCPAN::Role::ES';
 
 has batch_size => (
     is      => 'ro',

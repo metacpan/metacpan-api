@@ -8,7 +8,7 @@ use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Document::Mirror;
 use Moose;
 
-with 'MetaCPAN::Role::Script', 'MooseX::Getopt', 'MetaCPAN::Script::Role::ES';
+with 'MetaCPAN::Role::Script', 'MooseX::Getopt', 'MetaCPAN::Role::ES';
 
 sub run {
     my $self = shift;

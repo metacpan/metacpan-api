@@ -8,8 +8,7 @@ use Cpanel::JSON::XS qw( decode_json );
 use MetaCPAN::Types qw( Uri );
 use Moose;
 
-with 'MetaCPAN::Role::Script', 'MooseX::Getopt::Dashes',
-    'MetaCPAN::Script::Role::ES';
+with 'MetaCPAN::Role::Script', 'MooseX::Getopt::Dashes', 'MetaCPAN::Role::ES';
 
 has url => (
     is      => 'ro',

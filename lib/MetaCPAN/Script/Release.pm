@@ -21,7 +21,7 @@ use PerlIO::gzip;
 use Try::Tiny qw( catch try );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt',
-    'MetaCPAN::Script::Role::Contributor', 'MetaCPAN::Script::Role::ES';
+    'MetaCPAN::Script::Role::Contributor', 'MetaCPAN::Role::ES';
 
 has latest => (
     is            => 'ro',

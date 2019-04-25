@@ -7,7 +7,7 @@ use MetaCPAN::Document::Permission ();
 use MetaCPAN::Types qw( Bool );
 use PAUSE::Permissions ();
 
-with 'MooseX::Getopt', 'MetaCPAN::Role::Script', 'MetaCPAN::Script::Role::ES';
+with 'MooseX::Getopt', 'MetaCPAN::Role::Script', 'MetaCPAN::Role::ES';
 
 =head1 SYNOPSIS
 

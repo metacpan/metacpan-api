@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Moose;
-with 'MooseX::Getopt', 'MetaCPAN::Role::Script', 'MetaCPAN::Script::Role::ES';
+with 'MooseX::Getopt', 'MetaCPAN::Role::Script', 'MetaCPAN::Role::ES';
 
 use DateTime::Format::ISO8601 ();
 use Email::Valid              ();

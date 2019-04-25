@@ -9,7 +9,7 @@ use Log::Contextual qw( :log :dlog );
 use Moose;
 use Parse::CSV ();
 
-with 'MetaCPAN::Role::Script', 'MooseX::Getopt', 'MetaCPAN::Script::Role::ES';
+with 'MetaCPAN::Role::Script', 'MooseX::Getopt', 'MetaCPAN::Role::ES';
 
 has ratings => (
     is      => 'ro',

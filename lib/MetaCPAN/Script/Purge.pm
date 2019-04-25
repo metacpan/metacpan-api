@@ -6,7 +6,7 @@ use Log::Contextual qw( :log );
 use MetaCPAN::Types qw( Bool Str HashRef );
 use MetaCPAN::Util qw( author_dir );
 
-with 'MooseX::Getopt', 'MetaCPAN::Role::Script', 'MetaCPAN::Script::Role::ES';
+with 'MooseX::Getopt', 'MetaCPAN::Role::Script', 'MetaCPAN::Role::ES';
 
 has author => (
     is       => 'ro',

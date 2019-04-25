@@ -12,8 +12,7 @@ use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Types qw( Bool File Uri );
 use Moose;
 
-with 'MetaCPAN::Role::Script', 'MooseX::Getopt::Dashes',
-    'MetaCPAN::Script::Role::ES';
+with 'MetaCPAN::Role::Script', 'MooseX::Getopt::Dashes', 'MetaCPAN::Role::ES';
 
 has db => (
     is      => 'ro',

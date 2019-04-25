@@ -8,7 +8,7 @@ use Log::Contextual qw( :log );
 use MetaCPAN::Document::Package ();
 use MetaCPAN::Types qw( Bool );
 
-with 'MooseX::Getopt', 'MetaCPAN::Role::Script', 'MetaCPAN::Script::Role::ES';
+with 'MooseX::Getopt', 'MetaCPAN::Role::Script', 'MetaCPAN::Role::ES';
 
 =head1 SYNOPSIS
 

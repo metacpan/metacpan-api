@@ -11,7 +11,7 @@ use Regexp::Common qw(time);
 use Time::Local;
 use MetaCPAN::Types qw( Bool Str );
 
-with 'MetaCPAN::Role::Script', 'MooseX::Getopt', 'MetaCPAN::Script::Role::ES';
+with 'MetaCPAN::Role::Script', 'MooseX::Getopt', 'MetaCPAN::Role::ES';
 
 has dry_run => (
     is      => 'ro',
