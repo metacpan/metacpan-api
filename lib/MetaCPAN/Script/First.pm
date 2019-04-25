@@ -16,17 +16,30 @@ has distribution => (
 );
 
 sub run {
-    my $self          = shift;
-    my $distributions = $self->index->type("distribution");
-    $distributions
-        = $distributions->filter(
-        { term => { name => $self->distribution } } )
-        if $self->distribution;
-    $distributions = $distributions->size(500)->scroll;
+    my $self = shift;
 
-    log_info { "processing " . $distributions->total . " distributions" };
+    my $body;
+    if ( $self->distribution ) {
+        $body = {
+            query => {
+                term => { name => $self->distribution }
+            }
+        };
+    }
 
-    while ( my $distribution = $distributions->next ) {
+    my $scroll = $self->es->scroll_helper(
+        {
+            size   => 500,
+            scroll => '1m',
+            index  => 'cpan',
+            type   => 'distribution',
+            body   => $body,
+        }
+    );
+
+    log_info { "processing " . $scroll->total . " distributions" };
+
+    while ( my $distribution = $scroll->next ) {
         my $release = $distribution->set_first_release;
         $release
             ? log_debug {
@@ -73,4 +86,3 @@ information.
 Only set the L<MetaCPAN::Document::Release/first> property for releases of this distribution.
 
 =cut
-
