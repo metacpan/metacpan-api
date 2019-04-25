@@ -39,7 +39,7 @@ sub run {
   # ) unless $index =~ /author/;
 
     $self->index_authors;
-    $self->index->refresh;
+    $self->refresh;
 }
 
 sub index_authors {
@@ -75,14 +75,14 @@ sub index_authors {
             = ( @$data{qw(fullname email homepage asciiname)} );
         $name = undef if ( ref $name );
         $asciiname = q{} unless defined $asciiname;
-        $email     = lc($pauseid) . '@cpan.org'
+        $email = lc($pauseid) . '@cpan.org'
             unless ( $email && Email::Valid->address($email) );
         log_debug {
             Encode::encode_utf8(
                 sprintf( "Indexing %s: %s <%s>", $pauseid, $name, $email ) );
         };
         my $conf = $self->author_config( $pauseid, $dates ) || next;
-        my $put  = {
+        my $put = {
             pauseid   => $pauseid,
             name      => $name,
             asciiname => ref $asciiname ? undef : $asciiname,
@@ -141,7 +141,7 @@ sub index_authors {
         );
     }
     $bulk->flush;
-    $self->index->refresh;
+    $self->refresh;
 
     $self->purge_author_key(@author_ids_to_purge);
     $self->perform_purges;

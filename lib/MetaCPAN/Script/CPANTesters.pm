@@ -67,7 +67,7 @@ sub _build_db {
 sub run {
     my $self = shift;
     $self->index_reports;
-    $self->index->refresh;
+    $self->refresh;
 }
 
 sub index_reports {
@@ -130,7 +130,7 @@ sub index_reports {
         $version =~ s{\+}{}g;
         $version =~ s{\A-}{};
 
-        my $release     = join( '-', $row_from_db->{dist}, $version );
+        my $release = join( '-', $row_from_db->{dist}, $version );
         my $release_doc = $releases{$release};
 
         # there's a cpantesters dist we haven't indexed

@@ -67,7 +67,7 @@ sub run {
         }
     }
     $bulk->flush;
-    $self->index->refresh;
+    $self->refresh;
     log_info {'done'};
 }
 

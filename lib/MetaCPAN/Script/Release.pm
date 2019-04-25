@@ -216,7 +216,7 @@ sub run {
             };
         }
     }
-    $self->index->refresh unless $self->queue;
+    $self->refresh unless $self->queue;
 
     # Call Fastly to purge
     $self->purge_cpan_distnameinfos( \@module_to_purge_dists );
@@ -246,7 +246,7 @@ sub import_archive {
     my $self         = shift;
     my $archive_path = shift;
 
-    my $bulk  = $self->index->bulk( size => $self->_bulk_size );
+    my $bulk = $self->index->bulk( size => $self->_bulk_size );
     my $model = $self->_get_release_model( $archive_path, $bulk );
 
     log_debug {'Gathering modules'};

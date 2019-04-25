@@ -139,7 +139,7 @@ sub run {
         }
     }
 
-    $self->index->refresh;
+    $self->refresh;
 }
 
 sub purge_author_releases {

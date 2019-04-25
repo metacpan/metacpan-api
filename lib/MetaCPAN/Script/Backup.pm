@@ -62,7 +62,7 @@ sub run {
     return $self->run_restore if $self->restore;
 
     my $es = $self->es;
-    $self->index->refresh;
+    $self->refresh;
 
     my $filename = join( '-',
         DateTime->now->strftime('%F'),

@@ -69,7 +69,7 @@ sub run {
     }
 
     $self->index_favorites;
-    $self->index->refresh;
+    $self->refresh;
 }
 
 sub index_favorites {

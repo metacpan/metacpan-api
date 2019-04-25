@@ -13,7 +13,7 @@ with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 sub run {
     my $self = shift;
     $self->index_mirrors;
-    $self->index->refresh;
+    $self->refresh;
 }
 
 sub index_mirrors {
