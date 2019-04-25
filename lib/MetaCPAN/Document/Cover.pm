@@ -2,7 +2,6 @@ package MetaCPAN::Document::Cover;
 
 use MetaCPAN::Moose;
 
-use ElasticSearchX::Model::Document;
 use MetaCPAN::Types qw( HashRef Str );
 
 has distribution => (
