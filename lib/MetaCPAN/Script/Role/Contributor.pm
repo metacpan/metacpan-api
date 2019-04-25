@@ -5,12 +5,14 @@ use Moose::Role;
 use MetaCPAN::Util qw( digest );
 use Ref::Util qw( is_arrayref );
 
+use MetaCPAN::Document::Release::Set;
+
 sub get_cpan_author_contributors {
     my ( $self, $author, $release, $distribution ) = @_;
     my @ret;
     my $es = $self->es;
 
-    my $type = $self->index->type('release');
+    my $type = MetaCPAN::Document::Release::Set->new();
     my $data;
     eval {
         $data = $type->get_contributors( $author, $release );
@@ -21,7 +23,7 @@ sub get_cpan_author_contributors {
         next unless exists $d->{pauseid};
 
         # skip existing records
-        my $id     = digest( $d->{pauseid}, $release );
+        my $id = digest( $d->{pauseid}, $release );
         my $exists = $es->exists(
             index => 'contributor',
             type  => 'contributor',

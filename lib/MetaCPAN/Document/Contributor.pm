@@ -2,7 +2,6 @@ package MetaCPAN::Document::Contributor;
 
 use MetaCPAN::Moose;
 
-use ElasticSearchX::Model::Document;
 use MetaCPAN::Types qw( Str );
 
 has distribution => (

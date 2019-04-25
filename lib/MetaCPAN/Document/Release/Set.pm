@@ -6,7 +6,7 @@ use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
 
 use MetaCPAN::Query::Release;
 
-extends 'ElasticSearchX::Model::Document::Set';
+with 'MetaCPAN::Role::ES';
 
 has query_release => (
     is      => 'ro',
@@ -37,9 +37,10 @@ has query_release => (
 
 sub _build_query_release {
     my $self = shift;
+
     return MetaCPAN::Query::Release->new(
         es         => $self->es,
-        index_name => $self->index->name,
+        index_name => 'cpan',
     );
 }
 

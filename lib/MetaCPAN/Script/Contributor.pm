@@ -84,7 +84,7 @@ sub run {
     my $scroll = $self->es->scroll_helper(
         size   => 500,
         scroll => $timeout,
-        index  => $self->index->name,
+        index  => 'cpan',
         type   => 'release',
         body   => { query => $query },
         fields => [qw( author distribution name )],

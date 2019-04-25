@@ -2,11 +2,9 @@ package MetaCPAN::Role::Script;
 
 use Moose::Role;
 
-use ElasticSearchX::Model::Document::Types qw(:all);
 use FindBin;
 use Git::Helpers qw( checkout_root );
 use Log::Contextual qw( :log :dlog );
-use MetaCPAN::Model;
 use MetaCPAN::Types qw(:all);
 use Mojo::Server;
 use Term::ANSIColor qw( colored );
@@ -16,8 +14,10 @@ use File::Path ();
 
 use Carp ();
 
-with( 'MetaCPAN::Role::HasConfig', 'MetaCPAN::Role::Fastly',
-    'MetaCPAN::Role::Logger' );
+with(
+    'MetaCPAN::Role::HasConfig', 'MetaCPAN::Role::Fastly',
+    'MetaCPAN::Role::Logger',    'MetaCPAN::Role::ES'
+);
 
 has cpan => (
     is      => 'ro',
@@ -46,21 +46,6 @@ has proxy => (
     is      => 'ro',
     isa     => Str,
     default => '',
-);
-
-has es => (
-    is            => 'ro',
-    isa           => ES,
-    required      => 1,
-    coerce        => 1,
-    documentation => 'Elasticsearch http connection string',
-);
-
-has model => (
-    is      => 'ro',
-    lazy    => 1,
-    builder => '_build_model',
-    traits  => ['NoGetopt'],
 );
 
 has index => (
@@ -119,7 +104,6 @@ sub BUILDARGS {
             unless $ENV{'ES_SCRIPT_INDEX'}
             and $args{'index'} eq $ENV{'ES_SCRIPT_INDEX'};
     }
-
     return \%args;
 }
 
@@ -131,18 +115,6 @@ sub handle_error {
 
     # Die if configured (for the test suite).
     Carp::croak $error if $self->die_on_error;
-}
-
-sub index {
-    my $self = shift;
-    return $self->model->index( $self->_index );
-}
-
-sub _build_model {
-    my $self = shift;
-
-    # es provided by ElasticSearchX::Model::Role
-    return MetaCPAN::Model->new( es => $self->es );
 }
 
 sub _build_ua {
