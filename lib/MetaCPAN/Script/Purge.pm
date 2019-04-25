@@ -35,7 +35,7 @@ has bulk => (
 
 sub _build_bulk {
     my $self  = shift;
-    my $index = $self->index->name;
+    my $index = 'cpan';
     return +{
         author => $self->es->bulk_helper( index => $index, type => 'author' ),
         contributor => $self->es->bulk_helper(
@@ -58,7 +58,7 @@ sub _get_scroller_release {
     return $self->es->scroll_helper(
         size   => 500,
         scroll => '10m',
-        index  => $self->index->name,
+        index  => 'cpan',
         type   => 'release',
         body   => { query => $query },
         fields => [qw( archive name )],
@@ -70,7 +70,7 @@ sub _get_scroller_rating {
     return $self->es->scroll_helper(
         size   => 500,
         scroll => '10m',
-        index  => $self->index->name,
+        index  => 'cpan',
         type   => 'rating',
         body   => { query => $query },
     );
@@ -81,7 +81,7 @@ sub _get_scroller_file {
     return $self->es->scroll_helper(
         size   => 500,
         scroll => '10m',
-        index  => $self->index->name,
+        index  => 'cpan',
         type   => 'file',
         body   => { query => $query },
         fields => [qw( name )],
@@ -93,7 +93,7 @@ sub _get_scroller_favorite {
     return $self->es->scroll_helper(
         size   => 500,
         scroll => '10m',
-        index  => $self->index->name,
+        index  => 'cpan',
         type   => 'favorite',
         body   => { query => $query },
     );

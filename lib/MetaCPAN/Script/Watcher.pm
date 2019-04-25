@@ -97,7 +97,7 @@ sub backpan_changes {
         {
             size   => 1000,
             scroll => '1m',
-            index  => $self->index->name,
+            index  => 'cpan',
             type   => 'release',
             fields => [qw(author archive)],
             body   => {
@@ -189,7 +189,7 @@ sub reindex_release {
     my $es     = $self->es;
     my $scroll = $es->scroll_helper(
         {
-            index       => $self->index->name,
+            index       => 'cpan',
             type        => 'file',
             scroll      => '1m',
             size        => 1000,
@@ -225,7 +225,7 @@ sub reindex_release {
     my %bulk_helper;
     for (qw/ file release /) {
         $bulk_helper{$_} = $self->es->bulk_helper(
-            index => $self->index->name,
+            index => 'cpan',
             type  => $_,
         );
     }

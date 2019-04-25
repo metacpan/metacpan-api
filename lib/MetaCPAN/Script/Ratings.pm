@@ -41,7 +41,7 @@ sub run {
     $type->filter( { term => { user => 'CPANRatings' } } )->delete;
 
     my $bulk = $self->es->bulk_helper(
-        index     => $self->index->name,
+        index     => 'cpan',
         type      => 'rating',
         max_count => 500,
     );

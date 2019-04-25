@@ -95,7 +95,7 @@ sub index_favorites {
     }
     elsif ( $self->age ) {
         my $favs = $self->es->scroll_helper(
-            index       => $self->index->name,
+            index       => 'cpan',
             type        => 'favorite',
             search_type => 'scan',
             scroll      => '5m',
@@ -133,7 +133,7 @@ sub index_favorites {
     }
     else {
         my $favs = $self->es->scroll_helper(
-            index       => $self->index->name,
+            index       => 'cpan',
             type        => 'favorite',
             search_type => 'scan',
             scroll      => '30s',
@@ -160,7 +160,7 @@ sub index_favorites {
         }
 
         my $files = $self->es->scroll_helper(
-            index       => $self->index->name,
+            index       => 'cpan',
             type        => 'file',
             search_type => 'scan',
             scroll      => '15m',
@@ -228,14 +228,14 @@ sub index_favorites {
         }
         else {
             my $bulk = $self->es->bulk_helper(
-                index     => $self->index->name,
+                index     => 'cpan',
                 type      => 'file',
                 max_count => 250,
                 timeout   => '120m',
             );
 
             my $files = $self->es->scroll_helper(
-                index       => $self->index->name,
+                index       => 'cpan',
                 type        => 'file',
                 search_type => 'scan',
                 scroll      => '15s',

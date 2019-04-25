@@ -29,7 +29,7 @@ sub index_river_summaries {
     my ( $self, $summaries ) = @_;
 
     my $bulk = $self->es->bulk_helper(
-        index => $self->index->name,
+        index => 'cpan',
         type  => 'distribution',
     );
 
@@ -88,4 +88,3 @@ http://fastapi.metacpan.org/v1/distribution/Moose
 http://fastapi.metacpan.org/v1/distribution/HTTP-BrowserDetect
 
 =cut
-

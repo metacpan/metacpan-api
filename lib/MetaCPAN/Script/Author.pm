@@ -32,12 +32,6 @@ has author_fh => (
 sub run {
     my $self = shift;
 
-  # check we are using a dedicated index, prompts if not
-  # my $index = $self->index->name;
-  # $self->are_you_sure(
-  #     "Author script is run against a non-author specific index: $index !!!"
-  # ) unless $index =~ /author/;
-
     $self->index_authors;
     $self->refresh;
 }
@@ -62,7 +56,7 @@ sub index_authors {
     };
 
     my $bulk = $self->es->bulk_helper(
-        index     => $self->index->name,
+        index     => 'cpan',
         type      => 'author',
         max_count => 250,
         timeout   => '25m',

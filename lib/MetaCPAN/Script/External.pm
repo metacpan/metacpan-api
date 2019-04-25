@@ -62,7 +62,7 @@ sub update {
     my $external_source = $self->external_source;
 
     my $scroll = $self->es->scroll_helper(
-        index  => $self->index->name,
+        index  => 'cpan',
         type   => 'distribution',
         scroll => '10m',
         body   => {
@@ -89,7 +89,7 @@ sub update {
     }
 
     my $bulk = $self->es->bulk_helper(
-        index => $self->index->name,
+        index => 'cpan',
         type  => 'distribution',
     );
 
@@ -136,4 +136,3 @@ __PACKAGE__->meta->make_immutable;
  # bin/metacpan external --external_source SOURCE
 
 =cut
-

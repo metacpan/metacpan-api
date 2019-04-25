@@ -52,7 +52,7 @@ sub index_packages {
     log_debug {$meta};
 
     my $bulk = $self->es->bulk_helper(
-        index => $self->index->name,
+        index => 'cpan',
         type  => 'package',
     );
 
@@ -99,7 +99,7 @@ sub run_cleanup {
     log_debug {"checking package data to remove"};
 
     my $scroll = $self->es->scroll_helper(
-        index  => $self->index->name,
+        index  => 'cpan',
         type   => 'package',
         scroll => '30m',
         body   => { query => { match_all => {} } },

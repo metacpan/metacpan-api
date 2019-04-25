@@ -183,7 +183,7 @@ sub run {
     }
 
     my $bulk = $self->es->bulk_helper(
-        index => $self->index->name,
+        index => 'cpan',
         type  => 'file'
     );
 

@@ -36,7 +36,7 @@ sub index_permissions {
     my $pp = PAUSE::Permissions->new( path => $file_path );
 
     my $bulk = $self->es->bulk_helper(
-        index => $self->index->name,
+        index => 'cpan',
         type  => 'permission',
     );
 
@@ -86,7 +86,7 @@ sub run_cleanup {
     log_debug {"checking permission data to remove"};
 
     my $scroll = $self->es->scroll_helper(
-        index  => $self->index->name,
+        index  => 'cpan',
         type   => 'permission',
         scroll => '30m',
         body   => { query => { match_all => {} } },

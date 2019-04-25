@@ -43,7 +43,7 @@ sub run {
                 log_info {"updating suggest data for month: $gte"};
             }
 
-            my $lt    = $dt->strftime("%Y-%m-%d");
+            my $lt = $dt->strftime("%Y-%m-%d");
             my $range = +{ range => { date => { gte => $gte, lt => $lt } } };
             $self->_update_slice($range);
         }
@@ -63,7 +63,7 @@ sub _update_slice {
     my ( $self, $range ) = @_;
 
     my $files = $self->es->scroll_helper(
-        index       => $self->index->name,
+        index       => 'cpan',
         type        => 'file',
         search_type => 'scan',
         scroll      => '5m',
@@ -81,7 +81,7 @@ sub _update_slice {
     );
 
     my $bulk = $self->es->bulk_helper(
-        index     => $self->index->name,
+        index     => 'cpan',
         type      => 'file',
         max_count => 250,
         timeout   => '5m',

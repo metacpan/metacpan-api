@@ -56,7 +56,7 @@ has _bulk => (
 sub _build_bulk {
     my $self = shift;
     $self->es->bulk_helper(
-        index => $self->index->name,
+        index => 'cpan',
         type  => 'distribution',
     );
 }
@@ -94,7 +94,7 @@ sub check_all_distributions {
     my $scroll = $self->es->scroll_helper(
         size   => 500,
         scroll => '5m',
-        index  => $self->index->name,
+        index  => 'cpan',
         type   => 'release',
         fields => ['distribution'],
         body   => {
@@ -271,4 +271,3 @@ http://fastapi.metacpan.org/v1/distribution/Moose
 http://fastapi.metacpan.org/v1/distribution/HTTP-BrowserDetect
 
 =cut
-
