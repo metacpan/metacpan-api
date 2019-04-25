@@ -8,12 +8,12 @@ use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Document::Mirror;
 use Moose;
 
-with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
+with 'MetaCPAN::Role::Script', 'MooseX::Getopt', 'MetaCPAN::Script::Role::ES';
 
 sub run {
     my $self = shift;
     $self->index_mirrors;
-    $self->refresh;
+    $self->refresh('cpan');
 }
 
 sub index_mirrors {

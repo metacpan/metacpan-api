@@ -18,5 +18,10 @@ sub _build_es {
     );
 }
 
+sub refresh {
+    my ( $self, $name ) = @_;
+    $self->es->indices->refresh( index => $name );
+}
+
 no Moose::Role;
 1;

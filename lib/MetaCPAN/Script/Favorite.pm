@@ -6,7 +6,7 @@ use Log::Contextual qw( :log );
 
 use MetaCPAN::Types qw( Bool Int Str );
 
-with 'MooseX::Getopt', 'MetaCPAN::Role::Script';
+with 'MooseX::Getopt', 'MetaCPAN::Role::Script', 'MetaCPAN::Role::ES';
 
 =head1 SYNOPSIS
 
@@ -69,7 +69,7 @@ sub run {
     }
 
     $self->index_favorites;
-    $self->refresh;
+    $self->refresh('cpan');
 }
 
 sub index_favorites {

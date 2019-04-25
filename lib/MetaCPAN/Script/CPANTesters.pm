@@ -12,7 +12,8 @@ use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Types qw( Bool File Uri );
 use Moose;
 
-with 'MetaCPAN::Role::Script', 'MooseX::Getopt::Dashes';
+with 'MetaCPAN::Role::Script', 'MooseX::Getopt::Dashes',
+    'MetaCPAN::Script::Role::ES';
 
 has db => (
     is      => 'ro',
@@ -50,7 +51,7 @@ has _bulk => (
     lazy    => 1,
     default => sub {
         $_[0]->es->bulk_helper(
-            index => $_[0]->index->name,
+            index => 'cpan',
             type  => 'release'
         );
     },
@@ -67,7 +68,7 @@ sub _build_db {
 sub run {
     my $self = shift;
     $self->index_reports;
-    $self->refresh;
+    $self->refresh('cpan');
 }
 
 sub index_reports {

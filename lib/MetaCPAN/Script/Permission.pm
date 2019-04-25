@@ -7,7 +7,7 @@ use MetaCPAN::Document::Permission ();
 use MetaCPAN::Types qw( Bool );
 use PAUSE::Permissions ();
 
-with 'MooseX::Getopt', 'MetaCPAN::Role::Script';
+with 'MooseX::Getopt', 'MetaCPAN::Role::Script', 'MetaCPAN::Script::Role::ES';
 
 =head1 SYNOPSIS
 
@@ -25,7 +25,7 @@ has clean_up => (
 sub run {
     my $self = shift;
     $self->index_permissions;
-    $self->refresh;
+    $self->refresh('cpan');
 }
 
 sub index_permissions {

@@ -13,7 +13,8 @@ use MetaCPAN::Types qw( Bool Int Str File );
 use Moose;
 use Try::Tiny;
 
-with 'MetaCPAN::Role::Script', 'MooseX::Getopt::Dashes';
+with 'MetaCPAN::Role::Script', 'MooseX::Getopt::Dashes',
+    'MetaCPAN::Script::Role::ES';
 
 has batch_size => (
     is      => 'ro',
@@ -62,7 +63,7 @@ sub run {
     return $self->run_restore if $self->restore;
 
     my $es = $self->es;
-    $self->refresh;
+    $self->refresh('cpan');
 
     my $filename = join( '-',
         DateTime->now->strftime('%F'),

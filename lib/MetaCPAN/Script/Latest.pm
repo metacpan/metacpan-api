@@ -11,7 +11,7 @@ use Regexp::Common qw(time);
 use Time::Local;
 use MetaCPAN::Types qw( Bool Str );
 
-with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
+with 'MetaCPAN::Role::Script', 'MooseX::Getopt', 'MetaCPAN::Script::Role::ES';
 
 has dry_run => (
     is      => 'ro',
@@ -62,7 +62,7 @@ sub run {
     }
 
     my $p = $self->packages;
-    $self->refresh;
+    $self->refresh('cpan');
 
     # If a distribution name is passed get all the package names
     # from 02packages that match that distribution so we can limit
@@ -211,7 +211,7 @@ sub run {
         $self->reindex( $bulk, $file_data, 'cpan' );
     }
     $bulk->flush;
-    $self->refresh;
+    $self->refresh('cpan');
 
     # We just want the CPAN::DistnameInfo
     my @module_to_purge_dists = map { $_->distribution } @modules_to_purge;

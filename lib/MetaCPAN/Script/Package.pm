@@ -8,7 +8,7 @@ use Log::Contextual qw( :log );
 use MetaCPAN::Document::Package ();
 use MetaCPAN::Types qw( Bool );
 
-with 'MooseX::Getopt', 'MetaCPAN::Role::Script';
+with 'MooseX::Getopt', 'MetaCPAN::Role::Script', 'MetaCPAN::Script::Role::ES';
 
 =head1 SYNOPSIS
 
@@ -25,7 +25,7 @@ has clean_up => (
 sub run {
     my $self = shift;
     $self->index_packages;
-    $self->refresh;
+    $self->refresh('cpan');
 }
 
 sub _get_02packages_fh {

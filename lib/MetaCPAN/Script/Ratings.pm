@@ -9,7 +9,7 @@ use Log::Contextual qw( :log :dlog );
 use Moose;
 use Parse::CSV ();
 
-with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
+with 'MetaCPAN::Role::Script', 'MooseX::Getopt', 'MetaCPAN::Script::Role::ES';
 
 has ratings => (
     is      => 'ro',
@@ -64,7 +64,7 @@ sub run {
         }
     }
     $bulk->flush;
-    $self->refresh;
+    $self->refresh('cpan');
     log_info {'done'};
 }
 

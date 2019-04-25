@@ -21,7 +21,7 @@ use PerlIO::gzip;
 use Try::Tiny qw( catch try );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt',
-    'MetaCPAN::Script::Role::Contributor';
+    'MetaCPAN::Script::Role::Contributor', 'MetaCPAN::Script::Role::ES';
 
 has latest => (
     is            => 'ro',
@@ -216,7 +216,7 @@ sub run {
             };
         }
     }
-    $self->refresh unless $self->queue;
+    $self->refresh('cpan') unless $self->queue;
 
     # Call Fastly to purge
     $self->purge_cpan_distnameinfos( \@module_to_purge_dists );

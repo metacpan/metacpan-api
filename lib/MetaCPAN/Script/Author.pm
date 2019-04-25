@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Moose;
-with 'MooseX::Getopt', 'MetaCPAN::Role::Script';
+with 'MooseX::Getopt', 'MetaCPAN::Role::Script', 'MetaCPAN::Script::Role::ES';
 
 use DateTime::Format::ISO8601 ();
 use Email::Valid              ();
@@ -33,7 +33,7 @@ sub run {
     my $self = shift;
 
     $self->index_authors;
-    $self->refresh;
+    $self->refresh('cpan');
 }
 
 sub index_authors {
@@ -135,7 +135,7 @@ sub index_authors {
         );
     }
     $bulk->flush;
-    $self->refresh;
+    $self->refresh('cpan');
 
     $self->purge_author_key(@author_ids_to_purge);
     $self->perform_purges;

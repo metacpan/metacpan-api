@@ -8,7 +8,8 @@ use Cpanel::JSON::XS qw( decode_json );
 use MetaCPAN::Types qw( Uri );
 use Moose;
 
-with 'MetaCPAN::Role::Script', 'MooseX::Getopt::Dashes';
+with 'MetaCPAN::Role::Script', 'MooseX::Getopt::Dashes',
+    'MetaCPAN::Script::Role::ES';
 
 has url => (
     is      => 'ro',
@@ -43,7 +44,7 @@ has _bulk => (
 sub run {
     my $self = shift;
     $self->index_reports;
-    $self->refresh;
+    $self->refresh('cpan');
 }
 
 sub index_reports {
