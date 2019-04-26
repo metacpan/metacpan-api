@@ -38,16 +38,23 @@ sub run {
 
 sub index_authors {
     my $self    = shift;
-    my $type    = $self->index->type('author');
     my $authors = XMLin( $self->author_fh )->{cpanid};
     my $count   = keys %$authors;
     log_debug {"Counting author"};
     log_info {"Indexing $count authors"};
 
     log_debug {"Getting last update dates"};
-    my $dates
-        = $type->raw->filter( { exists => { field => 'updated' } } )
-        ->size(10000)->all;
+    my $dates = $self->es->search(
+        index => $self->index_name,
+        type  => 'author',
+        size  => 10000,
+        body  => {
+            query => {
+                exists => { field => 'updated' }
+            },
+        },
+    );
+
     $dates = {
         map {
             $_->{pauseid} =>
@@ -98,15 +105,17 @@ sub index_authors {
         $put->{is_pause_custodial_account} = 1
             if $name and $name =~ /\(PAUSE Custodial Account\)/;
 
-        # Now check the format we have is actually correct
-        my @errors = MetaCPAN::Document::Author->validate($put);
-        next if scalar @errors;
+       # Removing usage of EsX::Model - need to replace document functionality
+       #
+       # Now check the format we have is actually correct
+       # my @errors = MetaCPAN::Document::Author->validate($put);
+       # next if scalar @errors;
 
-        my $author = $type->new_document($put);
-        $author->gravatar_url;    # build gravatar_url
+        $put->{gravatar_url}
+            = get_gravatar_url( $put->{pauseid} );    # build gravatar_url
 
         # Do not import lat / lon's in the wrong order, or just invalid
-        if ( my $loc = $author->{location} ) {
+        if ( my $loc = $put->{location} ) {
 
             my $lat = $loc->[1];
             my $lon = $loc->[0];
@@ -114,12 +123,12 @@ sub index_authors {
             if ( $lat > 90 or $lat < -90 ) {
 
                 # Invalid latitude
-                delete $author->{location};
+                delete $put->{location};
             }
             elsif ( $lon > 180 or $lon < -180 ) {
 
                 # Invalid longitude
-                delete $author->{location};
+                delete $put->{location};
             }
         }
 
@@ -183,6 +192,26 @@ sub author_config {
         };
     $author->{updated} = $mtime->iso8601;
     return $author;
+}
+
+sub get_gravatar_url {
+    my $pauseid = shift;
+
+    # We do not use the author personal address ($self->email[0])
+    # because we want to show the author's CPAN identity.
+    # Using another e-mail than the CPAN one removes flexibility for
+    # the author and ultimately could be a privacy leak.
+    # The author can manage this identity both on his gravatar account
+    # (by assigning an image to his author@cpan.org)
+    # and now by changing this URL from metacpa.org
+    return Gravatar::URL::gravatar_url(
+        email => $pauseid . '@cpan.org',
+        size  => 130,
+        https => 1,
+
+        # Fallback to a generated image
+        default => 'identicon',
+    );
 }
 
 __PACKAGE__->meta->make_immutable;
