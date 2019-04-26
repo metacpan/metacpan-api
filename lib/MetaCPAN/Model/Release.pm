@@ -9,7 +9,7 @@ use CPAN::Meta         ();
 use DateTime           ();
 use File::Find         ();
 use File::Spec         ();
-use Log::Contextual::Easy::Default qw( :log :dlog );
+use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Model::Archive;
 use MetaCPAN::Types qw(ArrayRef AbsFile Str);
 use MetaCPAN::Util qw( fix_version);
@@ -18,6 +18,8 @@ use MooseX::StrictConstructor;
 use Path::Class ();
 use Parse::PMFile;
 use Try::Tiny qw( catch try );
+
+with 'MetaCPAN::Role::Logger';
 
 has archive => (
     is      => 'ro',
