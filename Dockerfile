@@ -1,6 +1,6 @@
 FROM metacpan/metacpan-base:latest
 
-ENV PERL_MM_USE_DEFAULT=1 PERL_CARTON_PATH=/carton
+ENV PERL_MM_USE_DEFAULT=1
 
 COPY cpanfile cpanfile.snapshot /metacpan-api/
 WORKDIR /metacpan-api
@@ -10,13 +10,11 @@ WORKDIR /metacpan-api
 # modules is tested by the test suite. Removing the tests, reduces the overall
 # size of the images.
 RUN useradd -m metacpan-api -g users \
-    && mkdir /carton /CPAN \
-    && cpm install --without-test -L /carton \
+    && mkdir /CPAN \
+    && cpm install --global --without-test \
     && rm -fr /root/.cpanm /root/.perl-cpm /var/cache/apt/lists/* /tmp/*
 
-RUN chown -R metacpan-api:users /metacpan-api /carton /CPAN
-
-VOLUME /carton
+RUN chown -R metacpan-api:users /metacpan-api /CPAN
 
 VOLUME /CPAN
 
@@ -24,4 +22,4 @@ USER metacpan-api:users
 
 EXPOSE 5000
 
-CMD /wait-for-it.sh ${PGDB} -- carton exec ${API_SERVER} ./bin/api.pl
+CMD /wait-for-it.sh ${PGDB} -- ${API_SERVER} ./bin/api.pl
