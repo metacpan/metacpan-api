@@ -66,7 +66,7 @@ sub run {
 
     my $filename = join( '-',
         DateTime->now->strftime('%F'),
-        grep {defined} $self->index->name,
+        grep {defined} $self->index_name,
         $self->type );
 
     my $file = $self->home->subdir(qw(var backup))->file("$filename.json.gz");
@@ -74,7 +74,7 @@ sub run {
     my $fh = IO::Zlib->new( "$file", 'wb4' );
 
     my $scroll = $es->scroll_helper(
-        index => $self->index->name,
+        index => $self->index_name,
         $self->type ? ( type => $self->type ) : (),
         size        => $self->size,
         search_type => 'scan',
