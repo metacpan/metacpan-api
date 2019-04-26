@@ -21,22 +21,24 @@ sub index_mirrors {
     log_info { 'Getting mirrors.json file from ' . $self->cpan };
 
     my $json = $self->cpan->file( 'indices', 'mirrors.json' )->slurp;
-    my $type = $self->index->type('mirror');
 
     # Clear out everything in the index
     # so don't end up with old mirrors
-    $type->delete;
+    $self->delete_all_ids('mirror');
 
     my $mirrors = Cpanel::JSON::XS::decode_json($json);
     foreach my $mirror (@$mirrors) {
         $mirror->{location}
             = { lon => $mirror->{longitude}, lat => $mirror->{latitude} };
         Dlog_trace {"Indexing $_"} $mirror;
-        $type->put(
-            {
+
+        $self->es->index(
+            index => $self->index_name,
+            type  => 'mirror',
+            body  => {
                 map { $_ => $mirror->{$_} }
                 grep { defined $mirror->{$_} } keys %$mirror
-            }
+            },
         );
     }
     log_info {'done'};

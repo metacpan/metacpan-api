@@ -35,13 +35,13 @@ sub run {
         fields => 'auto',
     );
 
+    $self->delete_all_ids('rating');
+
     my $bulk = $self->es->bulk_helper(
         index     => $self->index_name,
         type      => 'rating',
         max_count => 500,
     );
-
-    $self->delete_old_ratings($bulk);
 
     my $date = DateTime->now->iso8601;
     while ( my $rating = $parser->fetch ) {
@@ -66,31 +66,6 @@ sub run {
     $bulk->flush;
     $self->refresh;
     log_info {'done'};
-}
-
-sub delete_old_ratings {
-    my ( $self, $bulk ) = @_;
-
-    log_debug {'Deleting old CPANRatings'};
-
-    my $scroll = $self->es->scroll_helper(
-        {
-            size   => 1000,
-            scroll => '1m',
-            index  => $self->index_name,
-            type   => 'rating',
-            fields => [],
-        }
-    );
-
-    my @ids;
-
-    while ( my $rating = $scroll->next ) {
-        push @ids, $rating->{_id};
-    }
-
-    $bulk->delete_ids(@ids);
-    $bulk->flush;
 }
 
 sub digest {

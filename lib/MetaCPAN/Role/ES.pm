@@ -31,5 +31,34 @@ sub refresh {
     $self->es->indices->refresh( index => $name );
 }
 
+sub delete_all_ids {
+    my ( $self, $type, $index ) = @_;
+    $index //= $self->index_name;
+
+    # collect all ids in type
+    my @ids;
+    my $scroll = $self->es->scroll_helper(
+        {
+            size   => 1000,
+            scroll => '1m',
+            index  => $index,
+            type   => $type,
+            fields => [],
+        }
+    );
+    while ( my $record = $scroll->next ) {
+        push @ids, $record->{_id};
+    }
+
+    # delete all ids
+    my $bulk = $self->es->bulk_helper(
+        index     => $index,
+        type      => $type,
+        max_count => 500,
+    );
+    $bulk->delete_ids(@ids);
+    $bulk->flush;
+}
+
 no Moose::Role;
 1;

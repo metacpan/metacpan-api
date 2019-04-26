@@ -10,7 +10,7 @@ use Log::Contextual qw( :log );
 use MetaCPAN::Util;
 use MetaCPAN::Types qw( Bool );
 
-with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
+with 'MetaCPAN::Role::Script', 'MooseX::Getopt', 'MetaCPAN::Role::ES';
 
 has backpan => (
     is            => 'ro',
@@ -24,8 +24,9 @@ has dry_run => (
     default => 0,
 );
 
-my $fails  = 0;
-my $latest = 0;
+my $fails   = 0;
+my $latest  = 0;
+my $iso8601 = DateTime::Format::ISO8601->new;
 
 my @segments = qw(1h 6h 1d 1W 1M 1Q 1Y Z);
 
@@ -53,7 +54,8 @@ sub run {
 sub changes {
     my $self    = shift;
     my $now     = DateTime->now->epoch;
-    my $archive = $latest->archive;
+    my $epoch   = $iso8601->parse_datetime( $latest->{date} )->epoch;
+    my $archive = $latest->{archive};
     my %seen;
     my @changes;
     for my $segment (@segments) {
@@ -82,7 +84,7 @@ sub changes {
             push( @changes, $_ );
         }
         if (  !$self->backpan
-            && $json->{meta}->{minmax}->{min} < $latest->date->epoch )
+            && $json->{meta}->{minmax}->{min} < $epoch )
         {
             log_debug {"Includes latest release"};
             last;
@@ -131,21 +133,16 @@ sub backpan_changes {
 sub latest_release {
     my $self = shift;
     return undef if ( $self->backpan );
-    return $self->index->type('release')
-        ->sort( [ { 'date' => { order => "desc" } } ] )->first;
-}
-
-sub skip {
-    my ( $self, $author, $archive ) = @_;
-    return $self->index->type('release')->filter(
-        {
-            and => [
-                { term => { status  => 'backpan' } },
-                { term => { archive => $archive } },
-                { term => { author  => $author } },
-            ]
-        }
-    )->raw->count;
+    my $release = $self->es->search(
+        index => $self->index_name,
+        type  => 'release',
+        size  => 1,
+        body  => {
+            query => { match_all => {} },
+            sort => [ { date => 'desc' } ],
+        },
+    );
+    return $release->{hits}{hits}[0]{_source};
 }
 
 sub index_release {
@@ -174,16 +171,22 @@ sub index_release {
 
 sub reindex_release {
     my ( $self, $release ) = @_;
-    my $info = CPAN::DistnameInfo->new( $release->{path} );
-    $release = $self->index->type('release')->filter(
-        {
-            and => [
-                { term => { author  => $info->cpanid } },
-                { term => { archive => $info->filename } },
-            ]
-        }
-    )->raw->first;
-    return unless ($release);
+    my $info  = CPAN::DistnameInfo->new( $release->{path} );
+    my $count = $self->es->count(
+        index => $self->index_name,
+        type  => 'release',
+        body  => {
+            query => {
+                bool => {
+                    must => [
+                        { term => { author  => $info->cpanid } },
+                        { term => { archive => $info->filename } },
+                    ],
+                }
+            },
+        },
+    );
+    return unless $count->{count};
     log_info {"Moving $release->{_source}->{name} to BackPAN"};
 
     my $es     = $self->es;
