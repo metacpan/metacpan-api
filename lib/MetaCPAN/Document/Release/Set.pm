@@ -73,29 +73,42 @@ sub predecessor {
     )->sort( [ { date => 'desc' } ] )->first;
 }
 
-sub find_github_based {
-    shift->filter(
-        {
-            and => [
-                { term => { status => 'latest' } },
-                {
-                    or => [
+sub get_scroller_github_based {
+    my ($self) = @_;
+
+    return $self->es->scroll_helper(
+        index       => $self->index_name,
+        type        => 'release',
+        search_type => 'scan',
+        scroll      => '5m',
+        size        => 500,
+        body        => {
+            query => {
+                bool => {
+                    must => [
+                        { term => { status => 'latest' } },
                         {
-                            prefix => {
-                                "resources.bugtracker.web" =>
-                                    'http://github.com/'
+                            or => {
+                                should => [
+                                    {
+                                        prefix => {
+                                            "resources.bugtracker.web" =>
+                                                'http://github.com/'
+                                        }
+                                    },
+                                    {
+                                        prefix => {
+                                            "resources.bugtracker.web" =>
+                                                'https://github.com/'
+                                        }
+                                    },
+                                ]
                             }
-                        },
-                        {
-                            prefix => {
-                                "resources.bugtracker.web" =>
-                                    'https://github.com/'
-                            }
-                        },
+                        }
                     ]
                 }
-            ]
-        }
+            }
+        },
     );
 }
 

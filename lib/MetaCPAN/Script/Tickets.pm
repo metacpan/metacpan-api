@@ -20,6 +20,8 @@ use URI::Escape qw(uri_escape);
 use MetaCPAN::Types qw( ArrayRef Str );
 use Ref::Util qw( is_ref is_hashref);
 
+use MetaCPAN::Document::Release::Set;
+
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
 has rt_summary_url => (
@@ -121,14 +123,18 @@ sub index_github_bugs {
 
     log_debug {'Fetching GitHub issues'};
 
-    my $scroll
-        = $self->index->type('release')->find_github_based->scroll('5m');
+    my $type   = MetaCPAN::Document::Release::Set->new();
+    my $scroll = $type->get_scroller_github_based;
     log_debug { sprintf( "Found %s repos", $scroll->total ) };
 
     my %summary;
 
     while ( my $release = $scroll->next ) {
-        my $resources = $release->resources;
+
+        # TODO: temporary
+        my $release = $release->{_source};
+
+        my $resources = $release->{resources};
         my ( $user, $repo, $source )
             = $self->github_user_repo_from_resources($resources);
         next unless $user;
