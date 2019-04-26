@@ -31,7 +31,7 @@ sub run {
         {
             size   => 500,
             scroll => '1m',
-            index  => 'cpan',
+            index  => $self->index_name,
             type   => 'distribution',
             body   => $body,
         }

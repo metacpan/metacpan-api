@@ -62,7 +62,7 @@ sub update {
     my $external_source = $self->external_source;
 
     my $scroll = $self->es->scroll_helper(
-        index  => 'cpan',
+        index  => $self->index_name,
         type   => 'distribution',
         scroll => '10m',
         body   => {
@@ -89,7 +89,7 @@ sub update {
     }
 
     my $bulk = $self->es->bulk_helper(
-        index => 'cpan',
+        index => $self->index_name,
         type  => 'distribution',
     );
 

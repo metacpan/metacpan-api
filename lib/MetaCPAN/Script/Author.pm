@@ -33,7 +33,7 @@ sub run {
     my $self = shift;
 
     $self->index_authors;
-    $self->refresh('cpan');
+    $self->refresh;
 }
 
 sub index_authors {
@@ -56,7 +56,7 @@ sub index_authors {
     };
 
     my $bulk = $self->es->bulk_helper(
-        index     => 'cpan',
+        index     => $self->index_name,
         type      => 'author',
         max_count => 250,
         timeout   => '25m',
@@ -135,7 +135,7 @@ sub index_authors {
         );
     }
     $bulk->flush;
-    $self->refresh('cpan');
+    $self->refresh;
 
     $self->purge_author_key(@author_ids_to_purge);
     $self->perform_purges;

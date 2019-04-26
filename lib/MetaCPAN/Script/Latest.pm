@@ -62,7 +62,7 @@ sub run {
     }
 
     my $p = $self->packages;
-    $self->refresh('cpan');
+    $self->refresh;
 
     # If a distribution name is passed get all the package names
     # from 02packages that match that distribution so we can limit
@@ -183,7 +183,7 @@ sub run {
     }
 
     my $bulk = $self->es->bulk_helper(
-        index => 'cpan',
+        index => $self->index_name,
         type  => 'file'
     );
 
@@ -208,10 +208,10 @@ sub run {
             && $upgrade{ $file_data->{distribution} }->{release} eq
             $file_data->{release} );
 
-        $self->reindex( $bulk, $file_data, 'cpan' );
+        $self->reindex( $bulk, $file_data, $self->index_name );
     }
     $bulk->flush;
-    $self->refresh('cpan');
+    $self->refresh;
 
     # We just want the CPAN::DistnameInfo
     my @module_to_purge_dists = map { $_->distribution } @modules_to_purge;

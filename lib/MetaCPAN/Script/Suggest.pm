@@ -63,7 +63,7 @@ sub _update_slice {
     my ( $self, $range ) = @_;
 
     my $files = $self->es->scroll_helper(
-        index       => 'cpan',
+        index       => $self->index_name,
         type        => 'file',
         search_type => 'scan',
         scroll      => '5m',
@@ -81,7 +81,7 @@ sub _update_slice {
     );
 
     my $bulk = $self->es->bulk_helper(
-        index     => 'cpan',
+        index     => $self->index_name,
         type      => 'file',
         max_count => 250,
         timeout   => '5m',

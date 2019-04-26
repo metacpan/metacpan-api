@@ -91,7 +91,7 @@ sub build_release_status_map {
     my $scroll = $self->es->scroll_helper(
         size   => 500,
         scroll => '5m',
-        index  => 'cpan',
+        index  => $self->index_name,
         type   => 'release',
         fields => [ 'author', 'archive', 'name' ],
         body   => $self->_get_release_query,
@@ -150,7 +150,7 @@ sub update_releases {
     log_info {"update_releases"};
 
     $self->_bulk->{release} ||= $self->es->bulk_helper(
-        index     => 'cpan',
+        index     => $self->index_name,
         type      => 'release',
         max_count => 250,
         timeout   => '5m',
@@ -193,7 +193,7 @@ sub update_files_author {
     my $scroll = $self->es->scroll_helper(
         size   => 500,
         scroll => '5m',
-        index  => 'cpan',
+        index  => $self->index_name,
         type   => 'file',
         fields => ['release'],
         body   => {
@@ -209,7 +209,7 @@ sub update_files_author {
     );
 
     $self->_bulk->{file} ||= $self->es->bulk_helper(
-        index     => 'cpan',
+        index     => $self->index_name,
         type      => 'file',
         max_count => 250,
         timeout   => '5m',

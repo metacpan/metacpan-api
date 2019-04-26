@@ -84,9 +84,9 @@ sub check_modules {
 
              # look up this module in ElasticSearch and see what we have on it
                 my $results = $es->search(
-                    index  => 'cpan',
+                    index  => $self->index_name,
                     type   => 'file',
-                    size   => 100,      # shouldn't get more than this
+                    size   => 100,              # shouldn't get more than this
                     fields => [
                         qw(name release author distribution version authorized indexed maturity date)
                     ],
@@ -104,7 +104,7 @@ sub check_modules {
                 # now find the first latest releases for these files
                 foreach my $file (@files) {
                     my $release_results = $es->search(
-                        index => 'cpan',
+                        index => $self->index_name,
                         type  => 'release',
                         size  => 1,
                         fields =>
@@ -133,7 +133,7 @@ sub check_modules {
                 if ( !@releases ) {
                     foreach my $file (@files) {
                         my $release_results = $es->search(
-                            index => 'cpan',
+                            index => $self->index_name,
                             type  => 'release',
                             size  => 1,
                             fields =>

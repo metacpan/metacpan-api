@@ -2,6 +2,7 @@ package MetaCPAN::Role::ES;
 
 use Moose::Role;
 use MooseX::Types::ElasticSearch qw(:all);
+use MetaCPAN::Types qw( Str );
 
 has es => (
     is      => 'ro',
@@ -9,6 +10,12 @@ has es => (
     lazy    => 1,
     coerce  => 1,
     builder => '_build_es',
+);
+
+has index_name => (
+    is      => 'ro',
+    isa     => Str,
+    default => 'cpan',
 );
 
 sub _build_es {
@@ -20,6 +27,7 @@ sub _build_es {
 
 sub refresh {
     my ( $self, $name ) = @_;
+    $name //= $self->index_name;
     $self->es->indices->refresh( index => $name );
 }
 

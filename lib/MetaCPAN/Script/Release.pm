@@ -216,7 +216,7 @@ sub run {
             };
         }
     }
-    $self->refresh('cpan') unless $self->queue;
+    $self->refresh( $self->index_name ) unless $self->queue;
 
     # Call Fastly to purge
     $self->purge_cpan_distnameinfos( \@module_to_purge_dists );

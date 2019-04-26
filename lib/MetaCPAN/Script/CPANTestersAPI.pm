@@ -32,7 +32,7 @@ has _bulk => (
     lazy    => 1,
     default => sub {
         $_[0]->es->bulk_helper(
-            index     => 'cpan',
+            index     => $self->index_name,
             type      => 'release',
             max_count => 250,
             timeout   => '30m',
@@ -43,7 +43,7 @@ has _bulk => (
 sub run {
     my $self = shift;
     $self->index_reports;
-    $self->refresh('cpan');
+    $self->refresh;
 }
 
 sub index_reports {
@@ -61,7 +61,7 @@ sub index_reports {
     my $data = decode_json $json;
 
     my $scroll = $es->scroll_helper(
-        index       => 'cpan',
+        index       => $self->index_name,
         search_type => 'scan',
         size        => '500',
         type        => 'release',

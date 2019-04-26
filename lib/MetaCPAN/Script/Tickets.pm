@@ -56,7 +56,7 @@ has _bulk => (
 sub _build_bulk {
     my $self = shift;
     $self->es->bulk_helper(
-        index => 'cpan',
+        index => $self->index_name,
         type  => 'distribution',
     );
 }
@@ -94,7 +94,7 @@ sub check_all_distributions {
     my $scroll = $self->es->scroll_helper(
         size   => 500,
         scroll => '5m',
-        index  => 'cpan',
+        index  => $self->index_name,
         type   => 'release',
         fields => ['distribution'],
         body   => {

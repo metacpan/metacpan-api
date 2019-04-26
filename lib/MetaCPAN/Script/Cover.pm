@@ -54,7 +54,7 @@ sub index_cover_data {
         for my $version ( keys %{ $data->{$dist} } ) {
             my $release   = $dist . '-' . $version;
             my $rel_check = $self->es->search(
-                index => 'cpan',
+                index => $self->index_name,
                 type  => 'release',
                 size  => 0,
                 body  => {

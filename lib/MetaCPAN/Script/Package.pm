@@ -25,7 +25,7 @@ has clean_up => (
 sub run {
     my $self = shift;
     $self->index_packages;
-    $self->refresh('cpan');
+    $self->refresh;
 }
 
 sub _get_02packages_fh {
@@ -52,7 +52,7 @@ sub index_packages {
     log_debug {$meta};
 
     my $bulk = $self->es->bulk_helper(
-        index => 'cpan',
+        index => $self->index_name,
         type  => 'package',
     );
 
@@ -99,7 +99,7 @@ sub run_cleanup {
     log_debug {"checking package data to remove"};
 
     my $scroll = $self->es->scroll_helper(
-        index  => 'cpan',
+        index  => $self->index_name,
         type   => 'package',
         scroll => '30m',
         body   => { query => { match_all => {} } },

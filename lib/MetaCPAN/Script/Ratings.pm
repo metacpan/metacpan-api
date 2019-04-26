@@ -36,7 +36,7 @@ sub run {
     );
 
     my $bulk = $self->es->bulk_helper(
-        index     => 'cpan',
+        index     => $self->index_name,
         type      => 'rating',
         max_count => 500,
     );
@@ -64,7 +64,7 @@ sub run {
         }
     }
     $bulk->flush;
-    $self->refresh('cpan');
+    $self->refresh;
     log_info {'done'};
 }
 
@@ -77,7 +77,7 @@ sub delete_old_ratings {
         {
             size   => 1000,
             scroll => '1m',
-            index  => 'cpan',
+            index  => $self->index_name,
             type   => 'rating',
             fields => [],
         }

@@ -50,7 +50,7 @@ has _bulk => (
     lazy    => 1,
     default => sub {
         $_[0]->es->bulk_helper(
-            index => 'cpan',
+            index => $_[0]->index_name,
             type  => 'release'
         );
     },
@@ -67,7 +67,7 @@ sub _build_db {
 sub run {
     my $self = shift;
     $self->index_reports;
-    $self->refresh('cpan');
+    $self->refresh;
 }
 
 sub index_reports {

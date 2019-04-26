@@ -29,7 +29,7 @@ sub index_river_summaries {
     my ( $self, $summaries ) = @_;
 
     my $bulk = $self->es->bulk_helper(
-        index => 'cpan',
+        index => $self->index_name,
         type  => 'distribution',
     );
 
