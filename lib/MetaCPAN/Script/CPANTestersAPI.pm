@@ -32,7 +32,7 @@ has _bulk => (
     lazy    => 1,
     default => sub {
         $_[0]->es->bulk_helper(
-            index     => $self->index_name,
+            index     => $_[0]->index_name,
             type      => 'release',
             max_count => 250,
             timeout   => '30m',
