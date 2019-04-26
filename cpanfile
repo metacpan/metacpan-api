@@ -90,7 +90,7 @@ requires 'List::MoreUtils', '0.413';
 requires 'List::Util', '1.45';
 requires 'Log::Any::Adapter';
 requires 'Log::Any::Adapter::Log4perl';
-requires 'Log::Contextual';
+requires 'Log::Contextual', '>= 0.008001';
 requires 'Log::Log4perl';
 requires 'Log::Log4perl::Appender::ScreenColoredLevels';
 requires 'Log::Dispatch';

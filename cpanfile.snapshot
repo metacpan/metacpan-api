@@ -4098,20 +4098,20 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  Log-Contextual-0.007001
-    pathname: F/FR/FREW/Log-Contextual-0.007001.tar.gz
+  Log-Contextual-0.008001
+    pathname: F/FR/FREW/Log-Contextual-0.008001.tar.gz
     provides:
-      Log::Contextual 0.007001
-      Log::Contextual::Easy::Default 0.007001
-      Log::Contextual::Easy::Package 0.007001
-      Log::Contextual::Role::Router 0.007001
-      Log::Contextual::Role::Router::HasLogger 0.007001
-      Log::Contextual::Role::Router::SetLogger 0.007001
-      Log::Contextual::Role::Router::WithLogger 0.007001
-      Log::Contextual::Router 0.007001
-      Log::Contextual::SimpleLogger 0.007001
-      Log::Contextual::TeeLogger 0.007001
-      Log::Contextual::WarnLogger 0.007001
+      Log::Contextual 0.008001
+      Log::Contextual::Easy::Default 0.008001
+      Log::Contextual::Easy::Package 0.008001
+      Log::Contextual::Role::Router 0.008001
+      Log::Contextual::Role::Router::HasLogger 0.008001
+      Log::Contextual::Role::Router::SetLogger 0.008001
+      Log::Contextual::Role::Router::WithLogger 0.008001
+      Log::Contextual::Router 0.008001
+      Log::Contextual::SimpleLogger 0.008001
+      Log::Contextual::TeeLogger 0.008001
+      Log::Contextual::WarnLogger 0.008001
     requirements:
       Carp 0
       Data::Dumper::Concise 0
