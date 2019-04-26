@@ -6,6 +6,7 @@ use File::Basename ();
 use File::Path     ();
 use File::Spec     ();
 use Log::Log4perl  ();
+use Log::Contextual qw(set_logger);
 use Path::Tiny qw( path );
 use Plack::App::Directory ();
 use Plack::App::URLMap    ();
@@ -35,6 +36,8 @@ BEGIN {
         = File::Spec->rel2abs( $config->{log4perl_file} || 'log4perl.conf',
         $root_dir );
     Log::Log4perl::init($log4perl_config);
+
+    set_logger(Log::Log4perl->get_logger('MetaCPAN::Server'));
 
     package MetaCPAN::Server::WarnHandler;
     Log::Log4perl->wrapper_register(__PACKAGE__);
