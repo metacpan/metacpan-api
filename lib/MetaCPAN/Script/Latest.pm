@@ -112,11 +112,14 @@ sub run {
         }
     };
 
-    my $scroll
-        = $self->index->type('file')->filter($query)
-        ->source(
-        [qw< author date distribution module.name release status >] )
-        ->size(100)->raw->scroll;
+    my $scroll = $self->es->scroll_helper(
+        size   => 100,
+        scroll => '5m',
+        index  => $self->index_name,
+        type   => 'file',
+        body   => { query => $query },
+        fields => [qw( author date distribution module.name release status )],
+    );
 
     my ( %downgrade, %upgrade );
     log_debug { 'Found ' . $scroll->total . ' modules' };
@@ -130,13 +133,13 @@ sub run {
     while ( my $file = $scroll->next ) {
         $i++;
         log_debug { "$i of " . $scroll->total } unless ( $i % 1000 );
-        my $file_data = $file->{_source};
+        my $file_data = $file->{fields};
 
        # Convert module name into Parse::CPAN::Packages::Fast::Package object.
         my @modules = grep {defined}
             map {
-            eval { $p->package( $_->{name} ) }
-            } @{ $file_data->{module} };
+            eval { $p->package($_) }
+            } @{ $file_data->{'module.name'} };
 
         push @modules_to_purge, @modules;
 
@@ -225,35 +228,55 @@ sub run {
 sub reindex {
     my ( $self, $bulk, $source, $status ) = @_;
 
-    # Update the status on the release.
-    my $release = $self->index->type('release')->get(
-        {
-            author => $source->{author},
-            name   => $source->{release},
+    my $query = {
+        bool => {
+            must => [
+                { term => { author => $source->{author}[0] } },
+                { term => { name   => $source->{release}[0] } },
+            ]
         }
+    };
+
+    # Update the status on the release.
+    my $release = $self->es->search(
+        index  => $self->index_name,
+        type   => 'release',
+        fields => [qw( name )],
+        body   => { query => $query },
     );
 
-    $release->_set_status($status);
-    log_info {
-        $status eq 'latest' ? 'Upgrading ' : 'Downgrading ',
-            'release ', $release->name || q[];
-    };
-    $release->put unless ( $self->dry_run );
+    $release = $release->{hits}{hits}[0];
+
+    if ( !$self->dry_run ) {
+        log_info {
+            $status eq 'latest' ? 'Upgrading ' : 'Downgrading ',
+                'release ', $release->{fields}{name}[0] || q[];
+        };
+
+        $self->es->update(
+            index => $self->index_name,
+            type  => 'release',
+            id    => $release->{_id},
+            body  => {
+                doc => {
+                    status => $status,
+                },
+            },
+        );
+    }
 
     # Get all the files for the release.
-    my $scroll = $self->index->type("file")->search_type('scan')->filter(
-        {
-            bool => {
-                must => [
-                    { term => { 'release' => $source->{release} } },
-                    { term => { 'author'  => $source->{author} } }
-                ]
-            }
-        }
-    )->size(100)->source( [ 'status', 'file' ] )->raw->scroll;
+    my $scroll = $self->es->scroll_helper(
+        size   => 100,
+        scroll => '5m',
+        index  => $self->index_name,
+        type   => 'file',
+        body   => { query => $query },
+        fields => [qw( file status )],
+    );
 
     while ( my $row = $scroll->next ) {
-        my $source = $row->{_source};
+        my $source = $row->{fields};
         log_trace {
             $status eq 'latest' ? 'Upgrading ' : 'Downgrading ',
                 'file ', $source->{name} || q[];
@@ -263,7 +286,6 @@ sub reindex {
         $bulk->update( { id => $row->{_id}, doc => { status => $status } } )
             unless $self->dry_run;
     }
-
 }
 
 sub compare_dates {
