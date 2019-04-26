@@ -47,8 +47,11 @@ sub _queue_latest {
     my $dist = shift || $self->distribution;
 
     log_info { "queueing " . $dist };
-    $self->_add_to_queue( index_latest =>
-            [ ( $self->force ? '--force' : () ), '--distribution', $dist ] );
+    $self->_add_to_queue(
+        index_latest =>
+            [ ( $self->force ? '--force' : () ), '--distribution', $dist ],
+        { attempts => 3 }
+    );
 }
 
 sub run {

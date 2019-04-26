@@ -177,7 +177,9 @@ sub run {
 
         if ( $self->queue ) {
             my $job_id = $self->_add_to_queue(
-                index_release => [$file] => { priority => 3 } );
+                index_release => [$file],
+                { attempts => 3, priority => 3 }
+            );
 
            # This is a hack to deal with the fact that we don't know exactly
            # when 02packages gets updated.  It should be about every 5
@@ -190,6 +192,7 @@ sub run {
                 for my $delay ( 150, 330, 600 ) {
                     $self->_add_to_queue(
                         index_latest => [ '--distribution', $d->dist ] => {
+                            attempts => 3,
                             delay    => $delay,
                             parents  => [$job_id],
                             priority => 2,
