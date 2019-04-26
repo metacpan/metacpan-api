@@ -18,7 +18,7 @@ my $config;
 BEGIN {
     $root_dir = File::Basename::dirname(__FILE__);
     $dev_mode = $ENV{PLACK_ENV} && $ENV{PLACK_ENV} eq 'development';
-    $config   = Config::ZOMG->new(
+    $config   = Config::ZOMG->open(
         name => 'MetaCPAN::Server',
         path => $root_dir,
     );
