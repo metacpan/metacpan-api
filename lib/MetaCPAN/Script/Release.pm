@@ -161,15 +161,22 @@ sub run {
         my $d = CPAN::DistnameInfo->new($file);
 
         if ( $self->skip ) {
-            my $count = $self->index->type('release')->filter(
-                {
-                    and => [
-                        { term => { archive => $d->filename } },
-                        { term => { author  => $d->cpanid } },
-                    ]
-                }
-            )->raw->count;
-            if ($count) {
+            my $count = $self->es->count(
+                index => $self->index->name,
+                type  => 'release',
+                body  => {
+                    query => {
+                        bool => {
+                            must => [
+                                { term => { archive => $d->filename } },
+                                { term => { author  => $d->cpanid } },
+                            ]
+                        }
+                    }
+                },
+            );
+
+            if ( $count->{count} ) {
                 log_info {"Skipping $file"};
                 next;
             }
