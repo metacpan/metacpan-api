@@ -3157,12 +3157,12 @@ DISTRIBUTIONS
       Stream::Buffered 0
       Try::Tiny 0
       perl 5.008001
-  Getopt-Long-Descriptive-0.100
-    pathname: R/RJ/RJBS/Getopt-Long-Descriptive-0.100.tar.gz
+  Getopt-Long-Descriptive-0.104
+    pathname: R/RJ/RJBS/Getopt-Long-Descriptive-0.104.tar.gz
     provides:
-      Getopt::Long::Descriptive 0.100
-      Getopt::Long::Descriptive::Opts 0.100
-      Getopt::Long::Descriptive::Usage 0.100
+      Getopt::Long::Descriptive 0.104
+      Getopt::Long::Descriptive::Opts 0.104
+      Getopt::Long::Descriptive::Usage 0.104
     requirements:
       Carp 0
       ExtUtils::MakeMaker 0
