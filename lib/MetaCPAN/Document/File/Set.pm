@@ -44,6 +44,7 @@ sub _build_query_favorite {
 }
 
 my @ROGUE_DISTRIBUTIONS = qw(
+    Acme-DependOnEverything
     Bundle-Everything
     kurila
     perl-5.005_02+apache1.3.3+modperl

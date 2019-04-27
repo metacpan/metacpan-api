@@ -27,14 +27,15 @@ has index => (
 
 const my $RESULTS_PER_RUN     => 200;
 const my @ROGUE_DISTRIBUTIONS => qw(
+    Acme-DependOnEverything
+    Bundle-Everything
     kurila
+    perl-5.005_02+apache1.3.3+modperl
+    perlbench
     perl_debug
     perl_mlb
-    perl-5.005_02+apache1.3.3+modperl
     pod2texi
-    perlbench
     spodcxx
-    Bundle-Everything
 );
 
 sub _not_rogue {
