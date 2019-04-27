@@ -363,6 +363,7 @@ sub by_author_and_names {
     # $releases: ArrayRef[ Dict[ author => Str, name => Str ] ]
 
     my $body = {
+        size  => (0+ @$releases),
         query => {
             bool => {
                 should => [
