@@ -4,15 +4,14 @@ use Moose;
 
 ## no critic (Modules::RequireEndWithOne)
 use Catalyst qw( +MetaCPAN::Role::Fastly::Catalyst ), '-Log=warn,error,fatal';
-use Log::Log4perl::Catalyst;
-
 use CatalystX::RoleApplicator;
+use Digest::SHA;
 use File::Temp qw( tempdir );
+use Log::Log4perl::Catalyst;
+use Plack::Builder;
 use Plack::Middleware::ReverseProxy;
 use Plack::Middleware::ServerStatus::Lite;
 use Ref::Util qw( is_arrayref is_hashref );
-use Plack::Builder;
-use Digest::SHA;
 
 extends 'Catalyst';
 
