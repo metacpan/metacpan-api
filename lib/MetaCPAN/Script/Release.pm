@@ -228,6 +228,7 @@ sub _get_release_model {
     my $d = CPAN::DistnameInfo->new($archive_path);
 
     my $model = MetaCPAN::Model::Release->new(
+        es       => $self->es,
         bulk     => $bulk,
         distinfo => $d,
         file     => $archive_path,
