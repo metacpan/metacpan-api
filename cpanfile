@@ -69,6 +69,7 @@ requires 'File::stat';
 requires 'Find::Lib';
 requires 'FindBin';
 requires 'Gazelle';
+requires 'Getopt::Long::Descriptive', '>= 0.103';
 requires 'Git::Helpers';
 requires 'Gravatar::URL';
 requires 'HTML::Entities';
