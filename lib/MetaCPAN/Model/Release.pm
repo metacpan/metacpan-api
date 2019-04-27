@@ -122,6 +122,7 @@ has status => (
     isa => Str,
 );
 
+has es   => ( is => 'ro' );
 has bulk => ( is => 'ro' );
 
 =head2 run
@@ -221,11 +222,16 @@ sub _build_document {
     $document
         = $self->index->type('release')->put( $document, { refresh => 1 } );
 
-    # create will die if the document already exists
-    eval {
+    # create distribution if doesn't exist
+    my $dist_count = $self->es->count(
+        index => 'cpan',
+        type  => 'distribution',
+        body  => { query => { term => { name => $self->distribution } } },
+    );
+    if ( !$dist_count->{count} ) {
         $self->index->type('distribution')
             ->put( { name => $self->distribution }, { create => 1 } );
-    };
+    }
     return $document;
 }
 
