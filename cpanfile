@@ -174,8 +174,6 @@ requires 'Time::Local';
 requires 'Try::Tiny', '0.24';
 requires 'URI', '1.71';
 requires 'URI::Escape';
-requires 'WWW::Mechanize', '1.75';
-requires 'WWW::Mechanize::Cached', '1.50';
 requires 'XML::Simple';
 requires 'YAML', '1.15';
 requires 'YAML::Syck', '1.29';
