@@ -21,6 +21,8 @@ env:
 
     - DEVEL_COVER_OPTIONS="-ignore,^local/"
     - PERL_CARTON_PATH=$HOME/local
+
+    - DOCKER_IMAGE_NAME=metacpan-api
   matrix:
     - CPAN_RESOLVER=metadb PERL_CARTON_PATH=$HOME/no-snapshot HARNESS_VERBOSE=1
     - CPAN_RESOLVER=snapshot
@@ -82,6 +84,19 @@ after_success:
 
 services:
   - docker
+
+## Build and push a docker image in production
+deploy:
+  - provider: script
+    script:
+      - deploy/build.sh
+    on:
+      branch: master
+  - provider: script
+    script:
+      - deploy/push.sh
+    on:
+      branch: master
 
 # caching /local should save about 5 minutes in module install time
 cache:
