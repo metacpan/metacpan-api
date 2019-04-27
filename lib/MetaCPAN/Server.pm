@@ -4,15 +4,14 @@ use Moose;
 
 ## no critic (Modules::RequireEndWithOne)
 use Catalyst qw( +MetaCPAN::Role::Fastly::Catalyst ), '-Log=warn,error,fatal';
-use Log::Log4perl::Catalyst;
-
 use CatalystX::RoleApplicator;
+use Digest::SHA;
 use File::Temp qw( tempdir );
+use Log::Log4perl::Catalyst;
+use Plack::Builder;
 use Plack::Middleware::ReverseProxy;
 use Plack::Middleware::ServerStatus::Lite;
 use Ref::Util qw( is_arrayref is_hashref );
-use Plack::Builder;
-use Digest::SHA;
 
 extends 'Catalyst';
 
@@ -123,23 +122,6 @@ sub app {
             enable 'Rewrite', rules => sub {s{^/?v\d+/}{}};
         }
 
-        # Using an ES client against the API requires an index (/v0).
-        # In production nginx handles this.
-
-        unless ( $ENV{HARNESS_ACTIVE} or $0 =~ /\.t$/ ) {
-            my $scoreboard = $class->path_to(qw(var tmp scoreboard));
-
-   # This may be a File object if it doesn't exist so change it, then make it.
-            my $dir = Path::Class::Dir->new(
-                ref $scoreboard ? $scoreboard->stringify : $scoreboard );
-            $dir->mkpath unless -d $dir;
-
-            enable 'ServerStatus::Lite',
-                path       => '/server-status',
-                allow      => ['127.0.0.1'],
-                scoreboard => $scoreboard,
-                ;
-        }
         $class->apply_default_middlewares( $class->psgi_app );
     };
 }
