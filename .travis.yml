@@ -25,7 +25,7 @@ env:
     - DOCKER_IMAGE_NAME=metacpan-api
   matrix:
     - CPAN_RESOLVER=metadb PERL_CARTON_PATH=$HOME/no-snapshot HARNESS_VERBOSE=1
-    - CPAN_RESOLVER=snapshot
+    - CPAN_RESOLVER=snapshot BUILD_DOCKER=yes
 
 matrix:
   allow_failures:
@@ -92,11 +92,13 @@ deploy:
       - deploy/build.sh
     on:
       branch: master
+      condition: $BUILD_DOCKER -eq 'yes'
   - provider: script
     script:
       - deploy/push.sh
     on:
       branch: master
+      condition: $BUILD_DOCKER -eq 'yes'
 
 # caching /local should save about 5 minutes in module install time
 cache:
