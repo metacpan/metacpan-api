@@ -177,13 +177,30 @@ sub run {
 
         if ( $self->queue ) {
             my $job_id = $self->_add_to_queue(
-                index_release => [$file] => { priority => 3 } );
+                index_release => [$file],
+                { attempts => 3, priority => 3 }
+            );
+
+           # This is a hack to deal with the fact that we don't know exactly
+           # when 02packages gets updated.  It should be about every 5
+           # minutes.  We could stop trying once something is already
+           # "latest", but some uploads will never be "latest".  Trying this X
+           # times should be fairly cheap.  If this doesn't work, there is a
+           # cleanup cron which can set the "latest" flag, if necessary.
 
             if ( $self->latest ) {
-                $self->_add_to_queue(
-                    index_latest => [ '--distribution', $d->dist ] =>
-                        { priority => 2, parents => [$job_id] } );
+                for my $delay ( 150, 330, 600 ) {
+                    $self->_add_to_queue(
+                        index_latest => [ '--distribution', $d->dist ] => {
+                            attempts => 3,
+                            delay    => $delay,
+                            parents  => [$job_id],
+                            priority => 2,
+                        }
+                    );
+                }
             }
+
         }
         else {
             try { $self->import_archive($file) }

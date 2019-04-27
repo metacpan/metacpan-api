@@ -32,12 +32,18 @@ sub run {
 
         my $next = $rule->iter( $self->dir );
         while ( defined( my $file = $next->() ) ) {
-            $self->_add_to_queue( index_release => [$file] );
+            $self->_add_to_queue(
+                index_release => [$file],
+                { attempts => 3 }
+            );
         }
     }
 
     if ( $self->_has_file ) {
-        $self->_add_to_queue( index_release => [ $self->file->stringify ] );
+        $self->_add_to_queue(
+            index_release => [ $self->file->stringify ],
+            { attempts => 3 }
+        );
     }
 }
 
