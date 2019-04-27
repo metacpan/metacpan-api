@@ -70,7 +70,6 @@ requires 'Find::Lib';
 requires 'FindBin';
 requires 'Gazelle';
 requires 'Git::Helpers';
-requires 'Graph::Centrality::Pagerank';
 requires 'Gravatar::URL';
 requires 'HTML::Entities';
 requires 'HTML::TokeParser::Simple';
