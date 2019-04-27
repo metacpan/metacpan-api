@@ -666,7 +666,7 @@ sub requires {
 }
 
 sub reverse_dependencies {
-    my ( $self, $distribution, $page, $page_size, $sort ) = @_;
+    my ( $self, $distribution, $page, $page_size, $size, $sort ) = @_;
 
     # get the latest release of given distribution
     my $release = $self->_get_latest_release($distribution) || return;
@@ -676,7 +676,7 @@ sub reverse_dependencies {
 
     # return releases depended on those modules
     return $self->_get_depended_releases( $modules, $page, $page_size,
-        $sort );
+        $size, $sort );
 }
 
 sub _get_latest_release {
@@ -751,7 +751,7 @@ sub _fix_sort_value {
 }
 
 sub _get_depended_releases {
-    my ( $self, $modules, $page, $page_size, $sort ) = @_;
+    my ( $self, $modules, $page, $page_size, $size, $sort ) = @_;
     $page      //= 1;
     $page_size //= 50;
 
@@ -780,7 +780,7 @@ sub _get_depended_releases {
                     ]
                 }
             },
-            size => $page_size,
+            size => $size || $page_size,
             from => $page * $page_size - $page_size,
             sort => $sort,
         }

@@ -15,7 +15,7 @@ sub dist : Path('dist') : Args(1) {
     my ( $self, $c, $dist ) = @_;
     $c->stash_or_detach(
         $c->model('CPAN::Release')->reverse_dependencies(
-            $dist, @{ $c->req->params }{qw< page page_size sort >}
+            $dist, @{ $c->req->params }{qw< page page_size size sort >}
         )
     );
 }
