@@ -3,14 +3,13 @@ package MetaCPAN::Model::Search;
 use MetaCPAN::Moose;
 
 use Const::Fast qw( const );
-use Log::Contextual qw( :log :dlog );
-use MooseX::StrictConstructor;
 use Cpanel::JSON::XS ();
-
 use Hash::Merge qw( merge );
 use List::Util qw( min uniq );
+use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Types qw( Object Str );
 use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
+use MooseX::StrictConstructor;
 
 has es => (
     is       => 'ro',
@@ -25,9 +24,18 @@ has index => (
     required => 1,
 );
 
-const my $RESULTS_PER_RUN => 200;
-const my @ROGUE_DISTRIBUTIONS =>
-    qw(kurila perl_debug perl_mlb perl-5.005_02+apache1.3.3+modperl pod2texi perlbench spodcxx Bundle-Everything);
+const my $RESULTS_PER_RUN     => 200;
+const my @ROGUE_DISTRIBUTIONS => qw(
+    Acme-DependOnEverything
+    Bundle-Everything
+    kurila
+    perl-5.005_02+apache1.3.3+modperl
+    perlbench
+    perl_debug
+    perl_mlb
+    pod2texi
+    spodcxx
+);
 
 sub _not_rogue {
     my @rogue_dists
