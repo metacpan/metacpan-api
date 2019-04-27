@@ -4916,10 +4916,10 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       JSON::Validator 2.14
-  Mojolicious-Plugin-Web-Auth-0.15
-    pathname: H/HA/HAYAJO/Mojolicious-Plugin-Web-Auth-0.15.tar.gz
+  Mojolicious-Plugin-Web-Auth-0.17
+    pathname: H/HA/HAYAJO/Mojolicious-Plugin-Web-Auth-0.17.tar.gz
     provides:
-      Mojolicious::Plugin::Web::Auth 0.15
+      Mojolicious::Plugin::Web::Auth 0.17
       Mojolicious::Plugin::Web::Auth::Base undef
       Mojolicious::Plugin::Web::Auth::OAuth undef
       Mojolicious::Plugin::Web::Auth::OAuth2 undef
@@ -4933,9 +4933,9 @@ DISTRIBUTIONS
     requirements:
       IO::Socket::SSL 1.77
       Module::Build::Tiny 0.035
-      Mojolicious 3.02
+      Mojolicious 7.13
       Net::OAuth 0.28
-      perl 5.008005
+      perl 5.010001
   Moo-2.003003
     pathname: H/HA/HAARG/Moo-2.003003.tar.gz
     provides:

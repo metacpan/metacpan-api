@@ -111,7 +111,7 @@ requires 'Module::Runtime';
 requires 'Mojo::Pg', '>= 4.08';
 requires 'Mojolicious::Plugin::MountPSGI', '0.14';
 requires 'Mojolicious::Plugin::OpenAPI';
-requires 'Mojolicious::Plugin::Web::Auth', '0.000004';
+requires 'Mojolicious::Plugin::Web::Auth', '>= 0.17';
 requires 'Moose', ' >= 2.1403';
 requires 'Moose::Role';
 requires 'Moose::Util';
