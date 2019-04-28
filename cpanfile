@@ -175,7 +175,6 @@ requires 'Try::Tiny', '0.24';
 requires 'URI', '1.71';
 requires 'URI::Escape';
 requires 'XML::Simple';
-requires 'YAML', '1.15';
 requires 'YAML::Syck', '1.29';
 requires 'YAML::XS', '0.67'; # Mojolicious::Plugin::OpenAPI YAML loading
 requires 'base';
