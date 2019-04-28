@@ -5,4 +5,4 @@ export ES=${ES_TEST:-"localhost:9900"}
 export METACPAN_SERVER_CONFIG_LOCAL_SUFFIX=testing
 unset ES_SCRIPT_INDEX
 
-`dirname "$0"`/run prove -It/lib -lvr "$@"
+prove -It/lib -lvr "$@"
