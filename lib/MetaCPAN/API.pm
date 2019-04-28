@@ -104,34 +104,27 @@ sub _set_up_routes {
 
     my $r = $self->routes;
 
-    $self->plugin(
-        'Web::Auth',
-        module      => 'Github',
-        key         => $self->config->{github_key},
-        secret      => $self->config->{github_secret},
-        on_finished => sub {
-            my ( $c, $access_token, $account_info ) = @_;
-            my $login = $account_info->{login};
-            if ( $self->_is_admin($login) ) {
-                $c->session( username => $login );
-                $c->redirect_to('/admin');
-                return;
-            }
-            return $c->render(
-                text => "$login is not authorized to access this application",
-                status => 403
-            );
-        },
-    );
-
     my $admin = $r->under(
         '/admin' => sub {
-            my $c = shift;
-            return 1 if $self->_is_admin( $c->session('username') );
+            my $c        = shift;
+            my $username = $c->session('github_username');
+            if ( $self->_is_admin($username) ) {
+                return 1;
+            }
+
+            # Direct non-admins away from the app
+            elsif ($username) {
+                $c->redirect_to('https://metacpan.org');
+                return 0;
+            }
+
+            # This is possibly a logged out admin
             $c->redirect_to('/auth/github/authenticate');
             return 0;
         }
     );
+
+    $self->_set_up_oauth_routes;
 
     $admin->get('home')->to('admin#home')->name('admin-home');
     $admin->post('enqueue')->to('queue#enqueue')->name('enqueue');
@@ -165,9 +158,8 @@ sub _set_up_routes {
 }
 
 sub _is_admin {
-    my $self = shift;
-    my $username
-        = shift || ( $ENV{HARNESS_ACTIVE} ? $ENV{FORCE_ADMIN_AUTH} : () );
+    my $self     = shift;
+    my $username = $ENV{HARNESS_ACTIVE} ? $ENV{FORCE_ADMIN_AUTH} : shift;
     return 0 unless $username;
 
     my @admins = (
@@ -200,6 +192,65 @@ sub _build_db_params {
     }
 
     die "Unsupported Database in dsn: " . $self->config->{minion_dsn};
+}
+
+sub _set_up_oauth_routes {
+    my $self = shift;
+
+    my $oauth = $self->config->{oauth};
+
+    # We could do better DRY here, but it might be more complicated than it's
+    # worth
+
+    $self->plugin(
+        'Web::Auth',
+        module      => 'Github',
+        key         => $oauth->{github}->{key},
+        secret      => $oauth->{github}->{secret},
+        user_info   => 1,
+        on_finished => sub {
+            my ( $c, $access_token, $account_info ) = @_;
+            my $username = $account_info->{login};
+            $c->session( is_logged_in    => 1 );
+            $c->session( github_username => $username );
+            if ( $self->_is_admin($username) ) {
+                $c->session( gitnub_username => $username );
+                $c->redirect_to('/admin');
+                return;
+            }
+            $c->redirect_to( $self->config->{front_end_url} );
+        },
+    );
+
+    $self->plugin(
+        'Web::Auth',
+        module      => 'Google',
+        key         => $oauth->{google}->{key},
+        secret      => $oauth->{google}->{secret},
+        user_info   => 1,
+        on_finished => sub {
+            my ( $c, $access_token, $account_info ) = @_;
+            my $username = $account_info->{login};
+            $c->session( is_logged_in    => 1 );
+            $c->session( google_username => $username );
+            $c->redirect_to( $self->config->{front_end_url} );
+        },
+    );
+
+    $self->plugin(
+        'Web::Auth',
+        module      => 'Twitter',
+        key         => $oauth->{twitter}->{key},
+        secret      => $oauth->{twitter}->{secret},
+        user_info   => 1,
+        on_finished => sub {
+            my ( $c, $access_token, $access_secret, $account_info ) = @_;
+            my $username = $account_info->{screen_name};
+            $c->session( is_logged_in     => 1 );
+            $c->session( twitter_username => $username );
+            $c->redirect_to( $self->config->{front_end_url} );
+        },
+    );
 }
 
 1;
