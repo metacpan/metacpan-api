@@ -435,32 +435,24 @@ sub _load_meta_file {
     }
     return unless (@files);
 
-    #  YAML YAML::Tiny YAML::XS don't offer better results
-    my @backends = qw(CPAN::Meta::YAML YAML::Syck);
-    my $error;
-    while ( my $mod = shift @backends ) {
-        $ENV{PERL_YAML_BACKEND} = $mod;
-        my $last;
-        for my $file (@files) {
-            try {
-                $last = CPAN::Meta->load_file($file);
-            }
-            catch {
-                $error = $_;
-                log_warn {"META file ($file) could not be loaded: $error"};
-            };
-            if ($last) {
-                last;
-            }
+    my $last;
+    for my $file (@files) {
+        try {
+            $last = CPAN::Meta->load_file($file);
         }
+        catch {
+            log_warn {"META file ($file) could not be loaded: $_"};
+        };
         if ($last) {
-            push( @{ $last->{no_index}->{directory} },
-                @always_no_index_dirs );
-            return $last;
+            last;
         }
     }
+    if ($last) {
+        push( @{ $last->{no_index}->{directory} }, @always_no_index_dirs );
+        return $last;
+    }
 
-    log_warn {'No META files could be loaded'} unless @backends;
+    log_warn {'No META files could be loaded'};
 }
 
 sub extract {

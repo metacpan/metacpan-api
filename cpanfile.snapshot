@@ -9234,16 +9234,6 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       perl 5.008001
-  YAML-Syck-1.30
-    pathname: T/TO/TODDR/YAML-Syck-1.30.tar.gz
-    provides:
-      JSON::Syck 1.30
-      YAML::Dumper::Syck undef
-      YAML::Loader::Syck undef
-      YAML::Syck 1.30
-    requirements:
-      ExtUtils::MakeMaker 6.59
-      perl 5.006
   aliased-0.34
     pathname: E/ET/ETHER/aliased-0.34.tar.gz
     provides:
