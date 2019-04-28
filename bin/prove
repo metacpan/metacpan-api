@@ -1,8 +1,0 @@
-#!/bin/sh
-
-export EMAIL_SENDER_TRANSPORT=Test
-export ES=${ES_TEST:-"localhost:9900"}
-export METACPAN_SERVER_CONFIG_LOCAL_SUFFIX=testing
-unset ES_SCRIPT_INDEX
-
-prove -It/lib -lvr "$@"
