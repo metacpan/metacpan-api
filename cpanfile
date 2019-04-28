@@ -57,7 +57,6 @@ requires 'Encoding::FixLatin';
 requires 'Encoding::FixLatin::XS';
 requires 'Exporter';
 requires 'ExtUtils::HasCompiler';
-requires 'Facebook::Graph';
 requires 'File::Basename';
 requires 'File::Find';
 requires 'File::Find::Rule';

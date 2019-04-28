@@ -2887,42 +2887,6 @@ DISTRIBUTIONS
       Module::CPANfile 0
       Test::More 0.88
       version 0.76
-  Facebook-Graph-1.1204
-    pathname: R/RI/RIZEN/Facebook-Graph-1.1204.tar.gz
-    provides:
-      Facebook::Graph 1.1204
-      Facebook::Graph::AccessToken 1.1204
-      Facebook::Graph::AccessToken::Response 1.1204
-      Facebook::Graph::Authorize 1.1204
-      Facebook::Graph::BatchRequests 1.1204
-      Facebook::Graph::Page::Feed 1.1204
-      Facebook::Graph::Picture 1.1204
-      Facebook::Graph::Publish 1.1204
-      Facebook::Graph::Publish::Checkin 1.1204
-      Facebook::Graph::Publish::Comment 1.1204
-      Facebook::Graph::Publish::PageTab 1.1204
-      Facebook::Graph::Publish::Photo 1.1204
-      Facebook::Graph::Publish::Post 1.1204
-      Facebook::Graph::Publish::RSVPAttending 1.1204
-      Facebook::Graph::Publish::RSVPDeclined 1.1204
-      Facebook::Graph::Publish::RSVPMaybe 1.1204
-      Facebook::Graph::Query 1.1204
-      Facebook::Graph::Request 1.1204
-      Facebook::Graph::Response 1.1204
-      Facebook::Graph::Role::Uri 1.1204
-      Facebook::Graph::Session 1.1204
-    requirements:
-      DateTime 0.61
-      DateTime::Format::Strptime 1.4000
-      ExtUtils::MakeMaker 0
-      JSON 2.16
-      LWP::Protocol::https 6.06
-      LWP::UserAgent 6.13
-      MIME::Base64::URLSafe 0.01
-      Moo 0
-      Ouch 0.0400
-      Test::More 0
-      URI 1.54
   Fennec-Lite-0.004
     pathname: E/EX/EXODIST/Fennec-Lite-0.004.tar.gz
     provides:
@@ -4313,13 +4277,6 @@ DISTRIBUTIONS
       perl 5.008
       strict 0
       warnings 0
-  MIME-Base64-URLSafe-0.01
-    pathname: K/KA/KAZUHO/MIME-Base64-URLSafe-0.01.tar.gz
-    provides:
-      MIME::Base64::URLSafe 0.01
-    requirements:
-      ExtUtils::MakeMaker 0
-      MIME::Base64 0
   MIME-Charset-1.012.2
     pathname: N/NE/NEZUMI/MIME-Charset-1.012.2.tar.gz
     provides:
@@ -6301,17 +6258,6 @@ DISTRIBUTIONS
       parent 0
       perl 5.008005
       version 0.9912
-  Ouch-0.0500
-    pathname: R/RI/RIZEN/Ouch-0.0500.tar.gz
-    provides:
-      Ouch 0.0500
-    requirements:
-      Carp 0
-      ExtUtils::MakeMaker 0
-      Test::More 0
-      Test::Trap 0
-      overload 0
-      parent 0
   PAUSE-Permissions-0.17
     pathname: N/NE/NEILB/PAUSE-Permissions-0.17.tar.gz
     provides:
@@ -8489,31 +8435,6 @@ DISTRIBUTIONS
       Test::SharedFork 0.29
       Time::HiRes 0
       perl 5.008001
-  Test-Trap-v0.3.3
-    pathname: E/EB/EBHANSSEN/Test-Trap-v0.3.3.tar.gz
-    provides:
-      Test::Trap v0.3.3
-      Test::Trap::Builder v0.3.3
-      Test::Trap::Builder::PerlIO v0.3.3
-      Test::Trap::Builder::SystemSafe v0.3.3
-      Test::Trap::Builder::TempFile v0.3.3
-    requirements:
-      Carp 0
-      Data::Dump 0
-      Exporter 0
-      File::Temp 0
-      IO::Handle 0
-      Module::Build 0
-      Test::Builder 0
-      Test::More 0
-      Test::Tester 0.107
-      base 0
-      constant 0
-      lib 0
-      perl v5.6.2
-      strict 0
-      version 0
-      warnings 0
   Test-Vars-0.014
     pathname: D/DR/DROLSKY/Test-Vars-0.014.tar.gz
     provides:
