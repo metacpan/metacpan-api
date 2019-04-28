@@ -4,6 +4,7 @@ use MetaCPAN::Moose;
 
 use MetaCPAN::DarkPAN                ();
 use MetaCPAN::Script::Author         ();
+use MetaCPAN::Script::Cover          ();
 use MetaCPAN::Script::CPANTestersAPI ();
 use MetaCPAN::Script::Favorite       ();
 use MetaCPAN::Script::First          ();
@@ -224,6 +225,14 @@ sub index_mirrors {
     local @ARGV = ('mirrors');
     ok( MetaCPAN::Script::Mirrors->new_with_options( $self->_config )->run,
         'index mirrors' );
+}
+
+sub index_cover {
+    my $self = shift;
+
+    local @ARGV = ( 'cover', '--json_file', 't/var/cover.json' );
+    ok( MetaCPAN::Script::Cover->new_with_options( $self->_config )->run,
+        'index cover' );
 }
 
 sub index_permissions {

@@ -5,7 +5,8 @@ use namespace::autoclean;
 
 use Cpanel::JSON::XS qw( decode_json );
 use Log::Contextual qw( :log :dlog );
-use MetaCPAN::Types qw( Bool Uri);
+use MetaCPAN::Types qw( Bool Str Uri);
+use Path::Class qw( file );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
@@ -28,6 +29,14 @@ has test => (
     isa           => Bool,
     default       => 0,
     documentation => 'Test mode (pulls smaller development data set)',
+);
+
+has json_file => (
+    is      => 'ro',
+    isa     => Str,
+    default => 0,
+    documentation =>
+        'Path to JSON file to be read instead of URL (for testing)',
 );
 
 my %valid_keys
@@ -96,6 +105,11 @@ sub index_cover_data {
 sub retrieve_cover_data {
     my $self = shift;
 
+    if ( $self->json_file ) {
+        my $file = file( $self->json_file );
+        return decode_json( $file->slurp );
+    }
+
     my $url = $self->test ? $self->cover_dev_url : $self->cover_url;
 
     log_info { 'Fetching data from ', $url };
@@ -129,4 +143,3 @@ Retrieves the CPAN cover data from its source and
 updates our ES information.
 
 =cut
-
