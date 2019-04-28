@@ -188,15 +188,18 @@ sub run {
                 { attempts => 3, priority => 3 }
             );
 
-           # This is a hack to deal with the fact that we don't know exactly
-           # when 02packages gets updated.  It should be about every 5
-           # minutes.  We could stop trying once something is already
-           # "latest", but some uploads will never be "latest".  Trying this X
-           # times should be fairly cheap.  If this doesn't work, there is a
-           # cleanup cron which can set the "latest" flag, if necessary.
+            # This is a hack to deal with the fact that we don't know exactly
+            # when 02packages gets updated.  As of 2019-04-08, 02packages is
+            # updated via a cron which runs every 12 minutes, with the
+            # exception of one run which is skipped, resulting in a 24 minute
+            # gap.  The run usually takes less than one minute.  We could stop
+            # trying once something is already "latest", but some uploads will
+            # never be "latest".  Trying this X times should be fairly cheap.
+            # If this doesn't work, there is a cleanup cron which can set the
+            # "latest" flag, if necessary.
 
             if ( $self->latest ) {
-                for my $delay ( 150, 330, 600 ) {
+                for my $delay ( 2 * 60, 7 * 60, 14 * 60, 26 * 60 ) {
                     $self->_add_to_queue(
                         index_latest => [ '--distribution', $d->dist ] => {
                             attempts => 3,
