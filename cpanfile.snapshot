@@ -2483,44 +2483,44 @@ DISTRIBUTIONS
       Canary::Stability 0
       ExtUtils::MakeMaker 6.52
       common::sense 0
-  ElasticSearchX-Model-1.0.2
-    pathname: O/OA/OALDERS/ElasticSearchX-Model-1.0.2.tar.gz
+  ElasticSearchX-Model-2.0.1
+    pathname: O/OA/OALDERS/ElasticSearchX-Model-2.0.1.tar.gz
     provides:
-      ElasticSearchX::Model v1.0.2
-      ElasticSearchX::Model::Bulk v1.0.2
-      ElasticSearchX::Model::Document v1.0.2
-      ElasticSearchX::Model::Document::EmbeddedRole v1.0.2
-      ElasticSearchX::Model::Document::Mapping v1.0.2
-      ElasticSearchX::Model::Document::Role v1.0.2
-      ElasticSearchX::Model::Document::Set v1.0.2
-      ElasticSearchX::Model::Document::Trait::Attribute v1.0.2
-      ElasticSearchX::Model::Document::Trait::Class v1.0.2
-      ElasticSearchX::Model::Document::Trait::Class::ID v1.0.2
-      ElasticSearchX::Model::Document::Trait::Class::Timestamp v1.0.2
-      ElasticSearchX::Model::Document::Trait::Class::Version v1.0.2
-      ElasticSearchX::Model::Document::Trait::Field::ID v1.0.2
-      ElasticSearchX::Model::Document::Trait::Field::TTL v1.0.2
-      ElasticSearchX::Model::Document::Trait::Field::Timestamp v1.0.2
-      ElasticSearchX::Model::Document::Trait::Field::Version v1.0.2
-      ElasticSearchX::Model::Document::Types v1.0.2
-      ElasticSearchX::Model::Index v1.0.2
-      ElasticSearchX::Model::Role v1.0.2
-      ElasticSearchX::Model::Scroll v1.0.2
-      ElasticSearchX::Model::Trait::Class v1.0.2
-      ElasticSearchX::Model::Tutorial v1.0.2
-      ElasticSearchX::Model::Util v1.0.2
+      ElasticSearchX::Model v2.0.1
+      ElasticSearchX::Model::Bulk v2.0.1
+      ElasticSearchX::Model::Document v2.0.1
+      ElasticSearchX::Model::Document::EmbeddedRole v2.0.1
+      ElasticSearchX::Model::Document::Mapping v2.0.1
+      ElasticSearchX::Model::Document::Role v2.0.1
+      ElasticSearchX::Model::Document::Set v2.0.1
+      ElasticSearchX::Model::Document::Trait::Attribute v2.0.1
+      ElasticSearchX::Model::Document::Trait::Class v2.0.1
+      ElasticSearchX::Model::Document::Trait::Class::ID v2.0.1
+      ElasticSearchX::Model::Document::Trait::Class::Timestamp v2.0.1
+      ElasticSearchX::Model::Document::Trait::Class::Version v2.0.1
+      ElasticSearchX::Model::Document::Trait::Field::ID v2.0.1
+      ElasticSearchX::Model::Document::Trait::Field::TTL v2.0.1
+      ElasticSearchX::Model::Document::Trait::Field::Timestamp v2.0.1
+      ElasticSearchX::Model::Document::Trait::Field::Version v2.0.1
+      ElasticSearchX::Model::Document::Types v2.0.1
+      ElasticSearchX::Model::Index v2.0.1
+      ElasticSearchX::Model::Role v2.0.1
+      ElasticSearchX::Model::Scroll v2.0.1
+      ElasticSearchX::Model::Trait::Class v2.0.1
+      ElasticSearchX::Model::Tutorial v2.0.1
+      ElasticSearchX::Model::Util v2.0.1
     requirements:
       Carp 0
       Class::Load 0
       DateTime 0
       DateTime::Format::Epoch::Unix 0
       DateTime::Format::ISO8601 0
-      Digest::SHA1 0
+      Digest::SHA 0
       Eval::Closure 0
+      ExtUtils::MakeMaker 0
       JSON::MaybeXS 0
       List::MoreUtils 0
       List::Util 0
-      Module::Build 0.3601
       Module::Find 0
       Moose 2.02
       Moose::Exporter 0
