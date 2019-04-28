@@ -883,20 +883,6 @@ DISTRIBUTIONS
       Test::More 0
       YAML 0
       perl 5.008001
-  CatalystX-Component-Traits-0.19
-    pathname: R/RK/RKITOVER/CatalystX-Component-Traits-0.19.tar.gz
-    provides:
-      CatalystX::Component::Traits 0.19
-    requirements:
-      Carp 0
-      Catalyst 0
-      Class::Load 0
-      ExtUtils::MakeMaker 6.30
-      List::MoreUtils 0
-      Moose::Role 0
-      MooseX::Traits::Pluggable 0
-      Scalar::Util 0
-      namespace::autoclean 0
   CatalystX-Fastly-Role-Response-0.07
     pathname: L/LL/LLAP/CatalystX-Fastly-Role-Response-0.07.tar.gz
     provides:
@@ -5603,19 +5589,6 @@ DISTRIBUTIONS
       namespace::autoclean 0
       strict 0
       warnings 0
-  MooseX-Traits-Pluggable-0.12
-    pathname: R/RK/RKITOVER/MooseX-Traits-Pluggable-0.12.tar.gz
-    provides:
-      MooseX::Traits::Pluggable 0.12
-    requirements:
-      Carp 0
-      Class::Load 0
-      ExtUtils::MakeMaker 6.30
-      List::MoreUtils 0
-      Moose::Role 0
-      Moose::Util 0
-      Scalar::Util 0
-      namespace::autoclean 0
   MooseX-Types-0.50
     pathname: E/ET/ETHER/MooseX-Types-0.50.tar.gz
     provides:

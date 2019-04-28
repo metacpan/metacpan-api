@@ -26,7 +26,6 @@ requires 'Catalyst::Plugin::Unicode::Encoding';
 requires 'Catalyst::Utils';
 requires 'Catalyst::View';
 requires 'Catalyst::View::JSON', '0.36';
-requires 'CatalystX::Component::Traits';
 requires 'CatalystX::Fastly::Role::Response', '0.06';
 requires 'CatalystX::InjectComponent';
 requires 'CatalystX::RoleApplicator';
