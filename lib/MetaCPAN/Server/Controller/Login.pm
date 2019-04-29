@@ -3,7 +3,6 @@ package MetaCPAN::Server::Controller::Login;
 use strict;
 use warnings;
 
-use Facebook::Graph;
 use Cpanel::JSON::XS;
 use Moose;
 

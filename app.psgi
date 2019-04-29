@@ -1,21 +1,25 @@
 use strict;
 use warnings;
-
-use Config::ZOMG   ();
 use File::Basename ();
-use File::Path     ();
-use File::Spec     ();
-use Log::Log4perl  ();
+my $root_dir;
+
+BEGIN {
+    $root_dir = File::Basename::dirname(__FILE__);
+}
+use lib "$root_dir/lib";
+
+use Config::ZOMG;
+use File::Path    ();
+use File::Spec    ();
+use Log::Log4perl ();
 use Path::Tiny qw( path );
 use Plack::App::Directory ();
 use Plack::App::URLMap    ();
 
-my $root_dir;
 my $dev_mode;
 my $config;
 
 BEGIN {
-    $root_dir = File::Basename::dirname(__FILE__);
     $dev_mode = $ENV{PLACK_ENV} && $ENV{PLACK_ENV} eq 'development';
     $config   = Config::ZOMG->open(
         name => 'MetaCPAN::Server',
@@ -41,8 +45,6 @@ BEGIN {
     my $logger = Log::Log4perl->get_logger;
     $SIG{__WARN__} = sub { $logger->warn(@_) };
 }
-
-use lib "$root_dir/lib";
 
 use MetaCPAN::Server;
 

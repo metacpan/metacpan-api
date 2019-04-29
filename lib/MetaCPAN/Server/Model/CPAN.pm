@@ -8,8 +8,6 @@ use Moose;
 
 extends 'Catalyst::Model';
 
-with 'CatalystX::Component::Traits';
-
 has esx_model => (
     is      => 'ro',
     lazy    => 1,
@@ -39,7 +37,7 @@ sub type {
 sub BUILD {
     my ( $self, $args ) = @_;
     my $index = $self->esx_model->index( $self->index );
-    my $class = $self->_original_class_name;
+    my $class = ref $self;
     while ( my ( $k, $v ) = each %{ $index->types } ) {
         no strict 'refs';
         my $classname = "${class}::" . ucfirst($k);

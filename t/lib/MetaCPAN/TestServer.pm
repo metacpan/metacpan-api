@@ -23,7 +23,7 @@ use Try::Tiny qw( catch try );
 
 has es_client => (
     is      => 'ro',
-    isa     => 'Search::Elasticsearch::Client::2_0::Direct',
+    does    => 'Search::Elasticsearch::Role::Client',
     lazy    => 1,
     builder => '_build_es_client',
 );
