@@ -8,7 +8,7 @@ notifications:
       - olaf@wundersolutions.com
     on_success: always
     on_failure: always
-  irc: "irc.perl.org#metacpan-travis"
+  irc: "irc.perl.org#metacpan-infra"
 
 env:
   global:
