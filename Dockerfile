@@ -10,6 +10,8 @@ WORKDIR /metacpan-api
 # modules is tested by the test suite. Removing the tests, reduces the overall
 # size of the images.
 RUN mkdir /CPAN \
+    && apt-get update \
+    && apt-get install -y rsync \
     && cpm install --global --without-test \
     && rm -fr /root/.cpanm /root/.perl-cpm /var/cache/apt/lists/* /tmp/*
 
