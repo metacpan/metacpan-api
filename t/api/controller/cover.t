@@ -17,7 +17,7 @@ my $t = Test::Mojo->new(
 );
 
 my %expect = (
-    'Devel-GoFaster-0.000' => {
+    'MetaFile-Both-1.1' => {
         criteria => {
             branch     => '12.50',
             condition  => '0.00',
@@ -25,12 +25,12 @@ my %expect = (
             subroutine => '71.43',
             total      => '46.51',
         },
-        distribution => 'Devel-GoFaster',
-        release      => 'Devel-GoFaster-0.000',
-        url => 'http://cpancover.com/latest/Devel-GoFaster-0.000/index.html',
-        version => '0.000',
+        distribution => 'MetaFile-Both',
+        release      => 'MetaFile-Both-1.1',
+        url     => 'http://cpancover.com/latest/MetaFile-Both-1.1/index.html',
+        version => '1.1',
     },
-    'Try-Tiny-0.27' => {
+    'Pod-With-Generator-1' => {
         criteria => {
             branch     => '78.95',
             condition  => '46.67',
@@ -38,10 +38,10 @@ my %expect = (
             subroutine => '100.00',
             total      => '86.58',
         },
-        distribution => 'Try-Tiny',
-        release      => 'Try-Tiny-0.27',
-        url     => 'http://cpancover.com/latest/Try-Tiny-0.27/index.html',
-        version => '0.27',
+        distribution => 'Pod-With-Generator',
+        release      => 'Pod-With-Generator-1',
+        url => 'http://cpancover.com/latest/Pod-With-Generator-1/index.html',
+        version => '1',
     },
 );
 
