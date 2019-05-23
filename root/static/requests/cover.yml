@@ -14,6 +14,9 @@ cover:
           The name of the Release
         type: string
         required: true
+        # tell Mojolicious to use relaxed placeholders when
+        # parsing this parameter (dots are allowed)
+        x-mojo-placeholder: "#"
     responses:
       200:
         description: Release response
