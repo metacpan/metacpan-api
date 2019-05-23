@@ -1,10 +1,21 @@
 use Mojo::Base -strict;
+use lib 't/lib';
 
 use Test::More;
 use Test::Mojo;
 use Mojo::JSON qw(true false);
 
-my $t      = Test::Mojo->new('MetaCPAN::API');
+use MetaCPAN::Model::Search ();
+use MetaCPAN::TestServer    ();
+my $server = MetaCPAN::TestServer->new;
+
+my $t = Test::Mojo->new(
+    'MetaCPAN::API' => {
+        es     => $server->es_client,
+        secret => 'just a test',
+    }
+);
+
 my %expect = (
     'Devel-GoFaster-0.000' => {
         criteria => {
