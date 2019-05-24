@@ -23,8 +23,37 @@ cover:
         schema:
           type: object
           properties:
-            name:
+            url:
               type: string
+              description: URL for cpancover report
+            version:
+              type: string
+              description: Package version string
+            release:
+              type: string
+              description: Package name with version
+            criteria:
+              type: object
+              description: CPAN Cover results
+              properties:
+                total:
+                  type: string
+                  description: Percentage of total code coverage
+                condition:
+                  type: string
+                  description: Percentage of condition code coverage
+                statement:
+                  type: string
+                  description: Percentage of statement code coverage
+                branch:
+                  type: string
+                  description: Percentage of branch code coverage
+                subroutine:
+                  type: string
+                  description: Percentage of subroutine code coverage
+            distribution:
+              type: string
+              description: Name of the distribution
       default:
         description: "unexpected error"
         schema:
