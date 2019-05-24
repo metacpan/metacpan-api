@@ -22,3 +22,5 @@ paths:
     $ref: "requests/search.yml#/search_web"
   /search/first:
     $ref: "requests/search.yml#/search_first"
+  /cover/{name}:
+    $ref: "requests/cover.yml#/cover"

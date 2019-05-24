@@ -1,0 +1,31 @@
+---
+
+cover:
+  get:
+    tags:
+      - Coverage
+    operationId: cover
+    x-mojo-to: Cover#lookup
+    summary: Get coverage details about a release
+    parameters:
+      - name: name
+        in: path
+        description: |
+          The name of the Release
+        type: string
+        required: true
+        # tell Mojolicious to use relaxed placeholders when
+        # parsing this parameter (dots are allowed)
+        x-mojo-placeholder: "#"
+    responses:
+      200:
+        description: Release response
+        schema:
+          type: object
+          properties:
+            name:
+              type: string
+      default:
+        description: "unexpected error"
+        schema:
+          $ref: "../definitions/common.yml#/ErrorModel"

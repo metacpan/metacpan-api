@@ -1,10 +1,20 @@
-use strict;
-use warnings;
+use Mojo::Base -strict;
 use lib 't/lib';
 
-use MetaCPAN::Server::Test qw( app GET test_psgi );
-use MetaCPAN::TestHelpers qw( decode_json_ok );
 use Test::More;
+use Test::Mojo;
+use Mojo::JSON qw(true false);
+
+use MetaCPAN::Model::Search ();
+use MetaCPAN::TestServer    ();
+my $server = MetaCPAN::TestServer->new;
+
+my $t = Test::Mojo->new(
+    'MetaCPAN::API' => {
+        es     => $server->es_client,
+        secret => 'just a test',
+    }
+);
 
 my %expect = (
     'MetaFile-Both-1.1' => {
@@ -35,27 +45,13 @@ my %expect = (
     },
 );
 
-my $test = Plack::Test->create( app() );
-
 for my $release ( keys %expect ) {
     my $expected = $expect{$release};
     subtest "Check $release" => sub {
-        my $url = "/cover/$release";
-        my $res = $test->request( GET $url );
-        diag "GET $url";
 
-        # TRAVIS 5.18
-        is( $res->code, 200, "code 200" );
-        is(
-            $res->header('content-type'),
-            'application/json; charset=utf-8',
-            'Content-type'
-        );
-        my $json = decode_json_ok($res);
+        $t->get_ok("/v1/cover/$release")->status_is(200)->json_is($expected)
+            ->or( sub { diag $t->tx->res->dom } );
 
-        # TRAVIS 5.18
-        is_deeply( $json, $expected, "$release cover summary roundtrip" );
     };
 }
-
-done_testing();
+done_testing;
