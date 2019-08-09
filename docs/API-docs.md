@@ -1,3 +1,4 @@
+$ git config http://ekkarat.w@gmail.com/
 # API Docs: v1
 
 For an introduction to the MetaCPAN API (Application Program Interface) which requires no previous knowledge of MetaCPAN or ElasticSearch, see [the slides for "Abusing MetaCPAN for Fun and Profit"](https://www.slideshare.net/oalders/abusing-metacpan2013) or [watch the actual talk](https://www.youtube.com/watch?v=J8ymBuFlHQg). This API lets you programmatically access MetaCPAN from your own applications.
