@@ -549,9 +549,10 @@ sub all_by_author {
 sub versions {
     my ( $self, $dist ) = @_;
 
+    my $size = $dist eq 'perl' ? 1000 : 250;
     my $body = {
         query  => { term => { distribution => $dist } },
-        size   => 250,
+        size   => $size,
         sort   => [ { date => 'desc' } ],
         fields => [
             qw( name date author version status maturity authorized download_url)
