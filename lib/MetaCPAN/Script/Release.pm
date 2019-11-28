@@ -85,6 +85,48 @@ has _bulk_size => (
     default  => 10,
 );
 
+my @skip_dists = (
+
+    # specific dists to skip.  it's ugly to have all of these hard coded, but
+    # it works for now
+    qw(
+        AEPAGE/perl5.00502Tk800.011-win32-586.zip
+        ANDYD/perl5.002b1h.tar.gz
+        BMIDD/perl5.004_02-AlphaNTPreComp.tar.gz
+        BMIDD/perl5.00402-bindist04-msvcAlpha.tar.gz
+        BMIDD/perl5.00402-bindist05-msvcAlpha.tar.gz
+        GRABZIT/perl.2.3.0.zip
+        GSAR/perl5.00401-bindist02-bc.tar.gz
+        GSAR/perl5.00401-bindist-bc.tar.gz
+        GSAR/perl5.00402-bindist03-bc.tar.gz
+        GSAR/perl5.00402-bindist04-bc.tar.gz
+        GSAR/perl5.00402-bindist04-bc.zip
+        HOOO/perl-0.0017.tar.gz
+        JBAKER/perl-5.005_02+apache1.3.3+modperl-1.16-bin-bindist1-i386-win32-vc5.zip
+        KRISHPL/perl-5.6-info.tar.gz
+        LMOLNAR/perl5.00402-bindist01-dos-djgpp.zip
+        LMOLNAR/perl5.00503-bin-1-dos-djgpp.zip
+        MSCHWERN/perl-1.0_15.tar.gz
+        RCLAMP/perl-1.0_16.tar.gz
+        SREZIC/perl-5.005-basicmods-bin-0-arm-linux.tar.gz
+        SREZIC/perl-5.005-minimal-bin-0-arm-linux.tar.gz
+        SREZIC/perl-5.005-minimal-bin-1-arm-linux.tar.gz
+        SREZIC/perl-5.005-Tk-800.023-bin-0-arm-linux.tar.gz
+        ),
+
+# ILYAZ has lots of old weird os2 files that don't fit as dists or perl releases
+    qr{/ILYAZ/os2/[^/]+/perl_\w+\.zip\z},
+    qr{/ILYAZ/os2/perl[^/]+\.zip\z},
+
+    # Strip off any files in a Perl6 folder
+    # e.g. http://www.cpan.org/authors/id/J/JD/JDV/Perl6/
+    # As here we are indexing perl5 only
+    qr{/Perl6/},
+);
+
+my ($SKIP_MATCH) = map qr/$_/, join '|',
+    map +( ref $_ ? $_ : qr{/\Q$_\E\z} ), @skip_dists;
+
 sub run {
     my $self = shift;
     my ( undef, @args ) = @{ $self->extra_argv };
@@ -138,10 +180,7 @@ sub run {
         }
     }
 
-    # Strip off any files in a Perl6 folder
-    # e.g. http://www.cpan.org/authors/id/J/JD/JDV/Perl6/
-    # As here we are indexing perl5 only
-    @files = grep { $_ !~ m{/Perl6/} } @files;
+    @files = grep $_ !~ $SKIP_MATCH, @files;
 
     log_info { scalar @files, " archives found" } if ( @files > 1 );
 
