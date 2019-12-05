@@ -15,6 +15,7 @@ env:
     # We use a non-standard port to avoid trashing production
     # but travis will have it running on the standard port.
     - ES=localhost:9200
+    - ES_TEST=localhost:9200
 
     # Instantiate Catalyst models using metacpan_server_testing.conf
     - METACPAN_SERVER_CONFIG_LOCAL_SUFFIX=testing

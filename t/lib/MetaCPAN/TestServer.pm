@@ -79,11 +79,11 @@ sub _build_config {
 sub _build_es_home {
     my $self = shift;
 
-    my $es_home = $ENV{ES};
+    my $es_home = $ENV{ES_TEST};
 
     if ( !$es_home ) {
         my $es_home = $ENV{ES_HOME} or die <<'USAGE';
-Please set $ENV{ES} to a running instance of Elasticsearch, eg
+Please set ${ES_TEST} to a running instance of Elasticsearch, eg
 'localhost:9200' or set $ENV{ES_HOME} to the directory containing
 Elasticsearch
 USAGE
@@ -114,7 +114,7 @@ sub _build_es_server {
     diag 'Connecting to Elasticsearch on ' . $self->_es_home;
 
     try {
-        $ENV{ES} = $server->start->[0];
+        $ENV{ES_TEST} = $server->start->[0];
     }
     catch {
         diag(<<"EOF");

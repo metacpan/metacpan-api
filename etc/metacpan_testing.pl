@@ -1,5 +1,5 @@
 {
-    es => ($ENV{ES} || 'localhost:9900'),
+    es => ($ENV{ES_TEST} || 'localhost:9900'),
     port => '5900',
     die_on_error => 1,
     level => ($ENV{TEST_VERBOSE} ? 'info' : 'warn'),
