@@ -40,7 +40,7 @@ sub app {
 require MetaCPAN::Model;
 
 sub model {
-    MetaCPAN::Model->new( es => ( $ENV{ES} ||= 'localhost:9900' ) );
+    MetaCPAN::Model->new( es => ( $ENV{ES_TEST} ||= 'localhost:9200' ) );
 }
 
 1;
