@@ -60,7 +60,7 @@ $fakecpan_dir->child('indices')->mkpath;
 # make some changes to 06perms.txt
 {
     my $perms_file = $fakecpan_dir->child( 'modules', '06perms.txt' );
-    my $perms = $perms_file->slurp;
+    my $perms      = $perms_file->slurp;
     $perms =~ s/^Some,LOCAL,f$/Some,MO,f/m;
     my $fh = $perms_file->openw;
     print $fh $perms;
