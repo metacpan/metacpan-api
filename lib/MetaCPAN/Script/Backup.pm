@@ -206,7 +206,7 @@ sub run_purge {
             if ( $mtime->clone->truncate( to => 'week' )
                 != $mtime->clone->truncate( to => 'day' ) )
             {
-                log_info        {"Removing old backup $file"};
+                log_info {"Removing old backup $file"};
                 return log_info {'Not (dry run)'}
                 if ( $self->dry_run );
                 $file->remove;

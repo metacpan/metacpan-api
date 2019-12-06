@@ -87,8 +87,8 @@ sub run {
 
     my @module_filters = { term => { 'module.indexed' => 1 } };
     push @module_filters, @filter
-        ? { terms => { "module.name" => \@filter } }
-        : { exists => { field => "module.name" } };
+        ? { terms  => { "module.name" => \@filter } }
+        : { exists => { field         => "module.name" } };
 
     # This query will be used to produce a (scrolled) list of
     # 'file' type records where the module.name matches the

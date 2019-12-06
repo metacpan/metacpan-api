@@ -152,8 +152,8 @@ sub join : ActionClass('Deserialize') {
 
     while ( my ( $join, $config ) = each %$joins ) {
         my $has_many = ref $config->{type};
-        my ($type) = $has_many ? @{ $config->{type} } : $config->{type};
-        my $cself = $config->{self} || $join;
+        my ($type)   = $has_many ? @{ $config->{type} } : $config->{type};
+        my $cself    = $config->{self} || $join;
         next unless ( grep { $_ eq $join } @req_joins );
         my $data
             = $is_get

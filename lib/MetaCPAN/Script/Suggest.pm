@@ -29,7 +29,7 @@ sub run {
     my $self = shift;
 
     if ( $self->all ) {
-        my $dt = DateTime->new( year => 1994, month => 1 );
+        my $dt       = DateTime->new( year => 1994, month => 1 );
         my $end_time = DateTime->now->add( months => 1 );
 
         while ( $dt < $end_time ) {
