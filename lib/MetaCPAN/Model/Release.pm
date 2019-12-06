@@ -194,12 +194,14 @@ sub _build_document {
     my $dependencies = $self->dependencies;
 
     my $document = DlogS_trace {"adding release $_"} +{
-        abstract     => MetaCPAN::Util::strip_pod( $meta->abstract ),
-        archive      => $self->filename,
-        author       => $self->author,
-        date         => $self->date . q{},
-        dependency   => $dependencies,
-        distribution => $self->distribution,
+        abstract        => MetaCPAN::Util::strip_pod( $meta->abstract ),
+        archive         => $self->filename,
+        author          => $self->author,
+        checksum_md5    => $self->archive->file_digest_md5,
+        checksum_sha256 => $self->archive->file_digest_sha256,
+        date            => $self->date . q{},
+        dependency      => $dependencies,
+        distribution    => $self->distribution,
 
         # CPAN::Meta->license *must* be called in list context
         # (and *may* return multiple strings).

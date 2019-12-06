@@ -8,6 +8,7 @@ use List::Util qw( max );
 
 use MetaCPAN::Query::File;
 use MetaCPAN::Query::Favorite;
+use MetaCPAN::Query::Release;
 
 extends 'ElasticSearchX::Model::Document::Set';
 
@@ -38,6 +39,22 @@ has query_favorite => (
 sub _build_query_favorite {
     my $self = shift;
     return MetaCPAN::Query::Favorite->new(
+        es         => $self->es,
+        index_name => $self->index->name,
+    );
+}
+
+has query_release => (
+    is      => 'ro',
+    isa     => 'MetaCPAN::Query::Release',
+    lazy    => 1,
+    builder => '_build_query_release',
+    handles => [qw< get_checksums >],
+);
+
+sub _build_query_release {
+    my $self = shift;
+    return MetaCPAN::Query::Release->new(
         es         => $self->es,
         index_name => $self->index->name,
     );
@@ -320,15 +337,34 @@ sub find_download_url {
 
     my $res
         = $self->size(1)->query($query)
-        ->source( [ 'download_url', 'date', 'status' ] )
+        ->source( [ 'release', 'download_url', 'date', 'status' ] )
         ->search_type('dfs_query_then_fetch')->sort( \@sort )->raw->all;
     return unless $res->{hits}{total};
 
-    my $hit = $res->{hits}{hits}[0];
+    my @checksums;
+
+    my $hit     = $res->{hits}{hits}[0];
+    my $release = exists $hit->{_source} ? $hit->{_source}{release} : undef;
+
+    if ($release) {
+        my $checksums = $self->get_checksums($release);
+        @checksums = (
+            (
+                $checksums->{checksum_md5}
+                ? ( checksum_md5 => $checksums->{checksum_md5} )
+                : ()
+            ),
+            (
+                $checksums->{checksum_sha256}
+                ? ( checksum_sha256 => $checksums->{checksum_sha256} )
+                : ()
+            ),
+        );
+    }
 
     return +{
         %{ $hit->{_source} },
-        %{ $hit->{inner_hits}{module}{hits}{hits}[0]{_source} },
+        %{ $hit->{inner_hits}{module}{hits}{hits}[0]{_source} }, @checksums,
     };
 }
 

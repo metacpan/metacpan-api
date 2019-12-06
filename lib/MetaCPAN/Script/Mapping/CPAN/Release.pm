@@ -40,6 +40,16 @@ sub mapping {
               "index" : "not_analyzed",
               "type" : "string"
            },
+           "checksum_md5" : {
+              "ignore_above" : 2048,
+              "index" : "not_analyzed",
+              "type" : "string"
+           },
+           "checksum_sha256" : {
+              "ignore_above" : 2048,
+              "index" : "not_analyzed",
+              "type" : "string"
+           },
            "date" : {
               "format" : "strict_date_optional_time||epoch_millis",
               "type" : "date"

@@ -3,12 +3,13 @@ package MetaCPAN::Model::Archive;
 use v5.10;
 use Moose;
 use MooseX::StrictConstructor;
-use MetaCPAN::Types qw(AbsFile AbsDir ArrayRef Bool);
+use MetaCPAN::Types qw(AbsFile AbsDir ArrayRef Bool Str);
 
 use Archive::Any;
 use Carp;
 use File::Temp  ();
 use Path::Class ();
+use Digest::file qw( digest_file_hex );
 
 =head1 NAME
 
@@ -65,6 +66,28 @@ has _extractor => (
         my $self = shift;
         croak $self->file . ' does not exist' unless -e $self->file;
         return Archive::Any->new( $self->file );
+    },
+);
+
+# MD5 digest for the archive file
+has file_digest_md5 => (
+    is      => 'ro',
+    isa     => Str,
+    lazy    => 1,
+    default => sub {
+        my $self = shift;
+        digest_file_hex( $self->file, 'MD5' );
+    },
+);
+
+# SHA256 digest for the archive file
+has file_digest_sha256 => (
+    is      => 'ro',
+    isa     => Str,
+    lazy    => 1,
+    default => sub {
+        my $self = shift;
+        digest_file_hex( $self->file, 'SHA-256' );
     },
 );
 
