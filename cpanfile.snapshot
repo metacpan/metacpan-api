@@ -1102,40 +1102,44 @@ DISTRIBUTIONS
       strict 0
       vars 0
       warnings 0
-  Code-TidyAll-0.69
-    pathname: D/DR/DROLSKY/Code-TidyAll-0.69.tar.gz
+  Code-TidyAll-0.74
+    pathname: D/DR/DROLSKY/Code-TidyAll-0.74.tar.gz
     provides:
-      Code::TidyAll 0.69
-      Code::TidyAll::Cache 0.69
-      Code::TidyAll::CacheModel 0.69
-      Code::TidyAll::CacheModel::Shared 0.69
-      Code::TidyAll::Config::INI::Reader 0.69
-      Code::TidyAll::Git::Precommit 0.69
-      Code::TidyAll::Git::Prereceive 0.69
-      Code::TidyAll::Git::Util 0.69
-      Code::TidyAll::Plugin 0.69
-      Code::TidyAll::Plugin::CSSUnminifier 0.69
-      Code::TidyAll::Plugin::JSBeautify 0.69
-      Code::TidyAll::Plugin::JSHint 0.69
-      Code::TidyAll::Plugin::JSLint 0.69
-      Code::TidyAll::Plugin::JSON 0.69
-      Code::TidyAll::Plugin::MasonTidy 0.69
-      Code::TidyAll::Plugin::PHPCodeSniffer 0.69
-      Code::TidyAll::Plugin::PerlCritic 0.69
-      Code::TidyAll::Plugin::PerlTidy 0.69
-      Code::TidyAll::Plugin::PerlTidySweet 0.69
-      Code::TidyAll::Plugin::PodChecker 0.69
-      Code::TidyAll::Plugin::PodSpell 0.69
-      Code::TidyAll::Plugin::PodTidy 0.69
-      Code::TidyAll::Plugin::SortLines 0.69
-      Code::TidyAll::Result 0.69
-      Code::TidyAll::Role::HasIgnore 0.69
-      Code::TidyAll::Role::RunsCommand 0.69
-      Code::TidyAll::Role::Tempdir 0.69
-      Code::TidyAll::SVN::Precommit 0.69
-      Code::TidyAll::SVN::Util 0.69
-      Code::TidyAll::Util::Zglob 0.69
-      Test::Code::TidyAll 0.69
+      Code::TidyAll 0.74
+      Code::TidyAll::Cache 0.74
+      Code::TidyAll::CacheModel 0.74
+      Code::TidyAll::CacheModel::Shared 0.74
+      Code::TidyAll::Config::INI::Reader 0.74
+      Code::TidyAll::Git::Precommit 0.74
+      Code::TidyAll::Git::Prereceive 0.74
+      Code::TidyAll::Git::Util 0.74
+      Code::TidyAll::Plugin 0.74
+      Code::TidyAll::Plugin::CSSUnminifier 0.74
+      Code::TidyAll::Plugin::GenericTransformer 0.74
+      Code::TidyAll::Plugin::GenericValidator 0.74
+      Code::TidyAll::Plugin::JSBeautify 0.74
+      Code::TidyAll::Plugin::JSHint 0.74
+      Code::TidyAll::Plugin::JSLint 0.74
+      Code::TidyAll::Plugin::JSON 0.74
+      Code::TidyAll::Plugin::MasonTidy 0.74
+      Code::TidyAll::Plugin::PHPCodeSniffer 0.74
+      Code::TidyAll::Plugin::PerlCritic 0.74
+      Code::TidyAll::Plugin::PerlTidy 0.74
+      Code::TidyAll::Plugin::PerlTidySweet 0.74
+      Code::TidyAll::Plugin::PodChecker 0.74
+      Code::TidyAll::Plugin::PodSpell 0.74
+      Code::TidyAll::Plugin::PodTidy 0.74
+      Code::TidyAll::Plugin::SortLines 0.74
+      Code::TidyAll::Result 0.74
+      Code::TidyAll::Role::GenericExecutable 0.74
+      Code::TidyAll::Role::HasIgnore 0.74
+      Code::TidyAll::Role::RunsCommand 0.74
+      Code::TidyAll::Role::Tempdir 0.74
+      Code::TidyAll::SVN::Precommit 0.74
+      Code::TidyAll::SVN::Util 0.74
+      Code::TidyAll::Util::Zglob 0.74
+      Code::TidyAll::Zglob 0.74
+      Test::Code::TidyAll 0.74
     requirements:
       Capture::Tiny 0
       Config::INI::Reader 0
@@ -7012,27 +7016,27 @@ DISTRIBUTIONS
       strict 0
       version 0.77
       warnings 0
-  Perl-Tidy-20181120
-    pathname: S/SH/SHANCOCK/Perl-Tidy-20181120.tar.gz
+  Perl-Tidy-20191203
+    pathname: S/SH/SHANCOCK/Perl-Tidy-20191203.tar.gz
     provides:
-      Perl::Tidy 20181120
-      Perl::Tidy::Debugger 20181120
-      Perl::Tidy::DevNull 20181120
-      Perl::Tidy::Diagnostics 20181120
-      Perl::Tidy::FileWriter 20181120
-      Perl::Tidy::Formatter 20181120
-      Perl::Tidy::HtmlWriter 20181120
-      Perl::Tidy::IOScalar 20181120
-      Perl::Tidy::IOScalarArray 20181120
-      Perl::Tidy::IndentationItem 20181120
-      Perl::Tidy::LineBuffer 20181120
-      Perl::Tidy::LineSink 20181120
-      Perl::Tidy::LineSource 20181120
-      Perl::Tidy::Logger 20181120
-      Perl::Tidy::Tokenizer 20181120
-      Perl::Tidy::VerticalAligner 20181120
-      Perl::Tidy::VerticalAligner::Alignment 20181120
-      Perl::Tidy::VerticalAligner::Line 20181120
+      Perl::Tidy 20191203
+      Perl::Tidy::Debugger 20191203
+      Perl::Tidy::DevNull 20191203
+      Perl::Tidy::Diagnostics 20191203
+      Perl::Tidy::FileWriter 20191203
+      Perl::Tidy::Formatter 20191203
+      Perl::Tidy::HtmlWriter 20191203
+      Perl::Tidy::IOScalar 20191203
+      Perl::Tidy::IOScalarArray 20191203
+      Perl::Tidy::IndentationItem 20191203
+      Perl::Tidy::LineBuffer 20191203
+      Perl::Tidy::LineSink 20191203
+      Perl::Tidy::LineSource 20191203
+      Perl::Tidy::Logger 20191203
+      Perl::Tidy::Tokenizer 20191203
+      Perl::Tidy::VerticalAligner 20191203
+      Perl::Tidy::VerticalAligner::Alignment 20191203
+      Perl::Tidy::VerticalAligner::Line 20191203
     requirements:
       ExtUtils::MakeMaker 0
   PerlIO-gzip-0.20
