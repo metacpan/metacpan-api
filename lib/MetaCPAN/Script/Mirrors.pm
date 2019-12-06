@@ -34,7 +34,7 @@ sub index_mirrors {
         Dlog_trace {"Indexing $_"} $mirror;
         $type->put(
             {
-                map { $_ => $mirror->{$_} }
+                map  { $_ => $mirror->{$_} }
                 grep { defined $mirror->{$_} } keys %$mirror
             }
         );

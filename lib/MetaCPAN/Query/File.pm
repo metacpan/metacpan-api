@@ -173,7 +173,7 @@ sub interesting_files {
                                     }
                                 },
                                 map {
-                                    { prefix     => { 'name' => $_ } },
+                                    { prefix => { 'name' => $_ } },
                                         { prefix => { 'path' => $_ } },
 
                                  # With "prefix" we don't need the plural "s".

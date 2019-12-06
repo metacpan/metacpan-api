@@ -256,7 +256,7 @@ sub find_download_url {
     # exclude backpan if dev, and
     # require released modules if neither dev nor explicit version
     my @filters
-        = $dev ? { not => { term => { status => 'backpan' } } }
+        = $dev               ? { not => { term => { status => 'backpan' } } }
         : !$explicit_version ? { term => { maturity => 'released' } }
         :                      ();
 

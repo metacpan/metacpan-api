@@ -218,7 +218,7 @@ sub parse_tsv {
             source => $self->rt_dist_url( $row->{dist} ),
             active => $row->{active},
             closed => $row->{inactive},
-            map { $_ => $row->{$_} + 0 }
+            map      { $_ => $row->{$_} + 0 }
                 grep { not /^(dist|active|inactive)$/ }
                 keys %$row,
         };

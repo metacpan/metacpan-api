@@ -73,7 +73,7 @@ sub index_authors {
     while ( my ( $pauseid, $data ) = each %$authors ) {
         my ( $name, $email, $homepage, $asciiname )
             = ( @$data{qw(fullname email homepage asciiname)} );
-        $name = undef if ( ref $name );
+        $name      = undef if ( ref $name );
         $asciiname = q{} unless defined $asciiname;
         $email     = lc($pauseid) . '@cpan.org'
             unless ( $email && Email::Valid->address($email) );
@@ -88,7 +88,7 @@ sub index_authors {
             asciiname => ref $asciiname ? undef : $asciiname,
             email     => $email,
             website   => $homepage,
-            map { $_ => $conf->{$_} }
+            map      { $_ => $conf->{$_} }
                 grep { defined $conf->{$_} } keys %$conf
         };
         $put->{website} = [ $put->{website} ]
@@ -96,8 +96,8 @@ sub index_authors {
         $put->{website} = [
 
             # normalize www.homepage.com to http://www.homepage.com
-            map { $_->scheme ? $_->as_string : 'http://' . $_->as_string }
-                map  { URI->new($_)->canonical }
+            map     { $_->scheme ? $_->as_string : 'http://' . $_->as_string }
+                map { URI->new($_)->canonical }
                 grep {$_} @{ $put->{website} }
         ];
 
@@ -163,7 +163,7 @@ sub author_config {
     # Get the most recent version
     my ($file)
         = sort { $dir->file($b)->stat->mtime <=> $dir->file($a)->stat->mtime }
-        grep   {m/author-.*?\.json/} readdir($dh);
+        grep {m/author-.*?\.json/} readdir($dh);
     return $fallback unless ($file);
     $file = $dir->file($file);
     return $fallback if !-e $file;

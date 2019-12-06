@@ -101,7 +101,7 @@ subtest set_associated_pod => sub {
 {
 
     package PodFile;    ## no critic
-    sub new { bless { path => $_[1] }, $_[0]; }
+    sub new       { bless { path => $_[1] }, $_[0]; }
     sub path      { $_[0]->{path} }
     sub name      { $_[0]->{name} ||= ( $_[0]->{path} =~ m{([^\/]+)$} )[0] }
     sub full_path { '.../' . $_[0]->{path} }

@@ -186,7 +186,7 @@ requires 'warnings';
 
 test_requires 'App::Prove';
 test_requires 'CPAN::Faker', '0.010';
-test_requires 'Code::TidyAll', '0.47';
+test_requires 'Code::TidyAll', '0.74';
 test_requires 'Code::TidyAll::Plugin::UniqueLines';
 test_requires 'Devel::Confess';
 test_requires 'File::Copy';
@@ -195,7 +195,7 @@ test_requires 'LWP::ConsoleLogger::Easy';
 test_requires 'MetaCPAN::Client', '2.017000';
 test_requires 'Module::Faker', '0.015';
 test_requires 'Module::Faker::Dist', '0.010';
-test_requires 'Perl::Tidy', '20181120';
+test_requires 'Perl::Tidy', '20191203';
 test_requires 'Plack::Test::Agent';
 test_requires 'Test::Code::TidyAll';
 test_requires 'Test::More', '0.99';
@@ -205,6 +205,6 @@ test_requires 'Test::Perl::Critic';
 test_requires 'Test::RequiresInternet';
 test_requires 'Test::Routine', '0.012';
 test_requires 'Test::Routine::Util', '0';
-test_requires 'Test::Vars';
+test_requires 'Test::Vars', '0.014';
 
 author_requires 'Plack::Middleware::Rewrite';

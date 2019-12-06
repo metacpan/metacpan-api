@@ -752,9 +752,9 @@ sub _get_provided_modules {
     return unless $provided_modules->{hits}{total};
 
     return [
-        map { $_->{name} }
+        map      { $_->{name} }
             grep { $_->{indexed} && $_->{authorized} }
-            map { @{ $_->{_source}{module} } }
+            map  { @{ $_->{_source}{module} } }
             @{ $provided_modules->{hits}{hits} }
     ];
 }

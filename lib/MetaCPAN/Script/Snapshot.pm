@@ -152,7 +152,7 @@ sub run_snapshot {
     my $snap_name = $self->snap_stub . '_' . $date;
 
     my $indices = join ',', @{ $self->indices };
-    my $data    = {
+    my $data = {
         "ignore_unavailable"   => 0,
         "include_global_state" => 1,
         "indices"              => $indices,
