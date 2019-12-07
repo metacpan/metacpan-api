@@ -36,28 +36,29 @@ sub run {
             index => $self->index->name,
             type  => 'release',
         );
-    } else {
-        log_warn { "--- DRY-RUN ---" };
+    }
+    else {
+        log_warn {"--- DRY-RUN ---"};
     }
 
-    log_info { "Searching for releases missing checksums" };
+    log_info {"Searching for releases missing checksums"};
 
     my $scroll = $self->es->scroll_helper(
         index  => $self->index->name,
         type   => 'release',
         scroll => '10m',
-        body   => { 
-            query => {                
+        body   => {
+            query => {
                 not => {
                     exists => {
-                       field => "checksum_md5"
+                        field => "checksum_md5"
                     }
-                }                
-            } 
+                }
+            }
         },
         fields => [qw( id name download_url )],
     );
-    
+
     log_warn { "Found " . $scroll->total . " releases" };
     log_warn { "Limit is " . $self->limit };
 
@@ -65,30 +66,40 @@ sub run {
 
     while ( my $p = $scroll->next ) {
         if ( $count++ == $self->limit ) {
-            log_info { "Max number of changes reached." };
+            log_info {"Max number of changes reached."};
             last;
         }
 
         log_info { "Adding checksums for " . $p->{fields}{name}->[0] };
 
         if ( my $download_url = $p->{fields}{download_url} ) {
-            my $file = "/CPAN/authors" . $p->{fields}{download_url}->[0] =~ s/^.*authors//r;
-            my $checksum_md5 = digest_file_hex( $file, 'MD5' );
+            my $file = "/CPAN/authors" . $p->{fields}{download_url}->[0]
+                =~ s/^.*authors//r;
+            my $checksum_md5    = digest_file_hex( $file, 'MD5' );
             my $checksum_sha256 = digest_file_hex( $file, 'SHA-256' );
 
             if ( $self->dry_run ) {
                 log_info { "--- MD5: " . $checksum_md5 }
                 log_info { "--- SHA256: " . $checksum_sha256 }
-            } else {
-                $bulk->update({
-                    id => $p->{_id},
-                    doc => { checksum_md5 => $checksum_md5, checksum_sha256 => $checksum_sha256 },
-                    doc_as_upsert => 1,
-                }); 
+            }
+            else {
+                $bulk->update(
+                    {
+                        id  => $p->{_id},
+                        doc => {
+                            checksum_md5    => $checksum_md5,
+                            checksum_sha256 => $checksum_sha256
+                        },
+                        doc_as_upsert => 1,
+                    }
+                );
             }
 
-        } else {
-            log_info { $p->{fields}{name}->[0] . " is missing a download_url"};
+        }
+        else {
+            log_info {
+                $p->{fields}{name}->[0] . " is missing a download_url"
+            };
         }
     }
 
@@ -98,7 +109,6 @@ sub run {
 
     log_info {'Finished adding checksums'};
 }
-
 
 __PACKAGE__->meta->make_immutable;
 1;
