@@ -39,8 +39,9 @@ sub startup {
     unless ( $self->config->{config_override} ) {
         $self->config(
             Config::ZOMG->new(
-                name => 'metacpan_server',
-                path => $self->home->to_string,
+                local_suffix => $ENV{HARNESS_ACTIVE} ? 'testing' : 'local',
+                name         => 'metacpan_server',
+                path         => $self->home->to_string,
             )->load
         );
     }
