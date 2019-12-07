@@ -11,7 +11,7 @@ with 'MooseX::Getopt', 'MetaCPAN::Role::Script';
 
 =head1 SYNOPSIS
 
-Fill checksums for releases 
+Fill checksums for releases
 
 =cut
 
@@ -73,7 +73,8 @@ sub run {
         log_info { "Adding checksums for " . $p->{fields}{name}->[0] };
 
         if ( my $download_url = $p->{fields}{download_url} ) {
-            my $file = "/CPAN/authors" . $p->{fields}{download_url}->[0]
+            my $file
+                = $self->cpan . "/authors" . $p->{fields}{download_url}->[0]
                 =~ s/^.*authors//r;
             my $checksum_md5    = digest_file_hex( $file, 'MD5' );
             my $checksum_sha256 = digest_file_hex( $file, 'SHA-256' );
@@ -117,7 +118,7 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 SYNOPSIS
 
- # bin/metacpan checksum --[no-]dry_run --limit X 
+ # bin/metacpan checksum --[no-]dry_run --limit X
 
 =head1 DESCRIPTION
 
