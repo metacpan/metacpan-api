@@ -4,7 +4,6 @@ requires 'Archive::Any', '0.0942';
 requires 'Archive::Tar', '2.04';
 requires 'Authen::SASL', '2.16';
 requires 'BackPAN::Index', '0.42';
-requires 'base';
 requires 'Captcha::reCAPTCHA', '0.99';
 requires 'Catalyst', '5.90103';
 requires 'Catalyst::Action::RenderView';
@@ -169,16 +168,13 @@ requires 'Regexp::Common::time';
 requires 'Safe', '2.35'; # bug fixes (used by Parse::PMFile)
 requires 'Search::Elasticsearch', '== 2.03';
 requires 'Starman';
-requires 'strict';
 requires 'strictures', '1';
 requires 'Throwable::Error';
 requires 'Time::Local';
 requires 'Try::Tiny', '0.24';
 requires 'URI', '1.71';
 requires 'URI::Escape';
-requires 'utf8';
 requires 'version', '0.9901';
-requires 'warnings';
 requires 'XML::Simple';
 requires 'YAML::XS', '0.67'; # Mojolicious::Plugin::OpenAPI YAML loading
 
