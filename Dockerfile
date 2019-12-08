@@ -11,7 +11,9 @@ WORKDIR /metacpan-api
 # size of the images.
 RUN mkdir /CPAN \
     && apt-get update \
-    && apt-get install -y rsync \
+    && apt-get install -y --no-install-recommends rsync \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
     && cpm install --global --without-test \
     && rm -fr /root/.cpanm /root/.perl-cpm /var/cache/apt/lists/* /tmp/*
 
@@ -19,4 +21,4 @@ VOLUME /CPAN
 
 EXPOSE 5000
 
-CMD /wait-for-it.sh ${PGDB} -- ${API_SERVER} ./bin/api.pl
+CMD [ "/wait-for-it.sh", "${PGDB}",  "--", "${API_SERVER}", "./bin/api.pl" ]
