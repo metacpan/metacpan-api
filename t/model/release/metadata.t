@@ -8,7 +8,7 @@ use MetaCPAN::Script::Runner;
 use MetaCPAN::TestHelpers qw( fakecpan_dir get_config );
 use Test::More;
 
-my $authordir = fakecpan_dir->file('authors/id/L/LO/LOCAL');
+my $authordir = fakecpan_dir->child('authors/id/L/LO/LOCAL');
 
 my $config = get_config();
 
