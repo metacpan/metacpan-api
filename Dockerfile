@@ -14,7 +14,7 @@ RUN mkdir /CPAN \
     && apt-get install -y --no-install-recommends rsync \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
-    && cpm install --global --without-test \
+    && cpm install --global \
     && rm -fr /root/.cpanm /root/.perl-cpm /var/cache/apt/lists/* /tmp/*
 
 VOLUME /CPAN
