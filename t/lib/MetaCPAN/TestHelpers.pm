@@ -8,7 +8,7 @@ use Cpanel::JSON::XS;
 use FindBin;
 use Git::Helpers qw( checkout_root );
 use MetaCPAN::Script::Runner;
-use Path::Class qw( dir );
+use Path::Tiny qw( path );
 use Test::More;
 use Test::Routine::Util;
 use Try::Tiny qw( catch try );
@@ -84,7 +84,7 @@ sub test_release {
 
     # If the first arg is a string, treat it like 'AUTHOR/Release-Name'.
     if ( !ref( $_[0] ) ) {
-        my ( $author, $name ) = split /\//, shift;
+        my ( $author, $name ) = split m{/}, shift;
         $release = { name => $name, author => $author };
     }
 
@@ -98,27 +98,27 @@ sub get_config {
     my $config = do {
 
         # build_config expects test to be t/*.t
-        local $FindBin::RealBin = dir( undef, checkout_root(), 't' );
+        local $FindBin::RealBin = path( checkout_root(), 't' );
         MetaCPAN::Script::Runner->build_config;
     };
     return $config;
 }
 
 sub tmp_dir {
-    my $dir = dir( checkout_root(), 'var', 't', 'tmp' );
+    my $dir = path( checkout_root(), 'var', 't', 'tmp' );
     $dir->mkpath;
     return $dir;
 }
 
 sub fakecpan_dir {
     my $dir      = tmp_dir();
-    my $fakecpan = $dir->subdir('fakecpan');
+    my $fakecpan = $dir->child('fakecpan');
     $fakecpan->mkpath;
     return $fakecpan;
 }
 
 sub fakecpan_configs_dir {
-    my $source = dir( undef, checkout_root(), 'test-data', 'fakecpan' );
+    my $source = path( checkout_root(), 'test-data', 'fakecpan' );
     $source->mkpath;
     return $source;
 }

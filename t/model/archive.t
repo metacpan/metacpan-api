@@ -2,9 +2,9 @@ use strict;
 use warnings;
 use lib 't/lib';
 
+use Digest::SHA qw( sha1_hex );
 use MetaCPAN::TestHelpers qw( fakecpan_dir );
 use Test::Most;
-use Digest::SHA qw( sha1_hex );
 
 my $CLASS = 'MetaCPAN::Model::Archive';
 require_ok $CLASS;
@@ -35,8 +35,8 @@ subtest 'archive extraction' => sub {
     );
 
     my $archive = $CLASS->new(
-        file => fakecpan_dir->file(
-            '/authors/id/L/LO/LOCAL/Some-1.00-TRIAL.tar.gz')
+        file => fakecpan_dir->child(
+            '/authors/id/L/LO/LOCAL/Some-1.00-TRIAL.tar.gz')->stringify
     );
 
     ok !$archive->is_impolite;
@@ -62,8 +62,8 @@ subtest 'temp cleanup' => sub {
 
     {
         my $archive = $CLASS->new(
-            file => fakecpan_dir->file(
-                'authors/id/L/LO/LOCAL/Some-1.00-TRIAL.tar.gz')
+            file => fakecpan_dir->child(
+                'authors/id/L/LO/LOCAL/Some-1.00-TRIAL.tar.gz')->stringify
         );
 
         $tempdir = $archive->extract;
@@ -79,8 +79,8 @@ subtest 'temp cleanup' => sub {
 
 subtest 'extract once' => sub {
     my $archive = $CLASS->new(
-        file => fakecpan_dir->file(
-            'authors/id/L/LO/LOCAL/Some-1.00-TRIAL.tar.gz')
+        file => fakecpan_dir->child(
+            'authors/id/L/LO/LOCAL/Some-1.00-TRIAL.tar.gz')->stringify
     );
 
     is $archive->extract, $archive->extract;
@@ -91,8 +91,8 @@ subtest 'set extract dir' => sub {
 
     {
         my $archive = $CLASS->new(
-            file => fakecpan_dir->file(
-                'authors/id/L/LO/LOCAL/Some-1.00-TRIAL.tar.gz'),
+            file => fakecpan_dir->child(
+                'authors/id/L/LO/LOCAL/Some-1.00-TRIAL.tar.gz')->stringify,
             extract_dir => $temp->dirname
         );
 

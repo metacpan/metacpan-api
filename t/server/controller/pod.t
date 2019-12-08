@@ -6,16 +6,16 @@ use Cpanel::JSON::XS ();
 use HTTP::Request::Common qw( GET );
 use MetaCPAN::Server ();
 use MetaCPAN::TestHelpers;
-use Path::Class qw(dir);
+use Path::Tiny qw(path);
 use Plack::Test;
 use Test::More;
 use Try::Tiny qw( catch try );
 
-my $dir = dir( MetaCPAN::Server->model('Source')->base_dir,
+my $dir = path( MetaCPAN::Server->model('Source')->base_dir,
     'DOY/Moose-0.02/Moose-0.02' );
 $dir->mkpath;
 
-my $file = $dir->file('binary.bin');
+my $file = $dir->child('binary.bin');
 $file->openw->print( "\x00" x 10 );
 
 my %tests = (

@@ -12,7 +12,7 @@ my $config = get_config();
 
 subtest 'basic dependencies' => sub {
     my $file
-        = fakecpan_dir->file(
+        = fakecpan_dir->child(
         '/authors/id/M/MS/MSCHWERN/Prereqs-Basic-0.01.tar.gz');
 
     my $release = MetaCPAN::Model::Release->new(
