@@ -65,7 +65,7 @@ sub run {
     my $count = 0;
 
     while ( my $p = $scroll->next ) {
-        if ( $count++ == $self->limit ) {
+        if ( $self->limit >= 0 and $count++ >= $self->limit ) {
             log_info {"Max number of changes reached."};
             last;
         }
@@ -95,7 +95,6 @@ sub run {
                     }
                 );
             }
-
         }
         else {
             log_info {
@@ -126,6 +125,14 @@ Backfill checksums for releases
 
 =head2 dry_run
 
-Don't update - just show what would have been updated
+Don't update - just show what would have been updated (default)
+
+=head2 no-dry_run
+
+Update records
+
+=head2 limit
+
+Max number of records to update. default=1000, for unlimited set to -1
 
 =cut
