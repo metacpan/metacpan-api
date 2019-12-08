@@ -149,7 +149,6 @@ requires 'PerlIO::gzip';
 requires 'Pithub', '0.01033';
 requires 'Plack', '1.0039';
 requires 'Plack::App::Directory';
-requires 'Plack::Handler::Twiggy';
 requires 'Plack::Middleware::Header';
 requires 'Plack::Middleware::ReverseProxy';
 requires 'Plack::Middleware::Rewrite';
