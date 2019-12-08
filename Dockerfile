@@ -1,7 +1,5 @@
 FROM metacpan/metacpan-base:latest
 
-ENV PERL_MM_USE_DEFAULT=1
-
 COPY cpanfile cpanfile.snapshot /metacpan-api/
 WORKDIR /metacpan-api
 
