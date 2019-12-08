@@ -25,7 +25,6 @@ requires 'CatalystX::Fastly::Role::Response', '0.06';
 requires 'CatalystX::InjectComponent';
 requires 'CatalystX::RoleApplicator';
 requires 'CHI', '0.60';
-requires 'Config::General';
 requires 'Config::ZOMG', '1.000000';
 requires 'Const::Fast';
 requires 'CPAN::DistnameInfo', '0.12';
