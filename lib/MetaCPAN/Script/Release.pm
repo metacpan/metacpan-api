@@ -118,10 +118,10 @@ my @skip_dists = (
     qr{/ILYAZ/os2/[^/]+/perl_\w+\.zip\z},
     qr{/ILYAZ/os2/perl[^/]+\.zip\z},
 
-    # Strip off any files in a Perl6 folder
+    # Strip off any files in a Perl6 or Raku folder
     # e.g. http://www.cpan.org/authors/id/J/JD/JDV/Perl6/
     # As here we are indexing perl5 only
-    qr{/Perl6/},
+    qr{/(?:Perl6|Raku)/},
 );
 
 my ($SKIP_MATCH) = map qr/$_/, join '|',
