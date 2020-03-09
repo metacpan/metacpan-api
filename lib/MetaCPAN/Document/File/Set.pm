@@ -579,7 +579,7 @@ sub autocomplete_suggester {
             ( $docs{ $suggest->{text} }, $suggest->{score} );
     }
 
-    my @fields = (qw(documentation distribution author release deprecated));
+    my @fields = (qw(documentation distribution author release deprecated date));
     my $data   = $self->es->search(
         {
             index => $self->index->name,
