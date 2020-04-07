@@ -79,6 +79,9 @@ sub search_web {
     $page_size //= 20;
     $from      //= 0;
 
+    $search_term
+        =~ s{([ + - = > < ! & | ( ) { } \[ \] ^ " ~ * ? : \ / ])}{\\$1}x;
+
     # munge the search_term
     # these would be nicer if we had variable-length lookbehinds...
     # Allow q = 'author:LLAP' or 'module:Data::Page' or 'dist:'
