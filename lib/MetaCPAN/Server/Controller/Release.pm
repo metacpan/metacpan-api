@@ -99,8 +99,16 @@ sub top_uploaders : Path('top_uploaders') : Args() {
 
 sub interesting_files : Path('interesting_files') : Args(2) {
     my ( $self, $c, $author, $release ) = @_;
-    $c->stash_or_detach(
-        $c->model('CPAN::File')->interesting_files( $author, $release ) );
+    my $categories = $c->read_param( 'category', 1 );
+    $c->stash_or_detach( $c->model('CPAN::File')
+            ->interesting_files( $author, $release, $categories ) );
+}
+
+sub files_by_category : Path('files_by_category') : Args(2) {
+    my ( $self, $c, $author, $release ) = @_;
+    my $categories = $c->read_param( 'category', 1 );
+    $c->stash_or_detach( $c->model('CPAN::File')
+            ->files_by_category( $author, $release, $categories ) );
 }
 
 __PACKAGE__->meta->make_immutable;

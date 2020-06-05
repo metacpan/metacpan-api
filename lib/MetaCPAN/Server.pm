@@ -131,7 +131,7 @@ sub app {
 # request body (not both, 'body' parameters take precedence).
 # the returned output is an arrayref containing the parameter values.
 sub read_param {
-    my ( $c, $key ) = @_;
+    my ( $c, $key, $optional ) = @_;
 
     my $body_data = $c->req->body_data;
     my $params
@@ -139,10 +139,10 @@ sub read_param {
         ? $body_data->{$key}
         : [ $c->req->param($key) ];
 
-    $params = [$params] unless is_arrayref($params);
+    $params = [ $params // () ] unless is_arrayref($params);
 
     $c->detach( '/bad_request', ["Missing param: $key"] )
-        unless $params and @{$params};
+        if !$optional && !@$params;
 
     return $params;
 }
