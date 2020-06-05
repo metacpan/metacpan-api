@@ -45,8 +45,206 @@ sub dir {
     return { dir => $dir };
 }
 
+sub _doc_files {
+    my @files = @_;
+    my %s;
+    return
+        map +( "$_", "$_.pod", "$_.md", "$_.markdown", "$_.mdown",
+        "$_.mkdn", ),
+        grep !$s{$_}++,
+        map +( $_, uc $_ ),
+        @_;
+}
+
+my %special_files = (
+    changelog => [
+        _doc_files(
+            qw(
+                Changelog
+                ChangeLog
+                Changes
+                News
+                )
+        ),
+    ],
+    contributing => [
+        _doc_files(
+            qw(
+                Contributing
+                Hacking
+                Development
+                )
+        ),
+    ],
+    license => [
+        qw(
+            LICENCE
+            LICENSE
+            Copyright
+            COPYRIGHT
+            Copying
+            COPYING
+            Artistic
+            ARTISTIC
+            )
+    ],
+    install => [
+        _doc_files(
+            qw(
+                Install
+                )
+        ),
+    ],
+    dist => [
+        qw(
+            Build.PL
+            MANIFEST
+            META.json
+            META.yml
+            Makefile.PL
+            alienfile
+            cpanfile
+            dist.ini
+            minil.toml
+            )
+    ],
+    other => [
+        _doc_files(
+            qw(
+                Authors
+                Credits
+                FAQ
+                README
+                THANKS
+                ToDo
+                Todo
+                )
+        ),
+    ],
+);
+my %perl_files = (
+    changelog => [
+        qw(
+            perldelta.pod
+            )
+    ],
+);
+my %prefix_files = (
+    example => [
+        qw(
+            eg
+            ex
+            example
+            Example
+            sample
+            )
+    ],
+);
+
+my %file_to_type;
+my %type_to_regex;
+my %query_parts;
+
+my %sort_order;
+
+for my $type ( keys %special_files ) {
+    my @files      = @{ $special_files{$type} || [] };
+    my @perl_files = @{ $perl_files{$type}    || [] };
+
+    $sort_order{ $files[$_] } = $_ for 0 .. $#files;
+
+    my @root_file     = grep !/\.pod$/, @files;
+    my @non_root_file = grep /\.pod$/,  @files;
+
+    my @parts;
+    if (@root_file) {
+        push @parts,
+            {
+            bool => {
+                must => [
+                    { term  => { level => 0 } },
+                    { terms => { name  => \@root_file } },
+                ],
+                (
+                    @perl_files
+                    ? ( must_not =>
+                            [ { term => { distribution => 'perl' } } ] )
+                    : ()
+                ),
+            }
+            };
+    }
+    if (@non_root_file) {
+        push @parts,
+            {
+            bool => {
+                must => [ { terms => { name => \@non_root_file } } ],
+                (
+                    @perl_files
+                    ? ( must_not =>
+                            [ { term => { distribution => 'perl' } } ] )
+                    : ()
+                ),
+            }
+            };
+    }
+    if (@perl_files) {
+        push @parts,
+            {
+            bool => {
+                must => [
+                    { term  => { distribution => 'perl' } },
+                    { terms => { name         => \@perl_files } },
+                ],
+            }
+            };
+    }
+
+    $file_to_type{$_} = $type for @files, @perl_files;
+    push @{ $query_parts{$type} }, @parts;
+}
+
+for my $type ( keys %prefix_files ) {
+    my @prefixes = @{ $prefix_files{$type} };
+
+    my @parts = map +( { prefix => { 'name' => $_ } },
+        { prefix => { 'path' => $_ } }, ), @prefixes;
+
+    my ($regex) = map qr/\A(?:$_)/, join '|', @prefixes;
+
+    $type_to_regex{$type} = $regex;
+    push @{ $query_parts{$type} }, @parts;
+}
+
 sub interesting_files {
-    my ( $self, $author, $release ) = @_;
+    my ( $self, $author, $release, $categories, $options ) = @_;
+
+    $categories = [ sort keys %query_parts ]
+        if !$categories || !@$categories;
+
+    my $return = {
+        files => [],
+        total => 0,
+        took  => 0,
+    };
+
+    my @clauses = map @{ $query_parts{$_} // [] }, @$categories;
+
+    return $return
+        unless @clauses;
+
+    my $source = $options->{fields} || [
+        qw(
+            author
+            distribution
+            documentation
+            name
+            path
+            pod_lines
+            release
+            status
+            )
+    ];
 
     my $body = {
         query => {
@@ -63,141 +261,13 @@ sub interesting_files {
                     { not  => { prefix    => { 'path' => 'share/' } } },
                     { not  => { prefix    => { 'path' => 't/' } } },
                     { not  => { prefix    => { 'path' => 'xt/' } } },
-                    {
-                        bool => {
-                            should => [
-                                {
-                                    bool => {
-                                        must => [
-                                            { term => { level => 0 } },
-                                            {
-                                                terms => {
-                                                    name => [
-                                                        qw(
-                                                            alienfile
-                                                            AUTHORS
-                                                            Build.PL
-                                                            CHANGELOG
-                                                            CHANGELOG.md
-                                                            ChangeLog
-                                                            ChangeLog.md
-                                                            Changelog
-                                                            Changelog.md
-                                                            CHANGES
-                                                            CHANGES.md
-                                                            Changes
-                                                            Changes.md
-                                                            CONTRIBUTING
-                                                            CONTRIBUTING.md
-                                                            Contributing
-                                                            COPYING
-                                                            Copying
-                                                            COPYRIGHT
-                                                            cpanfile
-                                                            CREDITS
-                                                            DEVELOPMENT
-                                                            DEVELOPMENT.md
-                                                            Development
-                                                            Development.md
-                                                            dist.ini
-                                                            FAQ
-                                                            FAQ.md
-                                                            HACKING
-                                                            HACKING.md
-                                                            Hacking
-                                                            Hacking.md
-                                                            INSTALL
-                                                            INSTALL.md
-                                                            LICENCE
-                                                            LICENSE
-                                                            MANIFEST
-                                                            Makefile.PL
-                                                            META.json
-                                                            META.yml
-                                                            minil.toml
-                                                            NEWS
-                                                            NEWS.md
-                                                            README
-                                                            README.markdown
-                                                            README.md
-                                                            README.mdown
-                                                            README.mkdn
-                                                            THANKS
-                                                            TODO
-                                                            TODO.md
-                                                            ToDo
-                                                            ToDo.md
-                                                            Todo
-                                                            Todo.md
-                                                            )
-                                                    ]
-                                                }
-                                            }
-                                        ]
-                                    }
-                                },
-                                {
-                                    bool => {
-                                        must => [
-                                            {
-                                                terms => {
-                                                    name => [
-                                                        qw(
-                                                            CONTRIBUTING.pm
-                                                            CONTRIBUTING.pod
-                                                            Contributing.pm
-                                                            Contributing.pod
-                                                            ChangeLog.pm
-                                                            ChangeLog.pod
-                                                            Changelog.pm
-                                                            Changelog.pod
-                                                            CHANGES.pm
-                                                            CHANGES.pod
-                                                            Changes.pm
-                                                            Changes.pod
-                                                            HACKING.pm
-                                                            HACKING.pod
-                                                            Hacking.pm
-                                                            Hacking.pod
-                                                            TODO.pm
-                                                            TODO.pod
-                                                            ToDo.pm
-                                                            ToDo.pod
-                                                            Todo.pm
-                                                            Todo.pod
-                                                            )
-                                                    ]
-                                                }
-                                            }
-                                        ]
-                                    }
-                                },
-                                map {
-                                    { prefix => { 'name' => $_ } },
-                                        { prefix => { 'path' => $_ } },
-
-                                 # With "prefix" we don't need the plural "s".
-                                    } qw(
-                                    ex eg
-                                    example Example
-                                    sample
-                                    )
-                            ]
-                        }
-                    }
-                ]
-            }
+                    { bool => { should    => \@clauses } },
+                ],
+            },
         },
+        _source => $source,
 
-        # NOTE: We could inject author/release/distribution into each result
-        # in the controller if asking ES for less data would be better.
-        fields => [
-            qw(
-                name documentation path pod_lines
-                author release distribution status
-                )
-        ],
-        size => 250,
+        size => $options->{size} || 250,
     };
 
     my $data = $self->es->search(
@@ -207,16 +277,57 @@ sub interesting_files {
             body  => $body,
         }
     );
-    return unless $data->{hits}{total};
 
-    my $files = [ map { $_->{fields} } @{ $data->{hits}{hits} } ];
-    single_valued_arrayref_to_scalar($files);
+    $return->{took}  = $data->{took};
+    $return->{total} = $data->{hits}{total};
 
-    return {
-        files => $files,
-        total => $data->{hits}{total},
-        took  => $data->{took}
-    };
+    return $return
+        unless $return->{total};
+
+    my $files = [ map $_->{_source}, @{ $data->{hits}{hits} } ];
+
+    for my $file (@$files) {
+        my $category = $file_to_type{ $file->{name} };
+        if ( !$category ) {
+            for my $type ( keys %type_to_regex ) {
+                my $re = $type_to_regex{$type};
+                if ( $file->{name} =~ $re || $file->{path} =~ $re ) {
+                    $category = $type;
+                    last;
+                }
+            }
+        }
+        $category ||= 'unknown';
+
+        $file->{category} = $category;
+    }
+
+    $return->{files} = $files;
+
+    return $return;
+}
+
+sub files_by_category {
+    my ( $self, $author, $release, $categories, $options ) = @_;
+    my $return = $self->interesting_files( $author, $release, $categories,
+        $options );
+    my $files = delete $return->{files};
+
+    $return->{categories} = { map +( $_ => [] ), @$categories };
+
+    for my $file (@$files) {
+        my $category = $file->{category};
+        push @{ $return->{categories}{$category} }, $file;
+    }
+
+    for my $category (@$categories) {
+        my $files = $return->{categories}{$category};
+        @$files = map $_->[0],
+            sort { $a->[1] <=> $b->[1] || $a->[2] cmp $b->[2] }
+            map [ $_, $sort_order{ $_->{name} } || 9999, $_->{path} ],
+            @$files;
+    }
+    return $return;
 }
 
 __PACKAGE__->meta->make_immutable;
