@@ -21,7 +21,7 @@ sub process {
     my $content_type = $c->res->content_type;
     return 1 if ( $content_type eq 'text/javascript' );
     if ( $content_type ne 'application/json' ) {
-        $body = JSON->new->allow_nonref->ascii->encode($body);
+        $body = Cpanel::JSON::XS->new->allow_nonref->ascii->encode($body);
     }
     $c->res->body("/**/$cb($body);");
     return 1;
