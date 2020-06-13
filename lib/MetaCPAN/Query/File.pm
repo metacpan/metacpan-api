@@ -128,6 +128,17 @@ my %perl_files = (
             perldelta.pod
             )
     ],
+    license => [
+        qw(
+            perlartistic.pod
+            perlgpl.pod
+            )
+    ],
+    contributing => [
+        qw(
+            perlhack.pod
+            )
+    ],
 );
 my %prefix_files = (
     example => [
