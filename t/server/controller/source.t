@@ -2,6 +2,7 @@ use strict;
 use warnings;
 use lib 't/lib';
 
+use Cpanel::JSON::XS ();
 use MetaCPAN::Server::Test;
 use MetaCPAN::TestHelpers;
 use Test::More;
@@ -96,7 +97,7 @@ test_psgi app, sub {
                 );
                 ok(
                     my $jsdata
-                        = JSON->new->allow_nonref->decode($function_args),
+                        = Cpanel::JSON::XS->new->allow_nonref->decode($function_args),
                     'decode json'
                 );
                 is( $jsdata, $manifest, 'JSONP-wrapped manifest' );

@@ -85,6 +85,6 @@ foreach my $file (@files) {
     unlink $file;
     (my $base = $file) =~ s/^(.*)\/.*?$/$1/;
     open FILE, '>', "$base/author-1.0.json";
-    print FILE JSON->new->pretty->encode( $raw );
+    print FILE Cpanel::JSON::XS->new->pretty->encode( $raw );
     close FILE;
 }
