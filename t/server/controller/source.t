@@ -96,8 +96,8 @@ test_psgi app, sub {
                     'JSONP wrapper'
                 );
                 ok(
-                    my $jsdata
-                        = Cpanel::JSON::XS->new->allow_nonref->decode($function_args),
+                    my $jsdata = Cpanel::JSON::XS->new->allow_nonref->decode(
+                        $function_args),
                     'decode json'
                 );
                 is( $jsdata, $manifest, 'JSONP-wrapped manifest' );
