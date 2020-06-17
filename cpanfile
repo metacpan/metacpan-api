@@ -173,6 +173,7 @@ requires 'strictures', '1';
 requires 'Throwable::Error';
 requires 'Time::Local';
 requires 'Try::Tiny', '0.24';
+requires 'Type::Tiny', '1.002001';
 requires 'URI', '1.71';
 requires 'URI::Escape';
 requires 'version', '0.9901';
