@@ -62,7 +62,7 @@ before_script:
   - coverage-setup
 
 script:
-  - carton exec prove -It/lib -lr -j$(test-jobs) t
+  - carton exec prove -lr -j$(test-jobs) t
 
 after_success:
   - coverage-report
