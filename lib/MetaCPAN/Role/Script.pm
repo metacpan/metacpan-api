@@ -7,7 +7,7 @@ use FindBin;
 use Git::Helpers qw( checkout_root );
 use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Model;
-use MetaCPAN::Types qw(:all);
+use MetaCPAN::Types qw( Dir Int Str Bool );
 use Mojo::Server;
 use Term::ANSIColor qw( colored );
 use IO::Interactive qw( is_interactive );

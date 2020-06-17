@@ -10,7 +10,7 @@ use ElasticSearchX::Model::Document;
 use Encode;
 use List::AllUtils qw( any );
 use MetaCPAN::Document::Module;
-use MetaCPAN::Types qw(:all);
+use MetaCPAN::Types qw(Stat Module ArrayRef Bool Int Maybe Num ScalarRef Str);
 use MetaCPAN::Util qw(numify_version);
 use Plack::MIME;
 use Pod::Text;
