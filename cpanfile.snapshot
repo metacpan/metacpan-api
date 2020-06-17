@@ -386,6 +386,58 @@ DISTRIBUTIONS
       Text::Template 0
       strict 0
       warnings 0
+  CPAN-Meta-2.150010
+    pathname: D/DA/DAGOLDEN/CPAN-Meta-2.150010.tar.gz
+    provides:
+      CPAN::Meta 2.150010
+      CPAN::Meta::Converter 2.150010
+      CPAN::Meta::Feature 2.150010
+      CPAN::Meta::History 2.150010
+      CPAN::Meta::Merge 2.150010
+      CPAN::Meta::Prereqs 2.150010
+      CPAN::Meta::Spec 2.150010
+      CPAN::Meta::Validator 2.150010
+      Parse::CPAN::Meta 2.150010
+    requirements:
+      CPAN::Meta::Requirements 2.121
+      CPAN::Meta::YAML 0.011
+      Carp 0
+      Encode 0
+      Exporter 0
+      ExtUtils::MakeMaker 6.17
+      File::Spec 0.80
+      JSON::PP 2.27300
+      Scalar::Util 0
+      perl 5.008001
+      strict 0
+      version 0.88
+      warnings 0
+  CPAN-Meta-Requirements-2.140
+    pathname: D/DA/DAGOLDEN/CPAN-Meta-Requirements-2.140.tar.gz
+    provides:
+      CPAN::Meta::Requirements 2.140
+    requirements:
+      B 0
+      Carp 0
+      ExtUtils::MakeMaker 6.17
+      perl 5.006
+      strict 0
+      version 0.88
+      warnings 0
+  CPAN-Meta-YAML-0.018
+    pathname: D/DA/DAGOLDEN/CPAN-Meta-YAML-0.018.tar.gz
+    provides:
+      CPAN::Meta::YAML 0.018
+    requirements:
+      B 0
+      Carp 0
+      Exporter 0
+      ExtUtils::MakeMaker 6.17
+      Fcntl 0
+      Scalar::Util 0
+      perl 5.008001
+      strict 0
+      warnings 0
   CPAN-Repository-0.010
     pathname: O/OA/OALDERS/CPAN-Repository-0.010.tar.gz
     provides:
@@ -1118,7 +1170,6 @@ DISTRIBUTIONS
       Config::Any::XML undef
       Config::Any::YAML undef
     requirements:
-      Config::General 2.47
       Module::Pluggable::Object 3.6
   Config-General-2.63
     pathname: T/TL/TLINDEN/Config-General-2.63.tar.gz
@@ -2544,7 +2595,6 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       Mail::Address 0
-      Net::DNS 0
       Scalar::Util 0
       Test::More 0
       perl 5.006
@@ -2717,6 +2767,51 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
+  ExtUtils-MakeMaker-7.44
+    pathname: B/BI/BINGOS/ExtUtils-MakeMaker-7.44.tar.gz
+    provides:
+      ExtUtils::Command 7.44
+      ExtUtils::Command::MM 7.44
+      ExtUtils::Liblist 7.44
+      ExtUtils::Liblist::Kid 7.44
+      ExtUtils::MM 7.44
+      ExtUtils::MM_AIX 7.44
+      ExtUtils::MM_Any 7.44
+      ExtUtils::MM_BeOS 7.44
+      ExtUtils::MM_Cygwin 7.44
+      ExtUtils::MM_DOS 7.44
+      ExtUtils::MM_Darwin 7.44
+      ExtUtils::MM_MacOS 7.44
+      ExtUtils::MM_NW5 7.44
+      ExtUtils::MM_OS2 7.44
+      ExtUtils::MM_QNX 7.44
+      ExtUtils::MM_UWIN 7.44
+      ExtUtils::MM_Unix 7.44
+      ExtUtils::MM_VMS 7.44
+      ExtUtils::MM_VOS 7.44
+      ExtUtils::MM_Win32 7.44
+      ExtUtils::MM_Win95 7.44
+      ExtUtils::MY 7.44
+      ExtUtils::MakeMaker 7.44
+      ExtUtils::MakeMaker::Config 7.44
+      ExtUtils::MakeMaker::Locale 7.44
+      ExtUtils::MakeMaker::_version 7.44
+      ExtUtils::MakeMaker::charstar 7.44
+      ExtUtils::MakeMaker::version 7.44
+      ExtUtils::MakeMaker::version::regex 7.44
+      ExtUtils::MakeMaker::version::vpp 7.44
+      ExtUtils::Mkbootstrap 7.44
+      ExtUtils::Mksymlists 7.44
+      ExtUtils::testlib 7.44
+      MM 7.44
+      MY 7.44
+    requirements:
+      Data::Dumper 0
+      Encode 0
+      File::Basename 0
+      File::Spec 0.8
+      Pod::Man 0
+      perl 5.006
   ExtUtils-MakeMaker-CPANfile-0.08
     pathname: I/IS/ISHIGAKI/ExtUtils-MakeMaker-CPANfile-0.08.tar.gz
     provides:
@@ -3316,6 +3411,22 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 6.36
       Socket 1.94
       Test::More 0
+  HTTP-Tiny-0.076
+    pathname: D/DA/DAGOLDEN/HTTP-Tiny-0.076.tar.gz
+    provides:
+      HTTP::Tiny 0.076
+    requirements:
+      Carp 0
+      ExtUtils::MakeMaker 6.17
+      Fcntl 0
+      IO::Socket 0
+      MIME::Base64 0
+      Socket 0
+      Time::Local 0
+      bytes 0
+      perl 5.006
+      strict 0
+      warnings 0
   Hash-Merge-0.298
     pathname: H/HE/HERMES/Hash-Merge-0.298.tar.gz
     provides:
@@ -4394,6 +4505,19 @@ DISTRIBUTIONS
       Try::Tiny 0
       strict 0
       warnings 0
+  Module-Load-Conditional-0.70
+    pathname: B/BI/BINGOS/Module-Load-Conditional-0.70.tar.gz
+    provides:
+      Module::Load::Conditional 0.70
+    requirements:
+      ExtUtils::MakeMaker 0
+      Locale::Maketext::Simple 0
+      Module::CoreList 2.22
+      Module::Load 0.28
+      Module::Metadata 1.000005
+      Params::Check 0
+      Test::More 0
+      version 0.69
   Module-Pluggable-5.2
     pathname: S/SI/SIMONW/Module-Pluggable-5.2.tar.gz
     provides:
@@ -7280,6 +7404,16 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Scalar::Util 0
       perl 5.006
+  Scalar-List-Utils-1.55
+    pathname: P/PE/PEVANS/Scalar-List-Utils-1.55.tar.gz
+    provides:
+      List::Util 1.55
+      List::Util::XS 1.55
+      Scalar::Util 1.55
+      Sub::Util 1.55
+    requirements:
+      ExtUtils::MakeMaker 0
+      perl 5.006
   Scope-Guard-0.21
     pathname: C/CH/CHOCOLATE/Scope-Guard-0.21.tar.gz
     provides:
@@ -7982,6 +8116,84 @@ DISTRIBUTIONS
       Test::Builder::Module 0
       Test::More 0.88
       perl 5.008_001
+  Test-Simple-1.302175
+    pathname: E/EX/EXODIST/Test-Simple-1.302175.tar.gz
+    provides:
+      Test2 1.302175
+      Test2::API 1.302175
+      Test2::API::Breakage 1.302175
+      Test2::API::Context 1.302175
+      Test2::API::Instance 1.302175
+      Test2::API::Stack 1.302175
+      Test2::Event 1.302175
+      Test2::Event::Bail 1.302175
+      Test2::Event::Diag 1.302175
+      Test2::Event::Encoding 1.302175
+      Test2::Event::Exception 1.302175
+      Test2::Event::Fail 1.302175
+      Test2::Event::Generic 1.302175
+      Test2::Event::Note 1.302175
+      Test2::Event::Ok 1.302175
+      Test2::Event::Pass 1.302175
+      Test2::Event::Plan 1.302175
+      Test2::Event::Skip 1.302175
+      Test2::Event::Subtest 1.302175
+      Test2::Event::TAP::Version 1.302175
+      Test2::Event::V2 1.302175
+      Test2::Event::Waiting 1.302175
+      Test2::EventFacet 1.302175
+      Test2::EventFacet::About 1.302175
+      Test2::EventFacet::Amnesty 1.302175
+      Test2::EventFacet::Assert 1.302175
+      Test2::EventFacet::Control 1.302175
+      Test2::EventFacet::Error 1.302175
+      Test2::EventFacet::Hub 1.302175
+      Test2::EventFacet::Info 1.302175
+      Test2::EventFacet::Info::Table 1.302175
+      Test2::EventFacet::Meta 1.302175
+      Test2::EventFacet::Parent 1.302175
+      Test2::EventFacet::Plan 1.302175
+      Test2::EventFacet::Render 1.302175
+      Test2::EventFacet::Trace 1.302175
+      Test2::Formatter 1.302175
+      Test2::Formatter::TAP 1.302175
+      Test2::Hub 1.302175
+      Test2::Hub::Interceptor 1.302175
+      Test2::Hub::Interceptor::Terminator 1.302175
+      Test2::Hub::Subtest 1.302175
+      Test2::IPC 1.302175
+      Test2::IPC::Driver 1.302175
+      Test2::IPC::Driver::Files 1.302175
+      Test2::Tools::Tiny 1.302175
+      Test2::Util 1.302175
+      Test2::Util::ExternalMeta 1.302175
+      Test2::Util::Facets2Legacy 1.302175
+      Test2::Util::HashBase 1.302175
+      Test2::Util::Trace 1.302175
+      Test::Builder 1.302175
+      Test::Builder::Formatter 1.302175
+      Test::Builder::IO::Scalar 2.114
+      Test::Builder::Module 1.302175
+      Test::Builder::Tester 1.302175
+      Test::Builder::Tester::Color 1.302175
+      Test::Builder::Tester::Tie 1.302175
+      Test::Builder::TodoDiag 1.302175
+      Test::More 1.302175
+      Test::Simple 1.302175
+      Test::Tester 1.302175
+      Test::Tester::Capture 1.302175
+      Test::Tester::CaptureRunner 1.302175
+      Test::Tester::Delegate 1.302175
+      Test::use::ok 1.302175
+      ok 1.302175
+    requirements:
+      ExtUtils::MakeMaker 0
+      File::Spec 0
+      File::Temp 0
+      Scalar::Util 1.13
+      Storable 0
+      perl 5.006002
+      utf8 0
   Test-SubCalls-1.09
     pathname: A/AD/ADAMK/Test-SubCalls-1.09.tar.gz
     provides:
@@ -8727,6 +8939,13 @@ DISTRIBUTIONS
       XML::SAX 0.15
       XML::SAX::Expat 0
       perl 5.008
+  XSLoader-0.24
+    pathname: S/SA/SAPER/XSLoader-0.24.tar.gz
+    provides:
+      XSLoader 0.24
+    requirements:
+      ExtUtils::MakeMaker 0
+      Test::More 0.47
   YAML-1.24
     pathname: T/TI/TINITA/YAML-1.24.tar.gz
     provides:
@@ -8813,6 +9032,50 @@ DISTRIBUTIONS
       XSLoader 0
       lib 0
       perl 5.008001
+  libnet-3.11
+    pathname: S/SH/SHAY/libnet-3.11.tar.gz
+    provides:
+      Net undef
+      Net::Cmd 3.11
+      Net::Config 3.11
+      Net::Domain 3.11
+      Net::FTP 3.11
+      Net::FTP::A 3.11
+      Net::FTP::E 3.11
+      Net::FTP::I 3.11
+      Net::FTP::L 3.11
+      Net::FTP::_SSL_SingleSessionCache 3.11
+      Net::FTP::dataconn 3.11
+      Net::NNTP 3.11
+      Net::NNTP::_SSL 3.11
+      Net::Netrc 3.11
+      Net::POP3 3.11
+      Net::POP3::_SSL 3.11
+      Net::SMTP 3.11
+      Net::SMTP::_SSL 3.11
+      Net::Time 3.11
+    requirements:
+      Carp 0
+      Errno 0
+      Exporter 0
+      ExtUtils::MakeMaker 6.64
+      Fcntl 0
+      File::Basename 0
+      FileHandle 0
+      Getopt::Std 0
+      IO::File 0
+      IO::Select 0
+      IO::Socket 1.05
+      POSIX 0
+      Socket 2.016
+      Symbol 0
+      Time::Local 0
+      constant 0
+      perl 5.008001
+      strict 0
+      utf8 0
+      vars 0
+      warnings 0
   libwww-perl-6.29
     pathname: O/OA/OALDERS/libwww-perl-6.29.tar.gz
     provides:
@@ -8921,3 +9184,13 @@ DISTRIBUTIONS
       indirect 0
       multidimensional 0
       perl 5.006
+  version-0.9924
+    pathname: J/JP/JPEACOCK/version-0.9924.tar.gz
+    provides:
+      version 0.9924
+      version::regex 0.9924
+      version::vpp 0.9924
+      version::vxs 0.9924
+    requirements:
+      ExtUtils::MakeMaker 0
+      perl 5.006002
