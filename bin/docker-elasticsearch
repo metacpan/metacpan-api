@@ -6,7 +6,6 @@ ES_CONFIG_FILE="$1"
 ES_CONFIG_DIR="$2"
 ES_PORT="$3"
 
-# sudo mkdir -p /etc/elasticsearch/scripts/ # believe unnecessary
 sudo mkdir "$ES_CONFIG_DIR" && sudo chmod 777 "$ES_CONFIG_DIR"
 
 sudo curl -L https://github.com/metacpan/metacpan-puppet/raw/master/modules/metacpan_elasticsearch/files/etc/scripts/prefer_shorter_module_names_100.groovy > "$ES_CONFIG_DIR"/prefer_shorter_module_names_100.groovy
