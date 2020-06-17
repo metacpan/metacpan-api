@@ -45,20 +45,7 @@ before_install:
   - git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers
   - source ~/travis-perl-helpers/init
 
-  - sudo mkdir -p /etc/elasticsearch/scripts/ && sudo mkdir /tmp/es && sudo chmod 777 /tmp/es
-
-  - sudo curl -O -L https://github.com/metacpan/metacpan-puppet/raw/master/modules/metacpan_elasticsearch/files/etc/scripts/prefer_shorter_module_names_100.groovy > /tmp/es/prefer_shorter_module_names_100.groovy
-
-  - sudo curl -O -L https://github.com/metacpan/metacpan-puppet/raw/master/modules/metacpan_elasticsearch/files/etc/scripts/prefer_shorter_module_names_400.groovy > /tmp/es/prefer_shorter_module_names_400.groovy
-
-  - sudo curl -O -L https://github.com/metacpan/metacpan-puppet/raw/master/modules/metacpan_elasticsearch/files/etc/scripts/status_is_latest.groovy > /tmp/es/status_is_latest.groovy
-
-  - sudo curl -O -L https://github.com/metacpan/metacpan-puppet/raw/master/modules/metacpan_elasticsearch/files/etc/scripts/score_version_numified.groovy > /tmp/es/score_version_numified.groovy
-
-  - sudo curl -O -L https://raw.githubusercontent.com/metacpan/metacpan-docker/master/elasticsearch/metacpan.yml > /tmp/metacpan.yml
-
-  - docker pull elasticsearch:2.4-alpine
-  - docker run -d -p 127.0.0.1:9200:9200 -v /tmp/metacpan.yml:/usr/share/elasticsearch/config/metacpan.yml -v /tmp/es:/usr/share/elasticsearch/config/scripts elasticsearch:2.4-alpine
+  - bin/docker-elasticsearch /tmp/metacpan.yml /tmp/es 127.0.0.1:9200
 
   - cpanm -n Carton
   - cpanm -n App::cpm
@@ -71,7 +58,7 @@ install:
   - AUTHOR_TESTING=0 cpm install -L $PERL_CARTON_PATH --resolver $CPAN_RESOLVER --workers $(test-jobs) || (tail -n 500 -f ~/.perl-cpm/build.log; false)
 
 before_script:
-  - bin/wait-for-open http://localhost:9200/
+  - bin/wait-for-open http://$ES_TEST/
   - coverage-setup
 
 script:
