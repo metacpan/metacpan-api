@@ -5,7 +5,8 @@ use namespace::autoclean;
 
 use Cpanel::JSON::XS qw( decode_json );
 use Log::Contextual qw( :log :dlog );
-use MetaCPAN::Types qw( ArrayRef Str Uri);
+use MetaCPAN::Types qw( Uri);
+use Types::Standard qw( ArrayRef Str );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 

@@ -9,7 +9,7 @@ use MooseX::Aliases;
 use Parse::CPAN::Packages::Fast;
 use Regexp::Common qw(time);
 use Time::Local;
-use MetaCPAN::Types qw( Bool Str );
+use Types::Standard qw( Bool Str );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 

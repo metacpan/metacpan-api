@@ -2,7 +2,7 @@ package MetaCPAN::Role::HasRogueDistributions;
 
 use Moose::Role;
 
-use MetaCPAN::Types qw( ArrayRef );
+use Types::Standard qw( ArrayRef );
 
 has rogue_distributions => (
     is      => 'ro',

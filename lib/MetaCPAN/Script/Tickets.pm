@@ -17,7 +17,7 @@ use Moose;
 use Parse::CSV;
 use Pithub;
 use URI::Escape qw(uri_escape);
-use MetaCPAN::Types qw( ArrayRef Str );
+use Types::Standard qw( ArrayRef Str );
 use Ref::Util qw( is_ref is_hashref);
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';

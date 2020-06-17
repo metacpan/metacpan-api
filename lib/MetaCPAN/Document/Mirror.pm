@@ -7,8 +7,7 @@ use Moose;
 use ElasticSearchX::Model::Document::Types qw( Location );
 use ElasticSearchX::Model::Document;
 
-use MetaCPAN::Types qw( ArrayRef Dict Str );
-use MooseX::Types::Structured qw(Dict );    # not sure why I have to do this
+use Types::Standard qw( Dict Str );
 
 has name => (
     is       => 'ro',

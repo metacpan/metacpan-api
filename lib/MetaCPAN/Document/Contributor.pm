@@ -3,7 +3,7 @@ package MetaCPAN::Document::Contributor;
 use MetaCPAN::Moose;
 
 use ElasticSearchX::Model::Document;
-use MetaCPAN::Types qw( Str );
+use Types::Standard qw( Str );
 
 has distribution => (
     is       => 'ro',

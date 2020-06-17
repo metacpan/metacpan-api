@@ -7,7 +7,7 @@ use Cpanel::JSON::XS ();
 use Hash::Merge qw( merge );
 use List::Util qw( min uniq );
 use Log::Contextual qw( :log :dlog );
-use MetaCPAN::Types qw( Object Str );
+use Types::Standard qw( Object Str );
 use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
 use MooseX::StrictConstructor;
 

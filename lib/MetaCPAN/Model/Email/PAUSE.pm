@@ -6,7 +6,8 @@ use Email::Sender::Simple qw( sendmail );
 use Email::Sender::Transport::SMTP ();
 use Email::Simple                  ();
 use Encode                         ();
-use MetaCPAN::Types qw( Object Uri );
+use MetaCPAN::Types qw( Uri );
+use Types::Standard qw( Object );
 use Try::Tiny qw( catch try );
 
 with('MetaCPAN::Role::HasConfig');

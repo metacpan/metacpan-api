@@ -4,7 +4,7 @@ use Moose;
 
 use Log::Contextual qw( :log );
 use MetaCPAN::Document::Permission ();
-use MetaCPAN::Types qw( Bool );
+use Types::Standard qw( Bool );
 use PAUSE::Permissions ();
 
 with 'MooseX::Getopt', 'MetaCPAN::Role::Script';

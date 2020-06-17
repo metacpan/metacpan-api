@@ -8,10 +8,8 @@ use DateTime qw();
 use Ref::Util qw();
 use ElasticSearchX::Model::Document;
 
-use MetaCPAN::Types qw(
-    Dependency HashRef Resources Stat Tests
-    ArrayRef Bool Num Str
-);
+use MetaCPAN::Types qw(Dependency HashRef Resources Stat Tests);
+use Types::Standard qw(ArrayRef Bool Num Str);
 use MetaCPAN::Util qw( numify_version );
 
 =head1 PROPERTIES

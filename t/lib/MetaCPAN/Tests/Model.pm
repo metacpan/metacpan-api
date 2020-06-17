@@ -3,7 +3,7 @@ package MetaCPAN::Tests::Model;
 use Test::Routine;
 
 use MetaCPAN::Server::Test ();
-use MetaCPAN::Types qw( ArrayRef HashRef Str );
+use Types::Standard qw( ArrayRef HashRef Str );
 use Test::More;
 use Try::Tiny qw( catch try );
 

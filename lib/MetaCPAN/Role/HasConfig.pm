@@ -4,7 +4,7 @@ use Moose::Role;
 
 use FindBin;
 use Config::ZOMG ();
-use MetaCPAN::Types qw(HashRef);
+use Types::Standard qw(HashRef);
 use Module::Runtime qw( require_module );
 
 # Done like this so can be required by a role

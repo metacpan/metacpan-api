@@ -8,7 +8,7 @@ use ElasticSearchX::Model::Document;
 
 with 'ElasticSearchX::Model::Document::EmbeddedRole';
 
-use MetaCPAN::Types qw( Bool Maybe Num Str );
+use Types::Standard qw( Bool Maybe Num Str );
 use MetaCPAN::Util;
 
 =head1 SYNOPSIS
