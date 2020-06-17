@@ -2,7 +2,6 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use Test::Fatal qw( exception );
 use Test::Mojo;
 use Test::More;
 

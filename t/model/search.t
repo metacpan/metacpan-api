@@ -60,6 +60,17 @@ ok( $search->_not_rogue, '_not_rogue' );
 }
 
 {
+    my $results = $search->search_web('author:Mo BadPod');
+    isnt( @{ $results->{results} },
+        0, '>0 results on author search with extra' );
+}
+
+{
+    eval { $search->search_web('usr/bin/env') };
+    is( $@, '', 'search term with a / no exception' );
+}
+
+{
     my $long_form  = $search->search_web('distribution:Pod-Pm');
     my $short_form = $search->search_web('dist:Pod-Pm');
 

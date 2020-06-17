@@ -79,18 +79,15 @@ sub search_web {
     $page_size //= 20;
     $from      //= 0;
 
-    $search_term
-        =~ s{([ + - = > < ! & | ( ) { } \[ \] ^ " ~ * ? \ / ])}{\\$1}x;
+    $search_term =~ s{([+=><!&|\(\)\{\}[\]\^"~*?\\/])}{\\$1}g;
 
     # munge the search_term
     # these would be nicer if we had variable-length lookbehinds...
     # Allow q = 'author:LLAP' or 'module:Data::Page' or 'dist:'
-    # We are mapping to correct ES fields here - wonder if ANYONE
-    # uses these?!?!?!
+    # We are mapping to correct ES fields here - relied on by metacpan-web
+    # tests.
     #
     # The exceptions below are used specifically by the front end search.
-    # We've temporarily removed the ":" from the regex above so that the the
-    # author/dist/module searches work again.  The were broken in 225749b6e.
     $search_term    #
         =~ s{(^|\s)author:([a-zA-Z]+)(?=\s|$)}{$1author:\U$2\E}g;
     $search_term
