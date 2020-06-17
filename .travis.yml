@@ -95,3 +95,4 @@ cache:
     - local
     - ~/perl5
     - t/var/darkpan
+    - .tidyall.d # cache tidyall results
