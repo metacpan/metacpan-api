@@ -4,10 +4,6 @@ use Test::More;
 use Test::Mojo;
 use Mojo::JSON qw(true false);
 
-plan skip_all =>
-    "Travis ES bad, see https://travis-ci.org/metacpan/metacpan-api/jobs/301092129"
-    if $ENV{TRAVIS};
-
 my $t = Test::Mojo->new('MetaCPAN::API');
 
 $t->get_ok( '/v1/search/first', form => { q => 'Versions::PkgVar' } )

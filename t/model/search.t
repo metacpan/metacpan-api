@@ -8,10 +8,6 @@ use Test::More;
 use Test::Deep qw(cmp_deeply ignore);
 use Cpanel::JSON::XS ();
 
-plan skip_all =>
-    "Travis ES bad, see https://travis-ci.org/metacpan/metacpan-api/jobs/301092129"
-    if $ENV{TRAVIS};
-
 # Just use this to get an es object.
 my $server = MetaCPAN::TestServer->new;
 my $search = MetaCPAN::Model::Search->new(
