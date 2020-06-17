@@ -30,7 +30,7 @@ BEGIN {
 
 # Ensure we're starting fresh
 my $tmp_dir = tmp_dir();
-$tmp_dir->remove_tree;
+$tmp_dir->remove_tree( { safe => 0 } );
 $tmp_dir->mkpath;
 
 ok( $tmp_dir->stat, "$tmp_dir exists for testing" );
