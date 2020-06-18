@@ -2,7 +2,7 @@ use Test::Most;
 use strict;
 use warnings;
 use lib 't/lib';
-use MetaCPAN::Types qw(Resources);
+use MetaCPAN::Types::TypeTiny qw(Resources);
 
 is_deeply(
     Resources->coerce(
