@@ -5557,27 +5557,6 @@ DISTRIBUTIONS
       namespace::clean 0.19
       overload 0
       perl 5.008
-  MooseX-Types-URI-0.08
-    pathname: E/ET/ETHER/MooseX-Types-URI-0.08.tar.gz
-    provides:
-      MooseX::Types::URI 0.08
-    requirements:
-      Module::Build::Tiny 0.007
-      MooseX::Types 0.40
-      MooseX::Types::Moose 0
-      MooseX::Types::Path::Class 0
-      Scalar::Util 0
-      URI 0
-      URI::FromHash 0
-      URI::QueryParam 0
-      URI::WithBase 0
-      URI::data 0
-      URI::file 0
-      if 0
-      namespace::autoclean 0
-      perl 5.006
-      strict 0
-      warnings 0
   Mouse-v2.4.10
     pathname: G/GF/GFUJI/Mouse-v2.4.10.tar.gz
     provides:
