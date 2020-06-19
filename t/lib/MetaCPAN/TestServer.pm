@@ -16,7 +16,7 @@ use MetaCPAN::Script::Permission     ();
 use MetaCPAN::Script::Release        ();
 use MetaCPAN::Server                 ();
 use MetaCPAN::TestHelpers qw( fakecpan_dir );
-use MetaCPAN::Types qw( Dir );
+use MetaCPAN::Types qw( Path );
 use Types::Standard qw( HashRef Str );
 use Search::Elasticsearch;
 use Search::Elasticsearch::TestServer;
@@ -53,7 +53,7 @@ has _es_home => (
 
 has _cpan_dir => (
     is       => 'ro',
-    isa      => Dir,
+    isa      => Path,
     init_arg => 'cpan_dir',
     coerce   => 1,
     default  => sub { fakecpan_dir() },

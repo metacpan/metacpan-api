@@ -23,7 +23,7 @@ sub _build_url {
     my ($self) = @_;
     $ENV{HARNESS_ACTIVE}
         ? 'file:'
-        . $self->home->file('t/var/cpantesters-release-api-fake.json')
+        . $self->home->child('t/var/cpantesters-release-api-fake.json')
         : 'http://api-3.cpantesters.org/v3/release';
 }
 

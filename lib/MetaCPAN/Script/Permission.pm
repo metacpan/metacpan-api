@@ -31,9 +31,8 @@ sub run {
 sub index_permissions {
     my $self = shift;
 
-    my $file_path
-        = $self->cpan->subdir('modules')->file('06perms.txt')->absolute;
-    my $pp = PAUSE::Permissions->new( path => $file_path );
+    my $file_path = $self->cpan->child(qw(modules 06perms.txt))->absolute;
+    my $pp        = PAUSE::Permissions->new( path => $file_path );
 
     my $bulk = $self->es->bulk_helper(
         index => $self->index->name,

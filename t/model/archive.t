@@ -46,7 +46,7 @@ subtest 'archive extraction' => sub {
 
     my $dir = $archive->extract;
     for my $file ( keys %want ) {
-        my $content = $dir->file($file)->slurp;
+        my $content = $dir->child($file)->slurp;
         if ( ref $want{$file} ) {
             like $content, $want{$file}, "content of $file";
         }
@@ -98,13 +98,13 @@ subtest 'set extract dir' => sub {
 
         my $dir = $archive->extract_dir;
 
-        isa_ok $dir, 'Path::Class::Dir';
+        isa_ok $dir, 'Path::Tiny';
         is $dir,     $temp;
         is $archive->extract, $temp;
-        ok -s $dir->file('Some-1.00-TRIAL/META.json');
+        ok -s $dir->child('Some-1.00-TRIAL/META.json');
     }
 
-    ok -e $temp, q[Path::Class doesn't clean up directories it was handed];
+    ok -e $temp, q[Path::Tiny doesn't clean up directories it was handed];
 };
 
 done_testing;

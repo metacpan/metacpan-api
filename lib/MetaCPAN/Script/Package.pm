@@ -31,7 +31,8 @@ sub run {
 sub _get_02packages_fh {
     my $self = shift;
     my $file
-        = $self->cpan->file(qw(modules 02packages.details.txt.gz))->stringify;
+        = $self->cpan->child(qw(modules 02packages.details.txt.gz))
+        ->stringify;
     my $fh_uz = IO::Uncompress::Gunzip->new($file);
     return $fh_uz;
 }

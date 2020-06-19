@@ -5,23 +5,23 @@ use warnings;
 
 use File::Find::Rule ();
 use MetaCPAN::Model::Archive;
-use MetaCPAN::Types qw( Dir );
+use MetaCPAN::Types qw( Path );
 use MetaCPAN::Util ();
 use Moose;
-use Path::Class qw(file dir);
+use Path::Tiny ();
 
 extends 'Catalyst::Model';
 
 has base_dir => (
     is       => 'ro',
-    isa      => Dir,
+    isa      => Path,
     coerce   => 1,
     required => 1,
 );
 
 has cpan => (
     is       => 'ro',
-    isa      => Dir,
+    isa      => Path,
     coerce   => 1,
     required => 1,
 );
@@ -41,20 +41,20 @@ sub COMPONENT {
 }
 
 sub _default_base_dir {
-    return dir(qw(var tmp source));
+    return Path::Tiny::path(qw(var tmp source));
 }
 
 sub path {
     my ( $self, $pauseid, $distvname, $file ) = @_;
     $file ||= q{};
     my $base       = $self->base_dir;
-    my $source_dir = dir( $base, $pauseid, $distvname );
+    my $source_dir = Path::Tiny::path( $base, $pauseid, $distvname );
     my $source     = $self->find_file( $source_dir, $file );
     return $source if ($source);
     return if -e $source_dir;  # previously extracted, but file does not exist
 
     my $author = MetaCPAN::Util::author_dir($pauseid);
-    my $http   = dir( qw(var tmp http authors), $author );
+    my $http   = Path::Tiny::path( qw(var tmp http authors), $author );
     $author = $self->cpan . "/authors/$author";
 
     my ($archive_file)
@@ -79,8 +79,7 @@ sub find_file {
     my ( $self, $dir, $file ) = @_;
     my ($source) = glob "$dir/*/$file";    # file can be in any subdirectory
     ($source) ||= glob "$dir/$file";       # file can be in any subdirectory
-    return undef unless ( $source && -e $source );
-    return -d $source ? dir($source) : file($source);
+    return $source && -e $source ? Path::Tiny::path($source) : undef;
 }
 
 __PACKAGE__->meta->make_immutable;
