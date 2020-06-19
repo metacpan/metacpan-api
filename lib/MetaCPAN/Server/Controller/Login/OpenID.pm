@@ -7,7 +7,7 @@ use Moose;
 use Net::OpenID::Consumer;
 use LWP::UserAgent::Paranoid;
 use MooseX::ClassAttribute;
-use MetaCPAN::Types qw( Str );
+use Types::Standard qw( Str );
 
 BEGIN { extends 'MetaCPAN::Server::Controller::Login' }
 

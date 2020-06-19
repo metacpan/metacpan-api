@@ -3,7 +3,7 @@ package MetaCPAN::Document::Permission;
 use MetaCPAN::Moose;
 
 use ElasticSearchX::Model::Document;
-use MetaCPAN::Types qw( ArrayRef Str );
+use Types::Standard qw( ArrayRef Str );
 
 has module_name => (
     is       => 'ro',

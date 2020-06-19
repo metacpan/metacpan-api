@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Moose;
-use MetaCPAN::Types qw( HashRef Maybe );
+use Types::Standard qw( HashRef Maybe );
 
 has query => (
     is      => 'ro',

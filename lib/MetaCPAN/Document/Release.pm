@@ -8,7 +8,9 @@ use DateTime qw();
 use Ref::Util qw();
 use ElasticSearchX::Model::Document;
 
-use MetaCPAN::Types qw(:all);
+use MetaCPAN::Types qw(Dependency);
+use MetaCPAN::Types::TypeTiny qw(HashRefCPANMeta Resources Stat Tests);
+use Types::Standard qw(ArrayRef Bool Num Str);
 use MetaCPAN::Util qw( numify_version );
 
 =head1 PROPERTIES
@@ -239,7 +241,7 @@ has first => (
 has metadata => (
     coerce      => 1,
     is          => 'ro',
-    isa         => HashRef,
+    isa         => HashRefCPANMeta,
     dynamic     => 1,
     source_only => 1,
 );

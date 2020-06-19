@@ -7,7 +7,7 @@ use Moose;
 
 use Log::Contextual qw( :log :dlog );
 use BackPAN::Index;
-use MetaCPAN::Types qw( Bool HashRef Str );
+use Types::Standard qw( Bool HashRef Str );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt::Dashes';
 

@@ -6,7 +6,7 @@ use Moose;
 
 use Encoding::FixLatin ();
 use IPC::Run3;
-use MetaCPAN::Types qw( ArrayRef );
+use Types::Standard qw( ArrayRef );
 use File::Spec;
 
 has git => (

@@ -8,7 +8,7 @@ use HTTP::Request::Common;
 use List::Util ();
 use MetaCPAN::TestApp;
 use Test::More;
-use MetaCPAN::Types qw( ArrayRef HashRef Str );
+use Types::Standard qw( ArrayRef HashRef Str );
 
 with( 'MetaCPAN::Tests::Model', 'MetaCPAN::Tests::Role::HasApp' );
 

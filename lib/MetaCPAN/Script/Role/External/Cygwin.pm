@@ -6,7 +6,7 @@ use namespace::autoclean;
 use List::Util qw( shuffle );
 use Log::Contextual qw( :log );
 
-use MetaCPAN::Types qw( ArrayRef Int );
+use Types::Standard qw( ArrayRef Int );
 
 has mirrors => (
     is      => 'ro',

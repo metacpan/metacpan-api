@@ -3,7 +3,7 @@ package MetaCPAN::Pod::Renderer;
 use MetaCPAN::Moose;
 
 use MetaCPAN::Pod::XHTML;
-use MetaCPAN::Types qw( Uri );
+use Types::URI qw( Uri );
 use Pod::Markdown;
 use Pod::POM;
 use Pod::POM::View::Pod;

@@ -8,7 +8,7 @@ use Cpanel::JSON::XS;
 use List::MoreUtils ();
 use Moose::Util     ();
 use Moose;
-use MetaCPAN::Types qw( HashRef );
+use Types::Standard qw( HashRef );
 use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
 
 BEGIN { extends 'Catalyst::Controller'; }

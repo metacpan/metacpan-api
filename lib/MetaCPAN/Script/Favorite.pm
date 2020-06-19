@@ -4,7 +4,7 @@ use Moose;
 
 use Log::Contextual qw( :log );
 
-use MetaCPAN::Types qw( Bool Int Str );
+use Types::Standard qw( Bool Int Str );
 
 with 'MooseX::Getopt', 'MetaCPAN::Role::Script';
 

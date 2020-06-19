@@ -20,7 +20,7 @@ use MetaCPAN::Script::Mapping::User::Identity     ();
 use MetaCPAN::Script::Mapping::User::Session      ();
 use MetaCPAN::Script::Mapping::Contributor        ();
 use MetaCPAN::Script::Mapping::Cover              ();
-use MetaCPAN::Types qw( Bool Str );
+use Types::Standard qw( Bool Str );
 
 use constant {
     EXPECTED     => 1,

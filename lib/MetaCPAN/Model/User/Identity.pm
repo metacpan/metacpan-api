@@ -5,7 +5,7 @@ use warnings;
 
 use Moose;
 use ElasticSearchX::Model::Document;
-use MetaCPAN::Types qw( HashRef );
+use Types::Standard qw( HashRef );
 
 has name => (
     is       => 'ro',
