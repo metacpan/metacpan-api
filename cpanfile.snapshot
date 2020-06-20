@@ -5472,21 +5472,6 @@ DISTRIBUTIONS
       perl 5.008
       strict 0
       warnings 0
-  MooseX-Types-Common-0.001014
-    pathname: E/ET/ETHER/MooseX-Types-Common-0.001014.tar.gz
-    provides:
-      MooseX::Types::Common 0.001014
-      MooseX::Types::Common::Numeric 0.001014
-      MooseX::Types::Common::String 0.001014
-    requirements:
-      Carp 0
-      Module::Build::Tiny 0.034
-      MooseX::Types 0
-      MooseX::Types::Moose 0
-      if 0
-      perl 5.008
-      strict 0
-      warnings 0
   MooseX-Types-ElasticSearch-0.0.4
     pathname: P/PE/PERLER/MooseX-Types-ElasticSearch-0.0.4.tar.gz
     provides:
@@ -5508,23 +5493,6 @@ DISTRIBUTIONS
       Path::Class 0.16
       if 0
       perl 5.006
-      strict 0
-      warnings 0
-  MooseX-Types-Path-Class-MoreCoercions-0.003
-    pathname: D/DA/DAGOLDEN/MooseX-Types-Path-Class-MoreCoercions-0.003.tar.gz
-    provides:
-      MooseX::Types::Path::Class::MoreCoercions 0.003
-    requirements:
-      ExtUtils::MakeMaker 6.30
-      File::Find 0
-      File::Temp 0
-      File::pushd 0
-      Moose 0
-      MooseX::Types 0
-      MooseX::Types::Path::Class 0
-      MooseX::Types::Stringlike 0
-      Path::Class 0
-      Test::More 0.96
       strict 0
       warnings 0
   MooseX-Types-Path-Tiny-0.012
