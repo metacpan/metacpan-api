@@ -127,7 +127,6 @@ requires 'MooseX::Types';
 requires 'MooseX::Types::ElasticSearch', '== 0.0.4';
 requires 'MooseX::Types::Moose';
 requires 'MooseX::Types::Path::Tiny';
-requires 'MooseX::Types::Structured';
 requires 'Mozilla::CA';
 requires 'namespace::autoclean';
 requires 'Net::DNS::Paranoid';
