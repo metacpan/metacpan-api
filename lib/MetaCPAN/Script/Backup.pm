@@ -9,7 +9,7 @@ use DateTime;
 use IO::Zlib ();
 use Cpanel::JSON::XS;
 use Log::Contextual qw( :log :dlog );
-use MetaCPAN::Types qw( Path );
+use MetaCPAN::Types::TypeTiny qw( Path );
 use Types::Standard qw( Bool Int Str );
 use Moose;
 use Try::Tiny;

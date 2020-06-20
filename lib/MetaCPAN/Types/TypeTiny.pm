@@ -3,11 +3,7 @@ package MetaCPAN::Types::TypeTiny;
 use strict;
 use warnings;
 
-use Types::Standard qw(
-    ArrayRef Dict HashRef InstanceOf Int Object Optional Str Value
-);
-use Path::Class ();
-use overload    ();
+use overload ();
 
 use Type::Library -base, -declare => (
     qw(
@@ -31,6 +27,7 @@ use Type::Library -base, -declare => (
         )
 );
 use Type::Utils -all;
+BEGIN { extends qw( Types::Standard Types::Path::Tiny ) }
 
 declare Stringable, as Object, where { overload::Method( $_, '""' ) };
 
@@ -131,5 +128,12 @@ coerce HashRefCPANMeta, from InstanceOf ['CPAN::Meta'], via {
     my $struct = eval { $_->as_struct( { version => 2 } ); };
     return $struct ? $struct : $_->as_struct;
 };
+
+# optionally add Getopt option type (adapted from MooseX::Types:Path::Class)
+if ( eval { require MooseX::Getopt; 1 } ) {
+    for my $type ( Path, AbsPath ) {
+        MooseX::Getopt::OptionTypeMap->add_option_type_to_map( $type, '=s' );
+    }
+}
 
 1;

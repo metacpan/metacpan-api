@@ -5,7 +5,7 @@ use warnings;
 
 use File::Find::Rule ();
 use MetaCPAN::Model::Archive;
-use MetaCPAN::Types qw( Path );
+use MetaCPAN::Types::TypeTiny qw( Path );
 use MetaCPAN::Util ();
 use Moose;
 use Path::Tiny ();

@@ -4,7 +4,7 @@ use MetaCPAN::Moose;
 
 use CPAN::Repository::Perms;
 use MetaCPAN::TestHelpers qw( get_config );
-use MetaCPAN::Types qw( Path );
+use MetaCPAN::Types::TypeTiny qw( Path );
 use MetaCPAN::Util qw( author_dir );
 use OrePAN2::Indexer;
 use OrePAN2::Injector;

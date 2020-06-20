@@ -11,7 +11,7 @@ use IO::Uncompress::Bunzip2 qw(bunzip2);
 use Log::Contextual qw( :log :dlog );
 use Types::URI qw( Uri );
 use Types::Standard qw( Bool );
-use MetaCPAN::Types qw( Path );
+use MetaCPAN::Types::TypeTiny qw( Path );
 use ElasticSearchX::Model::Document::Types qw(ESBulk);
 use Moose;
 

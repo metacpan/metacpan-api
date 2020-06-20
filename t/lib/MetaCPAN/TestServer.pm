@@ -16,7 +16,7 @@ use MetaCPAN::Script::Permission     ();
 use MetaCPAN::Script::Release        ();
 use MetaCPAN::Server                 ();
 use MetaCPAN::TestHelpers qw( fakecpan_dir );
-use MetaCPAN::Types qw( Path );
+use MetaCPAN::Types::TypeTiny qw( Path );
 use Types::Standard qw( HashRef Str );
 use Search::Elasticsearch;
 use Search::Elasticsearch::TestServer;
