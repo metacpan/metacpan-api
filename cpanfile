@@ -124,7 +124,6 @@ requires 'MooseX::Getopt::Dashes';
 requires 'MooseX::Getopt::OptionTypeMap';
 requires 'MooseX::StrictConstructor';
 requires 'MooseX::Types';
-requires 'MooseX::Types::Common::String';
 requires 'MooseX::Types::ElasticSearch', '== 0.0.4';
 requires 'MooseX::Types::Moose';
 requires 'MooseX::Types::Path::Tiny';
