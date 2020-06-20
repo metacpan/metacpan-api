@@ -8,6 +8,8 @@ use Log::Contextual qw( set_logger );
 use Log::Log4perl ':easy';
 use Path::Tiny qw( path );
 
+with 'MooseX::Getopt';    # needed else traits => ['NoGetopt'] can blow up
+
 has level => (
     is            => 'ro',
     isa           => Str,
