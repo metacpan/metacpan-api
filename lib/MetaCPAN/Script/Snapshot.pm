@@ -9,7 +9,7 @@ use DateTime::Format::ISO8601 ();
 use DDP;
 use HTTP::Tiny ();
 use Log::Contextual qw( :log );
-use Types::Standard qw( Bool Int Str File ArrayRef );
+use Types::Standard qw( Bool Int Str ArrayRef );
 use Moose;
 use Sys::Hostname qw(hostname);
 

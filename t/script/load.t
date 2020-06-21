@@ -1,0 +1,58 @@
+use strict;
+use warnings;
+use lib 't/lib';
+
+use Test::More;
+
+require MetaCPAN::Script::Author;
+require MetaCPAN::Script::Backpan;
+require MetaCPAN::Script::Backup;
+require MetaCPAN::Script::CPANTesters;
+require MetaCPAN::Script::CPANTestersAPI;
+require MetaCPAN::Script::Check;
+require MetaCPAN::Script::Checksum;
+require MetaCPAN::Script::Contributor;
+require MetaCPAN::Script::Cover;
+require MetaCPAN::Script::External;
+require MetaCPAN::Script::Favorite;
+require MetaCPAN::Script::First;
+require MetaCPAN::Script::Latest;
+require MetaCPAN::Script::Mapping;
+require MetaCPAN::Script::Mapping::CPAN::Author;
+require MetaCPAN::Script::Mapping::CPAN::Distribution;
+require MetaCPAN::Script::Mapping::CPAN::Favorite;
+require MetaCPAN::Script::Mapping::CPAN::File;
+require MetaCPAN::Script::Mapping::CPAN::Mirror;
+require MetaCPAN::Script::Mapping::CPAN::Package;
+require MetaCPAN::Script::Mapping::CPAN::Permission;
+require MetaCPAN::Script::Mapping::CPAN::Rating;
+require MetaCPAN::Script::Mapping::CPAN::Release;
+require MetaCPAN::Script::Mapping::Contributor;
+require MetaCPAN::Script::Mapping::Cover;
+require MetaCPAN::Script::Mapping::DeployStatement;
+require MetaCPAN::Script::Mapping::User::Account;
+require MetaCPAN::Script::Mapping::User::Identity;
+require MetaCPAN::Script::Mapping::User::Session;
+require MetaCPAN::Script::Mirrors;
+require MetaCPAN::Script::Package;
+require MetaCPAN::Script::Permission;
+require MetaCPAN::Script::Purge;
+require MetaCPAN::Script::Queue;
+require MetaCPAN::Script::Ratings;
+require MetaCPAN::Script::Release;
+require MetaCPAN::Script::Restart;
+require MetaCPAN::Script::River;
+require MetaCPAN::Script::Role::Contributor;
+require MetaCPAN::Script::Role::External::Cygwin;
+require MetaCPAN::Script::Role::External::Debian;
+require MetaCPAN::Script::Role::External::Fedora;
+require MetaCPAN::Script::Runner;
+require MetaCPAN::Script::Session;
+require MetaCPAN::Script::Snapshot;
+require MetaCPAN::Script::Suggest;
+require MetaCPAN::Script::Tickets;
+require MetaCPAN::Script::Watcher;
+
+pass 'all loaded Ok';
+
+done_testing();
