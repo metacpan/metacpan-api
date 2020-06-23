@@ -9,8 +9,7 @@ use File::Temp qw(tempdir);
 use File::stat qw(stat);
 use IO::Uncompress::Bunzip2 qw(bunzip2);
 use Log::Contextual qw( :log :dlog );
-use Types::URI qw( Uri );
-use MetaCPAN::Types::TypeTiny qw( Path Bool );
+use MetaCPAN::Types::TypeTiny qw( Path Bool Uri );
 use ElasticSearchX::Model::Document::Types qw(ESBulk);
 use Moose;
 

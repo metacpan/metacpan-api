@@ -27,7 +27,7 @@ use Type::Library -base, -declare => (
         )
 );
 use Type::Utils -all;
-BEGIN { extends qw( Types::Standard Types::Path::Tiny ) }
+BEGIN { extends qw( Types::Standard Types::Path::Tiny Types::URI ) }
 
 declare Stringable, as Object, where { overload::Method( $_, '""' ) };
 
