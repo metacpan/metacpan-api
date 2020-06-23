@@ -27,10 +27,12 @@ env:
   matrix:
     - CPAN_RESOLVER=metadb PERL_CARTON_PATH=$HOME/no-snapshot HARNESS_VERBOSE=1
     - CPAN_RESOLVER=snapshot BUILD_DOCKER=yes
+    - CPAN_RESOLVER=snapshot BUILD_DOCKER=yes COVERAGE=1 # separate because slow
 
 matrix:
   allow_failures:
     - env: CPAN_RESOLVER=metadb PERL_CARTON_PATH=$HOME/no-snapshot HARNESS_VERBOSE=1
+    - env: CPAN_RESOLVER=snapshot BUILD_DOCKER=yes COVERAGE=1
   fast_finish: true
 
 addons:
@@ -59,6 +61,9 @@ install:
 
 before_script:
   - bin/wait-for-open http://$ES_TEST/
+  - if [ -n "$COVERAGE" ] && [ "$COVERAGE" != 0 ]; then AUTHOR_TESTING=0 cpm install -L $PERL_CARTON_PATH --workers $(test-jobs) Devel::Cover; fi
+  - AUTHOR_TESTING=0 cpm install -L $PERL_CARTON_PATH --resolver $CPAN_RESOLVER --workers $(test-jobs) || (tail -n 500 -f ~/.perl-cpm/build.log; false)
+  - cpan-install --coverage # puts Devel::Cover in normal Perl libs so next works
   - coverage-setup
 
 script:
