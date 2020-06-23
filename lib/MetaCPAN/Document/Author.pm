@@ -9,9 +9,10 @@ use ElasticSearchX::Model::Document;
 # load order not important
 use Gravatar::URL ();
 use MetaCPAN::Types qw(Profile);
-use MetaCPAN::Types::TypeTiny
-    qw(ArrayRefPromote Blog NonEmptySimpleStr PerlMongers);
-use Types::Standard qw(ArrayRef Bool Dict HashRef Str Tuple Optional);
+use MetaCPAN::Types::TypeTiny qw(
+    ArrayRefPromote Blog NonEmptySimpleStr PerlMongers
+    ArrayRef Bool Dict HashRef Str Tuple Optional
+);
 use MetaCPAN::Util;
 
 has name => (

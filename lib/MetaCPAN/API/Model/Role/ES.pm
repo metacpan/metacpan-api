@@ -2,7 +2,7 @@ package MetaCPAN::API::Model::Role::ES;
 
 use Moose::Role;
 
-use Types::Standard qw( Object );
+use MetaCPAN::Types::TypeTiny qw( Object );
 
 has es => (
     is       => 'ro',

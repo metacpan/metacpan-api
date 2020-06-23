@@ -6,7 +6,7 @@ package Author;
 
 use MetaCPAN::Moose;
 
-use Types::Standard qw( ArrayRef Str );
+use MetaCPAN::Types::TypeTiny qw( ArrayRef Str );
 
 has name => (
     is       => 'ro',

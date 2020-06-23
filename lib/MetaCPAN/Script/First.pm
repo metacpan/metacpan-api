@@ -5,7 +5,7 @@ use warnings;
 
 use Log::Contextual qw( :log );
 use Moose;
-use Types::Standard qw( Str );
+use MetaCPAN::Types::TypeTiny qw( Str );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 

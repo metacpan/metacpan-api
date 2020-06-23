@@ -11,8 +11,9 @@ use Encode;
 use List::AllUtils qw( any );
 use MetaCPAN::Document::Module;
 use MetaCPAN::Types qw(Module);
-use MetaCPAN::Types::TypeTiny qw(Stat);
-use Types::Standard qw(ArrayRef Bool Int Maybe Num ScalarRef Str);
+use MetaCPAN::Types::TypeTiny qw(
+    Stat ArrayRef Bool Int Maybe Num ScalarRef Str
+);
 use MetaCPAN::Util qw(numify_version);
 use Plack::MIME;
 use Pod::Text;

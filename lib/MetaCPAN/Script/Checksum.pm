@@ -3,7 +3,7 @@ package MetaCPAN::Script::Checksum;
 use Moose;
 
 use Log::Contextual qw( :log );
-use Types::Standard qw( Bool Int );
+use MetaCPAN::Types::TypeTiny qw( Bool Int );
 
 use Digest::file qw( digest_file_hex );
 

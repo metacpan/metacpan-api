@@ -11,7 +11,7 @@ use Log::Contextual qw( :log :dlog );
 use MetaCPAN::Util;
 use MetaCPAN::Model::Release ();
 use MetaCPAN::Script::Runner ();
-use Types::Standard qw( Bool HashRef Int Str );
+use MetaCPAN::Types::TypeTiny qw( Bool HashRef Int Str );
 use Moose;
 use PerlIO::gzip;
 use Try::Tiny qw( catch try );

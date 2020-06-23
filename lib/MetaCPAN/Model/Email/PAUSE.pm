@@ -7,7 +7,7 @@ use Email::Sender::Transport::SMTP ();
 use Email::Simple                  ();
 use Encode                         ();
 use Types::URI qw( Uri );
-use Types::Standard qw( Object );
+use MetaCPAN::Types::TypeTiny qw( Object );
 use Try::Tiny qw( catch try );
 
 with('MetaCPAN::Role::HasConfig');
