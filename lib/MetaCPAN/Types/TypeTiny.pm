@@ -3,17 +3,8 @@ package MetaCPAN::Types::TypeTiny;
 use strict;
 use warnings;
 
-use Types::Standard qw(
-    ArrayRef Dict HashRef InstanceOf Int Object Optional Str Value
-);
-use Path::Class ();
-use overload    ();
-
 use Type::Library -base, -declare => (
     qw(
-        Stringable
-        SimpleStr
-        NonEmptySimpleStr
         ArrayRefPromote
 
         PerlMongers
@@ -32,17 +23,11 @@ use Type::Library -base, -declare => (
 );
 use Type::Utils -all;
 
-declare Stringable, as Object, where { overload::Method( $_, '""' ) };
-
-declare SimpleStr, as Str,
-    where { ( length($_) <= 255 ) && ( $_ !~ m/\n/ ) },
-    message {"Must be a single line of no more than 255 chars"},
-    ;
-
-declare NonEmptySimpleStr, as SimpleStr,
-    where { length($_) > 0 },
-    message {"Must be a non-empty single line of no more than 255 chars"},
-    ;
+BEGIN {
+    extends qw(
+        Types::Standard Types::Path::Tiny Types::URI Types::Common::String
+    );
+}
 
 declare ArrayRefPromote, as ArrayRef;
 coerce ArrayRefPromote, from Value, via { [$_] };
@@ -131,5 +116,12 @@ coerce HashRefCPANMeta, from InstanceOf ['CPAN::Meta'], via {
     my $struct = eval { $_->as_struct( { version => 2 } ); };
     return $struct ? $struct : $_->as_struct;
 };
+
+# optionally add Getopt option type (adapted from MooseX::Types:Path::Class)
+if ( eval { require MooseX::Getopt; 1 } ) {
+    for my $type ( Path, AbsPath ) {
+        MooseX::Getopt::OptionTypeMap->add_option_type_to_map( $type, '=s' );
+    }
+}
 
 1;

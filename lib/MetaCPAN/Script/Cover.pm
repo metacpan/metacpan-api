@@ -5,9 +5,8 @@ use namespace::autoclean;
 
 use Cpanel::JSON::XS qw( decode_json );
 use Log::Contextual qw( :log :dlog );
-use Types::URI qw( Uri );
-use Types::Standard qw( Bool Str );
-use Path::Class qw( file );
+use MetaCPAN::Types::TypeTiny qw( Bool Str Uri );
+use Path::Tiny qw( path );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
@@ -106,10 +105,7 @@ sub index_cover_data {
 sub retrieve_cover_data {
     my $self = shift;
 
-    if ( $self->json_file ) {
-        my $file = file( $self->json_file );
-        return decode_json( $file->slurp );
-    }
+    return decode_json( path( $self->json_file )->slurp ) if $self->json_file;
 
     my $url = $self->test ? $self->cover_dev_url : $self->cover_url;
 

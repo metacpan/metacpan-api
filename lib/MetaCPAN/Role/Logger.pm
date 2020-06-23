@@ -2,13 +2,10 @@ package MetaCPAN::Role::Logger;
 
 use v5.10;
 use Moose::Role;
-use MetaCPAN::Types::TypeTiny qw(Logger);
-use Types::Standard qw(Str);
+use MetaCPAN::Types::TypeTiny qw(Logger Str);
 use Log::Contextual qw( set_logger );
 use Log::Log4perl ':easy';
 use Path::Tiny qw( path );
-
-with 'MooseX::Getopt';    # needed else traits => ['NoGetopt'] can blow up
 
 has level => (
     is            => 'ro',

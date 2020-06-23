@@ -5,18 +5,19 @@
 ES_CONFIG_FILE="$1"
 ES_CONFIG_DIR="$2"
 ES_PORT="$3"
+PUPPET_SCRIPTS="https://github.com/metacpan/metacpan-puppet/raw/master/modules/metacpan_elasticsearch/files/etc/scripts"
 
 sudo mkdir "$ES_CONFIG_DIR" && sudo chmod 777 "$ES_CONFIG_DIR"
 
-sudo curl -L https://github.com/metacpan/metacpan-puppet/raw/master/modules/metacpan_elasticsearch/files/etc/scripts/prefer_shorter_module_names_100.groovy > "$ES_CONFIG_DIR"/prefer_shorter_module_names_100.groovy
+curl -L "$PUPPET_SCRIPTS"/prefer_shorter_module_names_100.groovy > "$ES_CONFIG_DIR"/prefer_shorter_module_names_100.groovy
 
-sudo curl -L https://github.com/metacpan/metacpan-puppet/raw/master/modules/metacpan_elasticsearch/files/etc/scripts/prefer_shorter_module_names_400.groovy > "$ES_CONFIG_DIR"/prefer_shorter_module_names_400.groovy
+curl -L "$PUPPET_SCRIPTS"/prefer_shorter_module_names_400.groovy > "$ES_CONFIG_DIR"/prefer_shorter_module_names_400.groovy
 
-sudo curl -L https://github.com/metacpan/metacpan-puppet/raw/master/modules/metacpan_elasticsearch/files/etc/scripts/status_is_latest.groovy > "$ES_CONFIG_DIR"/status_is_latest.groovy
+curl -L "$PUPPET_SCRIPTS"/status_is_latest.groovy > "$ES_CONFIG_DIR"/status_is_latest.groovy
 
-sudo curl -L https://github.com/metacpan/metacpan-puppet/raw/master/modules/metacpan_elasticsearch/files/etc/scripts/score_version_numified.groovy > "$ES_CONFIG_DIR"/score_version_numified.groovy
+curl -L "$PUPPET_SCRIPTS"/score_version_numified.groovy > "$ES_CONFIG_DIR"/score_version_numified.groovy
 
-sudo curl -L https://raw.githubusercontent.com/metacpan/metacpan-docker/master/elasticsearch/metacpan.yml > "$ES_CONFIG_FILE"
+curl -L https://raw.githubusercontent.com/metacpan/metacpan-docker/master/elasticsearch/metacpan.yml > "$ES_CONFIG_FILE"
 
 docker pull elasticsearch:2.4-alpine
 docker run -d -p "$ES_PORT":9200 -v "$ES_CONFIG_FILE":/usr/share/elasticsearch/config/metacpan.yml -v "$ES_CONFIG_DIR":/usr/share/elasticsearch/config/scripts elasticsearch:2.4-alpine

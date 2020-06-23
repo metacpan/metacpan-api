@@ -7,7 +7,7 @@ use Moose;
 use ElasticSearchX::Model::Document::Types qw(:all);
 use ElasticSearchX::Model::Document;
 
-use Types::Standard qw( ArrayRef Bool Dict Num Str );
+use MetaCPAN::Types::TypeTiny qw( ArrayRef Bool Dict Num Str );
 
 has details => (
     is  => 'ro',

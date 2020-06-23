@@ -6,7 +6,7 @@ use namespace::autoclean;
 use CPAN::DistnameInfo ();
 use DBI                ();
 
-use Types::Standard qw( Str );
+use MetaCPAN::Types::TypeTiny qw( Str );
 
 has _host_regex => (
     is      => 'ro',

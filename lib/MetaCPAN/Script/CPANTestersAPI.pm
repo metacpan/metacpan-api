@@ -5,7 +5,7 @@ use warnings;
 
 use Log::Contextual qw( :log :dlog );
 use Cpanel::JSON::XS qw( decode_json );
-use Types::URI qw( Uri );
+use MetaCPAN::Types::TypeTiny qw( Uri );
 use ElasticSearchX::Model::Document::Types qw(ESBulk);
 use Moose;
 

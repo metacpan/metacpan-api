@@ -3,7 +3,7 @@ package MetaCPAN::Document::Package;
 use MetaCPAN::Moose;
 
 use ElasticSearchX::Model::Document;
-use Types::Standard qw( Str );
+use MetaCPAN::Types::TypeTiny qw( Str );
 
 has module_name => (
     is       => 'ro',

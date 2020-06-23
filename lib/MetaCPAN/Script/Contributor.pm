@@ -8,7 +8,7 @@ use Moose;
 use Log::Contextual qw( :log );
 use Ref::Util qw( is_arrayref );
 
-use Types::Standard qw( Bool HashRef Int Str );
+use MetaCPAN::Types::TypeTiny qw( Bool HashRef Int Str );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt',
     'MetaCPAN::Script::Role::Contributor';

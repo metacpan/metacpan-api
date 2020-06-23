@@ -7,7 +7,7 @@ use Moose;
 use ElasticSearchX::Model::Document::Types qw( Location );
 use ElasticSearchX::Model::Document;
 
-use Types::Standard qw( Dict Str );
+use MetaCPAN::Types::TypeTiny qw( Dict Str );
 
 has name => (
     is       => 'ro',
