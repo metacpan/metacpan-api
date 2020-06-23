@@ -3,11 +3,8 @@ package MetaCPAN::Types::TypeTiny;
 use strict;
 use warnings;
 
-use overload ();
-
 use Type::Library -base, -declare => (
     qw(
-        Stringable
         ArrayRefPromote
 
         PerlMongers
@@ -31,8 +28,6 @@ BEGIN {
         Types::Standard Types::Path::Tiny Types::URI Types::Common::String
     );
 }
-
-declare Stringable, as Object, where { overload::Method( $_, '""' ) };
 
 declare ArrayRefPromote, as ArrayRef;
 coerce ArrayRefPromote, from Value, via { [$_] };
