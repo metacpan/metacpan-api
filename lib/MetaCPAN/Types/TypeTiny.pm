@@ -8,8 +8,6 @@ use overload ();
 use Type::Library -base, -declare => (
     qw(
         Stringable
-        SimpleStr
-        NonEmptySimpleStr
         ArrayRefPromote
 
         PerlMongers
@@ -27,19 +25,14 @@ use Type::Library -base, -declare => (
         )
 );
 use Type::Utils -all;
-BEGIN { extends qw( Types::Standard Types::Path::Tiny Types::URI ) }
+
+BEGIN {
+    extends qw(
+        Types::Standard Types::Path::Tiny Types::URI Types::Common::String
+    );
+}
 
 declare Stringable, as Object, where { overload::Method( $_, '""' ) };
-
-declare SimpleStr, as Str,
-    where { ( length($_) <= 255 ) && ( $_ !~ m/\n/ ) },
-    message {"Must be a single line of no more than 255 chars"},
-    ;
-
-declare NonEmptySimpleStr, as SimpleStr,
-    where { length($_) > 0 },
-    message {"Must be a non-empty single line of no more than 255 chars"},
-    ;
 
 declare ArrayRefPromote, as ArrayRef;
 coerce ArrayRefPromote, from Value, via { [$_] };
