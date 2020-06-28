@@ -104,6 +104,8 @@ my %special_files = (
             Makefile.PL
             alienfile
             cpanfile
+            prereqs.json
+            prereqs.yml
             dist.ini
             minil.toml
             )
