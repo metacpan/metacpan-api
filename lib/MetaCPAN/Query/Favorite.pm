@@ -158,14 +158,13 @@ sub recent {
             sort  => [ { 'date' => { order => 'desc' } } ]
         }
     );
-    return {} unless $favs->{hits}{total};
 
     my @favs = map { $_->{_source} } @{ $favs->{hits}{hits} };
 
     return +{
         favorites => \@favs,
         took      => $favs->{took},
-        total     => $favs->{total}
+        total     => $favs->{hits}{total}
     };
 }
 
