@@ -8,7 +8,12 @@ with 'MetaCPAN::Query::Role::Common';
 
 sub agg_by_distributions {
     my ( $self, $distributions, $user ) = @_;
-    return unless $distributions;
+    return {
+        favorites   => {},
+        myfavorites => {},
+        took        => 0,
+        }
+        unless $distributions;
 
     my $body = {
         size  => 0,

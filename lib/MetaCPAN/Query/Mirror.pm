@@ -53,7 +53,6 @@ sub search {
             @sort,
         },
     );
-    return unless $ret->{hits}{total};
 
     my $data = [
         map +{

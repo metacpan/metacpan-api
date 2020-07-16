@@ -37,7 +37,6 @@ sub dir {
             body  => $body,
         }
     );
-    return unless $data->{hits}{total};
 
     my $dir = [ map { $_->{fields} } @{ $data->{hits}{hits} } ];
     single_valued_arrayref_to_scalar($dir);

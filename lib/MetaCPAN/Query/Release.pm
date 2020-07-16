@@ -364,7 +364,6 @@ sub by_author_and_name {
         type  => 'release',
         body  => $body,
     );
-    return unless $ret->{hits}{total};
 
     my $data = $ret->{hits}{hits}[0]{_source};
     single_valued_arrayref_to_scalar($data);
@@ -412,7 +411,6 @@ sub by_author_and_names {
         type  => 'release',
         body  => $body,
     );
-    return unless $ret->{hits}{total};
 
     my @releases;
     for my $hit ( @{ $ret->{hits}{hits} } ) {
@@ -454,7 +452,6 @@ sub by_author {
         type  => 'release',
         body  => $body,
     );
-    return unless $ret->{hits}{total};
 
     my $data = [ map { $_->{_source} } @{ $ret->{hits}{hits} } ];
     single_valued_arrayref_to_scalar($data);
@@ -491,7 +488,6 @@ sub latest_by_distribution {
         type  => 'release',
         body  => $body,
     );
-    return unless $ret->{hits}{total};
 
     my $data = $ret->{hits}{hits}[0]{_source};
     single_valued_arrayref_to_scalar($data);
@@ -526,7 +522,6 @@ sub latest_by_author {
         type  => 'release',
         body  => $body,
     );
-    return unless $ret->{hits}{total};
 
     my $data = [ map { $_->{fields} } @{ $ret->{hits}{hits} } ];
     single_valued_arrayref_to_scalar($data);
@@ -553,7 +548,6 @@ sub all_by_author {
         type  => 'release',
         body  => $body,
     );
-    return unless $ret->{hits}{total};
 
     my $data = [ map { $_->{fields} } @{ $ret->{hits}{hits} } ];
     single_valued_arrayref_to_scalar($data);
@@ -583,7 +577,6 @@ sub versions {
         type  => 'release',
         body  => $body,
     );
-    return unless $ret->{hits}{total};
 
     my $data = [ map { $_->{fields} } @{ $ret->{hits}{hits} } ];
     single_valued_arrayref_to_scalar($data);
@@ -676,7 +669,6 @@ sub requires {
             sort  => [$sort],
         }
     );
-    return {} unless $ret->{hits}{total};
 
     return +{
         data  => [ map { $_->{_source} } @{ $ret->{hits}{hits} } ],
@@ -718,7 +710,6 @@ sub _get_latest_release {
             fields => [qw< name author >],
         },
     );
-    return unless $release->{hits}{total};
 
     my ($release_info) = map { $_->{fields} } @{ $release->{hits}{hits} };
     single_valued_arrayref_to_scalar($release_info);
@@ -749,7 +740,6 @@ sub _get_provided_modules {
             size => 999,
         }
     );
-    return unless $provided_modules->{hits}{total};
 
     return [
         map      { $_->{name} }
@@ -805,7 +795,6 @@ sub _get_depended_releases {
             sort => $sort,
         }
     );
-    return unless $depended->{hits}{total};
 
     return +{
         data  => [ map { $_->{_source} } @{ $depended->{hits}{hits} } ],
@@ -858,7 +847,6 @@ sub recent {
         type  => 'release',
         body  => $body,
     );
-    return unless $ret->{hits}{total};
 
     my $data = [ map { $_->{fields} } @{ $ret->{hits}{hits} } ];
     single_valued_arrayref_to_scalar($data);
@@ -950,7 +938,6 @@ sub modules {
         type  => 'file',
         body  => $body,
     );
-    return unless $ret->{hits}{total};
 
     my @files = map +{
         %{ ( single_valued_arrayref_to_scalar( $_->{fields} ) )[0] },

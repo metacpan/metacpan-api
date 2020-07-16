@@ -28,7 +28,6 @@ sub get_modules {
         }
     );
 
-    return unless $res->{hits}{total};
     return +{ modules =>
             [ map { $_->{_source}{module_name} } @{ $res->{hits}{hits} } ] };
 }
