@@ -31,7 +31,6 @@ sub by_distributions {
         type  => 'rating',
         body  => $body,
     );
-    return unless $ret->{hits}{total};
 
     my %distributions = map { $_->{key} => $_->{ratings_dist} }
         @{ $ret->{aggregations}{ratings}{buckets} };

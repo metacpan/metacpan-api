@@ -47,7 +47,6 @@ sub search_for_first_result {
     my ( $self, $search_term ) = @_;
     my $es_query   = $self->build_query($search_term);
     my $es_results = $self->run_query( file => $es_query );
-    return unless $es_results->{hits}{total};
 
     my $data = $es_results->{hits}{hits}[0];
     single_valued_arrayref_to_scalar( $data->{fields} );

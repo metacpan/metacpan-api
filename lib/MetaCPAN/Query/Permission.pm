@@ -26,7 +26,6 @@ sub by_author {
         type  => 'permission',
         body  => $body,
     );
-    return unless $ret->{hits}{total};
 
     my $data = [
         sort { $a->{module_name} cmp $b->{module_name} }
@@ -42,7 +41,8 @@ sub by_modules {
 
     my @modules = map +{ term => { module_name => $_ } },
         grep defined, @{$modules};
-    return unless @modules;
+    return { permissions => [] }
+        unless @modules;
 
     my $body = {
         query => {
@@ -56,7 +56,6 @@ sub by_modules {
         type  => 'permission',
         body  => $body,
     );
-    return unless $ret->{hits}{total};
 
     my $data = [
         sort { $a->{module_name} cmp $b->{module_name} }
