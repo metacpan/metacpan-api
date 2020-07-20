@@ -13,7 +13,7 @@ REST API
 
 MetaCPAN is based on Elasticsearch, so it provides a RESTful interface as well
 as the option to create complex queries. [The
-wiki](https://github.com/metacpan/metacpan-api/wiki/API-docs) provides a good
+`docs/` directory](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md) provides a good
 starting point for REST access to MetaCPAN.
 
 Expanding Your Author Info
