@@ -806,6 +806,15 @@ sub _get_depended_releases {
 sub recent {
     my ( $self, $page, $page_size, $type ) = @_;
     my $query;
+    my $from = ( $page - 1 ) * $page_size;
+
+    if ( $from + $page_size > 10000 ) {
+        return {
+            releases => [],
+            total    => 0,
+            took     => 0,
+        };
+    }
 
     if ( $type eq 'n' ) {
         $query = {
@@ -836,7 +845,7 @@ sub recent {
 
     my $body = {
         size   => $page_size,
-        from   => ( $page - 1 ) * $page_size,
+        from   => $from,
         query  => $query,
         fields => [qw(name author status abstract date distribution)],
         sort   => [ { 'date' => { order => 'desc' } } ]
