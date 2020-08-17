@@ -215,7 +215,7 @@ sub _set_up_oauth_routes {
             $c->session( is_logged_in    => 1 );
             $c->session( github_username => $username );
             if ( $self->_is_admin($username) ) {
-                $c->session( gitnub_username => $username );
+                $c->session( github_username => $username );
                 $c->redirect_to('/admin');
                 return;
             }
