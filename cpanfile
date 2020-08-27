@@ -1,3 +1,6 @@
+use strict;
+use warnings;
+
 requires 'perl', '5.010';
 
 requires 'Archive::Any', '0.0942';
