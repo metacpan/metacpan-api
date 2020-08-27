@@ -10,6 +10,7 @@ workflows:
 jobs:
   build-and-test:
     machine: true
+    resource_class: medium
     steps:
       - run:
           name: Install Docker Compose
@@ -51,7 +52,7 @@ jobs:
       - run:
           command: |
             pushd metacpan-docker
-            ~/docker-compose exec -T api_test prove -lvr t
+            ~/docker-compose exec -T api_test prove -lr --jobs 2 t
       - run:
           command: |
             pushd metacpan-docker
