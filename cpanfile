@@ -1,3 +1,6 @@
+use strict;
+use warnings;
+
 requires 'perl', '5.010';
 
 requires 'Archive::Any', '0.0942';
@@ -130,7 +133,6 @@ requires 'Mozilla::CA';
 requires 'namespace::autoclean';
 requires 'Net::DNS::Paranoid';
 requires 'Net::Fastly', '1.05';
-requires 'Net::OpenID::Consumer';
 requires 'Net::Twitter', '4.01010';
 requires 'OrePAN2';
 requires 'Parse::CPAN::Packages::Fast', '0.09';
@@ -193,7 +195,6 @@ requires 'Plack::Test::Agent';
 requires 'Test::Code::TidyAll';
 requires 'Test::More', '0.99';
 requires 'Test::Most';
-requires 'Test::OpenID::Server', '0.03';
 requires 'Test::Perl::Critic';
 requires 'Test::RequiresInternet';
 requires 'Test::Routine', '0.012';
