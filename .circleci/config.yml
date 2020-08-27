@@ -18,10 +18,9 @@ jobs:
             curl -L https://github.com/docker/compose/releases/download/1.26.2/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
             sudo chmod +x ~/docker-compose
       - run:
-          command: >
-            git clone https://github.com/metacpan/metacpan-docker.git &&
-            cd metacpan-docker &&
-            git checkout -b oalders/api-test origin/oalders/api-test
+          command: |
+            git clone https://github.com/metacpan/metacpan-docker.git
+            cd metacpan-docker
           name: metacpan-docker checkout
       - run:
           command: >
