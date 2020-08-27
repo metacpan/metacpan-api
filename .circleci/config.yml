@@ -23,40 +23,40 @@ jobs:
             cd metacpan-docker
           name: metacpan-docker checkout
       - run:
-          command: >
-            pushd metacpan-docker &&
+          command: |
+            pushd metacpan-docker
             ./bin/metacpan-docker init
           name: clone missing repositories
       - run:
-          command: >
-            pushd metacpan-docker/src/metacpan-api &&
+          command: |
+            pushd metacpan-docker/src/metacpan-api
             git checkout -b ${CIRCLE_BRANCH} origin/${CIRCLE_BRANCH}
           name: metacpan-api checkout
       - run:
-          command: >
-            pushd metacpan-docker &&
+          command: |
+            pushd metacpan-docker
             ~/docker-compose build --build-arg CPM_ARGS='--with-test' api_test
           name: compose build
       - run:
-          command: >
-            pushd metacpan-docker &&
-            ./bin/metacpan-docker init &&
+          command: |
+            pushd metacpan-docker
+            ./bin/metacpan-docker init
             ~/docker-compose --verbose up -d api_test
           name: compose up
       - run:
-          command: >
-            pushd metacpan-docker/src/metacpan-api &&
+          command: |
+            pushd metacpan-docker/src/metacpan-api
             ./wait-for-es.sh http://localhost:9200
           name: wait for ES
       - run:
-          command: >
-            pushd metacpan-docker &&
+          command: |
+            pushd metacpan-docker
             ~/docker-compose exec -T api_test prove -lvr t
       - run:
-          command: >
-            pushd metacpan-docker &&
-            ~/docker-compose logs &&
-            docker stats --no-stream &&
+          command: |
+            pushd metacpan-docker
+            ~/docker-compose logs
+            docker stats --no-stream
             docker ps -a | head
           name: docker-compose logs
           when: on_fail
