@@ -1,8 +1,8 @@
 package MetaCPAN::Server::Controller::User;
 
 use strict;
+use Cpanel::JSON::XS ();
 use warnings;
-
 use DateTime;
 use Moose;
 use Log::Log4perl::MDC;
@@ -73,6 +73,10 @@ sub profile : Local : ActionClass('REST') {
         $c->detach;
     }
     my $profile = $c->model('CPAN::Author')->raw->get( $pause->key );
+    $profile->{_source}->{theme}
+        = Cpanel::JSON::XS::decode_json( $profile->{_source}->{theme} )
+        if $profile->{_source}->{theme};
+
     $c->stash->{profile} = $profile->{_source};
 }
 
@@ -84,7 +88,6 @@ sub profile_GET {
 sub profile_PUT {
     my ( $self, $c ) = @_;
     my $profile = $c->stash->{profile};
-
     map {
         defined $c->req->data->{$_}
             ? $profile->{$_}
@@ -93,7 +96,9 @@ sub profile_PUT {
         } qw(name asciiname website email
         gravatar_url profile blog
         donation city region country
-        location extra perlmongers);
+        location extra perlmongers theme);
+    $profile->{theme} = Cpanel::JSON::XS::decode_json( $profile->{theme} )
+        if ( $profile->{theme} && not ref $profile->{theme} );
     $profile->{updated} = DateTime->now->iso8601;
     my @errors = $c->model('CPAN::Author')->new_document->validate($profile);
 
@@ -104,10 +109,13 @@ sub profile_PUT {
     else {
         $profile
             = $c->model('CPAN::Author')->put( $profile, { refresh => 1 } );
+        my $data = $profile->meta->get_data($profile);
+        $data->{theme} = Cpanel::JSON::XS::decode_json( $data->{theme} )
+            if ( $data->{theme} && not ref $data->{theme} );
         $self->status_created(
             $c,
             location => $c->uri_for( '/author/' . $profile->{pauseid} ),
-            entity   => $profile->meta->get_data($profile)
+            entity   => $data
         );
         $self->purge_author_key( $profile->{pauseid} );
     }

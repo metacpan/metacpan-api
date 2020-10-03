@@ -102,6 +102,12 @@ has is_pause_custodial_account => (
     default => 0,
 );
 
+has theme => (
+    is      => 'ro',
+    isa     => HashRef,
+    default => sub { {} },
+);
+
 sub _build_gravatar_url {
     my $self = shift;
 
@@ -224,6 +230,8 @@ Array of longitude and latitude. Example:
 This field can contain anything. It is serialized using JSON
 and stored in the index. You can do full-text searches on the
 analyzed JSON string.
+
+=head2 theme
 
 =cut
 
