@@ -31,7 +31,7 @@ jobs:
       - run:
           command: |
             pushd metacpan-docker/src/metacpan-api
-            git checkout -b ${CIRCLE_BRANCH} origin/${CIRCLE_BRANCH}
+            git checkout ${CIRCLE_BRANCH}
           name: metacpan-api checkout
       - run:
           command: |
