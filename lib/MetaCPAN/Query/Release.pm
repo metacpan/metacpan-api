@@ -560,11 +560,28 @@ sub all_by_author {
 }
 
 sub versions {
-    my ( $self, $dist ) = @_;
+    my ( $self, $dist, $versions ) = @_;
 
     my $size = $dist eq 'perl' ? 1000 : 250;
+
+    my $query;
+
+    if ( @{$versions} ) {
+        $query = {
+            bool => {
+                must => [
+                    { term  => { distribution => $dist } },
+                    { terms => { version      => $versions } },
+                ]
+            }
+        };
+    }
+    else {
+        $query = { term => { distribution => $dist } };
+    }
+
     my $body = {
-        query  => { term => { distribution => $dist } },
+        query  => $query,
         size   => $size,
         sort   => [ { date => 'desc' } ],
         fields => [
