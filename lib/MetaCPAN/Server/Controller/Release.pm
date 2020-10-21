@@ -86,9 +86,21 @@ sub all_by_author : Path('all_by_author') : Args(1) {
 
 sub versions : Path('versions') : Args(1) {
     my ( $self, $c, $dist ) = @_;
+    my %params = %{ $c->req->params }{qw( plain versions )};
     $c->add_dist_key($dist);
     $c->cdn_max_age('1y');
-    $c->stash_or_detach( $self->model($c)->versions($dist) );
+    my $data = $self->model($c)
+        ->versions( $dist, [ split /,/, $params{versions} || '' ] );
+
+    if ( $params{plain} ) {
+        my $data = join "\n",
+            map { join "\t", @{$_}{qw/ version download_url /} }
+            @{ $data->{releases} };
+        $c->res->body($data);
+    }
+    else {
+        $c->stash_or_detach($data);
+    }
 }
 
 sub top_uploaders : Path('top_uploaders') : Args() {
