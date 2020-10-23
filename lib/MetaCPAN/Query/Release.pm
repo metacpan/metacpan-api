@@ -566,12 +566,39 @@ sub versions {
 
     my $query;
 
+    # 'versions' param was sent
     if ( @{$versions} ) {
+        my $filter_versions;
+
+        # we only want 'latest' version
+        if ( @{$versions} == 1 and $versions->[0] eq 'latest' ) {
+            $filter_versions = { term => { status => 'latest' } };
+        }
+        else {
+            if ( grep $_ eq 'latest', @{$versions} ) {
+
+                # we want a combination of 'latest' and specific versions
+                @{$versions} = grep $_ ne 'latest', @{$versions};
+                $filter_versions = {
+                    bool => {
+                        should => [
+                            { terms => { version => $versions } },
+                            { term  => { status  => 'latest' } },
+                        ],
+                    }
+                };
+            }
+            else {
+                # we only want specific versions
+                $filter_versions = { terms => { version => $versions } };
+            }
+        }
+
         $query = {
             bool => {
                 must => [
-                    { term  => { distribution => $dist } },
-                    { terms => { version      => $versions } },
+                    { term => { distribution => $dist } },
+                    $filter_versions
                 ]
             }
         };

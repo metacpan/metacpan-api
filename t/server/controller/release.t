@@ -53,7 +53,7 @@ test_psgi app, sub {
     );
 
     # versions (/release/versions/DIST)
-    get_json_ok(
+    my $versions = get_json_ok(
         $cb,
         '/release/versions/Moose',
         'GET /release/versions/Moose',
@@ -61,6 +61,40 @@ test_psgi app, sub {
             # ???
         }
     );
+    is( @{ $versions->{releases} }, 2, "Got 2 Moose versions (all)" );
+
+    # versions - specific (/release/versions/DIST?versions=VERSION)
+    my $versions_specific = get_json_ok(
+        $cb,
+        '/release/versions/Moose?versions=0.01',
+        'GET /release/versions/Moose?versions=0.01',
+        {
+            # ???
+        }
+    );
+    is( @{ $versions_specific->{releases} },
+        1, "Got 1 Moose version (specificly requested)" );
+
+    # versions - latest (/release/versions/DIST?versions=latest)
+    my $versions_latest = get_json_ok(
+        $cb,
+        '/release/versions/Moose?versions=latest',
+        'GET /release/versions/Moose?versions=latest',
+        {
+            # ???
+        }
+    );
+    is( @{ $versions_latest->{releases} },
+        1, "Got 1 Moose version (only latest requested)" );
+    is( $versions_latest->{releases}[0]{status},
+        'latest', "Release status is latest" );
+
+    # versions - plain (/release/versions/DIST?plain=1)
+    ok( my $versions_plain = $cb->( GET '/release/versions/Moose?plain=1' ),
+        'GET /release/versions/Moose?plain=1' );
+    is( $versions_plain->code, 200, 'code 200' );
+    ok( $versions_plain->content =~ /\A .+ \t .+ \n .+ \t .+ \z/xsm,
+        'Content is plain text result' );
 
     # latest_by_distribution (/release/latest_by_distribution/DIST)
     get_json_ok(
@@ -74,4 +108,3 @@ test_psgi app, sub {
 };
 
 done_testing;
-
