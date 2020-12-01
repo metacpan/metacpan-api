@@ -47,7 +47,7 @@ jobs:
       - run:
           command: |
             pushd metacpan-docker/src/metacpan-api
-            ./wait-for-es.sh elasticsearch_test http://localhost:9200
+            ./wait-for-es.sh http://localhost:9200 elasticsearch_test --
           name: wait for ES
       - run:
           command: |
