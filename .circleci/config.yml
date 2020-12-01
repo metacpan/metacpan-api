@@ -18,6 +18,7 @@ jobs:
             set -x
             curl -L https://github.com/docker/compose/releases/download/1.26.2/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
             sudo chmod +x ~/docker-compose
+            docker-compose --version
       - run:
           command: |
             git clone https://github.com/metacpan/metacpan-docker.git
@@ -46,8 +47,8 @@ jobs:
           name: compose up
       - run:
           command: |
-            pushd metacpan-docker/src/metacpan-api
-            ./wait-for-es.sh http://localhost:9200 elasticsearch_test --
+            pushd metacpan-docker
+            ./src/metacpan-api/wait-for-es.sh http://localhost:9200 elasticsearch_test --
           name: wait for ES
       - run:
           command: |
