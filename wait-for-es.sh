@@ -5,10 +5,13 @@
 
 set -ux
 
-host="$1"
+container="$1"
+host="$2"
+
+preamble="docker-compose exec $container"
 
 while true; do
-    response=$(curl --write-out '%{http_code}' --silent --fail --output /dev/null "$host")
+    response=$($preamble curl --write-out '%{http_code}' --silent --fail --output /dev/null "$host")
     if [[ "$response" -eq "200" ]]; then
         break
     fi
@@ -24,9 +27,8 @@ set -e
 while true; do
     ## Wait for ES status to turn to yellow.
     ## TODO: Ideally we'd be waiting for green, but we need multiple nodes for that.
-    health="$(curl -fsSL "$host/_cat/health?h=status")"
-    health="$(echo "$health" | xargs)" # trim whitespace (otherwise we'll have "green ")
-    if [[ $health == 'yellow' || $health == 'green' ]]; then
+    health=$($preamble curl -fsSL "$host/_cat/health?format=JSON" | jq '.[0].status == "yellow" or .[0].status == "green"')
+    if [[ $health == 'true' ]]; then
         break
     fi
     echo "Elastic Search is unavailable ($health) - sleeping" >&2
@@ -34,5 +36,4 @@ while true; do
 done
 
 echo "Elastic Search is up" >&2
-shift
-exec "$@"
+exit 0
