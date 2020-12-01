@@ -1,3 +1,4 @@
+[![CircleCI](https://circleci.com/gh/metacpan/metacpan-api.svg?style=svg)](https://circleci.com/gh/metacpan/metcpan-api)
 [![Build Status](https://travis-ci.org/metacpan/metacpan-api.svg?branch=master)](https://travis-ci.org/metacpan/metacpan-api)
 [![Coverage Status](https://coveralls.io/repos/metacpan/metacpan-api/badge.svg)](https://coveralls.io/r/metacpan/metacpan-api)
 [![Kritika Analysis Status](https://kritika.io/users/oalders/repos/6702044523424530/heads/master/status.svg)](https://kritika.io/users/oalders/repos/6702044523424530/heads/master/)
