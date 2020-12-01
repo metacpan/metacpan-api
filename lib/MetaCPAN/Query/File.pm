@@ -141,11 +141,19 @@ my %perl_files = (
             )
     ],
 );
-my %prefix_files = (
+
+my %path_files = (
     example => [
         qw(
             eg
             ex
+            )
+    ],
+);
+
+my %prefix_files = (
+    example => [
+        qw(
             example
             Example
             sample
@@ -219,13 +227,35 @@ for my $type ( keys %special_files ) {
 for my $type ( keys %prefix_files ) {
     my @prefixes = @{ $prefix_files{$type} };
 
-    my @parts = map +( { prefix => { 'name' => $_ } },
-        { prefix => { 'path' => $_ } }, ), @prefixes;
+    my @parts = map +{ prefix => { 'name' => $_ } }, @prefixes;
 
-    my ($regex) = map qr/\A(?:$_)/, join '|', @prefixes;
-
-    $type_to_regex{$type} = $regex;
     push @{ $query_parts{$type} }, @parts;
+
+    my ($regex) = map qr{(?:\A|/)(?:$_)[^/]*\z}, join '|', @prefixes;
+
+    if ( $type_to_regex{$type} ) {
+        $type_to_regex{$type} = qr{$type_to_regex{$type}|$regex};
+    }
+    else {
+        $type_to_regex{$type} = $regex;
+    }
+}
+
+for my $type ( keys %path_files ) {
+    my @prefixes = @{ $path_files{$type} };
+
+    my @parts = map +{ prefix => { 'path' => "$_/" } }, @prefixes;
+
+    push @{ $query_parts{$type} }, @parts;
+
+    my ($regex) = map qr{\A(?:$_)/}, join '|', @prefixes;
+
+    if ( $type_to_regex{$type} ) {
+        $type_to_regex{$type} = qr{$type_to_regex{$type}|$regex};
+    }
+    else {
+        $type_to_regex{$type} = $regex;
+    }
 }
 
 sub interesting_files {
@@ -302,8 +332,7 @@ sub interesting_files {
         my $category = $file_to_type{ $file->{name} };
         if ( !$category ) {
             for my $type ( keys %type_to_regex ) {
-                my $re = $type_to_regex{$type};
-                if ( $file->{name} =~ $re || $file->{path} =~ $re ) {
+                if ( $file->{path} =~ $type_to_regex{$type} ) {
                     $category = $type;
                     last;
                 }
