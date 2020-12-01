@@ -10,6 +10,7 @@ jobs:
     machine: true
     resource_class: medium
     steps:
+      # CircleCI has its own docker-compose already installed, but as of this writing, their version is too old to understand our docker-compose.yml
       - run:
           name: Install Docker Compose
           command: |
@@ -44,6 +45,9 @@ jobs:
             ./bin/metacpan-docker init
             docker-compose --verbose up -d api_test
           name: compose up
+      # Since we're running docker-compose -d, we don't actually know if
+      # Elasticsearch is available at the time this build step begins. We
+      # probably need to wait for it here, so we'll add our own check.
       - run:
           command: |
             pushd metacpan-docker
