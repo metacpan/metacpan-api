@@ -1,10 +1,8 @@
 # Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
-# Use a package of configuration called an orb.
 # Orchestrate or schedule a set of jobs
 workflows:
   docker-compose:
-    # Run the welcome/run job in its own container
     jobs:
       - build-and-test
 jobs:
@@ -16,8 +14,10 @@ jobs:
           name: Install Docker Compose
           command: |
             set -x
-            curl -L https://github.com/docker/compose/releases/download/1.26.2/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
-            sudo chmod +x ~/docker-compose
+            curl -L https://github.com/docker/compose/releases/download/1.26.2/docker-compose-`uname -s`-`uname -m` > /home/circleci/bin/docker-compose
+            sudo chmod +x /home/circleci/bin/docker-compose
+            which docker-compose
+            docker-compose --version
       - run:
           command: |
             git clone https://github.com/metacpan/metacpan-docker.git
@@ -36,27 +36,27 @@ jobs:
       - run:
           command: |
             pushd metacpan-docker
-            ~/docker-compose build --build-arg CPM_ARGS='--with-test' api_test
+            docker-compose build --build-arg CPM_ARGS='--with-test' api_test
           name: compose build
       - run:
           command: |
             pushd metacpan-docker
             ./bin/metacpan-docker init
-            ~/docker-compose --verbose up -d api_test
+            docker-compose --verbose up -d api_test
           name: compose up
       - run:
           command: |
-            pushd metacpan-docker/src/metacpan-api
-            ./wait-for-es.sh http://localhost:9200
+            pushd metacpan-docker
+            ./src/metacpan-api/wait-for-es.sh http://localhost:9200 elasticsearch_test --
           name: wait for ES
       - run:
           command: |
             pushd metacpan-docker
-            ~/docker-compose exec -T api_test prove -lr --jobs 2 t
+            docker-compose exec -T api_test prove -lr --jobs 2 t
       - run:
           command: |
             pushd metacpan-docker
-            ~/docker-compose logs
+            docker-compose logs
             docker stats --no-stream
             docker ps -a | head
           name: docker-compose logs

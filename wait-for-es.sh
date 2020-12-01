@@ -5,10 +5,18 @@
 
 set -ux
 
-host="$1"
+
+HOST="$1"
+CONTAINER=${2:-""}
+PREAMBLE=""
+
+echo "container |$CONTAINER|"
+if [[ $CONTAINER != "" ]]; then
+    PREAMBLE="docker-compose exec $CONTAINER"
+fi
 
 while true; do
-    response=$(curl --write-out '%{http_code}' --silent --fail --output /dev/null "$host")
+    response=$($PREAMBLE curl --write-out '%{http_code}' --silent --fail --output /dev/null "$HOST")
     if [[ "$response" -eq "200" ]]; then
         break
     fi
@@ -21,18 +29,27 @@ done
 # if the server was not available
 set -e
 
+COUNTER=0
+MAX_LOOPS=60
 while true; do
     ## Wait for ES status to turn to yellow.
     ## TODO: Ideally we'd be waiting for green, but we need multiple nodes for that.
-    health="$(curl -fsSL "$host/_cat/health?h=status")"
-    health="$(echo "$health" | xargs)" # trim whitespace (otherwise we'll have "green ")
-    if [[ $health == 'yellow' || $health == 'green' ]]; then
+    health=$($PREAMBLE curl -fsSL "$HOST/_cat/health?format=JSON" | jq '.[0].status == "yellow" or .[0].status == "green"')
+    if [[ $health == 'true' ]]; then
+        echo "Elasticsearch is up" >&2
         break
     fi
     echo "Elastic Search is unavailable ($health) - sleeping" >&2
+    COUNTER=$((COUNTER + 1))
+    if [[ $COUNTER -gt $MAX_LOOPS ]]; then
+        echo "Giving up after $COUNTER attempts"
+        exit 1
+        break
+    fi
     sleep 1
 done
 
-echo "Elastic Search is up" >&2
+# Allow commands to be chained
+shift
 shift
 exec "$@"
