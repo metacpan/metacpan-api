@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/metacpan/metacpan-api.svg?style=svg)](https://circleci.com/gh/metacpan/metcpan-api)
+[![CircleCI](https://circleci.com/gh/metacpan/metacpan-api.svg?style=svg)](https://circleci.com/gh/metacpan/metacpan-api)
 [![Build Status](https://travis-ci.org/metacpan/metacpan-api.svg?branch=master)](https://travis-ci.org/metacpan/metacpan-api)
 [![Coverage Status](https://coveralls.io/repos/metacpan/metacpan-api/badge.svg)](https://coveralls.io/r/metacpan/metacpan-api)
 
