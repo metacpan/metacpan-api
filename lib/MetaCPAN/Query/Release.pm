@@ -815,7 +815,18 @@ sub _get_depended_releases {
     my $filter_modules = {
         bool => {
             should => [
-                map +{ term => { 'dependency.module' => $_ } },
+                map +{
+                    bool => {
+                        must => [
+                            { term => { 'dependency.module' => $_ } },
+                            {
+                                term => {
+                                    'dependency.relationship' => 'requires'
+                                }
+                            }
+                        ],
+                    },
+                },
                 @{$modules}
             ]
         }
