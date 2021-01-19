@@ -27,7 +27,7 @@ test_psgi app, sub {
                 Multiple::Modules::Tester
                 Multiple::Modules::RDeps::A
                 Multiple::Modules::RDeps::Deprecated
-                )
+            )
             ],
             'results are sorted lexically by module name + length'
             or diag( Test::More::explain($got) );

@@ -23,7 +23,7 @@ test_psgi app, sub {
             {
                 module_name => $module_name,
                 version     => '0.02',
-                file =>
+                file        =>
                     'M/MI/MIYAGAWA/CPAN-Test-Dummy-Perl5-VersionBump-0.02.tar.gz',
                 author       => 'MIYAGAWA',
                 distribution => 'CPAN-Test-Dummy-Perl5-VersionBump',
