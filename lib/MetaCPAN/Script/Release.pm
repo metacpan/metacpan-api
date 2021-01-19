@@ -108,7 +108,7 @@ my @skip_dists = (
         SREZIC/perl-5.005-minimal-bin-0-arm-linux.tar.gz
         SREZIC/perl-5.005-minimal-bin-1-arm-linux.tar.gz
         SREZIC/perl-5.005-Tk-800.023-bin-0-arm-linux.tar.gz
-        ),
+    ),
 
 # ILYAZ has lots of old weird os2 files that don't fit as dists or perl releases
     qr{/ILYAZ/os2/[^/]+/perl_\w+\.zip\z},

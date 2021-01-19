@@ -18,7 +18,7 @@ has rogue_distributions => (
                 perl_mlb
                 pod2texi
                 spodcxx
-                )
+            )
         ];
     },
 );

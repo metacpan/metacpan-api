@@ -163,7 +163,7 @@ sub author_config {
     # Get the most recent version
     my ($file)
         = sort { $dir->child($b)->stat->mtime <=> $dir->child($a)->stat->mtime }
-        grep {m/author-.*?\.json/} readdir($dh);
+        grep   {m/author-.*?\.json/} readdir($dh);
     return $fallback unless ($file);
     $file = $dir->child($file);
     return $fallback if !-e $file;

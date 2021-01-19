@@ -25,9 +25,9 @@ has module => (
 );
 
 has max_errors => (
-    is      => 'ro',
-    isa     => Int,
-    default => 0,
+    is            => 'ro',
+    isa           => Int,
+    default       => 0,
     documentation =>
         'the maximum number of errors to encounter before stopping',
 );
@@ -104,9 +104,9 @@ sub check_modules {
                 # now find the first latest releases for these files
                 foreach my $file (@files) {
                     my $release_results = $es->search(
-                        index => $self->index->name,
-                        type  => 'release',
-                        size  => 1,
+                        index  => $self->index->name,
+                        type   => 'release',
+                        size   => 1,
                         fields =>
                             [qw(name status authorized version id date)],
                         query  => { match_all => {} },
@@ -133,9 +133,9 @@ sub check_modules {
                 if ( !@releases ) {
                     foreach my $file (@files) {
                         my $release_results = $es->search(
-                            index => $self->index->name,
-                            type  => 'release',
-                            size  => 1,
+                            index  => $self->index->name,
+                            type   => 'release',
+                            size   => 1,
                             fields =>
                                 [qw(name status authorized version id date)],
                             query  => { match_all => {} },

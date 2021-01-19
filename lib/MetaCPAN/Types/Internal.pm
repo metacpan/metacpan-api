@@ -14,7 +14,7 @@ use MooseX::Types -declare => [
         Identity
         Dependency
         Profile
-        )
+    )
 ];
 
 subtype Module, as ArrayRef [ Type ['MetaCPAN::Document::Module'] ];

@@ -26,7 +26,7 @@ __PACKAGE__->apply_request_class_roles(
         Catalyst::TraitFor::Request::REST
         Catalyst::TraitFor::Request::REST::ForBrowsers
         MetaCPAN::Server::Role::Request
-        )
+    )
 );
 __PACKAGE__->config(
     encoding           => 'UTF-8',
@@ -87,7 +87,7 @@ __PACKAGE__->setup(
         Session::State::Cookie
         Authentication
         OAuth2::Provider
-        )
+    )
 );
 
 sub app {

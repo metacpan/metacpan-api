@@ -19,7 +19,7 @@ use Type::Library -base, -declare => (
 
         Logger
         HashRefCPANMeta
-        )
+    )
 );
 use Type::Utils -all;
 
@@ -75,8 +75,8 @@ declare RiverSummary,
 
 declare Resources,
     as Dict [
-    license  => Optional [ ArrayRef [Str] ],
-    homepage => Optional [Str],
+    license    => Optional [ ArrayRef [Str] ],
+    homepage   => Optional [Str],
     bugtracker =>
         Optional [ Dict [ web => Optional [Str], mailto => Optional [Str] ] ],
     repository => Optional [

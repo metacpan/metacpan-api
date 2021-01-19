@@ -46,7 +46,7 @@ is( $pm->module->[0]->version,
                 lib/uncommon/sense.pm
                 sense.pod
                 sense.pm.PL
-                )
+            )
         ],
         'release contains expected files',
     );

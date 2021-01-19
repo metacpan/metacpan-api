@@ -318,7 +318,7 @@ END
         sloc      => 2,
         slop      => 2,
         pod_lines => [ [ 3, 3 ], ],
-        pod =>
+        pod       =>
             q[NAME "Perl6Attribute" -- An example attribute metaclass for Perl 6 style attributes],
         };
 };
@@ -365,7 +365,7 @@ END
         sloc      => 1,
         slop      => 10,
         pod_lines => [ [ 6, 19 ], ],
-        pod =>
+        pod       =>
             q[NAME Foo -- An example attribute metaclass for Perl 6 style attributes DESCRIPTION hot stuff * Foo * Bar],
         };
 };
@@ -456,7 +456,7 @@ END
         sloc      => 3,
         slop      => 12,
         pod_lines => [ [ 4, 17 ], ],
-        pod =>
+        pod       =>
             q[Something some paragraph .. Fully qualified subroutine names are also supported. For example, __DATA__ sub foo::bar {23} package baz; sub dob {32} will all be loaded correctly by the SelfLoader, and the SelfLoader will ensure that the packages 'foo' and 'baz' correctly have the SelfLoader "AUTOLOAD" method when the data after "__DATA__" is first parsed.],
         };
 };

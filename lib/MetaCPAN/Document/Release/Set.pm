@@ -31,7 +31,7 @@ has query_release => (
             reverse_dependencies
             top_uploaders
             versions
-            >
+        >
     ],
 );
 
@@ -66,7 +66,7 @@ sub predecessor {
         {
             and => [
                 { term => { distribution => $name } },
-                { not => { filter => { term => { status => 'latest' } } } },
+                { not  => { filter => { term => { status => 'latest' } } } },
             ]
         }
     )->sort( [ { date => 'desc' } ] )->first;

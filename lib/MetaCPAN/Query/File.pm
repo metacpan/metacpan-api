@@ -63,7 +63,7 @@ my %special_files = (
                 ChangeLog
                 Changes
                 News
-                )
+            )
         ),
     ],
     contributing => [
@@ -72,7 +72,7 @@ my %special_files = (
                 Contributing
                 Hacking
                 Development
-                )
+            )
         ),
     ],
     license => [
@@ -85,13 +85,13 @@ my %special_files = (
             COPYING
             Artistic
             ARTISTIC
-            )
+        )
     ],
     install => [
         _doc_files(
             qw(
                 Install
-                )
+            )
         ),
     ],
     dist => [
@@ -107,7 +107,7 @@ my %special_files = (
             prereqs.yml
             dist.ini
             minil.toml
-            )
+        )
     ],
     other => [
         _doc_files(
@@ -119,7 +119,7 @@ my %special_files = (
                 THANKS
                 ToDo
                 Todo
-                )
+            )
         ),
     ],
 );
@@ -127,18 +127,18 @@ my %perl_files = (
     changelog => [
         qw(
             perldelta.pod
-            )
+        )
     ],
     license => [
         qw(
             perlartistic.pod
             perlgpl.pod
-            )
+        )
     ],
     contributing => [
         qw(
             perlhack.pod
-            )
+        )
     ],
 );
 
@@ -147,7 +147,7 @@ my %path_files = (
         qw(
             eg
             ex
-            )
+        )
     ],
 );
 
@@ -157,7 +157,7 @@ my %prefix_files = (
             example
             Example
             sample
-            )
+        )
     ],
 );
 
@@ -285,7 +285,7 @@ sub interesting_files {
             pod_lines
             release
             status
-            )
+        )
     ];
 
     my $body = {

@@ -105,8 +105,8 @@ sub index_reports {
         $version =~ s{\Av}{} if $version;
 
         $releases{
-            join( '-', grep {defined} $data->{distribution}, $version )
-        } = $data;
+            join( '-', grep {defined} $data->{distribution}, $version ) }
+            = $data;
     }
 
     log_info { 'Opening database file at ' . $db };

@@ -13,7 +13,7 @@ analyzer lowercase => (
 analyzer fulltext => ( type => 'english' );
 
 tokenizer camelcase => (
-    type => 'pattern',
+    type    => 'pattern',
     pattern =>
         "([^\\p{L}\\d]+)|(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)|(?<=[\\p{L}&&[^\\p{Lu}]])(?=\\p{Lu})|(?<=\\p{Lu})(?=\\p{Lu}[\\p{L}&&[^\\p{Lu}]])"
 );

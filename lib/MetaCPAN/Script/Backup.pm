@@ -16,9 +16,9 @@ use Try::Tiny;
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt::Dashes';
 
 has batch_size => (
-    is      => 'ro',
-    isa     => Int,
-    default => 100,
+    is            => 'ro',
+    isa           => Int,
+    default       => 100,
     documentation =>
         'Number of documents to restore in one batch, defaults to 100',
 );

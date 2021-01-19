@@ -30,7 +30,7 @@ subtest 'archive extraction' => sub {
             '2eba5fd5f9e08a9dcc1c5e2166b7d7d958caf377',
         'Some-1.00-TRIAL/META.json' => qr/"meta-spec"/,
         'Some-1.00-TRIAL/META.yml'  => qr/provides:/,
-        'Some-1.00-TRIAL/MANIFEST' =>
+        'Some-1.00-TRIAL/MANIFEST'  =>
             'e93d21831fb3d3cac905dbe852ba1a4a07abd991',
     );
 

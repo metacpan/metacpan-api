@@ -27,8 +27,7 @@ sub find_release_contributors {
     $res->{hits}{total} or return {};
 
     return +{
-        contributors => [ map { $_->{_source} } @{ $res->{hits}{hits} } ]
-    };
+        contributors => [ map { $_->{_source} } @{ $res->{hits}{hits} } ] };
 }
 
 sub find_author_contributions {
@@ -47,8 +46,7 @@ sub find_author_contributions {
     $res->{hits}{total} or return {};
 
     return +{
-        contributors => [ map { $_->{_source} } @{ $res->{hits}{hits} } ]
-    };
+        contributors => [ map { $_->{_source} } @{ $res->{hits}{hits} } ] };
 }
 
 __PACKAGE__->meta->make_immutable;
