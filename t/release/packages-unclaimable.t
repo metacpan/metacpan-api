@@ -12,8 +12,8 @@ use Test::More;
 
 test_release(
     {
-        name   => 'Packages-Unclaimable-2',
-        author => 'RWSTAUNER',
+        name     => 'Packages-Unclaimable-2',
+        author   => 'RWSTAUNER',
         abstract =>
             'Dist that appears to declare packages that are not allowed',
         authorized  => 1,
@@ -29,7 +29,7 @@ test_release(
                     authorized       => Cpanel::JSON::XS::true(),
                     version          => 2,
                     version_numified => 2,
-                    associated_pod =>
+                    associated_pod   =>
                         'RWSTAUNER/Packages-Unclaimable-2/lib/Packages/Unclaimable.pm',
                 },
             ],

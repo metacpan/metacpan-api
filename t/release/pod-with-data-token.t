@@ -22,7 +22,7 @@ test_release(
                     authorized       => Cpanel::JSON::XS::true(),
                     version          => '0.01',
                     version_numified => 0.01,
-                    associated_pod =>
+                    associated_pod   =>
                         'BORISNAT/Pod-With-Data-Token-0.01/lib/Pod/With/Data/Token.pm',
                 },
             ],

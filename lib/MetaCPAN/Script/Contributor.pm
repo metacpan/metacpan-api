@@ -21,15 +21,15 @@ has all => (
 );
 
 has distribution => (
-    is  => 'ro',
-    isa => Str,
+    is            => 'ro',
+    isa           => Str,
     documentation =>
         'update contributors for all releases matching distribution name',
 );
 
 has release => (
-    is  => 'ro',
-    isa => Str,
+    is            => 'ro',
+    isa           => Str,
     documentation =>
         'update contributors for a single release (format: author/release_name)',
 );

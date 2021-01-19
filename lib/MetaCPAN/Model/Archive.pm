@@ -57,7 +57,7 @@ has _extractor => (
         qw(
             is_impolite
             is_naughty
-            )
+        )
     ],
     init_arg => undef,
     lazy     => 1,

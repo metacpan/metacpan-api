@@ -22,7 +22,7 @@ test_release(
                     authorized       => Cpanel::JSON::XS::true(),
                     version          => '0.01',
                     version_numified => 0.01,
-                    associated_pod =>
+                    associated_pod   =>
                         'BORISNAT/Oops-LocalLib-0.01/lib/Oops/LocalLib.pm',
                 },
             ],
@@ -33,7 +33,7 @@ test_release(
                     authorized       => Cpanel::JSON::XS::true(),
                     version          => '1',
                     version_numified => 1,
-                    associated_pod =>
+                    associated_pod   =>
                         'BORISNAT/Oops-LocalLib-0.01/foreign/Fruits.pm',
                 },
             ],

@@ -32,9 +32,9 @@ has test => (
 );
 
 has json_file => (
-    is      => 'ro',
-    isa     => Str,
-    default => 0,
+    is            => 'ro',
+    isa           => Str,
+    default       => 0,
     documentation =>
         'Path to JSON file to be read instead of URL (for testing)',
 );

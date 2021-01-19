@@ -19,14 +19,14 @@ sub author_status {
 
         my ( $id_2, $id_1 ) = $id =~ /^((\w)\w)/;
         $status->{links} = {
-            cpan_directory => "http://cpan.org/authors/id/$id_1/$id_2/$id",
+            cpan_directory    => "http://cpan.org/authors/id/$id_1/$id_2/$id",
             backpan_directory =>
                 "https://cpan.metacpan.org/authors/id/$id_1/$id_2/$id",
-            cpants => "http://cpants.cpanauthors.org/author/$id",
+            cpants              => "http://cpants.cpanauthors.org/author/$id",
             cpantesters_reports =>
                 "http://cpantesters.org/author/$id_1/$id.html",
             cpantesters_matrix => "http://matrix.cpantesters.org/?author=$id",
-            metacpan_explorer =>
+            metacpan_explorer  =>
                 "https://explorer.metacpan.org/?url=/author/$id",
         };
     }
@@ -86,7 +86,7 @@ sub get_contributors {
 
     my $release  = $res->{hits}{hits}[0]{_source};
     my $contribs = $release->{metadata}{x_contributors} || [];
-    my $authors  = $release->{metadata}{author} || [];
+    my $authors  = $release->{metadata}{author}         || [];
 
     for ( \( $contribs, $authors ) ) {
 
@@ -993,7 +993,7 @@ sub modules {
                 pod_lines
                 release
                 status
-                )
+            )
         ],
     };
 

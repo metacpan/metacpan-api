@@ -22,16 +22,16 @@ has queue => (
 );
 
 has check_missing => (
-    is      => 'ro',
-    isa     => Bool,
-    default => 0,
+    is            => 'ro',
+    isa           => Bool,
+    default       => 0,
     documentation =>
         'Report distributions that are missing from "file" or queue jobs if "--queue" specified',
 );
 
 has age => (
-    is  => 'ro',
-    isa => Int,
+    is            => 'ro',
+    isa           => Int,
     documentation =>
         'Update distributions that were voted on in the last X minutes',
 );
@@ -49,8 +49,8 @@ has distribution => (
 );
 
 has count => (
-    is  => 'ro',
-    isa => Int,
+    is            => 'ro',
+    isa           => Int,
     documentation =>
         'Update this count to a given distribution (will only work with "--distribution"',
 );

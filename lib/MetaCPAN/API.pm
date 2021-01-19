@@ -164,7 +164,7 @@ sub _is_admin {
     return 0 unless $username;
 
     my @admins = (
-        'haarg', 'jberger', 'mickeyn', 'oalders',
+        'haarg',    'jberger', 'mickeyn', 'oalders',
         'ranguard', 'reyjrar', 'ssoriche',
         $ENV{HARNESS_ACTIVE} ? 'tester' : (),
     );

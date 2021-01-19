@@ -22,7 +22,7 @@ test_release(
                     authorized       => Cpanel::JSON::XS::true(),
                     version          => '1',
                     version_numified => 1,
-                    associated_pod =>
+                    associated_pod   =>
                         'BORISNAT/Pod-With-Generator-1/lib/Pod/With/Generator.pm',
                 },
             ],

@@ -25,7 +25,7 @@ test_release(
                     authorized       => Cpanel::JSON::XS::true(),
                     version          => '1.103',
                     version_numified => 1.103,
-                    associated_pod =>
+                    associated_pod   =>
                         'RWSTAUNER/Packages-1.103/lib/Packages.pm',
                 },
             ],
@@ -36,7 +36,7 @@ test_release(
                     authorized       => Cpanel::JSON::XS::true(),
                     version          => 0.04,
                     version_numified => 0.04,
-                    associated_pod =>
+                    associated_pod   =>
                         'RWSTAUNER/Packages-1.103/lib/Packages/BOM.pm',
                 },
             ],

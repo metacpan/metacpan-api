@@ -148,7 +148,7 @@ sub get_identities {
 
 sub remove_identity {
     my ( $self, $identity ) = @_;
-    my $ids = $self->identity;
+    my $ids  = $self->identity;
     my ($id) = grep { $_->{name} eq $identity } @$ids;
     @$ids = grep { $_->{name} ne $identity } @$ids;
 

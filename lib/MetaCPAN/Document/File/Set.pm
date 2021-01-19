@@ -22,7 +22,7 @@ has query_file => (
             dir
             interesting_files
             files_by_category
-            )
+        )
     ],
 );
 
@@ -626,7 +626,7 @@ sub autocomplete_suggester {
         my $got = $_->{fields};
         my %record;
         @record{@fields} = map { $got->{$_}[0] } @fields;
-        $record{name} = delete $record{documentation};    # rename
+        $record{name} = delete $record{documentation};       # rename
         ( $_->{fields}{documentation}[0] => \%record );
     } @{ $data->{hits}{hits} };
 
@@ -649,7 +649,7 @@ sub autocomplete_suggester {
                $valid{$a}->{deprecated} <=> $valid{$b}->{deprecated}
             || $favorites->{ $valid{$b}->{distribution} }
             <=> $favorites->{ $valid{$a}->{distribution} }
-            || $docs{$b} <=> $docs{$a}
+            || $docs{$b}  <=> $docs{$a}
             || length($a) <=> length($b)
             || $a cmp $b
         }

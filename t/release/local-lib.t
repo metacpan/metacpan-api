@@ -23,7 +23,7 @@ test_release(
                     authorized       => Cpanel::JSON::XS::true(),
                     version          => '0.01',
                     version_numified => 0.01,
-                    associated_pod =>
+                    associated_pod   =>
                         'BORISNAT/local-lib-0.01/lib/local/lib.pm',
                 },
             ],

@@ -16,7 +16,7 @@ sub run {
         scroll => '1m',
         index  => 'user',
         type   => 'session',
-        body =>
+        body   =>
             { query => { filtered => { query => { match_all => {} }, }, }, },
     );
 

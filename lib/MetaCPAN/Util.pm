@@ -52,7 +52,7 @@ sub fix_version {
     $version =~ s/\.[._]+/./;
     $version =~ s/[._]*_[._]*/_/g;
     $version =~ s/\.{2,}/./g;
-    $v       ||= $version =~ tr/.// > 1;
+    $v ||= $version =~ tr/.// > 1;
     $version ||= 0;
     return ( ( $v ? 'v' : '' ) . $version );
 }

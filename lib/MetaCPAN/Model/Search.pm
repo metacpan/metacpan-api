@@ -152,7 +152,7 @@ sub _search_collapsed {
         size   => 0,
         fields => [
             qw(
-                )
+            )
         ],
     };
 
@@ -357,7 +357,7 @@ sub build_query {
                     pod_lines
                     release
                     status
-                    )
+                )
             ],
         }
     );

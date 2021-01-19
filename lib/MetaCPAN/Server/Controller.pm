@@ -166,7 +166,7 @@ sub join : ActionClass('Deserialize') {
             ];
         my @ids = List::MoreUtils::uniq grep {defined}
             map { ref $cself eq 'CODE' ? $cself->($_) : $_->{$cself} } @$data;
-        my $filter = { terms => { $config->{foreign} => [@ids] } };
+        my $filter   = { terms => { $config->{foreign} => [@ids] } };
         my $filtered = {%$query};    # don't work on $query
         $filtered->{filter}
             = $query->{filter}
