@@ -55,7 +55,7 @@ test_psgi app, sub {
 
     test_all_methods(
         {
-            query => { match_all => {} },
+            query         => { match_all => {} },
             script_fields =>
                 { pauselen2 => { metacpan_script => 'test_script_field' }, },
             filter => { term => { pauseid => 'RWSTAUNER' } },

@@ -87,7 +87,7 @@ test_psgi app, sub {
                     t/00-nop.t
                     META.json
                     META.yml
-                    )
+                )
             );
             if ( $k =~ /callback=foo/ ) {
                 ok(

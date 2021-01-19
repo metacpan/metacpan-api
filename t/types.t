@@ -94,7 +94,7 @@ ok(
                 'http://search.cpan.org/dist/Dist-Zilla-Plugin-GitHub/',
             repository => {
                 type => 'git',
-                url =>
+                url  =>
                     'git://github.com/AlexBio/Dist-Zilla-Plugin-GitHub.git',
                 web => 'https://github.com/AlexBio/Dist-Zilla-Plugin-GitHub'
             }
