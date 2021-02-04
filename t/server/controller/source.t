@@ -4,7 +4,7 @@ use lib 't/lib';
 
 use Cpanel::JSON::XS ();
 use MetaCPAN::Server::Test;
-use MetaCPAN::TestHelpers;
+use MetaCPAN::TestHelpers qw( test_cache_headers );
 use Test::More;
 
 my %tests = (

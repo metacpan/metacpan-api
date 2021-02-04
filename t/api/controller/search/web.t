@@ -2,7 +2,7 @@ use Mojo::Base -strict;
 
 use Test::More;
 use Test::Mojo;
-use Mojo::JSON qw(true false);
+use Mojo::JSON qw( false true );
 
 # Note: we need a release marked as status => latest
 # so we're using Versions::PkgVar for now

@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use MetaCPAN::TestHelpers;
+use MetaCPAN::TestHelpers qw( test_distribution test_release );
 use Test::More;
 
 test_distribution(

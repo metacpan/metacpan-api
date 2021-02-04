@@ -3,10 +3,9 @@ use warnings;
 use lib 't/lib';
 
 use MetaCPAN::Server::Test;
-use MetaCPAN::TestHelpers;
+use MetaCPAN::TestHelpers qw( decode_json_ok encode_json );
 use Test::More skip_all => 'Scripting is disabled';
-use Try::Tiny qw( catch try );
-use URI;
+use URI ();
 
 sub uri {
     my $uri = URI->new(shift);

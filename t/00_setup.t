@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use CPAN::Faker 0.010;
+use CPAN::Faker 0.010 ();
 use Devel::Confess;
 use MetaCPAN::Script::Tickets ();
 use MetaCPAN::Server::Test;
@@ -14,7 +14,6 @@ use MetaCPAN::TestHelpers qw(
 );
 use MetaCPAN::TestServer ();
 use Module::Faker 0.015 ();    # Generates META.json.
-use Path::Tiny qw( path );
 use Test::More 0.96;
 use URI::FromHash qw( uri );
 
@@ -78,7 +77,7 @@ $fakecpan_dir->child('indices')->mkpath;
 }
 
 # Help debug inconsistent parsing failures.
-require Parse::PMFile;
+use Parse::PMFile ();
 local $Parse::PMFile::VERBOSE = $ENV{TEST_VERBOSE} ? 9 : 0;
 
 my $src_dir = $fakecpan_configs;

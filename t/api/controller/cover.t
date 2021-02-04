@@ -1,12 +1,12 @@
 use Mojo::Base -strict;
-use lib 't/lib';
 
-use Test::More;
-use Test::Mojo;
-use Mojo::JSON qw(true false);
+use lib 't/lib';
 
 use MetaCPAN::Model::Search ();
 use MetaCPAN::TestServer    ();
+use Test::More;
+use Test::Mojo ();
+
 my $server = MetaCPAN::TestServer->new;
 
 my $t = Test::Mojo->new(

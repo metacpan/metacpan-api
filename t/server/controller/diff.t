@@ -2,9 +2,12 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use Encode;
 use MetaCPAN::Server::Test;
-use MetaCPAN::TestHelpers;
+use MetaCPAN::TestHelpers qw(
+    decode_json_ok
+    multiline_diag
+    test_cache_headers
+);
 use Test::More;
 
 {

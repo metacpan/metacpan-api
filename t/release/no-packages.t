@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use MetaCPAN::TestHelpers;
+use MetaCPAN::TestHelpers qw( test_release );
 use Test::More;
 
 # Some uploads contain no usable modules.
