@@ -155,8 +155,11 @@ my %prefix_files = (
     example => [
         qw(
             example
+            examples
             Example
+            Examples
             sample
+            samples
         )
     ],
 );
