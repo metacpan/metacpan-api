@@ -3,7 +3,7 @@ package MetaCPAN::Server::View::JSONP;
 use strict;
 use warnings;
 
-use Encode qw(decode_utf8);
+use Encode qw( decode_utf8 );
 use Cpanel::JSON::XS ();
 use Moose;
 

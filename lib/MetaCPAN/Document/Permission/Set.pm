@@ -2,7 +2,7 @@ package MetaCPAN::Document::Permission::Set;
 
 use Moose;
 
-use MetaCPAN::Query::Permission;
+use MetaCPAN::Query::Permission ();
 
 extends 'ElasticSearchX::Model::Document::Set';
 

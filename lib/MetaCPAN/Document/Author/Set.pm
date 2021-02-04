@@ -2,7 +2,7 @@ package MetaCPAN::Document::Author::Set;
 
 use Moose;
 
-use MetaCPAN::Query::Author;
+use MetaCPAN::Query::Author ();
 
 extends 'ElasticSearchX::Model::Document::Set';
 

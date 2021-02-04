@@ -1,13 +1,10 @@
 package MetaCPAN::Server::Controller::Login::PAUSE;
 
-use strict;
-use warnings;
+use Moose;
 use namespace::autoclean;
 
 use CHI ();
 use Log::Contextual qw( :log :dlog );
-use Moose;
-use Try::Tiny qw( catch try );
 use MetaCPAN::Model::Email::PAUSE ();
 use MetaCPAN::Util qw( generate_sid );
 

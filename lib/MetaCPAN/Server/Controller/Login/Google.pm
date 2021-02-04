@@ -3,9 +3,9 @@ package MetaCPAN::Server::Controller::Login::Google;
 use strict;
 use warnings;
 
-use HTTP::Request::Common;
-use Cpanel::JSON::XS;
-use LWP::UserAgent;
+use HTTP::Request::Common qw( GET POST );
+use Cpanel::JSON::XS qw( decode_json );
+use LWP::UserAgent ();
 use Moose;
 
 BEGIN { extends 'MetaCPAN::Server::Controller::Login' }

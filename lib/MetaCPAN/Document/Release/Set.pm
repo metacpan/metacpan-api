@@ -4,7 +4,7 @@ use Moose;
 
 use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
 
-use MetaCPAN::Query::Release;
+use MetaCPAN::Query::Release ();
 
 extends 'ElasticSearchX::Model::Document::Set';
 

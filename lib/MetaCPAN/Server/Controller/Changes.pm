@@ -6,7 +6,7 @@ use namespace::autoclean;
 
 use Encode ();
 use Moose;
-use Try::Tiny;
+use Try::Tiny qw( try );
 
 BEGIN { extends 'MetaCPAN::Server::Controller' }
 

@@ -2,7 +2,6 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use FindBin                  ();
 use MetaCPAN::Model::Release ();
 use MetaCPAN::Script::Runner;
 use MetaCPAN::TestHelpers qw( fakecpan_dir get_config );

@@ -2,7 +2,7 @@ package MetaCPAN::Document::Distribution::Set;
 
 use Moose;
 
-use MetaCPAN::Query::Distribution;
+use MetaCPAN::Query::Distribution ();
 
 extends 'ElasticSearchX::Model::Document::Set';
 

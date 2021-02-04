@@ -3,9 +3,9 @@ package MetaCPAN::Server::Controller::Diff;
 use strict;
 use warnings;
 
-use MetaCPAN::Server::Diff;
+use MetaCPAN::Server::Diff ();
 use Moose;
-use Try::Tiny;
+use Try::Tiny qw( catch try );
 use namespace::autoclean;
 
 BEGIN { extends 'MetaCPAN::Server::Controller' }

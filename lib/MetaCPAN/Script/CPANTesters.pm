@@ -1,17 +1,13 @@
 package MetaCPAN::Script::CPANTesters;
 
-use strict;
-use warnings;
+use Moose;
 
 use DBI ();
-use File::Spec::Functions qw(catfile);
-use File::Temp qw(tempdir);
-use File::stat qw(stat);
-use IO::Uncompress::Bunzip2 qw(bunzip2);
+use File::stat qw( stat );
+use IO::Uncompress::Bunzip2 qw( bunzip2 );
 use Log::Contextual qw( :log :dlog );
-use MetaCPAN::Types::TypeTiny qw( Path Bool Uri );
-use ElasticSearchX::Model::Document::Types qw(ESBulk);
-use Moose;
+use MetaCPAN::Types::TypeTiny qw( Bool Path Uri );
+use ElasticSearchX::Model::Document::Types qw( ESBulk );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt::Dashes';
 

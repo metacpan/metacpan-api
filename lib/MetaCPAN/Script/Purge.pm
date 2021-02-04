@@ -3,7 +3,7 @@ package MetaCPAN::Script::Purge;
 use Moose;
 
 use Log::Contextual qw( :log );
-use MetaCPAN::Types::TypeTiny qw( Bool Str HashRef );
+use MetaCPAN::Types::TypeTiny qw( Bool HashRef Str );
 use MetaCPAN::Util qw( author_dir );
 
 with 'MooseX::Getopt', 'MetaCPAN::Role::Script';

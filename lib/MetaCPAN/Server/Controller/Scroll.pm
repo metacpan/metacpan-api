@@ -5,7 +5,7 @@ use warnings;
 use namespace::autoclean;
 
 use Moose;
-use Try::Tiny;
+use Try::Tiny qw( catch try );
 
 BEGIN { extends 'MetaCPAN::Server::Controller' }
 

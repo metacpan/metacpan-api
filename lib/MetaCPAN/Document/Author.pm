@@ -8,10 +8,17 @@ use ElasticSearchX::Model::Document;
 
 # load order not important
 use Gravatar::URL ();
-use MetaCPAN::Types qw(Profile);
+use MetaCPAN::Types qw( Profile );
 use MetaCPAN::Types::TypeTiny qw(
-    ArrayRefPromote Blog NonEmptySimpleStr PerlMongers
-    ArrayRef Bool Dict HashRef Str Tuple Optional
+    ArrayRef
+    ArrayRefPromote
+    Blog
+    Bool
+    Dict
+    HashRef
+    NonEmptySimpleStr
+    PerlMongers
+    Str
 );
 use MetaCPAN::Util;
 

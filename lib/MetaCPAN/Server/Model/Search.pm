@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Moose;
-use MetaCPAN::Model::Search;
+use MetaCPAN::Model::Search ();
 
 extends 'MetaCPAN::Server::Model::CPAN';
 

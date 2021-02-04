@@ -2,7 +2,7 @@ package MetaCPAN::Document::Favorite::Set;
 
 use Moose;
 
-use MetaCPAN::Query::Favorite;
+use MetaCPAN::Query::Favorite ();
 
 extends 'ElasticSearchX::Model::Document::Set';
 
