@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use MetaCPAN::Document::Author;
+use MetaCPAN::Document::Author ();
 use Test::More;
 
 my @errors = MetaCPAN::Document::Author->validate(

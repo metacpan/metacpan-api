@@ -4,9 +4,9 @@ use lib 't/lib';
 
 use Cpanel::JSON::XS ();
 use IO::String;
-use List::MoreUtils qw(uniq);
+use List::MoreUtils qw( uniq );
 use MetaCPAN::Server::Test;
-use MetaCPAN::TestHelpers;
+use MetaCPAN::TestHelpers qw( test_release );
 use Module::Metadata;
 use Test::More;
 

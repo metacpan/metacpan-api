@@ -4,7 +4,7 @@ use lib 't/lib';
 
 use Test::More;
 
-use MetaCPAN::Pod::Renderer;
+use MetaCPAN::Pod::Renderer ();
 
 my $factory       = MetaCPAN::Pod::Renderer->new();
 my $html_renderer = $factory->html_renderer;

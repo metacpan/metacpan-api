@@ -1,8 +1,8 @@
-use Test::Most;
 use strict;
 use warnings;
-use lib 't/lib';
-use MetaCPAN::Types::TypeTiny qw(Resources);
+
+use MetaCPAN::Types::TypeTiny qw( Resources );
+use Test::Most import => [qw( done_testing is_deeply ok )];
 
 is_deeply(
     Resources->coerce(

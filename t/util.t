@@ -10,7 +10,7 @@ use MetaCPAN::Util qw(
     strip_pod
 );
 
-use Test::Most;
+use Test::Most import => [qw( done_testing is lives_ok ok )];
 
 ok( generate_sid(), 'generate_sid' );
 

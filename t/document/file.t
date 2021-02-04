@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use MetaCPAN::Document::File;
+use MetaCPAN::Document::File ();
 use Test::More;
 
 sub cpan_meta {

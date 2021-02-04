@@ -2,11 +2,11 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use FindBin;
-use MetaCPAN::Model::Release;
+use FindBin                  ();
+use MetaCPAN::Model::Release ();
 use MetaCPAN::Script::Runner;
 use MetaCPAN::TestHelpers qw( fakecpan_dir get_config );
-use Test::Most;
+use Test::Most import => [qw( cmp_bag done_testing subtest )];
 
 my $config = get_config();
 

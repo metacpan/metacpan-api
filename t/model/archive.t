@@ -4,7 +4,9 @@ use lib 't/lib';
 
 use Digest::SHA qw( sha1_hex );
 use MetaCPAN::TestHelpers qw( fakecpan_dir );
-use Test::Most;
+use Test::Most import =>
+    [qw( cmp_bag done_testing is isa_ok like ok require_ok subtest throws_ok )
+    ];
 
 my $CLASS = 'MetaCPAN::Model::Archive';
 require_ok $CLASS;

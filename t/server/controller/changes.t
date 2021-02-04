@@ -3,7 +3,7 @@ use warnings;
 use lib 't/lib';
 
 use MetaCPAN::Server::Test;
-use MetaCPAN::TestHelpers;
+use MetaCPAN::TestHelpers qw( decode_json_ok test_cache_headers );
 use Test::More;
 
 my $LOCAL_default_headers = {

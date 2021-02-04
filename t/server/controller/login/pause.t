@@ -3,9 +3,9 @@ use warnings;
 use lib 't/lib';
 use utf8;
 
-use Encode qw( encode is_utf8 FB_CROAK LEAVE_SRC );
+use Encode qw( encode FB_CROAK is_utf8 LEAVE_SRC );
 use MetaCPAN::Server::Test;
-use MetaCPAN::TestHelpers;
+use MetaCPAN::TestHelpers qw( decode_json_ok );
 use Test::More;
 
 BEGIN { $ENV{EMAIL_SENDER_TRANSPORT} = 'Test' }
