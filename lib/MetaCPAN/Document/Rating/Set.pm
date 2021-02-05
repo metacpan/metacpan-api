@@ -2,7 +2,7 @@ package MetaCPAN::Document::Rating::Set;
 
 use Moose;
 
-use MetaCPAN::Query::Rating;
+use MetaCPAN::Query::Rating ();
 
 extends 'ElasticSearchX::Model::Document::Set';
 

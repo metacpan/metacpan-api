@@ -1,17 +1,19 @@
 package MetaCPAN::Document::Release;
 
-use strict;
-use warnings;
-
 use Moose;
-use DateTime qw();
-use Ref::Util qw();
-use ElasticSearchX::Model::Document;
 
-use MetaCPAN::Types qw(Dependency);
+use DateTime qw();
+use ElasticSearchX::Model::Document;
+use MetaCPAN::Types qw( Dependency );
 use MetaCPAN::Types::TypeTiny qw(
-    HashRefCPANMeta Resources Stat Tests
-    ArrayRef Bool Num Str
+    ArrayRef
+    Bool
+    HashRefCPANMeta
+    Num
+    Resources
+    Stat
+    Str
+    Tests
 );
 use MetaCPAN::Util qw( numify_version );
 

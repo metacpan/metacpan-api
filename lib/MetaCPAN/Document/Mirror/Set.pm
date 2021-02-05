@@ -2,7 +2,7 @@ package MetaCPAN::Document::Mirror::Set;
 
 use Moose;
 
-use MetaCPAN::Query::Mirror;
+use MetaCPAN::Query::Mirror ();
 
 extends 'ElasticSearchX::Model::Document::Set';
 

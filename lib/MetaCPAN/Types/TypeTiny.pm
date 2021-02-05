@@ -21,7 +21,7 @@ use Type::Library -base, -declare => (
         HashRefCPANMeta
     )
 );
-use Type::Utils -all;
+use Type::Utils qw( as coerce declare extends from via );
 
 BEGIN {
     extends qw(

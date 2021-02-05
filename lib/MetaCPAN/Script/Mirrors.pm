@@ -5,7 +5,7 @@ use warnings;
 
 use Cpanel::JSON::XS ();
 use Log::Contextual qw( :log :dlog );
-use MetaCPAN::Document::Mirror;
+use MetaCPAN::Document::Mirror ();
 use Moose;
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';

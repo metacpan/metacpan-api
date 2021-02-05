@@ -1,12 +1,10 @@
 package MetaCPAN::Server::Controller::Login::GitHub;
 
-use strict;
-use warnings;
-
-use HTTP::Request::Common;
-use Cpanel::JSON::XS;
-use LWP::UserAgent;
 use Moose;
+
+use HTTP::Request::Common qw( GET POST );
+use Cpanel::JSON::XS qw( decode_json );
+use LWP::UserAgent ();
 
 BEGIN { extends 'MetaCPAN::Server::Controller::Login' }
 

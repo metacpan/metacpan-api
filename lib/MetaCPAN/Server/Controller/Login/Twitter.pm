@@ -1,13 +1,8 @@
 package MetaCPAN::Server::Controller::Login::Twitter;
 
-use strict;
-use warnings;
-
-use HTTP::Request::Common;
-use Cpanel::JSON::XS;
-use LWP::UserAgent;
 use Moose;
-use Net::Twitter;
+
+use Net::Twitter ();
 
 BEGIN { extends 'MetaCPAN::Server::Controller::Login' }
 

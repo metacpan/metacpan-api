@@ -3,8 +3,8 @@ package MetaCPAN::Server::Model::Source;
 use strict;
 use warnings;
 
-use File::Find::Rule ();
-use MetaCPAN::Model::Archive;
+use File::Find::Rule         ();
+use MetaCPAN::Model::Archive ();
 use MetaCPAN::Types::TypeTiny qw( Path );
 use MetaCPAN::Util ();
 use Moose;

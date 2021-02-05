@@ -4,7 +4,6 @@ package Catalyst::Plugin::Session::Store::ElasticSearch;
 
 use Moose;
 extends 'Catalyst::Plugin::Session::Store';
-use List::MoreUtils qw();
 use MooseX::Types::ElasticSearch qw(:all);
 
 has _session_es => (

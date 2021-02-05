@@ -7,18 +7,23 @@ use utf8;
 use Moose;
 use ElasticSearchX::Model::Document;
 
-use Encode;
 use List::AllUtils qw( any );
-use MetaCPAN::Document::Module;
-use MetaCPAN::Types qw(Module);
+use MetaCPAN::Document::Module ();
+use MetaCPAN::Types qw( Module );
 use MetaCPAN::Types::TypeTiny qw(
-    Stat ArrayRef Bool Int Maybe Num ScalarRef Str
+    ArrayRef
+    Bool
+    Int
+    Maybe
+    Num
+    ScalarRef
+    Stat
+    Str
 );
 use MetaCPAN::Util qw(numify_version);
-use Plack::MIME;
-use Pod::Text;
+use Plack::MIME ();
+use Pod::Text   ();
 use Try::Tiny qw( catch try );
-use URI::Escape ();
 
 Plack::MIME->add_type( '.t'   => 'text/x-script.perl' );
 Plack::MIME->add_type( '.pod' => 'text/x-pod' );

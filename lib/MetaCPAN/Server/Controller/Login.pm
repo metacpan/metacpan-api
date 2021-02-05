@@ -3,7 +3,7 @@ package MetaCPAN::Server::Controller::Login;
 use strict;
 use warnings;
 
-use Cpanel::JSON::XS;
+use Cpanel::JSON::XS qw( decode_json encode_json );
 use Moose;
 
 BEGIN { extends 'Catalyst::Controller' }

@@ -18,9 +18,9 @@ package Catalyst::Plugin::OAuth2::Provider::Controller;
 use Moose;
 BEGIN { extends 'Catalyst::Controller' }
 
-use Digest::SHA;
-use Cpanel::JSON::XS;
-use URI;
+use Digest::SHA ();
+use Cpanel::JSON::XS qw( decode_json encode_json );
+use URI ();
 
 has login   => ( is => 'ro' );
 has clients => ( is => 'ro' );

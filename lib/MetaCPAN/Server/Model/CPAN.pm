@@ -3,7 +3,7 @@ package MetaCPAN::Server::Model::CPAN;
 use strict;
 use warnings;
 
-use MetaCPAN::Model;
+use MetaCPAN::Model ();
 use Moose;
 
 extends 'Catalyst::Model';

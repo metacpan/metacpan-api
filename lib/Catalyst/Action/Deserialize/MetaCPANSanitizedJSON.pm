@@ -2,7 +2,7 @@ package Catalyst::Action::Deserialize::MetaCPANSanitizedJSON;
 
 use Moose;
 use namespace::autoclean;
-use Try::Tiny;
+use Try::Tiny qw( catch try );
 use Cpanel::JSON::XS                 ();
 use MetaCPAN::Server::QuerySanitizer ();
 

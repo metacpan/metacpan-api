@@ -12,9 +12,9 @@ use Encode                    ();
 use File::stat                ();
 use Cpanel::JSON::XS qw( decode_json );
 use Log::Contextual qw( :log );
-use MetaCPAN::Document::Author;
-use URI ();
-use XML::Simple qw(XMLin);
+use MetaCPAN::Document::Author ();
+use URI                        ();
+use XML::Simple qw( XMLin );
 
 =head1 SYNOPSIS
 

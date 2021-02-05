@@ -4,8 +4,8 @@ use strict;
 use warnings;
 
 use CPAN::Meta;
-use ElasticSearchX::Model::Document::Types qw(Type);
-use MooseX::Getopt::OptionTypeMap;
+use ElasticSearchX::Model::Document::Types qw( Type );
+use MooseX::Getopt::OptionTypeMap ();
 use MooseX::Types::Moose qw( ArrayRef HashRef );
 
 use MooseX::Types -declare => [

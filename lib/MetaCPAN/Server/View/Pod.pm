@@ -3,7 +3,7 @@ package MetaCPAN::Server::View::Pod;
 use strict;
 use warnings;
 
-use MetaCPAN::Pod::Renderer;
+use MetaCPAN::Pod::Renderer ();
 use Moose;
 
 extends 'Catalyst::View';
