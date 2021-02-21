@@ -222,8 +222,14 @@ sub build_query {
     $params //= {};
     ( my $clean = $search_term ) =~ s/::/ /g;
 
-    my $negative
-        = { term => { 'mime' => { value => 'text/x-script.perl' } } };
+    my $negative = {
+        bool => {
+            should => [
+                { term => { 'mime' => { value => 'text/x-script.perl' } } },
+                { term => { 'deprecated' => { value => 1, boost => -100 } } },
+            ],
+        },
+    };
 
     my $positive = {
         bool => {
