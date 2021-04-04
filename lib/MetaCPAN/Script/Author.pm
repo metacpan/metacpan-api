@@ -90,12 +90,16 @@ sub index_authors {
         $asciiname = q{} unless defined $asciiname;
         $email     = lc($pauseid) . '@cpan.org'
             unless ( $email && Email::Valid->address($email) );
+        my $is_pause_custodial_account
+            = ( $name && $name =~ /\(PAUSE Custodial Account\)/ );
         log_debug {
             Encode::encode_utf8(
                 sprintf( "Indexing %s: %s <%s>", $pauseid, $name, $email ) );
         };
-        my $conf = $self->author_config( $pauseid, $dates ) || next;
-        my $put  = {
+        my $conf = $self->author_config( $pauseid, $dates );
+        next unless ( $conf or $is_pause_custodial_account );
+        $conf ||= {};
+        my $put = {
             pauseid   => $pauseid,
             name      => $name,
             asciiname => ref $asciiname ? undef : $asciiname,
@@ -114,8 +118,7 @@ sub index_authors {
                 grep {$_} @{ $put->{website} }
         ];
 
-        $put->{is_pause_custodial_account} = 1
-            if $name and $name =~ /\(PAUSE Custodial Account\)/;
+        $put->{is_pause_custodial_account} = 1 if $is_pause_custodial_account;
 
         # Now check the format we have is actually correct
         my @errors = MetaCPAN::Document::Author->validate($put);
