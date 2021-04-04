@@ -96,6 +96,9 @@ sub mapping {
                  "bucket" : {
                     "type" : "integer"
                  },
+                 "bus_factor" : {
+                    "type" : "integer"
+                 },
                  "immediate" : {
                     "type" : "integer"
                  },
