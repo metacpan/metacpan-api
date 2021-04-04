@@ -15,6 +15,7 @@ use Log::Contextual qw( :log );
 use MetaCPAN::Document::Author ();
 use URI                        ();
 use XML::Simple qw( XMLin );
+use MetaCPAN::Types::TypeTiny qw( Str );
 
 =head1 SYNOPSIS
 
@@ -27,6 +28,11 @@ has author_fh => (
     traits  => ['NoGetopt'],
     lazy    => 1,
     default => sub { shift->cpan . '/authors/00whois.xml' },
+);
+
+has pauseid => (
+    is  => 'ro',
+    isa => Str,
 );
 
 sub run {
@@ -46,9 +52,14 @@ sub index_authors {
     my $self    = shift;
     my $type    = $self->index->type('author');
     my $authors = XMLin( $self->author_fh )->{cpanid};
-    my $count   = keys %$authors;
-    log_debug {"Counting author"};
-    log_info {"Indexing $count authors"};
+    if ( $self->pauseid ) {
+        log_info {"Indexing 1 author"};
+    }
+    else {
+        my $count = keys %$authors;
+        log_debug {"Counting author"};
+        log_info {"Indexing $count authors"};
+    }
 
     log_debug {"Getting last update dates"};
     my $dates
@@ -70,7 +81,9 @@ sub index_authors {
 
     my @author_ids_to_purge;
 
-    while ( my ( $pauseid, $data ) = each %$authors ) {
+    for my $pauseid ( keys %$authors ) {
+        next if ( $self->pauseid and $self->pauseid ne $pauseid );
+        my $data = $authors->{$pauseid};
         my ( $name, $email, $homepage, $asciiname )
             = ( @$data{qw(fullname email homepage asciiname)} );
         $name      = undef if ( ref $name );
@@ -140,6 +153,7 @@ sub index_authors {
             }
         );
     }
+
     $bulk->flush;
     $self->index->refresh;
 
@@ -163,7 +177,7 @@ sub author_config {
     # Get the most recent version
     my ($file)
         = sort { $dir->child($b)->stat->mtime <=> $dir->child($a)->stat->mtime }
-        grep   {m/author-.*?\.json/} readdir($dh);
+        grep {m/author-.*?\.json/} readdir($dh);
     return $fallback unless ($file);
     $file = $dir->child($file);
     return $fallback if !-e $file;
