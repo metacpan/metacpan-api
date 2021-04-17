@@ -8,11 +8,6 @@ jobs:
         runs-on: "ubuntu-20.04"
         steps:
             - uses: actions/checkout@v2
-            - name: Install Carton
-              run: >
-                  curl -sL https://git.io/cpm | perl -
-                  install -g Carton
-                  --show-build-log-on-failure
             - name: Install deps
               run: >
                   curl -sL https://git.io/cpm | perl -
@@ -22,7 +17,7 @@ jobs:
                   --show-build-log-on-failure
                   --local-lib-contained=local
             - name: Maybe update cpanfile.snapshot
-              run: carton
+              run: perl -Ilocal/lib/perl5 local/bin/carton
             - name: Create Pull Request
               uses: peter-evans/create-pull-request@v3
               with:

@@ -8,6 +8,7 @@ requires 'Archive::Tar', '2.04';
 requires 'Authen::SASL', '2.16';
 requires 'BackPAN::Index', '0.42';
 requires 'Captcha::reCAPTCHA', '0.99';
+requires 'Carton', '1.0.34';
 requires 'Catalyst', '5.90103';
 requires 'Catalyst::Action::RenderView';
 requires 'Catalyst::Controller';
