@@ -8,15 +8,15 @@ _All of these URLs can be tested using the [MetaCPAN Explorer](https://explorer.
 
 To learn more about the ElasticSearch query DSL (Domain-Specific Language) check out Clinton Gormley's [Terms of Endearment - ES Query DSL Explained](https://www.slideshare.net/clintongormley/terms-of-endearment-the-elasticsearch-query-dsl-explained) slides.
 
-The query syntax is explained on ElasticSearch's [reference page](https://www.elasticsearch.org/guide/reference/query-dsl/). You can also check out this getting started tutorial about Elasticsearch [reference page](http://joelabrahamsson.com/elasticsearch-101/).
+The query syntax is explained on ElasticSearch's [reference page](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/query-dsl.html). You can also check out this getting started tutorial about Elasticsearch [reference page](http://joelabrahamsson.com/elasticsearch-101/).
 
 ## Being polite
 
-Currently, the only rules around using the API are to "be polite". We have enforced an upper limit of a size of 5,000 on search requests.  If you need to fetch more than 5,000 items, you should look at using the scrolling API.  Search this page for "scroll" to get an example using [Search::Elasticsearch](https://metacpan.org/pod/Search::Elasticsearch) or see the [Elasticsearch scroll docs](https://www.elasticsearch.org/guide/reference/fastapi/search/scroll.html) if you are connecting in some other way.
+Currently, the only rules around using the API are to "be polite". We have enforced an upper limit of a size of 5,000 on search requests.  If you need to fetch more than 5,000 items, you should look at using the scrolling API.  Search this page for "scroll" to get an example using [Search::Elasticsearch](https://metacpan.org/pod/Search::Elasticsearch) or see the [Elasticsearch scroll docs](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html) if you are connecting in some other way.
 
 You can certainly scroll if you are fetching less than 5,000 items.  You might want to do this if you are expecting a large data set, but will still need to run many requests to get all of the required data.
 
-Be aware that when you scroll, your docs will come back unsorted, as noted in the [ElasticSearch scan documentation](https://www.elasticsearch.org/guide/reference/fastapi/search/search-type.html).
+Be aware that when you scroll, your docs will come back unsorted, as noted in the [ElasticSearch scan documentation](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-search-type.html#scan).
 
 ## Identifying Yourself
 
@@ -64,7 +64,7 @@ Joins on documents:
 
 Joins on search results is work in progress.
 
-Restricting the joined results can be done by using the [boolean "should"](https://www.elasticsearch.org/guide/reference/query-dsl/bool-query.html) occurrence type:
+Restricting the joined results can be done by using the [boolean "should"](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/query-dsl-bool-query.html) occurrence type:
 
 ```sh
 curl -XPOST https://fastapi.metacpan.org/v1/author/PERLER?join=release -d '
