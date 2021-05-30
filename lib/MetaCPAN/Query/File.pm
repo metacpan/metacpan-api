@@ -142,27 +142,26 @@ my %perl_files = (
     ],
 );
 
+my @shared_path_prefix_examples = qw(
+    example
+    examples
+    Example
+    Examples
+    sample
+    samples
+);
+
 my %path_files = (
     example => [
         qw(
             eg
             ex
-        )
+        ),
+        @shared_path_prefix_examples,
     ],
 );
 
-my %prefix_files = (
-    example => [
-        qw(
-            example
-            examples
-            Example
-            Examples
-            sample
-            samples
-        )
-    ],
-);
+my %prefix_files = ( example => [ @shared_path_prefix_examples, ], );
 
 my %file_to_type;
 my %type_to_regex;
