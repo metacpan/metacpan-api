@@ -149,6 +149,8 @@ my @shared_path_prefix_examples = qw(
     Examples
     sample
     samples
+    demo
+    demos
 );
 
 my %path_files = (
