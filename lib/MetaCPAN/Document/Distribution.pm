@@ -27,6 +27,14 @@ has river => (
     isa     => RiverSummary,
     dynamic => 1,
     writer  => '_set_river',
+    default => sub {
+        +{
+            bucket     => 0,
+            bus_factor => 1,
+            immediate  => 0,
+            total      => 0,
+        };
+    },
 );
 
 sub releases {
