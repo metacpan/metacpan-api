@@ -787,12 +787,12 @@ sub _get_provided_modules {
         }
     );
 
-    return [
-        map      { $_->{name} }
-            grep { $_->{indexed} && $_->{authorized} }
-            map  { @{ $_->{_source}{module} } }
-            @{ $provided_modules->{hits}{hits} }
-    ];
+    my @modules = map { $_->{name} }
+        grep { $_->{indexed} && $_->{authorized} }
+        map  { @{ $_->{_source}{module} } }
+        @{ $provided_modules->{hits}{hits} };
+
+    return @modules ? \@modules : undef;
 }
 
 sub _fix_sort_value {
