@@ -758,10 +758,12 @@ sub _get_latest_release {
     my ($release_info) = map { $_->{fields} } @{ $release->{hits}{hits} };
     single_valued_arrayref_to_scalar($release_info);
 
-    return +{
+    return $release_info->{name} && $release_info->{author}
+        ? +{
         name   => $release_info->{name},
         author => $release_info->{author},
-    };
+        }
+        : undef;
 }
 
 sub _get_provided_modules {
