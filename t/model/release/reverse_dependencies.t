@@ -7,7 +7,7 @@ use Test::More;
 
 my $c = 'MetaCPAN::Server';
 
-subtest 'reverse_dependencies' => sub {
+subtest 'distribution reverse_dependencies' => sub {
     my $data = [
         sort { $a->[1] cmp $b->[1] }
             map +[ @{$_}{qw(author name)} ],
@@ -27,7 +27,7 @@ subtest 'reverse_dependencies' => sub {
     );
 };
 
-subtest 'reverse_dependencies' => sub {
+subtest 'module reverse_dependencies' => sub {
     my $data = [
         map +[ @{$_}{qw(author name)} ],
         @{
@@ -41,6 +41,13 @@ subtest 'reverse_dependencies' => sub {
         [ [ LOCAL => 'Multiple-Modules-RDeps-2.03' ], ],
         'Got correct reverse dependencies for module.'
     );
+};
+
+subtest 'no reverse_dependencies' => sub {
+    my $data
+        = $c->model('CPAN::Release')->raw->requires('DoesNotExist')->{data};
+
+    is_deeply( $data, [], 'Found no reverse dependencies for module.' );
 };
 
 done_testing;
