@@ -93,13 +93,13 @@ sub get : Path('') : Args(1) {
         ['The requested field(s) could not be found'] );
 }
 
-sub all : Path('') : Args(0) : ActionClass('Deserialize') {
+sub all : Path('') : Args(0) : ActionClass('~Deserialize') {
     my ( $self, $c ) = @_;
     $c->req->params->{q} ||= '*' unless ( $c->req->data );
     $c->forward('search');
 }
 
-sub search : Path('_search') : ActionClass('Deserialize') {
+sub search : Path('_search') : ActionClass('~Deserialize') {
     my ( $self, $c ) = @_;
     my $req = $c->req;
 
@@ -129,7 +129,7 @@ sub search : Path('_search') : ActionClass('Deserialize') {
     } or do { $self->internal_error( $c, $@ ) };
 }
 
-sub join : ActionClass('Deserialize') {
+sub join : ActionClass('~Deserialize') {
     my ( $self, $c ) = @_;
     my $joins     = $self->relationships;
     my @req_joins = $c->req->param('join');
