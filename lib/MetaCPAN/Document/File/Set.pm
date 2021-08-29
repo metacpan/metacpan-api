@@ -257,12 +257,13 @@ sub find_download_url {
     my $version          = $args->{version};
     my $explicit_version = $version && $version =~ /==/;
 
-    # exclude backpan if dev, and
-    # require released modules if neither dev nor explicit version
-    my @filters
-        = $dev               ? { not => { term => { status => 'backpan' } } }
-        : !$explicit_version ? { term => { maturity => 'released' } }
-        :                      ();
+    my @filters;
+    if ( !$explicit_version ) {
+        push @filters, { not => { term => { status => 'backpan' } } };
+        if ( !$dev ) {
+            push @filters, { term => { maturity => 'released' } };
+        }
+    }
 
     my $version_filters = $self->_version_filters($version);
 
