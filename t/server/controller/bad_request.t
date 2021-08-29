@@ -40,7 +40,7 @@ my @tests = (
     ],
     [
         'plain text query',
-        400, 'some content as invalid JSON',
+        400,     'some content as invalid JSON',
         'error', 'malformed JSON string',
     ],
     [
@@ -53,7 +53,7 @@ for (@tests) {
 
     subtest $title => sub {
         for my $type (qw( release file )) {
-            my $url = "/$type/_search";
+            my $url     = "/$type/_search";
             my $request = HTTP::Request->new( 'POST', $url, [], $query );
 
             subtest "check with '$type' controller" => sub {
