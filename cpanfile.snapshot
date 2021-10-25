@@ -5444,13 +5444,12 @@ DISTRIBUTIONS
       Scalar::Util 1.14
       XSLoader 0.02
       perl 5.008005
-  Mozilla-CA-20200520
-    pathname: A/AB/ABH/Mozilla-CA-20200520.tar.gz
+  Mozilla-CA-20211001
+    pathname: A/AB/ABH/Mozilla-CA-20211001.tar.gz
     provides:
-      Mozilla::CA 20200520
+      Mozilla::CA 20211001
     requirements:
       ExtUtils::MakeMaker 0
-      Test 0
       perl 5.006
   Net-CIDR-Lite-0.21
     pathname: D/DO/DOUGW/Net-CIDR-Lite-0.21.tar.gz
