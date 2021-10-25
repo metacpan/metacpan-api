@@ -129,7 +129,7 @@ requires 'MooseX::StrictConstructor';
 requires 'MooseX::Types';
 requires 'MooseX::Types::ElasticSearch', '== 0.0.4';
 requires 'MooseX::Types::Moose';
-requires 'Mozilla::CA', '20200520';
+requires 'Mozilla::CA', '20211001';
 requires 'namespace::autoclean';
 requires 'Net::DNS::Paranoid';
 requires 'Net::Fastly', '1.12';
