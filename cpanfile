@@ -168,7 +168,7 @@ requires 'Starman';
 requires 'strictures', '1';
 requires 'Throwable::Error';
 requires 'Time::Local';
-requires 'Try::Tiny', '0.24';
+requires 'Try::Tiny', '0.30';
 requires 'Type::Tiny', '1.002001';
 requires 'Types::Path::Tiny';
 requires 'Types::URI';
