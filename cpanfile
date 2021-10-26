@@ -172,7 +172,7 @@ requires 'Try::Tiny', '0.24';
 requires 'Type::Tiny', '1.002001';
 requires 'Types::Path::Tiny';
 requires 'Types::URI';
-requires 'URI', '5.09';
+requires 'URI', '5.10';
 requires 'URI::Escape';
 requires 'version', '0.9901';
 requires 'XML::Simple';

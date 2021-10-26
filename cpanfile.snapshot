@@ -98,19 +98,6 @@ DISTRIBUTIONS
       Params::Check 0.07
       Test::More 0
       if 0
-  Archive-Peek-0.35
-    pathname: L/LB/LBROCARD/Archive-Peek-0.35.tar.gz
-    provides:
-      Archive::Peek 0.35
-      Archive::Peek::Tar undef
-      Archive::Peek::Zip undef
-    requirements:
-      Archive::Tar 0
-      Archive::Zip 0
-      ExtUtils::MakeMaker 0
-      Moose 0
-      MooseX::Types::Path::Class 0
-      Test::More 0
   Archive-Zip-1.59
     pathname: P/PH/PHRED/Archive-Zip-1.59.tar.gz
     provides:
@@ -953,17 +940,6 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Storable 0
       perl 5.008001
-  Clone-PP-1.07
-    pathname: N/NE/NEILB/Clone-PP-1.07.tar.gz
-    provides:
-      Clone::PP 1.07
-    requirements:
-      Exporter 0
-      ExtUtils::MakeMaker 0
-      perl 5.006
-      strict 0
-      vars 0
-      warnings 0
   Code-TidyAll-0.78
     pathname: D/DR/DROLSKY/Code-TidyAll-0.78.tar.gz
     provides:
@@ -2827,18 +2803,6 @@ DISTRIBUTIONS
       perl 5.008
       strict 0
       warnings 0
-  File-Slurp-9999.19
-    pathname: U/UR/URI/File-Slurp-9999.19.tar.gz
-    provides:
-      File::Slurp 9999.19
-      FileSlurp_12 9999.13
-    requirements:
-      Carp 0
-      Exporter 0
-      ExtUtils::MakeMaker 0
-      Fcntl 0
-      POSIX 0
-      perl 5.004
   File-Spec-Native-1.004
     pathname: R/RW/RWSTAUNER/File-Spec-Native-1.004.tar.gz
     provides:
@@ -3127,21 +3091,6 @@ DISTRIBUTIONS
       locale 0
       perl 5.008001
       strict 0
-  HTTP-Daemon-6.01
-    pathname: G/GA/GAAS/HTTP-Daemon-6.01.tar.gz
-    provides:
-      HTTP::Daemon 6.01
-      HTTP::Daemon::ClientConn 6.01
-    requirements:
-      ExtUtils::MakeMaker 0
-      HTTP::Date 6
-      HTTP::Request 6
-      HTTP::Response 6
-      HTTP::Status 6
-      IO::Socket 0
-      LWP::MediaTypes 6
-      Sys::Hostname 0
-      perl 5.008001
   HTTP-Date-6.02
     pathname: G/GA/GAAS/HTTP-Date-6.02.tar.gz
     provides:
@@ -5374,19 +5323,6 @@ DISTRIBUTIONS
       Module::Build 0.3601
       MooseX::Types 0
       Search::Elasticsearch 0
-  MooseX-Types-Path-Class-0.09
-    pathname: E/ET/ETHER/MooseX-Types-Path-Class-0.09.tar.gz
-    provides:
-      MooseX::Types::Path::Class 0.09
-    requirements:
-      Module::Build::Tiny 0.034
-      MooseX::Types 0
-      MooseX::Types::Moose 0
-      Path::Class 0.16
-      if 0
-      perl 5.006
-      strict 0
-      warnings 0
   MooseX-Types-Structured-0.36
     pathname: E/ET/ETHER/MooseX-Types-Structured-0.36.tar.gz
     provides:
@@ -6216,26 +6152,6 @@ DISTRIBUTIONS
       overload 0
       strict 0
       warnings 0
-  Parse-CPAN-Packages-2.40
-    pathname: M/MI/MITHALDU/Parse-CPAN-Packages-2.40.tar.gz
-    provides:
-      Parse::CPAN::Packages 2.40
-      Parse::CPAN::Packages::Distribution undef
-      Parse::CPAN::Packages::Package undef
-    requirements:
-      Archive::Peek 0
-      CPAN::DistnameInfo 0
-      Compress::Zlib 0
-      ExtUtils::MakeMaker 0
-      File::Slurp 0
-      Moo 0
-      PPI 0
-      Path::Class 0
-      Test::InDistDir 0
-      Test::More 0
-      Type::Utils 0
-      Types::Standard 0
-      version 0
   Parse-CPAN-Packages-Fast-0.09
     pathname: S/SR/SREZIC/Parse-CPAN-Packages-Fast-0.09.tar.gz
     provides:
@@ -7293,13 +7209,6 @@ DISTRIBUTIONS
       overload 0
       strict 0
       warnings 0
-  Sort-Naturally-1.03
-    pathname: B/BI/BINGOS/Sort-Naturally-1.03.tar.gz
-    provides:
-      Sort::Naturally 1.03
-    requirements:
-      ExtUtils::MakeMaker 0
-      perl 5
   Sort-Versions-1.62
     pathname: N/NE/NEILB/Sort-Versions-1.62.tar.gz
     provides:
@@ -7721,16 +7630,6 @@ DISTRIBUTIONS
       Try::Tiny 0.07
       strict 0
       warnings 0
-  Test-InDistDir-1.112071
-    pathname: M/MI/MITHALDU/Test-InDistDir-1.112071.tar.gz
-    provides:
-      Test::InDistDir 1.112071
-    requirements:
-      ExtUtils::MakeMaker 6.30
-      File::Find 0
-      File::Spec 0
-      File::Temp 0
-      Test::More 0
   Test-LongString-0.17
     pathname: R/RG/RGARCIA/Test-LongString-0.17.tar.gz
     provides:
@@ -8243,53 +8142,53 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  URI-5.09
-    pathname: O/OA/OALDERS/URI-5.09.tar.gz
+  URI-5.10
+    pathname: O/OA/OALDERS/URI-5.10.tar.gz
     provides:
-      URI 5.09
-      URI::Escape 5.09
-      URI::Heuristic 5.09
-      URI::IRI 5.09
-      URI::QueryParam 5.09
-      URI::Split 5.09
-      URI::URL 5.09
-      URI::WithBase 5.09
-      URI::data 5.09
-      URI::file 5.09
-      URI::file::Base 5.09
-      URI::file::FAT 5.09
-      URI::file::Mac 5.09
-      URI::file::OS2 5.09
-      URI::file::QNX 5.09
-      URI::file::Unix 5.09
-      URI::file::Win32 5.09
-      URI::ftp 5.09
-      URI::gopher 5.09
-      URI::http 5.09
-      URI::https 5.09
-      URI::ldap 5.09
-      URI::ldapi 5.09
-      URI::ldaps 5.09
-      URI::mailto 5.09
-      URI::mms 5.09
-      URI::news 5.09
-      URI::nntp 5.09
-      URI::nntps 5.09
-      URI::pop 5.09
-      URI::rlogin 5.09
-      URI::rsync 5.09
-      URI::rtsp 5.09
-      URI::rtspu 5.09
-      URI::sftp 5.09
-      URI::sip 5.09
-      URI::sips 5.09
-      URI::snews 5.09
-      URI::ssh 5.09
-      URI::telnet 5.09
-      URI::tn3270 5.09
-      URI::urn 5.09
-      URI::urn::isbn 5.09
-      URI::urn::oid 5.09
+      URI 5.10
+      URI::Escape 5.10
+      URI::Heuristic 5.10
+      URI::IRI 5.10
+      URI::QueryParam 5.10
+      URI::Split 5.10
+      URI::URL 5.10
+      URI::WithBase 5.10
+      URI::data 5.10
+      URI::file 5.10
+      URI::file::Base 5.10
+      URI::file::FAT 5.10
+      URI::file::Mac 5.10
+      URI::file::OS2 5.10
+      URI::file::QNX 5.10
+      URI::file::Unix 5.10
+      URI::file::Win32 5.10
+      URI::ftp 5.10
+      URI::gopher 5.10
+      URI::http 5.10
+      URI::https 5.10
+      URI::ldap 5.10
+      URI::ldapi 5.10
+      URI::ldaps 5.10
+      URI::mailto 5.10
+      URI::mms 5.10
+      URI::news 5.10
+      URI::nntp 5.10
+      URI::nntps 5.10
+      URI::pop 5.10
+      URI::rlogin 5.10
+      URI::rsync 5.10
+      URI::rtsp 5.10
+      URI::rtspu 5.10
+      URI::sftp 5.10
+      URI::sip 5.10
+      URI::sips 5.10
+      URI::snews 5.10
+      URI::ssh 5.10
+      URI::telnet 5.10
+      URI::tn3270 5.10
+      URI::urn 5.10
+      URI::urn::isbn 5.10
+      URI::urn::oid 5.10
     requirements:
       Carp 0
       Cwd 0
