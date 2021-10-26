@@ -8576,32 +8576,32 @@ DISTRIBUTIONS
       XSLoader 0
       lib 0
       perl 5.008001
-  libwww-perl-6.55
-    pathname: O/OA/OALDERS/libwww-perl-6.55.tar.gz
+  libwww-perl-6.58
+    pathname: O/OA/OALDERS/libwww-perl-6.58.tar.gz
     provides:
-      LWP 6.55
-      LWP::Authen::Basic 6.55
-      LWP::Authen::Digest 6.55
-      LWP::Authen::Ntlm 6.55
-      LWP::ConnCache 6.55
-      LWP::Debug 6.55
-      LWP::Debug::TraceHTTP 6.55
-      LWP::DebugFile 6.55
-      LWP::MemberMixin 6.55
-      LWP::Protocol 6.55
-      LWP::Protocol::cpan 6.55
-      LWP::Protocol::data 6.55
-      LWP::Protocol::file 6.55
-      LWP::Protocol::ftp 6.55
-      LWP::Protocol::gopher 6.55
-      LWP::Protocol::http 6.55
-      LWP::Protocol::loopback 6.55
-      LWP::Protocol::mailto 6.55
-      LWP::Protocol::nntp 6.55
-      LWP::Protocol::nogo 6.55
-      LWP::RobotUA 6.55
-      LWP::Simple 6.55
-      LWP::UserAgent 6.55
+      LWP 6.58
+      LWP::Authen::Basic 6.58
+      LWP::Authen::Digest 6.58
+      LWP::Authen::Ntlm 6.58
+      LWP::ConnCache 6.58
+      LWP::Debug 6.58
+      LWP::Debug::TraceHTTP 6.58
+      LWP::DebugFile 6.58
+      LWP::MemberMixin 6.58
+      LWP::Protocol 6.58
+      LWP::Protocol::cpan 6.58
+      LWP::Protocol::data 6.58
+      LWP::Protocol::file 6.58
+      LWP::Protocol::ftp 6.58
+      LWP::Protocol::gopher 6.58
+      LWP::Protocol::http 6.58
+      LWP::Protocol::loopback 6.58
+      LWP::Protocol::mailto 6.58
+      LWP::Protocol::nntp 6.58
+      LWP::Protocol::nogo 6.58
+      LWP::RobotUA 6.58
+      LWP::Simple 6.58
+      LWP::UserAgent 6.58
       libwww::perl undef
     requirements:
       CPAN::Meta::Requirements 2.120620
@@ -8633,7 +8633,7 @@ DISTRIBUTIONS
       URI 1.10
       URI::Escape 0
       WWW::RobotRules 6
-      base 0
+      parent 0.217
       perl 5.008001
       strict 0
       warnings 0
