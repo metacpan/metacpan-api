@@ -3983,28 +3983,29 @@ DISTRIBUTIONS
       Fennec::Lite 0
       Test::Exception 0
       Test::More 0
-  MetaCPAN-Client-2.019000
-    pathname: M/MI/MICKEY/MetaCPAN-Client-2.019000.tar.gz
+  MetaCPAN-Client-2.029000
+    pathname: M/MI/MICKEY/MetaCPAN-Client-2.029000.tar.gz
     provides:
-      MetaCPAN::Client 2.019000
-      MetaCPAN::Client::Author 2.019000
-      MetaCPAN::Client::Distribution 2.019000
-      MetaCPAN::Client::DownloadURL 2.019000
-      MetaCPAN::Client::Favorite 2.019000
-      MetaCPAN::Client::File 2.019000
-      MetaCPAN::Client::Mirror 2.019000
-      MetaCPAN::Client::Module 2.019000
-      MetaCPAN::Client::Package 2.019000
-      MetaCPAN::Client::Permission 2.019000
-      MetaCPAN::Client::Pod 2.019000
-      MetaCPAN::Client::Rating 2.019000
-      MetaCPAN::Client::Release 2.019000
-      MetaCPAN::Client::Request 2.019000
-      MetaCPAN::Client::ResultSet 2.019000
-      MetaCPAN::Client::Role::Entity 2.019000
-      MetaCPAN::Client::Role::HasUA 2.019000
-      MetaCPAN::Client::Scroll 2.019000
-      MetaCPAN::Client::Types 2.019000
+      MetaCPAN::Client 2.029000
+      MetaCPAN::Client::Author 2.029000
+      MetaCPAN::Client::Cover 2.029000
+      MetaCPAN::Client::Distribution 2.029000
+      MetaCPAN::Client::DownloadURL 2.029000
+      MetaCPAN::Client::Favorite 2.029000
+      MetaCPAN::Client::File 2.029000
+      MetaCPAN::Client::Mirror 2.029000
+      MetaCPAN::Client::Module 2.029000
+      MetaCPAN::Client::Package 2.029000
+      MetaCPAN::Client::Permission 2.029000
+      MetaCPAN::Client::Pod 2.029000
+      MetaCPAN::Client::Rating 2.029000
+      MetaCPAN::Client::Release 2.029000
+      MetaCPAN::Client::Request 2.029000
+      MetaCPAN::Client::ResultSet 2.029000
+      MetaCPAN::Client::Role::Entity 2.029000
+      MetaCPAN::Client::Role::HasUA 2.029000
+      MetaCPAN::Client::Scroll 2.029000
+      MetaCPAN::Client::Types 2.029000
     requirements:
       Carp 0
       ExtUtils::MakeMaker 7.1101

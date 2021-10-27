@@ -187,7 +187,7 @@ requires 'Devel::Confess';
 requires 'File::Copy';
 requires 'HTTP::Cookies', '6.10';
 requires 'LWP::ConsoleLogger::Easy';
-requires 'MetaCPAN::Client', '2.017000';
+requires 'MetaCPAN::Client', '2.029000';
 requires 'Module::Faker', '0.015';
 requires 'Module::Faker::Dist', '0.010';
 requires 'Perl::Tidy' => '20210402';
