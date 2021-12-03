@@ -36,8 +36,8 @@ test_release(
 
                 ok $file->indexed,    'local::lib should be indexed';
                 ok $file->authorized, 'local::lib should be authorized';
-                is $file->sloc,       3, 'sloc';
-                is $file->slop,       2, 'slop';
+                is $file->sloc, 3, 'sloc';
+                is $file->slop, 2, 'slop';
 
                 is_deeply $file->{pod_lines}, [ [ 4, 3 ] ], 'pod_lines';
 

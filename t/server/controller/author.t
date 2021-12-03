@@ -119,9 +119,7 @@ test_psgi app, sub {
                                 bool => {
                                     should => [
                                         {
-                                            term => {
-                                                'status' => 'latest'
-                                            }
+                                            term => { 'status' => 'latest' }
                                         },
                                         {
                                             term => { 'pauseid' => 'DOY' }

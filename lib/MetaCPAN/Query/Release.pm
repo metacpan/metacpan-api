@@ -956,18 +956,15 @@ sub modules {
                                     bool => {
                                         must => [
                                             {
-                                                range => {
-                                                    slop => { gt => 0 }
-                                                }
+                                                range =>
+                                                    { slop => { gt => 0 } }
                                             },
                                             {
                                                 exists => {
                                                     field => 'pod.analyzed'
                                                 }
                                             },
-                                            {
-                                                term => { 'indexed' => 1 }
-                                            },
+                                            { term => { 'indexed' => 1 } },
                                         ]
                                     }
                                 }
