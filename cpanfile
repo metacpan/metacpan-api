@@ -184,7 +184,6 @@ test_requires 'Code::TidyAll', '0.78';
 test_requires 'Code::TidyAll::Plugin::UniqueLines';
 test_requires 'CPAN::Faker', '0.010';
 test_requires 'Devel::Confess';
-test_requires 'File::Copy';
 test_requires 'HTTP::Cookies', '6.10';
 test_requires 'LWP::ConsoleLogger::Easy';
 test_requires 'MetaCPAN::Client', '2.029000';
