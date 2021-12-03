@@ -1,8 +1,6 @@
 use strict;
 use warnings;
-
 requires 'perl', '5.010';
-
 requires 'Archive::Any', '0.0942';
 requires 'Archive::Tar', '2.04';
 requires 'Authen::SASL', '2.16';
@@ -33,7 +31,7 @@ requires 'Config::ZOMG', '1.000000';
 requires 'Const::Fast';
 requires 'CPAN::DistnameInfo', '0.12';
 requires 'Cpanel::JSON::XS', '3.0115';
-requires 'CPAN::Meta', '2.150005'; # Avoid issues with List::Util dep under carton install.
+requires 'CPAN::Meta', '2.150005';
 requires 'CPAN::Meta::Requirements', '2.140';
 requires 'CPAN::Meta::YAML', '0.018';
 requires 'CPAN::Repository::Perms';
@@ -162,7 +160,7 @@ requires 'Pod::Text';
 requires 'Ref::Util';
 requires 'Regexp::Common';
 requires 'Regexp::Common::time';
-requires 'Safe', '2.35'; # bug fixes (used by Parse::PMFile)
+requires 'Safe', '2.35';
 requires 'Search::Elasticsearch', '== 2.03';
 requires 'Starman';
 requires 'strictures', '1';
@@ -176,29 +174,25 @@ requires 'URI', '5.10';
 requires 'URI::Escape';
 requires 'version', '0.9901';
 requires 'XML::Simple';
-requires 'YAML::XS', '0.83'; # Mojolicious::Plugin::OpenAPI YAML loading
-
-# test requirements
-test_requires 'App::Prove';
-test_requires 'Code::TidyAll', '0.78';
-test_requires 'Code::TidyAll::Plugin::UniqueLines';
-test_requires 'CPAN::Faker', '0.010';
-test_requires 'Devel::Confess';
+requires 'YAML::XS', '0.83';
+test_requires 'App::Prove', '3.42';
+test_requires 'Code::TidyAll', '0.80';
+test_requires 'Code::TidyAll::Plugin::UniqueLines', '0.000003';
+test_requires 'CPAN::Faker', '0.011';
+test_requires 'Devel::Confess', '0.009004';
 test_requires 'HTTP::Cookies', '6.10';
-test_requires 'LWP::ConsoleLogger::Easy';
+test_requires 'LWP::ConsoleLogger::Easy', '0.000043';
 test_requires 'MetaCPAN::Client', '2.029000';
-test_requires 'Module::Faker', '0.015';
-test_requires 'Module::Faker::Dist', '0.010';
-test_requires 'Perl::Tidy' => '20210402';
-test_requires 'Plack::Test::Agent';
-test_requires 'Test::Code::TidyAll';
-test_requires 'Test::More', '0.99';
-test_requires 'Test::Most';
-test_requires 'Test::Perl::Critic';
-test_requires 'Test::RequiresInternet';
-test_requires 'Test::Routine', '0.012';
-test_requires 'Test::Routine::Util', '0';
+test_requires 'Module::Faker', '0.022';
+test_requires 'Module::Faker::Dist', '0.022';
+test_requires 'Perl::Tidy', '20211029';
+test_requires 'Plack::Test::Agent', '1.5';
+test_requires 'Test::Code::TidyAll', '0.80';
+test_requires 'Test::More', '1.302188';
+test_requires 'Test::Most', '0.37';
+test_requires 'Test::Perl::Critic', '1.04';
+test_requires 'Test::RequiresInternet', '0.05';
+test_requires 'Test::Routine', '0.028';
+test_requires 'Test::Routine::Util', '0.028';
 test_requires 'Test::Vars', '0.015';
-
-# author requirements
 author_requires 'Plack::Middleware::Rewrite';
