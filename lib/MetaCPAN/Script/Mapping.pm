@@ -45,6 +45,14 @@ has arg_list_types => (
     documentation => 'list available index type names',
 );
 
+has arg_cluster_info => (
+    init_arg      => 'show_cluster_info',
+    is            => 'ro',
+    isa           => Bool,
+    default       => 0,
+    documentation => 'show basic info about cluster, indices and aliases',
+);
+
 has arg_create_index => (
     init_arg      => 'create_index',
     is            => 'ro',
@@ -121,14 +129,31 @@ has delete_from_type => (
 );
 
 sub run {
-    my $self = shift;
-    $self->create_index   if $self->arg_create_index;
-    $self->delete_index   if $self->arg_delete_index;
-    $self->update_index   if $self->arg_update_index;
-    $self->copy_type      if $self->copy_to_index;
-    $self->empty_type     if $self->delete_from_type;
-    $self->list_types     if $self->arg_list_types;
-    $self->deploy_mapping if $self->arg_deploy_mapping;
+    my $self   = shift;
+
+    if ( $self->await ) {
+        $self->delete_index if $self->arg_delete_index;
+        $self->update_index if $self->arg_update_index;
+        $self->copy_type    if $self->copy_to_index;
+        $self->empty_type   if $self->delete_from_type;
+        $self->list_types   if $self->arg_list_types;
+
+        if ( $self->arg_deploy_mapping ) {
+            unless ( $self->deploy_mapping ) {
+                $self->print_error("Indices Re-creation has failed!");
+                $self->exit_code(1);
+            }
+        }
+
+        if ( $self->arg_cluster_info ) {
+            $self->check_health;
+            $self->show_info;
+        }
+    }
+
+    # Correctly reaching this point it will end the application
+    # with the set MetaCPAN::Role::Script::exit_code
+    exit $self->exit_code;
 }
 
 sub _check_index_exists {
@@ -158,6 +183,7 @@ sub delete_index {
 
 sub _delete_index {
     my ( $self, $name ) = @_;
+
     log_info {"Deleting index: $name"};
     $self->es->indices->delete( index => $name );
 }
@@ -369,9 +395,20 @@ sub list_types {
     print "$_\n" for sort keys %{ $self->index->types };
 }
 
+sub show_info {
+    my $self    = $_[0];
+    my $info_rs = {
+        'cluster_info' => \%{ $self->cluster_info },
+        'indices_info' => \%{ $self->indices_info },
+        'aliases_info' => \%{ $self->aliases_info }
+    };
+    print JSON->new->utf8->pretty->encode($info_rs);
+}
+
 sub deploy_mapping {
     my $self       = shift;
     my $cpan_index = 'cpan_v1_01';
+    my $imappingok = 0;
 
     $self->are_you_sure(
         'this will delete EVERYTHING and re-create the (empty) indexes');
@@ -446,16 +483,89 @@ sub deploy_mapping {
         }
     }
 
-    # create alias
+    # create aliases
 
-    $es->indices->put_alias(
-        index => $cpan_index,
-        name  => 'cpan',
-    );
+    my %aliases = ( 'cpan' => $cpan_index );
+    for my $alias ( sort keys %aliases ) {
+        log_info {"Creating alias: '$alias' -> '$aliases{$alias}'"};
+        $es->indices->put_alias(
+            index => $aliases{$alias},
+            name  => $alias,
+        );
+    }
+
+    $self->check_health(1);
+    $imappingok = $self->verify_mapping( \%mappings, \%aliases );
 
     # done
     log_info {"Done."};
-    1;
+
+    return $imappingok;
+}
+
+sub verify_mapping {
+    my ( $self, $rmappings, $raliases ) = @_;
+    my $ihealth = 0;
+
+    if ( defined $rmappings && ref $rmappings eq 'HASH' ) {
+        my $rhealth = undef;
+
+        $ihealth = 1;
+
+        for my $idx ( sort keys %$rmappings ) {
+            $rhealth = $self->indices_info->{$idx};
+            if ( defined $rhealth ) {
+                if ( $rhealth->{'health'} eq 'red' ) {
+                    log_error {
+                        "Broken index: $idx (state '"
+                            . $rhealth->{'health'} . "')"
+                    };
+                    $ihealth = 0;
+                }
+                else {
+                    log_info {
+                        "Healthy index: $idx (state '"
+                            . $rhealth->{'health'} . "')"
+                    };
+                }
+            }
+            else {
+                log_error {"Missing index: $idx"};
+                $ihealth = 0;
+            }
+        }
+    }
+
+    if ( defined $raliases && ref $raliases eq 'HASH' ) {
+        my $ralias = undef;
+        for my $name ( sort keys %$raliases ) {
+            $ralias = $self->aliases_info->{$name};
+            if ( defined $ralias ) {
+                if ( $ralias->{'index'} eq $raliases->{$name} ) {
+                    log_info {
+                        "Correct alias: $name (index '"
+                            . $ralias->{'index'} . "')"
+                    };
+                }
+                else {
+                    log_error {
+                        "Broken alias: $name (index '"
+                            . $ralias->{'index'} . "')"
+                    };
+                    $ihealth = 0;
+                }
+            }
+            else {
+                log_error {"Missing alias: $name"};
+                $ihealth = 0;
+            }
+        }
+    }
+    else {
+        $ihealth = 0 if ( scalar( keys %{ $self->aliases_info } ) == 0 );
+    }
+
+    return $ihealth;
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -463,8 +573,15 @@ __PACKAGE__->meta->make_immutable;
 
 __END__
 
+=pod
+
+=head1 NAME
+
+MetaCPAN::Script::Mapping - Script to set the index and mapping the types
+
 =head1 SYNOPSIS
 
+ # bin/metacpan mapping --show_cluster_info   # show basic info about the cluster, indices and aliases
  # bin/metacpan mapping --delete
  # bin/metacpan mapping --list_types
  # bin/metacpan mapping --delete_index xxx
@@ -481,3 +598,91 @@ __END__
 This is the index mapping handling script.
 Used rarely, but carries the most important task of setting
 the index and mapping the types.
+
+=head1 OPTIONS
+
+This Script accepts the following options
+
+=over 4
+
+=item Option C<--show_cluster_info>
+
+This option makes the Script show basic information about the I<ElasticSearch> Cluster
+and its indices and aliases.
+This information has to be collected with the C<MetaCPAN::Role::Script::check_health()> Method.
+On Script start-up it is empty.
+
+    bin/metacpan mapping --show_cluster_info
+
+See L<Method C<MetaCPAN::Role::Script::check_health()>>
+
+=item Option C<--delete>
+
+This option makes the Script delete all indices configured in the project and re-create them emtpy.
+It verifies the index integrity of the indices and aliases calling the methods
+C<MetaCPAN::Role::Script::check_health()> and C<verify_mapping()>.
+If the C<verify_mapping()> Method fails it exits the Script
+with B<Exit Code> C< 1 >.
+
+    bin/metacpan mapping --delete
+
+See L<Method C<deploy_mapping()>>
+
+See L<Method C<verify_mapping()>>
+
+See L<Method C<MetaCPAN::Role::Script::check_health()>>
+
+=back
+
+=head1 METHODS
+
+This Package provides the following methods
+
+=over 4
+
+=item C<deploy_mapping()>
+
+Deletes and re-creates the indices and aliases defined in the Project.
+The user will be requested for manual confirmation on the command line before the elemination.
+The integrity of the indices and aliases will be checked with the C<verify_mapping()> Method.
+On successful creation it returns C< 1 >, otherwise it returns C< 0 >.
+
+B<Returns:> It returns C< 1 > when the indices and aliases are created and verified as correct.
+Otherwise it returns C< 0 >.
+
+B<Exceptions:> It can throw exceptions when the connection to I<ElasticSearch> fails
+or there is any issue in any I<ElasticSearch> Request run by the Script.
+
+See L<Option C<--delete>>
+
+See L<Method C<verify_mapping()>>
+
+See L<Method C<MetaCPAN::Role::Script::check_health()>>
+
+=item C<verify_mapping( \%indices, \%aliases )>
+
+Checks the defined indices and aliases against the actually in the I<ElasticSearch> Cluster
+existing indices and aliases which must have been requested with
+the C<MetaCPAN::Role::Script::check_health()> Method.
+
+B<Parameters:>
+
+C<\%indices> - Reference to a hash that defines the indices required for the Project.
+
+C<\%aliases> - Reference to a hash that defines the aliases required for the Project.
+
+B<Returns:> It returns C< 1 > when the indices and aliases are created and verified as correct.
+Otherwise it returns C< 0 >.
+
+B<Exceptions:> It can throw exceptions when the connection to I<ElasticSearch> fails
+or there is any issue in any I<ElasticSearch> Request run by the Script.
+
+See L<Option C<--delete>>
+
+See L<Method C<verify_mapping()>>
+
+See L<Method C<MetaCPAN::Role::Script::check_health()>>
+
+=back
+
+=cut
