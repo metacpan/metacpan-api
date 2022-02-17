@@ -246,6 +246,37 @@ before run => sub {
     #Dlog_debug {"Connected to $_"} $self->remote;
 };
 
+sub _get_indices_info {
+    my ( $self, $irefresh ) = @_;
+
+    if ( $irefresh || scalar( keys %{ $self->indices_info } ) == 0 ) {
+        my $sinfo_rs = $self->es->cat->indices( h => [ 'index', 'health' ] );
+        my $sindices_parsing = qr/^([^[:space:]]+) +([^[:space:]]+)/m;
+
+        $self->indices_info( {} );
+
+        while ( $sinfo_rs =~ /$sindices_parsing/g ) {
+            $self->indices_info->{$1}
+                = { 'index_name' => $1, 'health' => $2 };
+        }
+    }
+}
+
+sub _get_aliases_info {
+    my ( $self, $irefresh ) = @_;
+
+    if ( $irefresh || scalar( keys %{ $self->aliases_info } ) == 0 ) {
+        my $sinfo_rs = $self->es->cat->aliases( h => [ 'alias', 'index' ] );
+        my $saliases_parsing = qr/^([^[:space:]]+) +([^[:space:]]+)/m;
+
+        $self->aliases_info( {} );
+
+        while ( $sinfo_rs =~ /$saliases_parsing/g ) {
+            $self->aliases_info->{$1} = { 'alias_name' => $1, 'index' => $2 };
+        }
+    }
+}
+
 sub check_health {
     my ( $self, $irefresh ) = @_;
     my $ihealth = 0;
@@ -255,39 +286,16 @@ sub check_health {
     $ihealth = $self->await;
 
     if ($ihealth) {
-        if ( $irefresh || scalar( keys %{ $self->indices_info } ) == 0 ) {
-            my $sinfo_rs
-                = $self->es->cat->indices( h => [ 'index', 'health' ] );
+        $self->_get_indices_info($irefresh);
 
-            $self->indices_info( {} );
-
-            while ( $sinfo_rs =~ /^([^[:space:]]+) +([^[:space:]]+)/gm ) {
-                $self->indices_info->{$1}
-                    = { 'index_name' => $1, 'health' => $2 };
-
-                $ihealth = 0 if ( $2 eq 'red' );
-            }
-        }
-        else {
-            foreach ( keys %{ $self->indices_info } ) {
-                $ihealth = 0
-                    if ( $self->indices_info->{$_}->{'health'} eq 'red' );
-            }
+        foreach ( keys %{ $self->indices_info } ) {
+            $ihealth = 0
+                if ( $self->indices_info->{$_}->{'health'} eq 'red' );
         }
     }
 
     if ($ihealth) {
-        if ( $irefresh || scalar( keys %{ $self->aliases_info } ) == 0 ) {
-            my $sinfo_rs
-                = $self->es->cat->aliases( h => [ 'alias', 'index' ] );
-
-            $self->aliases_info( {} );
-
-            while ( $sinfo_rs =~ /^([^[:space:]]+) +([^[:space:]]+)/gm ) {
-                $self->aliases_info->{$1}
-                    = { 'alias_name' => $1, 'index' => $2 };
-            }
-        }
+        $self->_get_aliases_info($irefresh);
 
         $ihealth = 0 if ( scalar( keys %{ $self->aliases_info } ) == 0 );
     }
