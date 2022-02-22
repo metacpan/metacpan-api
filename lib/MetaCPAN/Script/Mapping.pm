@@ -129,7 +129,7 @@ has delete_from_type => (
 );
 
 sub run {
-    my $self   = shift;
+    my $self = shift;
 
     if ( $self->await ) {
         $self->delete_index if $self->arg_delete_index;
@@ -151,9 +151,8 @@ sub run {
         }
     }
 
-    # Correctly reaching this point it will end the application
-    # with the set MetaCPAN::Role::Script::exit_code
-    exit $self->exit_code;
+# The run() method is expected to communicate Success to the superior execution level
+    return ( $self->exit_code == 0 );
 }
 
 sub _check_index_exists {
