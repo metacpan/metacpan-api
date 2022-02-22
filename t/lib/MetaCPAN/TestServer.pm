@@ -161,12 +161,65 @@ sub wait_for_es {
     $self->es_client->indices->refresh;
 }
 
+sub verify_mappings {
+    my $self           = $_[0];
+    my %hshtestindices = (
+        'cover'       => 'yellow',
+        'cpan_v1_01'  => 'yellow',
+        'contributor' => 'yellow',
+        'user'        => 'yellow'
+    );
+    my %hshtestaliases = ( 'cpan' => 'cpan_v1_01' );
+
+    local @ARGV = qw(mapping --show_cluster_info);
+
+    my $mapping
+        = MetaCPAN::Script::Mapping->new_with_options( $self->_config );
+
+    ok( $mapping->run, 'show cluster info' );
+
+    note(
+        Test::More::explain(
+            { 'indices_info' => \%{ $mapping->indices_info } }
+        )
+    );
+    note(
+        Test::More::explain(
+            { 'aliases_info' => \%{ $mapping->aliases_info } }
+        )
+    );
+
+    subtest 'only configured indices' => sub {
+        ok( defined $hshtestindices{$_}, "indice '$_' is configured" )
+            foreach ( keys %{ $mapping->indices_info } );
+    };
+    subtest 'verify indix health' => sub {
+        foreach ( keys %hshtestindices ) {
+            ok( defined $mapping->indices_info->{$_},
+                "indice '$_' was created" );
+            is( $mapping->indices_info->{$_}->{'health'},
+                $hshtestindices{$_},
+                "indice '$_' correct state '$hshtestindices{$_}'" );
+        }
+    };
+    subtest 'verify aliases' => sub {
+        foreach ( keys %hshtestaliases ) {
+            ok( defined $mapping->aliases_info->{$_},
+                "alias '$_' was created" );
+            is( $mapping->aliases_info->{$_}->{'index'},
+                $hshtestaliases{$_},
+                "alias '$_' correctly assigned to '$hshtestaliases{$_}'" );
+        }
+    };
+}
+
 sub put_mappings {
     my $self = shift;
 
     local @ARGV = qw(mapping --delete);
     ok( MetaCPAN::Script::Mapping->new_with_options( $self->_config )->run,
         'put mapping' );
+    $self->verify_mappings;
     $self->wait_for_es();
 }
 
