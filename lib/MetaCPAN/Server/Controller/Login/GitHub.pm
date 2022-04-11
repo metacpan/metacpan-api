@@ -33,7 +33,9 @@ sub index : Path {
             unless ($token);
         $token =~ s/&.*$//;
         my $extra_res = $ua->request(
-            GET "https://api.github.com/user?access_token=$token" );
+            GET 'https://api.github.com/user',
+            authorization => "token $token"
+        );
         my $extra = eval { decode_json( $extra_res->content ) } || {};
         $self->update_user( $c, github => $extra->{id}, $extra );
     }
