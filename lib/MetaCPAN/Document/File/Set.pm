@@ -176,8 +176,9 @@ sub documented_modules {
     return $self->filter(
         {
             and => [
-                { term => { release => $release->{name} } },
-                { term => { author  => $release->{author} } },
+                { term   => { release => $release->{name} } },
+                { term   => { author  => $release->{author} } },
+                { exists => { field   => "documentation" } },
                 {
                     or => [
                         {
