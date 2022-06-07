@@ -6,6 +6,8 @@ on:
 jobs:
     update-dep:
         runs-on: "ubuntu-20.04"
+        container:
+            image: perl:5.36
         steps:
             - uses: actions/checkout@v2
             - name: Install Carton
