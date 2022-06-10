@@ -98,6 +98,23 @@ DISTRIBUTIONS
       Params::Check 0.07
       Test::More 0
       if 0
+  Archive-Tar-2.40
+    pathname: B/BI/BINGOS/Archive-Tar-2.40.tar.gz
+    provides:
+      Archive::Tar 2.40
+      Archive::Tar::Constant 2.40
+      Archive::Tar::File 2.40
+    requirements:
+      Compress::Zlib 2.015
+      ExtUtils::MakeMaker 0
+      File::Spec 0.82
+      IO::Compress::Base 2.015
+      IO::Compress::Bzip2 2.015
+      IO::Compress::Gzip 2.015
+      IO::Zlib 1.01
+      Test::Harness 2.26
+      Test::More 0
+      perl 5.00503
   Archive-Zip-1.59
     pathname: P/PH/PHRED/Archive-Zip-1.59.tar.gz
     provides:
