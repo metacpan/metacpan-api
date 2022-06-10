@@ -8365,46 +8365,52 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  Type-Tiny-1.002001
-    pathname: T/TO/TOBYINK/Type-Tiny-1.002001.tar.gz
+  Type-Tiny-1.012005
+    pathname: T/TO/TOBYINK/Type-Tiny-1.012005.tar.gz
     provides:
-      Devel::TypeTiny::Perl56Compat 1.002001
-      Devel::TypeTiny::Perl58Compat 1.002001
-      Error::TypeTiny 1.002001
-      Error::TypeTiny::Assertion 1.002001
-      Error::TypeTiny::Compilation 1.002001
-      Error::TypeTiny::WrongNumberOfParameters 1.002001
-      Eval::TypeTiny 1.002001
-      Reply::Plugin::TypeTiny 1.002001
-      Test::TypeTiny 1.002001
-      Type::Coercion 1.002001
-      Type::Coercion::FromMoose 1.002001
-      Type::Coercion::Union 1.002001
-      Type::Library 1.002001
-      Type::Params 1.002001
-      Type::Parser 1.002001
-      Type::Registry 1.002001
-      Type::Tiny 1.002001
-      Type::Tiny::Class 1.002001
-      Type::Tiny::Duck 1.002001
-      Type::Tiny::Enum 1.002001
-      Type::Tiny::Intersection 1.002001
-      Type::Tiny::Role 1.002001
-      Type::Tiny::Union 1.002001
-      Type::Utils 1.002001
-      Types::Common::Numeric 1.002001
-      Types::Common::String 1.002001
-      Types::Standard 1.002001
-      Types::Standard::ArrayRef 1.002001
-      Types::Standard::CycleTuple 1.002001
-      Types::Standard::Dict 1.002001
-      Types::Standard::HashRef 1.002001
-      Types::Standard::Map 1.002001
-      Types::Standard::ScalarRef 1.002001
-      Types::Standard::Tuple 1.002001
-      Types::TypeTiny 1.002001
+      Devel::TypeTiny::Perl56Compat 1.012005
+      Devel::TypeTiny::Perl58Compat 1.012005
+      Error::TypeTiny 1.012005
+      Error::TypeTiny::Assertion 1.012005
+      Error::TypeTiny::Compilation 1.012005
+      Error::TypeTiny::WrongNumberOfParameters 1.012005
+      Eval::TypeTiny 1.012005
+      Reply::Plugin::TypeTiny 1.012005
+      Test::TypeTiny 1.012005
+      Type::Coercion 1.012005
+      Type::Coercion::FromMoose 1.012005
+      Type::Coercion::Union 1.012005
+      Type::Library 1.012005
+      Type::Params 1.012005
+      Type::Parser 1.012005
+      Type::Parser::AstBuilder undef
+      Type::Parser::Token undef
+      Type::Parser::TokenStream undef
+      Type::Registry 1.012005
+      Type::Tiny 1.012005
+      Type::Tiny::Class 1.012005
+      Type::Tiny::ConstrainedObject 1.012005
+      Type::Tiny::Duck 1.012005
+      Type::Tiny::Enum 1.012005
+      Type::Tiny::Intersection 1.012005
+      Type::Tiny::Role 1.012005
+      Type::Tiny::Union 1.012005
+      Type::Utils 1.012005
+      Types::Common::Numeric 1.012005
+      Types::Common::String 1.012005
+      Types::Standard 1.012005
+      Types::Standard::ArrayRef 1.012005
+      Types::Standard::CycleTuple 1.012005
+      Types::Standard::Dict 1.012005
+      Types::Standard::HashRef 1.012005
+      Types::Standard::Map 1.012005
+      Types::Standard::ScalarRef 1.012005
+      Types::Standard::StrMatch 1.012005
+      Types::Standard::Tied 1.012005
+      Types::Standard::Tuple 1.012005
+      Types::TypeTiny 1.012005
     requirements:
-      Exporter::Tiny 0.026
+      Exporter::Tiny 1.000000
       ExtUtils::MakeMaker 6.17
       perl 5.006001
   Types-Path-Tiny-0.005
