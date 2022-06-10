@@ -6249,10 +6249,10 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  Parse-PMFile-0.41
-    pathname: I/IS/ISHIGAKI/Parse-PMFile-0.41.tar.gz
+  Parse-PMFile-0.43
+    pathname: I/IS/ISHIGAKI/Parse-PMFile-0.43.tar.gz
     provides:
-      Parse::PMFile 0.41
+      Parse::PMFile 0.43
     requirements:
       Dumpvalue 0
       ExtUtils::MakeMaker 0

@@ -137,7 +137,7 @@ requires 'Net::Twitter', '4.01043';
 requires 'OrePAN2', '0.48';
 requires 'Parse::CPAN::Packages::Fast', '0.09';
 requires 'Parse::CSV', '2.04';
-requires 'Parse::PMFile', '0.41';
+requires 'Parse::PMFile', '0.43';
 requires 'Path::Iterator::Rule', '>=1.011';
 requires 'PAUSE::Permissions', '0.17';
 requires 'PerlIO::gzip';
