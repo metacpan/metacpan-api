@@ -72,7 +72,7 @@ requires 'Gravatar::URL';
 requires 'Hash::Merge::Simple';
 requires 'HTML::Entities';
 requires 'HTML::TokeParser::Simple';
-requires 'HTTP::Request::Common';
+requires 'HTTP::Request::Common', '6.36';
 requires 'IO::All';
 requires 'IO::Interactive';
 requires 'IO::Prompt';

@@ -3202,26 +3202,27 @@ DISTRIBUTIONS
       HTTP::Date 0
       Module::Build::Tiny 0.035
       perl 5.008001
-  HTTP-Message-6.13
-    pathname: O/OA/OALDERS/HTTP-Message-6.13.tar.gz
+  HTTP-Message-6.36
+    pathname: O/OA/OALDERS/HTTP-Message-6.36.tar.gz
     provides:
-      HTTP::Config 6.13
-      HTTP::Headers 6.13
-      HTTP::Headers::Auth 6.13
-      HTTP::Headers::ETag 6.13
-      HTTP::Headers::Util 6.13
-      HTTP::Message 6.13
-      HTTP::Request 6.13
-      HTTP::Request::Common 6.13
-      HTTP::Response 6.13
-      HTTP::Status 6.13
+      HTTP::Config 6.36
+      HTTP::Headers 6.36
+      HTTP::Headers::Auth 6.36
+      HTTP::Headers::ETag 6.36
+      HTTP::Headers::Util 6.36
+      HTTP::Message 6.36
+      HTTP::Request 6.36
+      HTTP::Request::Common 6.36
+      HTTP::Response 6.36
+      HTTP::Status 6.36
     requirements:
       Carp 0
       Compress::Raw::Zlib 0
-      Encode 2.21
+      Encode 3.01
       Encode::Locale 1
       Exporter 5.57
       ExtUtils::MakeMaker 0
+      File::Spec 0
       HTTP::Date 6
       IO::Compress::Bzip2 2.021
       IO::Compress::Deflate 0
@@ -3234,7 +3235,6 @@ DISTRIBUTIONS
       LWP::MediaTypes 6
       MIME::Base64 2.1
       MIME::QuotedPrint 0
-      Storable 0
       URI 1.10
       base 0
       perl 5.008001
