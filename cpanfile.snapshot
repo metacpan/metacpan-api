@@ -4209,15 +4209,15 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       JSON::PP 2.27300
       parent 0
-  Module-Extract-Namespaces-1.02
-    pathname: B/BD/BDFOY/Module-Extract-Namespaces-1.02.tar.gz
+  Module-Extract-Namespaces-1.023
+    pathname: B/BD/BDFOY/Module-Extract-Namespaces-1.023.tar.gz
     provides:
-      Module::Extract::Namespaces 1.02
-      PPI::Lexer 1.02
+      Module::Extract::Namespaces 1.023
     requirements:
-      ExtUtils::MakeMaker 0
-      PPI 0
-      Test::More 0
+      ExtUtils::MakeMaker 6.64
+      File::Spec::Functions 0
+      PPI 1.270
+      perl 5.008
   Module-Faker-0.017
     pathname: R/RJ/RJBS/Module-Faker-0.017.tar.gz
     provides:
@@ -5824,196 +5824,233 @@ DISTRIBUTIONS
       POSIX 0
       Time::Local 0
       perl 5.008001
-  PPI-1.236
-    pathname: M/MI/MITHALDU/PPI-1.236.tar.gz
+  PPI-1.274
+    pathname: O/OA/OALDERS/PPI-1.274.tar.gz
     provides:
-      PPI 1.236
-      PPI::Cache 1.236
-      PPI::Document 1.236
-      PPI::Document::File 1.236
-      PPI::Document::Fragment 1.236
-      PPI::Document::Normalized 1.236
-      PPI::Dumper 1.236
-      PPI::Element 1.236
-      PPI::Exception 1.236
-      PPI::Exception::ParserRejection 1.236
-      PPI::Find 1.236
-      PPI::Lexer 1.236
-      PPI::Node 1.236
-      PPI::Normal 1.236
-      PPI::Normal::Standard 1.236
-      PPI::Statement 1.236
-      PPI::Statement::Break 1.236
-      PPI::Statement::Compound 1.236
-      PPI::Statement::Data 1.236
-      PPI::Statement::End 1.236
-      PPI::Statement::Expression 1.236
-      PPI::Statement::Given 1.236
-      PPI::Statement::Include 1.236
-      PPI::Statement::Include::Perl6 1.236
-      PPI::Statement::Null 1.236
-      PPI::Statement::Package 1.236
-      PPI::Statement::Scheduled 1.236
-      PPI::Statement::Sub 1.236
-      PPI::Statement::Unknown 1.236
-      PPI::Statement::UnmatchedBrace 1.236
-      PPI::Statement::Variable 1.236
-      PPI::Statement::When 1.236
-      PPI::Structure 1.236
-      PPI::Structure::Block 1.236
-      PPI::Structure::Condition 1.236
-      PPI::Structure::Constructor 1.236
-      PPI::Structure::For 1.236
-      PPI::Structure::Given 1.236
-      PPI::Structure::List 1.236
-      PPI::Structure::Subscript 1.236
-      PPI::Structure::Unknown 1.236
-      PPI::Structure::When 1.236
-      PPI::Token 1.236
-      PPI::Token::ArrayIndex 1.236
-      PPI::Token::Attribute 1.236
-      PPI::Token::BOM 1.236
-      PPI::Token::Cast 1.236
-      PPI::Token::Comment 1.236
-      PPI::Token::DashedWord 1.236
-      PPI::Token::Data 1.236
-      PPI::Token::End 1.236
-      PPI::Token::HereDoc 1.236
-      PPI::Token::Label 1.236
-      PPI::Token::Magic 1.236
-      PPI::Token::Number 1.236
-      PPI::Token::Number::Binary 1.236
-      PPI::Token::Number::Exp 1.236
-      PPI::Token::Number::Float 1.236
-      PPI::Token::Number::Hex 1.236
-      PPI::Token::Number::Octal 1.236
-      PPI::Token::Number::Version 1.236
-      PPI::Token::Operator 1.236
-      PPI::Token::Pod 1.236
-      PPI::Token::Prototype 1.236
-      PPI::Token::Quote 1.236
-      PPI::Token::Quote::Double 1.236
-      PPI::Token::Quote::Interpolate 1.236
-      PPI::Token::Quote::Literal 1.236
-      PPI::Token::Quote::Single 1.236
-      PPI::Token::QuoteLike 1.236
-      PPI::Token::QuoteLike::Backtick 1.236
-      PPI::Token::QuoteLike::Command 1.236
-      PPI::Token::QuoteLike::Readline 1.236
-      PPI::Token::QuoteLike::Regexp 1.236
-      PPI::Token::QuoteLike::Words 1.236
-      PPI::Token::Regexp 1.236
-      PPI::Token::Regexp::Match 1.236
-      PPI::Token::Regexp::Substitute 1.236
-      PPI::Token::Regexp::Transliterate 1.236
-      PPI::Token::Separator 1.236
-      PPI::Token::Structure 1.236
-      PPI::Token::Symbol 1.236
-      PPI::Token::Unknown 1.236
-      PPI::Token::Whitespace 1.236
-      PPI::Token::Word 1.236
-      PPI::Token::_QuoteEngine 1.236
-      PPI::Token::_QuoteEngine::Full 1.236
-      PPI::Token::_QuoteEngine::Simple 1.236
-      PPI::Tokenizer 1.236
-      PPI::Transform 1.236
-      PPI::Transform::UpdateCopyright 1.236
-      PPI::Util 1.236
-      PPI::XSAccessor 1.236
-    requirements:
-      Class::Inspector 1.22
-      Clone 0.30
-      Digest::MD5 2.35
-      ExtUtils::MakeMaker 6.59
-      File::Remove 1.42
-      File::Spec 0.84
-      IO::String 1.07
-      List::MoreUtils 0.16
-      List::Util 1.33
-      Params::Util 1.00
-      Storable 2.17
-      Task::Weaken 0
-      Test::Deep 0
-      Test::More 0.86
-      Test::Object 0.07
-      Test::SubCalls 1.07
-      perl 5.006
-  PPIx-Regexp-0.053
-    pathname: W/WY/WYANT/PPIx-Regexp-0.053.tar.gz
-    provides:
-      PPIx::Regexp 0.053
-      PPIx::Regexp::Constant 0.053
-      PPIx::Regexp::Dumper 0.053
-      PPIx::Regexp::Element 0.053
-      PPIx::Regexp::Lexer 0.053
-      PPIx::Regexp::Node 0.053
-      PPIx::Regexp::Node::Range 0.053
-      PPIx::Regexp::Node::Unknown 0.053
-      PPIx::Regexp::StringTokenizer 0.053
-      PPIx::Regexp::Structure 0.053
-      PPIx::Regexp::Structure::Assertion 0.053
-      PPIx::Regexp::Structure::BranchReset 0.053
-      PPIx::Regexp::Structure::Capture 0.053
-      PPIx::Regexp::Structure::CharClass 0.053
-      PPIx::Regexp::Structure::Code 0.053
-      PPIx::Regexp::Structure::Main 0.053
-      PPIx::Regexp::Structure::Modifier 0.053
-      PPIx::Regexp::Structure::NamedCapture 0.053
-      PPIx::Regexp::Structure::Quantifier 0.053
-      PPIx::Regexp::Structure::RegexSet 0.053
-      PPIx::Regexp::Structure::Regexp 0.053
-      PPIx::Regexp::Structure::Replacement 0.053
-      PPIx::Regexp::Structure::Subexpression 0.053
-      PPIx::Regexp::Structure::Switch 0.053
-      PPIx::Regexp::Structure::Unknown 0.053
-      PPIx::Regexp::Support 0.053
-      PPIx::Regexp::Token 0.053
-      PPIx::Regexp::Token::Assertion 0.053
-      PPIx::Regexp::Token::Backreference 0.053
-      PPIx::Regexp::Token::Backtrack 0.053
-      PPIx::Regexp::Token::CharClass 0.053
-      PPIx::Regexp::Token::CharClass::POSIX 0.053
-      PPIx::Regexp::Token::CharClass::POSIX::Unknown 0.053
-      PPIx::Regexp::Token::CharClass::Simple 0.053
-      PPIx::Regexp::Token::Code 0.053
-      PPIx::Regexp::Token::Comment 0.053
-      PPIx::Regexp::Token::Condition 0.053
-      PPIx::Regexp::Token::Control 0.053
-      PPIx::Regexp::Token::Delimiter 0.053
-      PPIx::Regexp::Token::Greediness 0.053
-      PPIx::Regexp::Token::GroupType 0.053
-      PPIx::Regexp::Token::GroupType::Assertion 0.053
-      PPIx::Regexp::Token::GroupType::BranchReset 0.053
-      PPIx::Regexp::Token::GroupType::Code 0.053
-      PPIx::Regexp::Token::GroupType::Modifier 0.053
-      PPIx::Regexp::Token::GroupType::NamedCapture 0.053
-      PPIx::Regexp::Token::GroupType::Subexpression 0.053
-      PPIx::Regexp::Token::GroupType::Switch 0.053
-      PPIx::Regexp::Token::Interpolation 0.053
-      PPIx::Regexp::Token::Literal 0.053
-      PPIx::Regexp::Token::Modifier 0.053
-      PPIx::Regexp::Token::NoOp 0.053
-      PPIx::Regexp::Token::Operator 0.053
-      PPIx::Regexp::Token::Quantifier 0.053
-      PPIx::Regexp::Token::Recursion 0.053
-      PPIx::Regexp::Token::Reference 0.053
-      PPIx::Regexp::Token::Structure 0.053
-      PPIx::Regexp::Token::Unknown 0.053
-      PPIx::Regexp::Token::Unmatched 0.053
-      PPIx::Regexp::Token::Whitespace 0.053
-      PPIx::Regexp::Tokenizer 0.053
-      PPIx::Regexp::Util 0.053
+      PPI 1.274
+      PPI::Cache 1.274
+      PPI::Document 1.274
+      PPI::Document::File 1.274
+      PPI::Document::Fragment 1.274
+      PPI::Document::Normalized 1.274
+      PPI::Dumper 1.274
+      PPI::Element 1.274
+      PPI::Exception 1.274
+      PPI::Exception::ParserRejection 1.274
+      PPI::Find 1.274
+      PPI::Lexer 1.274
+      PPI::Node 1.274
+      PPI::Normal 1.274
+      PPI::Normal::Standard 1.274
+      PPI::Singletons 1.274
+      PPI::Statement 1.274
+      PPI::Statement::Break 1.274
+      PPI::Statement::Compound 1.274
+      PPI::Statement::Data 1.274
+      PPI::Statement::End 1.274
+      PPI::Statement::Expression 1.274
+      PPI::Statement::Given 1.274
+      PPI::Statement::Include 1.274
+      PPI::Statement::Include::Perl6 1.274
+      PPI::Statement::Null 1.274
+      PPI::Statement::Package 1.274
+      PPI::Statement::Scheduled 1.274
+      PPI::Statement::Sub 1.274
+      PPI::Statement::Unknown 1.274
+      PPI::Statement::UnmatchedBrace 1.274
+      PPI::Statement::Variable 1.274
+      PPI::Statement::When 1.274
+      PPI::Structure 1.274
+      PPI::Structure::Block 1.274
+      PPI::Structure::Condition 1.274
+      PPI::Structure::Constructor 1.274
+      PPI::Structure::For 1.274
+      PPI::Structure::Given 1.274
+      PPI::Structure::List 1.274
+      PPI::Structure::Subscript 1.274
+      PPI::Structure::Unknown 1.274
+      PPI::Structure::When 1.274
+      PPI::Token 1.274
+      PPI::Token::ArrayIndex 1.274
+      PPI::Token::Attribute 1.274
+      PPI::Token::BOM 1.274
+      PPI::Token::Cast 1.274
+      PPI::Token::Comment 1.274
+      PPI::Token::DashedWord 1.274
+      PPI::Token::Data 1.274
+      PPI::Token::End 1.274
+      PPI::Token::HereDoc 1.274
+      PPI::Token::Label 1.274
+      PPI::Token::Magic 1.274
+      PPI::Token::Number 1.274
+      PPI::Token::Number::Binary 1.274
+      PPI::Token::Number::Exp 1.274
+      PPI::Token::Number::Float 1.274
+      PPI::Token::Number::Hex 1.274
+      PPI::Token::Number::Octal 1.274
+      PPI::Token::Number::Version 1.274
+      PPI::Token::Operator 1.274
+      PPI::Token::Pod 1.274
+      PPI::Token::Prototype 1.274
+      PPI::Token::Quote 1.274
+      PPI::Token::Quote::Double 1.274
+      PPI::Token::Quote::Interpolate 1.274
+      PPI::Token::Quote::Literal 1.274
+      PPI::Token::Quote::Single 1.274
+      PPI::Token::QuoteLike 1.274
+      PPI::Token::QuoteLike::Backtick 1.274
+      PPI::Token::QuoteLike::Command 1.274
+      PPI::Token::QuoteLike::Readline 1.274
+      PPI::Token::QuoteLike::Regexp 1.274
+      PPI::Token::QuoteLike::Words 1.274
+      PPI::Token::Regexp 1.274
+      PPI::Token::Regexp::Match 1.274
+      PPI::Token::Regexp::Substitute 1.274
+      PPI::Token::Regexp::Transliterate 1.274
+      PPI::Token::Separator 1.274
+      PPI::Token::Structure 1.274
+      PPI::Token::Symbol 1.274
+      PPI::Token::Unknown 1.274
+      PPI::Token::Whitespace 1.274
+      PPI::Token::Word 1.274
+      PPI::Tokenizer 1.274
+      PPI::Transform 1.274
+      PPI::Transform::UpdateCopyright 1.274
+      PPI::Util 1.274
+      PPI::XSAccessor 1.274
     requirements:
       Carp 0
+      Clone 0.30
+      Digest::MD5 2.35
       Exporter 0
-      List::MoreUtils 0
+      ExtUtils::MakeMaker 0
+      File::Path 0
+      File::Spec 0.84
+      List::Util 1.33
+      Params::Util 1.00
+      Scalar::Util 0
+      Storable 2.17
+      Task::Weaken 0
+      constant 0
+      if 0
+      overload 0
+      perl 5.006
+      strict 0
+  PPIx-QuoteLike-0.022
+    pathname: W/WY/WYANT/PPIx-QuoteLike-0.022.tar.gz
+    provides:
+      PPIx::QuoteLike 0.022
+      PPIx::QuoteLike::Constant 0.022
+      PPIx::QuoteLike::Dumper 0.022
+      PPIx::QuoteLike::Token 0.022
+      PPIx::QuoteLike::Token::Control 0.022
+      PPIx::QuoteLike::Token::Delimiter 0.022
+      PPIx::QuoteLike::Token::Interpolation 0.022
+      PPIx::QuoteLike::Token::String 0.022
+      PPIx::QuoteLike::Token::Structure 0.022
+      PPIx::QuoteLike::Token::Unknown 0.022
+      PPIx::QuoteLike::Token::Whitespace 0.022
+      PPIx::QuoteLike::Utils 0.022
+    requirements:
+      Carp 0
+      Encode 0
+      Exporter 0
       List::Util 0
-      PPI::Document 1.117
+      PPI::Document 1.238
+      PPI::Dumper 1.238
+      Readonly 0
+      Scalar::Util 0
+      Test::More 0.88
+      base 0
+      charnames 0
+      constant 0
+      lib 0
+      perl 5.006
+      re 0
+      strict 0
+      warnings 0
+  PPIx-Regexp-0.085
+    pathname: W/WY/WYANT/PPIx-Regexp-0.085.tar.gz
+    provides:
+      PPIx::Regexp 0.085
+      PPIx::Regexp::Constant 0.085
+      PPIx::Regexp::Dumper 0.085
+      PPIx::Regexp::Element 0.085
+      PPIx::Regexp::Lexer 0.085
+      PPIx::Regexp::Node 0.085
+      PPIx::Regexp::Node::Range 0.085
+      PPIx::Regexp::Node::Unknown 0.085
+      PPIx::Regexp::Structure 0.085
+      PPIx::Regexp::Structure::Assertion 0.085
+      PPIx::Regexp::Structure::Atomic_Script_Run 0.085
+      PPIx::Regexp::Structure::BranchReset 0.085
+      PPIx::Regexp::Structure::Capture 0.085
+      PPIx::Regexp::Structure::CharClass 0.085
+      PPIx::Regexp::Structure::Code 0.085
+      PPIx::Regexp::Structure::Main 0.085
+      PPIx::Regexp::Structure::Modifier 0.085
+      PPIx::Regexp::Structure::NamedCapture 0.085
+      PPIx::Regexp::Structure::Quantifier 0.085
+      PPIx::Regexp::Structure::RegexSet 0.085
+      PPIx::Regexp::Structure::Regexp 0.085
+      PPIx::Regexp::Structure::Replacement 0.085
+      PPIx::Regexp::Structure::Script_Run 0.085
+      PPIx::Regexp::Structure::Subexpression 0.085
+      PPIx::Regexp::Structure::Switch 0.085
+      PPIx::Regexp::Structure::Unknown 0.085
+      PPIx::Regexp::Support 0.085
+      PPIx::Regexp::Token 0.085
+      PPIx::Regexp::Token::Assertion 0.085
+      PPIx::Regexp::Token::Backreference 0.085
+      PPIx::Regexp::Token::Backtrack 0.085
+      PPIx::Regexp::Token::CharClass 0.085
+      PPIx::Regexp::Token::CharClass::POSIX 0.085
+      PPIx::Regexp::Token::CharClass::POSIX::Unknown 0.085
+      PPIx::Regexp::Token::CharClass::Simple 0.085
+      PPIx::Regexp::Token::Code 0.085
+      PPIx::Regexp::Token::Comment 0.085
+      PPIx::Regexp::Token::Condition 0.085
+      PPIx::Regexp::Token::Control 0.085
+      PPIx::Regexp::Token::Delimiter 0.085
+      PPIx::Regexp::Token::Greediness 0.085
+      PPIx::Regexp::Token::GroupType 0.085
+      PPIx::Regexp::Token::GroupType::Assertion 0.085
+      PPIx::Regexp::Token::GroupType::Atomic_Script_Run 0.085
+      PPIx::Regexp::Token::GroupType::BranchReset 0.085
+      PPIx::Regexp::Token::GroupType::Code 0.085
+      PPIx::Regexp::Token::GroupType::Modifier 0.085
+      PPIx::Regexp::Token::GroupType::NamedCapture 0.085
+      PPIx::Regexp::Token::GroupType::Script_Run 0.085
+      PPIx::Regexp::Token::GroupType::Subexpression 0.085
+      PPIx::Regexp::Token::GroupType::Switch 0.085
+      PPIx::Regexp::Token::Interpolation 0.085
+      PPIx::Regexp::Token::Literal 0.085
+      PPIx::Regexp::Token::Modifier 0.085
+      PPIx::Regexp::Token::NoOp 0.085
+      PPIx::Regexp::Token::Operator 0.085
+      PPIx::Regexp::Token::Quantifier 0.085
+      PPIx::Regexp::Token::Recursion 0.085
+      PPIx::Regexp::Token::Reference 0.085
+      PPIx::Regexp::Token::Structure 0.085
+      PPIx::Regexp::Token::Unknown 0.085
+      PPIx::Regexp::Token::Unmatched 0.085
+      PPIx::Regexp::Token::Whitespace 0.085
+      PPIx::Regexp::Tokenizer 0.085
+      PPIx::Regexp::Util 0.085
+    requirements:
+      Carp 0
+      Encode 0
+      Exporter 0
+      List::Util 0
+      PPI::Document 1.238
+      PPI::Dumper 1.238
       Scalar::Util 0
       Task::Weaken 0
       Test::More 0.88
       base 0
+      charnames 0
       constant 0
+      lib 0
       perl 5.006
       strict 0
       warnings 0
@@ -7334,10 +7371,10 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 6.30
       IO::File 1.14
-  String-Format-1.17
-    pathname: D/DA/DARREN/String-Format-1.17.tar.gz
+  String-Format-1.18
+    pathname: S/SR/SREZIC/String-Format-1.18.tar.gz
     provides:
-      String::Format 1.17
+      String::Format 1.18
     requirements:
       ExtUtils::MakeMaker 0
       Test::More 0

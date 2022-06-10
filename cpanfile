@@ -188,10 +188,16 @@ requires 'File::Copy';
 requires 'HTTP::Cookies', '6.10';
 requires 'LWP::ConsoleLogger::Easy';
 requires 'MetaCPAN::Client', '2.029000';
+requires 'Module::Extract::Namespaces', '1.023';
 requires 'Module::Faker', '0.015';
 requires 'Module::Faker::Dist', '0.010';
+requires 'Perl::Critic', '0.140';
 requires 'Perl::Tidy' => '20220217';
 requires 'Plack::Test::Agent';
+requires 'PPI', '1.274'; # Perl::Critic
+requires 'PPIx::QuoteLike', '0.022'; # Perl::Critic
+requires 'PPIx::Regexp', '0.085'; # Perl::Critic
+requires 'String::Format', '1.18'; # Perl::Critic
 requires 'Test::Code::TidyAll';
 requires 'Test::More', '0.99';
 requires 'Test::Most';
