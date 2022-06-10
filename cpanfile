@@ -94,7 +94,6 @@ requires 'Log::Log4perl::Catalyst';
 requires 'Log::Log4perl::Layout::JSON';
 requires 'LWP::Protocol::https';
 requires 'LWP::UserAgent', '6.66';
-requires 'LWP::UserAgent::Paranoid';
 requires 'MetaCPAN::Moose';
 requires 'MetaCPAN::Pod::XHTML';
 requires 'MetaCPAN::Role', '0.06';
