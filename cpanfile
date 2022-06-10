@@ -181,7 +181,7 @@ requires 'YAML::XS', '0.83'; # Mojolicious::Plugin::OpenAPI YAML loading
 # test requirements
 requires 'Code::TidyAll', '0.82';
 requires 'Code::TidyAll::Plugin::UniqueLines';
-requires 'CPAN::Faker', '0.010';
+requires 'CPAN::Faker', '0.011';
 requires 'Devel::Confess';
 requires 'HTTP::Cookies', '6.10';
 requires 'LWP::ConsoleLogger::Easy', '0.000044';

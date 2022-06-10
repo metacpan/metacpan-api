@@ -351,16 +351,16 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       Test::More 0
-  CPAN-Faker-0.010
-    pathname: R/RJ/RJBS/CPAN-Faker-0.010.tar.gz
+  CPAN-Faker-0.011
+    pathname: R/RJ/RJBS/CPAN-Faker-0.011.tar.gz
     provides:
-      CPAN::Faker 0.010
+      CPAN::Faker 0.011
     requirements:
       CPAN::Checksums 0
       Compress::Zlib 0
       Cwd 0
       Data::Section 0
-      ExtUtils::MakeMaker 6.30
+      ExtUtils::MakeMaker 6.78
       File::Find 0
       File::Next 0
       File::Path 0
@@ -371,6 +371,7 @@ DISTRIBUTIONS
       Moose 0
       Sort::Versions 0
       Text::Template 0
+      perl 5.014000
       strict 0
       warnings 0
   CPAN-Repository-0.010
