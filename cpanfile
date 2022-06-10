@@ -26,7 +26,7 @@ requires 'Catalyst::View::JSON', '0.36';
 requires 'CatalystX::Fastly::Role::Response', '0.06';
 requires 'CatalystX::InjectComponent';
 requires 'CatalystX::RoleApplicator';
-requires 'CHI', '0.60';
+requires 'CHI', '0.61';
 requires 'Config::Any', '0.32';
 requires 'Config::General', '2.63';
 requires 'Config::ZOMG', '1.000000';

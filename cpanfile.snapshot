@@ -280,24 +280,24 @@ DISTRIBUTIONS
       Storable 0
       Test::Deep 0
       Test::More 0
-  CHI-0.60
-    pathname: J/JS/JSWARTZ/CHI-0.60.tar.gz
+  CHI-0.61
+    pathname: A/AS/ASB/CHI-0.61.tar.gz
     provides:
-      CHI 0.60
-      CHI::CacheObject 0.60
-      CHI::Driver 0.60
-      CHI::Driver::Base::CacheContainer 0.60
-      CHI::Driver::CacheCache 0.60
-      CHI::Driver::FastMmap 0.60
-      CHI::Driver::File 0.60
-      CHI::Driver::Memory 0.60
-      CHI::Driver::Metacache 0.60
-      CHI::Driver::Null 0.60
-      CHI::Driver::RawMemory 0.60
-      CHI::Driver::Role::HasSubcaches 0.60
-      CHI::Driver::Role::IsSizeAware 0.60
-      CHI::Driver::Role::IsSubcache 0.60
-      CHI::Stats 0.60
+      CHI 0.61
+      CHI::CacheObject 0.61
+      CHI::Driver 0.61
+      CHI::Driver::Base::CacheContainer 0.61
+      CHI::Driver::CacheCache 0.61
+      CHI::Driver::FastMmap 0.61
+      CHI::Driver::File 0.61
+      CHI::Driver::Memory 0.61
+      CHI::Driver::Metacache 0.61
+      CHI::Driver::Null 0.61
+      CHI::Driver::RawMemory 0.61
+      CHI::Driver::Role::HasSubcaches 0.61
+      CHI::Driver::Role::IsSizeAware 0.61
+      CHI::Driver::Role::IsSubcache 0.61
+      CHI::Stats 0.61
     requirements:
       Carp::Assert 0.20
       Class::Load 0
