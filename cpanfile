@@ -113,7 +113,7 @@ requires 'Mojolicious::Plugin::MountPSGI', '0.14';
 requires 'Mojolicious::Plugin::OpenAPI';
 requires 'Mojolicious::Plugin::Web::Auth', '0.17';
 requires 'Mojo::Pg', '4.08';
-requires 'Moose', '2.2015';
+requires 'Moose', '2.2201';
 requires 'Moose::Role';
 requires 'Moose::Util';
 requires 'MooseX::Aliases';
@@ -162,6 +162,7 @@ requires 'Ref::Util';
 requires 'Regexp::Common';
 requires 'Regexp::Common::time';
 requires 'Safe', '2.35'; # bug fixes (used by Parse::PMFile)
+requires 'Scalar::Util', '1.62'; # Moose
 requires 'Search::Elasticsearch', '== 2.03';
 requires 'strictures', '1';
 requires 'Throwable::Error';
