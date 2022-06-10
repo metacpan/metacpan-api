@@ -48,15 +48,15 @@ DISTRIBUTIONS
       Path::Class 0
       Storable 0
       Test::More 0
-  Archive-Any-0.0945
-    pathname: O/OA/OALDERS/Archive-Any-0.0945.tar.gz
+  Archive-Any-0.0946
+    pathname: O/OA/OALDERS/Archive-Any-0.0946.tar.gz
     provides:
-      Archive::Any 0.0945
-      Archive::Any::Plugin 0.0945
-      Archive::Any::Plugin::Tar 0.0945
-      Archive::Any::Plugin::Zip 0.0945
-      Archive::Any::Tar 0.0945
-      Archive::Any::Zip 0.0945
+      Archive::Any 0.0946
+      Archive::Any::Plugin 0.0946
+      Archive::Any::Plugin::Tar 0.0946
+      Archive::Any::Plugin::Zip 0.0946
+      Archive::Any::Tar 0.0946
+      Archive::Any::Zip 0.0946
     requirements:
       Archive::Tar 0
       Archive::Zip 0
@@ -65,9 +65,9 @@ DISTRIBUTIONS
       File::MMagic 0
       File::Spec::Functions 0
       MIME::Types 0
-      Module::Build 0.28
       Module::Find 0
       base 0
+      perl 5.006
       strict 0
       warnings 0
   Archive-Any-Create-0.03
