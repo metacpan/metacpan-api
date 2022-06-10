@@ -6950,11 +6950,11 @@ DISTRIBUTIONS
       Pod::Coverage 0
       namespace::autoclean 0.08
       perl 5.006
-  Pod-Markdown-3.005
-    pathname: R/RW/RWSTAUNER/Pod-Markdown-3.005.tar.gz
+  Pod-Markdown-3.300
+    pathname: R/RW/RWSTAUNER/Pod-Markdown-3.300.tar.gz
     provides:
-      Pod::Markdown 3.005
-      Pod::Perldoc::ToMarkdown 3.005
+      Pod::Markdown 3.300
+      Pod::Perldoc::ToMarkdown 3.300
     requirements:
       Encode 0
       ExtUtils::MakeMaker 0
@@ -6962,6 +6962,7 @@ DISTRIBUTIONS
       Pod::Simple 3.27
       Pod::Simple::Methody 0
       Pod::Usage 0
+      URI::Escape 0
       parent 0
       perl 5.008
       strict 0
