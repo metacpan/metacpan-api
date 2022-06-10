@@ -47,8 +47,8 @@ test_release(
                 ok !$file->indexed, 'file in /local/ not indexed';
 
                 ok $file->authorized, 'file in /local/ not un-authorized';
-                is $file->sloc,       2, 'sloc';
-                is $file->slop,       2, 'slop';
+                is $file->sloc, 2, 'sloc';
+                is $file->slop, 2, 'slop';
 
                 is_deeply $file->{pod_lines}, [ [ 4, 3 ] ], 'pod_lines';
 

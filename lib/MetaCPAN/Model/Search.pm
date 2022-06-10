@@ -24,7 +24,7 @@ has index => (
     required => 1,
 );
 
-const my $RESULTS_PER_RUN     => 200;
+const my $RESULTS_PER_RUN => 200;
 const my @ROGUE_DISTRIBUTIONS => qw(
     Acme-DependOnEverything
     Bundle-Everything

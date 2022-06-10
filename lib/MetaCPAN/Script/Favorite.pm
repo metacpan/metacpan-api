@@ -188,8 +188,9 @@ sub index_favorites {
 
                 my @count_flag;
                 if ( $self->count or $dist_fav_count{$dist} ) {
-                    @count_flag = ( '--count',
-                        $self->count || $dist_fav_count{$dist} );
+                    @count_flag = (
+                        '--count', $self->count || $dist_fav_count{$dist}
+                    );
                 }
 
                 $self->_add_to_queue( index_favorite =>

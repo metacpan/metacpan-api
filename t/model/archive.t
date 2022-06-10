@@ -101,7 +101,7 @@ subtest 'set extract dir' => sub {
         my $dir = $archive->extract_dir;
 
         isa_ok $dir, 'Path::Tiny';
-        is $dir,     $temp;
+        is $dir,              $temp;
         is $archive->extract, $temp;
         ok -s $dir->child('Some-1.00-TRIAL/META.json');
     }

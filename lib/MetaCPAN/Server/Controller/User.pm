@@ -87,8 +87,7 @@ sub profile_PUT {
 
     map {
         defined $c->req->data->{$_}
-            ? $profile->{$_}
-            = $c->req->data->{$_}
+            ? $profile->{$_} = $c->req->data->{$_}
             : delete $profile->{$_}
         } qw(name asciiname website email
         gravatar_url profile blog

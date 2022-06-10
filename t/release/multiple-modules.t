@@ -108,7 +108,7 @@ $release = $idx->type('release')->get(
         name   => 'Multiple-Modules-0.1'
     }
 );
-ok $release, 'got older version of release';
+ok $release,        'got older version of release';
 ok $release->first, 'this version was first';
 
 ok(
