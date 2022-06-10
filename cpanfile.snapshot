@@ -5570,13 +5570,13 @@ DISTRIBUTIONS
       URI 0
       URI::Escape 0
       YAML 0
-  Net-HTTP-6.21
-    pathname: O/OA/OALDERS/Net-HTTP-6.21.tar.gz
+  Net-HTTP-6.22
+    pathname: O/OA/OALDERS/Net-HTTP-6.22.tar.gz
     provides:
-      Net::HTTP 6.21
-      Net::HTTP::Methods 6.21
-      Net::HTTP::NB 6.21
-      Net::HTTPS 6.21
+      Net::HTTP 6.22
+      Net::HTTP::Methods 6.22
+      Net::HTTP::NB 6.22
+      Net::HTTPS 6.22
     requirements:
       Carp 0
       Compress::Raw::Zlib 0
@@ -8799,6 +8799,67 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       File::Copy 0
       File::Listing 6
+      Getopt::Long 0
+      HTML::Entities 0
+      HTML::HeadParser 0
+      HTTP::Cookies 6
+      HTTP::Date 6
+      HTTP::Negotiate 6
+      HTTP::Request 6
+      HTTP::Request::Common 6
+      HTTP::Response 6
+      HTTP::Status 6.07
+      IO::Select 0
+      IO::Socket 0
+      LWP::MediaTypes 6
+      MIME::Base64 2.1
+      Module::Metadata 0
+      Net::FTP 2.58
+      Net::HTTP 6.18
+      Scalar::Util 0
+      Try::Tiny 0
+      URI 1.10
+      URI::Escape 0
+      WWW::RobotRules 6
+      parent 0.217
+      perl 5.008001
+      strict 0
+      warnings 0
+  libwww-perl-6.66
+    pathname: O/OA/OALDERS/libwww-perl-6.66.tar.gz
+    provides:
+      LWP 6.66
+      LWP::Authen::Basic 6.66
+      LWP::Authen::Digest 6.66
+      LWP::Authen::Ntlm 6.66
+      LWP::ConnCache 6.66
+      LWP::Debug 6.66
+      LWP::Debug::TraceHTTP 6.66
+      LWP::DebugFile 6.66
+      LWP::MemberMixin 6.66
+      LWP::Protocol 6.66
+      LWP::Protocol::cpan 6.66
+      LWP::Protocol::data 6.66
+      LWP::Protocol::file 6.66
+      LWP::Protocol::ftp 6.66
+      LWP::Protocol::gopher 6.66
+      LWP::Protocol::http 6.66
+      LWP::Protocol::loopback 6.66
+      LWP::Protocol::mailto 6.66
+      LWP::Protocol::nntp 6.66
+      LWP::Protocol::nogo 6.66
+      LWP::RobotUA 6.66
+      LWP::Simple 6.66
+      LWP::UserAgent 6.66
+    requirements:
+      CPAN::Meta::Requirements 2.120620
+      Digest::MD5 0
+      Encode 2.12
+      Encode::Locale 0
+      ExtUtils::MakeMaker 0
+      File::Copy 0
+      File::Listing 6
+      File::Temp 0
       Getopt::Long 0
       HTML::Entities 0
       HTML::HeadParser 0

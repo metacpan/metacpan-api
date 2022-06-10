@@ -98,7 +98,7 @@ requires 'Log::Log4perl::Appender::ScreenColoredLevels';
 requires 'Log::Log4perl::Catalyst';
 requires 'Log::Log4perl::Layout::JSON';
 requires 'LWP::Protocol::https';
-requires 'LWP::UserAgent', '6.58';
+requires 'LWP::UserAgent', '6.66';
 requires 'LWP::UserAgent::Paranoid';
 requires 'MetaCPAN::Moose';
 requires 'MetaCPAN::Pod::XHTML';
@@ -133,6 +133,7 @@ requires 'Mozilla::CA', '20211001';
 requires 'namespace::autoclean';
 requires 'Net::DNS::Paranoid';
 requires 'Net::Fastly', '1.12';
+requires 'Net::HTTP', '6.22'; # LWP::UserAgent
 requires 'Net::Twitter', '4.01043';
 requires 'OrePAN2', '0.48';
 requires 'Parse::CPAN::Packages::Fast', '0.09';
