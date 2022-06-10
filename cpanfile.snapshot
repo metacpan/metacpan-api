@@ -1146,13 +1146,22 @@ DISTRIBUTIONS
       Module::Build::Tiny 0.035
       URI::Escape 0
       perl 5.008001
-  Cpanel-JSON-XS-3.0239
-    pathname: R/RU/RURBAN/Cpanel-JSON-XS-3.0239.tar.gz
+  Cpanel-JSON-XS-4.29
+    pathname: R/RU/RURBAN/Cpanel-JSON-XS-4.29.tar.gz
     provides:
-      Cpanel::JSON::XS 3.0239
+      Cpanel::JSON::XS 4.29
+      Cpanel::JSON::XS::Type undef
     requirements:
+      Carp 0
+      Config 0
+      Encode 1.9801
+      Exporter 0
       ExtUtils::MakeMaker 0
       Pod::Text 2.08
+      XSLoader 0
+      overload 0
+      strict 0
+      warnings 0
   DBD-Pg-3.7.0
     pathname: T/TU/TURNSTEP/DBD-Pg-3.7.0.tar.gz
     provides:
