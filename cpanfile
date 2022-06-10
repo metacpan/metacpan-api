@@ -162,7 +162,6 @@ requires 'Type::Tiny', '1.002005';
 requires 'Types::Path::Tiny';
 requires 'Types::URI';
 requires 'URI', '5.10';
-requires 'URI::Escape';
 requires 'version', '0.9901';
 requires 'XML::Simple';
 requires 'YAML::XS', '0.83'; # Mojolicious::Plugin::OpenAPI YAML loading
