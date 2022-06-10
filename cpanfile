@@ -183,7 +183,6 @@ requires 'Code::TidyAll', '0.82';
 requires 'Code::TidyAll::Plugin::UniqueLines';
 requires 'CPAN::Faker', '0.010';
 requires 'Devel::Confess';
-requires 'File::Copy';
 requires 'HTTP::Cookies', '6.10';
 requires 'LWP::ConsoleLogger::Easy', '0.000044';
 requires 'MetaCPAN::Client', '2.029000';
