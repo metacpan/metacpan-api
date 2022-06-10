@@ -558,30 +558,27 @@ DISTRIBUTIONS
       Path::Class 0
       Test::More 0
       perl 5.008
-  Catalyst-Plugin-Session-0.40
-    pathname: J/JJ/JJNAPIORK/Catalyst-Plugin-Session-0.40.tar.gz
+  Catalyst-Plugin-Session-0.43
+    pathname: H/HA/HAARG/Catalyst-Plugin-Session-0.43.tar.gz
     provides:
-      Catalyst::Plugin::Session 0.40
-      Catalyst::Plugin::Session::State undef
-      Catalyst::Plugin::Session::Store undef
-      Catalyst::Plugin::Session::Store::Dummy undef
-      Catalyst::Plugin::Session::Test::Store 123
+      Catalyst::Plugin::Session 0.43
+      Catalyst::Plugin::Session::State 0.43
+      Catalyst::Plugin::Session::Store 0.43
+      Catalyst::Plugin::Session::Store::Dummy 0.43
+      Catalyst::Plugin::Session::Test::Store 0.43
     requirements:
       Catalyst::Runtime 5.71001
       Digest 0
-      ExtUtils::MakeMaker 6.59
+      ExtUtils::MakeMaker 0
       File::Spec 0
       File::Temp 0
+      HTML::Entities 0
       List::Util 0
       MRO::Compat 0
       Moose 0.76
       MooseX::Emulate::Class::Accessor::Fast 0.00801
       Object::Signature 0
-      Test::Deep 0
-      Test::Exception 0
       Test::More 0.88
-      Test::WWW::Mechanize::PSGI 0
-      Tie::RefHash 1.34
       namespace::clean 0.10
       perl 5.008
   Catalyst-Plugin-Session-State-Cookie-0.17

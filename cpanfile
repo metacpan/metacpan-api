@@ -13,7 +13,7 @@ requires 'Catalyst::Action::RenderView', '0.16';
 requires 'Catalyst::Controller::REST', '1.21';
 requires 'Catalyst::Plugin::Authentication';
 requires 'Catalyst::Plugin::ConfigLoader';
-requires 'Catalyst::Plugin::Session';
+requires 'Catalyst::Plugin::Session', '0.43';
 requires 'Catalyst::Plugin::Session::State::Cookie';
 requires 'Catalyst::Plugin::Session::Store';
 requires 'Catalyst::Plugin::Static::Simple';
