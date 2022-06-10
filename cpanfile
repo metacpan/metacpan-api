@@ -60,7 +60,6 @@ requires 'Encoding::FixLatin::XS';
 requires 'EV';
 requires 'Exporter';
 requires 'ExtUtils::HasCompiler';
-requires 'feature';
 requires 'File::Basename';
 requires 'File::Find';
 requires 'File::Find::Rule';
