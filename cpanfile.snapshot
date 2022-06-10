@@ -6534,27 +6534,27 @@ DISTRIBUTIONS
       strict 0
       version 0.77
       warnings 0
-  Perl-Tidy-20210402
-    pathname: S/SH/SHANCOCK/Perl-Tidy-20210402.tar.gz
+  Perl-Tidy-20220217
+    pathname: S/SH/SHANCOCK/Perl-Tidy-20220217.tar.gz
     provides:
-      Perl::Tidy 20210402
-      Perl::Tidy::Debugger 20210402
-      Perl::Tidy::DevNull 20210402
-      Perl::Tidy::Diagnostics 20210402
-      Perl::Tidy::FileWriter 20210402
-      Perl::Tidy::Formatter 20210402
-      Perl::Tidy::HtmlWriter 20210402
-      Perl::Tidy::IOScalar 20210402
-      Perl::Tidy::IOScalarArray 20210402
-      Perl::Tidy::IndentationItem 20210402
-      Perl::Tidy::LineBuffer 20210402
-      Perl::Tidy::LineSink 20210402
-      Perl::Tidy::LineSource 20210402
-      Perl::Tidy::Logger 20210402
-      Perl::Tidy::Tokenizer 20210402
-      Perl::Tidy::VerticalAligner 20210402
-      Perl::Tidy::VerticalAligner::Alignment 20210402
-      Perl::Tidy::VerticalAligner::Line 20210402
+      Perl::Tidy 20220217
+      Perl::Tidy::Debugger 20220217
+      Perl::Tidy::DevNull 20220217
+      Perl::Tidy::Diagnostics 20220217
+      Perl::Tidy::FileWriter 20220217
+      Perl::Tidy::Formatter 20220217
+      Perl::Tidy::HtmlWriter 20220217
+      Perl::Tidy::IOScalar 20220217
+      Perl::Tidy::IOScalarArray 20220217
+      Perl::Tidy::IndentationItem 20220217
+      Perl::Tidy::LineBuffer 20220217
+      Perl::Tidy::LineSink 20220217
+      Perl::Tidy::LineSource 20220217
+      Perl::Tidy::Logger 20220217
+      Perl::Tidy::Tokenizer 20220217
+      Perl::Tidy::VerticalAligner 20220217
+      Perl::Tidy::VerticalAligner::Alignment 20220217
+      Perl::Tidy::VerticalAligner::Line 20220217
     requirements:
       ExtUtils::MakeMaker 0
   PerlIO-gzip-0.20

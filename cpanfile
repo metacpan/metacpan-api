@@ -190,7 +190,7 @@ requires 'LWP::ConsoleLogger::Easy';
 requires 'MetaCPAN::Client', '2.029000';
 requires 'Module::Faker', '0.015';
 requires 'Module::Faker::Dist', '0.010';
-requires 'Perl::Tidy' => '20210402';
+requires 'Perl::Tidy' => '20220217';
 requires 'Plack::Test::Agent';
 requires 'Test::Code::TidyAll';
 requires 'Test::More', '0.99';
