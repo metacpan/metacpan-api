@@ -77,7 +77,7 @@ requires 'IO::All';
 requires 'IO::Interactive';
 requires 'IO::Prompt';
 requires 'IO::String';
-requires 'IO::Uncompress::Bunzip2';
+requires 'IO::Uncompress::Bunzip2', '2.106';
 requires 'IO::Zlib';
 requires 'IPC::Run3';
 requires 'List::AllUtils', '0.09';
