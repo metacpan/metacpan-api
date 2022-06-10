@@ -164,7 +164,6 @@ requires 'Regexp::Common';
 requires 'Regexp::Common::time';
 requires 'Safe', '2.35'; # bug fixes (used by Parse::PMFile)
 requires 'Search::Elasticsearch', '== 2.03';
-requires 'Starman';
 requires 'strictures', '1';
 requires 'Throwable::Error';
 requires 'Time::Local';
