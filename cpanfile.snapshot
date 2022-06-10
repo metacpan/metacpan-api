@@ -2940,11 +2940,11 @@ DISTRIBUTIONS
       overload 0
       strict 0
       warnings 0
-  Git-Helpers-0.000013
-    pathname: O/OA/OALDERS/Git-Helpers-0.000013.tar.gz
+  Git-Helpers-1.000001
+    pathname: O/OA/OALDERS/Git-Helpers-1.000001.tar.gz
     provides:
-      Git::Helpers 0.000013
-      Git::Helpers::CPAN 0.000013
+      Git::Helpers 1.000001
+      Git::Helpers::CPAN 1.000001
     requirements:
       Browser::Open 0
       Capture::Tiny 0
@@ -2953,20 +2953,19 @@ DISTRIBUTIONS
       File::pushd 0
       Getopt::Long 0
       Git::Sub 0
-      MetaCPAN::Client 0
+      MetaCPAN::Client 2.029000
       Moo 0
       MooX::Options 0
+      Pod::Usage 0
       String::Trim 0
       Sub::Exporter 0
-      Term::ReadLine 0
-      Term::UI 0
+      Term::Choose 1.743
       Try::Tiny 0
       Types::Standard 0
       URI 0
-      URI::FromHash 0
       URI::Heuristic 0
       URI::git 0
-      perl 5.006
+      perl v5.12.0
       strict 0
       warnings 0
   Git-Sub-0.163320
@@ -7633,6 +7632,34 @@ DISTRIBUTIONS
       Scalar::Util 1.14
       Test::More 0.42
       perl 5.005
+  Term-Choose-1.754
+    pathname: K/KU/KUERBIS/Term-Choose-1.754.tar.gz
+    provides:
+      Term::Choose 1.754
+      Term::Choose::Constants 1.754
+      Term::Choose::LineFold 1.754
+      Term::Choose::LineFold::CharWidthAmbiguousWide 1.754
+      Term::Choose::LineFold::CharWidthDefault 1.754
+      Term::Choose::Linux 1.754
+      Term::Choose::Opt::Mouse 1.754
+      Term::Choose::Opt::Search 1.754
+      Term::Choose::Opt::SkipItems 1.754
+      Term::Choose::Screen 1.754
+      Term::Choose::ValidateOptions 1.754
+      Term::Choose::Win32 1.754
+    requirements:
+      Carp 0
+      Exporter 0
+      ExtUtils::MakeMaker 0
+      File::Spec::Functions 0
+      FindBin 0
+      Test::Fatal 0
+      Test::More 0
+      constant 0
+      lib 0
+      perl 5.010000
+      strict 0
+      warnings 0
   Term-Size-Any-0.002
     pathname: F/FE/FERREIRA/Term-Size-Any-0.002.tar.gz
     provides:

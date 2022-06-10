@@ -67,7 +67,7 @@ requires 'File::Temp';
 requires 'FindBin';
 requires 'Find::Lib';
 requires 'Getopt::Long::Descriptive', '0.103';
-requires 'Git::Helpers';
+requires 'Git::Helpers', '1.000001';
 requires 'Gravatar::URL';
 requires 'Hash::Merge::Simple';
 requires 'HTML::Entities';
@@ -154,6 +154,7 @@ requires 'Safe', '2.35'; # bug fixes (used by Parse::PMFile)
 requires 'Scalar::Util', '1.62'; # Moose
 requires 'Search::Elasticsearch', '== 2.03';
 requires 'strictures', '1';
+requires 'Term::Choose', '1.754'; # Git::Helpers
 requires 'Throwable::Error';
 requires 'Time::Local';
 requires 'Try::Tiny', '0.30';
