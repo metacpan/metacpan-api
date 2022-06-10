@@ -199,7 +199,7 @@ requires 'PPIx::QuoteLike', '0.022'; # Perl::Critic
 requires 'PPIx::Regexp', '0.085'; # Perl::Critic
 requires 'String::Format', '1.18'; # Perl::Critic
 requires 'Test::Code::TidyAll';
-requires 'Test::More', '0.99';
+requires 'Test::More', '1.302190';
 requires 'Test::Most';
 requires 'Test::Perl::Critic', '1.04';
 requires 'Test::RequiresInternet';
