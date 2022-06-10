@@ -8971,6 +8971,20 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Package::Stash 0.23
       perl 5.008001
+  podlators-4.14
+    pathname: R/RR/RRA/podlators-4.14.tar.gz
+    provides:
+      Pod undef
+      Pod::Man 4.14
+      Pod::ParseLink 4.14
+      Pod::Text 4.14
+      Pod::Text::Color 4.14
+      Pod::Text::Overstrike 4.14
+      Pod::Text::Termcap 4.14
+    requirements:
+      ExtUtils::MakeMaker 0
+      Pod::Simple 3.06
+      perl 5.008
   strictures-2.000003
     pathname: H/HA/HAARG/strictures-2.000003.tar.gz
     provides:

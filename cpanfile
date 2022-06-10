@@ -159,7 +159,7 @@ requires 'Pod::Markdown', '3.002';
 requires 'Pod::POM';
 requires 'Pod::Simple', '3.43';
 requires 'Pod::Simple::XHTML', '3.24';
-requires 'Pod::Text';
+requires 'Pod::Text', '4.14';
 requires 'Ref::Util';
 requires 'Regexp::Common';
 requires 'Regexp::Common::time';
