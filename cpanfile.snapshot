@@ -6895,12 +6895,14 @@ DISTRIBUTIONS
       Digest::SHA1 0
       Module::Build::Tiny 0.039
       Plack 0.9910
-  Plack-Test-Agent-1.4
-    pathname: O/OA/OALDERS/Plack-Test-Agent-1.4.tar.gz
+  Plack-Test-Agent-1.5
+    pathname: O/OA/OALDERS/Plack-Test-Agent-1.5.tar.gz
     provides:
-      Plack::Test::Agent 1.4
+      Plack::Test::Agent 1.5
+      Test::WWW::Mechanize::Bound 1.5
     requirements:
       ExtUtils::MakeMaker 0
+      HTTP::Cookies 0
       HTTP::Message::PSGI 0
       HTTP::Request::Common 0
       HTTP::Response 0
