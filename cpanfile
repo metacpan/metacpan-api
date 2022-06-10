@@ -201,7 +201,7 @@ requires 'String::Format', '1.18'; # Perl::Critic
 requires 'Test::Code::TidyAll';
 requires 'Test::More', '0.99';
 requires 'Test::Most';
-requires 'Test::Perl::Critic';
+requires 'Test::Perl::Critic', '1.04';
 requires 'Test::RequiresInternet';
 requires 'Test::Routine', '0.012';
 requires 'Test::Routine::Util', '0';

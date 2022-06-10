@@ -7714,19 +7714,19 @@ DISTRIBUTIONS
       Test::Builder::Tester 1.02
       Test::More 0.42
       overload 0
-  Test-Perl-Critic-1.03
-    pathname: T/TH/THALJEF/Test-Perl-Critic-1.03.tar.gz
+  Test-Perl-Critic-1.04
+    pathname: P/PE/PETDANCE/Test-Perl-Critic-1.04.tar.gz
     provides:
-      Test::Perl::Critic 1.03
+      Test::Perl::Critic 1.04
     requirements:
       Carp 0
       English 0
-      MCE 1.52
+      MCE 1.827
       Module::Build 0.4
       Perl::Critic 1.105
       Perl::Critic::Utils 1.105
       Perl::Critic::Violation 1.105
-      Test::Builder 0
+      Test::Builder 0.88
       Test::More 0
       strict 0
       warnings 0
