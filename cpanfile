@@ -186,7 +186,7 @@ requires 'CPAN::Faker', '0.010';
 requires 'Devel::Confess';
 requires 'File::Copy';
 requires 'HTTP::Cookies', '6.10';
-requires 'LWP::ConsoleLogger::Easy';
+requires 'LWP::ConsoleLogger::Easy', '0.000044';
 requires 'MetaCPAN::Client', '2.029000';
 requires 'Module::Extract::Namespaces', '1.023';
 requires 'Module::Faker', '0.015';

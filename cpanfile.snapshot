@@ -3465,12 +3465,12 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 6.52
       Types::Serialiser 0
       common::sense 0
-  LWP-ConsoleLogger-0.000036
-    pathname: O/OA/OALDERS/LWP-ConsoleLogger-0.000036.tar.gz
+  LWP-ConsoleLogger-0.000044
+    pathname: O/OA/OALDERS/LWP-ConsoleLogger-0.000044.tar.gz
     provides:
-      LWP::ConsoleLogger 0.000036
-      LWP::ConsoleLogger::Easy 0.000036
-      LWP::ConsoleLogger::Everywhere 0.000036
+      LWP::ConsoleLogger 0.000044
+      LWP::ConsoleLogger::Easy 0.000044
+      LWP::ConsoleLogger::Everywhere 0.000044
     requirements:
       Class::Method::Modifiers 0
       Data::Printer 0.36
@@ -3479,14 +3479,18 @@ DISTRIBUTIONS
       HTML::Restrict 0
       HTTP::Body 0
       HTTP::CookieMonster 0
+      HTTP::Request 0
+      HTTP::Response 0
       JSON::MaybeXS 1.003005
       LWP::UserAgent 0
       List::AllUtils 0
       Log::Dispatch 2.56
       Module::Load::Conditional 0
+      Module::Runtime 0
       Moo 0
       MooX::StrictConstructor 0
       Parse::MIME 0
+      Ref::Util 0
       String::Trim 0
       Sub::Exporter 0
       Term::Size::Any 0
@@ -3494,10 +3498,9 @@ DISTRIBUTIONS
       Try::Tiny 0
       Types::Common::Numeric 0
       Types::Standard 0
-      URI::Query 0
       URI::QueryParam 0
       XML::Simple 0
-      perl 5.013010
+      perl 5.016
       strict 0
       warnings 0
   LWP-MediaTypes-6.02
