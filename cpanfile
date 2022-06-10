@@ -9,7 +9,7 @@ requires 'Authen::SASL', '2.16';
 requires 'BackPAN::Index', '0.42';
 requires 'Captcha::reCAPTCHA', '0.99';
 requires 'Catalyst', '5.90128';
-requires 'Catalyst::Action::RenderView';
+requires 'Catalyst::Action::RenderView', '0.16';
 requires 'Catalyst::Controller::REST';
 requires 'Catalyst::Plugin::Authentication';
 requires 'Catalyst::Plugin::ConfigLoader';
