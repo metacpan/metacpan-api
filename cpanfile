@@ -123,7 +123,6 @@ requires 'MooseX::Types::ElasticSearch', '== 0.0.4';
 requires 'MooseX::Types::Moose';
 requires 'Mozilla::CA', '20211001';
 requires 'namespace::autoclean';
-requires 'Net::DNS::Paranoid';
 requires 'Net::Fastly', '1.12';
 requires 'Net::HTTP', '6.22'; # LWP::UserAgent
 requires 'Net::Twitter', '4.01043';
