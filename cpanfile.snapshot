@@ -7009,6 +7009,54 @@ DISTRIBUTIONS
       strict 0
       vars 0
       warnings 0
+  Pod-Simple-3.43
+    pathname: K/KH/KHW/Pod-Simple-3.43.tar.gz
+    provides:
+      Pod::Simple 3.43
+      Pod::Simple::BlackBox 3.43
+      Pod::Simple::Checker 3.43
+      Pod::Simple::Debug 3.43
+      Pod::Simple::DumpAsText 3.43
+      Pod::Simple::DumpAsXML 3.43
+      Pod::Simple::HTML 3.43
+      Pod::Simple::HTMLBatch 3.43
+      Pod::Simple::HTMLLegacy 5.01
+      Pod::Simple::JustPod undef
+      Pod::Simple::LinkSection 3.43
+      Pod::Simple::Methody 3.43
+      Pod::Simple::Progress 3.43
+      Pod::Simple::PullParser 3.43
+      Pod::Simple::PullParserEndToken 3.43
+      Pod::Simple::PullParserStartToken 3.43
+      Pod::Simple::PullParserTextToken 3.43
+      Pod::Simple::PullParserToken 3.43
+      Pod::Simple::RTF 3.43
+      Pod::Simple::Search 3.43
+      Pod::Simple::SimpleTree 3.43
+      Pod::Simple::Text 3.43
+      Pod::Simple::TextContent 3.43
+      Pod::Simple::TiedOutFH 3.43
+      Pod::Simple::Transcode 3.43
+      Pod::Simple::TranscodeDumb 3.43
+      Pod::Simple::TranscodeSmart 3.43
+      Pod::Simple::XHTML 3.43
+      Pod::Simple::XMLOutStream 3.43
+    requirements:
+      Carp 0
+      Config 0
+      Cwd 0
+      ExtUtils::MakeMaker 0
+      File::Basename 0
+      File::Find 0
+      File::Spec 0
+      Pod::Escapes 1.04
+      Symbol 0
+      Test::More 0
+      Text::Wrap 98.112902
+      if 0
+      integer 0
+      overload 0
+      strict 0
   Pod-Spell-1.20
     pathname: D/DO/DOLMEN/Pod-Spell-1.20.tar.gz
     provides:
