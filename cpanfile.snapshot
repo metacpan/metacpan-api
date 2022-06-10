@@ -462,34 +462,34 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       Test::Exception 0
-  Catalyst-Action-REST-1.20
-    pathname: J/JJ/JJNAPIORK/Catalyst-Action-REST-1.20.tar.gz
+  Catalyst-Action-REST-1.21
+    pathname: J/JJ/JJNAPIORK/Catalyst-Action-REST-1.21.tar.gz
     provides:
-      Catalyst::Action::Deserialize 1.20
-      Catalyst::Action::Deserialize::Callback 1.20
-      Catalyst::Action::Deserialize::JSON 1.20
-      Catalyst::Action::Deserialize::JSON::XS 1.20
-      Catalyst::Action::Deserialize::View 1.20
-      Catalyst::Action::Deserialize::XML::Simple 1.20
-      Catalyst::Action::Deserialize::YAML 1.20
-      Catalyst::Action::DeserializeMultiPart 1.20
-      Catalyst::Action::REST 1.20
-      Catalyst::Action::REST::ForBrowsers 1.20
-      Catalyst::Action::Serialize 1.20
-      Catalyst::Action::Serialize::Callback 1.20
-      Catalyst::Action::Serialize::JSON 1.20
-      Catalyst::Action::Serialize::JSON::XS 1.20
-      Catalyst::Action::Serialize::JSONP 1.20
-      Catalyst::Action::Serialize::View 1.20
-      Catalyst::Action::Serialize::XML::Simple 1.20
-      Catalyst::Action::Serialize::YAML 1.20
-      Catalyst::Action::Serialize::YAML::HTML 1.20
-      Catalyst::Action::SerializeBase 1.20
-      Catalyst::Controller::REST 1.20
-      Catalyst::Request::REST 1.20
-      Catalyst::Request::REST::ForBrowsers 1.20
-      Catalyst::TraitFor::Request::REST 1.20
-      Catalyst::TraitFor::Request::REST::ForBrowsers 1.20
+      Catalyst::Action::Deserialize 1.21
+      Catalyst::Action::Deserialize::Callback 1.21
+      Catalyst::Action::Deserialize::JSON 1.21
+      Catalyst::Action::Deserialize::JSON::XS 1.21
+      Catalyst::Action::Deserialize::View 1.21
+      Catalyst::Action::Deserialize::XML::Simple 1.21
+      Catalyst::Action::Deserialize::YAML 1.21
+      Catalyst::Action::DeserializeMultiPart 1.21
+      Catalyst::Action::REST 1.21
+      Catalyst::Action::REST::ForBrowsers 1.21
+      Catalyst::Action::Serialize 1.21
+      Catalyst::Action::Serialize::Callback 1.21
+      Catalyst::Action::Serialize::JSON 1.21
+      Catalyst::Action::Serialize::JSON::XS 1.21
+      Catalyst::Action::Serialize::JSONP 1.21
+      Catalyst::Action::Serialize::View 1.21
+      Catalyst::Action::Serialize::XML::Simple 1.21
+      Catalyst::Action::Serialize::YAML 1.21
+      Catalyst::Action::Serialize::YAML::HTML 1.21
+      Catalyst::Action::SerializeBase 1.21
+      Catalyst::Controller::REST 1.21
+      Catalyst::Request::REST 1.21
+      Catalyst::Request::REST::ForBrowsers 1.21
+      Catalyst::TraitFor::Request::REST 1.21
+      Catalyst::TraitFor::Request::REST::ForBrowsers 1.21
     requirements:
       Catalyst::Runtime 5.80030
       Class::Inspector 1.13
