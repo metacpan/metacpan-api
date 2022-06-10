@@ -2598,6 +2598,14 @@ DISTRIBUTIONS
       perl 5.008001
       strict 0
       warnings 0
+  Exporter-5.74
+    pathname: T/TO/TODDR/Exporter-5.74.tar.gz
+    provides:
+      Exporter 5.74
+      Exporter::Heavy 5.74
+    requirements:
+      Carp 1.05
+      ExtUtils::MakeMaker 0
   Exporter-Declare-0.114
     pathname: E/EX/EXODIST/Exporter-Declare-0.114.tar.gz
     provides:

@@ -54,7 +54,7 @@ requires 'Encode', '3.17';
 requires 'Encoding::FixLatin';
 requires 'Encoding::FixLatin::XS';
 requires 'EV';
-requires 'Exporter';
+requires 'Exporter', '5.74';
 requires 'ExtUtils::HasCompiler';
 requires 'File::Basename';
 requires 'File::Find';
