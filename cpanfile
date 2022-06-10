@@ -180,7 +180,7 @@ requires 'YAML::XS', '0.83'; # Mojolicious::Plugin::OpenAPI YAML loading
 
 # test requirements
 requires 'App::Prove';
-requires 'Code::TidyAll', '0.78';
+requires 'Code::TidyAll', '0.82';
 requires 'Code::TidyAll::Plugin::UniqueLines';
 requires 'CPAN::Faker', '0.010';
 requires 'Devel::Confess';
