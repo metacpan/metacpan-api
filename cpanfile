@@ -49,7 +49,7 @@ requires 'ElasticSearchX::Model', '2.0.1';
 requires 'Email::Address';
 requires 'Email::Sender::Simple';
 requires 'Email::Simple';
-requires 'Email::Valid', '1.198';
+requires 'Email::Valid', '1.203';
 requires 'Encode';
 requires 'Encoding::FixLatin';
 requires 'Encoding::FixLatin::XS';
