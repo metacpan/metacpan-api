@@ -50,7 +50,7 @@ requires 'Email::Address';
 requires 'Email::Sender::Simple';
 requires 'Email::Simple';
 requires 'Email::Valid', '1.203';
-requires 'Encode';
+requires 'Encode', '3.17';
 requires 'Encoding::FixLatin';
 requires 'Encoding::FixLatin::XS';
 requires 'EV';
