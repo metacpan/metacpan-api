@@ -717,19 +717,16 @@ DISTRIBUTIONS
       URI::ws 0.03
       namespace::clean 0.23
       perl 5.008003
-  Catalyst-View-JSON-0.36
-    pathname: J/JJ/JJNAPIORK/Catalyst-View-JSON-0.36.tar.gz
+  Catalyst-View-JSON-0.37
+    pathname: H/HA/HAARG/Catalyst-View-JSON-0.37.tar.gz
     provides:
       Catalyst::Helper::View::JSON undef
-      Catalyst::View::JSON 0.36
+      Catalyst::View::JSON 0.37
     requirements:
-      Catalyst 5.6
-      ExtUtils::MakeMaker 6.59
+      Catalyst 5.60
+      ExtUtils::MakeMaker 0
       JSON::MaybeXS 1.003000
       MRO::Compat 0
-      Test::More 0
-      YAML 0
-      perl 5.008001
   CatalystX-Fastly-Role-Response-0.07
     pathname: L/LL/LLAP/CatalystX-Fastly-Role-Response-0.07.tar.gz
     provides:
