@@ -4,6 +4,7 @@ use Moose;
 use namespace::autoclean;
 
 use Cpanel::JSON::XS ();
+use List::AllUtils   ();
 use Moose::Util      ();
 use MetaCPAN::Types::TypeTiny qw( HashRef );
 use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
@@ -161,7 +162,7 @@ sub join : ActionClass('~Deserialize') {
                     || single_valued_arrayref_to_scalar( $_->{fields} )
             } @{ $c->stash->{hits}->{hits} }
             ];
-        my @ids = List::MoreUtils::uniq grep {defined}
+        my @ids = List::AllUtils::uniq grep {defined}
             map { ref $cself eq 'CODE' ? $cself->($_) : $_->{$cself} } @$data;
         my $filter   = { terms => { $config->{foreign} => [@ids] } };
         my $filtered = {%$query};    # don't work on $query

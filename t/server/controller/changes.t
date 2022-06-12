@@ -102,7 +102,7 @@ test_psgi app, sub {
 
         next unless $res->code == 200;
 
-        is $json->{name},      $name,    'change log has expected name';
+        is $json->{name}, $name, 'change log has expected name';
         like $json->{content}, $content, 'file content';
 
         my @fields = qw(release name content);
@@ -112,7 +112,7 @@ test_psgi app, sub {
         is_deeply [ sort keys %$json ], [ sort @fields ],
             'only requested fields';
         like $json->{content}, $content, 'content as expected';
-        is $json->{name},      $name,    'name as expected';
+        is $json->{name}, $name, 'name as expected';
 
         {
             my $suffix = 'v?[0-9.]+';    # wrong, but good enough

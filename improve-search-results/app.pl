@@ -1,7 +1,7 @@
 use Mojolicious::Lite;
 
 use Mojo::Pg;
-use List::MoreUtils 'first_index';
+use List::AllUtils 'first_index';
 
 my $user = getpwuid($<); # for vagrant user on dev box
 
