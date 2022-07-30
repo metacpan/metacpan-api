@@ -29,12 +29,36 @@ use constant {
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
+has cpan_index => (
+    is            => 'ro',
+    isa           => Str,
+    default       => 'cpan_v1_01',
+    documentation => 'real name for the cpan index',
+);
+
 has arg_deploy_mapping => (
     init_arg      => 'delete',
     is            => 'ro',
     isa           => Bool,
     default       => 0,
     documentation => 'delete index if it exists already',
+);
+
+has arg_delete_all => (
+    init_arg      => 'all',
+    is            => 'ro',
+    isa           => Bool,
+    default       => 0,
+    documentation =>
+        'delete ALL existing indices (only effective in combination with "--delete")',
+);
+
+has arg_verify_mapping => (
+    init_arg      => 'verify',
+    is            => 'ro',
+    isa           => Bool,
+    default       => 0,
+    documentation => 'verify deployed index structure against definition',
 );
 
 has arg_list_types => (
@@ -132,15 +156,33 @@ sub run {
     my $self = shift;
 
     if ( $self->await ) {
-        $self->delete_index if $self->arg_delete_index;
+        $self->create_index if $self->arg_create_index;
         $self->update_index if $self->arg_update_index;
+        $self->delete_index if $self->arg_delete_index;
         $self->copy_type    if $self->copy_to_index;
         $self->empty_type   if $self->delete_from_type;
         $self->list_types   if $self->arg_list_types;
 
         if ( $self->arg_deploy_mapping ) {
+            if ( $self->arg_delete_all ) {
+                $self->check_health;
+                $self->delete_all;
+            }
             unless ( $self->deploy_mapping ) {
                 $self->print_error("Indices Re-creation has failed!");
+                $self->exit_code(1);
+            }
+        }
+
+        if ( $self->arg_verify_mapping ) {
+            $self->check_health;
+            unless (
+                $self->verify_mapping(
+                    $self->_build_mapping, $self->_build_aliases
+                )
+                )
+            {
+                $self->print_error("Indices Verification has failed!");
                 $self->exit_code(1);
             }
         }
@@ -152,7 +194,7 @@ sub run {
     }
 
 # The run() method is expected to communicate Success to the superior execution level
-    return ( $self->exit_code == 0 );
+    return ( $self->exit_code == 0 ? 1 : 0 );
 }
 
 sub _check_index_exists {
@@ -161,12 +203,18 @@ sub _check_index_exists {
 
     if ( $exists and !$expected ) {
         log_error {"Index already exists: $name"};
-        exit 0;
+
+        #Set System Error: 1 - EPERM - Operation not permitted
+        $self->exit_code(1);
+        $self->handle_error( "Conflicting index: $name", 1 );
     }
 
     if ( !$exists and $expected ) {
         log_error {"Index doesn't exists: $name"};
-        exit 0;
+
+        #Set System Error: 1 - EPERM - Operation not permitted
+        $self->exit_code(1);
+        $self->handle_error( "Missing index: $name", 1 );
     }
 }
 
@@ -178,6 +226,39 @@ sub delete_index {
     $self->are_you_sure("Index $name will be deleted !!!");
 
     $self->_delete_index($name);
+}
+
+sub delete_all {
+    my $self                = $_[0];
+    my $runtime_environment = 'production';
+    my $is_development      = 0;
+
+    $runtime_environment = $ENV{'PLACK_ENV'}
+        if ( defined $ENV{'PLACK_ENV'} );
+    $runtime_environment = $ENV{'MOJO_MODE'}
+        if ( defined $ENV{'MOJO_MODE'} );
+
+    $is_development = 1
+        if ( $runtime_environment eq 'development'
+        || $runtime_environment eq 'testing' );
+
+    if ($is_development) {
+        my $name = undef;
+
+        $self->are_you_sure("ALL Indices will be deleted !!!");
+
+        foreach $name ( keys %{ $self->indices_info } ) {
+            $self->_delete_index($name);
+        }
+    }
+    else {
+        #Set System Error: 1 - EPERM - Operation not permitted
+        $self->exit_code(1);
+        $self->print_error("Operation not permitted!");
+        $self->handle_error(
+            "Operation not permitted in environment: $runtime_environment",
+            1 );
+    }
 }
 
 sub _delete_index {
@@ -208,7 +289,9 @@ sub update_index {
     for my $type ( sort keys %{$mapping} ) {
         log_info {"Adding mapping to index: $type"};
         $self->es->indices->put_mapping(
-            index => $self->index->name,
+
+            #            index => $self->index->name,
+            index => $name,
             type  => $type,
             body  => { $type => $mapping->{$type} },
         );
@@ -404,16 +487,10 @@ sub show_info {
     print JSON->new->utf8->pretty->encode($info_rs);
 }
 
-sub deploy_mapping {
-    my $self       = shift;
-    my $cpan_index = 'cpan_v1_01';
-    my $imappingok = 0;
-
-    $self->are_you_sure(
-        'this will delete EVERYTHING and re-create the (empty) indexes');
-
-    my %mappings = (
-        $cpan_index => {
+sub _build_mapping {
+    my $self = $_[0];
+    return {
+        $self->cpan_index => {
             author =>
                 decode_json(MetaCPAN::Script::Mapping::CPAN::Author::mapping),
             distribution => decode_json(
@@ -449,7 +526,24 @@ sub deploy_mapping {
         cover => {
             cover => decode_json(MetaCPAN::Script::Mapping::Cover::mapping),
         },
-    );
+    };
+}
+
+sub _build_aliases {
+    my $self = $_[0];
+    return { 'cpan' => $self->cpan_index };
+
+}
+
+sub deploy_mapping {
+    my $self       = shift;
+    my $imappingok = 0;
+
+    $self->are_you_sure(
+        'this will delete EVERYTHING and re-create the (empty) indexes');
+
+    # Deserialize the Index Mapping Structure
+    my $rmappings = $self->_build_mapping;
 
     my $deploy_statement
         = decode_json(MetaCPAN::Script::Mapping::DeployStatement::mapping);
@@ -458,35 +552,37 @@ sub deploy_mapping {
 
     # recreate the indices and apply the mapping
 
-    for my $idx ( sort keys %mappings ) {
+    for my $idx ( sort keys %$rmappings ) {
         $self->_delete_index($idx) if $es->indices->exists( index => $idx );
 
         log_info {"Creating index: $idx"};
         $es->indices->create( index => $idx, body => $deploy_statement );
 
-        for my $type ( sort keys %{ $mappings{$idx} } ) {
+        for my $type ( sort keys %{ $rmappings->{$idx} } ) {
             log_info {"Adding mapping: $idx/$type"};
             $es->indices->put_mapping(
                 index => $idx,
                 type  => $type,
-                body  => { $type => $mappings{$idx}{$type} },
+                body  => { $type => $rmappings->{$idx}{$type} },
             );
         }
     }
 
     # create aliases
 
-    my %aliases = ( 'cpan' => $cpan_index );
-    for my $alias ( sort keys %aliases ) {
-        log_info {"Creating alias: '$alias' -> '$aliases{$alias}'"};
+    my $raliases = $self->_build_aliases;
+    for my $alias ( sort keys %$raliases ) {
+        log_info {
+            "Creating alias: '$alias' -> '" . $raliases->{$alias} . "'"
+        };
         $es->indices->put_alias(
-            index => $aliases{$alias},
+            index => $raliases->{$alias},
             name  => $alias,
         );
     }
 
     $self->check_health(1);
-    $imappingok = $self->verify_mapping( \%mappings, \%aliases );
+    $imappingok = $self->verify_mapping( $rmappings, $raliases );
 
     # done
     log_info {"Done."};
@@ -494,7 +590,7 @@ sub deploy_mapping {
     return $imappingok;
 }
 
-sub verify_mapping {
+sub check_mapping {
     my ( $self, $rmappings, $raliases ) = @_;
     my $ihealth = 0;
 
@@ -527,8 +623,20 @@ sub verify_mapping {
         }
     }
 
+    $ihealth = ( $ihealth && $self->check_aliases($raliases) );
+
+    return $ihealth;
+}
+
+sub check_aliases {
+    my ( $self, $raliases ) = @_;
+    my $ihealth = 0;
+
     if ( defined $raliases && ref $raliases eq 'HASH' ) {
         my $ralias = undef;
+
+        $ihealth = 1;
+
         for my $name ( sort keys %$raliases ) {
             $ralias = $self->aliases_info->{$name};
             if ( defined $ralias ) {
@@ -559,6 +667,261 @@ sub verify_mapping {
     return $ihealth;
 }
 
+sub _compare_mapping {
+    my ( $self, $sname, $rdeploy, $rmodel ) = @_;
+    my $ihealth = 0;
+
+    if ( defined $rdeploy && defined $rmodel ) {
+        my $json_parser = Cpanel::JSON::XS->new->allow_nonref;
+        my ( $deploy_type, $deploy_value );
+        my ( $model_type,  $model_value );
+
+        $ihealth = 1;
+
+        if ( ref $rdeploy eq 'HASH' ) {
+            my $sfield = undef;
+
+            foreach $sfield ( sort keys %$rdeploy ) {
+                if (   defined $rdeploy->{$sfield}
+                    && defined $rmodel->{$sfield} )
+                {
+                    $deploy_type  = ref( $rdeploy->{$sfield} );
+                    $model_type   = ref( $rmodel->{$sfield} );
+                    $deploy_value = $rdeploy->{$sfield};
+                    $model_value  = $rmodel->{$sfield};
+
+                    if ( $deploy_type eq 'JSON::PP::Boolean' ) {
+                        $deploy_type = '';
+                        $deploy_value
+                            = $json_parser->encode( $rdeploy->{$sfield} );
+                    }
+
+                    if ( $model_type eq 'JSON::PP::Boolean' ) {
+                        $model_type = '';
+                        $model_value
+                            = $json_parser->encode( $rmodel->{$sfield} );
+                    }
+
+                    if ( $deploy_type ne '' ) {
+                        if (   $deploy_type eq 'HASH'
+                            || $deploy_type eq 'ARRAY' )
+                        {
+                            $ihealth = (
+                                $ihealth && $self->_compare_mapping(
+                                    $sname . '.' . $sfield, $deploy_value,
+                                    $model_value
+                                )
+                            );
+                        }
+                        else {    # No Hash nor Array
+                            unless ( ${$deploy_value} eq ${$model_value} ) {
+                                log_error {
+                                    'Mismatch field: '
+                                        . $sname . '.'
+                                        . $sfield . ' ('
+                                        . ${$deploy_value} . ' <> '
+                                        . ${$model_value} . ')'
+                                };
+                                $ihealth = 0;
+                            }
+                        }
+                    }
+                    else {    # Scalar Value
+                        unless ( $deploy_value eq $model_value ) {
+                            log_error {
+                                'Mismatch field: '
+                                    . $sname . '.'
+                                    . $sfield . ' ('
+                                    . $deploy_value . ' <> '
+                                    . $model_value . ')'
+                            };
+                            $ihealth = 0;
+                        }
+                    }
+                }
+                else {
+                    unless ( defined $rdeploy->{$sfield} ) {
+                        log_error {
+                            'Missing field: ' . $sname . '.' . $sfield
+                        };
+                        $ihealth = 0;
+
+                    }
+                    unless ( defined $rmodel->{$sfield} ) {
+                        log_error {
+                            'Missing definition: ' . $sname . '.' . $sfield
+                        };
+                        $ihealth = 0;
+                    }
+                }
+            }
+        }
+        elsif ( ref $rdeploy eq 'ARRAY' ) {
+            my $iindex = undef;
+
+            foreach $iindex (@$rdeploy) {
+                if (   defined $rdeploy->[$iindex]
+                    && defined $rmodel->[$iindex] )
+                {
+                    $deploy_type  = ref( $rdeploy->[$iindex] );
+                    $model_type   = ref( $rmodel->[$iindex] );
+                    $deploy_value = $rdeploy->[$iindex];
+                    $model_value  = $rmodel->[$iindex];
+
+                    if ( $deploy_type eq 'JSON::PP::Boolean' ) {
+                        $deploy_type = '';
+                        $deploy_value
+                            = $json_parser->encode( $rdeploy->[$iindex] );
+                    }
+
+                    if ( $model_type eq 'JSON::PP::Boolean' ) {
+                        $model_type = '';
+                        $model_value
+                            = $json_parser->encode( $rmodel->[$iindex] );
+                    }
+
+                    if ( $deploy_type eq '' ) {    # Reference Value
+                        if (   $deploy_type eq 'HASH'
+                            || $deploy_type eq 'ARRAY' )
+                        {
+                            $ihealth = (
+                                $ihealth && $self->_compare_mapping(
+                                    $sname . '[' . $iindex . ']',
+                                    $deploy_value,
+                                    $model_value
+                                )
+                            );
+                        }
+                        else {    # No Hash nor Array
+                            unless ( ${$deploy_value} eq ${$model_value} ) {
+                                log_error {
+                                    'Mismatch field: '
+                                        . $sname . '['
+                                        . $iindex . '] ('
+                                        . ${$deploy_value} . ' <> '
+                                        . ${$model_value} . ')'
+                                };
+                                $ihealth = 0;
+                            }
+                        }
+                    }
+                    else {    # Scalar Value
+                        unless ( $deploy_value eq $model_value ) {
+                            log_error {
+                                'Mismatch field: '
+                                    . $sname . '['
+                                    . $iindex . '] ('
+                                    . $deploy_value . ' <> '
+                                    . $model_value . ')'
+                            };
+                            $ihealth = 0;
+                        }
+                    }
+                }
+                else {    # Missing Field
+                    unless ( defined $rdeploy->[$iindex] ) {
+                        log_error {
+                            'Missing field: ' . $sname . '[' . $iindex . ']'
+                        };
+                        $ihealth = 0;
+
+                    }
+                    unless ( defined $rmodel->[$iindex] ) {
+                        log_error {
+                            'Missing definition: ' . $sname . '[' . $iindex
+                                . ']'
+                        };
+                        $ihealth = 0;
+                    }
+                }
+            }
+        }
+    }
+    else {    # Missing Field
+        unless ( defined $rdeploy ) {
+            log_error { 'Missing field: ' . $sname };
+            $ihealth = 0;
+        }
+        unless ( defined $rmodel ) {
+            log_error { 'Missing definition: ' . $sname };
+            $ihealth = 0;
+        }
+    }
+
+    if ( $self->{'logger'}->is_debug ) {
+        if ($ihealth) {
+            log_debug {"field '$sname': ok"};
+        }
+        else {
+            log_debug {"field '$sname': failed!"};
+        }
+    }
+
+    return $ihealth;
+}
+
+sub verify_mapping {
+    my ( $self, $rmappings, $raliases ) = @_;
+    my $ihealth = 0;
+
+    if ( defined $rmappings && ref $rmappings eq 'HASH' ) {
+        my $rindices = $self->es->indices->get_mapping();
+        my $iindexok = 0;
+
+        $ihealth = 1;
+
+        for my $idx ( sort keys %$rmappings ) {
+            if (   defined $rindices->{$idx}
+                && defined $rindices->{$idx}->{'mappings'} )
+            {
+                log_info {
+                    "Verifying index: $idx"
+                };
+
+                $iindexok
+                    = $self->_compare_mapping( $idx,
+                    $rindices->{$idx}->{'mappings'},
+                    $rmappings->{$idx} );
+
+                if ($iindexok) {
+                    log_info {
+                        "Correct index: $idx (mapping deployed)"
+                    };
+                }
+                else {
+                    log_error {
+                        "Broken index: $idx (mapping does not match definition)"
+                    };
+                    $ihealth = 0;
+                }
+
+                $ihealth = ( $ihealth && $iindexok );
+            }
+            else {
+                log_error {"Missing index: $idx"};
+                $ihealth = 0;
+            }
+        }
+    }
+    if ($ihealth) {
+        log_info {"Verification indices: ok"};
+    }
+    else {
+        log_info {"Verification indices: failed"};
+    }
+
+    $ihealth = ( $ihealth && $self->check_aliases($raliases) );
+
+    if ($ihealth) {
+        log_info {"Verification aliases: ok"};
+    }
+    else {
+        log_info {"Verification aliases: failed"};
+    }
+
+    return $ihealth;
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
 
@@ -574,6 +937,7 @@ MetaCPAN::Script::Mapping - Script to set the index and mapping the types
 
  # bin/metacpan mapping --show_cluster_info   # show basic info about the cluster, indices and aliases
  # bin/metacpan mapping --delete
+ # bin/metacpan mapping --delete --all        # deletes ALL indices in the cluster
  # bin/metacpan mapping --list_types
  # bin/metacpan mapping --delete_index xxx
  # bin/metacpan mapping --create_index xxx --reindex
@@ -619,11 +983,34 @@ with B<Exit Code> C< 1 >.
 
 See L<Method C<deploy_mapping()>>
 
-See L<Method C<verify_mapping()>>
+See L<Method C<check_mapping()>>
 
 See L<Method C<MetaCPAN::Role::Script::check_health()>>
 
 =back
+
+=cut
+
+#<<<<<<< HEAD
+#=item Option C<--all>
+
+#This option is only effective in combination with Option C<--delete>.
+#It uses the information gathered by C<MetaCPAN::Role::Script::check_health()> to delete
+#B<ALL> indices in the I<ElasticSearch> Cluster.
+#This option is usefull to reconstruct a broken I<ElasticSearch> Cluster
+
+#    bin/metacpan mapping --delete --all
+
+#See L<Option C<--delete>>
+
+#See L<Method C<deploy_mapping()>>
+
+#See L<Method C<MetaCPAN::Role::Script::check_health()>>
+
+#=======
+#>>>>>>> master
+
+=pod
 
 =head1 METHODS
 
@@ -646,11 +1033,11 @@ or there is any issue in any I<ElasticSearch> Request run by the Script.
 
 See L<Option C<--delete>>
 
-See L<Method C<verify_mapping()>>
+See L<Method C<check_mapping()>>
 
 See L<Method C<MetaCPAN::Role::Script::check_health()>>
 
-=item C<verify_mapping( \%indices, \%aliases )>
+=item C<check_mapping( \%indices, \%aliases )>
 
 Checks the defined indices and aliases against the actually in the I<ElasticSearch> Cluster
 existing indices and aliases which must have been requested with
@@ -662,7 +1049,7 @@ C<\%indices> - Reference to a hash that defines the indices required for the Pro
 
 C<\%aliases> - Reference to a hash that defines the aliases required for the Project.
 
-B<Returns:> It returns C< 1 > when the indices and aliases are created and verified as correct.
+B<Returns:> It returns C< 1 > when the indices and aliases are created and match the defined structure.
 Otherwise it returns C< 0 >.
 
 B<Exceptions:> It can throw exceptions when the connection to I<ElasticSearch> fails
@@ -670,7 +1057,7 @@ or there is any issue in any I<ElasticSearch> Request run by the Script.
 
 See L<Option C<--delete>>
 
-See L<Method C<verify_mapping()>>
+See L<Method C<check_mapping()>>
 
 See L<Method C<MetaCPAN::Role::Script::check_health()>>
 
