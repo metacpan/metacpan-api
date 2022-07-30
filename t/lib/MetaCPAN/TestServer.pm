@@ -2,7 +2,6 @@ package MetaCPAN::TestServer;
 
 use MetaCPAN::Moose;
 
-use Cpanel::JSON::XS qw( decode_json encode_json );
 use MetaCPAN::DarkPAN                ();
 use MetaCPAN::Script::Author         ();
 use MetaCPAN::Script::Cover          ();
@@ -415,23 +414,23 @@ sub test_field_mismatch {
 
     subtest 'field mismatch' => sub {
         my $sfieldjson = q({
-	        "properties" : {
+          "properties" : {
             "version" : {
               "ignore_above" : 2048,
               "index" : "not_analyzed",
               "type" : "string"
             }
-	        }
-	      });
+	  }
+	});
         my $sfieldchangejson = q({
-	        "properties" : {
+          "properties" : {
             "version" : {
               "ignore_above" : 1024,
               "index" : "not_analyzed",
               "type" : "string"
             }
-	        }
-	      });
+	  }
+	});
 
         subtest 'mapping change field' => sub {
             local @ARGV = (
@@ -511,16 +510,16 @@ sub test_delete_all {
     subtest 'delete all deletes unknown index' => sub {
         subtest 'create index' => sub {
             my $smockindexjson = q({
-            	"mock_index": {
-					      "properties": {
-					          "mock_field" : {
-					            "type" : "string",
-					            "index" : "not_analyzed",
-					            "ignore_above" : 2048
-					          }
-					        }
-					      }
-					    });
+              "mock_index": {
+                "properties": {
+		  "mock_field" : {
+		    "type" : "string",
+		    "index" : "not_analyzed",
+		    "ignore_above" : 2048
+                  }
+		}
+	      }
+	    });
 
             local @ARGV = (
                 'mapping',    '--create_index',

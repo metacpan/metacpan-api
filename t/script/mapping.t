@@ -20,16 +20,16 @@ subtest 'mapping verification succeeds' => sub {
 subtest 'create, delete index' => sub {
     subtest 'create index' => sub {
         my $smockindexjson = q({
-			    "mock_index": {
-						"properties": {
-			          "mock_field": {
-			            "type": "string",
-			            "index": "not_analyzed",
-			            "ignore_above": 2048
-			          }
-					    }
-					  }
-					});
+          "mock_index": {
+	    "properties": {
+	      "mock_field": {
+		"type": "string",
+		"index": "not_analyzed",
+		"ignore_above": 2048
+              }
+	    }
+          }
+	});
         local @ARGV = (
             'mapping',    '--create_index',
             'mock_index', '--patch_mapping',
