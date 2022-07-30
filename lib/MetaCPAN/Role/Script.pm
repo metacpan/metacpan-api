@@ -364,17 +364,32 @@ sub await {
 
 sub are_you_sure {
     my ( $self, $msg ) = @_;
+    my $iconfirmed = 0;
 
     if (is_interactive) {
-        print colored( ['bold red'], "*** Warning ***: $msg" ), "\n";
-        my $answer = prompt
-            'Are you sure you want to do this (type "YES" to confirm) ? ';
+        my $answer
+            = prompt colored( ['bold red'], "*** Warning ***: $msg" ) . "\n"
+            . 'Are you sure you want to do this (type "YES" to confirm) ? ';
         if ( $answer ne 'YES' ) {
-            print "bye.\n";
-            exit 0;
+            log_error {"Confirmation incorrect: '$answer'"};
+            print "Operation will be interruped!\n";
+
+            #Set System Error: 125 - ECANCELED - Operation canceled
+            $self->exit_code(125);
+            $self->handle_error( 'Operation canceled on User Request', 1 );
         }
-        print "alright then...\n";
+        else {
+            log_info {'Operation confirmed.'};
+            print "alright then...\n";
+            $iconfirmed = 1;
+        }
     }
+    else {
+        print colored( ['bold yellow'], "*** Warning ***: $msg" ) . "\n";
+        $iconfirmed = 1;
+    }
+
+    return $iconfirmed;
 }
 
 1;
