@@ -2,6 +2,7 @@ package MetaCPAN::TestServer;
 
 use MetaCPAN::Moose;
 
+use Cpanel::JSON::XS qw( decode_json encode_json );
 use MetaCPAN::DarkPAN                ();
 use MetaCPAN::Script::Author         ();
 use MetaCPAN::Script::Cover          ();
@@ -10,10 +11,12 @@ use MetaCPAN::Script::Favorite       ();
 use MetaCPAN::Script::First          ();
 use MetaCPAN::Script::Latest         ();
 use MetaCPAN::Script::Mapping        ();
+use MetaCPAN::Script::Mapping::Cover ();
 use MetaCPAN::Script::Mirrors        ();
 use MetaCPAN::Script::Package        ();
 use MetaCPAN::Script::Permission     ();
 use MetaCPAN::Script::Release        ();
+use MetaCPAN::Script::Runner         ();
 use MetaCPAN::Server                 ();
 use MetaCPAN::TestHelpers qw( fakecpan_dir );
 use MetaCPAN::Types::TypeTiny qw( Path HashRef Str );
@@ -62,6 +65,11 @@ sub setup {
     my $self = shift;
 
     $self->es_client;
+
+    # Run the Delete Index Tests before mapping deployment
+    $self->test_delete_mappings;
+
+    # Deploy project mappings
     $self->put_mappings;
 }
 
@@ -161,7 +169,7 @@ sub wait_for_es {
     $self->es_client->indices->refresh;
 }
 
-sub verify_mappings {
+sub check_mappings {
     my $self           = $_[0];
     my %hshtestindices = (
         'cover'       => 'yellow',
@@ -193,7 +201,7 @@ sub verify_mappings {
         ok( defined $hshtestindices{$_}, "indice '$_' is configured" )
             foreach ( keys %{ $mapping->indices_info } );
     };
-    subtest 'verify indix health' => sub {
+    subtest 'verify index health' => sub {
         foreach ( keys %hshtestindices ) {
             ok( defined $mapping->indices_info->{$_},
                 "indice '$_' was created" );
@@ -219,7 +227,7 @@ sub put_mappings {
     local @ARGV = qw(mapping --delete);
     ok( MetaCPAN::Script::Mapping->new_with_options( $self->_config )->run,
         'put mapping' );
-    $self->verify_mappings;
+    $self->check_mappings;
     $self->wait_for_es();
 }
 
@@ -227,9 +235,8 @@ sub index_releases {
     my $self = shift;
     my %args = @_;
 
-    local @ARGV = (
-        'release', $ENV{MC_RELEASE} ? $ENV{MC_RELEASE} : $self->_cpan_dir
-    );
+    local @ARGV = ( 'release',
+        $ENV{MC_RELEASE} ? $ENV{MC_RELEASE} : $self->_cpan_dir );
     ok(
         MetaCPAN::Script::Release->new_with_options( %{ $self->_config },
             %args )->run,
@@ -353,6 +360,212 @@ sub prepare_user_test_data {
         ),
         'put bot user'
     );
+}
+
+sub test_mappings {
+    my $self = $_[0];
+
+    $self->test_index_missing;
+    $self->test_field_mismatch;
+}
+
+sub test_index_missing {
+    my $self = $_[0];
+
+    subtest 'missing index' => sub {
+        my $scoverindexjson = MetaCPAN::Script::Mapping::Cover::mapping;
+
+        subtest 'delete cover index' => sub {
+            local @ARGV = qw(mapping --delete_index cover);
+            my $mapping
+                = MetaCPAN::Script::Mapping->new_with_options(
+                $self->_config );
+
+            ok( $mapping->run, "deletion 'cover' succeeds" );
+            is( $mapping->exit_code, 0, "Exit Code '0' - No Error" );
+        };
+        subtest 'mapping verification fails' => sub {
+            local @ARGV = qw(mapping --verify);
+            my $mapping
+                = MetaCPAN::Script::Mapping->new_with_options(
+                $self->_config );
+
+            is( $mapping->run, 0, "verification execution fails" );
+            is( $mapping->exit_code, 1,
+                "Exit Code '1' - Verification Error" );
+        };
+        subtest 're-create cover index' => sub {
+            local @ARGV = (
+                'mapping', '--create_index',
+                'cover',   '--patch_mapping',
+                qq({ "cover": $scoverindexjson })
+            );
+            my $mapping
+                = MetaCPAN::Script::Mapping->new_with_options(
+                $self->_config );
+
+            ok( $mapping->run, "creation 'cover' succeeds" );
+            is( $mapping->exit_code, 0, "Exit Code '0' - No Error" );
+        };
+    };
+}
+
+sub test_field_mismatch {
+    my $self = $_[0];
+
+    subtest 'field mismatch' => sub {
+        my $sfieldjson = q({
+	        "properties" : {
+            "version" : {
+              "ignore_above" : 2048,
+              "index" : "not_analyzed",
+              "type" : "string"
+            }
+	        }
+	      });
+        my $sfieldchangejson = q({
+	        "properties" : {
+            "version" : {
+              "ignore_above" : 1024,
+              "index" : "not_analyzed",
+              "type" : "string"
+            }
+	        }
+	      });
+
+        subtest 'mapping change field' => sub {
+            local @ARGV = (
+                'mapping', '--update_index',
+                'cover',   '--patch_mapping',
+                qq({ "cover": $sfieldchangejson })
+            );
+            my $mapping
+                = MetaCPAN::Script::Mapping->new_with_options(
+                $self->_config );
+
+            ok( $mapping->run, "change 'cover' succeeds" );
+
+            is( $mapping->exit_code, 0, "Exit Code '0' - No Error" );
+        };
+        subtest 'field verification fails' => sub {
+            local @ARGV = qw(mapping --verify);
+            my $mapping
+                = MetaCPAN::Script::Mapping->new_with_options(
+                $self->_config );
+
+            is( $mapping->run, 0, "verification fails" );
+            is( $mapping->exit_code, 1,
+                "Exit Code '1' - Verification Error" );
+        };
+        subtest 'mapping re-establish field' => sub {
+            local @ARGV = (
+                'mapping', '--update_index',
+                'cover',   '--patch_mapping',
+                qq({ "cover": $sfieldjson })
+            );
+            my $mapping
+                = MetaCPAN::Script::Mapping->new_with_options(
+                $self->_config );
+
+            ok( $mapping->run, "re-establish 'cover' succeeds" );
+            is( $mapping->exit_code, 0, "Exit Code '0' - No Error" );
+        };
+    };
+}
+
+sub test_delete_mappings {
+    my $self = $_[0];
+
+    $self->test_delete_fails;
+    $self->test_delete_all;
+}
+
+sub test_delete_fails {
+    my $self = $_[0];
+
+    my $iexitcode;
+    my $irunok;
+
+    subtest 'delete all not permitted' => sub {
+
+        # mapping script - delete indices
+        {
+            local @ARGV = qw(mapping --delete --all);
+            local %ENV  = (%ENV);
+
+            delete $ENV{'PLACK_ENV'};
+            delete $ENV{'MOJO_MODE'};
+
+            $irunok    = MetaCPAN::Script::Runner::run;
+            $iexitcode = $MetaCPAN::Script::Runner::EXIT_CODE;
+        }
+
+        ok( !$irunok, "delete all fails" );
+        is( $iexitcode, 1, "Exit Code '1' - Permission Error" );
+    };
+}
+
+sub test_delete_all {
+    my $self = $_[0];
+
+    subtest 'delete all deletes unknown index' => sub {
+        subtest 'create index' => sub {
+            my $smockindexjson = q({
+            	"mock_index": {
+					      "properties": {
+					          "mock_field" : {
+					            "type" : "string",
+					            "index" : "not_analyzed",
+					            "ignore_above" : 2048
+					          }
+					        }
+					      }
+					    });
+
+            local @ARGV = (
+                'mapping',    '--create_index',
+                'mock_index', '--patch_mapping',
+                $smockindexjson
+            );
+
+            ok( MetaCPAN::Script::Runner::run,
+                "creation 'mock_index' succeeds"
+            );
+            is( $MetaCPAN::Script::Runner::EXIT_CODE,
+                0, "Exit Code '0' - No Error" );
+        };
+        subtest 'info shows unknonwn index' => sub {
+            local @ARGV = ( 'mapping', '--show_cluster_info' );
+            my $mapping = MetaCPAN::Script::Mapping->new_with_options(
+                $self->_config );
+
+            ok( $mapping->run, "show info succeeds" );
+            is( $mapping->exit_code, 0, "Exit Code '0' - No Error" );
+
+            ok( defined $mapping->indices_info, 'Index Info built' );
+            ok( defined $mapping->indices_info->{'mock_index'},
+                'Unknown Index printed' );
+        };
+        subtest 'delete all succeeds' => sub {
+            local @ARGV = qw(mapping --delete --all);
+
+            ok( MetaCPAN::Script::Runner::run, "delete all succeeds" );
+            is( $MetaCPAN::Script::Runner::EXIT_CODE,
+                0, "Exit Code '0' - No Error" );
+        };
+        subtest 'info does not show unknown index' => sub {
+            local @ARGV = ( 'mapping', '--show_cluster_info' );
+            my $mapping = MetaCPAN::Script::Mapping->new_with_options(
+                $self->_config );
+
+            ok( $mapping->run, "show info succeeds" );
+            is( $mapping->exit_code, 0, "Exit Code '0' - No Error" );
+
+            ok( defined $mapping->indices_info, 'Index Info built' );
+            ok( !defined $mapping->indices_info->{'mock_index'},
+                'Unknown Index printed' );
+        };
+    };
 }
 
 __PACKAGE__->meta->make_immutable;
