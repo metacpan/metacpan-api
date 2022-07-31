@@ -987,30 +987,22 @@ See L<Method C<check_mapping()>>
 
 See L<Method C<MetaCPAN::Role::Script::check_health()>>
 
+=item Option C<--all>
+
+This option is only effective in combination with Option C<--delete>.
+It uses the information gathered by C<MetaCPAN::Role::Script::check_health()> to delete
+B<ALL> indices in the I<ElasticSearch> Cluster.
+This option is usefull to reconstruct a broken I<ElasticSearch> Cluster
+
+    bin/metacpan mapping --delete --all
+
+See L<Option C<--delete>>
+
+See L<Method C<deploy_mapping()>>
+
+See L<Method C<MetaCPAN::Role::Script::check_health()>>
+
 =back
-
-=cut
-
-#<<<<<<< HEAD
-#=item Option C<--all>
-
-#This option is only effective in combination with Option C<--delete>.
-#It uses the information gathered by C<MetaCPAN::Role::Script::check_health()> to delete
-#B<ALL> indices in the I<ElasticSearch> Cluster.
-#This option is usefull to reconstruct a broken I<ElasticSearch> Cluster
-
-#    bin/metacpan mapping --delete --all
-
-#See L<Option C<--delete>>
-
-#See L<Method C<deploy_mapping()>>
-
-#See L<Method C<MetaCPAN::Role::Script::check_health()>>
-
-#=======
-#>>>>>>> master
-
-=pod
 
 =head1 METHODS
 
