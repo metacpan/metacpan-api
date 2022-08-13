@@ -177,7 +177,7 @@ sub run {
         if ( $self->arg_verify_mapping ) {
             $self->check_health;
             unless (
-                $self->verify_mapping(
+                $self->mappings_valid(
                     $self->_build_mapping, $self->_build_aliases
                 )
                 )
@@ -582,7 +582,7 @@ sub deploy_mapping {
     }
 
     $self->check_health(1);
-    $imappingok = $self->verify_mapping( $rmappings, $raliases );
+    $imappingok = $self->mappings_valid( $rmappings, $raliases );
 
     # done
     log_info {"Done."};
@@ -590,52 +590,14 @@ sub deploy_mapping {
     return $imappingok;
 }
 
-sub check_mapping {
-    my ( $self, $rmappings, $raliases ) = @_;
-    my $ihealth = 0;
-
-    if ( defined $rmappings && ref $rmappings eq 'HASH' ) {
-        my $rhealth = undef;
-
-        $ihealth = 1;
-
-        for my $idx ( sort keys %$rmappings ) {
-            $rhealth = $self->indices_info->{$idx};
-            if ( defined $rhealth ) {
-                if ( $rhealth->{'health'} eq 'red' ) {
-                    log_error {
-                        "Broken index: $idx (state '"
-                            . $rhealth->{'health'} . "')"
-                    };
-                    $ihealth = 0;
-                }
-                else {
-                    log_info {
-                        "Healthy index: $idx (state '"
-                            . $rhealth->{'health'} . "')"
-                    };
-                }
-            }
-            else {
-                log_error {"Missing index: $idx"};
-                $ihealth = 0;
-            }
-        }
-    }
-
-    $ihealth = ( $ihealth && $self->check_aliases($raliases) );
-
-    return $ihealth;
-}
-
-sub check_aliases {
+sub aliases_valid {
     my ( $self, $raliases ) = @_;
-    my $ihealth = 0;
+    my $ivalid = 0;
 
     if ( defined $raliases && ref $raliases eq 'HASH' ) {
         my $ralias = undef;
 
-        $ihealth = 1;
+        $ivalid = 1;
 
         for my $name ( sort keys %$raliases ) {
             $ralias = $self->aliases_info->{$name};
@@ -651,32 +613,32 @@ sub check_aliases {
                         "Broken alias: $name (index '"
                             . $ralias->{'index'} . "')"
                     };
-                    $ihealth = 0;
+                    $ivalid = 0;
                 }
             }
             else {
                 log_error {"Missing alias: $name"};
-                $ihealth = 0;
+                $ivalid = 0;
             }
         }
     }
     else {
-        $ihealth = 0 if ( scalar( keys %{ $self->aliases_info } ) == 0 );
+        $ivalid = 0 if ( scalar( keys %{ $self->aliases_info } ) == 0 );
     }
 
-    return $ihealth;
+    return $ivalid;
 }
 
 sub _compare_mapping {
     my ( $self, $sname, $rdeploy, $rmodel ) = @_;
-    my $ihealth = 0;
+    my $imatch = 0;
 
     if ( defined $rdeploy && defined $rmodel ) {
         my $json_parser = Cpanel::JSON::XS->new->allow_nonref;
         my ( $deploy_type, $deploy_value );
         my ( $model_type,  $model_value );
 
-        $ihealth = 1;
+        $imatch = 1;
 
         if ( ref $rdeploy eq 'HASH' ) {
             my $sfield = undef;
@@ -706,8 +668,8 @@ sub _compare_mapping {
                         if (   $deploy_type eq 'HASH'
                             || $deploy_type eq 'ARRAY' )
                         {
-                            $ihealth = (
-                                $ihealth && $self->_compare_mapping(
+                            $imatch = (
+                                $imatch && $self->_compare_mapping(
                                     $sname . '.' . $sfield, $deploy_value,
                                     $model_value
                                 )
@@ -722,7 +684,7 @@ sub _compare_mapping {
                                         . ${$deploy_value} . ' <> '
                                         . ${$model_value} . ')'
                                 };
-                                $ihealth = 0;
+                                $imatch = 0;
                             }
                         }
                     }
@@ -735,7 +697,7 @@ sub _compare_mapping {
                                     . $deploy_value . ' <> '
                                     . $model_value . ')'
                             };
-                            $ihealth = 0;
+                            $imatch = 0;
                         }
                     }
                 }
@@ -744,14 +706,14 @@ sub _compare_mapping {
                         log_error {
                             'Missing field: ' . $sname . '.' . $sfield
                         };
-                        $ihealth = 0;
+                        $imatch = 0;
 
                     }
                     unless ( defined $rmodel->{$sfield} ) {
                         log_error {
                             'Missing definition: ' . $sname . '.' . $sfield
                         };
-                        $ihealth = 0;
+                        $imatch = 0;
                     }
                 }
             }
@@ -784,8 +746,8 @@ sub _compare_mapping {
                         if (   $deploy_type eq 'HASH'
                             || $deploy_type eq 'ARRAY' )
                         {
-                            $ihealth = (
-                                $ihealth && $self->_compare_mapping(
+                            $imatch = (
+                                $imatch && $self->_compare_mapping(
                                     $sname . '[' . $iindex . ']',
                                     $deploy_value,
                                     $model_value
@@ -801,7 +763,7 @@ sub _compare_mapping {
                                         . ${$deploy_value} . ' <> '
                                         . ${$model_value} . ')'
                                 };
-                                $ihealth = 0;
+                                $imatch = 0;
                             }
                         }
                     }
@@ -814,7 +776,7 @@ sub _compare_mapping {
                                     . $deploy_value . ' <> '
                                     . $model_value . ')'
                             };
-                            $ihealth = 0;
+                            $imatch = 0;
                         }
                     }
                 }
@@ -823,7 +785,7 @@ sub _compare_mapping {
                         log_error {
                             'Missing field: ' . $sname . '[' . $iindex . ']'
                         };
-                        $ihealth = 0;
+                        $imatch = 0;
 
                     }
                     unless ( defined $rmodel->[$iindex] ) {
@@ -831,7 +793,7 @@ sub _compare_mapping {
                             'Missing definition: ' . $sname . '[' . $iindex
                                 . ']'
                         };
-                        $ihealth = 0;
+                        $imatch = 0;
                     }
                 }
             }
@@ -840,16 +802,16 @@ sub _compare_mapping {
     else {    # Missing Field
         unless ( defined $rdeploy ) {
             log_error { 'Missing field: ' . $sname };
-            $ihealth = 0;
+            $imatch = 0;
         }
         unless ( defined $rmodel ) {
             log_error { 'Missing definition: ' . $sname };
-            $ihealth = 0;
+            $imatch = 0;
         }
     }
 
     if ( $self->{'logger'}->is_debug ) {
-        if ($ihealth) {
+        if ($imatch) {
             log_debug {"field '$sname': ok"};
         }
         else {
@@ -857,18 +819,18 @@ sub _compare_mapping {
         }
     }
 
-    return $ihealth;
+    return $imatch;
 }
 
-sub verify_mapping {
+sub mappings_valid {
     my ( $self, $rmappings, $raliases ) = @_;
-    my $ihealth = 0;
+    my $ivalid = 0;
 
     if ( defined $rmappings && ref $rmappings eq 'HASH' ) {
         my $rindices = $self->es->indices->get_mapping();
         my $iindexok = 0;
 
-        $ihealth = 1;
+        $ivalid = 1;
 
         for my $idx ( sort keys %$rmappings ) {
             if (   defined $rindices->{$idx}
@@ -892,34 +854,34 @@ sub verify_mapping {
                     log_error {
                         "Broken index: $idx (mapping does not match definition)"
                     };
-                    $ihealth = 0;
+                    $ivalid = 0;
                 }
 
-                $ihealth = ( $ihealth && $iindexok );
+                $ivalid = ( $ivalid && $iindexok );
             }
             else {
                 log_error {"Missing index: $idx"};
-                $ihealth = 0;
+                $ivalid = 0;
             }
         }
     }
-    if ($ihealth) {
+    if ($ivalid) {
         log_info {"Verification indices: ok"};
     }
     else {
         log_info {"Verification indices: failed"};
     }
 
-    $ihealth = ( $ihealth && $self->check_aliases($raliases) );
+    $ivalid = ( $ivalid && $self->aliases_valid($raliases) );
 
-    if ($ihealth) {
+    if ($ivalid) {
         log_info {"Verification aliases: ok"};
     }
     else {
         log_info {"Verification aliases: failed"};
     }
 
-    return $ihealth;
+    return $ivalid;
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -938,6 +900,7 @@ MetaCPAN::Script::Mapping - Script to set the index and mapping the types
  # bin/metacpan mapping --show_cluster_info   # show basic info about the cluster, indices and aliases
  # bin/metacpan mapping --delete
  # bin/metacpan mapping --delete --all        # deletes ALL indices in the cluster
+ # bin/metacpan mapping --verify              # compare deployed indices and aliases with project definitions
  # bin/metacpan mapping --list_types
  # bin/metacpan mapping --delete_index xxx
  # bin/metacpan mapping --create_index xxx --reindex
@@ -975,15 +938,16 @@ See L<Method C<MetaCPAN::Role::Script::check_health()>>
 
 This option makes the Script delete all indices configured in the project and re-create them emtpy.
 It verifies the index integrity of the indices and aliases calling the methods
-C<MetaCPAN::Role::Script::check_health()> and C<verify_mapping()>.
-If the C<verify_mapping()> Method fails it exits the Script
-with B<Exit Code> C< 1 >.
+C<MetaCPAN::Role::Script::check_health()> and C<mappings_valid()>.
+If the C<mappings_valid()> Method fails it will report an error.
 
     bin/metacpan mapping --delete
 
+B<Exit Code:> If the mapping deployment fails it exits the Script with B<Exit Code> C< 1 >.
+
 See L<Method C<deploy_mapping()>>
 
-See L<Method C<check_mapping()>>
+See L<Method C<mappings_valid()>>
 
 See L<Method C<MetaCPAN::Role::Script::check_health()>>
 
@@ -996,11 +960,24 @@ This option is usefull to reconstruct a broken I<ElasticSearch> Cluster
 
     bin/metacpan mapping --delete --all
 
+B<Exceptions:> It will throw an exceptions when not performed in an development or
+testing environment.
+
 See L<Option C<--delete>>
 
 See L<Method C<deploy_mapping()>>
 
 See L<Method C<MetaCPAN::Role::Script::check_health()>>
+
+=item Option C<--verify>
+
+This option will request the index mappings from the I<ElasticSearch> Cluster and
+compare them indepth with the Project Definitions.
+
+    bin/metacpan mapping --verify
+
+B<Exit Code:> If the deployed mappings do not match the defined mappings
+it exits the Script with B<Exit Code> C< 1 >.
 
 =back
 
@@ -1014,7 +991,7 @@ This Package provides the following methods
 
 Deletes and re-creates the indices and aliases defined in the Project.
 The user will be requested for manual confirmation on the command line before the elemination.
-The integrity of the indices and aliases will be checked with the C<verify_mapping()> Method.
+The integrity of the indices and aliases will be checked with the C<mappings_valid()> Method.
 On successful creation it returns C< 1 >, otherwise it returns C< 0 >.
 
 B<Returns:> It returns C< 1 > when the indices and aliases are created and verified as correct.
@@ -1025,15 +1002,19 @@ or there is any issue in any I<ElasticSearch> Request run by the Script.
 
 See L<Option C<--delete>>
 
-See L<Method C<check_mapping()>>
+See L<Method C<mappings_valid()>>
 
 See L<Method C<MetaCPAN::Role::Script::check_health()>>
 
-=item C<check_mapping( \%indices, \%aliases )>
+=item C<mappings_valid( \%indices, \%aliases )>
 
-Checks the defined indices and aliases against the actually in the I<ElasticSearch> Cluster
-existing indices and aliases which must have been requested with
-the C<MetaCPAN::Role::Script::check_health()> Method.
+This method uses the
+L<C<Search::Elasticsearch::Client::2_0::Direct::get_mapping()>|https://metacpan.org/pod/Search::Elasticsearch::Client::2_0::Direct#get_mapping()>
+method to request the complete index mappings structure from the I<ElasticSearch> Cluster.
+It also uses the alias information gathered by the C<MetaCPAN::Role::Script::check_health()> method.
+Then it performs an in-depth structure match against the Project Definitions.
+Missing indices or any structure mismatch will be count as error.
+Errors will be reported in the activity log.
 
 B<Parameters:>
 
@@ -1043,9 +1024,6 @@ C<\%aliases> - Reference to a hash that defines the aliases required for the Pro
 
 B<Returns:> It returns C< 1 > when the indices and aliases are created and match the defined structure.
 Otherwise it returns C< 0 >.
-
-B<Exceptions:> It can throw exceptions when the connection to I<ElasticSearch> fails
-or there is any issue in any I<ElasticSearch> Request run by the Script.
 
 See L<Option C<--delete>>
 
