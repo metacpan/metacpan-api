@@ -200,6 +200,39 @@ sub delete_index {
     $self->_delete_index($name);
 }
 
+sub delete_all {
+    my $self                = $_[0];
+    my $runtime_environment = 'production';
+    my $is_development      = 0;
+
+    $runtime_environment = $ENV{'PLACK_ENV'}
+        if ( defined $ENV{'PLACK_ENV'} );
+    $runtime_environment = $ENV{'MOJO_MODE'}
+        if ( defined $ENV{'MOJO_MODE'} );
+
+    $is_development = 1
+        if ( $runtime_environment eq 'development'
+        || $runtime_environment eq 'testing' );
+
+    if ($is_development) {
+        my $name = undef;
+
+        $self->are_you_sure("ALL Indices will be deleted !!!");
+
+        foreach $name ( keys %{ $self->indices_info } ) {
+            $self->_delete_index($name);
+        }
+    }
+    else {
+        #Set System Error: 1 - EPERM - Operation not permitted
+        $self->exit_code(1);
+        $self->print_error("Operation not permitted!");
+        $self->handle_error(
+            "Operation not permitted in environment: $runtime_environment",
+            1 );
+    }
+}
+
 sub _delete_index {
     my ( $self, $name ) = @_;
 
