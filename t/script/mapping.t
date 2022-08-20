@@ -9,14 +9,6 @@ use MetaCPAN::Script::Mapping;
 
 my $config = MetaCPAN::Script::Runner::build_config;
 
-subtest 'mapping verification succeeds' => sub {
-    local @ARGV = ( 'mapping', '--verify' );
-    my $mapping = MetaCPAN::Script::Mapping->new_with_options($config);
-
-    ok( $mapping->run, "verification succeeds" );
-    is( $mapping->exit_code, 0, "Exit Code '0' - No Error" );
-};
-
 subtest 'create, delete index' => sub {
     subtest 'create index' => sub {
         my $smockindexjson = q({
