@@ -364,17 +364,32 @@ sub await {
 
 sub are_you_sure {
     my ( $self, $msg ) = @_;
+    my $iconfirmed = 0;
 
     if (is_interactive) {
-        print colored( ['bold red'], "*** Warning ***: $msg" ), "\n";
-        my $answer = prompt
-            'Are you sure you want to do this (type "YES" to confirm) ? ';
+        my $answer
+            = prompt colored( ['bold red'], "*** Warning ***: $msg" ) . "\n"
+            . 'Are you sure you want to do this (type "YES" to confirm) ? ';
         if ( $answer ne 'YES' ) {
-            print "bye.\n";
-            exit 0;
+            log_error {"Confirmation incorrect: '$answer'"};
+            print "Operation will be interruped!\n";
+
+            #Set System Error: 125 - ECANCELED - Operation canceled
+            $self->exit_code(125);
+            $self->handle_error( 'Operation canceled on User Request', 1 );
         }
-        print "alright then...\n";
+        else {
+            log_info {'Operation confirmed.'};
+            print "alright then...\n";
+            $iconfirmed = 1;
+        }
     }
+    else {
+        print colored( ['bold yellow'], "*** Warning ***: $msg" ) . "\n";
+        $iconfirmed = 1;
+    }
+
+    return $iconfirmed;
 }
 
 1;
@@ -405,6 +420,9 @@ After C<await> seconds the Application will fail with an Exception and the Exit 
 
     bin/metacpan <script_name> --await 15
 
+B<Exit Code:> If the I<ElasticSearch> service does not become available
+within C<await> seconds it exits the Script with Exit Code C< 112 >.
+
 See L<Method C<await()>>
 
 =back
@@ -421,11 +439,16 @@ This method uses the
 L<C<Search::Elasticsearch::Client::2_0::Direct::ping()>|https://metacpan.org/pod/Search::Elasticsearch::Client::2_0::Direct#ping()>
 method to verify the service availabilty and wait for C<arg_await_timeout> seconds.
 When the service does not become available within C<arg_await_timeout> seconds it re-throws the
-Exception from the C<Search::Elasticsearch::Client> and sets C< $! > to C< 112 >.
+Exception from the C<Search::Elasticsearch::Client> and sets B<Exit Code> to C< 112 >.
 The C<Search::Elasticsearch::Client> generates a C<"Search::Elasticsearch::Error::NoNodes"> Exception.
 When the service is available it will populate the C<cluster_info> C<HASH> structure with the basic information
 about the cluster.
+
+B<Exceptions:> It will throw an exceptions when the I<ElasticSearch> service does not become available
+within C<arg_await_timeout> seconds (as described above).
+
 See L<Option C<--await 15>>
+
 See L<Method C<check_health()>>
 
 =item C<check_health( [ refresh ] )>
@@ -443,9 +466,19 @@ The method returns C< 1 > when the C<cluster_info> is populated, none of the ind
 the Health State I<red> and at least one alias is created in C<aliases_info>
 otherwise the method returns C< 0 >
 
+B<Parameters:>
+
+C<refresh> - Integer evaluated as boolean when set to C< 1 > the cluster info structures
+will always be updated.
+
+See L<Method C<await()>>
+
 =item C<are_you_sure()>
 
 Requests the user to confirm the operation with "I< YES >"
+
+B<Exceptions:> When the operator input does not match "I< YES >" it will exit the Script
+with Exit Code [125] (C<125 - ECANCELED - Operation canceled>).
 
 =item C<handle_error( error_message[, die_always ] )>
 
