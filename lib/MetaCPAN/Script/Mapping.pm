@@ -37,6 +37,15 @@ has arg_deploy_mapping => (
     documentation => 'delete index if it exists already',
 );
 
+has arg_delete_all => (
+    init_arg      => 'all',
+    is            => 'ro',
+    isa           => Bool,
+    default       => 0,
+    documentation =>
+        'delete ALL existing indices (only effective in combination with "--delete")',
+);
+
 has arg_list_types => (
     init_arg      => 'list_types',
     is            => 'ro',
@@ -132,13 +141,18 @@ sub run {
     my $self = shift;
 
     if ( $self->await ) {
-        $self->delete_index if $self->arg_delete_index;
+        $self->create_index if $self->arg_create_index;
         $self->update_index if $self->arg_update_index;
+        $self->delete_index if $self->arg_delete_index;
         $self->copy_type    if $self->copy_to_index;
         $self->empty_type   if $self->delete_from_type;
         $self->list_types   if $self->arg_list_types;
 
         if ( $self->arg_deploy_mapping ) {
+            if ( $self->arg_delete_all ) {
+                $self->check_health;
+                $self->delete_all;
+            }
             unless ( $self->deploy_mapping ) {
                 $self->print_error("Indices Re-creation has failed!");
                 $self->exit_code(1);
@@ -152,7 +166,7 @@ sub run {
     }
 
 # The run() method is expected to communicate Success to the superior execution level
-    return ( $self->exit_code == 0 );
+    return ( $self->exit_code == 0 ? 1 : 0 );
 }
 
 sub _check_index_exists {
@@ -161,12 +175,18 @@ sub _check_index_exists {
 
     if ( $exists and !$expected ) {
         log_error {"Index already exists: $name"};
-        exit 0;
+
+        #Set System Error: 1 - EPERM - Operation not permitted
+        $self->exit_code(1);
+        $self->handle_error( "Conflicting index: $name", 1 );
     }
 
     if ( !$exists and $expected ) {
         log_error {"Index doesn't exists: $name"};
-        exit 0;
+
+        #Set System Error: 1 - EPERM - Operation not permitted
+        $self->exit_code(1);
+        $self->handle_error( "Missing index: $name", 1 );
     }
 }
 
@@ -208,7 +228,7 @@ sub update_index {
     for my $type ( sort keys %{$mapping} ) {
         log_info {"Adding mapping to index: $type"};
         $self->es->indices->put_mapping(
-            index => $self->index->name,
+            index => $name,
             type  => $type,
             body  => { $type => $mapping->{$type} },
         );
@@ -574,6 +594,7 @@ MetaCPAN::Script::Mapping - Script to set the index and mapping the types
 
  # bin/metacpan mapping --show_cluster_info   # show basic info about the cluster, indices and aliases
  # bin/metacpan mapping --delete
+ # bin/metacpan mapping --delete --all        # deletes ALL indices in the cluster
  # bin/metacpan mapping --list_types
  # bin/metacpan mapping --delete_index xxx
  # bin/metacpan mapping --create_index xxx --reindex
@@ -617,9 +638,29 @@ with B<Exit Code> C< 1 >.
 
     bin/metacpan mapping --delete
 
+B<Exit Code:> If the mapping deployment fails it exits the Script with B<Exit Code> C< 1 >.
+
 See L<Method C<deploy_mapping()>>
 
 See L<Method C<verify_mapping()>>
+
+See L<Method C<MetaCPAN::Role::Script::check_health()>>
+
+=item Option C<--all>
+
+This option is only effective in combination with Option C<--delete>.
+It uses the information gathered by C<MetaCPAN::Role::Script::check_health()> to delete
+B<ALL> indices in the I<ElasticSearch> Cluster.
+This option is usefull to reconstruct a broken I<ElasticSearch> Cluster
+
+    bin/metacpan mapping --delete --all
+
+B<Exceptions:> It will throw an exceptions when not performed in an development or
+testing environment.
+
+See L<Option C<--delete>>
+
+See L<Method C<deploy_mapping()>>
 
 See L<Method C<MetaCPAN::Role::Script::check_health()>>
 
