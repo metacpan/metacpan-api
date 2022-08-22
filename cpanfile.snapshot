@@ -2237,16 +2237,6 @@ DISTRIBUTIONS
     requirements:
       Devel::StackTrace 0
       ExtUtils::MakeMaker 0
-  Devel-Symdump-2.18
-    pathname: A/AN/ANDK/Devel-Symdump-2.18.tar.gz
-    provides:
-      Devel::Symdump 2.18
-      Devel::Symdump::Export undef
-    requirements:
-      Compress::Zlib 0
-      ExtUtils::MakeMaker 0
-      Test::More 0
-      perl 5.004
   Digest-HMAC-1.03
     pathname: G/GA/GAAS/Digest-HMAC-1.03.tar.gz
     provides:
@@ -2614,7 +2604,7 @@ DISTRIBUTIONS
     pathname: T/TO/TODDR/Exporter-5.74.tar.gz
     provides:
       Exporter 5.74
-      Exporter::Heavy 5.74
+      Exporter::Heavy 5.73
     requirements:
       Carp 1.05
       ExtUtils::MakeMaker 0
@@ -2840,21 +2830,6 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       File::Spec 0
       Test::More 0.88
-  File-Remove-1.57
-    pathname: S/SH/SHLOMIF/File-Remove-1.57.tar.gz
-    provides:
-      File::Remove 1.57
-    requirements:
-      Cwd 3.29
-      ExtUtils::MakeMaker 0
-      File::Glob 0
-      File::Path 0
-      File::Spec 3.29
-      constant 0
-      perl 5.006
-      strict 0
-      vars 0
-      warnings 0
   File-ShareDir-1.104
     pathname: R/RE/REHSACK/File-ShareDir-1.104.tar.gz
     provides:
@@ -3259,14 +3234,6 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       HTTP::Headers 6
       perl 5.008001
-  HTTP-Parser-XS-0.17
-    pathname: K/KA/KAZUHO/HTTP-Parser-XS-0.17.tar.gz
-    provides:
-      HTTP::Parser::XS 0.17
-      HTTP::Parser::XS::PP undef
-    requirements:
-      ExtUtils::MakeMaker 6.36
-      Test::More 0.96
   HTTP-Request-AsCGI-1.2
     pathname: F/FL/FLORA/HTTP-Request-AsCGI-1.2.tar.gz
     provides:
@@ -3322,17 +3289,6 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       perl 5.008001
-  Hook-LexWrap-0.26
-    pathname: E/ET/ETHER/Hook-LexWrap-0.26.tar.gz
-    provides:
-      Hook::LexWrap 0.26
-    requirements:
-      Carp 0
-      ExtUtils::MakeMaker 0
-      overload 0
-      perl 5.006
-      strict 0
-      warnings 0
   IO-All-0.87
     pathname: F/FR/FREW/IO-All-0.87.tar.gz
     provides:
@@ -3638,36 +3594,6 @@ DISTRIBUTIONS
       Mozilla::CA 20110101
       Net::HTTPS 6
       perl 5.008001
-  LWP-UserAgent-Paranoid-0.97
-    pathname: T/TS/TSIBLEY/LWP-UserAgent-Paranoid-0.97.tar.gz
-    provides:
-      LWP::UserAgent::Paranoid 0.97
-      LWP::UserAgent::Paranoid::Compat undef
-      LWP::UserAgent::Paranoid::Test undef
-    requirements:
-      ExtUtils::MakeMaker 6.36
-      HTTP::Server::PSGI 0
-      LWP::UserAgent 0
-      LWPx::ParanoidHandler 0
-      Net::DNS::Paranoid 0
-      Scalar::Util 0
-      Test::Requires 0
-      Test::TCP 0
-      Time::HiRes 1.9716
-  LWPx-ParanoidHandler-0.07
-    pathname: T/TO/TOKUHIROM/LWPx-ParanoidHandler-0.07.tar.gz
-    provides:
-      LWPx::ParanoidHandler 0.07
-    requirements:
-      CPAN::Meta 0
-      CPAN::Meta::Prereqs 0
-      Exporter 0
-      ExtUtils::CBuilder 0
-      LWP 6
-      Module::Build 0.38
-      Net::DNS::Paranoid 0.07
-      parent 0
-      perl 5.008008
   Lexical-SealRequireHints-0.011
     pathname: Z/ZE/ZEFRAM/Lexical-SealRequireHints-0.011.tar.gz
     provides:
@@ -3958,32 +3884,6 @@ DISTRIBUTIONS
       perl 5.008
       strict 0
       warnings 0
-  Log-Message-0.08
-    pathname: B/BI/BINGOS/Log-Message-0.08.tar.gz
-    provides:
-      Log::Message 0.08
-      Log::Message::Config 0.08
-      Log::Message::Handlers 0.08
-      Log::Message::Item 0.08
-    requirements:
-      ExtUtils::MakeMaker 0
-      File::Spec 0
-      Locale::Maketext::Simple 0
-      Module::Load 0
-      Params::Check 0
-      Test::More 0
-      if 0
-  Log-Message-Simple-0.10
-    pathname: B/BI/BINGOS/Log-Message-Simple-0.10.tar.gz
-    provides:
-      Log::Message::Handlers 0.10
-      Log::Message::Simple 0.10
-    requirements:
-      Carp 0
-      ExtUtils::MakeMaker 0
-      Log::Message 0
-      Test::More 0
-      if 0
   MCE-1.831
     pathname: M/MA/MARIOROY/MCE-1.831.tar.gz
     provides:
@@ -5626,17 +5526,6 @@ DISTRIBUTIONS
       Test::More 0.52
       Time::Local 1.19
       perl 5.006
-  Net-DNS-Paranoid-0.08
-    pathname: T/TO/TOKUHIROM/Net-DNS-Paranoid-0.08.tar.gz
-    provides:
-      Net::DNS::Paranoid 0.08
-    requirements:
-      Class::Accessor::Lite 0.05
-      Module::Build 0.38
-      Net::DNS 0.68
-      Test::More 0.98
-      parent 0
-      perl 5.008008
   Net-Fastly-1.12
     pathname: F/FA/FASTLY/Net-Fastly-1.12.tar.gz
     provides:
@@ -5742,40 +5631,6 @@ DISTRIBUTIONS
       MIME::Base64 0
       Test::More 0.60_01
       perl 5.005
-  Net-Server-2.009
-    pathname: R/RH/RHANDOM/Net-Server-2.009.tar.gz
-    provides:
-      Net::Server 2.009
-      Net::Server::Daemonize 0.06
-      Net::Server::Fork undef
-      Net::Server::HTTP undef
-      Net::Server::INET undef
-      Net::Server::INET::Handle undef
-      Net::Server::Log::Log::Log4perl undef
-      Net::Server::Log::Sys::Syslog undef
-      Net::Server::MultiType undef
-      Net::Server::Multiplex undef
-      Net::Server::Multiplex::MUX undef
-      Net::Server::PSGI undef
-      Net::Server::PreFork undef
-      Net::Server::PreForkSimple undef
-      Net::Server::Proto undef
-      Net::Server::Proto::SSL undef
-      Net::Server::Proto::SSLEAY undef
-      Net::Server::Proto::TCP undef
-      Net::Server::Proto::UDP undef
-      Net::Server::Proto::UNIX undef
-      Net::Server::Proto::UNIXDGRAM undef
-      Net::Server::SIG 0.03
-      Net::Server::Single undef
-      Net::Server::TiedHandle 2.009
-    requirements:
-      ExtUtils::MakeMaker 6.30
-      File::Temp 0
-      IO::Socket 0
-      POSIX 0
-      Socket 0
-      Time::HiRes 0
   Net-Twitter-4.01043
     pathname: M/MM/MMIMS/Net-Twitter-4.01043.tar.gz
     provides:
@@ -7032,32 +6887,6 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  Pod-Coverage-0.23
-    pathname: R/RC/RCLAMP/Pod-Coverage-0.23.tar.gz
-    provides:
-      Pod::Coverage 0.23
-      Pod::Coverage::CountParents undef
-      Pod::Coverage::ExportOnly undef
-      Pod::Coverage::Extractor 0.23
-      Pod::Coverage::Overloader undef
-    requirements:
-      Devel::Symdump 2.01
-      ExtUtils::MakeMaker 0
-      Pod::Find 0.21
-      Pod::Parser 1.13
-      Test::More 0
-  Pod-Coverage-Moose-0.07
-    pathname: E/ET/ETHER/Pod-Coverage-Moose-0.07.tar.gz
-    provides:
-      Pod::Coverage::Moose 0.07
-    requirements:
-      Carp 0
-      Class::Load 0
-      Module::Build::Tiny 0.034
-      Moose 2.1300
-      Pod::Coverage 0
-      namespace::autoclean 0.08
-      perl 5.006
   Pod-Markdown-3.300
     pathname: R/RW/RWSTAUNER/Pod-Markdown-3.300.tar.gz
     provides:
@@ -7513,24 +7342,6 @@ DISTRIBUTIONS
       parent 0
       strict 0
       warnings 0
-  Starman-0.4014
-    pathname: M/MI/MIYAGAWA/Starman-0.4014.tar.gz
-    provides:
-      HTTP::Server::PSGI::Net::Server::PreFork undef
-      Plack::Handler::Starman undef
-      Starman 0.4014
-      Starman::Server undef
-    requirements:
-      Data::Dump 0
-      HTTP::Date 0
-      HTTP::Parser::XS 0
-      HTTP::Status 0
-      Module::Build::Tiny 0.039
-      Net::Server 2.007
-      Plack 0.9971
-      Test::TCP 2.00
-      parent 0
-      perl 5.008001
   Stream-Buffered-0.03
     pathname: D/DO/DOY/Stream-Buffered-0.03.tar.gz
     provides:
@@ -7731,19 +7542,6 @@ DISTRIBUTIONS
       ExtUtils::CBuilder 0
       ExtUtils::MakeMaker 0
       Test::More 0
-  Term-UI-0.46
-    pathname: B/BI/BINGOS/Term-UI-0.46.tar.gz
-    provides:
-      Term::UI 0.46
-      Term::UI::History 0.46
-    requirements:
-      ExtUtils::MakeMaker 0
-      Locale::Maketext::Simple 0
-      Log::Message::Simple 0
-      Params::Check 0
-      Term::ReadLine 0
-      Test::More 0.31
-      if 0
   TermReadKey-2.37
     pathname: J/JS/JSTOWE/TermReadKey-2.37.tar.gz
     provides:
@@ -7951,21 +7749,6 @@ DISTRIBUTIONS
       Test::Harness 3.35
       Test::More 1.302047
       Test::Warn 0.30
-  Test-Object-0.07
-    pathname: A/AD/ADAMK/Test-Object-0.07.tar.gz
-    provides:
-      Test::Object 0.07
-      Test::Object::Test 0.07
-    requirements:
-      Carp 0
-      Exporter 0
-      ExtUtils::MakeMaker 0
-      File::Spec 0.80
-      Scalar::Util 1.16
-      Test::Builder 0.33
-      Test::Builder::Tester 1.02
-      Test::More 0.42
-      overload 0
   Test-Perl-Critic-1.04
     pathname: P/PE/PETDANCE/Test-Perl-Critic-1.04.tar.gz
     provides:
@@ -8131,16 +7914,6 @@ DISTRIBUTIONS
       Storable 0
       perl 5.006002
       utf8 0
-  Test-SubCalls-1.09
-    pathname: A/AD/ADAMK/Test-SubCalls-1.09.tar.gz
-    provides:
-      Test::SubCalls 1.09
-    requirements:
-      ExtUtils::MakeMaker 6.42
-      File::Spec 0.80
-      Hook::LexWrap 0.20
-      Test::Builder::Tester 1.02
-      Test::More 0.42
   Test-TCP-2.19
     pathname: T/TO/TOKUHIROM/Test-TCP-2.19.tar.gz
     provides:
@@ -8185,20 +7958,6 @@ DISTRIBUTIONS
       WWW::Mechanize 1.68
       parent 0
       perl 5.008
-  Test-WWW-Mechanize-PSGI-0.37
-    pathname: O/OA/OALDERS/Test-WWW-Mechanize-PSGI-0.37.tar.gz
-    provides:
-      Test::WWW::Mechanize::PSGI 0.37
-    requirements:
-      Carp 0
-      ExtUtils::MakeMaker 0
-      HTTP::Message::PSGI 0
-      Test::WWW::Mechanize 0
-      Try::Tiny 0
-      base 0
-      perl 5.006
-      strict 0
-      warnings 0
   Test-Warn-0.32
     pathname: B/BI/BIGJ/Test-Warn-0.32.tar.gz
     provides:
@@ -8417,50 +8176,53 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  Type-Tiny-1.012005
-    pathname: T/TO/TOBYINK/Type-Tiny-1.012005.tar.gz
+  Type-Tiny-1.016008
+    pathname: T/TO/TOBYINK/Type-Tiny-1.016008.tar.gz
     provides:
-      Devel::TypeTiny::Perl56Compat 1.012005
-      Devel::TypeTiny::Perl58Compat 1.012005
-      Error::TypeTiny 1.012005
-      Error::TypeTiny::Assertion 1.012005
-      Error::TypeTiny::Compilation 1.012005
-      Error::TypeTiny::WrongNumberOfParameters 1.012005
-      Eval::TypeTiny 1.012005
-      Reply::Plugin::TypeTiny 1.012005
-      Test::TypeTiny 1.012005
-      Type::Coercion 1.012005
-      Type::Coercion::FromMoose 1.012005
-      Type::Coercion::Union 1.012005
-      Type::Library 1.012005
-      Type::Params 1.012005
-      Type::Parser 1.012005
+      Devel::TypeTiny::Perl56Compat 1.016008
+      Devel::TypeTiny::Perl58Compat 1.016008
+      Error::TypeTiny 1.016008
+      Error::TypeTiny::Assertion 1.016008
+      Error::TypeTiny::Compilation 1.016008
+      Error::TypeTiny::WrongNumberOfParameters 1.016008
+      Eval::TypeTiny 1.016008
+      Eval::TypeTiny::CodeAccumulator 1.016008
+      Reply::Plugin::TypeTiny 1.016008
+      Test::TypeTiny 1.016008
+      Type::Coercion 1.016008
+      Type::Coercion::FromMoose 1.016008
+      Type::Coercion::Union 1.016008
+      Type::Library 1.016008
+      Type::Params 1.016008
+      Type::Params::Parameter 1.016008
+      Type::Params::Signature 1.016008
+      Type::Parser 1.016008
       Type::Parser::AstBuilder undef
       Type::Parser::Token undef
       Type::Parser::TokenStream undef
-      Type::Registry 1.012005
-      Type::Tiny 1.012005
-      Type::Tiny::Class 1.012005
-      Type::Tiny::ConstrainedObject 1.012005
-      Type::Tiny::Duck 1.012005
-      Type::Tiny::Enum 1.012005
-      Type::Tiny::Intersection 1.012005
-      Type::Tiny::Role 1.012005
-      Type::Tiny::Union 1.012005
-      Type::Utils 1.012005
-      Types::Common::Numeric 1.012005
-      Types::Common::String 1.012005
-      Types::Standard 1.012005
-      Types::Standard::ArrayRef 1.012005
-      Types::Standard::CycleTuple 1.012005
-      Types::Standard::Dict 1.012005
-      Types::Standard::HashRef 1.012005
-      Types::Standard::Map 1.012005
-      Types::Standard::ScalarRef 1.012005
-      Types::Standard::StrMatch 1.012005
-      Types::Standard::Tied 1.012005
-      Types::Standard::Tuple 1.012005
-      Types::TypeTiny 1.012005
+      Type::Registry 1.016008
+      Type::Tiny 1.016008
+      Type::Tiny::Class 1.016008
+      Type::Tiny::ConstrainedObject 1.016008
+      Type::Tiny::Duck 1.016008
+      Type::Tiny::Enum 1.016008
+      Type::Tiny::Intersection 1.016008
+      Type::Tiny::Role 1.016008
+      Type::Tiny::Union 1.016008
+      Type::Utils 1.016008
+      Types::Common::Numeric 1.016008
+      Types::Common::String 1.016008
+      Types::Standard 1.016008
+      Types::Standard::ArrayRef 1.016008
+      Types::Standard::CycleTuple 1.016008
+      Types::Standard::Dict 1.016008
+      Types::Standard::HashRef 1.016008
+      Types::Standard::Map 1.016008
+      Types::Standard::ScalarRef 1.016008
+      Types::Standard::StrMatch 1.016008
+      Types::Standard::Tied 1.016008
+      Types::Standard::Tuple 1.016008
+      Types::TypeTiny 1.016008
     requirements:
       Exporter::Tiny 1.000000
       ExtUtils::MakeMaker 6.17
@@ -8617,19 +8379,6 @@ DISTRIBUTIONS
       Test::More 0.88
       URI 1.40
       perl 5.008001
-  URI-Query-0.16
-    pathname: G/GA/GAVINC/URI-Query-0.16.tar.gz
-    provides:
-      URI::Query 0.16
-    requirements:
-      Carp 0
-      Clone 0
-      ExtUtils::MakeMaker 0
-      URI::Escape 0
-      overload 0
-      parent 0
-      strict 0
-      vars 0
   URI-db-0.18
     pathname: D/DW/DWHEELER/URI-db-0.18.tar.gz
     provides:
@@ -8955,67 +8704,6 @@ DISTRIBUTIONS
       XSLoader 0
       lib 0
       perl 5.008001
-  libwww-perl-6.58
-    pathname: O/OA/OALDERS/libwww-perl-6.58.tar.gz
-    provides:
-      LWP 6.58
-      LWP::Authen::Basic 6.58
-      LWP::Authen::Digest 6.58
-      LWP::Authen::Ntlm 6.58
-      LWP::ConnCache 6.58
-      LWP::Debug 6.58
-      LWP::Debug::TraceHTTP 6.58
-      LWP::DebugFile 6.58
-      LWP::MemberMixin 6.58
-      LWP::Protocol 6.58
-      LWP::Protocol::cpan 6.58
-      LWP::Protocol::data 6.58
-      LWP::Protocol::file 6.58
-      LWP::Protocol::ftp 6.58
-      LWP::Protocol::gopher 6.58
-      LWP::Protocol::http 6.58
-      LWP::Protocol::loopback 6.58
-      LWP::Protocol::mailto 6.58
-      LWP::Protocol::nntp 6.58
-      LWP::Protocol::nogo 6.58
-      LWP::RobotUA 6.58
-      LWP::Simple 6.58
-      LWP::UserAgent 6.58
-      libwww::perl undef
-    requirements:
-      CPAN::Meta::Requirements 2.120620
-      Digest::MD5 0
-      Encode 2.12
-      Encode::Locale 0
-      ExtUtils::MakeMaker 0
-      File::Copy 0
-      File::Listing 6
-      Getopt::Long 0
-      HTML::Entities 0
-      HTML::HeadParser 0
-      HTTP::Cookies 6
-      HTTP::Date 6
-      HTTP::Negotiate 6
-      HTTP::Request 6
-      HTTP::Request::Common 6
-      HTTP::Response 6
-      HTTP::Status 6.07
-      IO::Select 0
-      IO::Socket 0
-      LWP::MediaTypes 6
-      MIME::Base64 2.1
-      Module::Metadata 0
-      Net::FTP 2.58
-      Net::HTTP 6.18
-      Scalar::Util 0
-      Try::Tiny 0
-      URI 1.10
-      URI::Escape 0
-      WWW::RobotRules 6
-      parent 0.217
-      perl 5.008001
-      strict 0
-      warnings 0
   libwww-perl-6.66
     pathname: O/OA/OALDERS/libwww-perl-6.66.tar.gz
     provides:
@@ -9060,7 +8748,7 @@ DISTRIBUTIONS
       HTTP::Request 6
       HTTP::Request::Common 6
       HTTP::Response 6
-      HTTP::Status 6.07
+      HTTP::Status 6.18
       IO::Select 0
       IO::Socket 0
       LWP::MediaTypes 6
