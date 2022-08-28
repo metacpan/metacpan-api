@@ -439,16 +439,10 @@ sub show_info {
     print JSON->new->utf8->pretty->encode($info_rs);
 }
 
-sub deploy_mapping {
-    my $self       = shift;
-    my $cpan_index = 'cpan_v1_01';
-    my $imappingok = 0;
-
-    $self->are_you_sure(
-        'this will delete EVERYTHING and re-create the (empty) indexes');
-
-    my %mappings = (
-        $cpan_index => {
+sub _build_mapping {
+    my $self = $_[0];
+    return {
+        $self->cpan_index => {
             author =>
                 decode_json(MetaCPAN::Script::Mapping::CPAN::Author::mapping),
             distribution => decode_json(
@@ -484,7 +478,24 @@ sub deploy_mapping {
         cover => {
             cover => decode_json(MetaCPAN::Script::Mapping::Cover::mapping),
         },
-    );
+    };
+}
+
+sub _build_aliases {
+    my $self = $_[0];
+    return { 'cpan' => $self->cpan_index };
+
+}
+
+sub deploy_mapping {
+    my $self       = shift;
+    my $imappingok = 0;
+
+    $self->are_you_sure(
+        'this will delete EVERYTHING and re-create the (empty) indexes');
+
+    # Deserialize the Index Mapping Structure
+    my $rmappings = $self->_build_mapping;
 
     my $deploy_statement
         = decode_json(MetaCPAN::Script::Mapping::DeployStatement::mapping);
@@ -493,35 +504,37 @@ sub deploy_mapping {
 
     # recreate the indices and apply the mapping
 
-    for my $idx ( sort keys %mappings ) {
+    for my $idx ( sort keys %$rmappings ) {
         $self->_delete_index($idx) if $es->indices->exists( index => $idx );
 
         log_info {"Creating index: $idx"};
         $es->indices->create( index => $idx, body => $deploy_statement );
 
-        for my $type ( sort keys %{ $mappings{$idx} } ) {
+        for my $type ( sort keys %{ $rmappings->{$idx} } ) {
             log_info {"Adding mapping: $idx/$type"};
             $es->indices->put_mapping(
                 index => $idx,
                 type  => $type,
-                body  => { $type => $mappings{$idx}{$type} },
+                body  => { $type => $rmappings->{$idx}{$type} },
             );
         }
     }
 
     # create aliases
 
-    my %aliases = ( 'cpan' => $cpan_index );
-    for my $alias ( sort keys %aliases ) {
-        log_info {"Creating alias: '$alias' -> '$aliases{$alias}'"};
+    my $raliases = $self->_build_aliases;
+    for my $alias ( sort keys %$raliases ) {
+        log_info {
+            "Creating alias: '$alias' -> '" . $raliases->{$alias} . "'"
+        };
         $es->indices->put_alias(
-            index => $aliases{$alias},
+            index => $raliases->{$alias},
             name  => $alias,
         );
     }
 
     $self->check_health(1);
-    $imappingok = $self->verify_mapping( \%mappings, \%aliases );
+    $imappingok = $self->verify_mapping( $rmappings, $raliases );
 
     # done
     log_info {"Done."};
