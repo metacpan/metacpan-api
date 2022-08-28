@@ -405,6 +405,9 @@ After C<await> seconds the Application will fail with an Exception and the Exit 
 
     bin/metacpan <script_name> --await 15
 
+B<Exit Code:> If the I<ElasticSearch> service does not become available
+within C<await> seconds it exits the Script with Exit Code C< 112 >.
+
 See L<Method C<await()>>
 
 =back
@@ -425,7 +428,12 @@ Exception from the C<Search::Elasticsearch::Client> and sets C< $! > to C< 112 >
 The C<Search::Elasticsearch::Client> generates a C<"Search::Elasticsearch::Error::NoNodes"> Exception.
 When the service is available it will populate the C<cluster_info> C<HASH> structure with the basic information
 about the cluster.
+
+B<Exceptions:> It will throw an exceptions when the I<ElasticSearch> service does not become available
+within C<arg_await_timeout> seconds (as described above).
+
 See L<Option C<--await 15>>
+
 See L<Method C<check_health()>>
 
 =item C<check_health( [ refresh ] )>
@@ -442,6 +450,13 @@ If the service is unavailable the C<await()> method will produce an exception an
 The method returns C< 1 > when the C<cluster_info> is populated, none of the indices in C<indices_info> has
 the Health State I<red> and at least one alias is created in C<aliases_info>
 otherwise the method returns C< 0 >
+
+B<Parameters:>
+
+C<refresh> - Integer evaluated as boolean when set to C< 1 > the cluster info structures
+will always be updated.
+
+See L<Method C<await()>>
 
 =item C<are_you_sure()>
 

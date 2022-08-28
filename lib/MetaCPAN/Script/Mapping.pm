@@ -29,12 +29,27 @@ use constant {
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
+has cpan_index => (
+    is            => 'ro',
+    isa           => Str,
+    default       => 'cpan_v1_01',
+    documentation => 'real name for the cpan index',
+);
+
 has arg_deploy_mapping => (
     init_arg      => 'delete',
     is            => 'ro',
     isa           => Bool,
     default       => 0,
     documentation => 'delete index if it exists already',
+);
+
+has arg_verify_mapping => (
+    init_arg      => 'verify',
+    is            => 'ro',
+    isa           => Bool,
+    default       => 0,
+    documentation => 'verify deployed index structure against definition',
 );
 
 has arg_list_types => (
@@ -132,8 +147,9 @@ sub run {
     my $self = shift;
 
     if ( $self->await ) {
-        $self->delete_index if $self->arg_delete_index;
+        $self->create_index if $self->arg_create_index;
         $self->update_index if $self->arg_update_index;
+        $self->delete_index if $self->arg_delete_index;
         $self->copy_type    if $self->copy_to_index;
         $self->empty_type   if $self->delete_from_type;
         $self->list_types   if $self->arg_list_types;
@@ -145,6 +161,19 @@ sub run {
             }
         }
 
+        if ( $self->arg_verify_mapping ) {
+            $self->check_health;
+            unless (
+                $self->mappings_valid(
+                    $self->_build_mapping, $self->_build_aliases
+                )
+                )
+            {
+                $self->print_error("Indices Verification has failed!");
+                $self->exit_code(1);
+            }
+        }
+
         if ( $self->arg_cluster_info ) {
             $self->check_health;
             $self->show_info;
@@ -152,7 +181,7 @@ sub run {
     }
 
 # The run() method is expected to communicate Success to the superior execution level
-    return ( $self->exit_code == 0 );
+    return ( $self->exit_code == 0 ? 1 : 0 );
 }
 
 sub _check_index_exists {
@@ -161,12 +190,18 @@ sub _check_index_exists {
 
     if ( $exists and !$expected ) {
         log_error {"Index already exists: $name"};
-        exit 0;
+
+        #Set System Error: 1 - EPERM - Operation not permitted
+        $self->exit_code(1);
+        $self->handle_error( "Conflicting index: $name", 1 );
     }
 
     if ( !$exists and $expected ) {
         log_error {"Index doesn't exists: $name"};
-        exit 0;
+
+        #Set System Error: 1 - EPERM - Operation not permitted
+        $self->exit_code(1);
+        $self->handle_error( "Missing index: $name", 1 );
     }
 }
 
@@ -208,7 +243,7 @@ sub update_index {
     for my $type ( sort keys %{$mapping} ) {
         log_info {"Adding mapping to index: $type"};
         $self->es->indices->put_mapping(
-            index => $self->index->name,
+            index => $name,
             type  => $type,
             body  => { $type => $mapping->{$type} },
         );
