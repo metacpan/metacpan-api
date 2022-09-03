@@ -628,7 +628,7 @@ sub _compare_mapping {
                             );
                         }
                         else {    # No Hash nor Array
-                            unless ( ${$deploy_value} eq ${$model_value} ) {
+                            if ( ${$deploy_value} ne ${$model_value} ) {
                                 log_error {
                                     'Mismatch field: '
                                         . $sname . '.'
@@ -641,7 +641,7 @@ sub _compare_mapping {
                         }
                     }
                     else {    # Scalar Value
-                        unless ( $deploy_value eq $model_value ) {
+                        if ( $deploy_value ne $model_value ) {
                             log_error {
                                 'Mismatch field: '
                                     . $sname . '.'
@@ -707,7 +707,7 @@ sub _compare_mapping {
                             );
                         }
                         else {    # No Hash nor Array
-                            unless ( ${$deploy_value} eq ${$model_value} ) {
+                            if ( ${$deploy_value} ne ${$model_value} ) {
                                 log_error {
                                     'Mismatch field: '
                                         . $sname . '['
@@ -720,7 +720,7 @@ sub _compare_mapping {
                         }
                     }
                     else {    # Scalar Value
-                        unless ( $deploy_value eq $model_value ) {
+                        if ( $deploy_value ne $model_value ) {
                             log_error {
                                 'Mismatch field: '
                                     . $sname . '['
