@@ -147,9 +147,9 @@ sub run {
     my $self = shift;
 
     if ( $self->await ) {
+        $self->delete_index if $self->arg_delete_index;
         $self->create_index if $self->arg_create_index;
         $self->update_index if $self->arg_update_index;
-        $self->delete_index if $self->arg_delete_index;
         $self->copy_type    if $self->copy_to_index;
         $self->empty_type   if $self->delete_from_type;
         $self->list_types   if $self->arg_list_types;
@@ -489,7 +489,7 @@ sub _build_aliases {
 
 sub deploy_mapping {
     my $self       = shift;
-    my $imappingok = 0;
+    my $is_mapping_ok = 0;
 
     $self->are_you_sure(
         'this will delete EVERYTHING and re-create the (empty) indexes');
@@ -534,12 +534,12 @@ sub deploy_mapping {
     }
 
     $self->check_health(1);
-    $imappingok = $self->mappings_valid( $rmappings, $raliases );
+    $is_mapping_ok = $self->mappings_valid( $rmappings, $raliases );
 
     # done
     log_info {"Done."};
 
-    return $imappingok;
+    return $is_mapping_ok;
 }
 
 sub aliases_valid {
