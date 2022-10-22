@@ -106,6 +106,7 @@ has updated => (
 has is_pause_custodial_account => (
     is      => 'ro',
     isa     => Bool,
+    coerce  => 1,
     default => 0,
 );
 
