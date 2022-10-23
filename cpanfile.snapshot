@@ -5621,16 +5621,19 @@ DISTRIBUTIONS
       Test::More 0.66
       Test::Warn 0.21
       URI::Escape 3.28
-  Net-SSLeay-1.82
-    pathname: M/MI/MIKEM/Net-SSLeay-1.82.tar.gz
+  Net-SSLeay-1.92
+    pathname: C/CH/CHRISN/Net-SSLeay-1.92.tar.gz
     provides:
-      Net::SSLeay 1.82
-      Net::SSLeay::Handle 0.61
+      Net::SSLeay 1.92
+      Net::SSLeay::Handle 1.92
     requirements:
-      ExtUtils::MakeMaker 6.36
+      English 0
+      ExtUtils::MakeMaker 0
+      File::Spec::Functions 0
       MIME::Base64 0
-      Test::More 0.60_01
-      perl 5.005
+      Text::Wrap 0
+      constant 0
+      perl 5.008001
   Net-Twitter-4.01043
     pathname: M/MM/MMIMS/Net-Twitter-4.01043.tar.gz
     provides:
