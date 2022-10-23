@@ -6,9 +6,9 @@ use feature qw( state );
 
 use Data::Printer;
 use DateTime;
-use IO::Zlib ();
-use Cpanel::JSON::XS qw( decode_json encode_json );
-use Log::Contextual qw( :log :dlog );
+use IO::Zlib                  ();
+use Cpanel::JSON::XS          qw( decode_json encode_json );
+use Log::Contextual           qw( :log :dlog );
 use MetaCPAN::Types::TypeTiny qw( Bool Int Path Str );
 use Moose;
 use Try::Tiny qw( catch try );

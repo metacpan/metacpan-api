@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use HTTP::Request::Common qw(POST GET DELETE);
-use MetaCPAN::Server ();
+use MetaCPAN::Server      ();
 use Plack::Test;
 use Test::More;
 

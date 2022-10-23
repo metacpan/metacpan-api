@@ -5,7 +5,7 @@ use namespace::autoclean;
 
 use Email::Sender::Simple ();
 use Email::Simple         ();
-use Log::Contextual qw( :log );
+use Log::Contextual       qw( :log );
 
 use MetaCPAN::Types::TypeTiny qw( Str );
 

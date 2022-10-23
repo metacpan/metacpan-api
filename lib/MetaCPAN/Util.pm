@@ -7,8 +7,8 @@ use warnings;
 use version;
 
 use Digest::SHA qw( sha1_base64 sha1_hex );
-use Encode qw( decode_utf8 );
-use Ref::Util qw( is_arrayref is_hashref );
+use Encode      qw( decode_utf8 );
+use Ref::Util   qw( is_arrayref is_hashref );
 use Sub::Exporter -setup => {
     exports => [
         'author_dir',      'digest',

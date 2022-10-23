@@ -3,13 +3,13 @@ package MetaCPAN::Script::Runner;
 use strict;
 use warnings;
 
-use Config::ZOMG ();
-use File::Path   ();
+use Config::ZOMG        ();
+use File::Path          ();
 use Hash::Merge::Simple qw(merge);
-use IO::Interactive qw(is_interactive);
+use IO::Interactive     qw(is_interactive);
 use Module::Pluggable search_path => ['MetaCPAN::Script'];
 use Module::Runtime ();
-use Try::Tiny qw( catch try );
+use Try::Tiny       qw( catch try );
 use Term::ANSIColor qw( colored );
 
 our $EXIT_CODE = 0;

@@ -4,9 +4,9 @@ use v5.010;
 use Moose::Role;
 use namespace::autoclean;
 
-use URI ();
+use URI              ();
 use Cpanel::JSON::XS qw( decode_json );
-use Log::Contextual qw( :log );
+use Log::Contextual  qw( :log );
 
 sub run_fedora {
     my $self = shift;

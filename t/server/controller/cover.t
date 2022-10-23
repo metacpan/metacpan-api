@@ -3,7 +3,7 @@ use warnings;
 use lib 't/lib';
 
 use MetaCPAN::Server::Test qw( app GET test_psgi );
-use MetaCPAN::TestHelpers qw( decode_json_ok );
+use MetaCPAN::TestHelpers  qw( decode_json_ok );
 use Test::More;
 
 my %expect = (

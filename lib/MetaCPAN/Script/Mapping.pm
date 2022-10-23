@@ -2,9 +2,9 @@ package MetaCPAN::Script::Mapping;
 
 use Moose;
 
-use Cpanel::JSON::XS qw( decode_json );
-use DateTime ();
-use Log::Contextual qw( :log );
+use Cpanel::JSON::XS                              qw( decode_json );
+use DateTime                                      ();
+use Log::Contextual                               qw( :log );
 use MetaCPAN::Script::Mapping::CPAN::Author       ();
 use MetaCPAN::Script::Mapping::CPAN::Distribution ();
 use MetaCPAN::Script::Mapping::CPAN::Favorite     ();
@@ -20,7 +20,7 @@ use MetaCPAN::Script::Mapping::User::Identity     ();
 use MetaCPAN::Script::Mapping::User::Session      ();
 use MetaCPAN::Script::Mapping::Contributor        ();
 use MetaCPAN::Script::Mapping::Cover              ();
-use MetaCPAN::Types::TypeTiny qw( Bool Str );
+use MetaCPAN::Types::TypeTiny                     qw( Bool Str );
 
 use constant {
     EXPECTED     => 1,

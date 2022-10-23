@@ -3,7 +3,7 @@ use warnings;
 use lib 't/lib';
 
 use MetaCPAN::TestHelpers qw( test_release );
-use Ref::Util qw( is_hashref );
+use Ref::Util             qw( is_hashref );
 use Test::More;
 
 use MetaCPAN::TestServer;

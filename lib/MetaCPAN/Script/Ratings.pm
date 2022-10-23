@@ -3,8 +3,8 @@ package MetaCPAN::Script::Ratings;
 use strict;
 use warnings;
 
-use Digest::MD5    ();
-use LWP::UserAgent ();
+use Digest::MD5     ();
+use LWP::UserAgent  ();
 use Log::Contextual qw( :log :dlog );
 use Moose;
 use Parse::CSV ();

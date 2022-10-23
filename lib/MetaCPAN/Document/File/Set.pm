@@ -2,11 +2,11 @@ package MetaCPAN::Document::File::Set;
 
 use Moose;
 
-use List::Util qw( max );
+use List::Util                qw( max );
 use MetaCPAN::Query::Favorite ();
 use MetaCPAN::Query::File     ();
 use MetaCPAN::Query::Release  ();
-use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
+use MetaCPAN::Util            qw( single_valued_arrayref_to_scalar );
 
 extends 'ElasticSearchX::Model::Document::Set';
 

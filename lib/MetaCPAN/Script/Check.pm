@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use File::Spec::Functions qw( catfile );
-use Log::Contextual qw( :log );
+use Log::Contextual       qw( :log );
 use Moose;
 use MetaCPAN::Types::TypeTiny qw( Bool Int Str );
 

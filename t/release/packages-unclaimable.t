@@ -4,10 +4,10 @@ use lib 't/lib';
 
 use Cpanel::JSON::XS ();
 use IO::String       ();
-use List::AllUtils qw( uniq );
+use List::AllUtils   qw( uniq );
 use MetaCPAN::Server::Test;
 use MetaCPAN::TestHelpers qw( test_release );
-use Module::Metadata ();
+use Module::Metadata      ();
 use Test::More;
 
 test_release(

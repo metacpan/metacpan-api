@@ -6,14 +6,14 @@ use namespace::autoclean;
 # Some issue with rt.cpan.org's cert
 $ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0;
 
-use HTTP::Request::Common qw( GET );
-use IO::String ();
-use Log::Contextual qw( :log :dlog );
+use HTTP::Request::Common     qw( GET );
+use IO::String                ();
+use Log::Contextual           qw( :log :dlog );
 use MetaCPAN::Types::TypeTiny ();
 use Parse::CSV                ();
 use Pithub                    ();
-use Ref::Util qw( is_hashref is_ref );
-use URI::Escape qw( uri_escape );
+use Ref::Util                 qw( is_hashref is_ref );
+use URI::Escape               qw( uri_escape );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 

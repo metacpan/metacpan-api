@@ -3,7 +3,7 @@ use warnings;
 use lib 't/lib';
 
 use MetaCPAN::DarkPAN ();
-use Path::Tiny qw( path );
+use Path::Tiny        qw( path );
 use Test::More;
 use Test::Mojo;
 

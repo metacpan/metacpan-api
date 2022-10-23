@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use Cpanel::JSON::XS ();
+use Cpanel::JSON::XS      ();
 use MetaCPAN::TestHelpers qw( test_release );
 use Test::More;
 

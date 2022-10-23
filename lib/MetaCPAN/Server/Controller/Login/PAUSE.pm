@@ -3,10 +3,10 @@ package MetaCPAN::Server::Controller::Login::PAUSE;
 use Moose;
 use namespace::autoclean;
 
-use CHI ();
-use Log::Contextual qw( :log :dlog );
+use CHI                           ();
+use Log::Contextual               qw( :log :dlog );
 use MetaCPAN::Model::Email::PAUSE ();
-use MetaCPAN::Util qw( generate_sid );
+use MetaCPAN::Util                qw( generate_sid );
 
 BEGIN { extends 'MetaCPAN::Server::Controller::Login' }
 

@@ -3,9 +3,9 @@ package MetaCPAN::Script::CPANTestersAPI;
 use strict;
 use warnings;
 
-use Log::Contextual qw( :log :dlog );
-use Cpanel::JSON::XS qw( decode_json );
-use MetaCPAN::Types::TypeTiny qw( Uri );
+use Log::Contextual                        qw( :log :dlog );
+use Cpanel::JSON::XS                       qw( decode_json );
+use MetaCPAN::Types::TypeTiny              qw( Uri );
 use ElasticSearchX::Model::Document::Types qw( ESBulk );
 use Moose;
 

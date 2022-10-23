@@ -3,7 +3,7 @@ package MetaCPAN::Script::Role::External::Cygwin;
 use Moose::Role;
 use namespace::autoclean;
 
-use List::Util qw( shuffle );
+use List::Util      qw( shuffle );
 use Log::Contextual qw( :log );
 
 use MetaCPAN::Types::TypeTiny qw( ArrayRef Int );

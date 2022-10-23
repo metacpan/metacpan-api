@@ -4,7 +4,3 @@
 # Break a line after opening/before closing token.
 -vt=0
 -vtc=0
-
-# Fix t/server/controller/login/pause.t tidyall failure
-# See https://github.com/autarch/Dist-Zilla-PluginBundle-DROLSKY/commit/b7f9c0194b83a72e4fe07ee5f9c541b6cfbf9b6d
---character-encoding=none

@@ -13,7 +13,7 @@ use MetaCPAN::TestHelpers qw(
     tmp_dir
 );
 use MetaCPAN::TestServer ();
-use Module::Faker 0.015 ();    # Generates META.json.
+use Module::Faker 0.015  ();    # Generates META.json.
 use Test::More 0.96;
 use URI::FromHash qw( uri );
 

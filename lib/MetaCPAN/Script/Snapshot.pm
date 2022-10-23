@@ -3,12 +3,12 @@ package MetaCPAN::Script::Snapshot;
 use strict;
 use warnings;
 
-use Cpanel::JSON::XS qw( decode_json encode_json );
+use Cpanel::JSON::XS          qw( decode_json encode_json );
 use DateTime                  ();
 use DateTime::Format::ISO8601 ();
 use DDP;
-use HTTP::Tiny ();
-use Log::Contextual qw( :log );
+use HTTP::Tiny                ();
+use Log::Contextual           qw( :log );
 use MetaCPAN::Types::TypeTiny qw( ArrayRef Bool Str );
 use Moose;
 use Sys::Hostname qw( hostname );

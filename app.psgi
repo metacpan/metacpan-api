@@ -9,10 +9,10 @@ BEGIN {
 use lib "$root_dir/lib";
 
 use Config::ZOMG;
-use File::Path    ();
-use File::Spec    ();
-use Log::Log4perl ();
-use Path::Tiny qw( path );
+use File::Path            ();
+use File::Spec            ();
+use Log::Log4perl         ();
+use Path::Tiny            qw( path );
 use Plack::App::Directory ();
 use Plack::App::URLMap    ();
 

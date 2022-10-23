@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use Digest::SHA qw( sha1_hex );
+use Digest::SHA           qw( sha1_hex );
 use MetaCPAN::TestHelpers qw( fakecpan_dir );
 use Test::Most import =>
     [qw( cmp_bag done_testing is isa_ok like ok require_ok subtest throws_ok )

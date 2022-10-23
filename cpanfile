@@ -177,7 +177,7 @@ requires 'Module::Extract::Namespaces', '1.023';
 requires 'Module::Faker', '0.015';
 requires 'Module::Faker::Dist', '0.010';
 requires 'Perl::Critic', '0.140';
-requires 'Perl::Tidy' => '20220217';
+requires 'Perl::Tidy' => '== 20220613';
 requires 'Plack::Test::Agent', '1.5';
 requires 'PPI', '1.274'; # Perl::Critic
 requires 'PPIx::QuoteLike', '0.022'; # Perl::Critic

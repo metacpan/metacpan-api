@@ -5,8 +5,8 @@ use warnings;
 
 use Moose;
 
-use DateTime ();
-use Log::Contextual qw( :log );
+use DateTime                  ();
+use Log::Contextual           qw( :log );
 use MetaCPAN::Types::TypeTiny qw( Bool Int );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';

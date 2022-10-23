@@ -7,8 +7,8 @@ use Log::Contextual qw( :log );
 use Moose;
 use MooseX::Aliases;
 use Parse::CPAN::Packages::Fast;
-use Regexp::Common qw(time);
-use Time::Local qw( timelocal );
+use Regexp::Common            qw(time);
+use Time::Local               qw( timelocal );
 use MetaCPAN::Types::TypeTiny qw( Bool Str );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';

@@ -4,7 +4,7 @@ use lib 't/lib';
 
 use Cpanel::JSON::XS qw( decode_json );
 use MetaCPAN::Server ();
-use Plack::Test qw();
+use Plack::Test      qw();
 use Test::More;
 use Ref::Util qw( is_hashref );
 

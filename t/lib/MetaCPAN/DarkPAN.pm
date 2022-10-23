@@ -3,12 +3,12 @@ package MetaCPAN::DarkPAN;
 use MetaCPAN::Moose;
 
 use CPAN::Repository::Perms;
-use MetaCPAN::TestHelpers qw( get_config );
+use MetaCPAN::TestHelpers     qw( get_config );
 use MetaCPAN::Types::TypeTiny qw( Path );
-use MetaCPAN::Util qw( author_dir );
+use MetaCPAN::Util            qw( author_dir );
 use OrePAN2::Indexer;
 use OrePAN2::Injector;
-use Path::Tiny qw( path );
+use Path::Tiny    qw( path );
 use URI::FromHash qw( uri_object );
 
 has base_dir => (

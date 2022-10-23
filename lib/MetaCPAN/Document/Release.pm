@@ -4,7 +4,7 @@ use Moose;
 
 use DateTime qw();
 use ElasticSearchX::Model::Document;
-use MetaCPAN::Types qw( Dependency );
+use MetaCPAN::Types           qw( Dependency );
 use MetaCPAN::Types::TypeTiny qw(
     ArrayRef
     Bool

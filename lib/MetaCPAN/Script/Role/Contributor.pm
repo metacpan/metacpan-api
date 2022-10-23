@@ -3,7 +3,7 @@ package MetaCPAN::Script::Role::Contributor;
 use Moose::Role;
 
 use MetaCPAN::Util qw( digest );
-use Ref::Util qw( is_arrayref );
+use Ref::Util      qw( is_arrayref );
 
 sub get_cpan_author_contributors {
     my ( $self, $author, $release, $distribution ) = @_;

@@ -19,12 +19,12 @@ To run the api web server, run the following on one of the servers:
 
 use Mojo::Base 'Mojolicious';
 
-use Config::ZOMG ();
-use File::Temp   ();
-use List::Util qw( any );
+use Config::ZOMG             ();
+use File::Temp               ();
+use List::Util               qw( any );
 use MetaCPAN::Script::Runner ();
 use Search::Elasticsearch    ();
-use Try::Tiny qw( catch try );
+use Try::Tiny                qw( catch try );
 
 has es => sub {
     return Search::Elasticsearch->new(

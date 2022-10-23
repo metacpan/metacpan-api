@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use Git::Helpers qw( checkout_root );
+use Git::Helpers             qw( checkout_root );
 use MetaCPAN::Script::Cover  ();
 use MetaCPAN::Script::Runner ();
 use Test::More;
