@@ -36,21 +36,19 @@ sub author_status {
 
 sub aggregate_status_by_author {
     my ( $self, $pauseid ) = @_;
-    my $agg = $self->es->search(
-        {
-            index => $self->index_name,
-            type  => 'release',
-            body  => {
-                query => {
-                    term => { author => $pauseid }
-                },
-                aggregations => {
-                    count => { terms => { field => 'status' } }
-                },
-                size => 0,
-            }
+    my $agg = $self->es->search( {
+        index => $self->index_name,
+        type  => 'release',
+        body  => {
+            query => {
+                term => { author => $pauseid }
+            },
+            aggregations => {
+                count => { terms => { field => 'status' } }
+            },
+            size => 0,
         }
-    );
+    } );
     my %ret = ( cpan => 0, latest => 0, backpan => 0 );
     if ($agg) {
         $ret{ $_->{'key'} } = $_->{'doc_count'}
@@ -984,19 +982,17 @@ sub modules {
 
         _source => [ "module", "abstract" ],
 
-        fields => [
-            qw(
-                author
-                authorized
-                distribution
-                documentation
-                indexed
-                path
-                pod_lines
-                release
-                status
-            )
-        ],
+        fields => [ qw(
+            author
+            authorized
+            distribution
+            documentation
+            indexed
+            path
+            pod_lines
+            release
+            status
+        ) ],
     };
 
     my $ret = $self->es->search(

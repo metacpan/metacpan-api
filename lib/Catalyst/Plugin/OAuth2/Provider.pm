@@ -18,9 +18,9 @@ package Catalyst::Plugin::OAuth2::Provider::Controller;
 use Moose;
 BEGIN { extends 'Catalyst::Controller' }
 
-use Digest::SHA ();
+use Digest::SHA      ();
 use Cpanel::JSON::XS qw( decode_json encode_json );
-use URI ();
+use URI              ();
 
 has login   => ( is => 'ro' );
 has clients => ( is => 'ro' );
@@ -107,11 +107,9 @@ sub access_token : Local {
     $user->put( { refresh => 1 } );
 
     $c->res->content_type('application/json');
-    $c->res->body(
-        encode_json(
-            { access_token => $access_token, token_type => 'bearer' }
-        )
-    );
+    $c->res->body( encode_json(
+        { access_token => $access_token, token_type => 'bearer' }
+    ) );
 
 }
 

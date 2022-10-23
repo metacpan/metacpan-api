@@ -2,11 +2,11 @@ package MetaCPAN::Script::CPANTesters;
 
 use Moose;
 
-use DBI ();
-use File::stat qw( stat );
-use IO::Uncompress::Bunzip2 qw( bunzip2 );
-use Log::Contextual qw( :log :dlog );
-use MetaCPAN::Types::TypeTiny qw( Bool Path Uri );
+use DBI                                    ();
+use File::stat                             qw( stat );
+use IO::Uncompress::Bunzip2                qw( bunzip2 );
+use Log::Contextual                        qw( :log :dlog );
+use MetaCPAN::Types::TypeTiny              qw( Bool Path Uri );
 use ElasticSearchX::Model::Document::Types qw( ESBulk );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt::Dashes';
@@ -153,13 +153,11 @@ sub index_reports {
 
         next unless ($insert_ok);
         my %tests = map { $_ => $row_from_db->{$_} } qw(fail pass na unknown);
-        $self->_bulk->update(
-            {
-                doc           => { tests => \%tests },
-                doc_as_upsert => 1,
-                id            => $release_doc->{id},
-            }
-        );
+        $self->_bulk->update( {
+            doc           => { tests => \%tests },
+            doc_as_upsert => 1,
+            id            => $release_doc->{id},
+        } );
     }
     $self->_bulk->flush;
     log_info {'done'};

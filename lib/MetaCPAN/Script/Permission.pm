@@ -2,10 +2,10 @@ package MetaCPAN::Script::Permission;
 
 use Moose;
 
-use Log::Contextual qw( :log );
+use Log::Contextual                qw( :log );
 use MetaCPAN::Document::Permission ();
-use MetaCPAN::Types::TypeTiny qw( Bool );
-use PAUSE::Permissions ();
+use MetaCPAN::Types::TypeTiny      qw( Bool );
+use PAUSE::Permissions             ();
 
 with 'MooseX::Getopt', 'MetaCPAN::Role::Script';
 
@@ -62,13 +62,11 @@ sub index_permissions {
             co_maintainers => \@co_maints,
         };
 
-        $bulk->update(
-            {
-                id            => $name,
-                doc           => $doc,
-                doc_as_upsert => 1,
-            }
-        );
+        $bulk->update( {
+            id            => $name,
+            doc           => $doc,
+            doc_as_upsert => 1,
+        } );
 
         $seen{$name} = 1;
     }

@@ -3,8 +3,8 @@ package MetaCPAN::Script::River;
 use Moose;
 use namespace::autoclean;
 
-use Cpanel::JSON::XS qw( decode_json );
-use Log::Contextual qw( :log :dlog );
+use Cpanel::JSON::XS          qw( decode_json );
+use Log::Contextual           qw( :log :dlog );
 use MetaCPAN::Types::TypeTiny qw( Uri );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
@@ -36,16 +36,14 @@ sub index_river_summaries {
     for my $summary ( @{$summaries} ) {
         my $dist = delete $summary->{dist};
 
-        $bulk->update(
-            {
-                id  => $dist,
-                doc => {
-                    name  => $dist,
-                    river => $summary,
-                },
-                doc_as_upsert => 1,
-            }
-        );
+        $bulk->update( {
+            id  => $dist,
+            doc => {
+                name  => $dist,
+                river => $summary,
+            },
+            doc_as_upsert => 1,
+        } );
     }
     $bulk->flush;
 }

@@ -253,12 +253,10 @@ sub index_favorites {
 
                 log_debug {"Updating file id $id with fav_count $cnt"};
 
-                $bulk->update(
-                    {
-                        id  => $file->{fields}{id}[0],
-                        doc => { dist_fav_count => $cnt },
-                    }
-                );
+                $bulk->update( {
+                    id  => $file->{fields}{id}[0],
+                    doc => { dist_fav_count => $cnt },
+                } );
             }
 
             $bulk->flush;

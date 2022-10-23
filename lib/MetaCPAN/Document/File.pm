@@ -7,10 +7,10 @@ use utf8;
 use Moose;
 use ElasticSearchX::Model::Document;
 
-use List::AllUtils qw( any );
+use List::AllUtils             qw( any );
 use MetaCPAN::Document::Module ();
-use MetaCPAN::Types qw( Module );
-use MetaCPAN::Types::TypeTiny qw(
+use MetaCPAN::Types            qw( Module );
+use MetaCPAN::Types::TypeTiny  qw(
     ArrayRef
     Bool
     Int
@@ -21,9 +21,9 @@ use MetaCPAN::Types::TypeTiny qw(
     Str
 );
 use MetaCPAN::Util qw(numify_version);
-use Plack::MIME ();
-use Pod::Text   ();
-use Try::Tiny qw( catch try );
+use Plack::MIME    ();
+use Pod::Text      ();
+use Try::Tiny      qw( catch try );
 
 Plack::MIME->add_type( '.t'   => 'text/x-script.perl' );
 Plack::MIME->add_type( '.pod' => 'text/x-pod' );

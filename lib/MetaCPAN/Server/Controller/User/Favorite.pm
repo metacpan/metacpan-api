@@ -38,11 +38,8 @@ sub index_POST {
     );
     $self->status_created(
         $c,
-        location => $c->uri_for(
-            join(
-                '/', '/favorite', $favorite->user, $favorite->distribution
-            )
-        ),
+        location => $c->uri_for( join( '/',
+            '/favorite', $favorite->user, $favorite->distribution ) ),
         entity => $favorite->meta->get_data($favorite)
     );
 }

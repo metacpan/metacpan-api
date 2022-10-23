@@ -2,11 +2,11 @@ package MetaCPAN::Script::Package;
 
 use Moose;
 
-use CPAN::DistnameInfo     ();
-use IO::Uncompress::Gunzip ();
-use Log::Contextual qw( :log );
+use CPAN::DistnameInfo          ();
+use IO::Uncompress::Gunzip      ();
+use Log::Contextual             qw( :log );
 use MetaCPAN::Document::Package ();
-use MetaCPAN::Types::TypeTiny qw( Bool );
+use MetaCPAN::Types::TypeTiny   qw( Bool );
 
 with 'MooseX::Getopt', 'MetaCPAN::Role::Script';
 
@@ -77,13 +77,11 @@ sub index_packages {
             dist_version => $distinfo->version,
         };
 
-        $bulk->update(
-            {
-                id            => $name,
-                doc           => $doc,
-                doc_as_upsert => 1,
-            }
-        );
+        $bulk->update( {
+            id            => $name,
+            doc           => $doc,
+            doc_as_upsert => 1,
+        } );
 
         $seen{$name} = 1;
     }

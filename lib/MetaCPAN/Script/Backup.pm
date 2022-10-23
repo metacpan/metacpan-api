@@ -6,9 +6,9 @@ use feature qw( state );
 
 use Data::Printer;
 use DateTime;
-use IO::Zlib ();
-use Cpanel::JSON::XS qw( decode_json encode_json );
-use Log::Contextual qw( :log :dlog );
+use IO::Zlib                  ();
+use Cpanel::JSON::XS          qw( decode_json encode_json );
+use Log::Contextual           qw( :log :dlog );
 use MetaCPAN::Types::TypeTiny qw( Bool Int Path Str );
 use Moose;
 use Try::Tiny qw( catch try );
@@ -159,23 +159,19 @@ sub run_restore {
         );
 
         if ($exists) {
-            $bulk->update(
-                {
-                    id            => $raw->{_id},
-                    doc           => $raw->{_source},
-                    doc_as_upsert => 1,
-                }
-            );
+            $bulk->update( {
+                id            => $raw->{_id},
+                doc           => $raw->{_source},
+                doc_as_upsert => 1,
+            } );
 
         }
         else {
-            $bulk->create(
-                {
-                    id => $raw->{_id},
-                    $parent ? ( parent => $parent ) : (),
-                    source => $raw->{_source},
-                }
-            );
+            $bulk->create( {
+                id => $raw->{_id},
+                $parent ? ( parent => $parent ) : (),
+                source => $raw->{_source},
+            } );
         }
     }
 

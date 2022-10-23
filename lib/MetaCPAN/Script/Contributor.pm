@@ -6,7 +6,7 @@ use warnings;
 use Moose;
 
 use Log::Contextual qw( :log );
-use Ref::Util qw( is_arrayref );
+use Ref::Util       qw( is_arrayref );
 
 use MetaCPAN::Types::TypeTiny qw( Bool HashRef Int Str );
 

@@ -5,17 +5,15 @@ use warnings;
 
 use CPAN::Meta;
 use ElasticSearchX::Model::Document::Types qw( Type );
-use MooseX::Getopt::OptionTypeMap ();
-use MooseX::Types::Moose qw( ArrayRef HashRef );
+use MooseX::Getopt::OptionTypeMap          ();
+use MooseX::Types::Moose                   qw( ArrayRef HashRef );
 
-use MooseX::Types -declare => [
-    qw(
-        Module
-        Identity
-        Dependency
-        Profile
-    )
-];
+use MooseX::Types -declare => [ qw(
+    Module
+    Identity
+    Dependency
+    Profile
+) ];
 
 subtype Module, as ArrayRef [ Type ['MetaCPAN::Document::Module'] ];
 coerce Module, from ArrayRef, via {

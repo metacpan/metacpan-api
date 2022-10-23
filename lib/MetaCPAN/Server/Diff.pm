@@ -4,8 +4,8 @@ use strict;
 use warnings;
 use Moose;
 
-use Encoding::FixLatin ();
-use IPC::Run3 qw( run3 );
+use Encoding::FixLatin        ();
+use IPC::Run3                 qw( run3 );
 use MetaCPAN::Types::TypeTiny qw( ArrayRef );
 use File::Spec;
 

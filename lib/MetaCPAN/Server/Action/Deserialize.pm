@@ -14,13 +14,11 @@ around serialize_bad_request => sub {
         = "Content-Type $content_type had a problem with your request.\n$error";
     $full_error =~ s{ at .*? line \d+\.\n\z}{};
 
-    $c->stash(
-        {
-            rest => {
-                error => $full_error,
-            },
-        }
-    );
+    $c->stash( {
+        rest => {
+            error => $full_error,
+        },
+    } );
 
     return undef;
 };

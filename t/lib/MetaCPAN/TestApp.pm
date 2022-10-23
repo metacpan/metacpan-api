@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use LWP::ConsoleLogger::Easy qw( debug_ua );
-use MetaCPAN::Server::Test qw( app );
+use MetaCPAN::Server::Test   qw( app );
 use Moose;
 use Plack::Test::Agent;
 

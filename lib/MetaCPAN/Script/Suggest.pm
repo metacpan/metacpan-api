@@ -5,8 +5,8 @@ use warnings;
 
 use Moose;
 
-use DateTime ();
-use Log::Contextual qw( :log );
+use DateTime                  ();
+use Log::Contextual           qw( :log );
 use MetaCPAN::Types::TypeTiny qw( Bool Int );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
@@ -92,18 +92,16 @@ sub _update_slice {
         my $weight        = 1000 - length($documentation);
         $weight = 0 if $weight < 0;
 
-        $bulk->update(
-            {
-                id  => $file->{fields}{id}[0],
-                doc => {
-                    suggest => {
-                        input   => [$documentation],
-                        payload => { doc_name => $documentation },
-                        weight  => $weight,
-                    }
-                },
-            }
-        );
+        $bulk->update( {
+            id  => $file->{fields}{id}[0],
+            doc => {
+                suggest => {
+                    input   => [$documentation],
+                    payload => { doc_name => $documentation },
+                    weight  => $weight,
+                }
+            },
+        } );
     }
 
     $bulk->flush;

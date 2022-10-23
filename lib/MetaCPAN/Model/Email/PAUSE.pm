@@ -2,12 +2,12 @@ package MetaCPAN::Model::Email::PAUSE;
 
 use MetaCPAN::Moose;
 
-use Email::Sender::Simple qw( sendmail );
+use Email::Sender::Simple          qw( sendmail );
 use Email::Sender::Transport::SMTP ();
 use Email::Simple                  ();
 use Encode                         ();
-use MetaCPAN::Types::TypeTiny qw( Object Uri );
-use Try::Tiny qw( catch try );
+use MetaCPAN::Types::TypeTiny      qw( Object Uri );
+use Try::Tiny                      qw( catch try );
 
 with('MetaCPAN::Role::HasConfig');
 
@@ -40,16 +40,14 @@ sub send {
     );
 
     my $config    = $self->config->{smtp};
-    my $transport = Email::Sender::Transport::SMTP->new(
-        {
-            debug         => 1,
-            host          => $config->{host},
-            port          => $config->{port},
-            sasl_username => $config->{username},
-            sasl_password => $config->{password},
-            ssl           => 1,
-        }
-    );
+    my $transport = Email::Sender::Transport::SMTP->new( {
+        debug         => 1,
+        host          => $config->{host},
+        port          => $config->{port},
+        sasl_username => $config->{username},
+        sasl_password => $config->{password},
+        ssl           => 1,
+    } );
 
     my $success = 0;
     try {

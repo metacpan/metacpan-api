@@ -3,10 +3,10 @@ package MetaCPAN::Script::Cover;
 use Moose;
 use namespace::autoclean;
 
-use Cpanel::JSON::XS qw( decode_json );
-use Log::Contextual qw( :log :dlog );
+use Cpanel::JSON::XS          qw( decode_json );
+use Log::Contextual           qw( :log :dlog );
 use MetaCPAN::Types::TypeTiny qw( Bool Str Uri );
-use Path::Tiny qw( path );
+use Path::Tiny                qw( path );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
@@ -84,18 +84,16 @@ sub index_cover_data {
                 delete $doc_data{$k} unless exists $valid_keys{$k};
             }
 
-            $bulk->update(
-                {
-                    id  => $release,
-                    doc => {
-                        distribution => $dist,
-                        version      => $version,
-                        release      => $release,
-                        criteria     => \%doc_data,
-                    },
-                    doc_as_upsert => 1,
-                }
-            );
+            $bulk->update( {
+                id  => $release,
+                doc => {
+                    distribution => $dist,
+                    version      => $version,
+                    release      => $release,
+                    criteria     => \%doc_data,
+                },
+                doc_as_upsert => 1,
+            } );
         }
     }
 

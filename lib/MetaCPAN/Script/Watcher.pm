@@ -6,7 +6,7 @@ use Moose;
 
 use CPAN::DistnameInfo;
 use Cpanel::JSON::XS qw( decode_json );
-use Log::Contextual qw( :log );
+use Log::Contextual  qw( :log );
 use MetaCPAN::Util;
 use MetaCPAN::Types::TypeTiny qw( Bool );
 
@@ -94,27 +94,25 @@ sub changes {
 
 sub backpan_changes {
     my $self   = shift;
-    my $scroll = $self->es->scroll_helper(
-        {
-            size   => 1000,
-            scroll => '1m',
-            index  => $self->index->name,
-            type   => 'release',
-            fields => [qw(author archive)],
-            body   => {
-                query => {
-                    filtered => {
-                        query  => { match_all => {} },
-                        filter => {
-                            not => {
-                                filter => { term => { status => 'backpan' } }
-                            }
-                        },
-                    }
+    my $scroll = $self->es->scroll_helper( {
+        size   => 1000,
+        scroll => '1m',
+        index  => $self->index->name,
+        type   => 'release',
+        fields => [qw(author archive)],
+        body   => {
+            query => {
+                filtered => {
+                    query  => { match_all => {} },
+                    filter => {
+                        not => {
+                            filter => { term => { status => 'backpan' } }
+                        }
+                    },
                 }
             }
         }
-    );
+    } );
     my @changes;
     while ( my $release = $scroll->next ) {
         my $data = $release->{fields};
@@ -138,15 +136,13 @@ sub latest_release {
 
 sub skip {
     my ( $self, $author, $archive ) = @_;
-    return $self->index->type('release')->filter(
-        {
-            and => [
-                { term => { status  => 'backpan' } },
-                { term => { archive => $archive } },
-                { term => { author  => $author } },
-            ]
-        }
-    )->raw->count;
+    return $self->index->type('release')->filter( {
+        and => [
+            { term => { status  => 'backpan' } },
+            { term => { archive => $archive } },
+            { term => { author  => $author } },
+        ]
+    } )->raw->count;
 }
 
 sub index_release {
@@ -176,51 +172,45 @@ sub index_release {
 sub reindex_release {
     my ( $self, $release ) = @_;
     my $info = CPAN::DistnameInfo->new( $release->{path} );
-    $release = $self->index->type('release')->filter(
-        {
-            and => [
-                { term => { author  => $info->cpanid } },
-                { term => { archive => $info->filename } },
-            ]
-        }
-    )->raw->first;
+    $release = $self->index->type('release')->filter( {
+        and => [
+            { term => { author  => $info->cpanid } },
+            { term => { archive => $info->filename } },
+        ]
+    } )->raw->first;
     return unless ($release);
     log_info {"Moving $release->{_source}->{name} to BackPAN"};
 
     my $es     = $self->es;
-    my $scroll = $es->scroll_helper(
-        {
-            index       => $self->index->name,
-            type        => 'file',
-            scroll      => '1m',
-            size        => 1000,
-            search_type => 'scan',
-            fields      => [ '_parent', '_source' ],
-            body        => {
-                query => {
-                    filtered => {
-                        query  => { match_all => {} },
-                        filter => {
-                            and => [
-                                {
-                                    term => {
-                                        'release' =>
-                                            $release->{_source}->{name}
-                                    }
-                                },
-                                {
-                                    term => {
-                                        'author' =>
-                                            $release->{_source}->{author}
-                                    }
+    my $scroll = $es->scroll_helper( {
+        index       => $self->index->name,
+        type        => 'file',
+        scroll      => '1m',
+        size        => 1000,
+        search_type => 'scan',
+        fields      => [ '_parent', '_source' ],
+        body        => {
+            query => {
+                filtered => {
+                    query  => { match_all => {} },
+                    filter => {
+                        and => [
+                            {
+                                term => {
+                                    'release' => $release->{_source}->{name}
                                 }
-                            ]
-                        }
+                            },
+                            {
+                                term => {
+                                    'author' => $release->{_source}->{author}
+                                }
+                            }
+                        ]
                     }
                 }
             }
         }
-    );
+    } );
     return if ( $self->dry_run );
 
     my %bulk_helper;
@@ -233,28 +223,24 @@ sub reindex_release {
 
     while ( my $row = $scroll->next ) {
         my $source = $row->{_source};
-        $bulk_helper{file}->index(
-            {
-                id     => $row->{_id},
-                source => {
-                    $row->{fields}->{_parent}
-                    ? ( parent => $row->{fields}->{_parent} )
-                    : (),
-                    %$source,
-                    status => 'backpan',
-                }
+        $bulk_helper{file}->index( {
+            id     => $row->{_id},
+            source => {
+                $row->{fields}->{_parent}
+                ? ( parent => $row->{fields}->{_parent} )
+                : (),
+                %$source,
+                status => 'backpan',
             }
-        );
+        } );
     }
 
-    $bulk_helper{release}->index(
-        {
-            id     => $release->{_id},
-            source => {
-                %{ $release->{_source} }, status => 'backpan',
-            }
+    $bulk_helper{release}->index( {
+        id     => $release->{_id},
+        source => {
+            %{ $release->{_source} }, status => 'backpan',
         }
-    );
+    } );
 
     for my $bulk ( values %bulk_helper ) {
         $bulk->flush;

@@ -15,23 +15,19 @@ test_psgi app, sub {
 
     is_deeply(
         $user->{identity},
-        [
-            {
-                'key'  => 'MO',
-                'name' => 'pause'
-            }
-        ],
+        [ {
+            'key'  => 'MO',
+            'name' => 'pause'
+        } ],
         'got correct identity'
     );
 
     is_deeply(
         $user->{access_token},
-        [
-            {
-                'client' => 'testing',
-                'token'  => 'testing'
-            }
-        ],
+        [ {
+            'client' => 'testing',
+            'token'  => 'testing'
+        } ],
         'got correct access_token'
     );
 
@@ -39,13 +35,11 @@ test_psgi app, sub {
         my $res = $cb->(
             POST '/user/favorite?access_token=testing',
             Content_Type => 'application/json',
-            Content      => encode_json(
-                {
-                    distribution => 'Moose',
-                    release      => 'Moose-1.10',
-                    author       => 'DOY'
-                }
-            )
+            Content      => encode_json( {
+                distribution => 'Moose',
+                release      => 'Moose-1.10',
+                author       => 'DOY'
+            } )
         ),
         'POST favorite'
     );
@@ -71,13 +65,11 @@ test_psgi app, sub {
     ok(
         $res = $cb->(
             POST '/user/favorite?access_token=bot',
-            Content => encode_json(
-                {
-                    distribution => 'Moose',
-                    release      => 'Moose-1.10',
-                    author       => 'DOY'
-                }
-            )
+            Content => encode_json( {
+                distribution => 'Moose',
+                release      => 'Moose-1.10',
+                author       => 'DOY'
+            } )
         ),
         'POST favorite'
     );

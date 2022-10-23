@@ -3,7 +3,7 @@ use warnings;
 use lib 't/lib';
 
 use MetaCPAN::Model::Release ();
-use MetaCPAN::TestHelpers qw( fakecpan_dir get_config );
+use MetaCPAN::TestHelpers    qw( fakecpan_dir get_config );
 use Test::More;
 
 my $authordir = fakecpan_dir->child('authors/id/L/LO/LOCAL');

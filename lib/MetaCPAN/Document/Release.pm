@@ -4,7 +4,7 @@ use Moose;
 
 use DateTime qw();
 use ElasticSearchX::Model::Document;
-use MetaCPAN::Types qw( Dependency );
+use MetaCPAN::Types           qw( Dependency );
 use MetaCPAN::Types::TypeTiny qw(
     ArrayRef
     Bool
@@ -279,24 +279,21 @@ sub _build_download_url {
 
 sub set_first {
     my $self     = shift;
-    my $is_first = $self->index->type('release')->filter(
-        {
-            and => [
-                { term => { distribution => $self->distribution } },
-                {
-                    range => {
-                        version_numified =>
-                            { 'lt' => $self->version_numified }
-                    }
-                },
+    my $is_first = $self->index->type('release')->filter( {
+        and => [
+            { term => { distribution => $self->distribution } },
+            {
+                range => {
+                    version_numified => { 'lt' => $self->version_numified }
+                }
+            },
 
           # REINDEX: after a full reindex, the above line is to replaced with:
           # { term => { first => 1 } },
           # currently, the "first" property is not computed on all releases
           # since this feature has not been around when last reindexed
-            ]
-        }
-        )->count
+        ]
+    } )->count
         ? 0
         : 1;
 

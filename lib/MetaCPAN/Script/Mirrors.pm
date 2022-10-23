@@ -3,8 +3,8 @@ package MetaCPAN::Script::Mirrors;
 use strict;
 use warnings;
 
-use Cpanel::JSON::XS ();
-use Log::Contextual qw( :log :dlog );
+use Cpanel::JSON::XS           ();
+use Log::Contextual            qw( :log :dlog );
 use MetaCPAN::Document::Mirror ();
 use Moose;
 
@@ -32,12 +32,10 @@ sub index_mirrors {
         $mirror->{location}
             = { lon => $mirror->{longitude}, lat => $mirror->{latitude} };
         Dlog_trace {"Indexing $_"} $mirror;
-        $type->put(
-            {
-                map  { $_ => $mirror->{$_} }
-                grep { defined $mirror->{$_} } keys %$mirror
-            }
-        );
+        $type->put( {
+            map  { $_ => $mirror->{$_} }
+            grep { defined $mirror->{$_} } keys %$mirror
+        } );
     }
     log_info {'done'};
 

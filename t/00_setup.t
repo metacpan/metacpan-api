@@ -13,7 +13,7 @@ use MetaCPAN::TestHelpers qw(
     tmp_dir
 );
 use MetaCPAN::TestServer ();
-use Module::Faker 0.015 ();    # Generates META.json.
+use Module::Faker 0.015  ();    # Generates META.json.
 use Test::More 0.96;
 use URI::FromHash qw( uri );
 
@@ -49,13 +49,11 @@ $fakecpan_dir = fakecpan_dir();         # recreate dir
 
 my $fakecpan_configs = fakecpan_configs_dir();
 
-my $cpan = CPAN::Faker->new(
-    {
-        source     => $fakecpan_configs->child('configs')->stringify,
-        dest       => $fakecpan_dir->stringify,
-        dist_class => $mod_faker,
-    }
-);
+my $cpan = CPAN::Faker->new( {
+    source     => $fakecpan_configs->child('configs')->stringify,
+    dest       => $fakecpan_dir->stringify,
+    dist_class => $mod_faker,
+} );
 
 ok( $cpan->make_cpan, 'make fake cpan' );
 $fakecpan_dir->child('authors')->mkpath;
@@ -106,20 +104,18 @@ $server->index_favorite;
 $server->index_cover;
 
 ok(
-    MetaCPAN::Script::Tickets->new_with_options(
-        {
-            %{$config},
-            rt_summary_url => uri(
-                scheme => 'file',
-                path => $fakecpan_dir->child('bugs.tsv')->absolute->stringify,
-            ),
-            github_issues => uri(
-                scheme => 'file',
-                path   => $fakecpan_dir->child('github')->absolute->stringify
-                    . '/%s/%s.json?per_page=100'
-            ),
-        }
-    )->run,
+    MetaCPAN::Script::Tickets->new_with_options( {
+        %{$config},
+        rt_summary_url => uri(
+            scheme => 'file',
+            path   => $fakecpan_dir->child('bugs.tsv')->absolute->stringify,
+        ),
+        github_issues => uri(
+            scheme => 'file',
+            path   => $fakecpan_dir->child('github')->absolute->stringify
+                . '/%s/%s.json?per_page=100'
+        ),
+    } )->run,
     'tickets'
 );
 

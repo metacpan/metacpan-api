@@ -6,8 +6,8 @@ use MooseX::StrictConstructor;
 use MetaCPAN::Types::TypeTiny qw( AbsPath ArrayRef Bool Str );
 
 use Archive::Any;
-use Carp qw( croak );
-use Path::Tiny qw( path );
+use Carp         qw( croak );
+use Path::Tiny   qw( path );
 use Digest::file qw( digest_file_hex );
 
 =head1 NAME
@@ -53,12 +53,10 @@ has file => (
 has _extractor => (
     is      => 'ro',
     isa     => 'Archive::Any',
-    handles => [
-        qw(
-            is_impolite
-            is_naughty
-        )
-    ],
+    handles => [ qw(
+        is_impolite
+        is_naughty
+    ) ],
     init_arg => undef,
     lazy     => 1,
     default  => sub {

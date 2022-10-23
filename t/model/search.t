@@ -5,7 +5,7 @@ use lib 't/lib';
 use MetaCPAN::Model::Search ();
 use MetaCPAN::TestServer    ();
 use Test::More;
-use Test::Deep qw( cmp_deeply ignore );
+use Test::Deep       qw( cmp_deeply ignore );
 use Cpanel::JSON::XS ();
 
 # Just use this to get an es object.

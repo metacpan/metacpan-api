@@ -26,22 +26,20 @@ test_distribution(
     'rt url is uri escaped',
 );
 
-test_release(
-    {
-        name => 'Text-Tabs+Wrap-2013.0523',
+test_release( {
+    name => 'Text-Tabs+Wrap-2013.0523',
 
-        distribution => 'Text-Tabs+Wrap',
+    distribution => 'Text-Tabs+Wrap',
 
-        author     => 'LOCAL',
-        authorized => 1,
-        first      => 1,
-        version    => '2013.0523',
+    author     => 'LOCAL',
+    authorized => 1,
+    first      => 1,
+    version    => '2013.0523',
 
-        # No modules.
-        status => 'cpan',
+    # No modules.
+    status => 'cpan',
 
-        provides => [],
-    }
-);
+    provides => [],
+} );
 
 done_testing;

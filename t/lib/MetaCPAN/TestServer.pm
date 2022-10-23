@@ -15,8 +15,8 @@ use MetaCPAN::Script::Package        ();
 use MetaCPAN::Script::Permission     ();
 use MetaCPAN::Script::Release        ();
 use MetaCPAN::Server                 ();
-use MetaCPAN::TestHelpers qw( fakecpan_dir );
-use MetaCPAN::Types::TypeTiny qw( Path HashRef Str );
+use MetaCPAN::TestHelpers            qw( fakecpan_dir );
+use MetaCPAN::Types::TypeTiny        qw( Path HashRef Str );
 use Search::Elasticsearch;
 use Search::Elasticsearch::TestServer;
 use Test::More;
@@ -178,16 +178,12 @@ sub verify_mappings {
 
     ok( $mapping->run, 'show cluster info' );
 
-    note(
-        Test::More::explain(
-            { 'indices_info' => \%{ $mapping->indices_info } }
-        )
-    );
-    note(
-        Test::More::explain(
-            { 'aliases_info' => \%{ $mapping->aliases_info } }
-        )
-    );
+    note( Test::More::explain(
+        { 'indices_info' => \%{ $mapping->indices_info } }
+    ) );
+    note( Test::More::explain(
+        { 'aliases_info' => \%{ $mapping->aliases_info } }
+    ) );
 
     subtest 'only configured indices' => sub {
         ok( defined $hshtestindices{$_}, "indice '$_' is configured" )
@@ -334,12 +330,9 @@ sub index_favorite {
 sub prepare_user_test_data {
     my $self = shift;
     ok(
-        my $user = MetaCPAN::Server->model('User::Account')->put(
-            {
-                access_token =>
-                    [ { client => 'testing', token => 'testing' } ]
-            }
-        ),
+        my $user = MetaCPAN::Server->model('User::Account')->put( {
+            access_token => [ { client => 'testing', token => 'testing' } ]
+        } ),
         'prepare user'
     );
     ok( $user->add_identity( { name => 'pause', key => 'MO' } ),

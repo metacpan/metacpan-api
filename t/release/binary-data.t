@@ -2,44 +2,42 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use Cpanel::JSON::XS ();
+use Cpanel::JSON::XS      ();
 use MetaCPAN::TestHelpers qw( test_release );
 use Test::More;
 
-test_release(
-    {
-        name        => 'Binary-Data-0.01',
-        author      => 'BORISNAT',
-        authorized  => 1,
-        first       => 1,
-        provides    => [ 'Binary::Data', 'Binary::Data::WithPod', ],
-        main_module => 'Binary::Data',
-        modules     => {
-            'lib/Binary/Data.pm' => [
-                {
-                    name             => 'Binary::Data',
-                    indexed          => Cpanel::JSON::XS::true(),
-                    authorized       => Cpanel::JSON::XS::true(),
-                    version          => '0.01',
-                    version_numified => 0.01,
-                    associated_pod   => undef,
-                },
-            ],
-            'lib/Binary/Data/WithPod.pm' => [
-                {
-                    name             => 'Binary::Data::WithPod',
-                    indexed          => Cpanel::JSON::XS::true(),
-                    authorized       => Cpanel::JSON::XS::true(),
-                    version          => '0.02',
-                    version_numified => 0.02,
-                    associated_pod   =>
-                        'BORISNAT/Binary-Data-0.01/lib/Binary/Data/WithPod.pm',
-                },
-            ],
-        },
-        extra_tests => \&test_binary_data,
-    }
-);
+test_release( {
+    name        => 'Binary-Data-0.01',
+    author      => 'BORISNAT',
+    authorized  => 1,
+    first       => 1,
+    provides    => [ 'Binary::Data', 'Binary::Data::WithPod', ],
+    main_module => 'Binary::Data',
+    modules     => {
+        'lib/Binary/Data.pm' => [
+            {
+                name             => 'Binary::Data',
+                indexed          => Cpanel::JSON::XS::true(),
+                authorized       => Cpanel::JSON::XS::true(),
+                version          => '0.01',
+                version_numified => 0.01,
+                associated_pod   => undef,
+            },
+        ],
+        'lib/Binary/Data/WithPod.pm' => [
+            {
+                name             => 'Binary::Data::WithPod',
+                indexed          => Cpanel::JSON::XS::true(),
+                authorized       => Cpanel::JSON::XS::true(),
+                version          => '0.02',
+                version_numified => 0.02,
+                associated_pod   =>
+                    'BORISNAT/Binary-Data-0.01/lib/Binary/Data/WithPod.pm',
+            },
+        ],
+    },
+    extra_tests => \&test_binary_data,
+} );
 
 sub test_binary_data {
     my ($self) = @_;

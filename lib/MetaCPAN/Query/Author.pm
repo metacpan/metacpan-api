@@ -3,7 +3,7 @@ package MetaCPAN::Query::Author;
 use MetaCPAN::Moose;
 
 use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
-use Ref::Util qw( is_arrayref );
+use Ref::Util      qw( is_arrayref );
 
 with 'MetaCPAN::Query::Role::Common';
 

@@ -6,16 +6,16 @@ use warnings;
 use Moose;
 with 'MooseX::Getopt', 'MetaCPAN::Role::Script';
 
-use DateTime::Format::ISO8601 ();
-use Email::Valid              ();
-use Encode                    ();
-use File::stat                ();
-use Cpanel::JSON::XS qw( decode_json );
-use Log::Contextual qw( :log );
+use DateTime::Format::ISO8601  ();
+use Email::Valid               ();
+use Encode                     ();
+use File::stat                 ();
+use Cpanel::JSON::XS           qw( decode_json );
+use Log::Contextual            qw( :log );
 use MetaCPAN::Document::Author ();
 use URI                        ();
-use XML::Simple qw( XMLin );
-use MetaCPAN::Types::TypeTiny qw( Str );
+use XML::Simple                qw( XMLin );
+use MetaCPAN::Types::TypeTiny  qw( Str );
 
 =head1 SYNOPSIS
 
@@ -148,13 +148,11 @@ sub index_authors {
         push @author_ids_to_purge, $put->{pauseid};
 
         # Only try put if this is a valid format
-        $bulk->update(
-            {
-                id            => $pauseid,
-                doc           => $put,
-                doc_as_upsert => 1,
-            }
-        );
+        $bulk->update( {
+            id            => $pauseid,
+            doc           => $put,
+            doc_as_upsert => 1,
+        } );
     }
 
     $bulk->flush;

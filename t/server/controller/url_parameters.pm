@@ -1,9 +1,9 @@
 use strict;
 use warnings;
 
-use Cpanel::JSON::XS ();
+use Cpanel::JSON::XS      ();
 use HTTP::Request::Common qw( GET );
-use MetaCPAN::Server ();
+use MetaCPAN::Server      ();
 use MetaCPAN::TestHelpers;
 use Plack::Test;
 use Test::More;

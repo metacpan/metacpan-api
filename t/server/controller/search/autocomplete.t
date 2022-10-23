@@ -18,17 +18,15 @@ test_psgi app, sub {
         my $got = [ map { $_->{fields}{documentation} }
                 @{ $json->{hits}{hits} } ];
 
-        is_deeply $got, [
-            qw(
-                Multiple::Modules
-                Multiple::Modules::A
-                Multiple::Modules::B
-                Multiple::Modules::RDeps
-                Multiple::Modules::Tester
-                Multiple::Modules::RDeps::A
-                Multiple::Modules::RDeps::Deprecated
-            )
-            ],
+        is_deeply $got, [ qw(
+            Multiple::Modules
+            Multiple::Modules::A
+            Multiple::Modules::B
+            Multiple::Modules::RDeps
+            Multiple::Modules::Tester
+            Multiple::Modules::RDeps::A
+            Multiple::Modules::RDeps::Deprecated
+        ) ],
             'results are sorted lexically by module name + length'
             or diag( Test::More::explain($got) );
     }

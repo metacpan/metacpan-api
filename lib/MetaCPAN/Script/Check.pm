@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use File::Spec::Functions qw( catfile );
-use Log::Contextual qw( :log );
+use Log::Contextual       qw( :log );
 use Moose;
 use MetaCPAN::Types::TypeTiny qw( Bool Int Str );
 
@@ -140,14 +140,11 @@ sub check_modules {
                                 [qw(name status authorized version id date)],
                             query  => { match_all => {} },
                             filter => {
-                                and => [
-                                    {
-                                        term => {
-                                            'name' =>
-                                                $file->{fields}->{release}
-                                        }
+                                and => [ {
+                                    term => {
+                                        'name' => $file->{fields}->{release}
                                     }
-                                ]
+                                } ]
                             },
                         );
 

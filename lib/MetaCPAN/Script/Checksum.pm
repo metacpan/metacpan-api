@@ -2,7 +2,7 @@ package MetaCPAN::Script::Checksum;
 
 use Moose;
 
-use Log::Contextual qw( :log );
+use Log::Contextual           qw( :log );
 use MetaCPAN::Types::TypeTiny qw( Bool Int );
 
 use Digest::file qw( digest_file_hex );
@@ -84,16 +84,14 @@ sub run {
                 log_info { "--- SHA256: " . $checksum_sha256 }
             }
             else {
-                $bulk->update(
-                    {
-                        id  => $p->{_id},
-                        doc => {
-                            checksum_md5    => $checksum_md5,
-                            checksum_sha256 => $checksum_sha256
-                        },
-                        doc_as_upsert => 1,
-                    }
-                );
+                $bulk->update( {
+                    id  => $p->{_id},
+                    doc => {
+                        checksum_md5    => $checksum_md5,
+                        checksum_sha256 => $checksum_sha256
+                    },
+                    doc_as_upsert => 1,
+                } );
             }
         }
         else {

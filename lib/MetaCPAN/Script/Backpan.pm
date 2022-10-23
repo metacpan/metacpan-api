@@ -160,14 +160,12 @@ sub update_releases {
 
         # value = [ status, _id ]
         for ( values %{ $self->_release_status->{$author} } ) {
-            $self->_bulk->{release}->update(
-                {
-                    id  => $_->[1],
-                    doc => {
-                        status => $_->[0],
-                    }
+            $self->_bulk->{release}->update( {
+                id  => $_->[1],
+                doc => {
+                    status => $_->[0],
                 }
-            );
+            } );
         }
     }
 }
@@ -218,14 +216,12 @@ sub update_files_author {
 
     while ( my $file = $scroll->next ) {
         my $release = $file->{fields}{release}[0];
-        $bulk->update(
-            {
-                id  => $file->{_id},
-                doc => {
-                    status => $self->_release_status->{$author}{$release}[0]
-                }
+        $bulk->update( {
+            id  => $file->{_id},
+            doc => {
+                status => $self->_release_status->{$author}{$release}[0]
             }
-        );
+        } );
     }
 }
 

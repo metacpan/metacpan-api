@@ -3,15 +3,15 @@ package MetaCPAN::Role::Script;
 use Moose::Role;
 
 use ElasticSearchX::Model::Document::Types qw(:all);
-use Git::Helpers qw( checkout_root );
-use Log::Contextual qw( :log :dlog );
-use MetaCPAN::Model ();
-use MetaCPAN::Types::TypeTiny qw( Bool HashRef Int Path Str );
-use Mojo::Server ();
-use Term::ANSIColor qw( colored );
-use IO::Interactive qw( is_interactive );
-use IO::Prompt qw( prompt );
-use File::Path ();
+use Git::Helpers                           qw( checkout_root );
+use Log::Contextual                        qw( :log :dlog );
+use MetaCPAN::Model                        ();
+use MetaCPAN::Types::TypeTiny              qw( Bool HashRef Int Path Str );
+use Mojo::Server                           ();
+use Term::ANSIColor                        qw( colored );
+use IO::Interactive                        qw( is_interactive );
+use IO::Prompt                             qw( prompt );
+use File::Path                             ();
 
 use Carp ();
 

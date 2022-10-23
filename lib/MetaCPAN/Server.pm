@@ -20,13 +20,11 @@ sub clear_stash {
     %{ $_[0]->stash } = ();
 }
 
-__PACKAGE__->apply_request_class_roles(
-    qw(
-        Catalyst::TraitFor::Request::REST
-        Catalyst::TraitFor::Request::REST::ForBrowsers
-        MetaCPAN::Server::Role::Request
-    )
-);
+__PACKAGE__->apply_request_class_roles( qw(
+    Catalyst::TraitFor::Request::REST
+    Catalyst::TraitFor::Request::REST::ForBrowsers
+    MetaCPAN::Server::Role::Request
+) );
 __PACKAGE__->config(
     encoding           => 'UTF-8',
     default_view       => 'JSON',
@@ -77,17 +75,15 @@ __PACKAGE__->config(
 
 __PACKAGE__->log( Log::Log4perl::Catalyst->new( undef, autoflush => 1 ) );
 
-__PACKAGE__->setup(
-    qw(
-        Static::Simple
-        ConfigLoader
-        Session
-        Session::Store::ElasticSearch
-        Session::State::Cookie
-        Authentication
-        OAuth2::Provider
-    )
-);
+__PACKAGE__->setup( qw(
+    Static::Simple
+    ConfigLoader
+    Session
+    Session::Store::ElasticSearch
+    Session::State::Cookie
+    Authentication
+    OAuth2::Provider
+) );
 
 sub app {
     my $class = shift;
@@ -97,11 +93,9 @@ sub app {
             sub {
                 my ($env) = @_;
 
-                my $request_id = Digest::SHA::sha1_hex(
-                    join( "\0",
-                        $env->{REMOTE_ADDR}, $env->{REQUEST_URI}, time, $$,
-                        rand, )
-                );
+                my $request_id = Digest::SHA::sha1_hex( join( "\0",
+                    $env->{REMOTE_ADDR}, $env->{REQUEST_URI}, time, $$,
+                    rand, ) );
                 $env->{'MetaCPAN::Server.request_id'} = $request_id;
 
                 Log::Log4perl::MDC->remove;

@@ -2,8 +2,8 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use File::Temp ();
-use LWP::Simple qw( getstore );
+use File::Temp               ();
+use LWP::Simple              qw( getstore );
 use MetaCPAN::Model::Release ();
 use MetaCPAN::Script::Runner;
 use MetaCPAN::TestHelpers qw( get_config );

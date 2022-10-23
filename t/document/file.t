@@ -6,12 +6,10 @@ use MetaCPAN::Document::File ();
 use Test::More;
 
 sub cpan_meta {
-    CPAN::Meta->new(
-        {
-            name    => 'who-cares',
-            version => 0,
-        }
-    );
+    CPAN::Meta->new( {
+        name    => 'who-cares',
+        version => 0,
+    } );
 }
 
 sub new_file_doc {

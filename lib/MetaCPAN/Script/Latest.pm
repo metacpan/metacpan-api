@@ -7,8 +7,8 @@ use Log::Contextual qw( :log );
 use Moose;
 use MooseX::Aliases;
 use Parse::CPAN::Packages::Fast;
-use Regexp::Common qw(time);
-use Time::Local qw( timelocal );
+use Regexp::Common            qw(time);
+use Time::Local               qw( timelocal );
 use MetaCPAN::Types::TypeTiny qw( Bool Str );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
@@ -227,12 +227,10 @@ sub reindex {
     my ( $self, $bulk, $source, $status ) = @_;
 
     # Update the status on the release.
-    my $release = $self->index->type('release')->get(
-        {
-            author => $source->{author},
-            name   => $source->{release},
-        }
-    );
+    my $release = $self->index->type('release')->get( {
+        author => $source->{author},
+        name   => $source->{release},
+    } );
 
     $release->_set_status($status);
     log_info {
@@ -242,16 +240,14 @@ sub reindex {
     $release->put unless ( $self->dry_run );
 
     # Get all the files for the release.
-    my $scroll = $self->index->type("file")->search_type('scan')->filter(
-        {
-            bool => {
-                must => [
-                    { term => { 'release' => $source->{release} } },
-                    { term => { 'author'  => $source->{author} } }
-                ]
-            }
+    my $scroll = $self->index->type("file")->search_type('scan')->filter( {
+        bool => {
+            must => [
+                { term => { 'release' => $source->{release} } },
+                { term => { 'author'  => $source->{author} } }
+            ]
         }
-    )->size(100)->source( [ 'status', 'file' ] )->raw->scroll;
+    } )->size(100)->source( [ 'status', 'file' ] )->raw->scroll;
 
     while ( my $row = $scroll->next ) {
         my $source = $row->{_source};

@@ -17,12 +17,10 @@ sub find : Path('') : Args(2) {
     $c->cdn_never_cache(1);
 
     eval {
-        my $favorite = $self->model($c)->raw->get(
-            {
-                user         => $user,
-                distribution => $distribution
-            }
-        );
+        my $favorite = $self->model($c)->raw->get( {
+            user         => $user,
+            distribution => $distribution
+        } );
         $c->stash( $favorite->{_source}
                 || single_valued_arrayref_to_scalar( $favorite->{fields} ) );
     } or $c->detach( '/not_found', [$@] );

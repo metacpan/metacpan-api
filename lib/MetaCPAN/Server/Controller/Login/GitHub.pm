@@ -3,8 +3,8 @@ package MetaCPAN::Server::Controller::Login::GitHub;
 use Moose;
 
 use HTTP::Request::Common qw( GET POST );
-use Cpanel::JSON::XS qw( decode_json );
-use LWP::UserAgent ();
+use Cpanel::JSON::XS      qw( decode_json );
+use LWP::UserAgent        ();
 
 BEGIN { extends 'MetaCPAN::Server::Controller::Login' }
 

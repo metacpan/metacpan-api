@@ -21,16 +21,14 @@ test_release(
             my ($self) = @_;
             my $release = $self->data;
 
-            my @files = $self->index->type('file')->filter(
-                {
-                    and => [
-                        { term   => { 'author'    => $release->author } },
-                        { term   => { 'release'   => $release->name } },
-                        { term   => { 'directory' => \0 } },
-                        { prefix => { 'path'      => 'lib/' } },
-                    ]
-                }
-            )->all;
+            my @files = $self->index->type('file')->filter( {
+                and => [
+                    { term   => { 'author'    => $release->author } },
+                    { term   => { 'release'   => $release->name } },
+                    { term   => { 'directory' => \0 } },
+                    { prefix => { 'path'      => 'lib/' } },
+                ]
+            } )->all;
             is( @files, 2, 'two files found in lib/' );
 
             @files = sort { $a->{name} cmp $b->{name} } @files;

@@ -2,34 +2,32 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use Cpanel::JSON::XS ();
+use Cpanel::JSON::XS      ();
 use MetaCPAN::TestHelpers qw( test_release );
 use Test::More;
 
-test_release(
-    {
-        name        => 'Pod-With-Generator-1',
-        author      => 'BORISNAT',
-        authorized  => 1,
-        first       => 1,
-        provides    => [ 'Pod::With::Generator', ],
-        main_module => 'Pod::With::Generator',
-        modules     => {
-            'lib/Pod/With/Generator.pm' => [
-                {
-                    name             => 'Pod::With::Generator',
-                    indexed          => Cpanel::JSON::XS::true(),
-                    authorized       => Cpanel::JSON::XS::true(),
-                    version          => '1',
-                    version_numified => 1,
-                    associated_pod   =>
-                        'BORISNAT/Pod-With-Generator-1/lib/Pod/With/Generator.pm',
-                },
-            ],
-        },
-        extra_tests => \&test_assoc_pod,
-    }
-);
+test_release( {
+    name        => 'Pod-With-Generator-1',
+    author      => 'BORISNAT',
+    authorized  => 1,
+    first       => 1,
+    provides    => [ 'Pod::With::Generator', ],
+    main_module => 'Pod::With::Generator',
+    modules     => {
+        'lib/Pod/With/Generator.pm' => [
+            {
+                name             => 'Pod::With::Generator',
+                indexed          => Cpanel::JSON::XS::true(),
+                authorized       => Cpanel::JSON::XS::true(),
+                version          => '1',
+                version_numified => 1,
+                associated_pod   =>
+                    'BORISNAT/Pod-With-Generator-1/lib/Pod/With/Generator.pm',
+            },
+        ],
+    },
+    extra_tests => \&test_assoc_pod,
+} );
 
 sub test_assoc_pod {
     my ($self) = @_;

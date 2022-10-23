@@ -2,11 +2,11 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use Cpanel::JSON::XS ();
+use Cpanel::JSON::XS      ();
 use HTTP::Request::Common qw( GET );
-use MetaCPAN::Server ();
+use MetaCPAN::Server      ();
 use MetaCPAN::TestHelpers qw( test_cache_headers );
-use Plack::Test ();
+use Plack::Test           ();
 use Test::More;
 use Ref::Util qw( is_hashref );
 

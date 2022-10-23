@@ -3,12 +3,12 @@ package MetaCPAN::DarkPAN;
 use MetaCPAN::Moose;
 
 use CPAN::Repository::Perms;
-use MetaCPAN::TestHelpers qw( get_config );
+use MetaCPAN::TestHelpers     qw( get_config );
 use MetaCPAN::Types::TypeTiny qw( Path );
-use MetaCPAN::Util qw( author_dir );
+use MetaCPAN::Util            qw( author_dir );
 use OrePAN2::Indexer;
 use OrePAN2::Injector;
-use Path::Tiny qw( path );
+use Path::Tiny    qw( path );
 use URI::FromHash qw( uri_object );
 
 has base_dir => (
@@ -72,12 +72,10 @@ sub run {
 sub _write_06perms {
     my $self = shift;
 
-    my $perms = CPAN::Repository::Perms->new(
-        {
-            repository_root => $self->base_dir,
-            written_by      => 'MetaCPAN',
-        }
-    );
+    my $perms = CPAN::Repository::Perms->new( {
+        repository_root => $self->base_dir,
+        written_by      => 'MetaCPAN',
+    } );
 
     my %authors = (
         MIYAGAWA => {

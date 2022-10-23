@@ -30,13 +30,11 @@ sub dir {
         ],
     };
 
-    my $data = $self->es->search(
-        {
-            index => $self->index_name,
-            type  => 'file',
-            body  => $body,
-        }
-    );
+    my $data = $self->es->search( {
+        index => $self->index_name,
+        type  => 'file',
+        body  => $body,
+    } );
 
     my $dir = [ map { $_->{fields} } @{ $data->{hits}{hits} } ];
     single_valued_arrayref_to_scalar($dir);
@@ -57,89 +55,71 @@ sub _doc_files {
 
 my %special_files = (
     changelog => [
-        _doc_files(
-            qw(
-                Changelog
-                ChangeLog
-                Changes
-                News
-            )
-        ),
+        _doc_files( qw(
+            Changelog
+            ChangeLog
+            Changes
+            News
+        ) ),
     ],
     contributing => [
-        _doc_files(
-            qw(
-                Contributing
-                Hacking
-                Development
-            )
-        ),
+        _doc_files( qw(
+            Contributing
+            Hacking
+            Development
+        ) ),
     ],
-    license => [
-        qw(
-            LICENCE
-            LICENSE
-            Copyright
-            COPYRIGHT
-            Copying
-            COPYING
-            Artistic
-            ARTISTIC
-        )
-    ],
+    license => [ qw(
+        LICENCE
+        LICENSE
+        Copyright
+        COPYRIGHT
+        Copying
+        COPYING
+        Artistic
+        ARTISTIC
+    ) ],
     install => [
-        _doc_files(
-            qw(
-                Install
-            )
-        ),
+        _doc_files( qw(
+            Install
+        ) ),
     ],
-    dist => [
-        qw(
-            Build.PL
-            MANIFEST
-            META.json
-            META.yml
-            Makefile.PL
-            alienfile
-            cpanfile
-            prereqs.json
-            prereqs.yml
-            dist.ini
-            minil.toml
-        )
-    ],
+    dist => [ qw(
+        Build.PL
+        MANIFEST
+        META.json
+        META.yml
+        Makefile.PL
+        alienfile
+        cpanfile
+        prereqs.json
+        prereqs.yml
+        dist.ini
+        minil.toml
+    ) ],
     other => [
-        _doc_files(
-            qw(
-                Authors
-                Credits
-                FAQ
-                README
-                THANKS
-                ToDo
-                Todo
-            )
-        ),
+        _doc_files( qw(
+            Authors
+            Credits
+            FAQ
+            README
+            THANKS
+            ToDo
+            Todo
+        ) ),
     ],
 );
 my %perl_files = (
-    changelog => [
-        qw(
-            perldelta.pod
-        )
-    ],
-    license => [
-        qw(
-            perlartistic.pod
-            perlgpl.pod
-        )
-    ],
-    contributing => [
-        qw(
-            perlhack.pod
-        )
-    ],
+    changelog => [ qw(
+        perldelta.pod
+    ) ],
+    license => [ qw(
+        perlartistic.pod
+        perlgpl.pod
+    ) ],
+    contributing => [ qw(
+        perlhack.pod
+    ) ],
 );
 
 my @shared_path_prefix_examples = qw(
@@ -279,18 +259,16 @@ sub interesting_files {
     return $return
         unless @clauses;
 
-    my $source = $options->{fields} || [
-        qw(
-            author
-            distribution
-            documentation
-            name
-            path
-            pod_lines
-            release
-            status
-        )
-    ];
+    my $source = $options->{fields} || [ qw(
+        author
+        distribution
+        documentation
+        name
+        path
+        pod_lines
+        release
+        status
+    ) ];
 
     my $body = {
         query => {
@@ -316,13 +294,11 @@ sub interesting_files {
         size => $options->{size} || 250,
     };
 
-    my $data = $self->es->search(
-        {
-            index => $self->index_name,
-            type  => 'file',
-            body  => $body,
-        }
-    );
+    my $data = $self->es->search( {
+        index => $self->index_name,
+        type  => 'file',
+        body  => $body,
+    } );
 
     $return->{took}  = $data->{took};
     $return->{total} = $data->{hits}{total};

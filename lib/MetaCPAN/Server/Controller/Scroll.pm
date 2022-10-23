@@ -35,12 +35,10 @@ sub index : Path('/_search/scroll') : Args {
     }
 
     my $res = eval {
-        $c->model('CPAN')->es->scroll(
-            {
-                scroll_id => $scroll_id,
-                scroll    => $c->req->params->{scroll},
-            }
-        );
+        $c->model('CPAN')->es->scroll( {
+            scroll_id => $scroll_id,
+            scroll    => $c->req->params->{scroll},
+        } );
     } or do { $self->internal_error( $c, $@ ); };
 
     $c->stash($res);

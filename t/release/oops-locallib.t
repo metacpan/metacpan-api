@@ -2,62 +2,59 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use Cpanel::JSON::XS ();
+use Cpanel::JSON::XS      ();
 use MetaCPAN::TestHelpers qw( test_release );
 use Test::More;
 
-test_release(
-    {
-        name        => 'Oops-LocalLib-0.01',
-        author      => 'BORISNAT',
-        authorized  => 1,
-        first       => 1,
-        provides    => [ 'Fruits', 'Oops::LocalLib', ],
-        main_module => 'Oops::LocalLib',
-        modules     => {
-            'lib/Oops/LocalLib.pm' => [
-                {
-                    name             => 'Oops::LocalLib',
-                    indexed          => Cpanel::JSON::XS::true(),
-                    authorized       => Cpanel::JSON::XS::true(),
-                    version          => '0.01',
-                    version_numified => 0.01,
-                    associated_pod   =>
-                        'BORISNAT/Oops-LocalLib-0.01/lib/Oops/LocalLib.pm',
-                },
-            ],
-            'foreign/Fruits.pm' => [
-                {
-                    name             => 'Fruits',
-                    indexed          => Cpanel::JSON::XS::true(),
-                    authorized       => Cpanel::JSON::XS::true(),
-                    version          => '1',
-                    version_numified => 1,
-                    associated_pod   =>
-                        'BORISNAT/Oops-LocalLib-0.01/foreign/Fruits.pm',
-                },
-            ],
-        },
-        extra_tests => sub {
-            my ($self) = @_;
-
+test_release( {
+    name        => 'Oops-LocalLib-0.01',
+    author      => 'BORISNAT',
+    authorized  => 1,
+    first       => 1,
+    provides    => [ 'Fruits', 'Oops::LocalLib', ],
+    main_module => 'Oops::LocalLib',
+    modules     => {
+        'lib/Oops/LocalLib.pm' => [
             {
-                my $file = $self->file_by_path('local/Vegetable.pm');
+                name             => 'Oops::LocalLib',
+                indexed          => Cpanel::JSON::XS::true(),
+                authorized       => Cpanel::JSON::XS::true(),
+                version          => '0.01',
+                version_numified => 0.01,
+                associated_pod   =>
+                    'BORISNAT/Oops-LocalLib-0.01/lib/Oops/LocalLib.pm',
+            },
+        ],
+        'foreign/Fruits.pm' => [
+            {
+                name             => 'Fruits',
+                indexed          => Cpanel::JSON::XS::true(),
+                authorized       => Cpanel::JSON::XS::true(),
+                version          => '1',
+                version_numified => 1,
+                associated_pod   =>
+                    'BORISNAT/Oops-LocalLib-0.01/foreign/Fruits.pm',
+            },
+        ],
+    },
+    extra_tests => sub {
+        my ($self) = @_;
 
-                ok !$file->indexed, 'file in /local/ not indexed';
+        {
+            my $file = $self->file_by_path('local/Vegetable.pm');
 
-                ok $file->authorized, 'file in /local/ not un-authorized';
-                is $file->sloc, 2, 'sloc';
-                is $file->slop, 2, 'slop';
+            ok !$file->indexed, 'file in /local/ not indexed';
 
-                is_deeply $file->{pod_lines}, [ [ 4, 3 ] ], 'pod_lines';
+            ok $file->authorized, 'file in /local/ not un-authorized';
+            is $file->sloc, 2, 'sloc';
+            is $file->slop, 2, 'slop';
 
-                is $file->abstract, q[should not have been included],
-                    'abstract';
-            }
+            is_deeply $file->{pod_lines}, [ [ 4, 3 ] ], 'pod_lines';
 
-        },
-    }
-);
+            is $file->abstract, q[should not have been included], 'abstract';
+        }
+
+    },
+} );
 
 done_testing;

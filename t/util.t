@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use CPAN::Meta ();
+use CPAN::Meta     ();
 use MetaCPAN::Util qw(
     extract_section
     generate_sid
@@ -73,13 +73,11 @@ is(
 );
 
 sub version {
-    CPAN::Meta->new(
-        {
-            name    => 'foo',
-            license => 'unknown',
-            version => MetaCPAN::Util::fix_version(shift)
-        }
-    )->version;
+    CPAN::Meta->new( {
+        name    => 'foo',
+        license => 'unknown',
+        version => MetaCPAN::Util::fix_version(shift)
+    } )->version;
 }
 
 # extract_section tests

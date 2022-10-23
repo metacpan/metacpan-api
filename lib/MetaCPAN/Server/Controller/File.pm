@@ -35,13 +35,11 @@ sub find : Path('') {
     $c->cdn_max_age('1y');
 
     eval {
-        my $file = $self->model($c)->raw->get(
-            {
-                author  => $author,
-                release => $release,
-                path    => join( '/', @path )
-            }
-        );
+        my $file = $self->model($c)->raw->get( {
+            author  => $author,
+            release => $release,
+            path    => join( '/', @path )
+        } );
         if ( $file->{_source} || $file->{fields} ) {
             $c->stash( $file->{_source}
                     || single_valued_arrayref_to_scalar( $file->{fields} ) );

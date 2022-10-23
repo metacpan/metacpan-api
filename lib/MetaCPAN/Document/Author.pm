@@ -7,8 +7,8 @@ use ElasticSearchX::Model::Document::Types qw(:all);
 use ElasticSearchX::Model::Document;
 
 # load order not important
-use Gravatar::URL ();
-use MetaCPAN::Types qw( Profile );
+use Gravatar::URL             ();
+use MetaCPAN::Types           qw( Profile );
 use MetaCPAN::Types::TypeTiny qw(
     ArrayRef
     ArrayRefPromote

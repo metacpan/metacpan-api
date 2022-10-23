@@ -118,17 +118,15 @@ sub filter_files {
 
     my $release = $self->data;
     return [
-        $self->index->type('file')->query(
-            {
-                bool => {
-                    must => [
-                        { term => { 'author'  => $release->author } },
-                        { term => { 'release' => $release->name } },
-                        @{ $add_filters || [] },
-                    ],
-                }
+        $self->index->type('file')->query( {
+            bool => {
+                must => [
+                    { term => { 'author'  => $release->author } },
+                    { term => { 'release' => $release->name } },
+                    @{ $add_filters || [] },
+                ],
             }
-        )->size(100)->all
+        } )->size(100)->all
     ];
 }
 
@@ -141,13 +139,10 @@ has modules => (
 sub pod {
     my ( $self, $path, $type ) = @_;
     my $query = $type ? "?content-type=$type" : q[];
-    return $self->psgi_app(
-        sub {
-            shift->(
-                GET "/pod/$self->{author}/$self->{name}/${path}${query}" )
-                ->content;
-        }
-    );
+    return $self->psgi_app( sub {
+        shift->( GET "/pod/$self->{author}/$self->{name}/${path}${query}" )
+            ->content;
+    } );
 }
 
 # The default status for a release is 'cpan'

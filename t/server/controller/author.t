@@ -91,14 +91,12 @@ test_psgi app, sub {
     ok(
         $res = $cb->(
             POST '/author/DOY?join=release',
-            Content => encode_json(
-                {
-                    query => {
-                        constant_score =>
-                            { filter => { term => { status => 'latest' } } }
-                    }
+            Content => encode_json( {
+                query => {
+                    constant_score =>
+                        { filter => { term => { status => 'latest' } } }
                 }
-            )
+            } )
         ),
         'POST /author/DOY?join=release with query body',
     );
@@ -111,28 +109,26 @@ test_psgi app, sub {
     ok(
         $res = $cb->(
             POST '/author/_search?join=release',
-            Content => encode_json(
-                {
-                    query => {
-                        constant_score => {
-                            filter => {
-                                bool => {
-                                    should => [
-                                        {
-                                            term => {
-                                                'status' => 'latest'
-                                            }
-                                        },
-                                        {
-                                            term => { 'pauseid' => 'DOY' }
+            Content => encode_json( {
+                query => {
+                    constant_score => {
+                        filter => {
+                            bool => {
+                                should => [
+                                    {
+                                        term => {
+                                            'status' => 'latest'
                                         }
-                                    ]
-                                }
+                                    },
+                                    {
+                                        term => { 'pauseid' => 'DOY' }
+                                    }
+                                ]
                             }
                         }
                     }
                 }
-            )
+            } )
         ),
         'POST /author/_search?join=release with query body'
     );

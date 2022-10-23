@@ -11,13 +11,11 @@ has query_favorite => (
     isa     => 'MetaCPAN::Query::Favorite',
     lazy    => 1,
     builder => '_build_query_favorite',
-    handles => [
-        qw< agg_by_distributions
-            by_user
-            leaderboard
-            recent
-            users_by_distribution >
-    ],
+    handles => [ qw< agg_by_distributions
+        by_user
+        leaderboard
+        recent
+        users_by_distribution > ],
 );
 
 sub _build_query_favorite {

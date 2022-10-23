@@ -24,12 +24,10 @@ test_psgi app, sub {
     ok(
         my $res = $cb->(
             POST '/user/turing?access_token=bot',
-            Content => encode_json(
-                {
-                    challenge => 'foo',
-                    answer    => 0
-                }
-            )
+            Content => encode_json( {
+                challenge => 'foo',
+                answer    => 0
+            } )
         ),
         'post challenge'
     );
@@ -38,12 +36,10 @@ test_psgi app, sub {
     ok(
         $res = $cb->(
             POST '/user/turing?access_token=bot',
-            Content => encode_json(
-                {
-                    challenge => 'foo',
-                    answer    => 1,
-                }
-            )
+            Content => encode_json( {
+                challenge => 'foo',
+                answer    => 1,
+            } )
         ),
         'post challenge'
     );

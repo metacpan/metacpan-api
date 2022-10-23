@@ -3,8 +3,8 @@ package MetaCPAN::Script::Ratings;
 use strict;
 use warnings;
 
-use Digest::MD5    ();
-use LWP::UserAgent ();
+use Digest::MD5     ();
+use LWP::UserAgent  ();
 use Log::Contextual qw( :log :dlog );
 use Moose;
 use Parse::CSV ();
@@ -59,11 +59,9 @@ sub run {
         };
 
         for ( my $i = 0; $i < $rating->{review_count}; $i++ ) {
-            $bulk->create(
-                {
-                    source => Dlog_trace {$_} $data,
-                }
-            );
+            $bulk->create( {
+                source => Dlog_trace {$_} $data,
+            } );
         }
     }
     $bulk->flush;

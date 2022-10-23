@@ -1,10 +1,17 @@
--pbp
--nst
-
+--maximum-line-length=78
+--indent-columns=4
+--continuation-indentation=4
+--standard-error-output
+--vertical-tightness=2
+--closing-token-indentation=0
+--paren-tightness=1
+--brace-tightness=1
+--square-bracket-tightness=1
+--block-brace-tightness=1
+--nospace-for-semicolon
+--nooutdent-long-quotes
+--want-break-before="% + - * / x != == >= <= =~ !~ < > | & = **= += *= &= <<= &&= -= /= |= >>= ||= //= .= %= ^= x="
 # Break a line after opening/before closing token.
--vt=0
--vtc=0
-
-# Fix t/server/controller/login/pause.t tidyall failure
-# See https://github.com/autarch/Dist-Zilla-PluginBundle-DROLSKY/commit/b7f9c0194b83a72e4fe07ee5f9c541b6cfbf9b6d
---character-encoding=none
+--vertical-tightness=0
+--vertical-tightness-closing=0
+--weld-nested-containers
