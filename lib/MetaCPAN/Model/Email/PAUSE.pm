@@ -40,16 +40,14 @@ sub send {
     );
 
     my $config    = $self->config->{smtp};
-    my $transport = Email::Sender::Transport::SMTP->new(
-        {
-            debug         => 1,
-            host          => $config->{host},
-            port          => $config->{port},
-            sasl_username => $config->{username},
-            sasl_password => $config->{password},
-            ssl           => 1,
-        }
-    );
+    my $transport = Email::Sender::Transport::SMTP->new( {
+        debug         => 1,
+        host          => $config->{host},
+        port          => $config->{port},
+        sasl_username => $config->{username},
+        sasl_password => $config->{password},
+        ssl           => 1,
+    } );
 
     my $success = 0;
     try {

@@ -85,14 +85,12 @@ sub _do_diff {
         $c->detach;
     }
 
-    $c->stash(
-        {
-            source     => join( q[/], @$source ),
-            target     => join( q[/], @$target ),
-            statistics => $diff->structured,
-            $include_raw ? ( diff => $diff->raw ) : (),
-        }
-    );
+    $c->stash( {
+        source     => join( q[/], @$source ),
+        target     => join( q[/], @$target ),
+        statistics => $diff->structured,
+        $include_raw ? ( diff => $diff->raw ) : (),
+    } );
 }
 
 1;

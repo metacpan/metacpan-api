@@ -407,14 +407,12 @@ sub _build_metadata {
 
     my $extract_dir = $self->extract;
 
-    return $self->_load_meta_file || CPAN::Meta->new(
-        {
-            license  => 'unknown',
-            name     => $self->distribution,
-            no_index => { directory => [@always_no_index_dirs] },
-            version  => $self->version || 0,
-        }
-    );
+    return $self->_load_meta_file || CPAN::Meta->new( {
+        license  => 'unknown',
+        name     => $self->distribution,
+        no_index => { directory => [@always_no_index_dirs] },
+        version  => $self->version || 0,
+    } );
 }
 
 sub _load_meta_file {
@@ -490,13 +488,11 @@ sub _modules_from_meta {
             grep { $_->indexed && $_->path =~ /\Q$path\E$/ } @$files;
 
         next unless $file;
-        $file->add_module(
-            {
-                name    => $module,
-                version => $data->{version},
-                indexed => 1,
-            }
-        );
+        $file->add_module( {
+            name    => $module,
+            version => $data->{version},
+            indexed => 1,
+        } );
         push( @modules, $file );
     }
 
@@ -520,14 +516,12 @@ sub _modules_from_files {
             next if !$info;
 
             foreach my $module_name ( keys %{$info} ) {
-                $file->add_module(
-                    {
-                        name => $module_name,
-                        defined $info->{$module_name}->{version}
-                        ? ( version => $info->{$module_name}->{version} )
-                        : (),
-                    }
-                );
+                $file->add_module( {
+                    name => $module_name,
+                    defined $info->{$module_name}->{version}
+                    ? ( version => $info->{$module_name}->{version} )
+                    : (),
+                } );
             }
             push @modules, $file;
         }
@@ -551,22 +545,20 @@ sub _modules_from_files {
                     $info->packages_inside )
                 {
                     my $version = $info->version($pkg);
-                    $file->add_module(
-                        {
-                            name => $pkg,
-                            defined $version
+                    $file->add_module( {
+                        name => $pkg,
+                        defined $version
 
 # Stringify if it's a version object, otherwise fall back to stupid stringification
 # Changes in Module::Metadata were causing inconsistencies in the return value,
 # we are just trying to survive.
-                            ? (
-                                version => ref $version eq 'version'
-                                ? $version->stringify
-                                : ( $version . q{} )
-                                )
-                            : ()
-                        }
-                    );
+                        ? (
+                            version => ref $version eq 'version'
+                            ? $version->stringify
+                            : ( $version . q{} )
+                            )
+                        : ()
+                    } );
                 }
                 push( @modules, $file );
                 alarm(0);

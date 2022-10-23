@@ -72,12 +72,10 @@ sub run {
 sub _write_06perms {
     my $self = shift;
 
-    my $perms = CPAN::Repository::Perms->new(
-        {
-            repository_root => $self->base_dir,
-            written_by      => 'MetaCPAN',
-        }
-    );
+    my $perms = CPAN::Repository::Perms->new( {
+        repository_root => $self->base_dir,
+        written_by      => 'MetaCPAN',
+    } );
 
     my %authors = (
         MIYAGAWA => {

@@ -95,31 +95,27 @@ sub update {
 
     for my $d ( keys %{$dist} ) {
         log_debug {"[$external_source] adding $d"};
-        $bulk->update(
-            {
-                id  => $d,
-                doc => +{
-                    'external_package' => {
-                        $external_source => $dist->{$d}
-                    }
-                },
-                doc_as_upsert => 1,
-            }
-        );
+        $bulk->update( {
+            id  => $d,
+            doc => +{
+                'external_package' => {
+                    $external_source => $dist->{$d}
+                }
+            },
+            doc_as_upsert => 1,
+        } );
     }
 
     for my $d (@to_remove) {
         log_debug {"[$external_source] removing $d"};
-        $bulk->update(
-            {
-                id  => $d,
-                doc => +{
-                    'external_package' => {
-                        $external_source => undef
-                    }
+        $bulk->update( {
+            id  => $d,
+            doc => +{
+                'external_package' => {
+                    $external_source => undef
                 }
             }
-        );
+        } );
     }
 
     $bulk->flush;

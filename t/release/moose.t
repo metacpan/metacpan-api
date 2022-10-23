@@ -58,36 +58,30 @@ is( $moose->name, 'Moose.pm', 'defined in Moose.pm' );
 is( $moose->module->[0]->associated_pod, 'DOY/Moose-0.02/lib/Moose.pm' );
 
 my $signature;
-$signature = $idx->type('file')->filter(
-    {
-        and => [
-            { term => { mime => 'text/x-script.perl' } },
-            { term => { name => 'SIGNATURE' } }
-        ]
-    }
-)->first;
+$signature = $idx->type('file')->filter( {
+    and => [
+        { term => { mime => 'text/x-script.perl' } },
+        { term => { name => 'SIGNATURE' } }
+    ]
+} )->first;
 ok( !$signature, 'SIGNATURE is not perl code' );
 
-$signature = $idx->type('file')->filter(
-    {
-        and => [
-            { term => { documentation => 'SIGNATURE' } },
-            { term => { mime          => 'text/x-script.perl' } },
-            { term => { name          => 'SIGNATURE' } }
-        ]
-    }
-)->first;
+$signature = $idx->type('file')->filter( {
+    and => [
+        { term => { documentation => 'SIGNATURE' } },
+        { term => { mime          => 'text/x-script.perl' } },
+        { term => { name          => 'SIGNATURE' } }
+    ]
+} )->first;
 ok( !$signature, 'SIGNATURE is not documentation' );
 
-$signature = $idx->type('file')->filter(
-    {
-        and => [
-            { term   => { name    => 'SIGNATURE' } },
-            { exists => { field   => 'documentation' } },
-            { term   => { indexed => 1 } },
-        ]
-    }
-)->first;
+$signature = $idx->type('file')->filter( {
+    and => [
+        { term   => { name    => 'SIGNATURE' } },
+        { exists => { field   => 'documentation' } },
+        { term   => { indexed => 1 } },
+    ]
+} )->first;
 ok( !$signature, 'SIGNATURE is not pod' );
 
 {

@@ -15,14 +15,12 @@ Find an account based on its identity.
 
 sub find {
     my ( $self, $p ) = @_;
-    return $self->filter(
-        {
-            and => [
-                { term => { 'identity.name' => $p->{name} } },
-                { term => { 'identity.key'  => $p->{key} } }
-            ]
-        }
-    )->first;
+    return $self->filter( {
+        and => [
+            { term => { 'identity.name' => $p->{name} } },
+            { term => { 'identity.key'  => $p->{key} } }
+        ]
+    } )->first;
 }
 
 =head2 find_code

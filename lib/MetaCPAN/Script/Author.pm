@@ -148,13 +148,11 @@ sub index_authors {
         push @author_ids_to_purge, $put->{pauseid};
 
         # Only try put if this is a valid format
-        $bulk->update(
-            {
-                id            => $pauseid,
-                doc           => $put,
-                doc_as_upsert => 1,
-            }
-        );
+        $bulk->update( {
+            id            => $pauseid,
+            doc           => $put,
+            doc_as_upsert => 1,
+        } );
     }
 
     $bulk->flush;

@@ -84,18 +84,16 @@ sub index_cover_data {
                 delete $doc_data{$k} unless exists $valid_keys{$k};
             }
 
-            $bulk->update(
-                {
-                    id  => $release,
-                    doc => {
-                        distribution => $dist,
-                        version      => $version,
-                        release      => $release,
-                        criteria     => \%doc_data,
-                    },
-                    doc_as_upsert => 1,
-                }
-            );
+            $bulk->update( {
+                id  => $release,
+                doc => {
+                    distribution => $dist,
+                    version      => $version,
+                    release      => $release,
+                    criteria     => \%doc_data,
+                },
+                doc_as_upsert => 1,
+            } );
         }
     }
 

@@ -3,24 +3,22 @@ package MetaCPAN::Types::TypeTiny;
 use strict;
 use warnings;
 
-use Type::Library -base, -declare => (
-    qw(
-        ArrayRefPromote
+use Type::Library -base, -declare => ( qw(
+    ArrayRefPromote
 
-        PerlMongers
-        Blog
-        Stat
-        Tests
-        RTIssueStatus
-        GitHubIssueStatus
-        BugSummary
-        RiverSummary
-        Resources
+    PerlMongers
+    Blog
+    Stat
+    Tests
+    RTIssueStatus
+    GitHubIssueStatus
+    BugSummary
+    RiverSummary
+    Resources
 
-        Logger
-        HashRefCPANMeta
-    )
-);
+    Logger
+    HashRefCPANMeta
+) );
 use Type::Utils qw( as coerce declare extends from via );
 
 BEGIN {

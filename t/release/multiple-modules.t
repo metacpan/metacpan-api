@@ -7,12 +7,10 @@ use Test::More;
 
 my $model   = model();
 my $idx     = $model->index('cpan');
-my $release = $idx->type('release')->get(
-    {
-        author => 'LOCAL',
-        name   => 'Multiple-Modules-1.01'
-    }
-);
+my $release = $idx->type('release')->get( {
+    author => 'LOCAL',
+    name   => 'Multiple-Modules-1.01'
+} );
 
 is( $release->abstract, 'abstract', 'abstract set from Multiple::Modules' );
 
@@ -36,15 +34,13 @@ is_deeply(
 ok( !$release->first, 'Release is not first' );
 
 {
-    my @files = $idx->type('file')->filter(
-        {
-            and => [
-                { term   => { author  => $release->author } },
-                { term   => { release => $release->name } },
-                { exists => { field   => 'module.name' } },
-            ]
-        }
-    )->all;
+    my @files = $idx->type('file')->filter( {
+        and => [
+            { term   => { author  => $release->author } },
+            { term   => { release => $release->name } },
+            { exists => { field   => 'module.name' } },
+        ]
+    } )->all;
     is( @files, 3, 'includes three files with modules' );
 
     @files = sort { $a->{name} cmp $b->{name} } @files;
@@ -102,24 +98,20 @@ ok( !$release->first, 'Release is not first' );
     }
 }
 
-$release = $idx->type('release')->get(
-    {
-        author => 'LOCAL',
-        name   => 'Multiple-Modules-0.1'
-    }
-);
+$release = $idx->type('release')->get( {
+    author => 'LOCAL',
+    name   => 'Multiple-Modules-0.1'
+} );
 ok $release,        'got older version of release';
 ok $release->first, 'this version was first';
 
 ok(
-    my $file = $idx->type('file')->filter(
-        {
-            and => [
-                { term         => { release => 'Multiple-Modules-0.1' } },
-                { match_phrase => { documentation => 'Moose' } }
-            ]
-        }
-    )->first,
+    my $file = $idx->type('file')->filter( {
+        and => [
+            { term         => { release       => 'Multiple-Modules-0.1' } },
+            { match_phrase => { documentation => 'Moose' } }
+        ]
+    } )->first,
     'get Moose.pm'
 );
 

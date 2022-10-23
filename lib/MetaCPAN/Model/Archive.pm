@@ -53,12 +53,10 @@ has file => (
 has _extractor => (
     is      => 'ro',
     isa     => 'Archive::Any',
-    handles => [
-        qw(
-            is_impolite
-            is_naughty
-        )
-    ],
+    handles => [ qw(
+        is_impolite
+        is_naughty
+    ) ],
     init_arg => undef,
     lazy     => 1,
     default  => sub {

@@ -84,16 +84,14 @@ sub run {
                 log_info { "--- SHA256: " . $checksum_sha256 }
             }
             else {
-                $bulk->update(
-                    {
-                        id  => $p->{_id},
-                        doc => {
-                            checksum_md5    => $checksum_md5,
-                            checksum_sha256 => $checksum_sha256
-                        },
-                        doc_as_upsert => 1,
-                    }
-                );
+                $bulk->update( {
+                    id  => $p->{_id},
+                    doc => {
+                        checksum_md5    => $checksum_md5,
+                        checksum_sha256 => $checksum_sha256
+                    },
+                    doc_as_upsert => 1,
+                } );
             }
         }
         else {

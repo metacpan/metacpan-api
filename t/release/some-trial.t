@@ -7,13 +7,11 @@ use Test::More;
 
 my $model   = model();
 my $idx     = $model->index('cpan');
-my $release = $idx->type('release')->get(
-    {
-        author      => 'LOCAL',
-        name        => 'Some-1.00-TRIAL',
-        main_module => 'Some',
-    }
-);
+my $release = $idx->type('release')->get( {
+    author      => 'LOCAL',
+    name        => 'Some-1.00-TRIAL',
+    main_module => 'Some',
+} );
 
 is( $release->name, 'Some-1.00-TRIAL', 'name ok' );
 

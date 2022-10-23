@@ -15,13 +15,11 @@ has query_file => (
     isa     => 'MetaCPAN::Query::File',
     lazy    => 1,
     builder => '_build_query_file',
-    handles => [
-        qw(
-            dir
-            interesting_files
-            files_by_category
-        )
-    ],
+    handles => [ qw(
+        dir
+        interesting_files
+        files_by_category
+    ) ],
 );
 
 sub _build_query_file {
@@ -77,67 +75,63 @@ my @ROGUE_DISTRIBUTIONS = qw(
 
 sub find {
     my ( $self, $module ) = @_;
-    my @candidates = $self->index->type('file')->query(
-        {
-            bool => {
-                must => [
-                    { term => { indexed    => 1, } },
-                    { term => { authorized => 1 } },
-                    { term => { status     => 'latest' } },
-                    {
-                        or => [
-                            {
-                                nested => {
-                                    path   => "module",
-                                    filter => {
-                                        and => [
-                                            {
-                                                term => {
-                                                    "module.name" => $module
-                                                }
-                                            },
-                                            {
-                                                term => {
-                                                    "module.authorized" => 1
-                                                }
-                                            },
-                                        ]
-                                    }
+    my @candidates = $self->index->type('file')->query( {
+        bool => {
+            must => [
+                { term => { indexed    => 1, } },
+                { term => { authorized => 1 } },
+                { term => { status     => 'latest' } },
+                {
+                    or => [
+                        {
+                            nested => {
+                                path   => "module",
+                                filter => {
+                                    and => [
+                                        {
+                                            term => {
+                                                "module.name" => $module
+                                            }
+                                        },
+                                        {
+                                            term => {
+                                                "module.authorized" => 1
+                                            }
+                                        },
+                                    ]
                                 }
-                            },
-                            { term => { documentation => $module } },
-                        ]
-                    },
-                ],
-                should => [
-                    { term => { documentation => $module } },
-                    {
-                        nested => {
-                            path   => 'module',
-                            filter => {
-                                and => [
-                                    { term => { 'module.name' => $module } },
-                                    {
-                                        exists => {
-                                            field => 'module.associated_pod'
-                                        }
-                                    },
-                                ]
                             }
+                        },
+                        { term => { documentation => $module } },
+                    ]
+                },
+            ],
+            should => [
+                { term => { documentation => $module } },
+                {
+                    nested => {
+                        path   => 'module',
+                        filter => {
+                            and => [
+                                { term => { 'module.name' => $module } },
+                                {
+                                    exists => {
+                                        field => 'module.associated_pod'
+                                    }
+                                },
+                            ]
                         }
-                    },
-                ]
-            }
+                    }
+                },
+            ]
         }
-    )->sort(
-        [
-            '_score',
-            { 'version_numified' => { order => 'desc' } },
-            { 'date'             => { order => 'desc' } },
-            { 'mime'             => { order => 'asc' } },
-            { 'stat.mtime'       => { order => 'desc' } }
-        ]
-    )->search_type('dfs_query_then_fetch')->size(100)->all;
+    } )->sort( [
+        '_score',
+        { 'version_numified' => { order => 'desc' } },
+        { 'date'             => { order => 'desc' } },
+        { 'mime'             => { order => 'asc' } },
+        { 'stat.mtime'       => { order => 'desc' } }
+    ] )->search_type('dfs_query_then_fetch')->size(100)->all;
 
     my ($file) = grep {
         grep { $_->indexed && $_->authorized && $_->name eq $module }
@@ -158,13 +152,11 @@ sub find_pod {
         @{ $file->module || [] };
     if ( $module && ( my $pod = $module->associated_pod ) ) {
         my ( $author, $release, @path ) = split( /\//, $pod );
-        return $self->get(
-            {
-                author  => $author,
-                release => $release,
-                path    => join( '/', @path ),
-            }
-        );
+        return $self->get( {
+            author  => $author,
+            release => $release,
+            path    => join( '/', @path ),
+        } );
     }
     else {
         return $file;
@@ -173,43 +165,41 @@ sub find_pod {
 
 sub documented_modules {
     my ( $self, $release ) = @_;
-    return $self->filter(
-        {
-            and => [
-                { term   => { release => $release->{name} } },
-                { term   => { author  => $release->{author} } },
-                { exists => { field   => "documentation" } },
-                {
-                    or => [
-                        {
-                            and => [
-                                {
-                                    exists => {
-                                        field => 'module.name',
-                                    }
-                                },
-                                {
-                                    term => {
-                                        'module.indexed' => 1
-                                    }
-                                },
-                            ]
-                        },
-                        {
-                            and => [
-                                {
-                                    exists => {
-                                        field => 'pod.analyzed',
-                                    }
-                                },
-                                { term => { indexed => 1 } },
-                            ]
-                        },
-                    ]
-                },
-            ],
-        }
-    )->size(999)
+    return $self->filter( {
+        and => [
+            { term   => { release => $release->{name} } },
+            { term   => { author  => $release->{author} } },
+            { exists => { field   => "documentation" } },
+            {
+                or => [
+                    {
+                        and => [
+                            {
+                                exists => {
+                                    field => 'module.name',
+                                }
+                            },
+                            {
+                                term => {
+                                    'module.indexed' => 1
+                                }
+                            },
+                        ]
+                    },
+                    {
+                        and => [
+                            {
+                                exists => {
+                                    field => 'pod.analyzed',
+                                }
+                            },
+                            { term => { indexed => 1 } },
+                        ]
+                    },
+                ]
+            },
+        ],
+    } )->size(999)
         ->source( [qw(name module path documentation distribution)] )->all;
 }
 
@@ -381,13 +371,11 @@ sub _version_filters {
 
     if ( $version =~ s/^==\s*// ) {
         return +{
-            must => [
-                {
-                    term => {
-                        'module.version_numified' => $self->_numify($version)
-                    }
+            must => [ {
+                term => {
+                    'module.version_numified' => $self->_numify($version)
                 }
-            ]
+            } ]
         };
     }
     elsif ( $version =~ /^[<>!]=?\s*/ ) {
@@ -423,14 +411,12 @@ sub _version_filters {
     }
     elsif ( $version !~ /\s/ ) {
         return +{
-            must => [
-                {
-                    range => {
-                        'module.version_numified' =>
-                            { 'gte' => $self->_numify($version) }
-                    },
-                }
-            ]
+            must => [ {
+                range => {
+                    'module.version_numified' =>
+                        { 'gte' => $self->_numify($version) }
+                },
+            } ]
         };
     }
 }
@@ -451,50 +437,44 @@ sub history {
     my ( $self, $type, $module, @path ) = @_;
     my $search
         = $type eq "module"
-        ? $self->query(
-        {
-            nested => {
-                path  => 'module',
-                query => {
-                    constant_score => {
-                        filter => {
-                            bool => {
-                                must => [
-                                    { term => { "module.authorized" => 1 } },
-                                    { term => { "module.indexed"    => 1 } },
-                                    { term => { "module.name" => $module } },
-                                ]
-                            }
+        ? $self->query( {
+        nested => {
+            path  => 'module',
+            query => {
+                constant_score => {
+                    filter => {
+                        bool => {
+                            must => [
+                                { term => { "module.authorized" => 1 } },
+                                { term => { "module.indexed"    => 1 } },
+                                { term => { "module.name" => $module } },
+                            ]
                         }
                     }
                 }
             }
         }
-        )
-        : $type eq "file" ? $self->query(
-        {
-            bool => {
-                must => [
-                    { term => { path         => join( "/", @path ) } },
-                    { term => { distribution => $module } },
-                ]
-            }
+        } )
+        : $type eq "file" ? $self->query( {
+        bool => {
+            must => [
+                { term => { path         => join( "/", @path ) } },
+                { term => { distribution => $module } },
+            ]
         }
-        )
+        } )
 
         # XXX: to fix: no filtering on 'release' so this query
         # will produce modules matching duplications. -- Mickey
-        : $type eq "documentation" ? $self->query(
-        {
-            bool => {
-                must => [
-                    { match_phrase => { documentation => $module } },
-                    { term         => { indexed       => 1 } },
-                    { term         => { authorized    => 1 } },
-                ]
-            }
+        : $type eq "documentation" ? $self->query( {
+        bool => {
+            must => [
+                { match_phrase => { documentation => $module } },
+                { term         => { indexed       => 1 } },
+                { term         => { authorized    => 1 } },
+            ]
         }
-        )
+        } )
 
         # clearly, one doesn't know what they want in this case
         : $self->query(
@@ -513,37 +493,34 @@ sub autocomplete {
     my $query = join( q{ }, @terms );
     return $self unless $query;
 
-    my $data = $self->search_type('dfs_query_then_fetch')->query(
-        {
-            filtered => {
-                query => {
-                    multi_match => {
-                        query    => $query,
-                        type     => 'most_fields',
-                        fields   => [ 'documentation', 'documentation.*' ],
-                        analyzer => 'camelcase',
-                        minimum_should_match => '80%'
-                    },
+    my $data = $self->search_type('dfs_query_then_fetch')->query( {
+        filtered => {
+            query => {
+                multi_match => {
+                    query    => $query,
+                    type     => 'most_fields',
+                    fields   => [ 'documentation', 'documentation.*' ],
+                    analyzer => 'camelcase',
+                    minimum_should_match => '80%'
                 },
-                filter => {
-                    bool => {
-                        must => [
-                            { exists => { field      => 'documentation' } },
-                            { term   => { status     => 'latest' } },
-                            { term   => { indexed    => 1 } },
-                            { term   => { authorized => 1 } }
-                        ],
-                        must_not => [
-                            {
-                                terms =>
-                                    { distribution => \@ROGUE_DISTRIBUTIONS }
-                            },
-                        ],
-                    }
+            },
+            filter => {
+                bool => {
+                    must => [
+                        { exists => { field      => 'documentation' } },
+                        { term   => { status     => 'latest' } },
+                        { term   => { indexed    => 1 } },
+                        { term   => { authorized => 1 } }
+                    ],
+                    must_not => [
+                        {
+                            terms => { distribution => \@ROGUE_DISTRIBUTIONS }
+                        },
+                    ],
                 }
             }
         }
-    )->sort( [ '_score', 'documentation' ] );
+    } )->sort( [ '_score', 'documentation' ] );
 
     $data = $data->fields( [qw(documentation release author distribution)] )
         unless $self->fields;
@@ -563,20 +540,18 @@ sub autocomplete_suggester {
     my $search_size = 100;
 
     my $suggestions
-        = $self->search_type('dfs_query_then_fetch')->es->suggest(
-        {
-            index => $self->index->name,
-            body  => {
-                documentation => {
-                    text       => $query,
-                    completion => {
-                        field => "suggest",
-                        size  => $search_size,
-                    }
+        = $self->search_type('dfs_query_then_fetch')->es->suggest( {
+        index => $self->index->name,
+        body  => {
+            documentation => {
+                text       => $query,
+                completion => {
+                    field => "suggest",
+                    size  => $search_size,
                 }
-            },
-        }
-        );
+            }
+        },
+        } );
 
     my %docs;
 
@@ -593,34 +568,31 @@ sub autocomplete_suggester {
         documentation
         release
     );
-    my $data = $self->es->search(
-        {
-            index => $self->index->name,
-            type  => 'file',
-            body  => {
-                query => {
-                    bool => {
-                        must => [
-                            { term => { indexed    => 1 } },
-                            { term => { authorized => 1 } },
-                            { term => { status     => 'latest' } },
-                            {
-                                terms => { 'documentation' => [ keys %docs ] }
-                            },
-                        ],
-                        must_not => [
-                            {
-                                terms =>
-                                    { distribution => \@ROGUE_DISTRIBUTIONS }
-                            },
-                        ],
-                    }
-                },
+    my $data = $self->es->search( {
+        index => $self->index->name,
+        type  => 'file',
+        body  => {
+            query => {
+                bool => {
+                    must => [
+                        { term => { indexed    => 1 } },
+                        { term => { authorized => 1 } },
+                        { term => { status     => 'latest' } },
+                        {
+                            terms => { 'documentation' => [ keys %docs ] }
+                        },
+                    ],
+                    must_not => [
+                        {
+                            terms => { distribution => \@ROGUE_DISTRIBUTIONS }
+                        },
+                    ],
+                }
             },
-            fields => \@fields,
-            size   => $search_size,
-        }
-    );
+        },
+        fields => \@fields,
+        size   => $search_size,
+    } );
 
     my %valid = map {
         my $got = $_->{fields};

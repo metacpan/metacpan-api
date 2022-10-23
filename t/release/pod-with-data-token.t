@@ -6,30 +6,28 @@ use Cpanel::JSON::XS      ();
 use MetaCPAN::TestHelpers qw( test_release );
 use Test::More;
 
-test_release(
-    {
-        name        => 'Pod-With-Data-Token-0.01',
-        author      => 'BORISNAT',
-        authorized  => 1,
-        first       => 1,
-        provides    => [ 'Pod::With::Data::Token', ],
-        main_module => 'Pod::With::Data::Token',
-        modules     => {
-            'lib/Pod/With/Data/Token.pm' => [
-                {
-                    name             => 'Pod::With::Data::Token',
-                    indexed          => Cpanel::JSON::XS::true(),
-                    authorized       => Cpanel::JSON::XS::true(),
-                    version          => '0.01',
-                    version_numified => 0.01,
-                    associated_pod   =>
-                        'BORISNAT/Pod-With-Data-Token-0.01/lib/Pod/With/Data/Token.pm',
-                },
-            ],
-        },
-        extra_tests => \&test_content,
-    }
-);
+test_release( {
+    name        => 'Pod-With-Data-Token-0.01',
+    author      => 'BORISNAT',
+    authorized  => 1,
+    first       => 1,
+    provides    => [ 'Pod::With::Data::Token', ],
+    main_module => 'Pod::With::Data::Token',
+    modules     => {
+        'lib/Pod/With/Data/Token.pm' => [
+            {
+                name             => 'Pod::With::Data::Token',
+                indexed          => Cpanel::JSON::XS::true(),
+                authorized       => Cpanel::JSON::XS::true(),
+                version          => '0.01',
+                version_numified => 0.01,
+                associated_pod   =>
+                    'BORISNAT/Pod-With-Data-Token-0.01/lib/Pod/With/Data/Token.pm',
+            },
+        ],
+    },
+    extra_tests => \&test_content,
+} );
 
 sub test_content {
     my ($self) = @_;

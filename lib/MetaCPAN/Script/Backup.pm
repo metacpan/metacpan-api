@@ -159,23 +159,19 @@ sub run_restore {
         );
 
         if ($exists) {
-            $bulk->update(
-                {
-                    id            => $raw->{_id},
-                    doc           => $raw->{_source},
-                    doc_as_upsert => 1,
-                }
-            );
+            $bulk->update( {
+                id            => $raw->{_id},
+                doc           => $raw->{_source},
+                doc_as_upsert => 1,
+            } );
 
         }
         else {
-            $bulk->create(
-                {
-                    id => $raw->{_id},
-                    $parent ? ( parent => $parent ) : (),
-                    source => $raw->{_source},
-                }
-            );
+            $bulk->create( {
+                id => $raw->{_id},
+                $parent ? ( parent => $parent ) : (),
+                source => $raw->{_source},
+            } );
         }
     }
 

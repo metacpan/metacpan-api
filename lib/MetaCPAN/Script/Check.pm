@@ -140,14 +140,11 @@ sub check_modules {
                                 [qw(name status authorized version id date)],
                             query  => { match_all => {} },
                             filter => {
-                                and => [
-                                    {
-                                        term => {
-                                            'name' =>
-                                                $file->{fields}->{release}
-                                        }
+                                and => [ {
+                                    term => {
+                                        'name' => $file->{fields}->{release}
                                     }
-                                ]
+                                } ]
                             },
                         );
 

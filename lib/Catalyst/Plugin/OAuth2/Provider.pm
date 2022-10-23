@@ -107,11 +107,9 @@ sub access_token : Local {
     $user->put( { refresh => 1 } );
 
     $c->res->content_type('application/json');
-    $c->res->body(
-        encode_json(
-            { access_token => $access_token, token_type => 'bearer' }
-        )
-    );
+    $c->res->body( encode_json(
+        { access_token => $access_token, token_type => 'bearer' }
+    ) );
 
 }
 

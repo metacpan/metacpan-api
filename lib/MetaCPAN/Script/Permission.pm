@@ -62,13 +62,11 @@ sub index_permissions {
             co_maintainers => \@co_maints,
         };
 
-        $bulk->update(
-            {
-                id            => $name,
-                doc           => $doc,
-                doc_as_upsert => 1,
-            }
-        );
+        $bulk->update( {
+            id            => $name,
+            doc           => $doc,
+            doc_as_upsert => 1,
+        } );
 
         $seen{$name} = 1;
     }

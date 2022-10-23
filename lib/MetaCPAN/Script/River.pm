@@ -36,16 +36,14 @@ sub index_river_summaries {
     for my $summary ( @{$summaries} ) {
         my $dist = delete $summary->{dist};
 
-        $bulk->update(
-            {
-                id  => $dist,
-                doc => {
-                    name  => $dist,
-                    river => $summary,
-                },
-                doc_as_upsert => 1,
-            }
-        );
+        $bulk->update( {
+            id  => $dist,
+            doc => {
+                name  => $dist,
+                river => $summary,
+            },
+            doc_as_upsert => 1,
+        } );
     }
     $bulk->flush;
 }

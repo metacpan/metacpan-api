@@ -123,13 +123,11 @@ sub _search_expanded {
     my $results = $self->_extract_results($es_results);
 
     $results = [
-        map {
-            {
-                hits         => [$_],
-                distribution => $_->{distribution},
-                total        => 1,
-            }
-        } @$results
+        map { {
+            hits         => [$_],
+            distribution => $_->{distribution},
+            total        => 1,
+        } } @$results
     ];
 
     my $return = {
@@ -150,10 +148,8 @@ sub _search_collapsed {
 
     my $es_query_opts = {
         size   => 0,
-        fields => [
-            qw(
-            )
-        ],
+        fields => [ qw(
+        ) ],
     };
 
     my $es_query = $self->build_query( $search_term, $es_query_opts );
@@ -347,24 +343,22 @@ sub build_query {
             _source => [
                 "module",
             ],
-            fields => [
-                qw(
-                    abstract.analyzed
-                    author
-                    authorized
-                    date
-                    description
-                    dist_fav_count
-                    distribution
-                    documentation
-                    id
-                    indexed
-                    path
-                    pod_lines
-                    release
-                    status
-                )
-            ],
+            fields => [ qw(
+                abstract.analyzed
+                author
+                authorized
+                date
+                description
+                dist_fav_count
+                distribution
+                documentation
+                id
+                indexed
+                path
+                pod_lines
+                release
+                status
+            ) ],
         }
     );
 

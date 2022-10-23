@@ -92,18 +92,16 @@ sub _update_slice {
         my $weight        = 1000 - length($documentation);
         $weight = 0 if $weight < 0;
 
-        $bulk->update(
-            {
-                id  => $file->{fields}{id}[0],
-                doc => {
-                    suggest => {
-                        input   => [$documentation],
-                        payload => { doc_name => $documentation },
-                        weight  => $weight,
-                    }
-                },
-            }
-        );
+        $bulk->update( {
+            id  => $file->{fields}{id}[0],
+            doc => {
+                suggest => {
+                    input   => [$documentation],
+                    payload => { doc_name => $documentation },
+                    weight  => $weight,
+                }
+            },
+        } );
     }
 
     $bulk->flush;

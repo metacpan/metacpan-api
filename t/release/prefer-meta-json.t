@@ -7,12 +7,10 @@ use Test::More;
 
 my $model   = model();
 my $idx     = $model->index('cpan');
-my $release = $idx->type('release')->get(
-    {
-        author => 'LOCAL',
-        name   => 'Prefer-Meta-JSON-1.1'
-    }
-);
+my $release = $idx->type('release')->get( {
+    author => 'LOCAL',
+    name   => 'Prefer-Meta-JSON-1.1'
+} );
 
 is( $release->name,         'Prefer-Meta-JSON-1.1', 'name ok' );
 is( $release->distribution, 'Prefer-Meta-JSON',     'distribution ok' );
@@ -24,15 +22,13 @@ is( ref $release->metadata, 'HASH', 'comes with metadata in a hashref' );
 is( $release->metadata->{'meta-spec'}{version}, 2, 'meta_spec version is 2' );
 
 {
-    my @files = $idx->type('file')->filter(
-        {
-            and => [
-                { term   => { author  => $release->author } },
-                { term   => { release => $release->name } },
-                { exists => { field   => 'module.name' } },
-            ]
-        }
-    )->all;
+    my @files = $idx->type('file')->filter( {
+        and => [
+            { term   => { author  => $release->author } },
+            { term   => { release => $release->name } },
+            { exists => { field   => 'module.name' } },
+        ]
+    } )->all;
     is( @files, 1, 'includes one file with modules' );
 
     my $file = shift @files;

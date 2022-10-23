@@ -13,26 +13,24 @@ has query_release => (
     isa     => 'MetaCPAN::Query::Release',
     lazy    => 1,
     builder => '_build_query_release',
-    handles => [
-        qw<
-            activity
-            all_by_author
-            author_status
-            by_author
-            by_author_and_name
-            by_author_and_names
-            get_contributors
-            get_files
-            latest_by_author
-            latest_by_distribution
-            modules
-            recent
-            requires
-            reverse_dependencies
-            top_uploaders
-            versions
-        >
-    ],
+    handles => [ qw<
+        activity
+        all_by_author
+        author_status
+        by_author
+        by_author_and_name
+        by_author_and_names
+        get_contributors
+        get_files
+        latest_by_author
+        latest_by_distribution
+        modules
+        recent
+        requires
+        reverse_dependencies
+        top_uploaders
+        versions
+    > ],
 );
 
 sub _build_query_release {
@@ -45,14 +43,12 @@ sub _build_query_release {
 
 sub find {
     my ( $self, $name ) = @_;
-    my $file = $self->filter(
-        {
-            and => [
-                { term => { distribution => $name } },
-                { term => { status       => 'latest' } }
-            ]
-        }
-    )->sort( [ { date => 'desc' } ] )->raw->first;
+    my $file = $self->filter( {
+        and => [
+            { term => { distribution => $name } },
+            { term => { status       => 'latest' } }
+        ]
+    } )->sort( [ { date => 'desc' } ] )->raw->first;
     return unless $file;
 
     my $data = $file->{_source}
@@ -62,40 +58,36 @@ sub find {
 
 sub predecessor {
     my ( $self, $name ) = @_;
-    return $self->filter(
-        {
-            and => [
-                { term => { distribution => $name } },
-                { not  => { filter => { term => { status => 'latest' } } } },
-            ]
-        }
-    )->sort( [ { date => 'desc' } ] )->first;
+    return $self->filter( {
+        and => [
+            { term => { distribution => $name } },
+            { not  => { filter => { term => { status => 'latest' } } } },
+        ]
+    } )->sort( [ { date => 'desc' } ] )->first;
 }
 
 sub find_github_based {
-    shift->filter(
-        {
-            and => [
-                { term => { status => 'latest' } },
-                {
-                    or => [
-                        {
-                            prefix => {
-                                "resources.bugtracker.web" =>
-                                    'http://github.com/'
-                            }
-                        },
-                        {
-                            prefix => {
-                                "resources.bugtracker.web" =>
-                                    'https://github.com/'
-                            }
-                        },
-                    ]
-                }
-            ]
-        }
-    );
+    shift->filter( {
+        and => [
+            { term => { status => 'latest' } },
+            {
+                or => [
+                    {
+                        prefix => {
+                            "resources.bugtracker.web" =>
+                                'http://github.com/'
+                        }
+                    },
+                    {
+                        prefix => {
+                            "resources.bugtracker.web" =>
+                                'https://github.com/'
+                        }
+                    },
+                ]
+            }
+        ]
+    } );
 }
 
 __PACKAGE__->meta->make_immutable;

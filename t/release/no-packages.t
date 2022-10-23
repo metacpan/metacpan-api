@@ -6,25 +6,23 @@ use MetaCPAN::TestHelpers qw( test_release );
 use Test::More;
 
 # Some uploads contain no usable modules.
-test_release(
-    {
-        name       => 'No-Packages-1.1',
-        author     => 'BORISNAT',
-        authorized => 1,
-        first      => 1,
+test_release( {
+    name       => 'No-Packages-1.1',
+    author     => 'BORISNAT',
+    authorized => 1,
+    first      => 1,
 
-        # Without modules it won't get marked as latest.
-        status => 'cpan',
+    # Without modules it won't get marked as latest.
+    status => 'cpan',
 
-        provides => [
+    provides => [
 
-            # empty
-        ],
-        modules => {
+        # empty
+    ],
+    modules => {
 
-            # empty
-        },
-    }
-);
+        # empty
+    },
+} );
 
 done_testing;

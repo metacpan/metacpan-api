@@ -50,18 +50,16 @@ sub update_release_contirbutors {
 
     for my $d ( @{$data} ) {
         my $id = digest( $d->{pauseid}, $d->{release_name} );
-        $bulk->update(
-            {
-                id  => $id,
-                doc => {
-                    pauseid        => $d->{pauseid},
-                    release_name   => $d->{release_name},
-                    release_author => $d->{release_author},
-                    distribution   => $d->{distribution},
-                },
-                doc_as_upsert => 1,
-            }
-        );
+        $bulk->update( {
+            id  => $id,
+            doc => {
+                pauseid        => $d->{pauseid},
+                release_name   => $d->{release_name},
+                release_author => $d->{release_author},
+                distribution   => $d->{distribution},
+            },
+            doc_as_upsert => 1,
+        } );
     }
 
     $bulk->flush;

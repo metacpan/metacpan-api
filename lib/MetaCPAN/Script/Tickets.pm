@@ -232,13 +232,11 @@ sub _bulk_update {
     my ( $self, $summary ) = @_;
 
     for my $distribution ( keys %$summary ) {
-        $self->_bulk->update(
-            {
-                id            => $distribution,
-                doc           => $summary->{$distribution},
-                doc_as_upsert => 1,
-            }
-        );
+        $self->_bulk->update( {
+            id            => $distribution,
+            doc           => $summary->{$distribution},
+            doc_as_upsert => 1,
+        } );
     }
 
     $self->_bulk->flush;

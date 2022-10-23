@@ -7,12 +7,10 @@ use Test::More;
 
 my $model   = model();
 my $idx     = $model->index('cpan');
-my $release = $idx->type('release')->get(
-    {
-        author => 'LOCAL',
-        name   => 'File-Changes-1.0'
-    }
-);
+my $release = $idx->type('release')->get( {
+    author => 'LOCAL',
+    name   => 'File-Changes-1.0'
+} );
 
 is( $release->name,         'File-Changes-1.0', 'name ok' );
 is( $release->author,       'LOCAL',            'author ok' );

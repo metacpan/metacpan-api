@@ -90,12 +90,10 @@ sub _gen_index_task_sub {
         }
         catch {
             warn $_;
-            $job->fail(
-                {
-                    message => $_,
-                    @warnings ? ( warnings => \@warnings ) : (),
-                }
-            );
+            $job->fail( {
+                message => $_,
+                @warnings ? ( warnings => \@warnings ) : (),
+            } );
         };
     }
 }

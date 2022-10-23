@@ -115,14 +115,12 @@ sub search : Path('_search') : ActionClass('~Deserialize') {
     }
     delete $params->{callback};
     eval {
-        my $res = $self->model($c)->es->search(
-            {
-                index => $c->model('CPAN')->index,
-                type  => $self->type,
-                body  => $c->req->data || delete $params->{source},
-                %$params,
-            }
-        );
+        my $res = $self->model($c)->es->search( {
+            index => $c->model('CPAN')->index,
+            type  => $self->type,
+            body  => $c->req->data || delete $params->{source},
+            %$params,
+        } );
         single_valued_arrayref_to_scalar( $_->{fields} )
             for @{ $res->{hits}{hits} };
         $c->stash($res);

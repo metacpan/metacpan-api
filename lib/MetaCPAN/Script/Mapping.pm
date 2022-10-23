@@ -344,12 +344,10 @@ sub _copy_slice {
     );
 
     while ( my $search = $scroll->next ) {
-        $bulk->create(
-            {
-                id     => $search->{_id},
-                source => $search->{_source}
-            }
-        );
+        $bulk->create( {
+            id     => $search->{_id},
+            source => $search->{_source}
+        } );
     }
 
     $bulk->flush;

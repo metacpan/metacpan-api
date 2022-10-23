@@ -123,13 +123,11 @@ sub index_reports {
         next unless $insert_ok;
 
         my %tests = map { $_ => $row->{$_} } qw(fail pass na unknown);
-        $self->_bulk->update(
-            {
-                doc           => { tests => \%tests },
-                doc_as_upsert => 1,
-                id            => $release_doc->{id},
-            }
-        );
+        $self->_bulk->update( {
+            doc           => { tests => \%tests },
+            doc_as_upsert => 1,
+            id            => $release_doc->{id},
+        } );
     }
 
     $self->_bulk->flush;

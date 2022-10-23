@@ -6,29 +6,27 @@ use Cpanel::JSON::XS      ();
 use MetaCPAN::TestHelpers qw( test_release );
 use Test::More;
 
-test_release(
-    {
-        name        => 'BadPod-0.01',
-        author      => 'MO',
-        authorized  => 1,
-        first       => 1,
-        provides    => [ 'BadPod', ],
-        main_module => 'BadPod',
-        modules     => {
-            'lib/BadPod.pm' => [
-                {
-                    name             => 'BadPod',
-                    indexed          => Cpanel::JSON::XS::true(),
-                    authorized       => Cpanel::JSON::XS::true(),
-                    version          => '0.01',
-                    version_numified => 0.01,
-                    associated_pod   => 'MO/BadPod-0.01/lib/BadPod.pm',
-                },
-            ],
-        },
-        extra_tests => \&test_bad_pod,
-    }
-);
+test_release( {
+    name        => 'BadPod-0.01',
+    author      => 'MO',
+    authorized  => 1,
+    first       => 1,
+    provides    => [ 'BadPod', ],
+    main_module => 'BadPod',
+    modules     => {
+        'lib/BadPod.pm' => [
+            {
+                name             => 'BadPod',
+                indexed          => Cpanel::JSON::XS::true(),
+                authorized       => Cpanel::JSON::XS::true(),
+                version          => '0.01',
+                version_numified => 0.01,
+                associated_pod   => 'MO/BadPod-0.01/lib/BadPod.pm',
+            },
+        ],
+    },
+    extra_tests => \&test_bad_pod,
+} );
 
 sub test_bad_pod {
     my ($self) = @_;

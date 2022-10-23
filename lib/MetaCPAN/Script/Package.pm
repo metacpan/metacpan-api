@@ -77,13 +77,11 @@ sub index_packages {
             dist_version => $distinfo->version,
         };
 
-        $bulk->update(
-            {
-                id            => $name,
-                doc           => $doc,
-                doc_as_upsert => 1,
-            }
-        );
+        $bulk->update( {
+            id            => $name,
+            doc           => $doc,
+            doc_as_upsert => 1,
+        } );
 
         $seen{$name} = 1;
     }

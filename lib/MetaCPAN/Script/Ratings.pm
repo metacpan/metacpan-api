@@ -59,11 +59,9 @@ sub run {
         };
 
         for ( my $i = 0; $i < $rating->{review_count}; $i++ ) {
-            $bulk->create(
-                {
-                    source => Dlog_trace {$_} $data,
-                }
-            );
+            $bulk->create( {
+                source => Dlog_trace {$_} $data,
+            } );
         }
     }
     $bulk->flush;
