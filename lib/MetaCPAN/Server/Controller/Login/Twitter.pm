@@ -2,7 +2,7 @@ package MetaCPAN::Server::Controller::Login::Twitter;
 
 use Moose;
 
-use Net::Twitter ();
+use Twitter::API ();
 
 BEGIN { extends 'MetaCPAN::Server::Controller::Login' }
 
@@ -13,8 +13,8 @@ has [qw(consumer_key consumer_secret)] => (
 
 sub nt {
     my $self = shift;
-    Net::Twitter->new(
-        traits          => [ 'API::REST', 'OAuth' ],
+    Twitter::API->new_with_traits(
+        api_version     => '2',
         consumer_key    => $self->consumer_key,
         consumer_secret => $self->consumer_secret,
     );
@@ -23,24 +23,28 @@ sub nt {
 sub index : Path {
     my ( $self, $c ) = @_;
     my $req = $c->req;
-    if ( my $code = $req->parameters->{oauth_verifier} ) {
-        my $nt = $self->nt;
-        $nt->request_token( $c->req->cookies->{twitter_token}->value );
-        $nt->request_token_secret(
-            $c->req->cookies->{twitter_token_secret}->value );
 
-        my ( $access_token, $access_token_secret, $user_id, $screen_name )
-            = $nt->request_access_token( verifier => $code );
+    # Ensure a session is created so it can be used for writing and reading
+    # Twitter credentials to use for the OAuth flow.
+    $c->session;
+
+    if ( my $code = $req->parameters->{oauth_verifier} ) {
+        my $nt       = $self->nt;
+        my $response = $nt->oauth_access_token(
+            token        => $c->session->{oauth_token},
+            token_secret => $c->session->{oauth_token_secret},
+            verifier     => $code,
+        );
+
         $c->controller('OAuth2')->redirect( $c, error => 'token' )
-            unless ($access_token);
+            unless ( $response->{oauth_token_secret} );
+
         $self->update_user(
             $c,
-            twitter => $user_id,
+            twitter => $response->{user_id},
             {
-                id                  => $user_id,
-                name                => $screen_name,
-                access_token        => $access_token,
-                access_token_secret => $access_token_secret
+                id   => $response->{user_id},
+                name => $response->{screen_name},
             }
         );
     }
@@ -48,15 +52,19 @@ sub index : Path {
         $c->controller('OAuth2')->redirect( $c, error => 'denied' );
     }
     else {
-        my $nt  = $self->nt;
-        my $url = $nt->get_authorization_url(
+        my $nt       = $self->nt;
+        my $response = $nt->oauth_request_token(
             callback => $c->uri_for( $self->action_for('index') ) );
-        my $res = $c->res;
-        $res->redirect($url);
-        $res->cookies->{twitter_token}
-            = { path => '/', value => $nt->request_token };
-        $res->cookies->{twitter_token_secret}
-            = { path => '/', value => $nt->request_token_secret };
+        my $url = $nt->oauth_authorization_url( {
+            oauth_token => $response->{oauth_token},
+        } );
+
+        $c->session(
+            oauth_token        => $response->{oauth_token},
+            oauth_token_secret => $response->{oauth_token_secret},
+        );
+
+        $c->res->redirect($url);
     }
 }
 
