@@ -28,7 +28,7 @@ requires 'Config::General', '2.63';
 requires 'Config::ZOMG', '1.000000';
 requires 'Const::Fast';
 requires 'CPAN::DistnameInfo', '0.12';
-requires 'Cpanel::JSON::XS', '4.29';
+requires 'Cpanel::JSON::XS', '4.32';
 requires 'CPAN::Meta', '2.150005'; # Avoid issues with List::Util dep under carton install.
 requires 'CPAN::Meta::Requirements', '2.140';
 requires 'CPAN::Meta::YAML', '0.018';
@@ -80,6 +80,7 @@ requires 'IO::String';
 requires 'IO::Uncompress::Bunzip2', '2.106';
 requires 'IO::Zlib';
 requires 'IPC::Run3', '0.048';
+requires 'JSON::MaybeXS', '1.004004'; # indirect dep
 requires 'List::AllUtils', '0.09';
 requires 'List::Util', '1.62';
 requires 'Log::Any::Adapter';

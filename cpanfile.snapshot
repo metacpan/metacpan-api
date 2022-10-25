@@ -1169,10 +1169,10 @@ DISTRIBUTIONS
       Module::Build::Tiny 0.035
       URI::Escape 0
       perl 5.008001
-  Cpanel-JSON-XS-4.29
-    pathname: R/RU/RURBAN/Cpanel-JSON-XS-4.29.tar.gz
+  Cpanel-JSON-XS-4.32
+    pathname: R/RU/RURBAN/Cpanel-JSON-XS-4.32.tar.gz
     provides:
-      Cpanel::JSON::XS 4.29
+      Cpanel::JSON::XS 4.32
       Cpanel::JSON::XS::Type undef
     requirements:
       Carp 0
@@ -3501,17 +3501,14 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       Test::More 0
-  JSON-MaybeXS-1.003009
-    pathname: E/ET/ETHER/JSON-MaybeXS-1.003009.tar.gz
+  JSON-MaybeXS-1.004004
+    pathname: E/ET/ETHER/JSON-MaybeXS-1.004004.tar.gz
     provides:
-      JSON::MaybeXS 1.003009
+      JSON::MaybeXS 1.004004
     requirements:
       Carp 0
       Cpanel::JSON::XS 2.3310
-      ExtUtils::CBuilder 0.27
       ExtUtils::MakeMaker 0
-      File::Spec 0
-      File::Temp 0
       JSON::PP 2.27300
       Scalar::Util 0
       perl 5.006
@@ -5621,19 +5618,16 @@ DISTRIBUTIONS
       Test::More 0.66
       Test::Warn 0.21
       URI::Escape 3.28
-  Net-SSLeay-1.92
-    pathname: C/CH/CHRISN/Net-SSLeay-1.92.tar.gz
+  Net-SSLeay-1.82
+    pathname: M/MI/MIKEM/Net-SSLeay-1.82.tar.gz
     provides:
-      Net::SSLeay 1.92
-      Net::SSLeay::Handle 1.92
+      Net::SSLeay 1.82
+      Net::SSLeay::Handle 0.61
     requirements:
-      English 0
-      ExtUtils::MakeMaker 0
-      File::Spec::Functions 0
+      ExtUtils::MakeMaker 6.36
       MIME::Base64 0
-      Text::Wrap 0
-      constant 0
-      perl 5.008001
+      Test::More 0.60_01
+      perl 5.005
   Net-Twitter-4.01043
     pathname: M/MM/MMIMS/Net-Twitter-4.01043.tar.gz
     provides:
