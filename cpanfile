@@ -80,6 +80,7 @@ requires 'IO::String';
 requires 'IO::Uncompress::Bunzip2', '2.106';
 requires 'IO::Zlib';
 requires 'IPC::Run3', '0.048';
+requires 'JSON::MaybeXS', '1.004004'; # indirect dep
 requires 'List::AllUtils', '0.09';
 requires 'List::Util', '1.62';
 requires 'Log::Any::Adapter';
