@@ -38,10 +38,8 @@ sub index : Path {
             $c,
             twitter => $response->{user_id},
             {
-                id                  => $response->{user_id},
-                name                => $response->{screen_name},
-                access_token        => $response->{oauth_token},
-                access_token_secret => $response->{oauth_token_secret}
+                id   => $response->{user_id},
+                name => $response->{screen_name},
             }
         );
     }
