@@ -158,7 +158,7 @@ requires 'Term::Choose', '1.754'; # Git::Helpers
 requires 'Throwable::Error';
 requires 'Time::Local';
 requires 'Try::Tiny', '0.30';
-requires 'Type::Tiny', '1.016008';
+requires 'Type::Tiny', '2.000001';
 requires 'Types::Path::Tiny';
 requires 'Types::URI';
 requires 'URI', '5.10';
