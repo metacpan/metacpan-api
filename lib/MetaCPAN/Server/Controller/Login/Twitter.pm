@@ -26,8 +26,8 @@ sub index : Path {
     if ( my $code = $req->parameters->{oauth_verifier} ) {
         my $nt       = $self->nt;
         my $response = $nt->oauth_access_token(
-            token        => $c->req->cookies->{twitter_token}->value,
-            token_secret => $c->req->cookies->{twitter_token_secret}->value,
+            token        => $c->session->{oauth_token},
+            token_secret => $c->session->{oauth_token_secret},
             verifier     => $code,
         );
 
@@ -56,12 +56,12 @@ sub index : Path {
             }
         );
 
-        my $res = $c->res;
-        $res->redirect($url);
-        $res->cookies->{twitter_token}
-            = { path => '/', value => $response->{oauth_token} };
-        $res->cookies->{twitter_token_secret}
-            = { path => '/', value => $response->{oauth_token_secret} };
+        $c->session(
+            oauth_token        => $response->{oauth_token},
+            oauth_token_secret => $response->{oauth_token_secret},
+        );
+
+        $c->res->redirect($url);
     }
 }
 
