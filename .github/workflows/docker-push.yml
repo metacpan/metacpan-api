@@ -1,0 +1,20 @@
+---
+name: docker push
+on: workflow_dispatch
+
+jobs:
+  docker:
+    runs-on: ubuntu-20.04
+    name: Docker
+    steps:
+      - uses: actions/checkout@v3
+      - name: docker build
+        run: docker build . -t metacpan/metacpan-api:latest
+      - name: push build to Docker hub
+        run: >
+          echo "${{ secrets.DOCKER_HUB_TOKEN }}" |
+          docker login
+          -u ${{ secrets.DOCKER_HUB_USER }}
+          --password-stdin
+          && docker push metacpan/metacpan-api:latest
+        if: success() && github.ref == 'refs/heads/master'
