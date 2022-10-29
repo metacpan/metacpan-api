@@ -23,6 +23,11 @@ sub nt {
 sub index : Path {
     my ( $self, $c ) = @_;
     my $req = $c->req;
+
+    # Ensure a session is created so it can be used for writing and reading
+    # Twitter credentials to use for the OAuth flow.
+    $c->session;
+
     if ( my $code = $req->parameters->{oauth_verifier} ) {
         my $nt       = $self->nt;
         my $response = $nt->oauth_access_token(
@@ -50,11 +55,9 @@ sub index : Path {
         my $nt       = $self->nt;
         my $response = $nt->oauth_request_token(
             callback => $c->uri_for( $self->action_for('index') ) );
-        my $url = $nt->oauth_authorization_url(
-            {
-                oauth_token => $response->{oauth_token},
-            }
-        );
+        my $url = $nt->oauth_authorization_url( {
+            oauth_token => $response->{oauth_token},
+        } );
 
         $c->session(
             oauth_token        => $response->{oauth_token},
