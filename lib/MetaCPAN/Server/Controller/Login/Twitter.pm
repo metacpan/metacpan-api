@@ -2,7 +2,7 @@ package MetaCPAN::Server::Controller::Login::Twitter;
 
 use Moose;
 
-use Twitter::API;
+use Twitter::API ();
 
 BEGIN { extends 'MetaCPAN::Server::Controller::Login' }
 

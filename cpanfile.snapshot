@@ -98,23 +98,6 @@ DISTRIBUTIONS
       Params::Check 0.07
       Test::More 0
       if 0
-  Archive-Tar-2.40
-    pathname: B/BI/BINGOS/Archive-Tar-2.40.tar.gz
-    provides:
-      Archive::Tar 2.40
-      Archive::Tar::Constant 2.40
-      Archive::Tar::File 2.40
-    requirements:
-      Compress::Zlib 2.015
-      ExtUtils::MakeMaker 0
-      File::Spec 0.82
-      IO::Compress::Base 2.015
-      IO::Compress::Bzip2 2.015
-      IO::Compress::Gzip 2.015
-      IO::Zlib 1.01
-      Test::Harness 2.26
-      Test::More 0
-      perl 5.00503
   Archive-Zip-1.59
     pathname: P/PH/PHRED/Archive-Zip-1.59.tar.gz
     provides:
@@ -926,6 +909,14 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
+  Class-Tiny-Chained-0.004
+    pathname: D/DB/DBOOK/Class-Tiny-Chained-0.004.tar.gz
+    provides:
+      Class::Tiny::Chained 0.004
+    requirements:
+      Class::Tiny 1.003
+      ExtUtils::MakeMaker 0
+      perl 5.006
   Class-XSAccessor-1.19
     pathname: S/SM/SMUELLER/Class-XSAccessor-1.19.tar.gz
     provides:
@@ -1059,18 +1050,6 @@ DISTRIBUTIONS
       Getopt::Std 0
       Test::More 0
       constant 1.04
-  Compress-Raw-Bzip2-2.103
-    pathname: P/PM/PMQS/Compress-Raw-Bzip2-2.103.tar.gz
-    provides:
-      Compress::Raw::Bzip2 2.103
-    requirements:
-      ExtUtils::MakeMaker 0
-  Compress-Raw-Zlib-2.105
-    pathname: P/PM/PMQS/Compress-Raw-Zlib-2.105.tar.gz
-    provides:
-      Compress::Raw::Zlib 2.105
-    requirements:
-      ExtUtils::MakeMaker 0
   Config-Any-0.32
     pathname: H/HA/HAARG/Config-Any-0.32.tar.gz
     provides:
@@ -2512,42 +2491,6 @@ DISTRIBUTIONS
       Scalar::Util 0
       Test::More 0
       perl 5.006
-  Encode-3.17
-    pathname: D/DA/DANKOGAI/Encode-3.17.tar.gz
-    provides:
-      Encode 3.17
-      Encode::Alias 2.24
-      Encode::Byte 2.04
-      Encode::CJKConstants 2.02
-      Encode::CN 2.03
-      Encode::CN::HZ 2.10
-      Encode::Config 2.05
-      Encode::EBCDIC 2.02
-      Encode::Encoder 2.03
-      Encode::Encoding 2.08
-      Encode::GSM0338 2.10
-      Encode::Guess 2.08
-      Encode::JP 2.05
-      Encode::JP::H2Z 2.02
-      Encode::JP::JIS7 2.08
-      Encode::KR 2.03
-      Encode::KR::2022_KR 2.04
-      Encode::MIME::Header 2.28
-      Encode::MIME::Header::ISO_2022_JP 1.09
-      Encode::MIME::Name 1.03
-      Encode::Symbol 2.02
-      Encode::TW 2.03
-      Encode::UTF_EBCDIC 3.17
-      Encode::Unicode 2.20
-      Encode::Unicode::UTF7 2.10
-      Encode::XS 3.17
-      Encode::utf8 3.17
-      encoding 3.00
-    requirements:
-      Exporter 5.57
-      ExtUtils::MakeMaker 0
-      Storable 0
-      parent 0.221
   Encode-Locale-1.05
     pathname: G/GA/GAAS/Encode-Locale-1.05.tar.gz
     provides:
@@ -2600,14 +2543,6 @@ DISTRIBUTIONS
       perl 5.008001
       strict 0
       warnings 0
-  Exporter-5.74
-    pathname: T/TO/TODDR/Exporter-5.74.tar.gz
-    provides:
-      Exporter 5.74
-      Exporter::Heavy 5.73
-    requirements:
-      Carp 1.05
-      ExtUtils::MakeMaker 0
   Exporter-Declare-0.114
     pathname: E/EX/EXODIST/Exporter-Declare-0.114.tar.gz
     provides:
@@ -3258,6 +3193,19 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 6.36
       Socket 1.94
       Test::More 0
+  HTTP-Thin-0.006
+    pathname: P/PE/PERIGRIN/HTTP-Thin-0.006.tar.gz
+    provides:
+      HTTP::Thin 0.006
+    requirements:
+      Class::Method::Modifiers 0
+      ExtUtils::MakeMaker 6.30
+      HTTP::Response 0
+      HTTP::Tiny 0
+      Hash::MultiValue 0
+      Safe::Isa 0
+      parent 0
+      warnings 0
   Hash-Merge-0.298
     pathname: H/HE/HERMES/Hash-Merge-0.298.tar.gz
     provides:
@@ -3310,46 +3258,6 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Scalar::Util 0
       perl 5.008001
-  IO-Compress-2.106
-    pathname: P/PM/PMQS/IO-Compress-2.106.tar.gz
-    provides:
-      Compress::Zlib 2.106
-      File::GlobMapper 1.001
-      IO::Compress undef
-      IO::Compress::Adapter::Bzip2 2.106
-      IO::Compress::Adapter::Deflate 2.106
-      IO::Compress::Adapter::Identity 2.106
-      IO::Compress::Base 2.106
-      IO::Compress::Base::Common 2.106
-      IO::Compress::Bzip2 2.106
-      IO::Compress::Deflate 2.106
-      IO::Compress::Gzip 2.106
-      IO::Compress::Gzip::Constants 2.106
-      IO::Compress::RawDeflate 2.106
-      IO::Compress::Zip 2.106
-      IO::Compress::Zip::Constants 2.106
-      IO::Compress::Zlib::Constants 2.106
-      IO::Compress::Zlib::Extra 2.106
-      IO::Uncompress::Adapter::Bunzip2 2.106
-      IO::Uncompress::Adapter::Identity 2.106
-      IO::Uncompress::Adapter::Inflate 2.106
-      IO::Uncompress::AnyInflate 2.106
-      IO::Uncompress::AnyUncompress 2.106
-      IO::Uncompress::Base 2.106
-      IO::Uncompress::Bunzip2 2.106
-      IO::Uncompress::Gunzip 2.106
-      IO::Uncompress::Inflate 2.106
-      IO::Uncompress::RawInflate 2.106
-      IO::Uncompress::Unzip 2.106
-      U64 2.106
-      Zlib::OldDeflate 2.106
-      Zlib::OldInflate 2.106
-    requirements:
-      Compress::Raw::Bzip2 2.103
-      Compress::Raw::Zlib 2.103
-      Encode 0
-      ExtUtils::MakeMaker 0
-      Scalar::Util 0
   IO-File-AtomicChange-0.05
     pathname: H/HI/HIROSE/IO-File-AtomicChange-0.05.tar.gz
     provides:
@@ -4301,7 +4209,7 @@ DISTRIBUTIONS
       File::Spec 3.00
       File::Spec::Functions 0
       if 0
-      perl 5.00503
+      perl 5.005030
       strict 0
   Module-Runtime-0.016
     pathname: Z/ZE/ZEFRAM/Module-Runtime-0.016.tar.gz
@@ -4552,6 +4460,15 @@ DISTRIBUTIONS
       Sub::Defer 2.003001
       Sub::Quote 2.003001
       perl 5.006
+  MooX-Aliases-0.001006
+    pathname: H/HA/HAARG/MooX-Aliases-0.001006.tar.gz
+    provides:
+      MooX::Aliases 0.001006
+    requirements:
+      Class::Method::Modifiers 1.05
+      Moo 1.001
+      perl 5.006
+      strictures 1
   MooX-Locale-Passthrough-0.001
     pathname: R/RE/REHSACK/MooX-Locale-Passthrough-0.001.tar.gz
     provides:
@@ -4599,6 +4516,18 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       strictures 1
+  MooX-Traits-0.005
+    pathname: T/TO/TOBYINK/MooX-Traits-0.005.tar.gz
+    provides:
+      MooX::Traits 0.005
+      MooX::Traits::Util 0.005
+    requirements:
+      Exporter::Shiny 0
+      ExtUtils::MakeMaker 6.17
+      Module::Runtime 0
+      Role::Tiny 1.000000
+      Scalar::Util 0
+      perl 5.006000
   MooX-Types-MooseLike-0.29
     pathname: M/MA/MATEU/MooX-Types-MooseLike-0.29.tar.gz
     provides:
@@ -5628,70 +5557,6 @@ DISTRIBUTIONS
       MIME::Base64 0
       Test::More 0.60_01
       perl 5.005
-  Net-Twitter-4.01043
-    pathname: M/MM/MMIMS/Net-Twitter-4.01043.tar.gz
-    provides:
-      Net::Identica 4.01043
-      Net::Twitter 4.01043
-      Net::Twitter::API 4.01043
-      Net::Twitter::Core 4.01043
-      Net::Twitter::Error 4.01043
-      Net::Twitter::Meta::Method 4.01043
-      Net::Twitter::OAuth 4.01043
-      Net::Twitter::Role::API::Lists 4.01043
-      Net::Twitter::Role::API::REST 4.01043
-      Net::Twitter::Role::API::RESTv1_1 4.01043
-      Net::Twitter::Role::API::Search 4.01043
-      Net::Twitter::Role::API::Search::Trends 4.01043
-      Net::Twitter::Role::API::TwitterVision 4.01043
-      Net::Twitter::Role::API::Upload 4.01043
-      Net::Twitter::Role::API::UploadMedia 4.01043
-      Net::Twitter::Role::AppAuth 4.01043
-      Net::Twitter::Role::AutoCursor 4.01043
-      Net::Twitter::Role::InflateObjects 4.01043
-      Net::Twitter::Role::Legacy 4.01043
-      Net::Twitter::Role::OAuth 4.01043
-      Net::Twitter::Role::RateLimit 4.01043
-      Net::Twitter::Role::RetryOnError 4.01043
-      Net::Twitter::Role::SimulateCursors 4.01043
-      Net::Twitter::Role::WrapError 4.01043
-      Net::Twitter::Role::WrapResult 4.01043
-      Net::Twitter::Search 4.01043
-      Net::Twitter::Types 4.01043
-      Net::Twitter::WrappedResult 4.01043
-    requirements:
-      Carp::Clan 0
-      Class::Load 0
-      Data::Visitor::Callback 0
-      DateTime 0
-      DateTime::Format::Strptime 0
-      Devel::StackTrace 0
-      Digest::SHA 0
-      Encode 0
-      ExtUtils::MakeMaker 7.1101
-      HTML::Entities 0
-      HTTP::Request::Common 0
-      IO::Socket::SSL 2.005
-      JSON::MaybeXS 0
-      LWP::Protocol::https 0
-      List::Util 0
-      Moose 0
-      Moose::Exporter 0
-      Moose::Meta::Method 0
-      Moose::Role 0
-      Moose::Util::TypeConstraints 0
-      MooseX::Role::Parameterized 0
-      Net::HTTP >= 0, != 6.04, != 6.05
-      Net::Netrc 0
-      Net::OAuth 0
-      Scalar::Util 0
-      Time::HiRes 0
-      Try::Tiny 0
-      URI 0
-      URI::Escape 0
-      namespace::autoclean 0
-      overload 0
-      perl 5.008001
   Number-Compare-0.03
     pathname: R/RC/RCLAMP/Number-Compare-0.03.tar.gz
     provides:
@@ -6123,7 +5988,7 @@ DISTRIBUTIONS
       File::Spec 0.80
       Scalar::Util 1.18
       Test::More 0.42
-      perl 5.00503
+      perl 5.005030
   Params-Validate-1.29
     pathname: D/DR/DROLSKY/Params-Validate-1.29.tar.gz
     provides:
@@ -6945,54 +6810,28 @@ DISTRIBUTIONS
       strict 0
       vars 0
       warnings 0
-  Pod-Simple-3.43
-    pathname: K/KH/KHW/Pod-Simple-3.43.tar.gz
+  Pod-Parser-1.65
+    pathname: M/MA/MAREKR/Pod-Parser-1.65.tar.gz
     provides:
-      Pod::Simple 3.43
-      Pod::Simple::BlackBox 3.43
-      Pod::Simple::Checker 3.43
-      Pod::Simple::Debug 3.43
-      Pod::Simple::DumpAsText 3.43
-      Pod::Simple::DumpAsXML 3.43
-      Pod::Simple::HTML 3.43
-      Pod::Simple::HTMLBatch 3.43
-      Pod::Simple::HTMLLegacy 5.01
-      Pod::Simple::JustPod undef
-      Pod::Simple::LinkSection 3.43
-      Pod::Simple::Methody 3.43
-      Pod::Simple::Progress 3.43
-      Pod::Simple::PullParser 3.43
-      Pod::Simple::PullParserEndToken 3.43
-      Pod::Simple::PullParserStartToken 3.43
-      Pod::Simple::PullParserTextToken 3.43
-      Pod::Simple::PullParserToken 3.43
-      Pod::Simple::RTF 3.43
-      Pod::Simple::Search 3.43
-      Pod::Simple::SimpleTree 3.43
-      Pod::Simple::Text 3.43
-      Pod::Simple::TextContent 3.43
-      Pod::Simple::TiedOutFH 3.43
-      Pod::Simple::Transcode 3.43
-      Pod::Simple::TranscodeDumb 3.43
-      Pod::Simple::TranscodeSmart 3.43
-      Pod::Simple::XHTML 3.43
-      Pod::Simple::XMLOutStream 3.43
+      Pod::Cache 1.65
+      Pod::Cache::Item 1.65
+      Pod::Find 1.65
+      Pod::Hyperlink 1.65
+      Pod::InputObjects 1.65
+      Pod::InputSource 1.65
+      Pod::InteriorSequence 1.65
+      Pod::List 1.65
+      Pod::Paragraph 1.65
+      Pod::ParseTree 1.65
+      Pod::ParseUtils 1.65
+      Pod::Parser 1.65
+      Pod::PlainText 2.07
+      Pod::Select 1.65
     requirements:
-      Carp 0
-      Config 0
       Cwd 0
       ExtUtils::MakeMaker 0
       File::Basename 0
-      File::Find 0
-      File::Spec 0
-      Pod::Escapes 1.04
-      Symbol 0
-      Test::More 0
-      Text::Wrap 98.112902
-      if 0
-      integer 0
-      overload 0
-      strict 0
+      Test::More 0.6
   Pod-Spell-1.20
     pathname: D/DO/DOLMEN/Pod-Spell-1.20.tar.gz
     provides:
@@ -7086,7 +6925,7 @@ DISTRIBUTIONS
     requirements:
       Config 0
       ExtUtils::MakeMaker 0
-      perl 5.01
+      perl 5.010
       strict 0
       vars 0
       warnings 0
@@ -7132,16 +6971,6 @@ DISTRIBUTIONS
       Exporter 5.57
       ExtUtils::MakeMaker 0
       Scalar::Util 0
-      perl 5.006
-  Scalar-List-Utils-1.62
-    pathname: P/PE/PEVANS/Scalar-List-Utils-1.62.tar.gz
-    provides:
-      List::Util 1.62
-      List::Util::XS 1.62
-      Scalar::Util 1.62
-      Sub::Util 1.62
-    requirements:
-      ExtUtils::MakeMaker 0
       perl 5.006
   Scope-Guard-0.21
     pathname: C/CH/CHOCOLATE/Scope-Guard-0.21.tar.gz
@@ -7662,60 +7491,6 @@ DISTRIBUTIONS
       Try::Tiny 0.07
       strict 0
       warnings 0
-  Test-Harness-3.44
-    pathname: L/LE/LEONT/Test-Harness-3.44.tar.gz
-    provides:
-      App::Prove 3.44
-      App::Prove::State 3.44
-      App::Prove::State::Result 3.44
-      App::Prove::State::Result::Test 3.44
-      Harness::Hook undef
-      TAP::Base 3.44
-      TAP::Formatter::Base 3.44
-      TAP::Formatter::Color 3.44
-      TAP::Formatter::Console 3.44
-      TAP::Formatter::Console::ParallelSession 3.44
-      TAP::Formatter::Console::Session 3.44
-      TAP::Formatter::File 3.44
-      TAP::Formatter::File::Session 3.44
-      TAP::Formatter::Session 3.44
-      TAP::Harness 3.44
-      TAP::Harness::Env 3.44
-      TAP::Object 3.44
-      TAP::Parser 3.44
-      TAP::Parser::Aggregator 3.44
-      TAP::Parser::Grammar 3.44
-      TAP::Parser::Iterator 3.44
-      TAP::Parser::Iterator::Array 3.44
-      TAP::Parser::Iterator::Process 3.44
-      TAP::Parser::Iterator::Stream 3.44
-      TAP::Parser::IteratorFactory 3.44
-      TAP::Parser::Multiplexer 3.44
-      TAP::Parser::Result 3.44
-      TAP::Parser::Result::Bailout 3.44
-      TAP::Parser::Result::Comment 3.44
-      TAP::Parser::Result::Plan 3.44
-      TAP::Parser::Result::Pragma 3.44
-      TAP::Parser::Result::Test 3.44
-      TAP::Parser::Result::Unknown 3.44
-      TAP::Parser::Result::Version 3.44
-      TAP::Parser::Result::YAML 3.44
-      TAP::Parser::ResultFactory 3.44
-      TAP::Parser::Scheduler 3.44
-      TAP::Parser::Scheduler::Job 3.44
-      TAP::Parser::Scheduler::Spinner 3.44
-      TAP::Parser::Source 3.44
-      TAP::Parser::SourceHandler 3.44
-      TAP::Parser::SourceHandler::Executable 3.44
-      TAP::Parser::SourceHandler::File 3.44
-      TAP::Parser::SourceHandler::Handle 3.44
-      TAP::Parser::SourceHandler::Perl 3.44
-      TAP::Parser::SourceHandler::RawTAP 3.44
-      TAP::Parser::YAMLish::Reader 3.44
-      TAP::Parser::YAMLish::Writer 3.44
-      Test::Harness 3.44
-    requirements:
-      ExtUtils::MakeMaker 0
   Test-LongString-0.17
     pathname: R/RG/RGARCIA/Test-LongString-0.17.tar.gz
     provides:
@@ -7829,89 +7604,6 @@ DISTRIBUTIONS
       Test::Builder::Module 0
       Test::More 0.88
       perl 5.008_001
-  Test-Simple-1.302190
-    pathname: E/EX/EXODIST/Test-Simple-1.302190.tar.gz
-    provides:
-      Test2 1.302190
-      Test2::API 1.302190
-      Test2::API::Breakage 1.302190
-      Test2::API::Context 1.302190
-      Test2::API::Instance 1.302190
-      Test2::API::InterceptResult 1.302190
-      Test2::API::InterceptResult::Event 1.302190
-      Test2::API::InterceptResult::Facet 1.302190
-      Test2::API::InterceptResult::Hub 1.302190
-      Test2::API::InterceptResult::Squasher 1.302190
-      Test2::API::Stack 1.302190
-      Test2::Event 1.302190
-      Test2::Event::Bail 1.302190
-      Test2::Event::Diag 1.302190
-      Test2::Event::Encoding 1.302190
-      Test2::Event::Exception 1.302190
-      Test2::Event::Fail 1.302190
-      Test2::Event::Generic 1.302190
-      Test2::Event::Note 1.302190
-      Test2::Event::Ok 1.302190
-      Test2::Event::Pass 1.302190
-      Test2::Event::Plan 1.302190
-      Test2::Event::Skip 1.302190
-      Test2::Event::Subtest 1.302190
-      Test2::Event::TAP::Version 1.302190
-      Test2::Event::V2 1.302190
-      Test2::Event::Waiting 1.302190
-      Test2::EventFacet 1.302190
-      Test2::EventFacet::About 1.302190
-      Test2::EventFacet::Amnesty 1.302190
-      Test2::EventFacet::Assert 1.302190
-      Test2::EventFacet::Control 1.302190
-      Test2::EventFacet::Error 1.302190
-      Test2::EventFacet::Hub 1.302190
-      Test2::EventFacet::Info 1.302190
-      Test2::EventFacet::Info::Table 1.302190
-      Test2::EventFacet::Meta 1.302190
-      Test2::EventFacet::Parent 1.302190
-      Test2::EventFacet::Plan 1.302190
-      Test2::EventFacet::Render 1.302190
-      Test2::EventFacet::Trace 1.302190
-      Test2::Formatter 1.302190
-      Test2::Formatter::TAP 1.302190
-      Test2::Hub 1.302190
-      Test2::Hub::Interceptor 1.302190
-      Test2::Hub::Interceptor::Terminator 1.302190
-      Test2::Hub::Subtest 1.302190
-      Test2::IPC 1.302190
-      Test2::IPC::Driver 1.302190
-      Test2::IPC::Driver::Files 1.302190
-      Test2::Tools::Tiny 1.302190
-      Test2::Util 1.302190
-      Test2::Util::ExternalMeta 1.302190
-      Test2::Util::Facets2Legacy 1.302190
-      Test2::Util::HashBase 1.302190
-      Test2::Util::Trace 1.302190
-      Test::Builder 1.302190
-      Test::Builder::Formatter 1.302190
-      Test::Builder::IO::Scalar 2.114
-      Test::Builder::Module 1.302190
-      Test::Builder::Tester 1.302190
-      Test::Builder::Tester::Color 1.302190
-      Test::Builder::Tester::Tie 1.302190
-      Test::Builder::TodoDiag 1.302190
-      Test::More 1.302190
-      Test::Simple 1.302190
-      Test::Tester 1.302190
-      Test::Tester::Capture 1.302190
-      Test::Tester::CaptureRunner 1.302190
-      Test::Tester::Delegate 1.302190
-      Test::use::ok 1.302190
-      ok 1.302190
-    requirements:
-      ExtUtils::MakeMaker 0
-      File::Spec 0
-      File::Temp 0
-      Scalar::Util 1.13
-      Storable 0
-      perl 5.006002
-      utf8 0
   Test-TCP-2.19
     pathname: T/TO/TOKUHIROM/Test-TCP-2.19.tar.gz
     provides:
@@ -7998,7 +7690,7 @@ DISTRIBUTIONS
       Exporter 0
       ExtUtils::MakeMaker 0
       constant 0
-      perl 5.00503
+      perl 5.005030
   Text-SimpleTable-2.03
     pathname: M/MR/MRAMBERG/Text-SimpleTable-2.03.tar.gz
     provides:
@@ -8174,6 +7866,50 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
+  Twitter-API-1.0006
+    pathname: M/MM/MMIMS/Twitter-API-1.0006.tar.gz
+    provides:
+      Twitter::API 1.0006
+      Twitter::API::Context 1.0006
+      Twitter::API::Error 1.0006
+      Twitter::API::Role::RequestArgs 1.0006
+      Twitter::API::Trait::ApiMethods 1.0006
+      Twitter::API::Trait::AppAuth 1.0006
+      Twitter::API::Trait::DecodeHtmlEntities 1.0006
+      Twitter::API::Trait::Enchilada 1.0006
+      Twitter::API::Trait::Migration 1.0006
+      Twitter::API::Trait::NormalizeBooleans 1.0006
+      Twitter::API::Trait::RateLimiting 1.0006
+      Twitter::API::Trait::RetryOnError 1.0006
+      Twitter::API::Util 1.0006
+    requirements:
+      Carp 0
+      Digest::SHA 0
+      Encode 0
+      HTML::Entities 0
+      HTTP::Request::Common 0
+      HTTP::Thin 0
+      IO::Socket::SSL 0
+      JSON::MaybeXS 0
+      Module::Build::Tiny 0.034
+      Module::Runtime 0
+      Moo 0
+      Moo::Role 0
+      MooX::Aliases 0
+      MooX::Traits 0
+      Ref::Util 0
+      Scalar::Util 0
+      StackTrace::Auto 0
+      Sub::Exporter::Progressive 0
+      Throwable 0
+      Time::HiRes 0
+      Time::Local 0
+      Try::Tiny 0
+      URI 0
+      URL::Encode 0
+      WWW::OAuth 0.006
+      namespace::clean 0
+      perl v5.14.1
   Type-Tiny-2.000001
     pathname: T/TO/TOBYINK/Type-Tiny-2.000001.tar.gz
     provides:
@@ -8449,6 +8185,18 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 6.30
       URI 0
+  URL-Encode-0.03
+    pathname: C/CH/CHANSEN/URL-Encode-0.03.tar.gz
+    provides:
+      URL::Encode 0.03
+      URL::Encode::PP 0.03
+    requirements:
+      Carp 0
+      Exporter 0
+      ExtUtils::MakeMaker 6.59
+      Test::More 0.88
+      XSLoader 0
+      perl 5.008001
   UUID-Tiny-1.04
     pathname: C/CA/CAUGUSTIN/UUID-Tiny-1.04.tar.gz
     provides:
@@ -8530,6 +8278,28 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
+  WWW-OAuth-1.000
+    pathname: D/DB/DBOOK/WWW-OAuth-1.000.tar.gz
+    provides:
+      WWW::OAuth 1.000
+      WWW::OAuth::Request 1.000
+      WWW::OAuth::Request::Basic 1.000
+      WWW::OAuth::Request::HTTP_Request 1.000
+      WWW::OAuth::Request::Mojo 1.000
+      WWW::OAuth::Util 1.000
+    requirements:
+      Carp 0
+      Class::Tiny::Chained 0
+      Digest::SHA 0
+      ExtUtils::MakeMaker 0
+      List::Util 1.33
+      Module::Runtime 0
+      Role::Tiny 2.000000
+      Scalar::Util 0
+      URI 1.28
+      URI::Escape 3.26
+      WWW::Form::UrlEncoded 0.23
+      perl 5.008001
   WWW-RobotRules-6.02
     pathname: G/GA/GAAS/WWW-RobotRules-6.02.tar.gz
     provides:
@@ -8573,7 +8343,7 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       LWP::UserAgent 0
       Test::More 0
-      perl 5.00405
+      perl 5.004050
   XML-SAX-0.99
     pathname: G/GR/GRANTM/XML-SAX-0.99.tar.gz
     provides:
@@ -8806,20 +8576,6 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Package::Stash 0.23
       perl 5.008001
-  podlators-4.14
-    pathname: R/RR/RRA/podlators-4.14.tar.gz
-    provides:
-      Pod undef
-      Pod::Man 4.14
-      Pod::ParseLink 4.14
-      Pod::Text 4.14
-      Pod::Text::Color 4.14
-      Pod::Text::Overstrike 4.14
-      Pod::Text::Termcap 4.14
-    requirements:
-      ExtUtils::MakeMaker 0
-      Pod::Simple 3.06
-      perl 5.008
   strictures-2.000003
     pathname: H/HA/HAARG/strictures-2.000003.tar.gz
     provides:
@@ -8830,13 +8586,3 @@ DISTRIBUTIONS
       indirect 0
       multidimensional 0
       perl 5.006
-  version-0.9929
-    pathname: L/LE/LEONT/version-0.9929.tar.gz
-    provides:
-      version 0.9929
-      version::regex 0.9929
-      version::vpp 0.9929
-      version::vxs 0.9929
-    requirements:
-      ExtUtils::MakeMaker 0
-      perl 5.006002
