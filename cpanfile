@@ -125,7 +125,6 @@ requires 'Mozilla::CA', '20211001';
 requires 'namespace::autoclean';
 requires 'Net::Fastly', '1.12';
 requires 'Net::HTTP', '6.22'; # LWP::UserAgent
-requires 'Net::Twitter', '4.01043';
 requires 'OrePAN2', '0.48';
 requires 'Parse::CPAN::Packages::Fast', '0.09';
 requires 'Parse::CSV', '2.04';
@@ -161,6 +160,7 @@ requires 'Try::Tiny', '0.30';
 requires 'Type::Tiny', '2.000001';
 requires 'Types::Path::Tiny';
 requires 'Types::URI';
+requires 'Twitter::API', '1.0006';
 requires 'URI', '5.10';
 requires 'version', '0.9929';
 requires 'XML::Simple';

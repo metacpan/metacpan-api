@@ -926,6 +926,14 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
+  Class-Tiny-Chained-0.004
+    pathname: D/DB/DBOOK/Class-Tiny-Chained-0.004.tar.gz
+    provides:
+      Class::Tiny::Chained 0.004
+    requirements:
+      Class::Tiny 1.003
+      ExtUtils::MakeMaker 0
+      perl 5.006
   Class-XSAccessor-1.19
     pathname: S/SM/SMUELLER/Class-XSAccessor-1.19.tar.gz
     provides:
@@ -3258,6 +3266,19 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 6.36
       Socket 1.94
       Test::More 0
+  HTTP-Thin-0.006
+    pathname: P/PE/PERIGRIN/HTTP-Thin-0.006.tar.gz
+    provides:
+      HTTP::Thin 0.006
+    requirements:
+      Class::Method::Modifiers 0
+      ExtUtils::MakeMaker 6.30
+      HTTP::Response 0
+      HTTP::Tiny 0
+      Hash::MultiValue 0
+      Safe::Isa 0
+      parent 0
+      warnings 0
   Hash-Merge-0.298
     pathname: H/HE/HERMES/Hash-Merge-0.298.tar.gz
     provides:
@@ -4552,6 +4573,15 @@ DISTRIBUTIONS
       Sub::Defer 2.003001
       Sub::Quote 2.003001
       perl 5.006
+  MooX-Aliases-0.001006
+    pathname: H/HA/HAARG/MooX-Aliases-0.001006.tar.gz
+    provides:
+      MooX::Aliases 0.001006
+    requirements:
+      Class::Method::Modifiers 1.05
+      Moo 1.001
+      perl 5.006
+      strictures 1
   MooX-Locale-Passthrough-0.001
     pathname: R/RE/REHSACK/MooX-Locale-Passthrough-0.001.tar.gz
     provides:
@@ -4599,6 +4629,18 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       strictures 1
+  MooX-Traits-0.005
+    pathname: T/TO/TOBYINK/MooX-Traits-0.005.tar.gz
+    provides:
+      MooX::Traits 0.005
+      MooX::Traits::Util 0.005
+    requirements:
+      Exporter::Shiny 0
+      ExtUtils::MakeMaker 6.17
+      Module::Runtime 0
+      Role::Tiny 1.000000
+      Scalar::Util 0
+      perl 5.006000
   MooX-Types-MooseLike-0.29
     pathname: M/MA/MATEU/MooX-Types-MooseLike-0.29.tar.gz
     provides:
@@ -5628,70 +5670,6 @@ DISTRIBUTIONS
       MIME::Base64 0
       Test::More 0.60_01
       perl 5.005
-  Net-Twitter-4.01043
-    pathname: M/MM/MMIMS/Net-Twitter-4.01043.tar.gz
-    provides:
-      Net::Identica 4.01043
-      Net::Twitter 4.01043
-      Net::Twitter::API 4.01043
-      Net::Twitter::Core 4.01043
-      Net::Twitter::Error 4.01043
-      Net::Twitter::Meta::Method 4.01043
-      Net::Twitter::OAuth 4.01043
-      Net::Twitter::Role::API::Lists 4.01043
-      Net::Twitter::Role::API::REST 4.01043
-      Net::Twitter::Role::API::RESTv1_1 4.01043
-      Net::Twitter::Role::API::Search 4.01043
-      Net::Twitter::Role::API::Search::Trends 4.01043
-      Net::Twitter::Role::API::TwitterVision 4.01043
-      Net::Twitter::Role::API::Upload 4.01043
-      Net::Twitter::Role::API::UploadMedia 4.01043
-      Net::Twitter::Role::AppAuth 4.01043
-      Net::Twitter::Role::AutoCursor 4.01043
-      Net::Twitter::Role::InflateObjects 4.01043
-      Net::Twitter::Role::Legacy 4.01043
-      Net::Twitter::Role::OAuth 4.01043
-      Net::Twitter::Role::RateLimit 4.01043
-      Net::Twitter::Role::RetryOnError 4.01043
-      Net::Twitter::Role::SimulateCursors 4.01043
-      Net::Twitter::Role::WrapError 4.01043
-      Net::Twitter::Role::WrapResult 4.01043
-      Net::Twitter::Search 4.01043
-      Net::Twitter::Types 4.01043
-      Net::Twitter::WrappedResult 4.01043
-    requirements:
-      Carp::Clan 0
-      Class::Load 0
-      Data::Visitor::Callback 0
-      DateTime 0
-      DateTime::Format::Strptime 0
-      Devel::StackTrace 0
-      Digest::SHA 0
-      Encode 0
-      ExtUtils::MakeMaker 7.1101
-      HTML::Entities 0
-      HTTP::Request::Common 0
-      IO::Socket::SSL 2.005
-      JSON::MaybeXS 0
-      LWP::Protocol::https 0
-      List::Util 0
-      Moose 0
-      Moose::Exporter 0
-      Moose::Meta::Method 0
-      Moose::Role 0
-      Moose::Util::TypeConstraints 0
-      MooseX::Role::Parameterized 0
-      Net::HTTP >= 0, != 6.04, != 6.05
-      Net::Netrc 0
-      Net::OAuth 0
-      Scalar::Util 0
-      Time::HiRes 0
-      Try::Tiny 0
-      URI 0
-      URI::Escape 0
-      namespace::autoclean 0
-      overload 0
-      perl 5.008001
   Number-Compare-0.03
     pathname: R/RC/RCLAMP/Number-Compare-0.03.tar.gz
     provides:
@@ -8174,6 +8152,50 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
+  Twitter-API-1.0006
+    pathname: M/MM/MMIMS/Twitter-API-1.0006.tar.gz
+    provides:
+      Twitter::API 1.0006
+      Twitter::API::Context 1.0006
+      Twitter::API::Error 1.0006
+      Twitter::API::Role::RequestArgs 1.0006
+      Twitter::API::Trait::ApiMethods 1.0006
+      Twitter::API::Trait::AppAuth 1.0006
+      Twitter::API::Trait::DecodeHtmlEntities 1.0006
+      Twitter::API::Trait::Enchilada 1.0006
+      Twitter::API::Trait::Migration 1.0006
+      Twitter::API::Trait::NormalizeBooleans 1.0006
+      Twitter::API::Trait::RateLimiting 1.0006
+      Twitter::API::Trait::RetryOnError 1.0006
+      Twitter::API::Util 1.0006
+    requirements:
+      Carp 0
+      Digest::SHA 0
+      Encode 0
+      HTML::Entities 0
+      HTTP::Request::Common 0
+      HTTP::Thin 0
+      IO::Socket::SSL 0
+      JSON::MaybeXS 0
+      Module::Build::Tiny 0.034
+      Module::Runtime 0
+      Moo 0
+      Moo::Role 0
+      MooX::Aliases 0
+      MooX::Traits 0
+      Ref::Util 0
+      Scalar::Util 0
+      StackTrace::Auto 0
+      Sub::Exporter::Progressive 0
+      Throwable 0
+      Time::HiRes 0
+      Time::Local 0
+      Try::Tiny 0
+      URI 0
+      URL::Encode 0
+      WWW::OAuth 0.006
+      namespace::clean 0
+      perl v5.14.1
   Type-Tiny-2.000001
     pathname: T/TO/TOBYINK/Type-Tiny-2.000001.tar.gz
     provides:
@@ -8449,6 +8471,18 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 6.30
       URI 0
+  URL-Encode-0.03
+    pathname: C/CH/CHANSEN/URL-Encode-0.03.tar.gz
+    provides:
+      URL::Encode 0.03
+      URL::Encode::PP 0.03
+    requirements:
+      Carp 0
+      Exporter 0
+      ExtUtils::MakeMaker 6.59
+      Test::More 0.88
+      XSLoader 0
+      perl 5.008001
   UUID-Tiny-1.04
     pathname: C/CA/CAUGUSTIN/UUID-Tiny-1.04.tar.gz
     provides:
@@ -8530,6 +8564,28 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
+  WWW-OAuth-1.000
+    pathname: D/DB/DBOOK/WWW-OAuth-1.000.tar.gz
+    provides:
+      WWW::OAuth 1.000
+      WWW::OAuth::Request 1.000
+      WWW::OAuth::Request::Basic 1.000
+      WWW::OAuth::Request::HTTP_Request 1.000
+      WWW::OAuth::Request::Mojo 1.000
+      WWW::OAuth::Util 1.000
+    requirements:
+      Carp 0
+      Class::Tiny::Chained 0
+      Digest::SHA 0
+      ExtUtils::MakeMaker 0
+      List::Util 1.33
+      Module::Runtime 0
+      Role::Tiny 2.000000
+      Scalar::Util 0
+      URI 1.28
+      URI::Escape 3.26
+      WWW::Form::UrlEncoded 0.23
+      perl 5.008001
   WWW-RobotRules-6.02
     pathname: G/GA/GAAS/WWW-RobotRules-6.02.tar.gz
     provides:
