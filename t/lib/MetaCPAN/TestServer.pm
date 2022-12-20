@@ -10,6 +10,7 @@ use MetaCPAN::Script::Favorite       ();
 use MetaCPAN::Script::First          ();
 use MetaCPAN::Script::Latest         ();
 use MetaCPAN::Script::Mapping        ();
+use MetaCPAN::Script::Mapping::Cover ();
 use MetaCPAN::Script::Mirrors        ();
 use MetaCPAN::Script::Package        ();
 use MetaCPAN::Script::Permission     ();
@@ -62,6 +63,8 @@ sub setup {
     my $self = shift;
 
     $self->es_client;
+
+    # Deploy project mappings
     $self->put_mappings;
 }
 
@@ -161,7 +164,7 @@ sub wait_for_es {
     $self->es_client->indices->refresh;
 }
 
-sub verify_mappings {
+sub check_mappings {
     my $self           = $_[0];
     my %hshtestindices = (
         'cover'       => 'yellow',
@@ -189,7 +192,7 @@ sub verify_mappings {
         ok( defined $hshtestindices{$_}, "indice '$_' is configured" )
             foreach ( keys %{ $mapping->indices_info } );
     };
-    subtest 'verify indix health' => sub {
+    subtest 'verify index health' => sub {
         foreach ( keys %hshtestindices ) {
             ok( defined $mapping->indices_info->{$_},
                 "indice '$_' was created" );
@@ -215,7 +218,7 @@ sub put_mappings {
     local @ARGV = qw(mapping --delete);
     ok( MetaCPAN::Script::Mapping->new_with_options( $self->_config )->run,
         'put mapping' );
-    $self->verify_mappings;
+    $self->check_mappings;
     $self->wait_for_es();
 }
 
@@ -223,9 +226,8 @@ sub index_releases {
     my $self = shift;
     my %args = @_;
 
-    local @ARGV = (
-        'release', $ENV{MC_RELEASE} ? $ENV{MC_RELEASE} : $self->_cpan_dir
-    );
+    local @ARGV = ( 'release',
+        $ENV{MC_RELEASE} ? $ENV{MC_RELEASE} : $self->_cpan_dir );
     ok(
         MetaCPAN::Script::Release->new_with_options( %{ $self->_config },
             %args )->run,
@@ -346,6 +348,117 @@ sub prepare_user_test_data {
         ),
         'put bot user'
     );
+}
+
+sub test_mappings {
+    my $self = $_[0];
+
+    $self->test_index_missing;
+    $self->test_field_mismatch;
+}
+
+sub test_index_missing {
+    my $self = $_[0];
+
+    subtest 'missing index' => sub {
+        my $scoverindexjson = MetaCPAN::Script::Mapping::Cover::mapping;
+
+        subtest 'delete cover index' => sub {
+            local @ARGV = qw(mapping --delete_index cover);
+            my $mapping
+                = MetaCPAN::Script::Mapping->new_with_options(
+                $self->_config );
+
+            ok( $mapping->run, "deletion 'cover' succeeds" );
+            is( $mapping->exit_code, 0, "Exit Code '0' - No Error" );
+        };
+        subtest 'mapping verification fails' => sub {
+            local @ARGV = qw(mapping --verify);
+            my $mapping
+                = MetaCPAN::Script::Mapping->new_with_options(
+                $self->_config );
+
+            is( $mapping->run, 0, "verification execution fails" );
+            is( $mapping->exit_code, 1,
+                "Exit Code '1' - Verification Error" );
+        };
+        subtest 're-create cover index' => sub {
+            local @ARGV = (
+                'mapping', '--create_index',
+                'cover',   '--patch_mapping',
+                qq({ "cover": $scoverindexjson })
+            );
+            my $mapping
+                = MetaCPAN::Script::Mapping->new_with_options(
+                $self->_config );
+
+            ok( $mapping->run, "creation 'cover' succeeds" );
+            is( $mapping->exit_code, 0, "Exit Code '0' - No Error" );
+        };
+    };
+}
+
+sub test_field_mismatch {
+    my $self = $_[0];
+
+    subtest 'field mismatch' => sub {
+        my $sfieldjson = q({
+   "properties" : {
+      "version" : {
+         "index" : "not_analyzed",
+         "ignore_above" : 2048,
+         "type" : "string"
+      }
+   }
+});
+        my $sfieldchangejson = q({
+   "properties" : {
+      "version" : {
+         "type" : "string",
+         "index" : "not_analyzed",
+         "ignore_above" : 1024
+      }
+   }
+});
+
+        subtest 'mapping change field' => sub {
+            local @ARGV = (
+                'mapping', '--update_index',
+                'cover',   '--patch_mapping',
+                qq({ "cover": $sfieldchangejson })
+            );
+            my $mapping
+                = MetaCPAN::Script::Mapping->new_with_options(
+                $self->_config );
+
+            ok( $mapping->run, "change 'cover' succeeds" );
+
+            is( $mapping->exit_code, 0, "Exit Code '0' - No Error" );
+        };
+        subtest 'field verification fails' => sub {
+            local @ARGV = qw(mapping --verify);
+            my $mapping
+                = MetaCPAN::Script::Mapping->new_with_options(
+                $self->_config );
+
+            is( $mapping->run, 0, "verification fails" );
+            is( $mapping->exit_code, 1,
+                "Exit Code '1' - Verification Error" );
+        };
+        subtest 'mapping re-establish field' => sub {
+            local @ARGV = (
+                'mapping', '--update_index',
+                'cover',   '--patch_mapping',
+                qq({ "cover": $sfieldjson })
+            );
+            my $mapping
+                = MetaCPAN::Script::Mapping->new_with_options(
+                $self->_config );
+
+            ok( $mapping->run, "re-establish 'cover' succeeds" );
+            is( $mapping->exit_code, 0, "Exit Code '0' - No Error" );
+        };
+    };
 }
 
 __PACKAGE__->meta->make_immutable;
