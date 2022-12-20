@@ -163,11 +163,9 @@ sub run {
 
         if ( $self->arg_verify_mapping ) {
             $self->check_health;
-            unless (
-                $self->mappings_valid(
-                    $self->_build_mapping, $self->_build_aliases
-                )
-                )
+            unless ( $self->mappings_valid(
+                $self->_build_mapping, $self->_build_aliases
+            ) )
             {
                 $self->print_error("Indices Verification has failed!");
                 $self->exit_code(1);
@@ -486,7 +484,7 @@ sub _build_aliases {
 }
 
 sub deploy_mapping {
-    my $self       = shift;
+    my $self          = shift;
     my $is_mapping_ok = 0;
 
     $self->are_you_sure(
