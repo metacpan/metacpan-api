@@ -64,6 +64,9 @@ sub setup {
 
     $self->es_client;
 
+    # Run the Delete Index Tests before mapping deployment
+    $self->test_delete_mappings;
+
     # Deploy project mappings
     $self->put_mappings;
 }
@@ -349,6 +352,102 @@ sub prepare_user_test_data {
         ),
         'put bot user'
     );
+}
+
+sub test_delete_mappings {
+    my $self = $_[0];
+
+    $self->test_delete_fails;
+    $self->test_delete_all;
+}
+
+sub test_delete_fails {
+    my $self = $_[0];
+
+    my $iexitcode;
+    my $irunok;
+
+    subtest 'delete all not permitted' => sub {
+
+        # mapping script - delete indices
+        {
+            local @ARGV = qw(mapping --delete --all);
+            local %ENV  = (%ENV);
+
+            delete $ENV{'PLACK_ENV'};
+            delete $ENV{'MOJO_MODE'};
+
+            $irunok    = MetaCPAN::Script::Runner::run;
+            $iexitcode = $MetaCPAN::Script::Runner::EXIT_CODE;
+        }
+
+        ok( !$irunok, "delete all fails" );
+        is( $iexitcode, 1, "Exit Code '1' - Permission Error" );
+    };
+}
+
+sub test_delete_all {
+    my $self = $_[0];
+
+    subtest 'delete all deletes unknown index' => sub {
+        subtest 'create index' => sub {
+            my $smockindexjson = q({
+   "mock_index" : {
+      "properties" : {
+         "mock_field" : {
+            "index" : "not_analyzed",
+            "ignore_above" : 2048,
+            "type" : "string"
+         }
+      }
+   }
+});
+
+            local @ARGV = (
+                'mapping',    '--create_index',
+                'mock_index', '--patch_mapping',
+                $smockindexjson
+            );
+
+            ok(
+                MetaCPAN::Script::Runner::run,
+                "creation 'mock_index' succeeds"
+            );
+            is( $MetaCPAN::Script::Runner::EXIT_CODE,
+                0, "Exit Code '0' - No Error" );
+        };
+        subtest 'info shows unknonwn index' => sub {
+            local @ARGV = ( 'mapping', '--show_cluster_info' );
+            my $mapping = MetaCPAN::Script::Mapping->new_with_options(
+                $self->_config );
+
+            ok( $mapping->run, "show info succeeds" );
+            is( $mapping->exit_code, 0, "Exit Code '0' - No Error" );
+
+            ok( defined $mapping->indices_info, 'Index Info built' );
+            ok( defined $mapping->indices_info->{'mock_index'},
+                'Unknown Index printed' );
+        };
+        subtest 'delete all succeeds' => sub {
+            local @ARGV = qw(mapping --delete --all);
+
+            ok( MetaCPAN::Script::Runner::run, "delete all succeeds" );
+            is( $MetaCPAN::Script::Runner::EXIT_CODE,
+                0, "Exit Code '0' - No Error" );
+        };
+        subtest 'info does not show unknown index' => sub {
+            local @ARGV = ( 'mapping', '--show_cluster_info' );
+            my $mapping = MetaCPAN::Script::Mapping->new_with_options(
+                $self->_config );
+
+            ok( $mapping->run, "show info succeeds" );
+            is( $mapping->exit_code, 0, "Exit Code '0' - No Error" );
+
+            ok( defined $mapping->indices_info, 'Index Info built' );
+            ok( !defined $mapping->indices_info->{'mock_index'},
+                'Unknown Index printed' );
+        };
+    };
 }
 
 sub test_mappings {
