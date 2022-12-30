@@ -431,6 +431,9 @@ sub test_delete_all {
         subtest 'delete all succeeds' => sub {
             local @ARGV = qw(mapping --delete --all);
 
+				    print STDERR "PLACK_ENV: '" . $ENV{'PLACK_ENV'} . "'\n";
+				    print STDERR "MOJO_MODE: '" . $ENV{'MOJO_MODE'} . "'\n";
+
             ok( MetaCPAN::Script::Runner::run, "delete all succeeds" );
             is( $MetaCPAN::Script::Runner::EXIT_CODE,
                 0, "Exit Code '0' - No Error" );
