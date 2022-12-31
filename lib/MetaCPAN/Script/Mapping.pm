@@ -44,6 +44,15 @@ has arg_deploy_mapping => (
     documentation => 'delete index if it exists already',
 );
 
+has arg_delete_all => (
+    init_arg      => 'all',
+    is            => 'ro',
+    isa           => Bool,
+    default       => 0,
+    documentation =>
+        'delete ALL existing indices (only effective in combination with "--delete")',
+);
+
 has arg_verify_mapping => (
     init_arg      => 'verify',
     is            => 'ro',
@@ -146,15 +155,28 @@ has delete_from_type => (
 sub run {
     my $self = shift;
 
+    # Wait for the ElasticSearch Engine to become ready
     if ( $self->await ) {
-        $self->delete_index if $self->arg_delete_index;
-        $self->create_index if $self->arg_create_index;
-        $self->update_index if $self->arg_update_index;
-        $self->copy_type    if $self->copy_to_index;
-        $self->empty_type   if $self->delete_from_type;
-        $self->list_types   if $self->arg_list_types;
-
-        if ( $self->arg_deploy_mapping ) {
+        if ( $self->arg_delete_index ) {
+            $self->delete_index;
+        }
+        elsif ( $self->arg_create_index ) {
+            $self->create_index;
+        }
+        elsif ( $self->arg_update_index ) {
+            $self->update_index;
+        }
+        elsif ( $self->copy_to_index ) {
+            $self->copy_type;
+        }
+        elsif ( $self->delete_from_type ) {
+            $self->empty_type;
+        }
+        elsif ( $self->arg_deploy_mapping ) {
+            if ( $self->arg_delete_all ) {
+                $self->check_health;
+                $self->delete_all;
+            }
             unless ( $self->deploy_mapping ) {
                 $self->print_error("Indices Re-creation has failed!");
                 $self->exit_code(1);
@@ -170,6 +192,10 @@ sub run {
                 $self->print_error("Indices Verification has failed!");
                 $self->exit_code(1);
             }
+        }
+
+        if ( $self->arg_list_types ) {
+            $self->list_types;
         }
 
         if ( $self->arg_cluster_info ) {
@@ -211,6 +237,39 @@ sub delete_index {
     $self->are_you_sure("Index $name will be deleted !!!");
 
     $self->_delete_index($name);
+}
+
+sub delete_all {
+    my $self                = $_[0];
+    my $runtime_environment = 'production';
+    my $is_development      = 0;
+
+    $runtime_environment = $ENV{'PLACK_ENV'}
+        if ( defined $ENV{'PLACK_ENV'} );
+    $runtime_environment = $ENV{'MOJO_MODE'}
+        if ( defined $ENV{'MOJO_MODE'} );
+
+    $is_development = 1
+        if ( $runtime_environment eq 'development'
+        || $runtime_environment eq 'testing' );
+
+    if ($is_development) {
+        my $name = undef;
+
+        $self->are_you_sure("ALL Indices will be deleted !!!");
+
+        foreach $name ( keys %{ $self->indices_info } ) {
+            $self->_delete_index($name);
+        }
+    }
+    else {
+        #Set System Error: 1 - EPERM - Operation not permitted
+        $self->exit_code(1);
+        $self->print_error("Operation not permitted!");
+        $self->handle_error(
+            "Operation not permitted in environment: $runtime_environment",
+            1 );
+    }
 }
 
 sub _delete_index {
@@ -847,6 +906,7 @@ MetaCPAN::Script::Mapping - Script to set the index and mapping the types
 
  # bin/metacpan mapping --show_cluster_info   # show basic info about the cluster, indices and aliases
  # bin/metacpan mapping --delete
+ # bin/metacpan mapping --delete --all        # deletes ALL indices in the cluster
  # bin/metacpan mapping --verify              # compare deployed indices and aliases with project definitions
  # bin/metacpan mapping --list_types
  # bin/metacpan mapping --delete_index xxx
@@ -895,6 +955,24 @@ B<Exit Code:> If the mapping deployment fails it exits the Script with B<Exit Co
 See L<Method C<deploy_mapping()>>
 
 See L<Method C<mappings_valid()>>
+
+See L<Method C<MetaCPAN::Role::Script::check_health()>>
+
+=item Option C<--all>
+
+This option is only effective in combination with Option C<--delete>.
+It uses the information gathered by C<MetaCPAN::Role::Script::check_health()> to delete
+B<ALL> indices in the I<ElasticSearch> Cluster.
+This option is usefull to reconstruct a broken I<ElasticSearch> Cluster
+
+    bin/metacpan mapping --delete --all
+
+B<Exceptions:> It will throw an exceptions when not performed in an development or
+testing environment.
+
+See L<Option C<--delete>>
+
+See L<Method C<deploy_mapping()>>
 
 See L<Method C<MetaCPAN::Role::Script::check_health()>>
 

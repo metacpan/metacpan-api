@@ -63,7 +63,7 @@ sub run {
 
         # Display Exception Message in red
         print colored( ['bold red'],
-            "*** EXECPTION [ $EXIT_CODE ] ***: " . $ex->{'message'} ),
+            "*** EXCEPTION [ $EXIT_CODE ] ***: " . $ex->{'message'} ),
             "\n";
     };
 
