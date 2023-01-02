@@ -374,9 +374,6 @@ sub test_delete_fails {
             local @ARGV = qw(mapping --delete --all);
             local %ENV  = (%ENV);
 
-            print STDERR "test_delete_fails - PLACK_ENV: '" . $ENV{'PLACK_ENV'} . "'\n";
-            print STDERR "test_delete_fails - MOJO_MODE: '" . $ENV{'MOJO_MODE'} . "'\n";
-
             delete $ENV{'PLACK_ENV'};
             delete $ENV{'MOJO_MODE'};
 
@@ -434,9 +431,6 @@ sub test_delete_all {
         subtest 'delete all succeeds' => sub {
             local @ARGV = qw(mapping --delete --all);
 
-				    print STDERR "test_delete_all - PLACK_ENV: '" . $ENV{'PLACK_ENV'} . "'\n";
-				    print STDERR "test_delete_all - MOJO_MODE: '" . $ENV{'MOJO_MODE'} . "'\n";
-
             ok( MetaCPAN::Script::Runner::run, "delete all succeeds" );
             is( $MetaCPAN::Script::Runner::EXIT_CODE,
                 0, "Exit Code '0' - No Error" );
@@ -451,7 +445,7 @@ sub test_delete_all {
 
             ok( defined $mapping->indices_info, 'Index Info built' );
             ok( !defined $mapping->indices_info->{'mock_index'},
-                'Unknown Index printed' );
+                'Unknown Index not printed' );
         };
     };
 }
