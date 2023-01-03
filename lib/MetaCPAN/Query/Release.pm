@@ -811,25 +811,31 @@ sub _get_depended_releases {
 
     $sort = _fix_sort_value($sort);
 
-    # because 'terms' doesn't work properly
-    my $filter_modules = {
-        bool => {
-            should => [
-                map +{
-                    bool => {
-                        must => [
-                            { term => { 'dependency.module' => $_ } },
-                            {
-                                term => {
-                                    'dependency.relationship' => 'requires'
-                                }
+    my $dependency_filter = {
+        nested => {
+            path  => 'dependency',
+            query => {
+                bool => {
+                    must => [
+                        {
+                            term =>
+                                { 'dependency.relationship' => 'requires' }
+                        },
+                        {
+                            terms => {
+                                'dependency.phase' => [ qw(
+                                    configure
+                                    build
+                                    runtime
+                                    test
+                                ) ]
                             }
-                        ],
-                    },
+                        },
+                        { terms => { 'dependency.module' => $modules } },
+                    ],
                 },
-                @{$modules}
-            ]
-        }
+            },
+        },
     };
 
     my $depended = $self->es->search(
@@ -839,11 +845,11 @@ sub _get_depended_releases {
             query => {
                 bool => {
                     must => [
-                        $filter_modules,
+                        $dependency_filter,
                         { term => { status     => 'latest' } },
                         { term => { authorized => 1 } },
-                    ]
-                }
+                    ],
+                },
             },
             size => $size || $page_size,
             from => $page * $page_size - $page_size,
