@@ -677,46 +677,8 @@ sub top_uploaders {
 
 sub requires {
     my ( $self, $module, $page, $page_size, $sort ) = @_;
-    $page      //= 1;
-    $page_size //= 20;
-
-    $sort = _fix_sort_value($sort);
-
-    my $query = {
-        query => {
-            filtered => {
-                query  => { 'match_all' => {} },
-                filter => {
-                    and => [
-                        { term => { 'status'     => 'latest' } },
-                        { term => { 'authorized' => 1 } },
-                        {
-                            term => {
-                                'dependency.module' => $module
-                            }
-                        }
-                    ]
-                }
-            }
-        }
-    };
-
-    my $ret = $self->es->search(
-        index => $self->index_name,
-        type  => 'release',
-        body  => {
-            query => $query,
-            from  => $page * $page_size - $page_size,
-            size  => $page_size,
-            sort  => [$sort],
-        }
-    );
-
-    return +{
-        data  => [ map { $_->{_source} } @{ $ret->{hits}{hits} } ],
-        total => $ret->{hits}{total},
-        took  => $ret->{took}
-    };
+    return $self->_get_depended_releases( [$module], $page, $page_size,
+        $page_size, $sort );
 }
 
 sub reverse_dependencies {
