@@ -28,6 +28,7 @@ sub author_status {
             cpantesters_matrix => "http://matrix.cpantesters.org/?author=$id",
             metacpan_explorer  =>
                 "https://explorer.metacpan.org/?url=/author/$id",
+            repology => "https://repology.org/maintainer/$id%40cpan",
         };
     }
 
