@@ -13,6 +13,7 @@ with 'MetaCPAN::Role::Script', 'MooseX::Getopt',
     'MetaCPAN::Script::Role::External::Cygwin',
     'MetaCPAN::Script::Role::External::Debian',
     'MetaCPAN::Script::Role::External::Fedora';
+    'MetaCPAN::Script::Role::External::Repology';
 
 has external_source => (
     is       => 'ro',
@@ -33,6 +34,7 @@ sub run {
     $ret = $self->run_cygwin if $self->external_source eq 'cygwin';
     $ret = $self->run_debian if $self->external_source eq 'debian';
     $ret = $self->run_fedora if $self->external_source eq 'fedora';
+    $ret = $self->run_repology if $self->external_source eq 'repology';
 
     my $email_body = $ret->{errors_email_body};
     if ($email_body) {
