@@ -45,7 +45,6 @@ use MetaCPAN::Script::River                       ();
 require MetaCPAN::Script::Role::Contributor;
 require MetaCPAN::Script::Role::External::Cygwin;
 require MetaCPAN::Script::Role::External::Debian;
-require MetaCPAN::Script::Role::External::Fedora;
 use MetaCPAN::Script::Runner   ();
 use MetaCPAN::Script::Session  ();
 use MetaCPAN::Script::Snapshot ();

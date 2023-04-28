@@ -9,10 +9,12 @@ use Log::Contextual       qw( :log );
 
 use MetaCPAN::Types::TypeTiny qw( Str );
 
-with 'MetaCPAN::Role::Script', 'MooseX::Getopt',
+with(
+    'MetaCPAN::Role::Script',
     'MetaCPAN::Script::Role::External::Cygwin',
     'MetaCPAN::Script::Role::External::Debian',
-    'MetaCPAN::Script::Role::External::Fedora';
+    'MooseX::Getopt',
+);
 
 has external_source => (
     is       => 'ro',
@@ -32,7 +34,6 @@ sub run {
 
     $ret = $self->run_cygwin if $self->external_source eq 'cygwin';
     $ret = $self->run_debian if $self->external_source eq 'debian';
-    $ret = $self->run_fedora if $self->external_source eq 'fedora';
 
     my $email_body = $ret->{errors_email_body};
     if ($email_body) {
