@@ -9,7 +9,7 @@ jobs:
         container:
             image: perl:5.36
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v3
               with:
                   token: ${{ secrets.METACPAN_BOT_TOKEN }}
             - name: Install Carton
@@ -28,7 +28,7 @@ jobs:
             - name: Maybe update cpanfile.snapshot
               run: carton
             - name: Create Pull Request
-              uses: peter-evans/create-pull-request@v3.8.2
+              uses: peter-evans/create-pull-request@v5
               with:
                   token: ${{ secrets.METACPAN_BOT_TOKEN }}
                   commit-message: Update cpanfile.snapshot
