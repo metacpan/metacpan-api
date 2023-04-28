@@ -1,11 +1,15 @@
 ---
-name: docker push
-on: workflow_dispatch
+name: Build Production Container
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
 
 jobs:
   docker:
-    runs-on: ubuntu-20.04
-    name: Docker
+    runs-on: ubuntu-22.04
+    name: Docker push latest
     steps:
       - uses: actions/checkout@v3
       - name: docker build
