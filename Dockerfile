@@ -13,6 +13,7 @@ RUN mkdir /CPAN \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && cpm install --global \
+    && git config --global --add safe.directory /metacpan-api \
     && rm -fr /root/.cpanm /root/.perl-cpm /var/cache/apt/lists/* /tmp/*
 
 VOLUME /CPAN
