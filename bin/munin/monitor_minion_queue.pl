@@ -9,10 +9,10 @@ use warnings;
 my $config_mode = 0;
 $config_mode = 1 if $ARGV[0] && $ARGV[0] eq 'config';
 
-if($config_mode) {
+if ($config_mode) {
 
-# Dump this (though we supported dynamic below) so it's faster
-print <<'EOF';
+    # Dump this (though we supported dynamic below) so it's faster
+    print <<'EOF';
 graph_title Minion Queue stats
 graph_vlabel count
 graph_category metacpan_api
@@ -25,32 +25,34 @@ jobs_failed.label Failed jobs
 jobs_finished.label Finished jobs
 EOF
 
-exit;
+    exit;
 }
 
 # Get the stats
-my $stats_report = `/home/metacpan/bin/metacpan-api-carton-exec bin/queue.pl minion job -s`;
+my $stats_report
+    = `/home/metacpan/bin/metacpan-api-carton-exec bin/queue.pl minion job -s`;
 
-my @lines = split("\n", $stats_report);
+my @lines = split( "\n", $stats_report );
 
 for my $line (@lines) {
-  my ($label, $num) = split ':', $line;
+    my ( $label, $num ) = split ':', $line;
 
-  $num =~ s/\D//g;
+    $num =~ s/\D//g;
 
-  my $key = lc($label); # Was 'Inactive jobs'
+    my $key = lc($label);    # Was 'Inactive jobs'
 
-  # Swap type and status around so idle_jobs becomes jobs_idle
-  $key =~ s/(\w+)\s+(\w+)/$2_$1/g;
+    # Swap type and status around so idle_jobs becomes jobs_idle
+    $key =~ s/(\w+)\s+(\w+)/$2_$1/g;
 
-  if( $config_mode ) {
-     # config
-     print "${key}.label $label\n";
+    if ($config_mode) {
 
-  } else {
-     # results
-     print "${key}.value $num\n" if $num;
-  }
+        # config
+        print "${key}.label $label\n";
 
+    }
+    else {
+        # results
+        print "${key}.value $num\n" if $num;
+    }
 
 }
