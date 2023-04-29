@@ -177,8 +177,9 @@ requires 'MetaCPAN::Client', '2.029000';
 requires 'Module::Extract::Namespaces', '1.023';
 requires 'Module::Faker', '== 0.017';
 requires 'Module::Faker::Dist', '== 0.017';
+requires 'Parallel::ForkManager' => '2.02';
 requires 'Perl::Critic', '0.140';
-requires 'Perl::Tidy' => '== 20220613';
+requires 'Perl::Tidy' => '== 20230309';
 requires 'Plack::Test::Agent', '1.5';
 requires 'PPI', '1.274'; # Perl::Critic
 requires 'PPIx::QuoteLike', '0.022'; # Perl::Critic

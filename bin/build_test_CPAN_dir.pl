@@ -66,7 +66,8 @@ sub _download_with_dependencies {
         $seen{$seen_key} = 1;
         $injector->{author} = $release->{author};
         $injector->inject( $file->stringify );
-    } else {
+    }
+    else {
         warn "Unable to mirror: " . $release->{download_url};
     }
 }
@@ -93,7 +94,7 @@ sub _get_meta {
         index  => 'v0',
         type   => 'release',
         query  => { match_all => {} },
-        filter => { term => { 'release.name' => $release_name } },
+        filter => { term      => { 'release.name' => $release_name } },
     );
     return $module->{hits}{hits}[0]{_source},
         $release->{hits}{hits}[0]{_source};

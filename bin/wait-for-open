@@ -5,8 +5,8 @@ use warnings;
 my $server = shift;
 
 my $timeout = 30;
-while ($timeout--) {
-    if (!system "curl -s '$server' 2>/dev/null 1>&2") {
+while ( $timeout-- ) {
+    if ( !system "curl -s '$server' 2>/dev/null 1>&2" ) {
         exit 0;
     }
     sleep 1;
