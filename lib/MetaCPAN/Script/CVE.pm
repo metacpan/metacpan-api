@@ -169,6 +169,7 @@ sub index_cve_data {
                     type   => 'release',
                     body   => $query,
                     fields => ["version"],
+                    size   => 2000,
                 );
 
                 if ( $releases->{hits}{total} ) {
