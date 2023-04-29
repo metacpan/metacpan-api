@@ -52,6 +52,7 @@ my %valid_keys = map { $_ => 1 } qw<
     description
     distribution
     references
+    releases
     reported
     severity
     versions
@@ -190,6 +191,7 @@ sub index_cve_data {
                 reported          => $cpansa->{reported},
                 severity          => $cpansa->{severity},
                 versions          => \@matches,
+                releases          => [ map {"$dist-$_"} @matches ],
             };
 
             for my $k ( keys %{$doc_data} ) {
