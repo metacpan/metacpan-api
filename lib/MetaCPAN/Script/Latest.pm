@@ -86,99 +86,128 @@ sub run {
         return;
     }
 
-    my @module_filters = { term => { 'module.indexed' => 1 } };
-    push @module_filters, @filter
-        ? { terms  => { "module.name" => \@filter } }
-        : { exists => { field         => "module.name" } };
-
-    # This query will be used to produce a (scrolled) list of
-    # 'file' type records where the module.name matches the
-    # distribution name and which are released &
-    # indexed (the 'leading' module)
-    my $query = {
-        bool => {
-            must => [
-                {
-                    nested => {
-                        path   => 'module',
-                        filter => { bool => { must => \@module_filters } }
-                    }
-                },
-                { term => { 'maturity' => 'released' } },
-            ],
-            must_not => [
-                { term => { status       => 'backpan' } },
-                { term => { distribution => 'perl' } }
-            ]
-        }
-    };
-
-    my $scroll
-        = $self->index->type('file')->filter($query)
-        ->source(
-        [qw< author date distribution module.name release status >] )
-        ->size(100)->raw->scroll;
-
-    my ( %downgrade, %upgrade );
-    log_debug { 'Found ' . $scroll->total . ' modules' };
-
-    my $i = 0;
-
+    my %upgrade;
+    my %downgrade;
     my @modules_to_purge;
     my %queued_distributions;
 
-    # For each file...
-    while ( my $file = $scroll->next ) {
-        $i++;
-        log_debug { "$i of " . $scroll->total } unless ( $i % 1000 );
-        my $file_data = $file->{_source};
+    my $total       = @filter;
+    my $found_total = 0;
+
+    my @module_filters;
+    if (@filter) {
+        while (@filter) {
+            my @modules = splice @filter, 0, 500;
+
+            push @module_filters,
+                [
+                { term  => { 'module.indexed' => 1 } },
+                { terms => { "module.name"    => \@modules } },
+                ];
+        }
+    }
+    else {
+        push @module_filters,
+            [
+            { term   => { 'module.indexed' => 1 } },
+            { exists => { field            => "module.name" } },
+            ];
+    }
+    for my $filter (@module_filters) {
+
+        # This query will be used to produce a (scrolled) list of
+        # 'file' type records where the module.name matches the
+        # distribution name and which are released &
+        # indexed (the 'leading' module)
+        my $query = {
+            bool => {
+                must => [
+                    {
+                        nested => {
+                            path   => 'module',
+                            filter => { bool => { must => $filter } }
+                        }
+                    },
+                    { term => { 'maturity' => 'released' } },
+                ],
+                must_not => [
+                    { term => { status       => 'backpan' } },
+                    { term => { distribution => 'perl' } }
+                ]
+            }
+        };
+
+        log_debug {
+            'Searching for ' . @$filter . ' of ' . $total . ' modules'
+        }
+        if @module_filters > 1;
+        my $scroll
+            = $self->index->type('file')->filter($query)
+            ->source(
+            [qw< author date distribution module.name release status >] )
+            ->size(100)->raw->scroll;
+
+        $found_total += $scroll->total;
+
+        log_debug { 'Found ' . $scroll->total . ' modules' };
+        log_debug { 'Found ' . $found_total . 'total modules' }
+        if @$filter != $total and $filter == $module_filters[-1];
+
+        my $i = 0;
+
+        # For each file...
+        while ( my $file = $scroll->next ) {
+            $i++;
+            log_debug { "$i of " . $scroll->total } unless ( $i % 100 );
+            my $file_data = $file->{_source};
 
        # Convert module name into Parse::CPAN::Packages::Fast::Package object.
-        my @modules = grep {defined}
-            map {
-            eval { $p->package( $_->{name} ) }
-            } @{ $file_data->{module} };
+            my @modules = grep {defined}
+                map {
+                eval { $p->package( $_->{name} ) }
+                } @{ $file_data->{module} };
 
-        push @modules_to_purge, @modules;
+            push @modules_to_purge, @modules;
 
-        # For each of the packages in this file...
-        foreach my $module (@modules) {
+            # For each of the packages in this file...
+            foreach my $module (@modules) {
 
            # Get P:C:P:F:Distribution (CPAN::DistnameInfo) object for package.
-            my $dist = $module->distribution;
+                my $dist = $module->distribution;
 
-            if ( $self->queue ) {
-                my $d = $dist->dist;
-                $self->_queue_latest($d)
-                    unless exists $queued_distributions{$d};
-                $queued_distributions{$d} = 1;
-                next;
-            }
+                if ( $self->queue ) {
+                    my $d = $dist->dist;
+                    $self->_queue_latest($d)
+                        unless exists $queued_distributions{$d};
+                    $queued_distributions{$d} = 1;
+                    next;
+                }
 
-            # If 02packages has the same author/release for this package...
+               # If 02packages has the same author/release for this package...
 
-            # NOTE: CPAN::DistnameInfo doesn't parse some weird uploads
-            # (like /\.pm\.gz$/) so distvname might not be present.
-            # I assume cpanid always will be.
-            if (   defined( $dist->distvname )
-                && $dist->distvname eq $file_data->{release}
-                && $dist->cpanid eq $file_data->{author} )
-            {
-                my $upgrade = $upgrade{ $file_data->{distribution} };
+                # NOTE: CPAN::DistnameInfo doesn't parse some weird uploads
+                # (like /\.pm\.gz$/) so distvname might not be present.
+                # I assume cpanid always will be.
+                if (   defined( $dist->distvname )
+                    && $dist->distvname eq $file_data->{release}
+                    && $dist->cpanid eq $file_data->{author} )
+                {
+                    my $upgrade = $upgrade{ $file_data->{distribution} };
 
-                # If multiple versions of a dist appear in 02packages
-                # only mark the most recent upload as latest.
-                next
-                    if (
-                    $upgrade
-                    && $self->compare_dates(
-                        $upgrade->{date}, $file_data->{date}
-                    )
-                    );
-                $upgrade{ $file_data->{distribution} } = $file_data;
-            }
-            elsif ( $file_data->{status} eq 'latest' ) {
-                $downgrade{ $file_data->{release} } = $file_data;
+                    # If multiple versions of a dist appear in 02packages
+                    # only mark the most recent upload as latest.
+                    next
+                        if (
+                        $upgrade
+                        && $self->compare_dates(
+                            $upgrade->{date}, $file_data->{date}
+                        )
+                        );
+                    $upgrade{ $file_data->{distribution} } = $file_data;
+                }
+                elsif ( $file_data->{status} eq 'latest' ) {
+                    $downgrade{ $file_data->{release} } = $file_data;
+                }
             }
         }
     }
