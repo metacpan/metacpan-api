@@ -10,8 +10,6 @@ use Ref::Util                 qw( is_arrayref );
 use MetaCPAN::Types::TypeTiny qw( Bool Str Uri );
 use MetaCPAN::Util            qw( numify_version );
 
-use Data::Dumper;    # REMOVE
-
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
 has cve_url => (
@@ -85,25 +83,27 @@ sub index_cve_data {
             my @matches;
 
             if ( !is_arrayref( $cpansa->{affected_versions} ) ) {
+                log_debug {
+                    sprintf( "Dist '%s' has non-array affected_versions %s",
+                        $dist, $cpansa->{affected_versions} )
+                };
 
-                # log_warn {
-                #     sprintf(
-                #         "Dist '%s' has non-array affected_versions %s",
-                #         $dist, $cpansa->{affected_versions} )
-                # };
-
-### REMOVE:
+                # Temp - remove after fixed upstream
+                # (affected_versions will always be an array)
                 $cpansa->{affected_versions}
                     = [ $cpansa->{affected_versions} ];
 
-                #next;
+                # next;
             }
 
             my @filters;
             my @afv_filters;
 
             for my $afv ( @{ $cpansa->{affected_versions} } ) {
-                next unless $afv;    ### REMOVE ???
+
+                # Temp - remove after fixed upstream
+                # (affected_versions will always be an array)
+                next unless $afv;
 
                 my @rules = map {s/\(.*?\)//gr} split /,/, $afv;
 
@@ -112,7 +112,18 @@ sub index_cve_data {
                 for my $rule (@rules) {
                     my ( $op, $num ) = $rule =~ /^([=<>]*)(.*)$/;
                     $num = numify_version($num);
-                    $op ||= '=';    # REMOVE???
+
+                    if ( !$op ) {
+                        log_debug {
+                            sprintf(
+                                "Dist '%s' - affected_versions has no operator",
+                                $dist )
+                        };
+
+                        # Temp - remove after fixed upstream
+                        # (affected_versions will always have an operator)
+                        $op ||= '=';
+                    }
 
                     if ( exists $range_ops{$op} ) {
                         push @rule_filters,
@@ -123,15 +134,9 @@ sub index_cve_data {
                             }
                             };
                     }
-                    elsif ( $op eq '=' ) {
+                    else {
                         push @rule_filters,
                             +{ term => { version_numified => $num } };
-                    }
-                    else {
-                        log_warn {
-                            sprintf( "Dist '%s' has invalid version op %s",
-                                $dist, $op )
-                        };
                     }
                 }
 
@@ -177,7 +182,9 @@ sub index_cve_data {
                         @{ $releases->{hits}{hits} };
                 }
                 else {
-#                    log_warn { "Dist '" . $dist . "' doesn't have matches." };
+                    log_debug {
+                        sprintf( "Dist '%s' doesn't have matches.", $dist )
+                    };
                     next;
                 }
             }
@@ -199,13 +206,11 @@ sub index_cve_data {
                 delete $doc_data->{$k} unless exists $valid_keys{$k};
             }
 
-            print Dumper $doc_data if @matches;
-
-            # $bulk->update( {
-            #     id  => ### ???,
-            #     doc => $doc_data,
-            #     doc_as_upsert => 1,
-            # } );
+            $bulk->update( {
+                id            => $cpansa->{cpansa_id},
+                doc           => $doc_data,
+                doc_as_upsert => 1,
+            } );
         }
     }
 
