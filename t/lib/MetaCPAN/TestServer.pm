@@ -173,6 +173,7 @@ sub check_mappings {
         'cover'       => 'yellow',
         'cpan_v1_01'  => 'yellow',
         'contributor' => 'yellow',
+        'cve'         => 'yellow',
         'user'        => 'yellow'
     );
     my %hshtestaliases = ( 'cpan' => 'cpan_v1_01' );
