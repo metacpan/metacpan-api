@@ -11,7 +11,7 @@ has query_cve => (
     isa     => 'MetaCPAN::Query::CVE',
     lazy    => 1,
     builder => '_build_query_cve',
-    handles => [qw< find_cves_by_cpansa >],
+    handles => [qw< find_cves_by_cpansa find_cves_by_release >],
 );
 
 sub _build_query_cve {
