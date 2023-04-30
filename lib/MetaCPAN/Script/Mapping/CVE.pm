@@ -7,18 +7,41 @@ sub mapping {
     '{
         "dynamic" : false,
         "properties" : {
-           "distribution" : {
-              "ignore_above" : 2048,
-              "index" : "not_analyzed",
-              "type" : "string"
-           },
-           "id" : {
-              "ignore_above" : 2048,
-              "index" : "not_analyzed",
-              "type" : "string"
-           }
+          "affected_versions" : {
+            "type" : "string"
+          },
+          "cpansa_id" : {
+            "ignore_above" : 2048,
+            "index" : "not_analyzed",
+            "type" : "string"
+          },
+          "cves" : {
+            "type" : "string"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "distribution" : {
+            "type" : "string"
+          },
+          "references" : {
+            "type" : "string"
+          },
+          "releases" : {
+            "type" : "string"
+          },
+          "reported" : {
+            "type" : "date",
+            "format" : "strict_date_optional_time||epoch_millis"
+          },
+          "severity" : {
+            "type" : "string"
+          },
+          "versions" : {
+            "type" : "string"
+          }
         }
-     }';
+      }';
 }
 
 1;

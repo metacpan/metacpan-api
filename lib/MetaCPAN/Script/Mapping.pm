@@ -20,6 +20,7 @@ use MetaCPAN::Script::Mapping::User::Identity     ();
 use MetaCPAN::Script::Mapping::User::Session      ();
 use MetaCPAN::Script::Mapping::Contributor        ();
 use MetaCPAN::Script::Mapping::Cover              ();
+use MetaCPAN::Script::Mapping::CVE                ();
 use MetaCPAN::Types::TypeTiny                     qw( Bool Str );
 
 use constant {
@@ -532,6 +533,9 @@ sub _build_mapping {
         },
         cover => {
             cover => decode_json(MetaCPAN::Script::Mapping::Cover::mapping),
+        },
+        cve => {
+            cve => decode_json(MetaCPAN::Script::Mapping::CVE::mapping),
         },
     };
 }
