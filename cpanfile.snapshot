@@ -1003,6 +1003,7 @@ DISTRIBUTIONS
       Config::Any::XML undef
       Config::Any::YAML undef
     requirements:
+      Config::General 2.47
       Module::Pluggable::Object 3.6
   Config-General-2.65
     pathname: T/TL/TLINDEN/Config-General-2.65.tar.gz
@@ -3220,7 +3221,6 @@ DISTRIBUTIONS
       IO::Prompt 0.997004
       IO::Prompt::ReturnVal 0.997004
     requirements:
-      ExtUtils::MakeMaker 0
       IO::Handle 0
       Term::ReadKey 0
       Test::More 0
