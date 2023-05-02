@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 jobs:
   update-dep:
-    runs-on: "ubuntu-20.04"
+    runs-on: "ubuntu-22.04"
     container:
       image: perl:5.36
     steps:
