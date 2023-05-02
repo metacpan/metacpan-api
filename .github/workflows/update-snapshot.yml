@@ -12,20 +12,17 @@ jobs:
       - uses: actions/checkout@v3
         with:
           token: ${{ secrets.METACPAN_BOT_TOKEN }}
-      - name: Get cpm
-        run: |
-          curl -sL -o $RUNNER_TEMP/cpm https://git.io/cpm
-          chmod +x $RUNNER_TEMP/cpm
       - name: Install deps
-        run: >
-          $RUNNER_TEMP/cpm
-          install
-          --cpanfile cpanfile
-          --resolver metacpan
-          --show-build-log-on-failure
-          --local-lib-contained=local
+        uses: perl-actions/install-with-cpm@stable
+        with:
+          cpanfile: cpanfile
+          sudo: false
+          args: >
+            --resolver metacpan
+            --show-build-log-on-failure
+            --local-lib-contained=local
       - name: Maybe update cpanfile.snapshot
-        run: perl -Ilocal/lib/perl5 local/bin/carton
+        run: carton
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
