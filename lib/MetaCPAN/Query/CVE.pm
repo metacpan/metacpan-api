@@ -22,9 +22,9 @@ sub find_cves_by_cpansa {
 }
 
 sub find_cves_by_release {
-    my ( $self, $release_id ) = @_;
+    my ( $self, $author, $release ) = @_;
 
-    my $query = +{ match => { releases => $release_id } };
+    my $query = +{ match => { releases => "$author/$release" } };
 
     my $res = $self->es->search(
         index => $self->index_name,
