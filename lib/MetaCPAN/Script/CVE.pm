@@ -179,11 +179,12 @@ sub index_cve_data {
 
                 if ( $releases->{hits}{total} ) {
                     ## no critic (ControlStructures::ProhibitMutatingListFunctions)
-                    @matches = sort { $a->{version} <=> $b->{version} }
+                    @matches = map { $_->[0] }
+                        sort { $a->[1] <=> $b->[1] }
                         map {
                         my %fields = %{ $_->{fields} };
                         ref $_ and $_ = $_->[0] for values %fields;
-                        \%fields;
+                        [ \%fields, numify_version( $fields{version} ) ];
                         } @{ $releases->{hits}{hits} };
                 }
                 else {
