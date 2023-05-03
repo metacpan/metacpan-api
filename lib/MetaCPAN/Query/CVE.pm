@@ -17,15 +17,14 @@ sub find_cves_by_cpansa {
             size  => 999,
         }
     );
-    $res->{hits}{total} or return {};
 
     return +{ cve => [ map { $_->{_source} } @{ $res->{hits}{hits} } ] };
 }
 
 sub find_cves_by_release {
-    my ( $self, $release_id ) = @_;
+    my ( $self, $author, $release ) = @_;
 
-    my $query = +{ match => { releases => $release_id } };
+    my $query = +{ match => { releases => "$author/$release" } };
 
     my $res = $self->es->search(
         index => $self->index_name,
@@ -35,7 +34,28 @@ sub find_cves_by_release {
             size  => 999,
         }
     );
-    $res->{hits}{total} or return {};
+
+    return +{ cve => [ map { $_->{_source} } @{ $res->{hits}{hits} } ] };
+}
+
+sub find_cves_by_dist {
+    my ( $self, $dist, $version ) = @_;
+
+    my $query = +{
+        match => {
+            dist => $dist,
+            ( defined $version ? ( versions => $version ) : () ),
+        }
+    };
+
+    my $res = $self->es->search(
+        index => $self->index_name,
+        type  => 'cve',
+        body  => {
+            query => $query,
+            size  => 999,
+        }
+    );
 
     return +{ cve => [ map { $_->{_source} } @{ $res->{hits}{hits} } ] };
 }

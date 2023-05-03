@@ -173,13 +173,18 @@ sub index_cve_data {
                     index  => 'cpan',
                     type   => 'release',
                     body   => $query,
-                    fields => ["version"],
+                    fields => [ "version", "name", "author", ],
                     size   => 2000,
                 );
 
                 if ( $releases->{hits}{total} ) {
-                    @matches = sort map { $_->{fields}{version}[0] }
-                        @{ $releases->{hits}{hits} };
+                    ## no critic (ControlStructures::ProhibitMutatingListFunctions)
+                    @matches = sort { $a->{version} <=> $b->{version} }
+                        map {
+                        my %fields = %{ $_->{fields} };
+                        ref $_ and $_ = $_->[0] for values %fields;
+                        \%fields;
+                        } @{ $releases->{hits}{hits} };
                 }
                 else {
                     log_debug {
@@ -198,8 +203,8 @@ sub index_cve_data {
                 references        => $cpansa->{references},
                 reported          => $cpansa->{reported},
                 severity          => $cpansa->{severity},
-                versions          => \@matches,
-                releases          => [ map {"$dist-$_"} @matches ],
+                versions          => [ map { $_->{version} } @matches ],
+                releases => [ map {"$_->{author}/$_->{name}"} @matches ],
             };
 
             for my $k ( keys %{$doc_data} ) {
