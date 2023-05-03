@@ -17,7 +17,6 @@ sub find_cves_by_cpansa {
             size  => 999,
         }
     );
-    $res->{hits}{total} or return {};
 
     return +{ cve => [ map { $_->{_source} } @{ $res->{hits}{hits} } ] };
 }
@@ -35,7 +34,6 @@ sub find_cves_by_release {
             size  => 999,
         }
     );
-    $res->{hits}{total} or return {};
 
     return +{ cve => [ map { $_->{_source} } @{ $res->{hits}{hits} } ] };
 }
