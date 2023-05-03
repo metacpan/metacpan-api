@@ -22,13 +22,15 @@ sub mapping {
             "type" : "string"
           },
           "distribution" : {
-            "type" : "string"
+            "type" : "string",
+            "index" : "not_analyzed"
           },
           "references" : {
             "type" : "string"
           },
           "releases" : {
-            "type" : "string"
+            "type" : "string",
+            "index" : "not_analyzed"
           },
           "reported" : {
             "type" : "date",
@@ -38,7 +40,8 @@ sub mapping {
             "type" : "string"
           },
           "versions" : {
-            "type" : "string"
+            "type" : "string",
+            "index" : "not_analyzed"
           }
         }
       }';
