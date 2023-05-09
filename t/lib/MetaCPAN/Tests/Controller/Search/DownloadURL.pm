@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use MetaCPAN::Server::Test;
-use MetaCPAN::TestHelpers;
+use MetaCPAN::TestHelpers qw( decode_json_ok );
 use Moose;
 use Test::More;
 
@@ -19,7 +19,7 @@ sub run {
             "GET $module" );
         my $json = decode_json_ok($res);
 
-        use Data::Dump qw(pp);
+        use Data::Dump qw( pp );
         print STDERR ( pp( scalar $json ), "\n" );
 
         #        my $got

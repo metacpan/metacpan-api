@@ -2,8 +2,7 @@ use Mojo::Base -strict;
 
 use lib 't/lib';
 
-use MetaCPAN::Model::Search ();
-use MetaCPAN::TestServer    ();
+use MetaCPAN::TestServer ();
 use Test::More;
 use Test::Mojo ();
 

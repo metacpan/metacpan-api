@@ -4,8 +4,8 @@ use warnings;
 use Cpanel::JSON::XS      ();
 use HTTP::Request::Common qw( GET );
 use MetaCPAN::Server      ();
-use MetaCPAN::TestHelpers;
-use Plack::Test;
+use MetaCPAN::TestHelpers qw( test_cache_headers );
+use Plack::Test           ();
 use Test::More;
 use Ref::Util qw( is_arrayref is_hashref );
 

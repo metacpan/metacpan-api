@@ -3,8 +3,7 @@ use warnings;
 use lib 't/lib';
 
 use MetaCPAN::Model::Release ();
-use MetaCPAN::Script::Runner;
-use MetaCPAN::TestHelpers qw( fakecpan_dir get_config );
+use MetaCPAN::TestHelpers    qw( fakecpan_dir get_config );
 use Test::Most import => [qw( cmp_bag done_testing subtest )];
 
 my $config = get_config();

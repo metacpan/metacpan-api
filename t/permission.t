@@ -3,7 +3,7 @@ use warnings;
 use lib 't/lib';
 
 use Test::More;
-use MetaCPAN::Script::Runner;
+use MetaCPAN::Script::Runner ();
 
 local @ARGV = ('permission');
 

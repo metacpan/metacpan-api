@@ -4,7 +4,7 @@ package    # no_index
 use Moose;
 extends 'Module::Faker::Dist';
 
-use Encode;
+use Encode qw( encode_utf8 );
 
 around append_for => sub {
     my ( $orig, $self, $filename ) = @_;

@@ -5,7 +5,7 @@ use Test::Routine;
 use MetaCPAN::Server::Test    ();
 use MetaCPAN::Types::TypeTiny qw( ArrayRef HashRef Str );
 use Test::More;
-use Try::Tiny qw( catch try );
+use Try::Tiny qw( try );
 
 with qw(
     MetaCPAN::Tests::Extra
