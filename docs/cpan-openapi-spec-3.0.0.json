@@ -1567,6 +1567,69 @@
    },
    "openapi" : "3.0.0",
    "paths" : {
+      "/v1/author" : {
+         "get" : {
+            "description" : "Retrieves author information details.",
+            "operationId" : "GetAuthor",
+            "parameters" : [
+               {
+                  "in" : "query",
+                  "name" : "q",
+                  "required" : false,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "description" : "Specifies which fields in the response should be provided.",
+                  "in" : "query",
+                  "name" : "fields",
+                  "required" : false,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/result_set"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
       "/v1/author/_mapping" : {
          "get" : {
             "description" : "Returns the available fields for the [author object](https://explorer.metacpan.org/?url=/author/_mapping).",
@@ -2310,13 +2373,13 @@
       },
       "/v1/favorite" : {
          "get" : {
-            "description" : "Retrieves an author information details.",
+            "description" : "Retrieves favorites information details.",
             "operationId" : "GetFavorite",
             "parameters" : [
                {
-                  "in" : "path",
-                  "name" : "author",
-                  "required" : true,
+                  "in" : "query",
+                  "name" : "q",
+                  "required" : false,
                   "schema" : {
                      "maxLength" : 2048,
                      "type" : "string"
@@ -2352,7 +2415,7 @@
                   "content" : {
                      "application/json" : {
                         "schema" : {
-                           "$ref" : "#/components/schemas/favorite"
+                           "$ref" : "#/components/schemas/result_set"
                         }
                      }
                   },
@@ -2555,13 +2618,13 @@
       },
       "/v1/file" : {
          "get" : {
-            "description" : "Retrieves an author information details.",
+            "description" : "Retrieves a file information details.",
             "operationId" : "GetFile",
             "parameters" : [
                {
-                  "in" : "path",
-                  "name" : "author",
-                  "required" : true,
+                  "in" : "query",
+                  "name" : "q",
+                  "required" : false,
                   "schema" : {
                      "maxLength" : 2048,
                      "type" : "string"
@@ -2597,7 +2660,7 @@
                   "content" : {
                      "application/json" : {
                         "schema" : {
-                           "$ref" : "#/components/schemas/file"
+                           "$ref" : "#/components/schemas/result_set"
                         }
                      }
                   },
@@ -2851,6 +2914,69 @@
             }
          }
       },
+      "/v1/module" : {
+         "get" : {
+            "description" : "Retrieves module information details.",
+            "operationId" : "GetModule",
+            "parameters" : [
+               {
+                  "in" : "query",
+                  "name" : "q",
+                  "required" : false,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "description" : "Specifies which fields in the response should be provided.",
+                  "in" : "query",
+                  "name" : "fields",
+                  "required" : false,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/result_set"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
       "/v1/module/_mapping" : {
          "get" : {
             "description" : "Returns the available fields for the [module object](https://explorer.metacpan.org/?url=/module/_mapping).",
@@ -2956,6 +3082,69 @@
             }
          }
       },
+      "/v1/package" : {
+         "get" : {
+            "description" : "Retrieves package information details.",
+            "operationId" : "GetPackage",
+            "parameters" : [
+               {
+                  "in" : "query",
+                  "name" : "q",
+                  "required" : false,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "description" : "Specifies which fields in the response should be provided.",
+                  "in" : "query",
+                  "name" : "fields",
+                  "required" : false,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/result_set"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
       "/v1/package/{module}" : {
          "get" : {
             "description" : "Returns the corresponding `package` for the specified `module`. For example, [/package/Moose](https://fastapi.metacpan.org/v1/package/Moose).",
@@ -3001,6 +3190,69 @@
                      "application/json" : {
                         "schema" : {
                            "$ref" : "#/components/schemas/package"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/permission" : {
+         "get" : {
+            "description" : "Retrieves permission information details.",
+            "operationId" : "GetPermission",
+            "parameters" : [
+               {
+                  "in" : "query",
+                  "name" : "q",
+                  "required" : false,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "description" : "Specifies which fields in the response should be provided.",
+                  "in" : "query",
+                  "name" : "fields",
+                  "required" : false,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/result_set"
                         }
                      }
                   },
@@ -3284,13 +3536,13 @@
       },
       "/v1/rating" : {
          "get" : {
-            "description" : "Retrieves an author information details.",
+            "description" : "Retrieves rating information details.",
             "operationId" : "GetRating",
             "parameters" : [
                {
-                  "in" : "path",
-                  "name" : "author",
-                  "required" : true,
+                  "in" : "query",
+                  "name" : "q",
+                  "required" : false,
                   "schema" : {
                      "maxLength" : 2048,
                      "type" : "string"
@@ -3326,7 +3578,7 @@
                   "content" : {
                      "application/json" : {
                         "schema" : {
-                           "$ref" : "#/components/schemas/rating"
+                           "$ref" : "#/components/schemas/result_set"
                         }
                      }
                   },
@@ -3498,6 +3750,69 @@
                      "encoding" : {},
                      "schema" : {
                         "$ref" : "#/components/schemas/search"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/result_set"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/release" : {
+         "get" : {
+            "description" : "Retrieves release information details.",
+            "operationId" : "GetRelease",
+            "parameters" : [
+               {
+                  "in" : "query",
+                  "name" : "q",
+                  "required" : false,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "description" : "Specifies which fields in the response should be provided.",
+                  "in" : "query",
+                  "name" : "fields",
+                  "required" : false,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
                      }
                   }
                },

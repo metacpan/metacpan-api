@@ -1770,6 +1770,86 @@
     openapi => '3.0.0',
     paths =>
     {
+        # NOTE: /v1/author
+        '/v1/author' =>
+        {
+            get => 
+            {
+                description => 'Retrieves author information details.',
+                operationId => 'GetAuthor',
+                parameters => [
+                {
+                    in => 'query',
+                    name => 'q',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    description => "Specifies which fields in the response should be provided.",
+                    in => 'query',
+                    name => 'fields',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string'
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/result_set",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
         # NOTE: /v1/author/{author}
         '/v1/author/{author}' =>
         {
@@ -2715,13 +2795,13 @@
         {
             get => 
             {
-                description => 'Retrieves an author information details.',
+                description => 'Retrieves favorites information details.',
                 operationId => 'GetFavorite',
                 parameters => [
                 {
-                    in => 'path',
-                    name => 'author',
-                    required => \1,
+                    in => 'query',
+                    name => 'q',
+                    required => \0,
                     schema =>
                     {
                         maxLength => 2048,
@@ -2767,7 +2847,7 @@
                             {
                                 schema =>
                                 {
-                                    '$ref' => "#/components/schemas/favorite",
+                                    '$ref' => "#/components/schemas/result_set",
                                 }
                             }
                         },
@@ -3022,13 +3102,13 @@
         {
             get => 
             {
-                description => 'Retrieves an author information details.',
+                description => 'Retrieves a file information details.',
                 operationId => 'GetFile',
                 parameters => [
                 {
-                    in => 'path',
-                    name => 'author',
-                    required => \1,
+                    in => 'query',
+                    name => 'q',
+                    required => \0,
                     schema =>
                     {
                         maxLength => 2048,
@@ -3074,7 +3154,7 @@
                             {
                                 schema =>
                                 {
-                                    '$ref' => "#/components/schemas/file",
+                                    '$ref' => "#/components/schemas/result_set",
                                 }
                             }
                         },
@@ -3393,6 +3473,86 @@
                 }
             },
         },
+        # NOTE: /v1/module
+        '/v1/module' =>
+        {
+            get => 
+            {
+                description => 'Retrieves module information details.',
+                operationId => 'GetModule',
+                parameters => [
+                {
+                    in => 'query',
+                    name => 'q',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    description => "Specifies which fields in the response should be provided.",
+                    in => 'query',
+                    name => 'fields',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string'
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/result_set",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
         # NOTE: /v1/module/{module}
         '/v1/module/{module}' =>
         {
@@ -3531,6 +3691,86 @@
                 }
             },
         },
+        # NOTE: /v1/package
+        '/v1/package' =>
+        {
+            get => 
+            {
+                description => 'Retrieves package information details.',
+                operationId => 'GetPackage',
+                parameters => [
+                {
+                    in => 'query',
+                    name => 'q',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    description => "Specifies which fields in the response should be provided.",
+                    in => 'query',
+                    name => 'fields',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string'
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/result_set",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
         # NOTE: /v1/package/{module}
         '/v1/package/{module}' =>
         {
@@ -3589,6 +3829,86 @@
                                 schema =>
                                 {
                                     '$ref' => "#/components/schemas/package",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # NOTE: /v1/permission
+        '/v1/permission' =>
+        {
+            get => 
+            {
+                description => 'Retrieves permission information details.',
+                operationId => 'GetPermission',
+                parameters => [
+                {
+                    in => 'query',
+                    name => 'q',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    description => "Specifies which fields in the response should be provided.",
+                    in => 'query',
+                    name => 'fields',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string'
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/result_set",
                                 }
                             }
                         },
@@ -3938,13 +4258,13 @@
         {
             get => 
             {
-                description => 'Retrieves an author information details.',
+                description => 'Retrieves rating information details.',
                 operationId => 'GetRating',
                 parameters => [
                 {
-                    in => 'path',
-                    name => 'author',
-                    required => \1,
+                    in => 'query',
+                    name => 'q',
+                    required => \0,
                     schema =>
                     {
                         maxLength => 2048,
@@ -3990,7 +4310,7 @@
                             {
                                 schema =>
                                 {
-                                    '$ref' => "#/components/schemas/rating",
+                                    '$ref' => "#/components/schemas/result_set",
                                 }
                             }
                         },
@@ -4202,6 +4522,86 @@
                             schema =>
                             {
                                 '$ref' => '#/components/schemas/search',
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/result_set",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # NOTE: /v1/release
+        '/v1/release' =>
+        {
+            get => 
+            {
+                description => 'Retrieves release information details.',
+                operationId => 'GetRelease',
+                parameters => [
+                {
+                    in => 'query',
+                    name => 'q',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    description => "Specifies which fields in the response should be provided.",
+                    in => 'query',
+                    name => 'fields',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string'
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
                             }
                         }
                     },
