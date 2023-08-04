@@ -1870,6 +1870,17 @@
                     style => 'simple',
                 },
                 {
+                    description => "Specifies which object to [join](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#joins) in the result.",
+                    in => 'query',
+                    name => 'join',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string'
+                    },
+                },
+                {
                     description => "Specifies which fields in the response should be provided.",
                     in => 'query',
                     name => 'fields',
@@ -3573,6 +3584,17 @@
                     style => 'simple',
                 },
                 {
+                    description => "Specifies which object to [join](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#joins) in the result.",
+                    in => 'query',
+                    name => 'join',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string'
+                    },
+                },
+                {
                     description => "Specifies which fields in the response should be provided.",
                     in => 'query',
                     name => 'fields',
@@ -4660,6 +4682,17 @@
                     style => 'simple',
                 },
                 {
+                    description => "Specifies which object to [join](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#joins) in the result.",
+                    in => 'query',
+                    name => 'join',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string'
+                    },
+                },
+                {
                     description => "Specifies which fields in the response should be provided.",
                     in => 'query',
                     name => 'fields',
@@ -4749,6 +4782,17 @@
                         type => 'string',
                     },
                     style => 'simple',
+                },
+                {
+                    description => "Specifies which object to [join](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#joins) in the result.",
+                    in => 'query',
+                    name => 'join',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string'
+                    },
                 },
                 {
                     description => "Specifies which fields in the response should be provided.",
