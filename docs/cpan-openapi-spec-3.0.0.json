@@ -284,6 +284,41 @@
                }
             }
          },
+         "distributions" : {
+            "description" : "This is the object representing a list of distributions.",
+            "properties" : {
+               "distributions" : {
+                  "additionalProperties" : {
+                     "properties" : {
+                        "avg" : {
+                           "type" : "float"
+                        },
+                        "count" : {
+                           "type" : "integer"
+                        },
+                        "max" : {
+                           "type" : "float"
+                        },
+                        "min" : {
+                           "type" : "float"
+                        },
+                        "sum" : {
+                           "type" : "float"
+                        }
+                     },
+                     "type" : "object"
+                  },
+                  "description" : "This contains dynamic properties named after the perl distribution name, such as \"Moose\"",
+                  "type" : "object"
+               },
+               "took" : {
+                  "type" : "integer"
+               },
+               "total" : {
+                  "type" : "integer"
+               }
+            }
+         },
          "download_url" : {
             "description" : "This is the object representing a MetaCPAN [distribution download URL](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#download_urlmodule)",
             "properties" : {
@@ -360,6 +395,25 @@
                }
             }
          },
+         "favorites" : {
+            "description" : "This is the object representing a user favorites",
+            "properties" : {
+               "favorites" : {
+                  "items" : {
+                     "schema" : {
+                        "$ref" : "#/components/schemas/favorite"
+                     }
+                  },
+                  "type" : "array"
+               },
+               "took" : {
+                  "type" : "integer"
+               },
+               "total" : {
+                  "type" : "integer"
+               }
+            }
+         },
          "file" : {
             "description" : "This is the object representing a file",
             "properties" : {
@@ -425,6 +479,7 @@
                   "type" : "string"
                },
                "mime" : {
+                  "example" : "text/x-script.perl-module",
                   "maxLength" : 2048,
                   "type" : "string"
                },
@@ -496,6 +551,162 @@
             "properties" : {
                "schema" : {
                   "$ref" : "#/components/schemas/file"
+               }
+            }
+         },
+         "file_preview" : {
+            "description" : "This represents a file preview used in endpoint `/file/dir`",
+            "properties" : {
+               "directory" : {
+                  "type" : "boolean"
+               },
+               "documentation" : {
+                  "maxLength" : 2048,
+                  "type" : "string"
+               },
+               "mime" : {
+                  "example" : "text/x-script.perl-module",
+                  "maxLength" : 2048,
+                  "type" : "string"
+               },
+               "name" : {
+                  "maxLength" : 2048,
+                  "type" : "string"
+               },
+               "path" : {
+                  "maxLength" : 2048,
+                  "type" : "string"
+               },
+               "slop" : {
+                  "type" : "integer"
+               },
+               "stat.mime" : {
+                  "type" : "integer"
+               },
+               "stat.size" : {
+                  "type" : "integer"
+               }
+            }
+         },
+         "file_snapshot" : {
+            "description" : "This is the object representing a file snapshot",
+            "properties" : {
+               "author" : {
+                  "maxLength" : 2048,
+                  "type" : "string"
+               },
+               "category" : {
+                  "type" : "string"
+               },
+               "distribution" : {
+                  "maxLength" : 2048,
+                  "type" : "string"
+               },
+               "documentation" : {
+                  "maxLength" : 2048,
+                  "type" : "string"
+               },
+               "name" : {
+                  "maxLength" : 2048,
+                  "type" : "string"
+               },
+               "path" : {
+                  "maxLength" : 2048,
+                  "type" : "string"
+               },
+               "pod_lines" : {
+                  "maxLength" : 2048,
+                  "type" : "string"
+               },
+               "release" : {
+                  "maxLength" : 2048,
+                  "type" : "string"
+               },
+               "status" : {
+                  "maxLength" : 2048,
+                  "type" : "string"
+               }
+            }
+         },
+         "files" : {
+            "description" : "This is the object representing a list of files",
+            "properties" : {
+               "files" : {
+                  "items" : {
+                     "schema" : {
+                        "$ref" : "#/components/schemas/file"
+                     }
+                  },
+                  "type" : "array"
+               },
+               "took" : {
+                  "type" : "integer"
+               },
+               "total" : {
+                  "type" : "integer"
+               }
+            }
+         },
+         "files_categories" : {
+            "description" : "This is the object representing a list of files by categories",
+            "properties" : {
+               "categories" : {
+                  "changelog" : {
+                     "items" : {
+                        "$ref" : "#/components/schemas/file_snapshot"
+                     },
+                     "type" : "array"
+                  },
+                  "contributing" : {
+                     "items" : {
+                        "$ref" : "#/components/schemas/file_snapshot"
+                     },
+                     "type" : "array"
+                  },
+                  "dist" : {
+                     "items" : {
+                        "$ref" : "#/components/schemas/file_snapshot"
+                     },
+                     "type" : "array"
+                  },
+                  "license" : {
+                     "items" : {
+                        "$ref" : "#/components/schemas/file_snapshot"
+                     },
+                     "type" : "array"
+                  },
+                  "other" : {
+                     "items" : {
+                        "$ref" : "#/components/schemas/file_snapshot"
+                     },
+                     "type" : "array"
+                  },
+                  "type" : "object"
+               },
+               "took" : {
+                  "type" : "integer"
+               },
+               "total" : {
+                  "type" : "integer"
+               }
+            }
+         },
+         "files_interesting" : {
+            "description" : "This is the object representing a list of files",
+            "properties" : {
+               "files" : {
+                  "items" : {
+                     "schema" : {
+                        "$ref" : "#/components/schema/file_snapshot"
+                     }
+                  },
+                  "type" : "array"
+               },
+               "took" : {
+                  "type" : "integer"
+               },
+               "total" : {
+                  "type" : "integer"
                }
             }
          },
@@ -910,6 +1121,43 @@
                "owner" : {
                   "maxLength" : 2048,
                   "type" : "string"
+               }
+            }
+         },
+         "permissions" : {
+            "description" : "This is the object representing a user permissions",
+            "properties" : {
+               "permissions" : {
+                  "items" : {
+                     "properties" : {
+                        "co_maintainers" : {
+                           "items" : {
+                              "description" : "List of co-maintainer's pause ID",
+                              "maxLength" : 2048,
+                              "type" : "string"
+                           },
+                           "type" : "array"
+                        },
+                        "module_name" : {
+                           "example" : "Bundle::DBI",
+                           "maxLength" : 2048,
+                           "type" : "string"
+                        },
+                        "owner" : {
+                           "description" : "This is the owner's pause ID",
+                           "example" : "TIMB",
+                           "maxLength" : 2048,
+                           "type" : "string"
+                        }
+                     }
+                  },
+                  "type" : "array"
+               },
+               "took" : {
+                  "type" : "integer"
+               },
+               "total" : {
+                  "type" : "integer"
                }
             }
          },
@@ -1333,6 +1581,61 @@
                }
             }
          },
+         "release_recents" : {
+            "description" : "This is the object representing a list of recent releases",
+            "properties" : {
+               "releases" : {
+                  "items" : {
+                     "properties" : {
+                        "abstract" : {
+                           "type" : "string"
+                        },
+                        "author" : {
+                           "type" : "string"
+                        },
+                        "date" : {
+                           "type" : "string"
+                        },
+                        "distribution" : {
+                           "type" : "string"
+                        },
+                        "name" : {
+                           "type" : "string"
+                        },
+                        "status" : {
+                           "type" : "string"
+                        }
+                     }
+                  },
+                  "type" : "array"
+               },
+               "took" : {
+                  "type" : "integer"
+               },
+               "total" : {
+                  "type" : "integer"
+               }
+            }
+         },
+         "releases" : {
+            "description" : "This is the object representing a list of releases",
+            "properties" : {
+               "releases" : {
+                  "items" : {
+                     "schema" : {
+                        "$ref" : "#/components/schemas/release"
+                     }
+                  },
+                  "type" : "array"
+               },
+               "took" : {
+                  "type" : "integer"
+               },
+               "total" : {
+                  "type" : "integer"
+               }
+            }
+         },
          "result_set" : {
             "description" : "This is the object representing a search result set)",
             "properties" : {
@@ -1436,6 +1739,37 @@
                },
                "took" : {
                   "type" : "integer"
+               }
+            }
+         },
+         "river" : {
+            "description" : "This is the object representing a distribution river)",
+            "example" : "/v1/distribution/river/Moose",
+            "properties" : {
+               "river" : {
+                  "properties" : {
+                     "module" : {
+                        "example" : "Moose",
+                        "maxLength" : 2048,
+                        "properties" : {
+                           "bucket" : {
+                              "type" : "integer"
+                           },
+                           "bus_factor" : {
+                              "type" : "integer"
+                           },
+                           "immediate" : {
+                              "type" : "integer"
+                           },
+                           "total" : {
+                              "type" : "integer"
+                           }
+                        },
+                        "type" : "object"
+                     },
+                     "type" : "object"
+                  },
+                  "type" : "object"
                }
             }
          },
@@ -1874,6 +2208,276 @@
             }
          }
       },
+      "/v1/author/by_ids" : {
+         "get" : {
+            "description" : "Retrieves author information details using pause ID.",
+            "operationId" : "GetAuthorByPauseID",
+            "parameters" : [
+               {
+                  "in" : "query",
+                  "name" : "id",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "description" : "Specifies which fields in the response should be provided.",
+                  "in" : "query",
+                  "name" : "fields",
+                  "required" : false,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/result_set"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/author/by_prefix/{prefix}" : {
+         "get" : {
+            "description" : "Retrieves author information details using parts of the pause ID.",
+            "operationId" : "GetAuthorByPrefix",
+            "parameters" : [
+               {
+                  "in" : "path",
+                  "name" : "prefix",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "description" : "Specifies from which offset to return the results.",
+                  "in" : "query",
+                  "name" : "from",
+                  "required" : false,
+                  "schema" : {
+                     "type" : "integer"
+                  }
+               },
+               {
+                  "description" : "Specifies the maximum size of the results.",
+                  "in" : "query",
+                  "name" : "size",
+                  "required" : false,
+                  "schema" : {
+                     "type" : "integer"
+                  }
+               },
+               {
+                  "description" : "Specifies which fields in the response should be provided.",
+                  "in" : "query",
+                  "name" : "fields",
+                  "required" : false,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/result_set"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/author/by_user" : {
+         "get" : {
+            "description" : "Retrieves author information details using user ID in query string.",
+            "operationId" : "GetAuthorByUserIDQuery",
+            "parameters" : [
+               {
+                  "in" : "query",
+                  "name" : "user",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "description" : "Specifies which fields in the response should be provided.",
+                  "in" : "query",
+                  "name" : "fields",
+                  "required" : false,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/result_set"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/author/by_user/{user}" : {
+         "get" : {
+            "description" : "Retrieves author information details using user ID.",
+            "operationId" : "GetAuthorByUserID",
+            "parameters" : [
+               {
+                  "in" : "path",
+                  "name" : "user",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "description" : "Specifies which fields in the response should be provided.",
+                  "in" : "query",
+                  "name" : "fields",
+                  "required" : false,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/result_set"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
       "/v1/author/{author}" : {
          "get" : {
             "description" : "Retrieves an author information details.",
@@ -1947,9 +2551,194 @@
             }
          }
       },
+      "/v1/changes/by_releases" : {
+         "get" : {
+            "description" : "Retrieves a distribution Changes file details using author and release information.",
+            "operationId" : "GetChangesFileByRelease",
+            "parameters" : [
+               {
+                  "example" : "/v1/changes/by_releases/?release=ETHER/Moose-2.2206",
+                  "in" : "query",
+                  "name" : "release",
+                  "required" : false,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "description" : "Specifies which fields in the response should be provided.",
+                  "in" : "query",
+                  "name" : "fields",
+                  "required" : false,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/json" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/result_set"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         },
+         "post" : {
+            "description" : "Retrieves a distribution Changes file details using author and release information.",
+            "operationId" : "PostChangesFileByRelease",
+            "parameters" : [],
+            "requestBody" : {
+               "content" : {
+                  "application/json" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {
+                           "release" : {
+                              "example" : "{\"release\":\"ETHER/Moose-2.2206\"}",
+                              "maxLength" : 2048,
+                              "type" : "string"
+                           }
+                        },
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/result_set"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/changes/{author}/{module}" : {
+         "get" : {
+            "description" : "Retrieves an author distribution Changes file details.",
+            "example" : "/v1/changes/JDEGUEST/Nice-Try-v1.3.4",
+            "operationId" : "GetChangesFileAuthor",
+            "parameters" : [
+               {
+                  "in" : "path",
+                  "name" : "author",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "in" : "path",
+                  "name" : "module",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "description" : "Specifies which fields in the response should be provided.",
+                  "in" : "query",
+                  "name" : "fields",
+                  "required" : false,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/changes"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
       "/v1/changes/{module}" : {
          "get" : {
             "description" : "Retrieves a distribution Changes file details.",
+            "example" : "/v1/changes/Nice-Try",
             "operationId" : "GetChangesFile",
             "parameters" : [
                {
@@ -2010,14 +2799,193 @@
             }
          }
       },
-      "/v1/cover/{cover}" : {
+      "/v1/contributor/by_pauseid/{author}" : {
+         "get" : {
+            "description" : "Retrieves a list of module contributed to by the specified PauseID.",
+            "example" : "/v1/contributor/by_pauseid/ETHER",
+            "operationId" : "GetModuleContributedByPauseID",
+            "parameters" : [
+               {
+                  "in" : "path",
+                  "name" : "by_pauseid",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "description" : "Specifies which fields in the response should be provided.",
+                  "in" : "query",
+                  "name" : "fields",
+                  "required" : false,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "properties" : {
+                              "contributors" : {
+                                 "items" : {
+                                    "properties" : {
+                                       "distribution" : {
+                                          "type" : "string"
+                                       },
+                                       "pauseid" : {
+                                          "type" : "string"
+                                       },
+                                       "release_author" : {
+                                          "type" : "string"
+                                       },
+                                       "release_name" : {
+                                          "type" : "string"
+                                       }
+                                    }
+                                 },
+                                 "type" : "array"
+                              }
+                           }
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/contributor/{author}/{release}" : {
+         "get" : {
+            "description" : "Retrieves a list of module contributors details.",
+            "example" : "/v1/contributor/ETHER/Moose-2.2206",
+            "operationId" : "GetModuleContributors",
+            "parameters" : [
+               {
+                  "in" : "path",
+                  "name" : "author",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "in" : "path",
+                  "name" : "release",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "description" : "Specifies which fields in the response should be provided.",
+                  "in" : "query",
+                  "name" : "fields",
+                  "required" : false,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "properties" : {
+                              "contributors" : {
+                                 "items" : {
+                                    "properties" : {
+                                       "distribution" : {
+                                          "type" : "string"
+                                       },
+                                       "pauseid" : {
+                                          "type" : "string"
+                                       },
+                                       "release_author" : {
+                                          "type" : "string"
+                                       },
+                                       "release_name" : {
+                                          "type" : "string"
+                                       }
+                                    }
+                                 },
+                                 "type" : "array"
+                              }
+                           }
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/cover/{release}" : {
          "get" : {
             "description" : "Retrieves a module cover details.",
+            "example" : "/v1/cover/Nice-Try-v1.3.4",
             "operationId" : "GetModuleCover",
             "parameters" : [
                {
                   "in" : "path",
-                  "name" : "cover",
+                  "name" : "release",
                   "required" : true,
                   "schema" : {
                      "maxLength" : 2048,
@@ -2055,6 +3023,468 @@
                      "application/json" : {
                         "schema" : {
                            "$ref" : "#/components/schemas/cover"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/cve" : {
+         "get" : {
+            "description" : "Retrieves CVE (Common Vulnerabilities & Exposures) information details.",
+            "operationId" : "GetCVE",
+            "parameters" : [
+               {
+                  "description" : "Specifies which fields in the response should be provided.",
+                  "in" : "query",
+                  "name" : "fields",
+                  "required" : false,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/result_set"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/cve/dist/{distribution}" : {
+         "get" : {
+            "description" : "Retrieves Distribution CVE (Common Vulnerabilities & Exposures) information details.",
+            "operationId" : "GetCVEByDistribution",
+            "parameters" : [
+               {
+                  "in" : "path",
+                  "name" : "distribution",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "description" : "Specifies which fields in the response should be provided.",
+                  "in" : "query",
+                  "name" : "fields",
+                  "required" : false,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/json" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : true,
+                        "properties" : {
+                           "version" : {
+                              "maxLength" : 2048,
+                              "type" : "string"
+                           }
+                        },
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/result_set"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/cve/release/{author}/{release}" : {
+         "get" : {
+            "description" : "Retrieves Release CVE (Common Vulnerabilities & Exposures) information details.",
+            "operationId" : "GetCVEByAuthorRelease",
+            "parameters" : [
+               {
+                  "in" : "path",
+                  "name" : "author",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "in" : "path",
+                  "name" : "release",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "description" : "Specifies which fields in the response should be provided.",
+                  "in" : "query",
+                  "name" : "fields",
+                  "required" : false,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/result_set"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/cve/{cpanid}" : {
+         "get" : {
+            "description" : "Retrieves CPAN ID CVE (Common Vulnerabilities & Exposures) information details.",
+            "operationId" : "GetCVEByCpanID",
+            "parameters" : [
+               {
+                  "in" : "path",
+                  "name" : "cpanid",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "description" : "Specifies which fields in the response should be provided.",
+                  "in" : "query",
+                  "name" : "fields",
+                  "required" : false,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/result_set"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/diff/file/{file1}/{file2}" : {
+         "get" : {
+            "description" : "Retrieves a diff of two files.",
+            "example" : "/v1/diff/file/AcREzFgg3ExIrFTURa0QJfn8nto/Ies7Ysw0GjCxUU6Wj_WzI9s8ysU",
+            "operationId" : "Get2FilesDiff",
+            "parameters" : [
+               {
+                  "in" : "path",
+                  "name" : "file1",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "in" : "path",
+                  "name" : "file2",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "text/plain" : {
+                        "schema" : {
+                           "format" : "binary",
+                           "type" : "string"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/diff/release/{author1}/{release1}/{author2}/{release2}" : {
+         "get" : {
+            "description" : "Retrieves a diff of two releases.",
+            "example" : "/v1/diff/release/JDEGUEST/Nice-Try-v1.3.3/JDEGUEST/Nice-Try-v1.3.4",
+            "operationId" : "Get2ReleasesDiff",
+            "parameters" : [
+               {
+                  "in" : "path",
+                  "name" : "author1",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "in" : "path",
+                  "name" : "release1",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "in" : "path",
+                  "name" : "author2",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "in" : "path",
+                  "name" : "release2",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "text/plain" : {
+                        "schema" : {
+                           "format" : "binary",
+                           "type" : "string"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/diff/release/{module}" : {
+         "get" : {
+            "description" : "Retrieves a diff of the latest release and its previous version.",
+            "example" : "/v1/diff/release/Nice-Try",
+            "operationId" : "GetReleaseDiff",
+            "parameters" : [
+               {
+                  "in" : "path",
+                  "name" : "module",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "text/plain" : {
+                        "schema" : {
+                           "format" : "binary",
+                           "type" : "string"
                         }
                      }
                   },
@@ -2255,6 +3685,118 @@
             }
          }
       },
+      "/v1/distribution/river" : {
+         "get" : {
+            "description" : "Returns the river of a distribution name",
+            "example" : "/v1/river",
+            "operationId" : "GetModuleDistributionRiverWithJSON",
+            "parameters" : [],
+            "requestBody" : {
+               "content" : {
+                  "application/json" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {
+                           "distribution" : {
+                              "maxLength" : 2048,
+                              "type" : "string"
+                           }
+                        },
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : true
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/river"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/distribution/river/{module}" : {
+         "get" : {
+            "description" : "Returns the river of a distribution name",
+            "example" : "/v1/river/Moose",
+            "operationId" : "GetModuleDistributionRiverWithParam",
+            "parameters" : [
+               {
+                  "in" : "path",
+                  "name" : "module",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "description" : "Specifies which fields in the response should be provided.",
+                  "in" : "query",
+                  "name" : "fields",
+                  "required" : false,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/river"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
       "/v1/distribution/{distribution}" : {
          "get" : {
             "description" : "The `/distribution` endpoint accepts the name of a distribution (e.g. [/distribution/Moose](https://fastapi.metacpan.org/v1/distribution/Moose)), which returns information about the distribution which is not specific to a version (like RT bug counts)",
@@ -2387,6 +3929,7 @@
             "operationId" : "GetFavorite",
             "parameters" : [
                {
+                  "example" : "/v1/favorite?q=distribution:Moose",
                   "in" : "query",
                   "name" : "q",
                   "required" : false,
@@ -2608,6 +4151,502 @@
                      "application/json" : {
                         "schema" : {
                            "$ref" : "#/components/schemas/result_set"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/favorite/agg_by_distributions" : {
+         "get" : {
+            "description" : "Retrieves favorites agregate by distributions.",
+            "example" : "/v1/favorite/agg_by_distributions?distribution=Nice-Try",
+            "operationId" : "GetFavoriteAggregateDistribution",
+            "parameters" : [
+               {
+                  "description" : "Specifies the distribution to get the favorites.",
+                  "example" : "Nice-Try",
+                  "in" : "query",
+                  "name" : "distribution",
+                  "required" : false,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  }
+               },
+               {
+                  "description" : "Specifies the user to get the favorites.",
+                  "example" : "AhTh1sISr3eA11yW3e1rd",
+                  "in" : "query",
+                  "name" : "user",
+                  "required" : false,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "properties" : {
+                              "favorites" : {
+                                 "example" : "Nice:;Try",
+                                 "module" : {
+                                    "type" : "integer"
+                                 },
+                                 "type" : "object"
+                              },
+                              "myfavorites" : {
+                                 "module" : {
+                                    "type" : "integer"
+                                 },
+                                 "type" : "object"
+                              },
+                              "took" : {
+                                 "type" : "integer"
+                              }
+                           }
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "properties" : {
+                              "users" : {
+                                 "items" : {
+                                    "type" : "string"
+                                 },
+                                 "type" : "array"
+                              }
+                           }
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         },
+         "post" : {
+            "description" : "Retrieves favorites agregate by distributions using JSON parameters.",
+            "example" : "/v1/favorite/agg_by_distributions",
+            "operationId" : "PostFavoriteAggregateDistribution",
+            "parameters" : [],
+            "requestBody" : {
+               "content" : {
+                  "application/json" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {
+                           "distribution" : {
+                              "description" : "Specifies the distribution to get the favorites.",
+                              "example" : "Nice-Try",
+                              "type" : "string"
+                           },
+                           "user" : {
+                              "description" : "Specifies the user to get the favorites.",
+                              "example" : "AhTh1sISr3eA11yW3e1rd",
+                              "type" : "string"
+                           }
+                        },
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "properties" : {
+                              "favorites" : {
+                                 "example" : "Nice:;Try",
+                                 "module" : {
+                                    "type" : "integer"
+                                 },
+                                 "type" : "object"
+                              },
+                              "myfavorites" : {
+                                 "module" : {
+                                    "type" : "integer"
+                                 },
+                                 "type" : "object"
+                              },
+                              "took" : {
+                                 "type" : "integer"
+                              }
+                           }
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "properties" : {
+                              "users" : {
+                                 "items" : {
+                                    "type" : "string"
+                                 },
+                                 "type" : "array"
+                              }
+                           }
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/favorite/by_user/{user}" : {
+         "get" : {
+            "description" : "Retrieves user favorites information details.",
+            "example" : "/v1/favorite/by_user/q_15sjOkRminDY93g9DuZQ",
+            "operationId" : "GetFavoriteByUser",
+            "parameters" : [
+               {
+                  "in" : "path",
+                  "name" : "user",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "description" : "Specifies which fields in the response should be provided.",
+                  "in" : "query",
+                  "name" : "fields",
+                  "required" : false,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/favorites"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/favorite/leaderboard" : {
+         "get" : {
+            "description" : "Retrieves top favorite distributions (leaderboard).",
+            "example" : "/v1/favorite/leaderboard",
+            "operationId" : "GetFavoriteLeaderboard",
+            "parameters" : [],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "properties" : {
+                              "leaderboard" : {
+                                 "items" : {
+                                    "doc_count" : {
+                                       "type" : "integer"
+                                    },
+                                    "key" : {
+                                       "type" : "string"
+                                    }
+                                 },
+                                 "type" : "array"
+                              }
+                           }
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "properties" : {
+                              "users" : {
+                                 "items" : {
+                                    "type" : "string"
+                                 },
+                                 "type" : "array"
+                              }
+                           }
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/favorite/recent" : {
+         "get" : {
+            "description" : "Retrieves list of recent favorite distribution.",
+            "example" : "/v1/favorite/recent",
+            "operationId" : "GetFavoriteRecent",
+            "parameters" : [
+               {
+                  "description" : "Specifies which result page should be returned.",
+                  "in" : "query",
+                  "name" : "page",
+                  "required" : false,
+                  "schema" : {
+                     "type" : "integer"
+                  }
+               },
+               {
+                  "description" : "Specifies the size of the result page.",
+                  "in" : "query",
+                  "name" : "size",
+                  "required" : false,
+                  "schema" : {
+                     "type" : "integer"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/favorites"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "properties" : {
+                              "users" : {
+                                 "items" : {
+                                    "type" : "string"
+                                 },
+                                 "type" : "array"
+                              }
+                           }
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/favorite/users_by_distribution/{distribution}" : {
+         "get" : {
+            "description" : "Retrieves list of users who favorited a distribution.",
+            "example" : "/v1/favorite/users_by_distribution/Nice-Try",
+            "operationId" : "GetFavoriteUsers",
+            "parameters" : [
+               {
+                  "in" : "path",
+                  "name" : "distribution",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/favorites"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "properties" : {
+                              "users" : {
+                                 "items" : {
+                                    "type" : "string"
+                                 },
+                                 "type" : "array"
+                              }
+                           }
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/favorite/{user}/{distribution}" : {
+         "get" : {
+            "description" : "Retrieves favorites information details.",
+            "example" : "/v1/favorite/q_15sjOkRminDY93g9DuZQ/DBI",
+            "operationId" : "GetFavoriteByUserModule",
+            "parameters" : [
+               {
+                  "in" : "path",
+                  "name" : "user",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "in" : "path",
+                  "name" : "distribution",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "description" : "Specifies which fields in the response should be provided.",
+                  "in" : "query",
+                  "name" : "fields",
+                  "required" : false,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/favorite"
                         }
                      }
                   },
@@ -2871,6 +4910,153 @@
             }
          }
       },
+      "/v1/file/dir/{path}" : {
+         "get" : {
+            "description" : "Retrieves a file path directory content.",
+            "example" : "/v1/file/dir/JDEGUEST/Module-Generic-v0.31.0/lib/Module/Generic",
+            "operationId" : "GetFilePathDirectoryContent",
+            "parameters" : [],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "properties" : {
+                              "dir" : {
+                                 "items" : {
+                                    "$ref" : "#/components/schemas/file_preview"
+                                 },
+                                 "type" : "array"
+                              }
+                           }
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/file/{author}/{release}/{path}" : {
+         "get" : {
+            "description" : "Retrieves a file information details.",
+            "example" : "/v1/file/JDEGUEST/Nice-Try-v1.3.4/lib/Nice/Try.pm",
+            "operationId" : "GetFileByAuthorReleaseFilePath",
+            "parameters" : [
+               {
+                  "description" : "Specifies which fields in the response should be provided.",
+                  "in" : "query",
+                  "name" : "fields",
+                  "required" : false,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/file"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/login/index" : {
+         "get" : {
+            "description" : "Returns a login HTML page.",
+            "operationId" : "GetLoginPage",
+            "parameters" : [],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "text/html" : {
+                        "schema" : {
+                           "format" : "binary",
+                           "type" : "string"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
       "/v1/mirror" : {
          "get" : {
             "description" : "Returns a `mirrors` object containing a list of `mirror` objects. Currently, the API only returns one mirror, because CPAN now uses CDN instead of mirrors.",
@@ -2894,6 +5080,151 @@
                      "schema" : {
                         "additionalProperties" : false,
                         "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/mirrors"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         },
+         "post" : {
+            "description" : "Returns a `mirrors` object containing a list of `mirror` objects. Currently, the API only returns one mirror, because CPAN now uses CDN instead of mirrors.",
+            "operationId" : "PostMirror",
+            "parameters" : [],
+            "requestBody" : {
+               "content" : {
+                  "application/json" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {
+                           "q" : {
+                              "description" : "Specifies an optional keyword to find the matching mirrors.",
+                              "maxLength" : 2048,
+                              "type" : "string"
+                           }
+                        },
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/mirrors"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/mirror/search" : {
+         "get" : {
+            "description" : "Returns a `mirrors` object containing a list of `mirror` objects. Currently, the API only returns one mirror, because CPAN now uses CDN instead of mirrors.",
+            "operationId" : "GetMirrorSearch",
+            "parameters" : [
+               {
+                  "description" : "Specifies an optional keyword to find the matching mirrors.",
+                  "in" : "query",
+                  "name" : "q",
+                  "required" : false,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/mirrors"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         },
+         "post" : {
+            "description" : "Returns a `mirrors` object containing a list of `mirror` objects. Currently, the API only returns one mirror, because CPAN now uses CDN instead of mirrors.",
+            "operationId" : "PostMirrorSearch",
+            "parameters" : [],
+            "requestBody" : {
+               "content" : {
+                  "application/json" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {
+                           "q" : {
+                              "description" : "Specifies an optional keyword to find the matching mirrors.",
+                              "maxLength" : 2048,
+                              "type" : "string"
+                           }
+                        },
                         "type" : "object"
                      }
                   }
@@ -3032,6 +5363,7 @@
       "/v1/module/{module}" : {
          "get" : {
             "description" : "Returns the corresponding `file` of the latest version of the `module`. Considering that Moose-2.0001 is the latest release, the result of [/module/Moose](https://fastapi.metacpan.org/v1/module/Moose) is the same as [/file/DOY/Moose-2.0001/lib/Moose.pm](https://fastapi.metacpan.org/v1/file/DOY/Moose-2.0001/lib/Moose.pm).",
+            "example" : "/v1/module/Module::Generic",
             "operationId" : "GetModuleFile",
             "parameters" : [
                {
@@ -3147,6 +5479,58 @@
                      "application/json" : {
                         "schema" : {
                            "$ref" : "#/components/schemas/result_set"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/package/modules/{distribution}" : {
+         "get" : {
+            "description" : "Retrieves the list of a distribution packages.",
+            "example" : "/v1/package/modules/Moose",
+            "operationId" : "GetPackageDistributionList",
+            "parameters" : [],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "property" : {
+                              "modules" : {
+                                 "items" : {
+                                    "example" : "Moose::Cookbook",
+                                    "maxLength" : 2048,
+                                    "type" : "string"
+                                 },
+                                 "type" : "array"
+                              }
+                           }
                         }
                      }
                   },
@@ -3291,6 +5675,221 @@
             }
          }
       },
+      "/v1/permission/by_author/{author}" : {
+         "get" : {
+            "description" : "Retrieves permission information details by author.",
+            "operationId" : "GetPermissionByAuthor",
+            "parameters" : [
+               {
+                  "description" : "This is the user's pause ID",
+                  "example" : "TIMB",
+                  "in" : "path",
+                  "name" : "author",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/permissions"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/permission/by_module" : {
+         "get" : {
+            "description" : "Retrieves permission information details by module.",
+            "example" : "/v1/permission/by_module?module=DBD::DBM::Statement",
+            "operationId" : "GetPermissionByModuleQueryString",
+            "parameters" : [
+               {
+                  "description" : "This is the module package name",
+                  "example" : "DBD::DBM::Statement",
+                  "in" : "query",
+                  "name" : "module",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/permissions"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         },
+         "post" : {
+            "description" : "Retrieves permission information details by module.",
+            "example" : "/v1/permission/by_module",
+            "operationId" : "PostPermissionByModuleJSON",
+            "parameters" : [],
+            "requestBody" : {
+               "content" : {
+                  "application/json" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {
+                           "module" : {
+                              "description" : "This is the module package name",
+                              "example" : "DBD::DBM::Statement",
+                              "maxLength" : 2048,
+                              "type" : "string"
+                           }
+                        },
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : true
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/permissions"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/permission/by_module/{module}" : {
+         "get" : {
+            "description" : "Retrieves permission information details by module.",
+            "example" : "/v1/permission/by_module/DBD::DBM::Statement",
+            "operationId" : "GetPermissionByModule",
+            "parameters" : [
+               {
+                  "description" : "This is the module package name",
+                  "example" : "DBD::DBM::Statement",
+                  "in" : "path",
+                  "name" : "module",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/permissions"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
       "/v1/permission/{module}" : {
          "get" : {
             "description" : "Returns the corresponding `permission` for the specified `module`. For example, [/permission/Moose](https://fastapi.metacpan.org/v1/permission/Moose).",
@@ -3361,6 +5960,16 @@
             "parameters" : [
                {
                   "in" : "path",
+                  "name" : "author",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "in" : "path",
                   "name" : "release",
                   "required" : true,
                   "schema" : {
@@ -3378,6 +5987,20 @@
                      "type" : "string"
                   },
                   "style" : "simple"
+               },
+               {
+                  "in" : "query",
+                  "maxLength" : 2048,
+                  "name" : "show_errors",
+                  "required" : false,
+                  "type" : "boolean"
+               },
+               {
+                  "in" : "query",
+                  "maxLength" : 2048,
+                  "name" : "url_prefix",
+                  "required" : false,
+                  "type" : "string"
                },
                {
                   "description" : "You can change the output format by either passing a `content-type` query parameter (e.g. [/pod/Moose?content-type=text/plain](https://fastapi.metacpan.org/v1/pod/Moose?content-type=text/plain) or by adding an `Accept` header to the HTTP request. Valid content types are:\n\n* text/html (default)\n* text/plain\n* text/x-pod\n* text/x-markdown",
@@ -3475,6 +6098,20 @@
                   "style" : "simple"
                },
                {
+                  "in" : "query",
+                  "maxLength" : 2048,
+                  "name" : "show_errors",
+                  "required" : false,
+                  "type" : "boolean"
+               },
+               {
+                  "in" : "query",
+                  "maxLength" : 2048,
+                  "name" : "url_prefix",
+                  "required" : false,
+                  "type" : "string"
+               },
+               {
                   "description" : "You can change the output format by either passing a `content-type` query parameter (e.g. [/pod/Moose?content-type=text/plain](https://fastapi.metacpan.org/v1/pod/Moose?content-type=text/plain) or by adding an `Accept` header to the HTTP request. Valid content types are:\n\n* text/html (default)\n* text/plain\n* text/x-pod\n* text/x-markdown",
                   "in" : "query",
                   "name" : "content-type",
@@ -3533,6 +6170,116 @@
                         }
                      },
                      "text/x-pod" : {
+                        "schema" : {
+                           "format" : "binary",
+                           "type" : "string"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/pod_render" : {
+         "get" : {
+            "description" : "Takes some POD data and check for errors. It returns the POD provided in formatted plan text.",
+            "operationId" : "GetRenderPOD",
+            "parameters" : [
+               {
+                  "description" : "The POD data to format",
+                  "example" : "=encoding utf-8\n\n=head1 Hello World\n\nSomething here\n\n=oops\n\n=cut\n",
+                  "in" : "query",
+                  "name" : "pod",
+                  "required" : true,
+                  "type" : "string"
+               },
+               {
+                  "in" : "query",
+                  "maxLength" : 2048,
+                  "name" : "show_errors",
+                  "required" : false,
+                  "type" : "boolean"
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "text/plain" : {
+                        "schema" : {
+                           "example" : "Hello World\n    Something here\n\nPOD ERRORS\n    Hey! The above document had some coding errors, which are explained below:\n\n    Around line 7:\n        Unknown directive: =oops\n",
+                           "format" : "binary",
+                           "type" : "string"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         },
+         "post" : {
+            "description" : "Takes some POD data and check for errors. It returns the POD provided in formatted plan text.",
+            "operationId" : "PostRenderPOD",
+            "parameters" : [],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {
+                           "pod" : {
+                              "description" : "The POD data to format",
+                              "example" : "=encoding utf-8\\n\\n=head1 Hello World\\n\\nSomething here\\n\\n=oops\\n\\n=cut\\n",
+                              "type" : "string"
+                           },
+                           "show_errors" : {
+                              "type" : "boolean"
+                           }
+                        },
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "text/plain" : {
                         "schema" : {
                            "format" : "binary",
                            "type" : "string"
@@ -3799,6 +6546,106 @@
             }
          }
       },
+      "/v1/rating/by_distributions" : {
+         "get" : {
+            "description" : "Retrieves rating information details by distribution.",
+            "example" : "/v1/rating/by_distributions?distribution=Moose",
+            "operationId" : "GetRatingByDistribution",
+            "parameters" : [
+               {
+                  "in" : "query",
+                  "name" : "distribution",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/distributions"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         },
+         "post" : {
+            "description" : "Retrieves rating information details by distribution.",
+            "operationId" : "PostRatingByDistribution",
+            "parameters" : [],
+            "requestBody" : {
+               "content" : {
+                  "application/json" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {
+                           "distribution" : {
+                              "example" : "Moose",
+                              "maxLength" : 2048,
+                              "type" : "string"
+                           }
+                        },
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : true
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/distributions"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
       "/v1/release" : {
          "get" : {
             "description" : "Retrieves release information details.",
@@ -4044,11 +6891,283 @@
             }
          }
       },
-      "/v1/release/recent" : {
+      "/v1/release/all_by_author/{author}" : {
          "get" : {
+            "description" : "Get all releases by the specified author",
+            "example" : "/v1/release/all_by_author/JDEGUEST",
+            "operationId" : "GetAllReleasesByAuthor",
+            "parameters" : [
+               {
+                  "in" : "path",
+                  "name" : "author",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "description" : "Specifies the page offset starting from 1.",
+                  "in" : "query",
+                  "name" : "page",
+                  "required" : false,
+                  "schema" : {
+                     "type" : "integer"
+                  }
+               },
+               {
+                  "description" : "Specifies the page size, i.e. the number of elements returned in one page.",
+                  "in" : "query",
+                  "name" : "page_size",
+                  "required" : false,
+                  "schema" : {
+                     "type" : "integer"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/releases"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         },
+         "post" : {
+            "description" : "Get all releases by the specified author",
+            "example" : "/v1/release/all_by_author/JDEGUEST",
+            "operationId" : "PostAllReleasesByAuthor",
+            "parameters" : [
+               {
+                  "in" : "path",
+                  "name" : "author",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/json" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {
+                           "page" : {
+                              "description" : "Specifies the page offset starting from 1.",
+                              "type" : "integer"
+                           },
+                           "page_size" : {
+                              "description" : "Specifies the page size, i.e. the number of elements returned in one page.",
+                              "type" : "integer"
+                           }
+                        },
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/releases"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/release/by_author" : {
+         "get" : {
+            "description" : "Get releases by author",
+            "operationId" : "GetReleaseByAuthor",
+            "parameters" : [
+               {
+                  "description" : "Specifies the page size, i.e. the number of elements returned in one page.",
+                  "in" : "query",
+                  "name" : "size",
+                  "required" : false,
+                  "schema" : {
+                     "type" : "integer"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/releases"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         },
+         "post" : {
             "description" : "Get recent releases",
-            "operationId" : "GetReleaseRecent",
+            "operationId" : "PostReleaseRecent",
             "parameters" : [],
+            "requestBody" : {
+               "content" : {
+                  "application/json" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {
+                           "size" : {
+                              "description" : "Specifies the page size, i.e. the number of elements returned in one page.",
+                              "type" : "integer"
+                           }
+                        },
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/releases"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/release/contributors/{author}/{release}" : {
+         "get" : {
+            "description" : "Retrieves the list of contributors for the specified distributions",
+            "example" : "/v1/release/contributors/JDEGUEST/Module-Generic-v0.30.5",
+            "operationId" : "GetReleaseDistributionContributors",
+            "parameters" : [
+               {
+                  "in" : "path",
+                  "name" : "author",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "in" : "path",
+                  "name" : "release",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "description" : "Specifies which object to [join](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#joins) in the result.",
+                  "in" : "query",
+                  "name" : "join",
+                  "required" : false,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  }
+               },
+               {
+                  "description" : "Specifies which fields in the response should be provided.",
+                  "in" : "query",
+                  "name" : "fields",
+                  "required" : false,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  }
+               }
+            ],
             "requestBody" : {
                "content" : {
                   "application/x-www-form-urlencoded" : {
@@ -4068,30 +7187,534 @@
                      "application/json" : {
                         "schema" : {
                            "properties" : {
-                              "releases" : {
+                              "contributors" : {
                                  "items" : {
-                                    "properties" : {
-                                       "abstract" : {
+                                    "email" : {
+                                       "items" : {
+                                          "maxLength" : 2048,
                                           "type" : "string"
                                        },
-                                       "author" : {
-                                          "type" : "string"
-                                       },
-                                       "date" : {
-                                          "type" : "string"
-                                       },
-                                       "distribution" : {
-                                          "type" : "string"
-                                       },
-                                       "name" : {
-                                          "type" : "string"
-                                       },
-                                       "status" : {
-                                          "type" : "string"
-                                       }
+                                       "type" : "array"
+                                    },
+                                    "name" : {
+                                       "description" : "Contributor's name",
+                                       "maxLength" : 2048,
+                                       "type" : "string"
                                     }
                                  },
                                  "type" : "array"
+                              }
+                           }
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/release/files_by_category/{author}/{release}" : {
+         "get" : {
+            "description" : "Retrieves the list of release key files by category",
+            "example" : "/v1/release/files_by_category/JDEGUEST/Module-Generic-v0.30.5",
+            "operationId" : "GetReleaseKeyFilesByCategory",
+            "parameters" : [
+               {
+                  "in" : "path",
+                  "name" : "author",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "in" : "path",
+                  "name" : "release",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "description" : "An optional category can be specified to refine the result. Valid vlues include `changelog`, `contributing`, `dist`, `license`, `other`",
+                  "in" : "query",
+                  "name" : "category",
+                  "required" : false,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schema/files_categories"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         },
+         "post" : {
+            "description" : "Retrieves the list of release key files by category",
+            "example" : "/v1/release/files_by_category/JDEGUEST/Module-Generic-v0.30.5",
+            "operationId" : "PostReleaseKeyFilesByCategory",
+            "parameters" : [
+               {
+                  "in" : "path",
+                  "name" : "author",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "in" : "path",
+                  "name" : "release",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {
+                           "category" : {
+                              "description" : "An optional category can be specified to refine the result. Valid vlues include `changelog`, `contributing`, `dist`, `license`, `other`",
+                              "maxLength" : 2048,
+                              "type" : "string"
+                           }
+                        },
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schema/files_categories"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/release/interesting_files/{author}/{release}" : {
+         "get" : {
+            "description" : "Retrieves the list of release interesting files",
+            "example" : "/v1/release/interesting_files/JDEGUEST/Module-Generic-v0.30.5",
+            "operationId" : "GetReleaseInterestingFiles",
+            "parameters" : [
+               {
+                  "in" : "path",
+                  "name" : "author",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "in" : "path",
+                  "name" : "release",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "description" : "An optional category can be specified to refine the result. Valid vlues include `changelog`, `contributing`, `dist`, `license`, `other`",
+                  "in" : "query",
+                  "name" : "category",
+                  "required" : false,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/files_interesting"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         },
+         "post" : {
+            "description" : "Retrieves the list of release interesting files",
+            "example" : "/v1/release/interesting_files/JDEGUEST/Module-Generic-v0.30.5",
+            "operationId" : "PostReleaseInterestingFiles",
+            "parameters" : [
+               {
+                  "in" : "path",
+                  "name" : "author",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "in" : "path",
+                  "name" : "release",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {
+                           "category" : {
+                              "description" : "An optional category can be specified to refine the result. Valid vlues include `changelog`, `contributing`, `dist`, `license`, `other`",
+                              "maxLength" : 2048,
+                              "type" : "string"
+                           }
+                        },
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/files_interesting"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/release/latest_by_author/{author}" : {
+         "get" : {
+            "description" : "Get latest releases by the specified author",
+            "operationId" : "GetLatestReleaseByAuthor",
+            "parameters" : [
+               {
+                  "in" : "path",
+                  "name" : "author",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/releases"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         },
+         "post" : {
+            "description" : "Get latest releases by the specified author",
+            "operationId" : "PostLatestReleaseByAuthor",
+            "parameters" : [
+               {
+                  "in" : "path",
+                  "name" : "author",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/json" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/releases"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/release/latest_by_distribution/{distribution}" : {
+         "get" : {
+            "description" : "Get latest releases by distribution",
+            "operationId" : "GetLatestReleaseByDistribution",
+            "parameters" : [
+               {
+                  "in" : "path",
+                  "name" : "distribution",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "properties" : {
+                              "release" : {
+                                 "schema" : {
+                                    "$ref" : "#/components/schemas/release"
+                                 }
+                              },
+                              "took" : {
+                                 "type" : "integer"
+                              },
+                              "total" : {
+                                 "type" : "integer"
+                              }
+                           }
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         },
+         "post" : {
+            "description" : "Get recent releases",
+            "operationId" : "PostLatestReleaseByDistribution",
+            "parameters" : [
+               {
+                  "in" : "path",
+                  "name" : "distribution",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/json" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "properties" : {
+                              "release" : {
+                                 "schema" : {
+                                    "$ref" : "#/components/schemas/release"
+                                 }
                               },
                               "took" : {
                                  "type" : "integer"
@@ -4118,9 +7741,489 @@
             }
          }
       },
+      "/v1/release/modules/{author}/{release}" : {
+         "get" : {
+            "description" : "Retrieves the list of modules in the specified release",
+            "example" : "/v1/release/modules/JDEGUEST/Module-Generic-v0.31.0",
+            "operationId" : "GetReleaseModules",
+            "parameters" : [
+               {
+                  "in" : "path",
+                  "name" : "author",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "in" : "path",
+                  "name" : "release",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "description" : "Specifies which object to [join](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#joins) in the result.",
+                  "in" : "query",
+                  "name" : "join",
+                  "required" : false,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  }
+               },
+               {
+                  "description" : "Specifies which fields in the response should be provided.",
+                  "in" : "query",
+                  "name" : "fields",
+                  "required" : false,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/files"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/release/recent" : {
+         "get" : {
+            "description" : "Get recent releases",
+            "operationId" : "GetReleaseRecent",
+            "parameters" : [
+               {
+                  "description" : "Specifies the page offset starting from 1.",
+                  "in" : "query",
+                  "name" : "page",
+                  "required" : false,
+                  "schema" : {
+                     "type" : "integer"
+                  }
+               },
+               {
+                  "description" : "Specifies the page size, i.e. the number of elements returned in one page.",
+                  "in" : "query",
+                  "name" : "page_size",
+                  "required" : false,
+                  "schema" : {
+                     "type" : "integer"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/release_recents"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         },
+         "post" : {
+            "description" : "Get recent releases",
+            "operationId" : "PostReleaseRecent",
+            "parameters" : [],
+            "requestBody" : {
+               "content" : {
+                  "application/json" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {
+                           "page" : {
+                              "description" : "Specifies the page offset starting from 1.",
+                              "type" : "integer"
+                           },
+                           "page_size" : {
+                              "description" : "Specifies the page size, i.e. the number of elements returned in one page.",
+                              "type" : "integer"
+                           }
+                        },
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/release_recents"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/release/top_uploaders" : {
+         "get" : {
+            "description" : "Get top release uploaders",
+            "operationId" : "GetTopReleaseUploaders",
+            "parameters" : [
+               {
+                  "description" : "Specifies the result range. Valid values are `all`, `weekly`, `monthly` or `yearly`. It defaults to `weekly`",
+                  "in" : "query",
+                  "name" : "range",
+                  "required" : false,
+                  "schema" : {
+                     "type" : "string"
+                  }
+               },
+               {
+                  "description" : "Specifies the page size, i.e. the number of elements returned in one page.",
+                  "in" : "query",
+                  "name" : "page_size",
+                  "required" : false,
+                  "schema" : {
+                     "type" : "integer"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "properties" : {
+                              "count" : {
+                                 "description" : "Array of pause IDs to the number of distributions",
+                                 "example" : "\"NOBUNAGA\" : 5",
+                                 "items" : {
+                                    "additionalProperties" : {
+                                       "type" : "string"
+                                    }
+                                 },
+                                 "type" : "array"
+                              },
+                              "took" : {
+                                 "type" : "integer"
+                              }
+                           }
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         },
+         "post" : {
+            "description" : "Get top release uploaders",
+            "operationId" : "PostTopReleaseUploaders",
+            "parameters" : [],
+            "requestBody" : {
+               "content" : {
+                  "application/json" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {
+                           "range" : {
+                              "description" : "Specifies the result range. Valid values are `all`, `weekly`, `monthly` or `yearly`. It defaults to `weekly`",
+                              "type" : "string"
+                           }
+                        },
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "properties" : {
+                              "count" : {
+                                 "description" : "Array of pause IDs to the number of distributions",
+                                 "example" : "\"NOBUNAGA\" : 5",
+                                 "items" : {
+                                    "additionalProperties" : {
+                                       "type" : "string"
+                                    }
+                                 },
+                                 "type" : "array"
+                              },
+                              "took" : {
+                                 "type" : "integer"
+                              }
+                           }
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/release/versions/{distribution}" : {
+         "get" : {
+            "description" : "Get all releases by versions for the specified distribution",
+            "example" : "/v1/release/versions/Module-Generic",
+            "operationId" : "GetAllReleasesByVersion",
+            "parameters" : [
+               {
+                  "in" : "path",
+                  "name" : "distribution",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "description" : "Specifies the version(s) to return as a comma-sepated value.",
+                  "example" : "v0.30.5,v0.31.0",
+                  "in" : "query",
+                  "name" : "versions",
+                  "required" : false,
+                  "schema" : {
+                     "type" : "string"
+                  }
+               },
+               {
+                  "description" : "Specifies whether the result should be returned in plain mode.",
+                  "in" : "query",
+                  "name" : "plain",
+                  "required" : false,
+                  "schema" : {
+                     "type" : "boolean"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/releases"
+                        }
+                     },
+                     "text/plain" : {
+                        "description" : "Lines of version and download URL spearated by a space are returned when the option `plain` is enabled.",
+                        "example" : "v0.31.0\thttps://cpan.metacpan.org/authors/id/J/JD/JDEGUEST/Module-Generic-v0.31.0.tar.gz\nv0.30.5\thttps://cpan.metacpan.org/authors/id/J/JD/JDEGUEST/Module-Generic-v0.30.5.tar.gz",
+                        "schema" : {
+                           "format" : "binary",
+                           "type" : "string"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         },
+         "post" : {
+            "description" : "Get all releases by versions for the specified distribution",
+            "example" : "/v1/release/versions/Module-Generic",
+            "operationId" : "PostAllReleasesByVersion",
+            "parameters" : [
+               {
+                  "in" : "path",
+                  "name" : "distribution",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/json" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {
+                           "plain" : {
+                              "description" : "Specifies whether the result should be returned in plain mode.",
+                              "type" : "boolean"
+                           },
+                           "versions" : {
+                              "description" : "Specifies the version(s) to return as a comma-sepated value.",
+                              "example" : "v0.30.5,v0.31.0",
+                              "type" : "string"
+                           }
+                        },
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/releases"
+                        }
+                     },
+                     "text/plain" : {
+                        "description" : "Lines of version and download URL spearated by a space are returned when the option `plain` is enabled.",
+                        "example" : "v0.31.0\thttps://cpan.metacpan.org/authors/id/J/JD/JDEGUEST/Module-Generic-v0.31.0.tar.gz\nv0.30.5\thttps://cpan.metacpan.org/authors/id/J/JD/JDEGUEST/Module-Generic-v0.30.5.tar.gz",
+                        "schema" : {
+                           "format" : "binary",
+                           "type" : "string"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
       "/v1/release/{author}/{release}" : {
          "get" : {
             "description" : "Retrieves an distribution release information details.\nThis `/release` endpoint accepts  the name of an `author` and the name of the `release` (e.g. [/release/DOY/Moose-2.0001](https://fastapi.metacpan.org/v1/release/DOY/Moose-2.0001)), which returns the most recent release of the distribution.",
+            "example" : "/v1/release/JDEGUEST/Module-Generic-v0.30.5",
             "operationId" : "GetAuthorReleaseDistribution",
             "parameters" : [
                {
@@ -4182,7 +8285,19 @@
                   "content" : {
                      "application/json" : {
                         "schema" : {
-                           "$ref" : "#/components/schemas/release"
+                           "properties" : {
+                              "release" : {
+                                 "schema" : {
+                                    "$ref" : "#/components/schemas/release"
+                                 }
+                              },
+                              "took" : {
+                                 "type" : "integer"
+                              },
+                              "total" : {
+                                 "type" : "integer"
+                              }
+                           }
                         }
                      }
                   },
@@ -4204,6 +8319,7 @@
       "/v1/release/{distribution}" : {
          "get" : {
             "description" : "Retrieves an author information details.\nThe `/release` endpoint accepts either the name of a `distribution` (e.g. [/release/Moose](https://fastapi.metacpan.org/v1/release/Moose)), which returns the most recent release of the distribution.",
+            "example" : "/v1/release/Moose",
             "operationId" : "GetReleaseDistribution",
             "parameters" : [
                {
@@ -4290,6 +8406,42 @@
                   "style" : "simple"
                },
                {
+                  "description" : "Specifies the page offset from which the result will be returned.",
+                  "in" : "query",
+                  "name" : "page",
+                  "required" : false,
+                  "schema" : {
+                     "type" : "integer"
+                  }
+               },
+               {
+                  "description" : "Specifies the number of result per page to be returned.",
+                  "in" : "query",
+                  "name" : "page_size",
+                  "required" : false,
+                  "schema" : {
+                     "type" : "integer"
+                  }
+               },
+               {
+                  "description" : "Specifies the maximum total number of result to be returned.",
+                  "in" : "query",
+                  "name" : "size",
+                  "required" : false,
+                  "schema" : {
+                     "type" : "integer"
+                  }
+               },
+               {
+                  "description" : "Specifies how the result is sorted.",
+                  "in" : "query",
+                  "name" : "sort",
+                  "required" : false,
+                  "schema" : {
+                     "type" : "string"
+                  }
+               },
+               {
                   "description" : "Specifies which fields in the response should be provided.",
                   "in" : "query",
                   "name" : "fields",
@@ -4307,6 +8459,236 @@
                      "schema" : {
                         "additionalProperties" : false,
                         "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/reverse_dependencies"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         },
+         "post" : {
+            "description" : "Returns a list of all the modules who depend on the specified module.`.",
+            "operationId" : "PostReverseDependencyDist",
+            "parameters" : [
+               {
+                  "in" : "path",
+                  "name" : "module",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {
+                           "page" : {
+                              "description" : "Specifies the page offset from which the result will be returned.",
+                              "required" : false,
+                              "type" : "integer"
+                           },
+                           "page_size" : {
+                              "description" : "Specifies the number of result per page to be returned.",
+                              "required" : false,
+                              "type" : "integer"
+                           },
+                           "size" : {
+                              "description" : "Specifies the maximum total number of result to be returned.",
+                              "required" : false,
+                              "type" : "integer"
+                           },
+                           "sort" : {
+                              "description" : "Specifies how the result is sorted.",
+                              "required" : false,
+                              "type" : "string"
+                           }
+                        },
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/reverse_dependencies"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/reverse_dependencies/module/{module}" : {
+         "get" : {
+            "description" : "Returns a list of all the modules who depend on the specified module.`.",
+            "example" : "/v1/reverse_dependencies/module/Module::Generic",
+            "operationId" : "GetReverseDependencyModule",
+            "parameters" : [
+               {
+                  "in" : "path",
+                  "name" : "module",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "description" : "Specifies the page offset from which the result will be returned.",
+                  "in" : "query",
+                  "name" : "page",
+                  "required" : false,
+                  "schema" : {
+                     "type" : "integer"
+                  }
+               },
+               {
+                  "description" : "Specifies the number of result per page to be returned.",
+                  "in" : "query",
+                  "name" : "page_size",
+                  "required" : false,
+                  "schema" : {
+                     "type" : "integer"
+                  }
+               },
+               {
+                  "description" : "Specifies how the result is sorted.",
+                  "in" : "query",
+                  "name" : "sort",
+                  "required" : false,
+                  "schema" : {
+                     "type" : "string"
+                  }
+               },
+               {
+                  "description" : "Specifies which fields in the response should be provided.",
+                  "in" : "query",
+                  "name" : "fields",
+                  "required" : false,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/reverse_dependencies"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         },
+         "post" : {
+            "description" : "Returns a list of all the modules who depend on the specified module.`.",
+            "operationId" : "PostReverseDependencyModule",
+            "parameters" : [
+               {
+                  "in" : "path",
+                  "name" : "module",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {
+                           "page" : {
+                              "description" : "Specifies the page offset from which the result will be returned.",
+                              "required" : false,
+                              "type" : "integer"
+                           },
+                           "page_size" : {
+                              "description" : "Specifies the number of result per page to be returned.",
+                              "required" : false,
+                              "type" : "integer"
+                           },
+                           "sort" : {
+                              "description" : "Specifies how the result is sorted.",
+                              "required" : false,
+                              "type" : "string"
+                           }
+                        },
                         "type" : "object"
                      }
                   }
@@ -4727,6 +9109,81 @@
                      "application/json" : {
                         "schema" : {
                            "$ref" : "#/components/schemas/result_set"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/source/{author}/{release}/{path}" : {
+         "get" : {
+            "description" : "Returns the POD of the given module. You can change the output format by either passing a `content-type` query parameter (e.g. [/pod/Moose?content-type=text/plain](https://fastapi.metacpan.org/v1/pod/Moose?content-type=text/plain) or by adding an `Accept` header to the HTTP request. Valid content types are:\n\n* text/html (default)\n* text/plain\n* text/x-pod\n* text/x-markdown",
+            "example" : "/v1/source/JDEGUEST/Module-Generic-v0.31.0/lib/Module/Generic.pm",
+            "operationId" : "GetModuleReleasePod",
+            "parameters" : [
+               {
+                  "in" : "path",
+                  "name" : "author",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "in" : "path",
+                  "name" : "release",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "in" : "path",
+                  "name" : "path",
+                  "required" : true,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  },
+                  "style" : "simple"
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "text/plain" : {
+                        "schema" : {
+                           "format" : "binary",
+                           "type" : "string"
                         }
                      }
                   },

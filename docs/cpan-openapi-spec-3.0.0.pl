@@ -336,6 +336,54 @@
                     }
                 },
             },
+            # NOTE: schemas -> distributions
+            distributions =>
+            {
+                description => q{This is the object representing a list of distributions.},
+                properties =>
+                {
+                    distributions => 
+                    {
+                        additionalProperties =>
+                        {
+                            type => 'object',
+                            properties =>
+                            {
+                                avg =>
+                                {
+                                    type => 'float',
+                                },
+                                count =>
+                                {
+                                    type => 'integer',
+                                },
+                                max =>
+                                {
+                                    type => 'float',
+                                },
+                                min =>
+                                {
+                                    type => 'float',
+                                },
+                                sum =>
+                                {
+                                    type => 'float',
+                                },
+                            },
+                        },
+                        type => 'object',
+                        description => 'This contains dynamic properties named after the perl distribution name, such as "Moose"',
+                    },
+                    took =>
+                    {
+                        type => 'integer',
+                    },
+                    total =>
+                    {
+                        type => 'integer',
+                    },
+                },
+            },
             # NOTE: schemas -> download_url
             download_url =>
             {
@@ -427,6 +475,33 @@
                     },
                 },
             },
+            # NOTE: schemas -> favorites
+            favorites =>
+            {
+                description => q{This is the object representing a user favorites},
+                properties =>
+                {
+                    favorites =>
+                    {
+                        items =>
+                        {
+                            schema =>
+                            {
+                                '$ref' => '#/components/schemas/favorite',
+                            },
+                        },
+                        type => 'array',
+                    },
+                    took => 
+                    {
+                        type => 'integer',
+                    },
+                    total => 
+                    {
+                        type => 'integer',
+                    },
+                },
+            },
             # NOTE: schemas -> favorite_mapping
             favorite_mapping =>
             {
@@ -504,6 +579,7 @@
                     },
                     mime => 
                     {
+                        example => 'text/x-script.perl-module',
                         maxLength => 2048,
                         type => 'string',
                     },
@@ -564,6 +640,88 @@
                     version_numified => { type => 'number' },
                 },
             },
+            # NOTE: schemas -> file_snapshot
+            file_snapshot =>
+            {
+                description => q{This is the object representing a file snapshot},
+                properties =>
+                {
+                    author => 
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    category => { type => 'string' },
+                    distribution => 
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    documentation => 
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    name => 
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    path => 
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    pod_lines => 
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    release => 
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    status => 
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                },
+            },
+            # NOTE: schemas -> file_preview
+            file_preview =>
+            {
+                description => q{This represents a file preview used in endpoint `/file/dir`},
+                properties =>
+                {
+                    directory => { type => 'boolean' },
+                    documentation => 
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    mime => 
+                    {
+                        example => 'text/x-script.perl-module',
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    name => 
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    path => 
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    slop => { type => 'integer' },
+                    'stat.mime' => { type => 'integer' },
+                    'stat.size' => { type => 'integer' },
+                },
+            },
             # NOTE: schemas -> file_mapping
             file_mapping =>
             {
@@ -574,6 +732,120 @@
                     {
                         '$ref' => "#/components/schemas/file",
                     }
+                },
+            },
+            # NOTE: schemas -> files
+            files =>
+            {
+                description => q{This is the object representing a list of files},
+                properties =>
+                {
+                    files =>
+                    {
+                        items =>
+                        {
+                            schema =>
+                            {
+                                '$ref' => '#/components/schemas/file',
+                            },
+                        },
+                        type => 'array',
+                    },
+                    took => 
+                    {
+                        type => 'integer',
+                    },
+                    total => 
+                    {
+                        type => 'integer',
+                    },
+                },
+            },
+            # NOTE: schemas -> files_categories
+            files_categories =>
+            {
+                description => q{This is the object representing a list of files by categories},
+                properties =>
+                {
+                    categories =>
+                    {
+                        changelog =>
+                        {
+                            items => 
+                            {
+                                '$ref' => '#/components/schemas/file_snapshot',
+                            },
+                            type => 'array',
+                        },
+                        contributing =>
+                        {
+                            items => 
+                            {
+                                '$ref' => '#/components/schemas/file_snapshot',
+                            },
+                            type => 'array',
+                        },
+                        dist =>
+                        {
+                            items => 
+                            {
+                                '$ref' => '#/components/schemas/file_snapshot',
+                            },
+                            type => 'array',
+                        },
+                        license =>
+                        {
+                            items => 
+                            {
+                                '$ref' => '#/components/schemas/file_snapshot',
+                            },
+                            type => 'array',
+                        },
+                        other =>
+                        {
+                            items => 
+                            {
+                                '$ref' => '#/components/schemas/file_snapshot',
+                            },
+                            type => 'array',
+                        },
+                        type => 'object',
+                    },
+                    took => 
+                    {
+                        type => 'integer',
+                    },
+                    total => 
+                    {
+                        type => 'integer',
+                    },
+                },
+            },
+            # NOTE: schemas -> files_interesting
+            files_interesting =>
+            {
+                description => q{This is the object representing a list of files},
+                properties =>
+                {
+                    files =>
+                    {
+                        items =>
+                        {
+                            schema =>
+                            {
+                                '$ref' => '#/components/schema/file_snapshot',
+                            },
+                        },
+                        type => 'array',
+                    },
+                    took => 
+                    {
+                        type => 'integer',
+                    },
+                    total => 
+                    {
+                        type => 'integer',
+                    },
                 },
             },
             # NOTE: schemas -> metadata
@@ -1090,6 +1362,55 @@
                     },
                 },
             },
+            # NOTE: schemas -> favorites
+            permissions =>
+            {
+                description => q{This is the object representing a user permissions},
+                properties =>
+                {
+                    permissions =>
+                    {
+                        items =>
+                        {
+                            properties =>
+                            {
+                                co_maintainers =>
+                                {
+                                    items =>
+                                    {
+                                        description => "List of co-maintainer's pause ID",
+                                        maxLength => 2048,
+                                        type => 'string',
+                                    },
+                                    type => 'array',
+                                },
+                                module_name =>
+                                {
+                                    example => 'Bundle::DBI',
+                                    maxLength => 2048,
+                                    type => 'string',
+                                },
+                                owner =>
+                                {
+                                    description => "This is the owner's pause ID",
+                                    example => 'TIMB',
+                                    maxLength => 2048,
+                                    type => 'string',
+                                },
+                            },
+                        },
+                        type => 'array',
+                    },
+                    took => 
+                    {
+                        type => 'integer',
+                    },
+                    total => 
+                    {
+                        type => 'integer',
+                    },
+                },
+            },
             # NOTE: schemas -> profile
             profile =>
             {
@@ -1558,6 +1879,56 @@
                     version_numified => { type => 'number' },
                 },
             },
+            # NOTE: schemas -> release_recents
+            release_recents =>
+            {
+                description => q{This is the object representing a list of recent releases},
+                properties =>
+                {
+                    releases =>
+                    {
+                        items =>
+                        {
+                            properties =>
+                            {
+                                abstract =>
+                                {
+                                    type => 'string',
+                                },
+                                author =>
+                                {
+                                    type => 'string',
+                                },
+                                date =>
+                                {
+                                    type => 'string',
+                                },
+                                distribution =>
+                                {
+                                    type => 'string',
+                                },
+                                name =>
+                                {
+                                    type => 'string',
+                                },
+                                status =>
+                                {
+                                    type => 'string',
+                                },
+                            },
+                        },
+                        type => 'array',
+                    },
+                    total => 
+                    {
+                        type => 'integer',
+                    },
+                    took => 
+                    {
+                        type => 'integer',
+                    },
+                },
+            },
             # NOTE: schemas -> release_mapping
             release_mapping =>
             {
@@ -1568,6 +1939,33 @@
                     {
                         '$ref' => "#/components/schemas/release",
                     }
+                },
+            },
+            # NOTE: schemas -> releases
+            releases =>
+            {
+                description => q{This is the object representing a list of releases},
+                properties =>
+                {
+                    releases =>
+                    {
+                        items =>
+                        {
+                            schema =>
+                            {
+                                '$ref' => '#/components/schemas/release',
+                            },
+                        },
+                        type => 'array',
+                    },
+                    took => 
+                    {
+                        type => 'integer',
+                    },
+                    total => 
+                    {
+                        type => 'integer',
+                    },
                 },
             },
             # NOTE: schemas -> result_set
@@ -1650,6 +2048,48 @@
                     },
                     took => { type => 'integer' },
                     timed_out => { type => 'boolean' },
+                },
+            },
+            # NOTE: schemas -> river
+            river =>
+            {
+                description => q{This is the object representing a distribution river)},
+                example => '/v1/distribution/river/Moose',
+                properties =>
+                {
+                    river => 
+                    {
+                        properties =>
+                        {
+                            module =>
+                            {
+                                properties =>
+                                {
+                                    bus_factor =>
+                                    {
+                                        type => 'integer',
+                                    },
+                                    bucket => 
+                                    {
+                                        type => 'integer',
+                                    },
+                                    immediate => 
+                                    {
+                                        type => 'integer',
+                                    },
+                                    total => 
+                                    {
+                                        type => 'integer',
+                                    },
+                                },
+                                type => 'object',
+                                example => 'Moose',
+                                maxLength => 2048,
+                            },
+                            type => 'object',
+                        },
+                        type => 'object'
+                    },
                 },
             },
             # NOTE: schemas -> search
@@ -1782,6 +2222,350 @@
                     in => 'query',
                     name => 'q',
                     required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    description => "Specifies which fields in the response should be provided.",
+                    in => 'query',
+                    name => 'fields',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string'
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/result_set",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Author.pm#L45>
+        # NOTE: /v1/author/by_ids
+        '/v1/author/by_ids' =>
+        {
+            get => 
+            {
+                description => 'Retrieves author information details using pause ID.',
+                operationId => 'GetAuthorByPauseID',
+                parameters => [
+                {
+                    in => 'query',
+                    name => 'id',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    description => "Specifies which fields in the response should be provided.",
+                    in => 'query',
+                    name => 'fields',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string'
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/result_set",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Author.pm#L64>
+        # NOTE: /v1/author/by_prefix/{prefix}
+        '/v1/author/by_prefix/{prefix}' =>
+        {
+            get => 
+            {
+                description => 'Retrieves author information details using parts of the pause ID.',
+                operationId => 'GetAuthorByPrefix',
+                parameters => [
+                {
+                    in => 'path',
+                    name => 'prefix',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    description => "Specifies from which offset to return the results.",
+                    in => 'query',
+                    name => 'from',
+                    required => \0,
+                    schema =>
+                    {
+                        type => 'integer'
+                    },
+                },
+                {
+                    description => "Specifies the maximum size of the results.",
+                    in => 'query',
+                    name => 'size',
+                    required => \0,
+                    schema =>
+                    {
+                        type => 'integer'
+                    },
+                },
+                {
+                    description => "Specifies which fields in the response should be provided.",
+                    in => 'query',
+                    name => 'fields',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string'
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/result_set",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Author.pm#L57>
+        # NOTE: /v1/author/by_user
+        '/v1/author/by_user' =>
+        {
+            get => 
+            {
+                description => 'Retrieves author information details using user ID in query string.',
+                operationId => 'GetAuthorByUserIDQuery',
+                parameters => [
+                {
+                    in => 'query',
+                    name => 'user',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    description => "Specifies which fields in the response should be provided.",
+                    in => 'query',
+                    name => 'fields',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string'
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/result_set",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Author.pm#L51>
+        # NOTE: /v1/author/by_user/{user}
+        '/v1/author/by_user/{user}' =>
+        {
+            get => 
+            {
+                description => 'Retrieves author information details using user ID.',
+                operationId => 'GetAuthorByUserID',
+                parameters => [
+                {
+                    in => 'path',
+                    name => 'user',
+                    required => \1,
                     schema =>
                     {
                         maxLength => 2048,
@@ -2254,6 +3038,151 @@
                 }
             },
         },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Changes.pm#L68>
+        # NOTE: /v1/changes/by_releases
+        '/v1/changes/by_releases' =>
+        {
+            get => 
+            {
+                description => 'Retrieves a distribution Changes file details using author and release information.',
+                operationId => 'GetChangesFileByRelease',
+                parameters => [
+                {
+                    in => 'query',
+                    name => 'release',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                    example => '/v1/changes/by_releases/?release=ETHER/Moose-2.2206',
+                },
+                {
+                    description => "Specifies which fields in the response should be provided.",
+                    in => 'query',
+                    name => 'fields',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string'
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/json' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/result_set",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+            post => 
+            {
+                description => 'Retrieves a distribution Changes file details using author and release information.',
+                operationId => 'PostChangesFileByRelease',
+                parameters => [],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/json' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => 
+                                {
+                                    release =>
+                                    {
+                                        example => '{"release":"ETHER/Moose-2.2206"}',
+                                        maxLength => 2048,
+                                        type => 'string',
+                                    },
+                                },
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/result_set",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Changes.pm#L55>
         # NOTE: /v1/changes/{module}
         '/v1/changes/{module}' =>
         {
@@ -2261,6 +3190,7 @@
             {
                 description => 'Retrieves a distribution Changes file details.',
                 operationId => 'GetChangesFile',
+                example => '/v1/changes/Nice-Try',
                 parameters => [
                 {
                     in => 'path',
@@ -2334,17 +3264,342 @@
                 }
             },
         },
-        # NOTE: /v1/cover/{cover}
-        '/v1/cover/{cover}' =>
+        # NOTE: /v1/changes/{author}/{module}
+        '/v1/changes/{author}/{module}' =>
+        {
+            get => 
+            {
+                description => 'Retrieves an author distribution Changes file details.',
+                operationId => 'GetChangesFileAuthor',
+                example => '/v1/changes/JDEGUEST/Nice-Try-v1.3.4',
+                parameters => [
+                {
+                    in => 'path',
+                    name => 'author',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    in => 'path',
+                    name => 'module',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    description => "Specifies which fields in the response should be provided.",
+                    in => 'query',
+                    name => 'fields',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string'
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/changes",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Contributor.pm#L19>
+        # NOTE: /v1/contributor/by_pauseid/{author}
+        '/v1/contributor/by_pauseid/{author}' =>
+        {
+            get => 
+            {
+                description => 'Retrieves a list of module contributed to by the specified PauseID.',
+                example => '/v1/contributor/by_pauseid/ETHER',
+                operationId => 'GetModuleContributedByPauseID',
+                parameters => [
+                {
+                    in => 'path',
+                    name => 'by_pauseid',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    description => "Specifies which fields in the response should be provided.",
+                    in => 'query',
+                    name => 'fields',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string'
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    properties =>
+                                    {
+                                        contributors =>
+                                        {
+                                            items => 
+                                            {
+                                                properties =>
+                                                {
+                                                    distribution =>
+                                                    {
+                                                        type => 'string',
+                                                    },
+                                                    pauseid =>
+                                                    {
+                                                        type => 'string',
+                                                    },
+                                                    release_author =>
+                                                    {
+                                                        type => 'string',
+                                                    },
+                                                    release_name =>
+                                                    {
+                                                        type => 'string',
+                                                    },
+                                                },
+                                            },
+                                            type => 'array',
+                                        },
+                                    },
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Contributor.pm#L13>
+        # NOTE: /v1/contributor/{author}/{module}
+        '/v1/contributor/{author}/{release}' =>
+        {
+            get => 
+            {
+                description => 'Retrieves a list of module contributors details.',
+                example => '/v1/contributor/ETHER/Moose-2.2206',
+                operationId => 'GetModuleContributors',
+                parameters => [
+                {
+                    in => 'path',
+                    name => 'author',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    in => 'path',
+                    name => 'release',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    description => "Specifies which fields in the response should be provided.",
+                    in => 'query',
+                    name => 'fields',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string'
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    properties =>
+                                    {
+                                        contributors =>
+                                        {
+                                            items => 
+                                            {
+                                                properties =>
+                                                {
+                                                    distribution =>
+                                                    {
+                                                        type => 'string',
+                                                    },
+                                                    pauseid =>
+                                                    {
+                                                        type => 'string',
+                                                    },
+                                                    release_author =>
+                                                    {
+                                                        type => 'string',
+                                                    },
+                                                    release_name =>
+                                                    {
+                                                        type => 'string',
+                                                    },
+                                                },
+                                            },
+                                            type => 'array',
+                                        },
+                                    },
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Changes.pm#L23>
+        # NOTE: /v1/cover/{release}
+        '/v1/cover/{release}' =>
         {
             get => 
             {
                 description => 'Retrieves a module cover details.',
                 operationId => 'GetModuleCover',
+                example => '/v1/cover/Nice-Try-v1.3.4',
                 parameters => [
                 {
                     in => 'path',
-                    name => 'cover',
+                    name => 'release',
                     required => \1,
                     schema =>
                     {
@@ -2392,6 +3647,597 @@
                                 schema =>
                                 {
                                     '$ref' => "#/components/schemas/cover",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/CVE.pm#L24>
+        # NOTE: /v1/cve
+        '/v1/cve' =>
+        {
+            get => 
+            {
+                description => 'Retrieves CVE (Common Vulnerabilities & Exposures) information details.',
+                operationId => 'GetCVE',
+                parameters => [
+                {
+                    description => "Specifies which fields in the response should be provided.",
+                    in => 'query',
+                    name => 'fields',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string'
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/result_set",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/CVE.pm#L24>
+        # NOTE: /v1/cve/dist/{distribution}
+        '/v1/cve/dist/{distribution}' =>
+        {
+            get => 
+            {
+                description => 'Retrieves Distribution CVE (Common Vulnerabilities & Exposures) information details.',
+                operationId => 'GetCVEByDistribution',
+                parameters => [
+                {
+                    in => 'path',
+                    name => 'distribution',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    description => "Specifies which fields in the response should be provided.",
+                    in => 'query',
+                    name => 'fields',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string'
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/json' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \1,
+                                properties => 
+                                {
+                                    version =>
+                                    {
+                                        maxLength => 2048,
+                                        type => 'string'
+                                    },
+                                },
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/result_set",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/CVE.pm#L18>
+        # NOTE: /v1/cve/release/{author}/{release}
+        '/v1/cve/release/{author}/{release}' =>
+        {
+            get => 
+            {
+                description => 'Retrieves Release CVE (Common Vulnerabilities & Exposures) information details.',
+                operationId => 'GetCVEByAuthorRelease',
+                parameters => [
+                {
+                    in => 'path',
+                    name => 'author',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    in => 'path',
+                    name => 'release',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    description => "Specifies which fields in the response should be provided.",
+                    in => 'query',
+                    name => 'fields',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string'
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/result_set",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/CVE.pm#L18>
+        # NOTE: /v1/cve/{cpanid}
+        '/v1/cve/{cpanid}' =>
+        {
+            get => 
+            {
+                description => 'Retrieves CPAN ID CVE (Common Vulnerabilities & Exposures) information details.',
+                operationId => 'GetCVEByCpanID',
+                parameters => [
+                {
+                    in => 'path',
+                    name => 'cpanid',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    description => "Specifies which fields in the response should be provided.",
+                    in => 'query',
+                    name => 'fields',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string'
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/result_set",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Diff.pm#L19>
+        # NOTE: /v1/diff/release/{module}
+        '/v1/diff/release/{module}' =>
+        {
+            get => 
+            {
+                description => 'Retrieves a diff of the latest release and its previous version.',
+                operationId => 'GetReleaseDiff',
+                example => '/v1/diff/release/Nice-Try',
+                parameters => [
+                {
+                    in => 'path',
+                    name => 'module',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'text/plain' =>
+                            {
+                                schema =>
+                                {
+                                    format => 'binary',
+                                    type => 'string',
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Diff.pm#L19>
+        # NOTE: /v1/diff/release/{author1}/{release1}/{author2}/{release2}
+        '/v1/diff/release/{author1}/{release1}/{author2}/{release2}' =>
+        {
+            get => 
+            {
+                description => 'Retrieves a diff of two releases.',
+                operationId => 'Get2ReleasesDiff',
+                example => '/v1/diff/release/JDEGUEST/Nice-Try-v1.3.3/JDEGUEST/Nice-Try-v1.3.4',
+                parameters => [
+                {
+                    in => 'path',
+                    name => 'author1',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    in => 'path',
+                    name => 'release1',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    in => 'path',
+                    name => 'author2',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    in => 'path',
+                    name => 'release2',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'text/plain' =>
+                            {
+                                schema =>
+                                {
+                                    format => 'binary',
+                                    type => 'string',
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Diff.pm#L49C7-L49C73>
+        # NOTE: /v1/diff/file/{file1}/{file2}
+        '/v1/diff/file/{file1}/{file2}' =>
+        {
+            get => 
+            {
+                description => 'Retrieves a diff of two files.',
+                operationId => 'Get2FilesDiff',
+                example => '/v1/diff/file/AcREzFgg3ExIrFTURa0QJfn8nto/Ies7Ysw0GjCxUU6Wj_WzI9s8ysU',
+                parameters => [
+                {
+                    in => 'path',
+                    name => 'file1',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    in => 'path',
+                    name => 'file2',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'text/plain' =>
+                            {
+                                schema =>
+                                {
+                                    format => 'binary',
+                                    type => 'string',
                                 }
                             }
                         },
@@ -2472,6 +4318,155 @@
                                 schema =>
                                 {
                                     '$ref' => "#/components/schemas/distribution",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Distribution.pm#L18>
+        # NOTE: /v1/distribution/river
+        '/v1/distribution/river' =>
+        {
+            get => 
+            {
+                description => 'Returns the river of a distribution name',
+                operationId => 'GetModuleDistributionRiverWithJSON',
+                example => '/v1/river',
+                parameters => [],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/json' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => 
+                                {
+                                    distribution =>
+                                    {
+                                        maxLength => 2048,
+                                        type => 'string'
+                                    },
+                                },
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \1,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/river",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Distribution.pm#L13>
+        # NOTE: /v1/distribution/river/{module}
+        '/v1/distribution/river/{module}' =>
+        {
+            get => 
+            {
+                description => 'Returns the river of a distribution name',
+                operationId => 'GetModuleDistributionRiverWithParam',
+                example => '/v1/river/Moose',
+                parameters => [
+                {
+                    in => 'path',
+                    name => 'module',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    description => "Specifies which fields in the response should be provided.",
+                    in => 'query',
+                    name => 'fields',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string'
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/river",
                                 }
                             }
                         },
@@ -2810,6 +4805,7 @@
                 operationId => 'GetFavorite',
                 parameters => [
                 {
+                    example => '/v1/favorite?q=distribution:Moose',
                     in => 'query',
                     name => 'q',
                     required => \0,
@@ -2873,6 +4869,658 @@
                                 schema =>
                                 {
                                     '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Favorite.pm#L13>
+        # NOTE: /v1/favorite/{user}/{distribution}
+        '/v1/favorite/{user}/{distribution}' =>
+        {
+            get => 
+            {
+                description => 'Retrieves favorites information details.',
+                operationId => 'GetFavoriteByUserModule',
+                example => '/v1/favorite/q_15sjOkRminDY93g9DuZQ/DBI',
+                parameters => [
+                {
+                    in => 'path',
+                    name => 'user',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    in => 'path',
+                    name => 'distribution',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    description => "Specifies which fields in the response should be provided.",
+                    in => 'query',
+                    name => 'fields',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string'
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/favorite",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Favorite.pm#L56C34-L56C54>
+        # NOTE: /v1/favorite/agg_by_distributions
+        '/v1/favorite/agg_by_distributions' =>
+        {
+            get => 
+            {
+                description => 'Retrieves favorites agregate by distributions.',
+                operationId => 'GetFavoriteAggregateDistribution',
+                example => '/v1/favorite/agg_by_distributions?distribution=Nice-Try',
+                parameters => [
+                {
+                    description => "Specifies the distribution to get the favorites.",
+                    example => 'Nice-Try',
+                    in => 'query',
+                    name => 'distribution',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string'
+                    },
+                },
+                {
+                    description => "Specifies the user to get the favorites.",
+                    example => 'AhTh1sISr3eA11yW3e1rd',
+                    in => 'query',
+                    name => 'user',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string'
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    properties =>
+                                    {
+                                        favorites =>
+                                        {
+                                            example => 'Nice:;Try',
+                                            module =>
+                                            {
+                                                type => 'integer',
+                                            },
+                                            type => 'object',
+                                        },
+                                        myfavorites =>
+                                        {
+                                            module =>
+                                            {
+                                                type => 'integer',
+                                            },
+                                            type => 'object',
+                                        },
+                                        took =>
+                                        {
+                                            type => 'integer',
+                                        },
+                                    },
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    properties =>
+                                    {
+                                        users =>
+                                        {
+                                            items =>
+                                            {
+                                                type => 'string',
+                                            },
+                                            type => 'array',
+                                        },
+                                    },
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+            post => 
+            {
+                description => 'Retrieves favorites agregate by distributions using JSON parameters.',
+                operationId => 'PostFavoriteAggregateDistribution',
+                example => '/v1/favorite/agg_by_distributions',
+                parameters => [],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/json' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => 
+                                {
+                                    distribution =>
+                                    {
+                                        description => "Specifies the distribution to get the favorites.",
+                                        example => 'Nice-Try',
+                                        type => 'string',
+                                    },
+                                    user =>
+                                    {
+                                        description => "Specifies the user to get the favorites.",
+                                        example => 'AhTh1sISr3eA11yW3e1rd',
+                                        type => 'string',
+                                    },
+                                },
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    properties =>
+                                    {
+                                        favorites =>
+                                        {
+                                            example => 'Nice:;Try',
+                                            module =>
+                                            {
+                                                type => 'integer',
+                                            },
+                                            type => 'object',
+                                        },
+                                        myfavorites =>
+                                        {
+                                            module =>
+                                            {
+                                                type => 'integer',
+                                            },
+                                            type => 'object',
+                                        },
+                                        took =>
+                                        {
+                                            type => 'integer',
+                                        },
+                                    },
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    properties =>
+                                    {
+                                        users =>
+                                        {
+                                            items =>
+                                            {
+                                                type => 'string',
+                                            },
+                                            type => 'array',
+                                        },
+                                    },
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Favorite.pm#L29>
+        # NOTE: /v1/favorite/by_user/{user}
+        '/v1/favorite/by_user/{user}' =>
+        {
+            get => 
+            {
+                description => 'Retrieves user favorites information details.',
+                operationId => 'GetFavoriteByUser',
+                example => '/v1/favorite/by_user/q_15sjOkRminDY93g9DuZQ',
+                # XXX There is presumably an optional 'size' parmeter, but it is not working. When specifying 5, it returns 3. When specifying 10, it returns 7. POSTing it as JSON does not work.
+                parameters => [
+                {
+                    in => 'path',
+                    name => 'user',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    description => "Specifies which fields in the response should be provided.",
+                    in => 'query',
+                    name => 'fields',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string'
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/favorites",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Favorite.pm#L51C25-L51C36leaderboard>
+        # NOTE: /v1/favorite/leaderboard
+        '/v1/favorite/leaderboard' =>
+        {
+            get => 
+            {
+                description => 'Retrieves top favorite distributions (leaderboard).',
+                operationId => 'GetFavoriteLeaderboard',
+                example => '/v1/favorite/leaderboard',
+                parameters => [],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    properties =>
+                                    {
+                                        leaderboard =>
+                                        {
+                                            items =>
+                                            {
+                                                doc_count =>
+                                                {
+                                                    type => 'integer',
+                                                },
+                                                key =>
+                                                {
+                                                    type => 'string',
+                                                }
+                                            },
+                                            type => 'array',
+                                        },
+                                    },
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    properties =>
+                                    {
+                                        users =>
+                                        {
+                                            items =>
+                                            {
+                                                type => 'string',
+                                            },
+                                            type => 'array',
+                                        },
+                                    },
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # NOTE: /v1/favorite/recent
+        '/v1/favorite/recent' =>
+        {
+            get => 
+            {
+                description => 'Retrieves list of recent favorite distribution.',
+                operationId => 'GetFavoriteRecent',
+                example => '/v1/favorite/recent',
+                parameters => [
+                {
+                    description => "Specifies which result page should be returned.",
+                    in => 'query',
+                    name => 'page',
+                    required => \0,
+                    schema =>
+                    {
+                        type => 'integer'
+                    },
+                },
+                {
+                    description => "Specifies the size of the result page.",
+                    in => 'query',
+                    name => 'size',
+                    required => \0,
+                    schema =>
+                    {
+                        type => 'integer'
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/favorites",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    properties =>
+                                    {
+                                        users =>
+                                        {
+                                            items =>
+                                            {
+                                                type => 'string',
+                                            },
+                                            type => 'array',
+                                        },
+                                    },
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Favorite.pm#L35C35-L35C56>
+        # NOTE: /v1/favorite/users_by_distribution/{distribution}
+        '/v1/favorite/users_by_distribution/{distribution}' =>
+        {
+            get => 
+            {
+                description => 'Retrieves list of users who favorited a distribution.',
+                operationId => 'GetFavoriteUsers',
+                example => '/v1/favorite/users_by_distribution/Nice-Try',
+                parameters => [
+                {
+                    in => 'path',
+                    name => 'distribution',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/favorites",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    properties =>
+                                    {
+                                        users =>
+                                        {
+                                            items =>
+                                            {
+                                                type => 'string',
+                                            },
+                                            type => 'array',
+                                        },
+                                    },
                                 }
                             }
                         },
@@ -3188,6 +5836,147 @@
                 }
             },
         },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/File.pm#L31>
+        # NOTE: /v1/file/{author}/{release}/{path}
+        '/v1/file/{author}/{release}/{path}' =>
+        {
+            get => 
+            {
+                description => 'Retrieves a file information details.',
+                operationId => 'GetFileByAuthorReleaseFilePath',
+                example => '/v1/file/JDEGUEST/Nice-Try-v1.3.4/lib/Nice/Try.pm',
+                parameters => [
+                {
+                    description => "Specifies which fields in the response should be provided.",
+                    in => 'query',
+                    name => 'fields',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string'
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/file",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/File.pm#L50>
+        # NOTE: /v1/file/dir/{path}
+        '/v1/file/dir/{path}' =>
+        {
+            get => 
+            {
+                description => 'Retrieves a file path directory content.',
+                operationId => 'GetFilePathDirectoryContent',
+                example => '/v1/file/dir/JDEGUEST/Module-Generic-v0.31.0/lib/Module/Generic',
+                parameters => [],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    properties =>
+                                    {
+                                        dir =>
+                                        {
+                                            items =>
+                                            {
+                                                '$ref' => "#/components/schemas/file_preview",
+                                            },
+                                            type => 'array',
+                                        },
+                                    },
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
         # NOTE: /v1/file/_mapping
         '/v1/file/_mapping' =>
         {
@@ -3415,6 +6204,65 @@
                 }
             },
         },
+        # NOTE: /v1/login/index
+        '/v1/login/index' =>
+        {
+            get => 
+            {
+                description => 'Returns a login HTML page.',
+                operationId => 'GetLoginPage',
+                parameters => [],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'text/html' =>
+                            {
+                                schema =>
+                                {
+                                    format => 'binary',
+                                    type => 'string',
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
         # NOTE: /v1/mirror
         '/v1/mirror' =>
         {
@@ -3445,6 +6293,200 @@
                             {
                                 additionalProperties => \0,
                                 properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/mirrors",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+            post => 
+            {
+                description => qq{Returns a `mirrors` object containing a list of `mirror` objects. Currently, the API only returns one mirror, because CPAN now uses CDN instead of mirrors.},
+                operationId => 'PostMirror',
+                parameters => [],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/json' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => 
+                                {
+                                    "q" =>
+                                    {
+                                        description => "Specifies an optional keyword to find the matching mirrors.",
+                                        maxLength => 2048,
+                                        type => 'string'
+                                    },
+                                },
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/mirrors",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Mirror.pm#L12>
+        # NOTE: /v1/mirror/search
+        '/v1/mirror/search' =>
+        {
+            get => 
+            {
+                description => qq{Returns a `mirrors` object containing a list of `mirror` objects. Currently, the API only returns one mirror, because CPAN now uses CDN instead of mirrors.},
+                operationId => 'GetMirrorSearch',
+                parameters => [
+                {
+                    description => "Specifies an optional keyword to find the matching mirrors.",
+                    in => 'query',
+                    name => 'q',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string'
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/mirrors",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+            post => 
+            {
+                description => qq{Returns a `mirrors` object containing a list of `mirror` objects. Currently, the API only returns one mirror, because CPAN now uses CDN instead of mirrors.},
+                operationId => 'PostMirrorSearch',
+                parameters => [],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/json' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => 
+                                {
+                                    "q" =>
+                                    {
+                                        description => "Specifies an optional keyword to find the matching mirrors.",
+                                        maxLength => 2048,
+                                        type => 'string'
+                                    },
+                                },
                                 type => 'object'
                             }
                         }
@@ -3571,6 +6613,7 @@
             {
                 description => qq{Returns the corresponding `file` of the latest version of the `module`. Considering that Moose-2.0001 is the latest release, the result of [/module/Moose](https://fastapi.metacpan.org/v1/module/Moose) is the same as [/file/DOY/Moose-2.0001/lib/Moose.pm](https://fastapi.metacpan.org/v1/file/DOY/Moose-2.0001/lib/Moose.pm).},
                 operationId => 'GetModuleFile',
+                example => '/v1/module/Module::Generic',
                 parameters => [
                 {
                     in => 'path',
@@ -3793,6 +6836,78 @@
                 }
             },
         },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Package.pm#L10C31-L10C56>
+        # NOTE: /v1/package/modules/{distribution}
+        '/v1/package/modules/{distribution}' =>
+        {
+            get => 
+            {
+                description => 'Retrieves the list of a distribution packages.',
+                operationId => 'GetPackageDistributionList',
+                example => '/v1/package/modules/Moose',
+                parameters => [],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    property =>
+                                    {
+                                        modules =>
+                                        {
+                                            items =>
+                                            {
+                                                example => 'Moose::Cookbook',
+                                                maxLength => 2048,
+                                                type => 'string',
+                                            },
+                                            type => 'array',
+                                        },
+                                    },
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
         # NOTE: /v1/package/{module}
         '/v1/package/{module}' =>
         {
@@ -3953,6 +7068,287 @@
                 }
             },
         },
+        # NOTE: /v1/permission/by_author/{author}
+        '/v1/permission/by_author/{author}' =>
+        {
+            get => 
+            {
+                description => 'Retrieves permission information details by author.',
+                operationId => 'GetPermissionByAuthor',
+                parameters => [
+                {
+                    description => "This is the user's pause ID",
+                    example => 'TIMB',
+                    in => 'path',
+                    name => 'author',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/permissions",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Permission.pm#L20>
+        # NOTE: /v1/permission/by_module
+        '/v1/permission/by_module' =>
+        {
+            get => 
+            {
+                description => 'Retrieves permission information details by module.',
+                operationId => 'GetPermissionByModuleQueryString',
+                example => '/v1/permission/by_module?module=DBD::DBM::Statement',
+                parameters => [
+                {
+                    description => "This is the module package name",
+                    example => 'DBD::DBM::Statement',
+                    in => 'query',
+                    name => 'module',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/permissions",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+            post => 
+            {
+                description => 'Retrieves permission information details by module.',
+                operationId => 'PostPermissionByModuleJSON',
+                example => '/v1/permission/by_module',
+                parameters => [],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/json' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => 
+                                {
+                                    module => 
+                                    {
+                                        description => "This is the module package name",
+                                        example => 'DBD::DBM::Statement',
+                                        maxLength => 2048,
+                                        type => 'string',
+                                    },
+                                },
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \1,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/permissions",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Permission.pm#L15>
+        # NOTE: /v1/permission/by_module/{module}
+        '/v1/permission/by_module/{module}' =>
+        {
+            get => 
+            {
+                description => 'Retrieves permission information details by module.',
+                operationId => 'GetPermissionByModule',
+                example => '/v1/permission/by_module/DBD::DBM::Statement',
+                parameters => [
+                {
+                    description => "This is the module package name",
+                    example => 'DBD::DBM::Statement',
+                    in => 'path',
+                    name => 'module',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/permissions",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
         # NOTE: /v1/permission/{module}
         '/v1/permission/{module}' =>
         {
@@ -4033,6 +7429,148 @@
                 }
             },
         },
+        # NOTE: /v1/pod_render
+        '/v1/pod_render' =>
+        {
+            get => 
+            {
+                description => qq{Takes some POD data and check for errors. It returns the POD provided in formatted plan text.},
+                operationId => 'GetRenderPOD',
+                parameters => [
+                {
+                    in => 'query',
+                    name => 'pod',
+                    required => \1,
+                    type => 'string',
+                    description => 'The POD data to format',
+                    example => qq{=encoding utf-8\n\n=head1 Hello World\n\nSomething here\n\n=oops\n\n=cut\n},
+                },
+                {
+                    in => 'query',
+                    maxLength => 2048,
+                    name => 'show_errors',
+                    required => \0,
+                    type => 'boolean',
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'text/plain' =>
+                            {
+                                schema =>
+                                {
+                                    format => 'binary',
+                                    type => 'string',
+                                    example => qq{Hello World\n    Something here\n\nPOD ERRORS\n    Hey! The above document had some coding errors, which are explained below:\n\n    Around line 7:\n        Unknown directive: =oops\n},
+                                }
+                            },
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+            post => 
+            {
+                description => qq{Takes some POD data and check for errors. It returns the POD provided in formatted plan text.},
+                operationId => 'PostRenderPOD',
+                parameters => [],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => 
+                                {
+                                    pod =>
+                                    {
+                                        type => 'string',
+                                        description => 'The POD data to format',
+                                        example => q{=encoding utf-8\n\n=head1 Hello World\n\nSomething here\n\n=oops\n\n=cut\n},
+                                    },
+                                    show_errors =>
+                                    {
+                                        type => 'boolean',
+                                    },
+                                },
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'text/plain' =>
+                            {
+                                schema =>
+                                {
+                                    format => 'binary',
+                                    type => 'string',
+                                }
+                            },
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
         # NOTE: /v1/pod/{module}
         '/v1/pod/{module}' =>
         {
@@ -4053,11 +7591,25 @@
                     style => 'simple',
                 },
                 {
+                    in => 'query',
+                    maxLength => 2048,
+                    name => 'show_errors',
+                    required => \0,
+                    type => 'boolean',
+                },
+                {
+                    in => 'query',
+                    maxLength => 2048,
+                    name => 'url_prefix',
+                    required => \0,
+                    # XXX /pod/author/release/path?url_prefix -> Not sure what the valid values are
+                    type => 'string',
+                },
+                {
                     description => qq{You can change the output format by either passing a `content-type` query parameter (e.g. [/pod/Moose?content-type=text/plain](https://fastapi.metacpan.org/v1/pod/Moose?content-type=text/plain) or by adding an `Accept` header to the HTTP request. Valid content types are:\n\n* text/html (default)\n* text/plain\n* text/x-pod\n* text/x-markdown},
                     in => 'query',
                     name => 'content-type',
                     required => \0,
-                    # TODO: Need to find out and set the correct openapi definition for query string
                     schema =>
                     {
                         properties =>
@@ -4149,6 +7701,7 @@
                 }
             },
         },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Pod.pm#L12>
         # NOTE: /v1/pod/{author}/{release}/{path}
         '/v1/pod/{author}/{release}/{path}' =>
         {
@@ -4157,6 +7710,17 @@
                 description => qq{Returns the POD of the given module. You can change the output format by either passing a `content-type` query parameter (e.g. [/pod/Moose?content-type=text/plain](https://fastapi.metacpan.org/v1/pod/Moose?content-type=text/plain) or by adding an `Accept` header to the HTTP request. Valid content types are:\n\n* text/html (default)\n* text/plain\n* text/x-pod\n* text/x-markdown},
                 operationId => 'GetModuleReleasePod',
                 parameters => [
+                {
+                    in => 'path',
+                    name => 'author',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
                 {
                     in => 'path',
                     name => 'release',
@@ -4178,6 +7742,21 @@
                         type => 'string',
                     },
                     style => 'simple',
+                },
+                {
+                    in => 'query',
+                    maxLength => 2048,
+                    name => 'show_errors',
+                    required => \0,
+                    type => 'boolean',
+                },
+                {
+                    in => 'query',
+                    maxLength => 2048,
+                    name => 'url_prefix',
+                    required => \0,
+                    # XXX /pod/author/release/path?url_prefix -> Not sure what the valid values are
+                    type => 'string',
                 },
                 {
                     description => qq{You can change the output format by either passing a `content-type` query parameter (e.g. [/pod/Moose?content-type=text/plain](https://fastapi.metacpan.org/v1/pod/Moose?content-type=text/plain) or by adding an `Accept` header to the HTTP request. Valid content types are:\n\n* text/html (default)\n* text/plain\n* text/x-pod\n* text/x-markdown},
@@ -4333,6 +7912,139 @@
                                 schema =>
                                 {
                                     '$ref' => "#/components/schemas/result_set",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Rating.pm#L12>
+        # NOTE: /v1/rating/by_distributions
+        '/v1/rating/by_distributions' =>
+        {
+            get => 
+            {
+                description => 'Retrieves rating information details by distribution.',
+                operationId => 'GetRatingByDistribution',
+                example => '/v1/rating/by_distributions?distribution=Moose',
+                parameters => [
+                {
+                    in => 'query',
+                    name => 'distribution',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/distributions",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+            post => 
+            {
+                description => 'Retrieves rating information details by distribution.',
+                operationId => 'PostRatingByDistribution',
+                parameters => [],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/json' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => 
+                                {
+                                    distribution =>
+                                    {
+                                        maxLength => 2048,
+                                        type => 'string',
+                                        example => 'Moose',
+                                    },
+                                },
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \1,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/distributions",
                                 }
                             }
                         },
@@ -4662,6 +8374,7 @@
                 }
             },
         },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Release.pm#L22>
         # NOTE: /v1/release/{distribution}
         '/v1/release/{distribution}' =>
         {
@@ -4669,6 +8382,7 @@
             {
                 description => qq{Retrieves an author information details.\nThe `/release` endpoint accepts either the name of a `distribution` (e.g. [/release/Moose](https://fastapi.metacpan.org/v1/release/Moose)), which returns the most recent release of the distribution.},
                 operationId => 'GetReleaseDistribution',
+                example => '/v1/release/Moose',
                 parameters => [
                 {
                     in => 'path',
@@ -4753,6 +8467,7 @@
                 }
             },
         },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Release.pm#L29>
         # NOTE: /v1/release/{author}/{release}
         '/v1/release/{author}/{release}' =>
         {
@@ -4760,6 +8475,7 @@
             {
                 description => qq{Retrieves an distribution release information details.\nThis `/release` endpoint accepts  the name of an `author` and the name of the `release` (e.g. [/release/DOY/Moose-2.0001](https://fastapi.metacpan.org/v1/release/DOY/Moose-2.0001)), which returns the most recent release of the distribution.},
                 operationId => 'GetAuthorReleaseDistribution',
+                example => '/v1/release/JDEGUEST/Module-Generic-v0.30.5',
                 parameters => [
                 {
                     in => 'path',
@@ -4832,7 +8548,24 @@
                             {
                                 schema =>
                                 {
-                                    '$ref' => "#/components/schemas/release",
+                                    properties =>
+                                    {
+                                        release =>
+                                        {
+                                            schema =>
+                                            {
+                                                '$ref' => "#/components/schemas/release",
+                                            },
+                                        },
+                                        took =>
+                                        {
+                                            type => 'integer',
+                                        },
+                                        total =>
+                                        {
+                                            type => 'integer',
+                                        },
+                                    },
                                 }
                             }
                         },
@@ -4855,14 +8588,357 @@
                 }
             },
         },
-        # NOTE: /v1/release/recent
-        '/v1/release/recent' =>
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Release.pm#L80>
+        # NOTE: /v1/release/all_by_author/{author}
+        '/v1/release/all_by_author/{author}' =>
         {
             get => 
             {
+                description => qq{Get all releases by the specified author},
+                operationId => 'GetAllReleasesByAuthor',
+                example => '/v1/release/all_by_author/JDEGUEST',
+                parameters => [
+                {
+                    in => 'path',
+                    name => 'author',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    description => "Specifies the page offset starting from 1.",
+                    in => 'query',
+                    name => 'page',
+                    required => \0,
+                    schema =>
+                    {
+                        type => 'integer'
+                    },
+                },
+                {
+                    description => "Specifies the page size, i.e. the number of elements returned in one page.",
+                    in => 'query',
+                    name => 'page_size',
+                    required => \0,
+                    schema =>
+                    {
+                        type => 'integer'
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => '#/components/schemas/releases',
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+            post => 
+            {
+                description => qq{Get all releases by the specified author},
+                operationId => 'PostAllReleasesByAuthor',
+                example => '/v1/release/all_by_author/JDEGUEST',
+                parameters => [
+                {
+                    in => 'path',
+                    name => 'author',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/json' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => 
+                                {
+                                    page =>
+                                    {
+                                        description => "Specifies the page offset starting from 1.",
+                                        type => 'integer'
+                                    },
+                                    page_size =>
+                                    {
+                                        description => "Specifies the page size, i.e. the number of elements returned in one page.",
+                                        type => 'integer'
+                                    }
+                                },
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => '#/components/schemas/releases',
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # NOTE: /v1/release/by_author
+        '/v1/release/by_author' =>
+        {
+            get => 
+            {
+                description => qq{Get releases by author},
+                operationId => 'GetReleaseByAuthor',
+                parameters => [{
+                    description => "Specifies the page size, i.e. the number of elements returned in one page.",
+                    in => 'query',
+                    name => 'size',
+                    required => \0,
+                    schema =>
+                    {
+                        type => 'integer'
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => '#/components/schemas/releases',
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+            post => 
+            {
                 description => qq{Get recent releases},
-                operationId => 'GetReleaseRecent',
+                operationId => 'PostReleaseRecent',
                 parameters => [],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/json' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => 
+                                {
+                                    size =>
+                                    {
+                                        description => "Specifies the page size, i.e. the number of elements returned in one page.",
+                                        type => 'integer'
+                                    }
+                                },
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => '#/components/schemas/releases',
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Release.pm#L37>
+        # NOTE: /v1/release/contributors/{author}/{release}
+        '/v1/release/contributors/{author}/{release}' =>
+        {
+            get => 
+            {
+                description => qq{Retrieves the list of contributors for the specified distributions},
+                operationId => 'GetReleaseDistributionContributors',
+                example => '/v1/release/contributors/JDEGUEST/Module-Generic-v0.30.5',
+                parameters => [
+                {
+                    in => 'path',
+                    name => 'author',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    in => 'path',
+                    name => 'release',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    description => "Specifies which object to [join](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#joins) in the result.",
+                    in => 'query',
+                    name => 'join',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string'
+                    },
+                },
+                {
+                    description => "Specifies which fields in the response should be provided.",
+                    in => 'query',
+                    name => 'fields',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string'
+                    },
+                }],
                 requestBody =>
                 {
                     content =>
@@ -4892,49 +8968,1308 @@
                                 {
                                     properties =>
                                     {
-                                        releases =>
+                                        contributors =>
                                         {
                                             items =>
                                             {
-                                                properties =>
+                                                email =>
                                                 {
-                                                    abstract =>
+                                                    items =>
                                                     {
+                                                        maxLength => 2048,
                                                         type => 'string',
                                                     },
-                                                    author =>
-                                                    {
-                                                        type => 'string',
-                                                    },
-                                                    date =>
-                                                    {
-                                                        type => 'string',
-                                                    },
-                                                    distribution =>
-                                                    {
-                                                        type => 'string',
-                                                    },
-                                                    name =>
-                                                    {
-                                                        type => 'string',
-                                                    },
-                                                    status =>
-                                                    {
-                                                        type => 'string',
-                                                    },
+                                                    type => 'array',
+                                                },
+                                                name =>
+                                                {
+                                                    description => "Contributor's name",
+                                                    maxLength => 2048,
+                                                    type => 'string',
                                                 },
                                             },
                                             type => 'array',
                                         },
-                                        total => 
+                                    },
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # NOTE: /v1/release/files_by_category/{author}/{release}
+        '/v1/release/files_by_category/{author}/{release}' =>
+        {
+            get => 
+            {
+                description => qq{Retrieves the list of release key files by category},
+                operationId => 'GetReleaseKeyFilesByCategory',
+                example => '/v1/release/files_by_category/JDEGUEST/Module-Generic-v0.30.5',
+                parameters => [
+                {
+                    in => 'path',
+                    name => 'author',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    in => 'path',
+                    name => 'release',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    in => 'query',
+                    name => 'category',
+                    description => 'An optional category can be specified to refine the result. Valid vlues include `changelog`, `contributing`, `dist`, `license`, `other`',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => '#/components/schema/files_categories',
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+            post => 
+            {
+                description => qq{Retrieves the list of release key files by category},
+                operationId => 'PostReleaseKeyFilesByCategory',
+                example => '/v1/release/files_by_category/JDEGUEST/Module-Generic-v0.30.5',
+                parameters => [
+                {
+                    in => 'path',
+                    name => 'author',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    in => 'path',
+                    name => 'release',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => 
+                                {
+                                    category =>
+                                    {
+                                        description => 'An optional category can be specified to refine the result. Valid vlues include `changelog`, `contributing`, `dist`, `license`, `other`',
+                                        maxLength => 2048,
+                                        type => 'string',
+                                    },
+                                },
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => '#/components/schema/files_categories',
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # NOTE: /v1/release/interesting_files/{author}/{release}
+        '/v1/release/interesting_files/{author}/{release}' =>
+        {
+            get => 
+            {
+                description => qq{Retrieves the list of release interesting files},
+                operationId => 'GetReleaseInterestingFiles',
+                example => '/v1/release/interesting_files/JDEGUEST/Module-Generic-v0.30.5',
+                parameters => [
+                {
+                    in => 'path',
+                    name => 'author',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    in => 'path',
+                    name => 'release',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    in => 'query',
+                    name => 'category',
+                    description => 'An optional category can be specified to refine the result. Valid vlues include `changelog`, `contributing`, `dist`, `license`, `other`',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => '#/components/schemas/files_interesting',
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+            post => 
+            {
+                description => qq{Retrieves the list of release interesting files},
+                operationId => 'PostReleaseInterestingFiles',
+                example => '/v1/release/interesting_files/JDEGUEST/Module-Generic-v0.30.5',
+                parameters => [
+                {
+                    in => 'path',
+                    name => 'author',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    in => 'path',
+                    name => 'release',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => 
+                                {
+                                    category =>
+                                    {
+                                        description => 'An optional category can be specified to refine the result. Valid vlues include `changelog`, `contributing`, `dist`, `license`, `other`',
+                                        maxLength => 2048,
+                                        type => 'string',
+                                    },
+                                },
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => '#/components/schemas/files_interesting',
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Release.pm#L75>
+        # NOTE: /v1/release/latest_by_author/{author}
+        '/v1/release/latest_by_author/{author}' =>
+        {
+            get => 
+            {
+                description => qq{Get latest releases by the specified author},
+                operationId => 'GetLatestReleaseByAuthor',
+                parameters => [
+                {
+                    in => 'path',
+                    name => 'author',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => '#/components/schemas/releases',
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+            post => 
+            {
+                description => qq{Get latest releases by the specified author},
+                operationId => 'PostLatestReleaseByAuthor',
+                parameters => [
+                {
+                    in => 'path',
+                    name => 'author',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/json' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => '#/components/schemas/releases',
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Release.pm#L68>
+        # NOTE: /v1/release/latest_by_distribution/{distribution}
+        '/v1/release/latest_by_distribution/{distribution}' =>
+        {
+            get => 
+            {
+                description => qq{Get latest releases by distribution},
+                operationId => 'GetLatestReleaseByDistribution',
+                parameters => [
+                {
+                    in => 'path',
+                    name => 'distribution',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    properties =>
+                                    {
+                                        release =>
+                                        {
+                                            schema =>
+                                            {
+                                                '$ref' => '#/components/schemas/release',
+                                            }
+                                        },
+                                        took =>
                                         {
                                             type => 'integer',
                                         },
-                                        took => 
+                                        total =>
+                                        {
+                                            type => 'integer',
+                                        },
+                                    }
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+            post => 
+            {
+                description => qq{Get recent releases},
+                operationId => 'PostLatestReleaseByDistribution',
+                parameters => [
+                {
+                    in => 'path',
+                    name => 'distribution',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/json' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    properties =>
+                                    {
+                                        release =>
+                                        {
+                                            schema =>
+                                            {
+                                                '$ref' => '#/components/schemas/release',
+                                            }
+                                        },
+                                        took =>
+                                        {
+                                            type => 'integer',
+                                        },
+                                        total =>
+                                        {
+                                            type => 'integer',
+                                        },
+                                    }
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # NOTE: /v1/release/modules/{author}/{release}
+        '/v1/release/modules/{author}/{release}' =>
+        {
+            get => 
+            {
+                description => qq{Retrieves the list of modules in the specified release},
+                operationId => 'GetReleaseModules',
+                example => '/v1/release/modules/JDEGUEST/Module-Generic-v0.31.0',
+                parameters => [
+                {
+                    in => 'path',
+                    name => 'author',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    in => 'path',
+                    name => 'release',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    description => "Specifies which object to [join](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#joins) in the result.",
+                    in => 'query',
+                    name => 'join',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string'
+                    },
+                },
+                {
+                    description => "Specifies which fields in the response should be provided.",
+                    in => 'query',
+                    name => 'fields',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string'
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => '#/components/schemas/files',
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Release.pm#L56>
+        # NOTE: /v1/release/recent
+        '/v1/release/recent' =>
+        {
+            get => 
+            {
+                description => qq{Get recent releases},
+                operationId => 'GetReleaseRecent',
+                parameters => [
+                {
+                    description => "Specifies the page offset starting from 1.",
+                    in => 'query',
+                    name => 'page',
+                    required => \0,
+                    schema =>
+                    {
+                        type => 'integer'
+                    },
+                },
+                {
+                    description => "Specifies the page size, i.e. the number of elements returned in one page.",
+                    in => 'query',
+                    name => 'page_size',
+                    required => \0,
+                    schema =>
+                    {
+                        type => 'integer'
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => '#/components/schemas/release_recents',
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+            post => 
+            {
+                description => qq{Get recent releases},
+                operationId => 'PostReleaseRecent',
+                parameters => [],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/json' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => 
+                                {
+                                    page =>
+                                    {
+                                        description => "Specifies the page offset starting from 1.",
+                                        type => 'integer'
+                                    },
+                                    page_size =>
+                                    {
+                                        description => "Specifies the page size, i.e. the number of elements returned in one page.",
+                                        type => 'integer'
+                                    }
+                                },
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => '#/components/schemas/release_recents',
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Release.pm#L106>
+        # NOTE: /v1/release/top_uploaders
+        '/v1/release/top_uploaders' =>
+        {
+            get => 
+            {
+                description => qq{Get top release uploaders},
+                operationId => 'GetTopReleaseUploaders',
+                parameters => [
+                {
+                    description => "Specifies the result range. Valid values are `all`, `weekly`, `monthly` or `yearly`. It defaults to `weekly`",
+                    in => 'query',
+                    name => 'range',
+                    required => \0,
+                    schema =>
+                    {
+                        type => 'string'
+                    },
+                },
+                {
+                    description => "Specifies the page size, i.e. the number of elements returned in one page.",
+                    in => 'query',
+                    name => 'page_size',
+                    required => \0,
+                    schema =>
+                    {
+                        type => 'integer'
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    properties =>
+                                    {
+                                        count =>
+                                        {
+                                            items =>
+                                            {
+                                                additionalProperties =>
+                                                {
+                                                    type => 'string',
+                                                },
+                                            },
+                                            # TODO: /v1/release/top_uploaders: Not sure this is the number of distributions. Need to be double checked
+                                            description => 'Array of pause IDs to the number of distributions',
+                                            example => '"NOBUNAGA" : 5',
+                                            type => 'array',
+                                        },
+                                        took =>
                                         {
                                             type => 'integer',
                                         },
                                     },
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+            post => 
+            {
+                description => qq{Get top release uploaders},
+                operationId => 'PostTopReleaseUploaders',
+                parameters => [],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/json' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => 
+                                {
+                                    range =>
+                                    {
+                                        description => "Specifies the result range. Valid values are `all`, `weekly`, `monthly` or `yearly`. It defaults to `weekly`",
+                                        type => 'string'
+                                    }
+                                },
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    properties =>
+                                    {
+                                        count =>
+                                        {
+                                            items =>
+                                            {
+                                                additionalProperties =>
+                                                {
+                                                    type => 'string',
+                                                },
+                                            },
+                                            # TODO: /v1/release/top_uploaders: Not sure this is the number of distributions. Need to be double checked
+                                            description => 'Array of pause IDs to the number of distributions',
+                                            example => '"NOBUNAGA" : 5',
+                                            type => 'array',
+                                        },
+                                        took =>
+                                        {
+                                            type => 'integer',
+                                        },
+                                    },
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Release.pm#L87>
+        # NOTE: /v1/release/versions/{distribution}
+        '/v1/release/versions/{distribution}' =>
+        {
+            get => 
+            {
+                description => qq{Get all releases by versions for the specified distribution},
+                operationId => 'GetAllReleasesByVersion',
+                example => '/v1/release/versions/Module-Generic',
+                parameters => [
+                {
+                    in => 'path',
+                    name => 'distribution',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    description => "Specifies the version(s) to return as a comma-sepated value.",
+                    example => 'v0.30.5,v0.31.0',
+                    in => 'query',
+                    name => 'versions',
+                    required => \0,
+                    schema =>
+                    {
+                        type => 'string'
+                    },
+                },
+                {
+                    description => "Specifies whether the result should be returned in plain mode.",
+                    in => 'query',
+                    name => 'plain',
+                    required => \0,
+                    schema =>
+                    {
+                        type => 'boolean'
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => '#/components/schemas/releases',
+                                }
+                            },
+                            'text/plain' =>
+                            {
+                                description => 'Lines of version and download URL spearated by a space are returned when the option `plain` is enabled.',
+                                example => "v0.31.0	https://cpan.metacpan.org/authors/id/J/JD/JDEGUEST/Module-Generic-v0.31.0.tar.gz\nv0.30.5	https://cpan.metacpan.org/authors/id/J/JD/JDEGUEST/Module-Generic-v0.30.5.tar.gz",
+                                schema =>
+                                {
+                                    format => 'binary',
+                                    type => 'string',
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+            post => 
+            {
+                description => qq{Get all releases by versions for the specified distribution},
+                operationId => 'PostAllReleasesByVersion',
+                example => '/v1/release/versions/Module-Generic',
+                parameters => [
+                {
+                    in => 'path',
+                    name => 'distribution',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/json' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => 
+                                {
+                                    versions =>
+                                    {
+                                        description => "Specifies the version(s) to return as a comma-sepated value.",
+                                        example => 'v0.30.5,v0.31.0',
+                                        type => 'string'
+                                    },
+                                    plain =>
+                                    {
+                                        description => "Specifies whether the result should be returned in plain mode.",
+                                        type => 'boolean'
+                                    }
+                                },
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => '#/components/schemas/releases',
+                                }
+                            },
+                            'text/plain' =>
+                            {
+                                description => 'Lines of version and download URL spearated by a space are returned when the option `plain` is enabled.',
+                                example => "v0.31.0	https://cpan.metacpan.org/authors/id/J/JD/JDEGUEST/Module-Generic-v0.31.0.tar.gz\nv0.30.5	https://cpan.metacpan.org/authors/id/J/JD/JDEGUEST/Module-Generic-v0.30.5.tar.gz",
+                                schema =>
+                                {
+                                    format => 'binary',
+                                    type => 'string',
                                 }
                             }
                         },
@@ -5184,6 +10519,7 @@
                 }
             },
         },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/ReverseDependencies.pm#L14>
         # NOTE: /v1/reverse_dependencies/dist/{module}
         '/v1/reverse_dependencies/dist/{module}' =>
         {
@@ -5202,6 +10538,46 @@
                         type => 'string',
                     },
                     style => 'simple',
+                },
+                {
+                    description => 'Specifies the page offset from which the result will be returned.',
+                    in => 'query',
+                    name => 'page',
+                    required => \0,
+                    schema =>
+                    {
+                        type => 'integer',
+                    },
+                },
+                {
+                    description => 'Specifies the number of result per page to be returned.',
+                    in => 'query',
+                    name => 'page_size',
+                    required => \0,
+                    schema =>
+                    {
+                        type => 'integer',
+                    },
+                },
+                {
+                    description => 'Specifies the maximum total number of result to be returned.',
+                    in => 'query',
+                    name => 'size',
+                    required => \0,
+                    schema =>
+                    {
+                        type => 'integer',
+                    },
+                },
+                {
+                    description => 'Specifies how the result is sorted.',
+                    in => 'query',
+                    name => 'sort',
+                    required => \0,
+                    schema =>
+                    {
+                        type => 'string',
+                    },
                 },
                 {
                     description => "Specifies which fields in the response should be provided.",
@@ -5225,6 +10601,294 @@
                             {
                                 additionalProperties => \0,
                                 properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/reverse_dependencies",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+            post => 
+            {
+                description => qq{Returns a list of all the modules who depend on the specified module.`.},
+                operationId => 'PostReverseDependencyDist',
+                parameters => [
+                {
+                    in => 'path',
+                    name => 'module',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => 
+                                {
+                                    page =>
+                                    {
+                                        description => 'Specifies the page offset from which the result will be returned.',
+                                        required => \0,
+                                        type => 'integer',
+                                    },
+                                    page_size =>
+                                    {
+                                        description => 'Specifies the number of result per page to be returned.',
+                                        required => \0,
+                                        type => 'integer',
+                                    },
+                                    size =>
+                                    {
+                                        description => 'Specifies the maximum total number of result to be returned.',
+                                        required => \0,
+                                        type => 'integer',
+                                    },
+                                    sort =>
+                                    {
+                                        description => 'Specifies how the result is sorted.',
+                                        required => \0,
+                                        type => 'string',
+                                    },
+                                },
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/reverse_dependencies",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/ReverseDependencies.pm#L23>
+        # NOTE: /v1/reverse_dependencies/module/{module}
+        '/v1/reverse_dependencies/module/{module}' =>
+        {
+            get => 
+            {
+                description => qq{Returns a list of all the modules who depend on the specified module.`.},
+                operationId => 'GetReverseDependencyModule',
+                example => '/v1/reverse_dependencies/module/Module::Generic',
+                parameters => [
+                {
+                    in => 'path',
+                    name => 'module',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    description => 'Specifies the page offset from which the result will be returned.',
+                    in => 'query',
+                    name => 'page',
+                    required => \0,
+                    schema =>
+                    {
+                        type => 'integer',
+                    },
+                },
+                {
+                    description => 'Specifies the number of result per page to be returned.',
+                    in => 'query',
+                    name => 'page_size',
+                    required => \0,
+                    schema =>
+                    {
+                        type => 'integer',
+                    },
+                },
+                {
+                    description => 'Specifies how the result is sorted.',
+                    in => 'query',
+                    name => 'sort',
+                    required => \0,
+                    schema =>
+                    {
+                        type => 'string',
+                    },
+                },
+                {
+                    description => "Specifies which fields in the response should be provided.",
+                    in => 'query',
+                    name => 'fields',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string'
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/reverse_dependencies",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+            post => 
+            {
+                description => qq{Returns a list of all the modules who depend on the specified module.`.},
+                operationId => 'PostReverseDependencyModule',
+                parameters => [
+                {
+                    in => 'path',
+                    name => 'module',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => 
+                                {
+                                    page =>
+                                    {
+                                        description => 'Specifies the page offset from which the result will be returned.',
+                                        required => \0,
+                                        type => 'integer',
+                                    },
+                                    page_size =>
+                                    {
+                                        description => 'Specifies the number of result per page to be returned.',
+                                        required => \0,
+                                        type => 'integer',
+                                    },
+                                    sort =>
+                                    {
+                                        description => 'Specifies how the result is sorted.',
+                                        required => \0,
+                                        type => 'string',
+                                    },
+                                },
                                 type => 'object'
                             }
                         }
@@ -5776,6 +11440,101 @@
                 }
             },
         },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Source.pm#L17>
+        # NOTE: /v1/source/{author}/{release}/{path}
+        '/v1/source/{author}/{release}/{path}' =>
+        {
+            get => 
+            {
+                description => qq{Returns the POD of the given module. You can change the output format by either passing a `content-type` query parameter (e.g. [/pod/Moose?content-type=text/plain](https://fastapi.metacpan.org/v1/pod/Moose?content-type=text/plain) or by adding an `Accept` header to the HTTP request. Valid content types are:\n\n* text/html (default)\n* text/plain\n* text/x-pod\n* text/x-markdown},
+                operationId => 'GetModuleReleasePod',
+                example => '/v1/source/JDEGUEST/Module-Generic-v0.31.0/lib/Module/Generic.pm',
+                parameters => [
+                {
+                    in => 'path',
+                    name => 'author',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    in => 'path',
+                    name => 'release',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    in => 'path',
+                    name => 'path',
+                    required => \1,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'text/plain' =>
+                            {
+                                schema =>
+                                {
+                                    format => 'binary',
+                                    type => 'string',
+                                }
+                            },
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Source.pm#L61>
         # NOTE: /v1/source/{module}
         '/v1/source/{module}' =>
         {
