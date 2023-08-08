@@ -97,6 +97,7 @@ sub versions : Path('versions') : Args(1) {
             map { join "\t", @{$_}{qw/ version download_url /} }
             @{ $data->{releases} };
         $c->res->body($data);
+        $c->res->content_type('text/plain');
     }
     else {
         $c->stash_or_detach($data);
