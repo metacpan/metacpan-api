@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: install jq
         run: |
-          apt-get install -y jq
+          apt-get update && apt-get install -y jq
       - name: Generate Auth Token
         id: auth-token
         uses: jamestrousdale/github-app-jwt-token@0.1.4
