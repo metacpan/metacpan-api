@@ -25,7 +25,7 @@ jobs:
           jwt: ${{ steps.auth-token.outputs.jwt }}
       - uses: actions/checkout@v3
         with:
-          token: ${{ steps.auth-token.outputs.auth-token }}
+          token: ${{ steps.auth-token.outputs.access-token }}
       - name: Set up installation local::lib
         run: |
           mkdir -p $RUNNER_TEMP/perl5/bin
