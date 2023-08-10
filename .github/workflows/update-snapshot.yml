@@ -9,6 +9,9 @@ jobs:
     container:
       image: perl:5.36
     steps:
+      - name: install jq
+        run: |
+          sudo apt-get install -y jq
       - name: Generate Auth Token
         id: auth-token
         uses: jamestrousdale/github-app-jwt-token@0.1.4
