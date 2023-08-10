@@ -9,34 +9,58 @@ jobs:
     container:
       image: perl:5.36
     steps:
+      - name: install jq
+        run: |
+          apt-get update && apt-get install -y jq
+      - name: Generate Auth Token
+        id: auth-token
+        uses: jamestrousdale/github-app-jwt-token@0.1.4
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+      - id: git-user
+        name: Set up git user
+        uses: haarg/setup-git-user@v1
+        with:
+          jwt: ${{ steps.auth-token.outputs.jwt }}
       - uses: actions/checkout@v3
         with:
-          token: ${{ secrets.METACPAN_BOT_TOKEN }}
-      - name: Install carton
-        uses: perl-actions/install-with-cpm@stable
-        with:
-          sudo: false
-          install: Carton
+          token: ${{ steps.auth-token.outputs.access-token }}
+      - name: Set up installation local::lib
+        run: |
+          mkdir -p $RUNNER_TEMP/perl5/bin
+          mkdir -p $RUNNER_TEMP/perl5/lib/perl5
+          echo "$RUNNER_TEMP/perl5/bin" >> "$GITHUB_PATH"
+          echo "PERL5LIB=$RUNNER_TEMP/perl5/lib/perl5" >> "$GITHUB_ENV"
+      - name: Get cpm
+        run: |
+          curl -sL -o $RUNNER_TEMP/perl5/bin/cpm https://raw.githubusercontent.com/skaji/cpm/main/cpm
+          chmod +x $RUNNER_TEMP/perl5/bin/cpm
+      - name: Install Carton and Carton::Snapshot
+        run: >
+          cpm install
+          Carton
+          Carton::Snapshot
+          --without-test
+          --show-build-log-on-failure
+          --local-lib-contained=$RUNNER_TEMP/perl5
       - name: Install deps
-        uses: perl-actions/install-with-cpm@stable
-        with:
-          cpanfile: cpanfile
-          sudo: false
-          args: >
-            --resolver metacpan
-            --show-build-log-on-failure
-            --local-lib-contained=local
+        run: >
+          cpm install
+          --cpanfile cpanfile
+          --resolver metacpan
+          --show-build-log-on-failure
+          --local-lib-contained=local
       - name: Maybe update cpanfile.snapshot
         run: carton
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
-          token: ${{ secrets.METACPAN_BOT_TOKEN }}
+          token: ${{ steps.auth-token.outputs.access-token }}
           commit-message: Update cpanfile.snapshot
           title: Update cpanfile.snapshot
-          author: MetaCPAN Bot <bot@metacpan.org>
-          committer: MetaCPAN Bot <bot@metacpan.org>
+          author: ${{ steps.git-user.outputs.user-full }}
+          committer: ${{ steps.git-user.outputs.user-full }}
           body: |
             [GitHub Action Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
-          push-to-fork: metacpan-bot/metacpan-api
           branch: update-cpanfile-snapshot
