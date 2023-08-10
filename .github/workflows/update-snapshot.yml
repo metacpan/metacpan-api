@@ -9,14 +9,42 @@ jobs:
     container:
       image: perl:5.36
     steps:
+      - name: Generate Auth Token
+        id: auth-token
+        uses: jamestrousdale/github-app-jwt-token@0.1.4
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+      - id: git-user
+        name: Set up git user
+        uses: haarg/setup-git-user@v1
+        with:
+          jwt: ${{ steps.auth-token.outputs.jwt }}
       - uses: actions/checkout@v3
         with:
-          token: ${{ secrets.METACPAN_BOT_TOKEN }}
-      - name: Install carton
-        uses: perl-actions/install-with-cpm@stable
-        with:
-          sudo: false
-          install: Carton
+          token: ${{ steps.auth-token.outputs.auth-token }}
+
+      - name: Get cpm
+        run: |
+          curl -sL -o $RUNNER_TEMP/cpm https://git.io/cpm
+          chmod +x $RUNNER_TEMP/cpm
+      - name: Install Carton::Snapshot
+        run: >
+          $RUNNER_TEMP/cpm
+          install
+          Carton
+          Carton::Snapshot
+          --resolver metacpan
+          --show-build-log-on-failure
+          --local-lib=$RUNNER_TEMP/perl5
+      - name: Install deps
+        run: >
+          perl -I$RUNNER_TEMP/perl5/lib/perl5 $RUNNER_TEMP/cpm
+          install
+          --cpanfile cpanfile
+          --resolver metacpan
+          --show-build-log-on-failure
+          --local-lib-contained=local
       - name: Install deps
         uses: perl-actions/install-with-cpm@stable
         with:
