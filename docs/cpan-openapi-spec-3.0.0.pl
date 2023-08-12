@@ -75,6 +75,7 @@
                     date =>
                     {
                         type => 'string',
+                        format => 'date-time',
                     },
                     deprecated =>
                     {
@@ -176,7 +177,8 @@
                     },
                     version_numified =>
                     {
-                        type => 'float',
+                        type => 'number',
+                        format => 'float',
                     }
                 },
             },
@@ -194,27 +196,27 @@
                             branch =>
                             {
                                 description => 'Percentage of branch code coverage',
-                                type => 'float',
+                                type => 'number',
                             },
                             condition =>
                             {
                                 description => 'Percentage of condition code coverage',
-                                type => 'float',
+                                type => 'number',
                             },
                             statement =>
                             {
                                 description => 'Percentage of statement code coverage',
-                                type => 'float',
+                                type => 'number',
                             },
                             subroutine =>
                             {
                                 description => 'Percentage of subroutine code coverage',
-                                type => 'float',
+                                type => 'number',
                             },
                             total =>
                             {
                                 description => 'Percentage of total code coverage',
-                                type => 'float',
+                                type => 'number',
                             }
                         },
                     },
@@ -351,7 +353,8 @@
                             {
                                 avg =>
                                 {
-                                    type => 'float',
+                                    format => 'float',
+                                    type => 'number',
                                 },
                                 count =>
                                 {
@@ -359,15 +362,18 @@
                                 },
                                 max =>
                                 {
-                                    type => 'float',
+                                    format => 'float',
+                                    type => 'number',
                                 },
                                 min =>
                                 {
-                                    type => 'float',
+                                    format => 'float',
+                                    type => 'number',
                                 },
                                 sum =>
                                 {
-                                    type => 'float',
+                                    format => 'float',
+                                    type => 'number',
                                 },
                             },
                         },
@@ -402,6 +408,7 @@
                     {
                         description => 'An ISO 8601 datetime',
                         type => 'string',
+                        format => 'date-time',
                     },
                     download_url =>
                     {
@@ -451,7 +458,8 @@
                     date => 
                     {
                         description => 'ISO8601 date format',
-                        type => 'string'
+                        type => 'string',
+                        format => 'date-time',
                     },
                     distribution => 
                     {
@@ -485,10 +493,7 @@
                     {
                         items =>
                         {
-                            schema =>
-                            {
-                                '$ref' => '#/components/schemas/favorite',
-                            },
+                            '$ref' => '#/components/schemas/favorite',
                         },
                         type => 'array',
                     },
@@ -535,7 +540,8 @@
                     date =>
                     {
                         description => 'ISO8601 date format',
-                        type => 'string'
+                        type => 'string',
+                        format => 'date-time',
                     },
                     deprecated => { type => 'boolean' },
                     description => 
@@ -744,10 +750,7 @@
                     {
                         items =>
                         {
-                            schema =>
-                            {
-                                '$ref' => '#/components/schemas/file',
-                            },
+                            '$ref' => '#/components/schemas/file',
                         },
                         type => 'array',
                     },
@@ -769,45 +772,48 @@
                 {
                     categories =>
                     {
-                        changelog =>
+                        properties =>
                         {
-                            items => 
+                            changelog =>
                             {
-                                '$ref' => '#/components/schemas/file_snapshot',
+                                items => 
+                                {
+                                    '$ref' => '#/components/schemas/file_snapshot',
+                                },
+                                type => 'array',
                             },
-                            type => 'array',
-                        },
-                        contributing =>
-                        {
-                            items => 
+                            contributing =>
                             {
-                                '$ref' => '#/components/schemas/file_snapshot',
+                                items => 
+                                {
+                                    '$ref' => '#/components/schemas/file_snapshot',
+                                },
+                                type => 'array',
                             },
-                            type => 'array',
-                        },
-                        dist =>
-                        {
-                            items => 
+                            dist =>
                             {
-                                '$ref' => '#/components/schemas/file_snapshot',
+                                items => 
+                                {
+                                    '$ref' => '#/components/schemas/file_snapshot',
+                                },
+                                type => 'array',
                             },
-                            type => 'array',
-                        },
-                        license =>
-                        {
-                            items => 
+                            license =>
                             {
-                                '$ref' => '#/components/schemas/file_snapshot',
+                                items => 
+                                {
+                                    '$ref' => '#/components/schemas/file_snapshot',
+                                },
+                                type => 'array',
                             },
-                            type => 'array',
-                        },
-                        other =>
-                        {
-                            items => 
+                            other =>
                             {
-                                '$ref' => '#/components/schemas/file_snapshot',
+                                items => 
+                                {
+                                    '$ref' => '#/components/schemas/file_snapshot',
+                                },
+                                type => 'array',
                             },
-                            type => 'array',
                         },
                         type => 'object',
                     },
@@ -831,10 +837,7 @@
                     {
                         items =>
                         {
-                            schema =>
-                            {
-                                '$ref' => '#/components/schema/file_snapshot',
-                            },
+                            '$ref' => '#/components/schemas/file_snapshot',
                         },
                         type => 'array',
                     },
@@ -923,7 +926,11 @@
                                 {
                                     requires =>
                                     {
-                                        type => 'nested'
+                                        additionalProperties =>
+                                        {
+                                            description => "Key-value pairs of module names with their version number",
+                                            type => 'string',
+                                        },
                                     }
                                 }
                             },
@@ -933,7 +940,11 @@
                                 {
                                     requires =>
                                     {
-                                        type => 'nested'
+                                        additionalProperties =>
+                                        {
+                                            description => "Key-value pairs of module names with their version number",
+                                            type => 'string',
+                                        },
                                     }
                                 }
                             },
@@ -943,7 +954,11 @@
                                 {
                                     requires =>
                                     {
-                                        type => 'nested'
+                                        additionalProperties =>
+                                        {
+                                            description => "Key-value pairs of module names with their version number",
+                                            type => 'string',
+                                        },
                                     }
                                 }
                             },
@@ -953,7 +968,11 @@
                                 {
                                     requires =>
                                     {
-                                        type => 'nested'
+                                        additionalProperties =>
+                                        {
+                                            description => "Key-value pairs of module names with their version number",
+                                            type => 'string',
+                                        },
                                     }
                                 }
                             }
@@ -1009,7 +1028,7 @@
                                 type => 'string'
                             }
                         },
-                        type => 'nested'
+                        type => 'object'
                     },
                     version =>
                     {
@@ -1045,14 +1064,18 @@
                     {
                         items => 
                         {
-                            contact_site =>
+                            properties =>
                             {
-                                type => 'string',
+                                contact_site =>
+                                {
+                                    type => 'string',
+                                },
+                                contact_user =>
+                                {
+                                    type => 'string',
+                                },
                             },
-                            contact_user =>
-                            {
-                                type => 'string',
-                            },
+                            type => 'object'
                         },
                         type => 'array',
                     },
@@ -1091,6 +1114,7 @@
                     inceptdate =>
                     {
                         type => 'string',
+                        format => 'date-time',
                     },
                     location =>
                     {
@@ -1119,6 +1143,7 @@
                     reitredate =>
                     {
                         type => 'string',
+                        format => 'date-time',
                     },
                     rsync =>
                     {
@@ -1181,7 +1206,8 @@
                     date =>
                     {
                         description => 'ISO8601 date format',
-                        type => 'string'
+                        type => 'string',
+                        format => 'date-time',
                     },
                     deprecated => { type => 'boolean' },
                     description => 
@@ -1398,6 +1424,7 @@
                                     type => 'string',
                                 },
                             },
+                            type => 'object',
                         },
                         type => 'array',
                     },
@@ -1454,15 +1481,18 @@
                         {
                             anyOf => [
                             {
-                                id => 
+                                properties =>
                                 {
-                                    maxLength => 2048,
-                                    type => 'string'
-                                },
-                                name =>
-                                {
-                                    maxLength => 2048,
-                                    type => 'string'
+                                    id => 
+                                    {
+                                        maxLength => 2048,
+                                        type => 'string'
+                                    },
+                                    name =>
+                                    {
+                                        maxLength => 2048,
+                                        type => 'string'
+                                    },
                                 },
                             }],
                         },
@@ -1504,6 +1534,7 @@
                         items => 
                         {
                             type => 'number',
+                            format => 'float',
                         },
                         type => 'array',
                     },
@@ -1550,6 +1581,7 @@
                                     type => 'string'
                                 },
                             },
+                            type => 'object',
                         },
                         type => 'array',
                     },
@@ -1568,7 +1600,11 @@
                         maxLength => 2048,
                         type => 'string'
                     },
-                    updated => { type => 'string' },
+                    updated => 
+                    {
+                        type => 'string',
+                        format => 'date-time',
+                    },
                     user => 
                     {
                         maxLength => 2048,
@@ -1600,6 +1636,7 @@
                     {
                         description => 'ISO8601 datetime',
                         type => 'string',
+                        format => 'date-time',
                     },
                     # See <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Document/Rating.pm#L12>
                     details => 
@@ -1622,12 +1659,16 @@
                     {
                         items =>
                         {
-                            user =>
+                            properties =>
                             {
-                                maxLength => 2048,
-                                type => 'string'
+                                user =>
+                                {
+                                    maxLength => 2048,
+                                    type => 'string'
+                                },
+                                value => { type => 'boolean' },
                             },
-                            value => { type => 'boolean' },
+                            type => 'object',
                         },
                         type => 'array',
                     },
@@ -1697,6 +1738,7 @@
                     {
                         description => 'ISO8601 datetime',
                         type => 'string',
+                        format => 'date-time',
                     },
                     dependency => 
                     {
@@ -1768,10 +1810,7 @@
                     },
                     metadata =>
                     {
-                        schema =>
-                        {
-                            '$ref' => '#/components/schemas/metadata',
-                        }
+                        '$ref' => '#/components/schemas/metadata',
                     },
                     name => 
                     {
@@ -1902,6 +1941,7 @@
                                 date =>
                                 {
                                     type => 'string',
+                                    format => 'date-time',
                                 },
                                 distribution =>
                                 {
@@ -1916,6 +1956,7 @@
                                     type => 'string',
                                 },
                             },
+                            type => 'object',
                         },
                         type => 'array',
                     },
@@ -1951,10 +1992,7 @@
                     {
                         items =>
                         {
-                            schema =>
-                            {
-                                '$ref' => '#/components/schemas/release',
-                            },
+                            '$ref' => '#/components/schemas/release',
                         },
                         type => 'array',
                     },
@@ -1994,9 +2032,8 @@
                                         _source => 
                                         {
                                             oneOf => [
-                                                { '$ref' => '#/components/schemas/author' },
+                                                { '$ref' => '#/components/schemas/profile' },
                                                 { '$ref' => '#/components/schemas/distribution' },
-                                                { '$ref' => '#/components/schemas/favorite' },
                                                 { '$ref' => '#/components/schemas/favorite' },
                                                 { '$ref' => '#/components/schemas/file' },
                                                 { '$ref' => '#/components/schemas/rating' },
@@ -2005,10 +2042,11 @@
                                         },
                                         _type => 
                                         {
-                                            anyOf => [qw( author distribution favorite file rating release )],
-                                            type => 'enum',
+                                            enum => [qw( author distribution favorite file rating release )],
+                                            type => 'string',
                                         },
                                     },
+                                    type => 'object',
                                 },
                                 type => 'array',
                             },
@@ -2039,10 +2077,7 @@
                     {
                         items =>
                         {
-                            schema =>
-                            {
-                                '$ref' => '#/components/schemas/release',
-                            },
+                            '$ref' => '#/components/schemas/release',
                         },
                         type => 'array',
                     },
@@ -2084,9 +2119,7 @@
                                 },
                                 type => 'object',
                                 example => 'Moose',
-                                maxLength => 2048,
                             },
-                            type => 'object',
                         },
                         type => 'object'
                     },
@@ -2141,9 +2174,36 @@
                                 items =>
                                 {
                                     anyOf => [
-                                        { 'exists' => { type => 'object', }, },
-                                        { missing => { type => 'object', }, },
-                                        { term => { type => 'object', }, },
+                                        {
+                                            properties =>
+                                            {
+                                                'exists' => 
+                                                {
+                                                    additionalProperties => {},
+                                                    type => 'object',
+                                                },
+                                            },
+                                        },
+                                        {
+                                            properties =>
+                                            {
+                                                missing => 
+                                                {
+                                                    additionalProperties => {},
+                                                    type => 'object',
+                                                },
+                                            },
+                                        },
+                                        {
+                                            properties =>
+                                            {
+                                                term => 
+                                                {
+                                                    additionalProperties => {},
+                                                    type => 'object',
+                                                },
+                                            },
+                                        },
                                     ],
                                 },
                                 type => 'array',
@@ -2153,9 +2213,36 @@
                                 items =>
                                 {
                                     anyOf => [
-                                        { 'exists' => { type => 'object', }, },
-                                        { missing => { type => 'object', }, },
-                                        { term => { type => 'object', }, },
+                                        {
+                                            properties =>
+                                            {
+                                                'exists' => 
+                                                {
+                                                    additionalProperties => {},
+                                                    type => 'object',
+                                                },
+                                            },
+                                        },
+                                        {
+                                            properties =>
+                                            {
+                                                missing => 
+                                                {
+                                                    additionalProperties => {},
+                                                    type => 'object',
+                                                },
+                                            },
+                                        },
+                                        {
+                                            properties =>
+                                            {
+                                                term => 
+                                                {
+                                                    additionalProperties => {},
+                                                    type => 'object',
+                                                },
+                                            },
+                                        },
                                     ],
                                 },
                                 type => 'array',
@@ -2165,9 +2252,36 @@
                                 items =>
                                 {
                                     anyOf => [
-                                        { 'exists' => { type => 'object', }, },
-                                        { missing => { type => 'object', }, },
-                                        { term => { type => 'object', }, },
+                                        {
+                                            properties =>
+                                            {
+                                                'exists' => 
+                                                {
+                                                    additionalProperties => {},
+                                                    type => 'object',
+                                                },
+                                            },
+                                        },
+                                        {
+                                            properties =>
+                                            {
+                                                missing => 
+                                                {
+                                                    additionalProperties => {},
+                                                    type => 'object',
+                                                },
+                                            },
+                                        },
+                                        {
+                                            properties =>
+                                            {
+                                                term => 
+                                                {
+                                                    additionalProperties => {},
+                                                    type => 'object',
+                                                },
+                                            },
+                                        },
                                     ],
                                 },
                                 type => 'array',
@@ -2796,28 +2910,40 @@
                     in => 'query',
                     name => 'q',
                     required => \1,
-                    type => 'string',
+                    schema =>
+                    {
+                        type => 'string',
+                    },
                 },
                 {
                     description => "Specifies the maximum number of [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result elements.",
                     in => 'query',
                     name => 'size',
                     required => \0,
-                    type => 'integer',
+                    schema =>
+                    {
+                        type => 'integer',
+                    },
                 },
                 {
                     description => "Specifies the elements to sort the [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result.",
                     in => 'query',
                     name => 'sort',
                     required => \0,
-                    type => 'string',
+                    schema =>
+                    {
+                        type => 'string',
+                    },
                 },
                 {
                     description => "Specifies which fields in the response should be provided.",
                     in => 'query',
                     name => 'fields',
                     required => \0,
-                    type => 'string',
+                    schema =>
+                    {
+                        type => 'string',
+                    },
                 }],
                 requestBody =>
                 {
@@ -2877,27 +3003,35 @@
                     in => 'query',
                     name => 'query',
                     required => \1,
-                    type => 'string',
+                    schema =>
+                    {
+                        type => 'string',
+                    },
                 },
                 {
                     in => 'query',
                     name => 'size',
                     required => \0,
-                    type => 'integer',
+                    schema =>
+                    {
+                        type => 'integer',
+                    },
                 },
                 {
                     description => "Specifies the elements to sort the [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result.",
                     in => 'query',
                     name => 'sort',
                     required => \0,
-                    type => 'string',
+                    schema =>
+                    {
+                        type => 'string',
+                    },
                 },
                 {
                     description => "Specifies which fields in the response should be provided.",
                     in => 'query',
                     name => 'fields',
                     required => \0,
-                    type => 'array',
                     schema =>
                     {
                         maxLength => 2048,
@@ -3440,6 +3574,7 @@
                                                         type => 'string',
                                                     },
                                                 },
+                                                type => 'object',
                                             },
                                             type => 'array',
                                         },
@@ -3561,6 +3696,7 @@
                                                         type => 'string',
                                                     },
                                                 },
+                                                type => 'object',
                                             },
                                             type => 'array',
                                         },
@@ -4560,28 +4696,40 @@
                     in => 'query',
                     name => 'q',
                     required => \1,
-                    type => 'string',
+                    schema =>
+                    {
+                        type => 'string',
+                    },
                 },
                 {
                     description => "Specifies the maximum number of [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result elements.",
                     in => 'query',
                     name => 'size',
                     required => \0,
-                    type => 'integer',
+                    schema =>
+                    {
+                        type => 'integer',
+                    },
                 },
                 {
                     description => "Specifies the elements to sort the [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result.",
                     in => 'query',
                     name => 'sort',
                     required => \0,
-                    type => 'string',
+                    schema =>
+                    {
+                        type => 'string',
+                    },
                 },
                 {
                     description => "Specifies which fields in the response should be provided.",
                     in => 'query',
                     name => 'fields',
                     required => \0,
-                    type => 'string',
+                    schema =>
+                    {
+                        type => 'string',
+                    },
                 }],
                 requestBody =>
                 {
@@ -4641,27 +4789,35 @@
                     in => 'query',
                     name => 'query',
                     required => \1,
-                    type => 'string',
+                    schema =>
+                    {
+                        type => 'string',
+                    }
                 },
                 {
                     in => 'query',
                     name => 'size',
                     required => \0,
-                    type => 'integer',
+                    schema =>
+                    {
+                        type => 'integer',
+                    }
                 },
                 {
                     description => "Specifies the elements to sort the [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result.",
                     in => 'query',
                     name => 'sort',
                     required => \0,
-                    type => 'string',
+                    schema =>
+                    {
+                        type => 'string',
+                    },
                 },
                 {
                     description => "Specifies which fields in the response should be provided.",
                     in => 'query',
                     name => 'fields',
                     required => \0,
-                    type => 'array',
                     schema =>
                     {
                         maxLength => 2048,
@@ -5315,14 +5471,18 @@
                                         {
                                             items =>
                                             {
-                                                doc_count =>
+                                                properties =>
                                                 {
-                                                    type => 'integer',
+                                                    doc_count =>
+                                                    {
+                                                        type => 'integer',
+                                                    },
+                                                    key =>
+                                                    {
+                                                        type => 'string',
+                                                    },
                                                 },
-                                                key =>
-                                                {
-                                                    type => 'string',
-                                                }
+                                                type => 'object',
                                             },
                                             type => 'array',
                                         },
@@ -5600,28 +5760,40 @@
                     in => 'query',
                     name => 'q',
                     required => \1,
-                    type => 'string',
+                    schema =>
+                    {
+                        type => 'string',
+                    },
                 },
                 {
                     description => "Specifies the maximum number of [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result elements.",
                     in => 'query',
                     name => 'size',
                     required => \0,
-                    type => 'integer',
+                    schema =>
+                    {
+                        type => 'integer',
+                    },
                 },
                 {
                     description => "Specifies the elements to sort the [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result.",
                     in => 'query',
                     name => 'sort',
                     required => \0,
-                    type => 'string',
+                    schema =>
+                    {
+                        type => 'string',
+                    },
                 },
                 {
                     description => "Specifies which fields in the response should be provided.",
                     in => 'query',
                     name => 'fields',
                     required => \0,
-                    type => 'string',
+                    schema =>
+                    {
+                        type => 'string',
+                    },
                 }],
                 requestBody =>
                 {
@@ -5681,27 +5853,35 @@
                     in => 'query',
                     name => 'query',
                     required => \1,
-                    type => 'string',
+                    schema =>
+                    {
+                        type => 'string',
+                    },
                 },
                 {
                     in => 'query',
                     name => 'size',
                     required => \0,
-                    type => 'integer',
+                    schema =>
+                    {
+                        type => 'integer',
+                    },
                 },
                 {
                     description => "Specifies the elements to sort the [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result.",
                     in => 'query',
                     name => 'sort',
                     required => \0,
-                    type => 'string',
+                    schema =>
+                    {
+                        type => 'string',
+                    },
                 },
                 {
                     description => "Specifies which fields in the response should be provided.",
                     in => 'query',
                     name => 'fields',
                     required => \0,
-                    type => 'array',
                     schema =>
                     {
                         maxLength => 2048,
@@ -6048,28 +6228,40 @@
                     in => 'query',
                     name => 'q',
                     required => \1,
-                    type => 'string',
+                    schema =>
+                    {
+                        type => 'string',
+                    },
                 },
                 {
                     description => "Specifies the maximum number of [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result elements.",
                     in => 'query',
                     name => 'size',
                     required => \0,
-                    type => 'integer',
+                    schema =>
+                    {
+                        type => 'integer',
+                    },
                 },
                 {
                     description => "Specifies the elements to sort the [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result.",
                     in => 'query',
                     name => 'sort',
                     required => \0,
-                    type => 'string',
+                    schema =>
+                    {
+                        type => 'string',
+                    },
                 },
                 {
                     description => "Specifies which fields in the response should be provided.",
                     in => 'query',
                     name => 'fields',
                     required => \0,
-                    type => 'string',
+                    schema =>
+                    {
+                        type => 'string',
+                    },
                 }],
                 requestBody =>
                 {
@@ -6129,27 +6321,35 @@
                     in => 'query',
                     name => 'query',
                     required => \1,
-                    type => 'string',
+                    schema =>
+                    {
+                        type => 'string',
+                    },
                 },
                 {
                     in => 'query',
                     name => 'size',
                     required => \0,
-                    type => 'integer',
+                    schema =>
+                    {
+                        type => 'integer',
+                    },
                 },
                 {
                     description => "Specifies the elements to sort the [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result.",
                     in => 'query',
                     name => 'sort',
                     required => \0,
-                    type => 'string',
+                    schema =>
+                    {
+                        type => 'string',
+                    },
                 },
                 {
                     description => "Specifies which fields in the response should be provided.",
                     in => 'query',
                     name => 'fields',
                     required => \0,
-                    type => 'array',
                     schema =>
                     {
                         maxLength => 2048,
@@ -7438,19 +7638,24 @@
                 operationId => 'GetRenderPOD',
                 parameters => [
                 {
+                    description => 'The POD data to format',
+                    example => qq{=encoding utf-8\n\n=head1 Hello World\n\nSomething here\n\n=oops\n\n=cut\n},
                     in => 'query',
                     name => 'pod',
                     required => \1,
-                    type => 'string',
-                    description => 'The POD data to format',
-                    example => qq{=encoding utf-8\n\n=head1 Hello World\n\nSomething here\n\n=oops\n\n=cut\n},
+                    schema =>
+                    {
+                        type => 'string',
+                    },
                 },
                 {
                     in => 'query',
-                    maxLength => 2048,
                     name => 'show_errors',
                     required => \0,
-                    type => 'boolean',
+                    schema =>
+                    {
+                        type => 'boolean',
+                    },
                 }],
                 requestBody =>
                 {
@@ -7592,18 +7797,23 @@
                 },
                 {
                     in => 'query',
-                    maxLength => 2048,
                     name => 'show_errors',
                     required => \0,
-                    type => 'boolean',
+                    schema =>
+                    {
+                        type => 'boolean',
+                    },
                 },
                 {
                     in => 'query',
-                    maxLength => 2048,
                     name => 'url_prefix',
                     required => \0,
                     # XXX /pod/author/release/path?url_prefix -> Not sure what the valid values are
-                    type => 'string',
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
                 },
                 {
                     description => qq{You can change the output format by either passing a `content-type` query parameter (e.g. [/pod/Moose?content-type=text/plain](https://fastapi.metacpan.org/v1/pod/Moose?content-type=text/plain) or by adding an `Accept` header to the HTTP request. Valid content types are:\n\n* text/html (default)\n* text/plain\n* text/x-pod\n* text/x-markdown},
@@ -7745,18 +7955,23 @@
                 },
                 {
                     in => 'query',
-                    maxLength => 2048,
                     name => 'show_errors',
                     required => \0,
-                    type => 'boolean',
+                    schema =>
+                    {
+                        type => 'boolean',
+                    },
                 },
                 {
                     in => 'query',
-                    maxLength => 2048,
                     name => 'url_prefix',
                     required => \0,
                     # XXX /pod/author/release/path?url_prefix -> Not sure what the valid values are
-                    type => 'string',
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
                 },
                 {
                     description => qq{You can change the output format by either passing a `content-type` query parameter (e.g. [/pod/Moose?content-type=text/plain](https://fastapi.metacpan.org/v1/pod/Moose?content-type=text/plain) or by adding an `Accept` header to the HTTP request. Valid content types are:\n\n* text/html (default)\n* text/plain\n* text/x-pod\n* text/x-markdown},
@@ -8138,28 +8353,40 @@
                     in => 'query',
                     name => 'q',
                     required => \1,
-                    type => 'string',
+                    schema =>
+                    {
+                        type => 'string',
+                    },
                 },
                 {
                     description => "Specifies the maximum number of [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result elements.",
                     in => 'query',
                     name => 'size',
                     required => \0,
-                    type => 'integer',
+                    schema =>
+                    {
+                        type => 'integer',
+                    },
                 },
                 {
                     description => "Specifies the elements to sort the [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result.",
                     in => 'query',
                     name => 'sort',
                     required => \0,
-                    type => 'string',
+                    schema =>
+                    {
+                        type => 'string',
+                    },
                 },
                 {
                     description => "Specifies which fields in the response should be provided.",
                     in => 'query',
                     name => 'fields',
                     required => \0,
-                    type => 'string',
+                    schema =>
+                    {
+                        type => 'string',
+                    },
                 }],
                 requestBody =>
                 {
@@ -8219,27 +8446,35 @@
                     in => 'query',
                     name => 'query',
                     required => \1,
-                    type => 'string',
+                    schema =>
+                    {
+                        type => 'string',
+                    },
                 },
                 {
                     in => 'query',
                     name => 'size',
                     required => \0,
-                    type => 'integer',
+                    schema =>
+                    {
+                        type => 'integer',
+                    },
                 },
                 {
                     description => "Specifies the elements to sort the [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result.",
                     in => 'query',
                     name => 'sort',
                     required => \0,
-                    type => 'string',
+                    schema =>
+                    {
+                        type => 'string',
+                    },
                 },
                 {
                     description => "Specifies which fields in the response should be provided.",
                     in => 'query',
                     name => 'fields',
                     required => \0,
-                    type => 'array',
                     schema =>
                     {
                         maxLength => 2048,
@@ -8826,7 +9061,7 @@
             post => 
             {
                 description => qq{Get recent releases},
-                operationId => 'PostReleaseRecent',
+                operationId => 'PostReleaseByAuthor',
                 parameters => [],
                 requestBody =>
                 {
@@ -8972,21 +9207,25 @@
                                         {
                                             items =>
                                             {
-                                                email =>
+                                                properties =>
                                                 {
-                                                    items =>
+                                                    email =>
                                                     {
+                                                        items =>
+                                                        {
+                                                            maxLength => 2048,
+                                                            type => 'string',
+                                                        },
+                                                        type => 'array',
+                                                    },
+                                                    name =>
+                                                    {
+                                                        description => "Contributor's name",
                                                         maxLength => 2048,
                                                         type => 'string',
                                                     },
-                                                    type => 'array',
                                                 },
-                                                name =>
-                                                {
-                                                    description => "Contributor's name",
-                                                    maxLength => 2048,
-                                                    type => 'string',
-                                                },
+                                                type => 'object',
                                             },
                                             type => 'array',
                                         },
@@ -9083,7 +9322,7 @@
                             {
                                 schema =>
                                 {
-                                    '$ref' => '#/components/schema/files_categories',
+                                    '$ref' => '#/components/schemas/files_categories',
                                 }
                             }
                         },
@@ -9168,7 +9407,7 @@
                             {
                                 schema =>
                                 {
-                                    '$ref' => '#/components/schema/files_categories',
+                                    '$ref' => '#/components/schemas/files_categories',
                                 }
                             }
                         },
@@ -9987,6 +10226,7 @@
                                                 {
                                                     type => 'string',
                                                 },
+                                                type => 'object',
                                             },
                                             # TODO: /v1/release/top_uploaders: Not sure this is the number of distributions. Need to be double checked
                                             description => 'Array of pause IDs to the number of distributions',
@@ -10068,6 +10308,7 @@
                                                 {
                                                     type => 'string',
                                                 },
+                                                type => 'object',
                                             },
                                             # TODO: /v1/release/top_uploaders: Not sure this is the number of distributions. Need to be double checked
                                             description => 'Array of pause IDs to the number of distributions',
@@ -10363,28 +10604,40 @@
                     in => 'query',
                     name => 'q',
                     required => \1,
-                    type => 'string',
+                    schema =>
+                    {
+                        type => 'string',
+                    },
                 },
                 {
                     description => "Specifies the maximum number of [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result elements.",
                     in => 'query',
                     name => 'size',
                     required => \0,
-                    type => 'integer',
+                    schema =>
+                    {
+                        type => 'integer',
+                    },
                 },
                 {
                     description => "Specifies the elements to sort the [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result.",
                     in => 'query',
                     name => 'sort',
                     required => \0,
-                    type => 'string',
+                    schema =>
+                    {
+                        type => 'string',
+                    },
                 },
                 {
                     description => "Specifies which fields in the response should be provided.",
                     in => 'query',
                     name => 'fields',
                     required => \0,
-                    type => 'string',
+                    schema =>
+                    {
+                        type => 'string',
+                    },
                 }],
                 requestBody =>
                 {
@@ -10444,27 +10697,35 @@
                     in => 'query',
                     name => 'query',
                     required => \1,
-                    type => 'string',
+                    schema =>
+                    {
+                        type => 'string',
+                    },
                 },
                 {
                     in => 'query',
                     name => 'size',
                     required => \0,
-                    type => 'integer',
+                    schema =>
+                    {
+                        type => 'integer',
+                    },
                 },
                 {
                     description => "Specifies the elements to sort the [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result.",
                     in => 'query',
                     name => 'sort',
                     required => \0,
-                    type => 'string',
+                    schema =>
+                    {
+                        type => 'string',
+                    },
                 },
                 {
                     description => "Specifies which fields in the response should be provided.",
                     in => 'query',
                     name => 'fields',
                     required => \0,
-                    type => 'array',
                     schema =>
                     {
                         maxLength => 2048,
@@ -10670,28 +10931,25 @@
                                     page =>
                                     {
                                         description => 'Specifies the page offset from which the result will be returned.',
-                                        required => \0,
                                         type => 'integer',
                                     },
                                     page_size =>
                                     {
                                         description => 'Specifies the number of result per page to be returned.',
-                                        required => \0,
                                         type => 'integer',
                                     },
                                     size =>
                                     {
                                         description => 'Specifies the maximum total number of result to be returned.',
-                                        required => \0,
                                         type => 'integer',
                                     },
                                     sort =>
                                     {
                                         description => 'Specifies how the result is sorted.',
-                                        required => \0,
                                         type => 'string',
                                     },
                                 },
+                                required => [],
                                 type => 'object'
                             }
                         }
@@ -10873,22 +11131,20 @@
                                     page =>
                                     {
                                         description => 'Specifies the page offset from which the result will be returned.',
-                                        required => \0,
                                         type => 'integer',
                                     },
                                     page_size =>
                                     {
                                         description => 'Specifies the number of result per page to be returned.',
-                                        required => \0,
                                         type => 'integer',
                                     },
                                     sort =>
                                     {
                                         description => 'Specifies how the result is sorted.',
-                                        required => \0,
                                         type => 'string',
                                     },
                                 },
+                                required => [],
                                 type => 'object'
                             }
                         }
@@ -11282,6 +11538,7 @@
                                         {
                                             type => 'string',
                                             description => "date module was indexed",
+                                            format => 'date-time',
                                         },
                                         documentation =>
                                         {
@@ -11447,7 +11704,7 @@
             get => 
             {
                 description => qq{Returns the POD of the given module. You can change the output format by either passing a `content-type` query parameter (e.g. [/pod/Moose?content-type=text/plain](https://fastapi.metacpan.org/v1/pod/Moose?content-type=text/plain) or by adding an `Accept` header to the HTTP request. Valid content types are:\n\n* text/html (default)\n* text/plain\n* text/x-pod\n* text/x-markdown},
-                operationId => 'GetModuleReleasePod',
+                operationId => 'GetSourceReleasePod',
                 example => '/v1/source/JDEGUEST/Module-Generic-v0.31.0/lib/Module/Generic.pm',
                 parameters => [
                 {

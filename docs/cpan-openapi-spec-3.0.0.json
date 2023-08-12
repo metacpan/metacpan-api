@@ -53,6 +53,7 @@
                   "type" : "string"
                },
                "date" : {
+                  "format" : "date-time",
                   "type" : "string"
                },
                "deprecated" : {
@@ -129,7 +130,8 @@
                   "type" : "string"
                },
                "version_numified" : {
-                  "type" : "float"
+                  "format" : "float",
+                  "type" : "number"
                }
             }
          },
@@ -141,23 +143,23 @@
                   "properties" : {
                      "branch" : {
                         "description" : "Percentage of branch code coverage",
-                        "type" : "float"
+                        "type" : "number"
                      },
                      "condition" : {
                         "description" : "Percentage of condition code coverage",
-                        "type" : "float"
+                        "type" : "number"
                      },
                      "statement" : {
                         "description" : "Percentage of statement code coverage",
-                        "type" : "float"
+                        "type" : "number"
                      },
                      "subroutine" : {
                         "description" : "Percentage of subroutine code coverage",
-                        "type" : "float"
+                        "type" : "number"
                      },
                      "total" : {
                         "description" : "Percentage of total code coverage",
-                        "type" : "float"
+                        "type" : "number"
                      }
                   }
                },
@@ -291,19 +293,23 @@
                   "additionalProperties" : {
                      "properties" : {
                         "avg" : {
-                           "type" : "float"
+                           "format" : "float",
+                           "type" : "number"
                         },
                         "count" : {
                            "type" : "integer"
                         },
                         "max" : {
-                           "type" : "float"
+                           "format" : "float",
+                           "type" : "number"
                         },
                         "min" : {
-                           "type" : "float"
+                           "format" : "float",
+                           "type" : "number"
                         },
                         "sum" : {
-                           "type" : "float"
+                           "format" : "float",
+                           "type" : "number"
                         }
                      },
                      "type" : "object"
@@ -330,6 +336,7 @@
                },
                "date" : {
                   "description" : "An ISO 8601 datetime",
+                  "format" : "date-time",
                   "type" : "string"
                },
                "download_url" : {
@@ -367,6 +374,7 @@
                },
                "date" : {
                   "description" : "ISO8601 date format",
+                  "format" : "date-time",
                   "type" : "string"
                },
                "distribution" : {
@@ -400,9 +408,7 @@
             "properties" : {
                "favorites" : {
                   "items" : {
-                     "schema" : {
-                        "$ref" : "#/components/schemas/favorite"
-                     }
+                     "$ref" : "#/components/schemas/favorite"
                   },
                   "type" : "array"
                },
@@ -433,6 +439,7 @@
                },
                "date" : {
                   "description" : "ISO8601 date format",
+                  "format" : "date-time",
                   "type" : "string"
                },
                "deprecated" : {
@@ -633,9 +640,7 @@
             "properties" : {
                "files" : {
                   "items" : {
-                     "schema" : {
-                        "$ref" : "#/components/schemas/file"
-                     }
+                     "$ref" : "#/components/schemas/file"
                   },
                   "type" : "array"
                },
@@ -651,35 +656,37 @@
             "description" : "This is the object representing a list of files by categories",
             "properties" : {
                "categories" : {
-                  "changelog" : {
-                     "items" : {
-                        "$ref" : "#/components/schemas/file_snapshot"
+                  "properties" : {
+                     "changelog" : {
+                        "items" : {
+                           "$ref" : "#/components/schemas/file_snapshot"
+                        },
+                        "type" : "array"
                      },
-                     "type" : "array"
-                  },
-                  "contributing" : {
-                     "items" : {
-                        "$ref" : "#/components/schemas/file_snapshot"
+                     "contributing" : {
+                        "items" : {
+                           "$ref" : "#/components/schemas/file_snapshot"
+                        },
+                        "type" : "array"
                      },
-                     "type" : "array"
-                  },
-                  "dist" : {
-                     "items" : {
-                        "$ref" : "#/components/schemas/file_snapshot"
+                     "dist" : {
+                        "items" : {
+                           "$ref" : "#/components/schemas/file_snapshot"
+                        },
+                        "type" : "array"
                      },
-                     "type" : "array"
-                  },
-                  "license" : {
-                     "items" : {
-                        "$ref" : "#/components/schemas/file_snapshot"
+                     "license" : {
+                        "items" : {
+                           "$ref" : "#/components/schemas/file_snapshot"
+                        },
+                        "type" : "array"
                      },
-                     "type" : "array"
-                  },
-                  "other" : {
-                     "items" : {
-                        "$ref" : "#/components/schemas/file_snapshot"
-                     },
-                     "type" : "array"
+                     "other" : {
+                        "items" : {
+                           "$ref" : "#/components/schemas/file_snapshot"
+                        },
+                        "type" : "array"
+                     }
                   },
                   "type" : "object"
                },
@@ -696,9 +703,7 @@
             "properties" : {
                "files" : {
                   "items" : {
-                     "schema" : {
-                        "$ref" : "#/components/schema/file_snapshot"
-                     }
+                     "$ref" : "#/components/schemas/file_snapshot"
                   },
                   "type" : "array"
                },
@@ -763,28 +768,40 @@
                      "build" : {
                         "properties" : {
                            "requires" : {
-                              "type" : "nested"
+                              "additionalProperties" : {
+                                 "description" : "Key-value pairs of module names with their version number",
+                                 "type" : "string"
+                              }
                            }
                         }
                      },
                      "configure" : {
                         "properties" : {
                            "requires" : {
-                              "type" : "nested"
+                              "additionalProperties" : {
+                                 "description" : "Key-value pairs of module names with their version number",
+                                 "type" : "string"
+                              }
                            }
                         }
                      },
                      "runtime" : {
                         "properties" : {
                            "requires" : {
-                              "type" : "nested"
+                              "additionalProperties" : {
+                                 "description" : "Key-value pairs of module names with their version number",
+                                 "type" : "string"
+                              }
                            }
                         }
                      },
                      "test" : {
                         "properties" : {
                            "requires" : {
-                              "type" : "nested"
+                              "additionalProperties" : {
+                                 "description" : "Key-value pairs of module names with their version number",
+                                 "type" : "string"
+                              }
                            }
                         }
                      }
@@ -827,7 +844,7 @@
                         }
                      }
                   },
-                  "type" : "nested"
+                  "type" : "object"
                },
                "version" : {
                   "type" : "string"
@@ -853,12 +870,15 @@
                },
                "contact" : {
                   "items" : {
-                     "contact_site" : {
-                        "type" : "string"
+                     "properties" : {
+                        "contact_site" : {
+                           "type" : "string"
+                        },
+                        "contact_user" : {
+                           "type" : "string"
+                        }
                      },
-                     "contact_user" : {
-                        "type" : "string"
-                     }
+                     "type" : "object"
                   },
                   "type" : "array"
                },
@@ -884,6 +904,7 @@
                   "type" : "string"
                },
                "inceptdate" : {
+                  "format" : "date-time",
                   "type" : "string"
                },
                "location" : {
@@ -905,6 +926,7 @@
                   "type" : "string"
                },
                "reitredate" : {
+                  "format" : "date-time",
                   "type" : "string"
                },
                "rsync" : {
@@ -957,6 +979,7 @@
                },
                "date" : {
                   "description" : "ISO8601 date format",
+                  "format" : "date-time",
                   "type" : "string"
                },
                "deprecated" : {
@@ -1149,7 +1172,8 @@
                            "maxLength" : 2048,
                            "type" : "string"
                         }
-                     }
+                     },
+                     "type" : "object"
                   },
                   "type" : "array"
                },
@@ -1192,13 +1216,15 @@
                   "items" : {
                      "anyOf" : [
                         {
-                           "id" : {
-                              "maxLength" : 2048,
-                              "type" : "string"
-                           },
-                           "name" : {
-                              "maxLength" : 2048,
-                              "type" : "string"
+                           "properties" : {
+                              "id" : {
+                                 "maxLength" : 2048,
+                                 "type" : "string"
+                              },
+                              "name" : {
+                                 "maxLength" : 2048,
+                                 "type" : "string"
+                              }
                            }
                         }
                      ]
@@ -1247,6 +1273,7 @@
                },
                "location" : {
                   "items" : {
+                     "format" : "float",
                      "type" : "number"
                   },
                   "type" : "array"
@@ -1282,7 +1309,8 @@
                            "maxLength" : 2048,
                            "type" : "string"
                         }
-                     }
+                     },
+                     "type" : "object"
                   },
                   "type" : "array"
                },
@@ -1304,6 +1332,7 @@
                   }
                },
                "updated" : {
+                  "format" : "date-time",
                   "type" : "string"
                },
                "user" : {
@@ -1328,6 +1357,7 @@
                },
                "date" : {
                   "description" : "ISO8601 datetime",
+                  "format" : "date-time",
                   "type" : "string"
                },
                "details" : {
@@ -1344,13 +1374,16 @@
                },
                "helpful" : {
                   "items" : {
-                     "user" : {
-                        "maxLength" : 2048,
-                        "type" : "string"
+                     "properties" : {
+                        "user" : {
+                           "maxLength" : 2048,
+                           "type" : "string"
+                        },
+                        "value" : {
+                           "type" : "boolean"
+                        }
                      },
-                     "value" : {
-                        "type" : "boolean"
-                     }
+                     "type" : "object"
                   },
                   "type" : "array"
                },
@@ -1407,6 +1440,7 @@
                },
                "date" : {
                   "description" : "ISO8601 datetime",
+                  "format" : "date-time",
                   "type" : "string"
                },
                "dependency" : {
@@ -1467,9 +1501,7 @@
                   "type" : "string"
                },
                "metadata" : {
-                  "schema" : {
-                     "$ref" : "#/components/schemas/metadata"
-                  }
+                  "$ref" : "#/components/schemas/metadata"
                },
                "name" : {
                   "maxLength" : 2048,
@@ -1594,6 +1626,7 @@
                            "type" : "string"
                         },
                         "date" : {
+                           "format" : "date-time",
                            "type" : "string"
                         },
                         "distribution" : {
@@ -1605,7 +1638,8 @@
                         "status" : {
                            "type" : "string"
                         }
-                     }
+                     },
+                     "type" : "object"
                   },
                   "type" : "array"
                },
@@ -1622,9 +1656,7 @@
             "properties" : {
                "releases" : {
                   "items" : {
-                     "schema" : {
-                        "$ref" : "#/components/schemas/release"
-                     }
+                     "$ref" : "#/components/schemas/release"
                   },
                   "type" : "array"
                },
@@ -1670,13 +1702,10 @@
                               "_source" : {
                                  "oneOf" : [
                                     {
-                                       "$ref" : "#/components/schemas/author"
+                                       "$ref" : "#/components/schemas/profile"
                                     },
                                     {
                                        "$ref" : "#/components/schemas/distribution"
-                                    },
-                                    {
-                                       "$ref" : "#/components/schemas/favorite"
                                     },
                                     {
                                        "$ref" : "#/components/schemas/favorite"
@@ -1693,7 +1722,7 @@
                                  ]
                               },
                               "_type" : {
-                                 "anyOf" : [
+                                 "enum" : [
                                     "author",
                                     "distribution",
                                     "favorite",
@@ -1701,9 +1730,10 @@
                                     "rating",
                                     "release"
                                  ],
-                                 "type" : "enum"
+                                 "type" : "string"
                               }
-                           }
+                           },
+                           "type" : "object"
                         },
                         "type" : "array"
                      },
@@ -1728,9 +1758,7 @@
             "properties" : {
                "data" : {
                   "items" : {
-                     "schema" : {
-                        "$ref" : "#/components/schemas/release"
-                     }
+                     "$ref" : "#/components/schemas/release"
                   },
                   "type" : "array"
                },
@@ -1750,7 +1778,6 @@
                   "properties" : {
                      "module" : {
                         "example" : "Moose",
-                        "maxLength" : 2048,
                         "properties" : {
                            "bucket" : {
                               "type" : "integer"
@@ -1766,8 +1793,7 @@
                            }
                         },
                         "type" : "object"
-                     },
-                     "type" : "object"
+                     }
                   },
                   "type" : "object"
                }
@@ -1807,18 +1833,27 @@
                         "items" : {
                            "anyOf" : [
                               {
-                                 "exists" : {
-                                    "type" : "object"
+                                 "properties" : {
+                                    "exists" : {
+                                       "additionalProperties" : {},
+                                       "type" : "object"
+                                    }
                                  }
                               },
                               {
-                                 "missing" : {
-                                    "type" : "object"
+                                 "properties" : {
+                                    "missing" : {
+                                       "additionalProperties" : {},
+                                       "type" : "object"
+                                    }
                                  }
                               },
                               {
-                                 "term" : {
-                                    "type" : "object"
+                                 "properties" : {
+                                    "term" : {
+                                       "additionalProperties" : {},
+                                       "type" : "object"
+                                    }
                                  }
                               }
                            ]
@@ -1829,18 +1864,27 @@
                         "items" : {
                            "anyOf" : [
                               {
-                                 "exists" : {
-                                    "type" : "object"
+                                 "properties" : {
+                                    "exists" : {
+                                       "additionalProperties" : {},
+                                       "type" : "object"
+                                    }
                                  }
                               },
                               {
-                                 "missing" : {
-                                    "type" : "object"
+                                 "properties" : {
+                                    "missing" : {
+                                       "additionalProperties" : {},
+                                       "type" : "object"
+                                    }
                                  }
                               },
                               {
-                                 "term" : {
-                                    "type" : "object"
+                                 "properties" : {
+                                    "term" : {
+                                       "additionalProperties" : {},
+                                       "type" : "object"
+                                    }
                                  }
                               }
                            ]
@@ -1851,18 +1895,27 @@
                         "items" : {
                            "anyOf" : [
                               {
-                                 "exists" : {
-                                    "type" : "object"
+                                 "properties" : {
+                                    "exists" : {
+                                       "additionalProperties" : {},
+                                       "type" : "object"
+                                    }
                                  }
                               },
                               {
-                                 "missing" : {
-                                    "type" : "object"
+                                 "properties" : {
+                                    "missing" : {
+                                       "additionalProperties" : {},
+                                       "type" : "object"
+                                    }
                                  }
                               },
                               {
-                                 "term" : {
-                                    "type" : "object"
+                                 "properties" : {
+                                    "term" : {
+                                       "additionalProperties" : {},
+                                       "type" : "object"
+                                    }
                                  }
                               }
                            ]
@@ -2016,28 +2069,36 @@
                   "in" : "query",
                   "name" : "q",
                   "required" : true,
-                  "type" : "string"
+                  "schema" : {
+                     "type" : "string"
+                  }
                },
                {
                   "description" : "Specifies the maximum number of [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result elements.",
                   "in" : "query",
                   "name" : "size",
                   "required" : false,
-                  "type" : "integer"
+                  "schema" : {
+                     "type" : "integer"
+                  }
                },
                {
                   "description" : "Specifies the elements to sort the [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result.",
                   "in" : "query",
                   "name" : "sort",
                   "required" : false,
-                  "type" : "string"
+                  "schema" : {
+                     "type" : "string"
+                  }
                },
                {
                   "description" : "Specifies which fields in the response should be provided.",
                   "in" : "query",
                   "name" : "fields",
                   "required" : false,
-                  "type" : "string"
+                  "schema" : {
+                     "type" : "string"
+                  }
                }
             ],
             "requestBody" : {
@@ -2084,20 +2145,26 @@
                   "in" : "query",
                   "name" : "query",
                   "required" : true,
-                  "type" : "string"
+                  "schema" : {
+                     "type" : "string"
+                  }
                },
                {
                   "in" : "query",
                   "name" : "size",
                   "required" : false,
-                  "type" : "integer"
+                  "schema" : {
+                     "type" : "integer"
+                  }
                },
                {
                   "description" : "Specifies the elements to sort the [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result.",
                   "in" : "query",
                   "name" : "sort",
                   "required" : false,
-                  "type" : "string"
+                  "schema" : {
+                     "type" : "string"
+                  }
                },
                {
                   "description" : "Specifies which fields in the response should be provided.",
@@ -2107,8 +2174,7 @@
                   "schema" : {
                      "maxLength" : 2048,
                      "type" : "string"
-                  },
-                  "type" : "array"
+                  }
                }
             ],
             "requestBody" : {
@@ -2860,7 +2926,8 @@
                                        "release_name" : {
                                           "type" : "string"
                                        }
-                                    }
+                                    },
+                                    "type" : "object"
                                  },
                                  "type" : "array"
                               }
@@ -2954,7 +3021,8 @@
                                        "release_name" : {
                                           "type" : "string"
                                        }
-                                    }
+                                    },
+                                    "type" : "object"
                                  },
                                  "type" : "array"
                               }
@@ -3555,28 +3623,36 @@
                   "in" : "query",
                   "name" : "q",
                   "required" : true,
-                  "type" : "string"
+                  "schema" : {
+                     "type" : "string"
+                  }
                },
                {
                   "description" : "Specifies the maximum number of [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result elements.",
                   "in" : "query",
                   "name" : "size",
                   "required" : false,
-                  "type" : "integer"
+                  "schema" : {
+                     "type" : "integer"
+                  }
                },
                {
                   "description" : "Specifies the elements to sort the [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result.",
                   "in" : "query",
                   "name" : "sort",
                   "required" : false,
-                  "type" : "string"
+                  "schema" : {
+                     "type" : "string"
+                  }
                },
                {
                   "description" : "Specifies which fields in the response should be provided.",
                   "in" : "query",
                   "name" : "fields",
                   "required" : false,
-                  "type" : "string"
+                  "schema" : {
+                     "type" : "string"
+                  }
                }
             ],
             "requestBody" : {
@@ -3623,20 +3699,26 @@
                   "in" : "query",
                   "name" : "query",
                   "required" : true,
-                  "type" : "string"
+                  "schema" : {
+                     "type" : "string"
+                  }
                },
                {
                   "in" : "query",
                   "name" : "size",
                   "required" : false,
-                  "type" : "integer"
+                  "schema" : {
+                     "type" : "integer"
+                  }
                },
                {
                   "description" : "Specifies the elements to sort the [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result.",
                   "in" : "query",
                   "name" : "sort",
                   "required" : false,
-                  "type" : "string"
+                  "schema" : {
+                     "type" : "string"
+                  }
                },
                {
                   "description" : "Specifies which fields in the response should be provided.",
@@ -3646,8 +3728,7 @@
                   "schema" : {
                      "maxLength" : 2048,
                      "type" : "string"
-                  },
-                  "type" : "array"
+                  }
                }
             ],
             "requestBody" : {
@@ -4039,28 +4120,36 @@
                   "in" : "query",
                   "name" : "q",
                   "required" : true,
-                  "type" : "string"
+                  "schema" : {
+                     "type" : "string"
+                  }
                },
                {
                   "description" : "Specifies the maximum number of [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result elements.",
                   "in" : "query",
                   "name" : "size",
                   "required" : false,
-                  "type" : "integer"
+                  "schema" : {
+                     "type" : "integer"
+                  }
                },
                {
                   "description" : "Specifies the elements to sort the [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result.",
                   "in" : "query",
                   "name" : "sort",
                   "required" : false,
-                  "type" : "string"
+                  "schema" : {
+                     "type" : "string"
+                  }
                },
                {
                   "description" : "Specifies which fields in the response should be provided.",
                   "in" : "query",
                   "name" : "fields",
                   "required" : false,
-                  "type" : "string"
+                  "schema" : {
+                     "type" : "string"
+                  }
                }
             ],
             "requestBody" : {
@@ -4107,20 +4196,26 @@
                   "in" : "query",
                   "name" : "query",
                   "required" : true,
-                  "type" : "string"
+                  "schema" : {
+                     "type" : "string"
+                  }
                },
                {
                   "in" : "query",
                   "name" : "size",
                   "required" : false,
-                  "type" : "integer"
+                  "schema" : {
+                     "type" : "integer"
+                  }
                },
                {
                   "description" : "Specifies the elements to sort the [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result.",
                   "in" : "query",
                   "name" : "sort",
                   "required" : false,
-                  "type" : "string"
+                  "schema" : {
+                     "type" : "string"
+                  }
                },
                {
                   "description" : "Specifies which fields in the response should be provided.",
@@ -4130,8 +4225,7 @@
                   "schema" : {
                      "maxLength" : 2048,
                      "type" : "string"
-                  },
-                  "type" : "array"
+                  }
                }
             ],
             "requestBody" : {
@@ -4426,12 +4520,15 @@
                            "properties" : {
                               "leaderboard" : {
                                  "items" : {
-                                    "doc_count" : {
-                                       "type" : "integer"
+                                    "properties" : {
+                                       "doc_count" : {
+                                          "type" : "integer"
+                                       },
+                                       "key" : {
+                                          "type" : "string"
+                                       }
                                     },
-                                    "key" : {
-                                       "type" : "string"
-                                    }
+                                    "type" : "object"
                                  },
                                  "type" : "array"
                               }
@@ -4780,28 +4877,36 @@
                   "in" : "query",
                   "name" : "q",
                   "required" : true,
-                  "type" : "string"
+                  "schema" : {
+                     "type" : "string"
+                  }
                },
                {
                   "description" : "Specifies the maximum number of [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result elements.",
                   "in" : "query",
                   "name" : "size",
                   "required" : false,
-                  "type" : "integer"
+                  "schema" : {
+                     "type" : "integer"
+                  }
                },
                {
                   "description" : "Specifies the elements to sort the [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result.",
                   "in" : "query",
                   "name" : "sort",
                   "required" : false,
-                  "type" : "string"
+                  "schema" : {
+                     "type" : "string"
+                  }
                },
                {
                   "description" : "Specifies which fields in the response should be provided.",
                   "in" : "query",
                   "name" : "fields",
                   "required" : false,
-                  "type" : "string"
+                  "schema" : {
+                     "type" : "string"
+                  }
                }
             ],
             "requestBody" : {
@@ -4848,20 +4953,26 @@
                   "in" : "query",
                   "name" : "query",
                   "required" : true,
-                  "type" : "string"
+                  "schema" : {
+                     "type" : "string"
+                  }
                },
                {
                   "in" : "query",
                   "name" : "size",
                   "required" : false,
-                  "type" : "integer"
+                  "schema" : {
+                     "type" : "integer"
+                  }
                },
                {
                   "description" : "Specifies the elements to sort the [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result.",
                   "in" : "query",
                   "name" : "sort",
                   "required" : false,
-                  "type" : "string"
+                  "schema" : {
+                     "type" : "string"
+                  }
                },
                {
                   "description" : "Specifies which fields in the response should be provided.",
@@ -4871,8 +4982,7 @@
                   "schema" : {
                      "maxLength" : 2048,
                      "type" : "string"
-                  },
-                  "type" : "array"
+                  }
                }
             ],
             "requestBody" : {
@@ -5990,17 +6100,20 @@
                },
                {
                   "in" : "query",
-                  "maxLength" : 2048,
                   "name" : "show_errors",
                   "required" : false,
-                  "type" : "boolean"
+                  "schema" : {
+                     "type" : "boolean"
+                  }
                },
                {
                   "in" : "query",
-                  "maxLength" : 2048,
                   "name" : "url_prefix",
                   "required" : false,
-                  "type" : "string"
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  }
                },
                {
                   "description" : "You can change the output format by either passing a `content-type` query parameter (e.g. [/pod/Moose?content-type=text/plain](https://fastapi.metacpan.org/v1/pod/Moose?content-type=text/plain) or by adding an `Accept` header to the HTTP request. Valid content types are:\n\n* text/html (default)\n* text/plain\n* text/x-pod\n* text/x-markdown",
@@ -6099,17 +6212,20 @@
                },
                {
                   "in" : "query",
-                  "maxLength" : 2048,
                   "name" : "show_errors",
                   "required" : false,
-                  "type" : "boolean"
+                  "schema" : {
+                     "type" : "boolean"
+                  }
                },
                {
                   "in" : "query",
-                  "maxLength" : 2048,
                   "name" : "url_prefix",
                   "required" : false,
-                  "type" : "string"
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  }
                },
                {
                   "description" : "You can change the output format by either passing a `content-type` query parameter (e.g. [/pod/Moose?content-type=text/plain](https://fastapi.metacpan.org/v1/pod/Moose?content-type=text/plain) or by adding an `Accept` header to the HTTP request. Valid content types are:\n\n* text/html (default)\n* text/plain\n* text/x-pod\n* text/x-markdown",
@@ -6202,14 +6318,18 @@
                   "in" : "query",
                   "name" : "pod",
                   "required" : true,
-                  "type" : "string"
+                  "schema" : {
+                     "type" : "string"
+                  }
                },
                {
                   "in" : "query",
                   "maxLength" : 2048,
                   "name" : "show_errors",
                   "required" : false,
-                  "type" : "boolean"
+                  "schema" : {
+                     "type" : "boolean"
+                  }
                }
             ],
             "requestBody" : {
@@ -6416,28 +6536,36 @@
                   "in" : "query",
                   "name" : "q",
                   "required" : true,
-                  "type" : "string"
+                  "schema" : {
+                     "type" : "string"
+                  }
                },
                {
                   "description" : "Specifies the maximum number of [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result elements.",
                   "in" : "query",
                   "name" : "size",
                   "required" : false,
-                  "type" : "integer"
+                  "schema" : {
+                     "type" : "integer"
+                  }
                },
                {
                   "description" : "Specifies the elements to sort the [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result.",
                   "in" : "query",
                   "name" : "sort",
                   "required" : false,
-                  "type" : "string"
+                  "schema" : {
+                     "type" : "string"
+                  }
                },
                {
                   "description" : "Specifies which fields in the response should be provided.",
                   "in" : "query",
                   "name" : "fields",
                   "required" : false,
-                  "type" : "string"
+                  "schema" : {
+                     "type" : "string"
+                  }
                }
             ],
             "requestBody" : {
@@ -6484,20 +6612,26 @@
                   "in" : "query",
                   "name" : "query",
                   "required" : true,
-                  "type" : "string"
+                  "schema" : {
+                     "type" : "string"
+                  }
                },
                {
                   "in" : "query",
                   "name" : "size",
                   "required" : false,
-                  "type" : "integer"
+                  "schema" : {
+                     "type" : "integer"
+                  }
                },
                {
                   "description" : "Specifies the elements to sort the [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result.",
                   "in" : "query",
                   "name" : "sort",
                   "required" : false,
-                  "type" : "string"
+                  "schema" : {
+                     "type" : "string"
+                  }
                },
                {
                   "description" : "Specifies which fields in the response should be provided.",
@@ -6507,8 +6641,7 @@
                   "schema" : {
                      "maxLength" : 2048,
                      "type" : "string"
-                  },
-                  "type" : "array"
+                  }
                }
             ],
             "requestBody" : {
@@ -6761,28 +6894,36 @@
                   "in" : "query",
                   "name" : "q",
                   "required" : true,
-                  "type" : "string"
+                  "schema" : {
+                     "type" : "string"
+                  }
                },
                {
                   "description" : "Specifies the maximum number of [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result elements.",
                   "in" : "query",
                   "name" : "size",
                   "required" : false,
-                  "type" : "integer"
+                  "schema" : {
+                     "type" : "integer"
+                  }
                },
                {
                   "description" : "Specifies the elements to sort the [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result.",
                   "in" : "query",
                   "name" : "sort",
                   "required" : false,
-                  "type" : "string"
+                  "schema" : {
+                     "type" : "string"
+                  }
                },
                {
                   "description" : "Specifies which fields in the response should be provided.",
                   "in" : "query",
                   "name" : "fields",
                   "required" : false,
-                  "type" : "string"
+                  "schema" : {
+                     "type" : "string"
+                  }
                }
             ],
             "requestBody" : {
@@ -6829,20 +6970,26 @@
                   "in" : "query",
                   "name" : "query",
                   "required" : true,
-                  "type" : "string"
+                  "schema" : {
+                     "type" : "string"
+                  }
                },
                {
                   "in" : "query",
                   "name" : "size",
                   "required" : false,
-                  "type" : "integer"
+                  "schema" : {
+                     "type" : "integer"
+                  }
                },
                {
                   "description" : "Specifies the elements to sort the [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result.",
                   "in" : "query",
                   "name" : "sort",
                   "required" : false,
-                  "type" : "string"
+                  "schema" : {
+                     "type" : "string"
+                  }
                },
                {
                   "description" : "Specifies which fields in the response should be provided.",
@@ -6852,8 +6999,7 @@
                   "schema" : {
                      "maxLength" : 2048,
                      "type" : "string"
-                  },
-                  "type" : "array"
+                  }
                }
             ],
             "requestBody" : {
@@ -7077,7 +7223,7 @@
          },
          "post" : {
             "description" : "Get recent releases",
-            "operationId" : "PostReleaseRecent",
+            "operationId" : "PostReleaseByAuthor",
             "parameters" : [],
             "requestBody" : {
                "content" : {
@@ -7189,18 +7335,21 @@
                            "properties" : {
                               "contributors" : {
                                  "items" : {
-                                    "email" : {
-                                       "items" : {
+                                    "properties" : {
+                                       "email" : {
+                                          "items" : {
+                                             "maxLength" : 2048,
+                                             "type" : "string"
+                                          },
+                                          "type" : "array"
+                                       },
+                                       "name" : {
+                                          "description" : "Contributor's name",
                                           "maxLength" : 2048,
                                           "type" : "string"
-                                       },
-                                       "type" : "array"
+                                       }
                                     },
-                                    "name" : {
-                                       "description" : "Contributor's name",
-                                       "maxLength" : 2048,
-                                       "type" : "string"
-                                    }
+                                    "type" : "object"
                                  },
                                  "type" : "array"
                               }
@@ -7279,7 +7428,7 @@
                   "content" : {
                      "application/json" : {
                         "schema" : {
-                           "$ref" : "#/components/schema/files_categories"
+                           "$ref" : "#/components/schemas/files_categories"
                         }
                      }
                   },
@@ -7347,7 +7496,7 @@
                   "content" : {
                      "application/json" : {
                         "schema" : {
-                           "$ref" : "#/components/schema/files_categories"
+                           "$ref" : "#/components/schemas/files_categories"
                         }
                      }
                   },
@@ -7984,7 +8133,8 @@
                                  "items" : {
                                     "additionalProperties" : {
                                        "type" : "string"
-                                    }
+                                    },
+                                    "type" : "object"
                                  },
                                  "type" : "array"
                               },
@@ -8043,7 +8193,8 @@
                                  "items" : {
                                     "additionalProperties" : {
                                        "type" : "string"
-                                    }
+                                    },
+                                    "type" : "object"
                                  },
                                  "type" : "array"
                               },
@@ -8512,25 +8663,22 @@
                         "properties" : {
                            "page" : {
                               "description" : "Specifies the page offset from which the result will be returned.",
-                              "required" : false,
                               "type" : "integer"
                            },
                            "page_size" : {
                               "description" : "Specifies the number of result per page to be returned.",
-                              "required" : false,
                               "type" : "integer"
                            },
                            "size" : {
                               "description" : "Specifies the maximum total number of result to be returned.",
-                              "required" : false,
                               "type" : "integer"
                            },
                            "sort" : {
                               "description" : "Specifies how the result is sorted.",
-                              "required" : false,
                               "type" : "string"
                            }
                         },
+                        "required" : [],
                         "type" : "object"
                      }
                   }
@@ -8675,20 +8823,18 @@
                         "properties" : {
                            "page" : {
                               "description" : "Specifies the page offset from which the result will be returned.",
-                              "required" : false,
                               "type" : "integer"
                            },
                            "page_size" : {
                               "description" : "Specifies the number of result per page to be returned.",
-                              "required" : false,
                               "type" : "integer"
                            },
                            "sort" : {
                               "description" : "Specifies how the result is sorted.",
-                              "required" : false,
                               "type" : "string"
                            }
                         },
+                        "required" : [],
                         "type" : "object"
                      }
                   }
@@ -8970,6 +9116,7 @@
                               },
                               "date" : {
                                  "description" : "date module was indexed",
+                                 "format" : "date-time",
                                  "type" : "string"
                               },
                               "description" : {
@@ -9131,7 +9278,7 @@
          "get" : {
             "description" : "Returns the POD of the given module. You can change the output format by either passing a `content-type` query parameter (e.g. [/pod/Moose?content-type=text/plain](https://fastapi.metacpan.org/v1/pod/Moose?content-type=text/plain) or by adding an `Accept` header to the HTTP request. Valid content types are:\n\n* text/html (default)\n* text/plain\n* text/x-pod\n* text/x-markdown",
             "example" : "/v1/source/JDEGUEST/Module-Generic-v0.31.0/lib/Module/Generic.pm",
-            "operationId" : "GetModuleReleasePod",
+            "operationId" : "GetSourceReleasePod",
             "parameters" : [
                {
                   "in" : "path",
