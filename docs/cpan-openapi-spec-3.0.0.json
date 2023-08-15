@@ -32,7 +32,9 @@
                "schema" : {
                   "$ref" : "#/components/schemas/profile"
                }
-            }
+            },
+            "title" : "AuthorMapping",
+            "type" : "object"
          },
          "changes" : {
             "description" : "This is the object representing a MetaCPAN [module changes file](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches)",
@@ -89,7 +91,8 @@
                "module" : {
                   "items" : {
                      "type" : "string"
-                  }
+                  },
+                  "type" : "array"
                },
                "name" : {
                   "type" : "string"
@@ -133,7 +136,9 @@
                   "format" : "float",
                   "type" : "number"
                }
-            }
+            },
+            "title" : "Changes",
+            "type" : "object"
          },
          "cover" : {
             "description" : "This is the object representing a MetaCPAN [module coverage](http://cpancover.com/)",
@@ -179,7 +184,9 @@
                   "description" : "Package version string",
                   "type" : "string"
                }
-            }
+            },
+            "title" : "Cover",
+            "type" : "object"
          },
          "distribution" : {
             "description" : "This is the object representing a MetaCPAN [author distribution](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#distributiondistribution)",
@@ -276,7 +283,9 @@
                      }
                   }
                }
-            }
+            },
+            "title" : "Distribution",
+            "type" : "object"
          },
          "distribution_mapping" : {
             "description" : "This is the object representing the availble fields for the [distribution object](https://explorer.metacpan.org/?url=/distribution/_mapping).",
@@ -284,7 +293,9 @@
                "schema" : {
                   "$ref" : "#/components/schemas/distribution"
                }
-            }
+            },
+            "title" : "DistributionMapping",
+            "type" : "object"
          },
          "distributions" : {
             "description" : "This is the object representing a list of distributions.",
@@ -323,7 +334,9 @@
                "total" : {
                   "type" : "integer"
                }
-            }
+            },
+            "title" : "Distributions",
+            "type" : "object"
          },
          "download_url" : {
             "description" : "This is the object representing a MetaCPAN [distribution download URL](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#download_urlmodule)",
@@ -351,7 +364,9 @@
                "version" : {
                   "type" : "string"
                }
-            }
+            },
+            "title" : "DownloadURL",
+            "type" : "object"
          },
          "error" : {
             "description" : "An error response from the MetaCPAN API",
@@ -363,6 +378,7 @@
             "required" : [
                "error"
             ],
+            "title" : "Error",
             "type" : "object"
          },
          "favorite" : {
@@ -393,7 +409,9 @@
                   "maxLength" : 2048,
                   "type" : "string"
                }
-            }
+            },
+            "title" : "Favorite",
+            "type" : "object"
          },
          "favorite_mapping" : {
             "description" : "This is the object representing the availble fields for the [favorite object](https://explorer.metacpan.org/?url=/favorite/_mapping).",
@@ -401,7 +419,9 @@
                "schema" : {
                   "$ref" : "#/components/schemas/favorite"
                }
-            }
+            },
+            "title" : "FavoriteMapping",
+            "type" : "object"
          },
          "favorites" : {
             "description" : "This is the object representing a user favorites",
@@ -418,7 +438,9 @@
                "total" : {
                   "type" : "integer"
                }
-            }
+            },
+            "title" : "Favorites",
+            "type" : "object"
          },
          "file" : {
             "description" : "This is the object representing a file",
@@ -551,7 +573,9 @@
                "version_numified" : {
                   "type" : "number"
                }
-            }
+            },
+            "title" : "File",
+            "type" : "object"
          },
          "file_mapping" : {
             "description" : "This is the object representing the availble fields for the [file object](https://explorer.metacpan.org/?url=/module/_mapping).",
@@ -559,7 +583,9 @@
                "schema" : {
                   "$ref" : "#/components/schemas/file"
                }
-            }
+            },
+            "title" : "FileMapping",
+            "type" : "object"
          },
          "file_preview" : {
             "description" : "This represents a file preview used in endpoint `/file/dir`",
@@ -593,7 +619,9 @@
                "stat.size" : {
                   "type" : "integer"
                }
-            }
+            },
+            "title" : "FilePreview",
+            "type" : "object"
          },
          "file_snapshot" : {
             "description" : "This is the object representing a file snapshot",
@@ -633,7 +661,9 @@
                   "maxLength" : 2048,
                   "type" : "string"
                }
-            }
+            },
+            "title" : "FileSnapshot",
+            "type" : "object"
          },
          "files" : {
             "description" : "This is the object representing a list of files",
@@ -650,7 +680,9 @@
                "total" : {
                   "type" : "integer"
                }
-            }
+            },
+            "title" : "Files",
+            "type" : "object"
          },
          "files_categories" : {
             "description" : "This is the object representing a list of files by categories",
@@ -696,7 +728,9 @@
                "total" : {
                   "type" : "integer"
                }
-            }
+            },
+            "title" : "FilesCategories",
+            "type" : "object"
          },
          "files_interesting" : {
             "description" : "This is the object representing a list of files",
@@ -713,7 +747,9 @@
                "total" : {
                   "type" : "integer"
                }
-            }
+            },
+            "title" : "FilesInteresting",
+            "type" : "object"
          },
          "metadata" : {
             "properties" : {
@@ -849,7 +885,9 @@
                "version" : {
                   "type" : "string"
                }
-            }
+            },
+            "title" : "Metadata",
+            "type" : "object"
          },
          "mirror" : {
             "description" : "This is the object representing a mirror",
@@ -938,7 +976,9 @@
                "tz" : {
                   "type" : "string"
                }
-            }
+            },
+            "title" : "Mirror",
+            "type" : "object"
          },
          "mirrors" : {
             "description" : "This is the object representing a list of mirrors",
@@ -955,7 +995,9 @@
                "total" : {
                   "type" : "integer"
                }
-            }
+            },
+            "title" : "Mirrors",
+            "type" : "object"
          },
          "module" : {
             "description" : "This is the object representing a module",
@@ -1088,7 +1130,9 @@
                "version_numified" : {
                   "type" : "number"
                }
-            }
+            },
+            "title" : "Module",
+            "type" : "object"
          },
          "module_mapping" : {
             "description" : "This is the object representing the availble fields for the [module object](https://explorer.metacpan.org/?url=/module/_mapping).",
@@ -1096,7 +1140,9 @@
                "schema" : {
                   "$ref" : "#/components/schemas/module"
                }
-            }
+            },
+            "title" : "ModuleMapping",
+            "type" : "object"
          },
          "package" : {
             "description" : "This is the object representing a MetaCPAN [module package](https://github.com/metacpan/metacpan-api/blob/master/lib/MetaCPAN/Document/Package.pm)",
@@ -1125,7 +1171,9 @@
                   "maxLength" : 2048,
                   "type" : "string"
                }
-            }
+            },
+            "title" : "Package",
+            "type" : "object"
          },
          "permission" : {
             "description" : "This is the object representing a MetaCPAN [module permission](https://github.com/metacpan/metacpan-api/blob/master/lib/MetaCPAN/Document/Permission.pm)",
@@ -1145,7 +1193,9 @@
                   "maxLength" : 2048,
                   "type" : "string"
                }
-            }
+            },
+            "title" : "Permission",
+            "type" : "object"
          },
          "permissions" : {
             "description" : "This is the object representing a user permissions",
@@ -1183,7 +1233,9 @@
                "total" : {
                   "type" : "integer"
                }
-            }
+            },
+            "title" : "Permissions",
+            "type" : "object"
          },
          "profile" : {
             "description" : "This is the object representing a MetaCPAN [author profile](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#authorauthor)",
@@ -1346,7 +1398,9 @@
                   },
                   "type" : "array"
                }
-            }
+            },
+            "title" : "Profile",
+            "type" : "object"
          },
          "rating" : {
             "description" : "This is the object representing a rating)",
@@ -1398,7 +1452,9 @@
                   "maxLength" : 2048,
                   "type" : "string"
                }
-            }
+            },
+            "title" : "Rating",
+            "type" : "object"
          },
          "rating_mapping" : {
             "description" : "This is the object representing the availble fields for the [rating object](https://explorer.metacpan.org/?url=/rating/_mapping).",
@@ -1406,7 +1462,9 @@
                "schema" : {
                   "$ref" : "#/components/schemas/rating"
                }
-            }
+            },
+            "title" : "RatingMapping",
+            "type" : "object"
          },
          "release" : {
             "description" : "This is the object representing a release)",
@@ -1603,7 +1661,9 @@
                "version_numified" : {
                   "type" : "number"
                }
-            }
+            },
+            "title" : "Release",
+            "type" : "object"
          },
          "release_mapping" : {
             "description" : "This is the object representing the availble fields for the [release object](https://explorer.metacpan.org/?url=/release/_mapping).",
@@ -1611,7 +1671,9 @@
                "schema" : {
                   "$ref" : "#/components/schemas/release"
                }
-            }
+            },
+            "title" : "ReleaseMapping",
+            "type" : "object"
          },
          "release_recents" : {
             "description" : "This is the object representing a list of recent releases",
@@ -1649,7 +1711,9 @@
                "total" : {
                   "type" : "integer"
                }
-            }
+            },
+            "title" : "ReleaseRecents",
+            "type" : "object"
          },
          "releases" : {
             "description" : "This is the object representing a list of releases",
@@ -1666,7 +1730,9 @@
                "total" : {
                   "type" : "integer"
                }
-            }
+            },
+            "title" : "Releases",
+            "type" : "object"
          },
          "result_set" : {
             "description" : "This is the object representing a search result set)",
@@ -1751,7 +1817,9 @@
                "took" : {
                   "type" : "integer"
                }
-            }
+            },
+            "title" : "ResultSet",
+            "type" : "object"
          },
          "reverse_dependencies" : {
             "description" : "This is the object representing a reverse dependencies result set)",
@@ -1768,7 +1836,9 @@
                "took" : {
                   "type" : "integer"
                }
-            }
+            },
+            "title" : "ReverseDependencies",
+            "type" : "object"
          },
          "river" : {
             "description" : "This is the object representing a distribution river)",
@@ -1797,7 +1867,47 @@
                   },
                   "type" : "object"
                }
-            }
+            },
+            "title" : "River",
+            "type" : "object"
+         },
+         "scroll" : {
+            "description" : "This is the object representing a scroll search follow-on query)",
+            "properties" : {
+               "scroll" : {
+                  "description" : "Specifies the [scroll query time to live](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html#scroll-search-context).",
+                  "type" : "string"
+               },
+               "scroll_id" : {
+                  "description" : "Specifies the [search scroll ID](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html).",
+                  "type" : "string"
+               },
+               "size" : {
+                  "description" : "Specifies the [scroll page size](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html).",
+                  "type" : "integer"
+               }
+            },
+            "required" : [
+               "scroll",
+               "scroll_id"
+            ],
+            "title" : "Scroll search",
+            "type" : "object"
+         },
+         "scroll_result_set" : {
+            "allOf" : [
+               {
+                  "$ref" : "#/components/schemas/result_set"
+               },
+               "properties",
+               {
+                  "_scroll_id" : {
+                     "type" : "string"
+                  }
+               }
+            ],
+            "description" : "This is the object representing a scroll search result set)",
+            "title" : "ResultSet"
          },
          "search" : {
             "description" : "This is the object representing a search query)",
@@ -1925,6 +2035,10 @@
                   },
                   "type" : "object"
                },
+               "from" : {
+                  "description" : "Specifies the offset, starting at 0, from which to return the results.",
+                  "type" : "integer"
+               },
                "query" : {
                   "description" : "Specifies the [search query](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#post-searches).",
                   "type" : "string"
@@ -1937,7 +2051,9 @@
                   "description" : "Specifies the elements to sort the [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#post-searches) result.",
                   "type" : "string"
                }
-            }
+            },
+            "title" : "Search",
+            "type" : "object"
          }
       }
    },
@@ -1970,6 +2086,26 @@
                   "style" : "simple"
                },
                {
+                  "description" : "The offset starting from 0 within the total data.",
+                  "in" : "query",
+                  "name" : "from",
+                  "required" : false,
+                  "schema" : {
+                     "type" : "integer"
+                  },
+                  "style" : "simple"
+               },
+               {
+                  "description" : "The size of each page, i.e. how many results are returned per page. This usually defaults to 10.",
+                  "in" : "query",
+                  "name" : "size",
+                  "required" : false,
+                  "schema" : {
+                     "type" : "integer"
+                  },
+                  "style" : "simple"
+               },
+               {
                   "description" : "Specifies which fields in the response should be provided.",
                   "in" : "query",
                   "name" : "fields",
@@ -1987,6 +2123,61 @@
                      "schema" : {
                         "additionalProperties" : false,
                         "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/result_set"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         },
+         "post" : {
+            "description" : "Retrieves author information details.",
+            "operationId" : "PostAuthor",
+            "parameters" : [],
+            "requestBody" : {
+               "content" : {
+                  "application/json" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {
+                           "fields" : {
+                              "maxLength" : 2048,
+                              "type" : "string"
+                           },
+                           "from" : {
+                              "type" : "integer"
+                           },
+                           "q" : {
+                              "maxLength" : 2048,
+                              "type" : "string"
+                           },
+                           "size" : {
+                              "type" : "integer"
+                           }
+                        },
                         "type" : "object"
                      }
                   }
@@ -2074,6 +2265,24 @@
                   }
                },
                {
+                  "description" : "Specifies the offset from which to return results.",
+                  "in" : "query",
+                  "name" : "from",
+                  "required" : false,
+                  "schema" : {
+                     "type" : "integer"
+                  }
+               },
+               {
+                  "description" : "Specifies the time to live of the [scroll search](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html#scroll-search-context).",
+                  "in" : "query",
+                  "name" : "scroll",
+                  "required" : false,
+                  "schema" : {
+                     "type" : "string"
+                  }
+               },
+               {
                   "description" : "Specifies the maximum number of [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result elements.",
                   "in" : "query",
                   "name" : "size",
@@ -2142,44 +2351,18 @@
             "operationId" : "PostAuthorSearch",
             "parameters" : [
                {
+                  "description" : "Specifies the time to live of the [scroll search](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html#scroll-search-context).",
                   "in" : "query",
-                  "name" : "query",
-                  "required" : true,
-                  "schema" : {
-                     "type" : "string"
-                  }
-               },
-               {
-                  "in" : "query",
-                  "name" : "size",
+                  "name" : "scroll",
                   "required" : false,
                   "schema" : {
-                     "type" : "integer"
-                  }
-               },
-               {
-                  "description" : "Specifies the elements to sort the [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result.",
-                  "in" : "query",
-                  "name" : "sort",
-                  "required" : false,
-                  "schema" : {
-                     "type" : "string"
-                  }
-               },
-               {
-                  "description" : "Specifies which fields in the response should be provided.",
-                  "in" : "query",
-                  "name" : "fields",
-                  "required" : false,
-                  "schema" : {
-                     "maxLength" : 2048,
                      "type" : "string"
                   }
                }
             ],
             "requestBody" : {
                "content" : {
-                  "application/x-www-form-urlencoded" : {
+                  "application/json" : {
                      "encoding" : {},
                      "schema" : {
                         "$ref" : "#/components/schemas/search"
@@ -2255,7 +2438,105 @@
                               "removed" : {
                                  "type" : "boolean"
                               }
-                           }
+                           },
+                           "type" : "object"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         },
+         "get" : {
+            "description" : "Returns the result set for the author search.",
+            "operationId" : "GetAuthorSearchScroll",
+            "parameters" : [
+               {
+                  "description" : "Specifies the time to live of the [scroll search](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html#scroll-search-context).",
+                  "in" : "query",
+                  "name" : "scroll",
+                  "required" : true,
+                  "schema" : {
+                     "type" : "string"
+                  }
+               },
+               {
+                  "description" : "Specifies the [scroll ID](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html).",
+                  "in" : "query",
+                  "name" : "scroll_id",
+                  "required" : true,
+                  "schema" : {
+                     "type" : "string"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/scroll_result_set"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         },
+         "post" : {
+            "description" : "Returns the result set for the author search.",
+            "operationId" : "PostAuthorSearchScroll",
+            "parameters" : [],
+            "requestBody" : {
+               "content" : {
+                  "application/json" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "$ref" : "#/components/schemas/scroll"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/scroll_result_set"
                         }
                      }
                   },
@@ -2277,6 +2558,7 @@
       "/v1/author/by_ids" : {
          "get" : {
             "description" : "Retrieves author information details using pause ID.",
+            "example" : "/v1/author/by_ids?id=PAUSE_ID1&id=PAUSE_ID2...",
             "operationId" : "GetAuthorByPauseID",
             "parameters" : [
                {
@@ -2307,6 +2589,60 @@
                      "schema" : {
                         "additionalProperties" : false,
                         "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/result_set"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         },
+         "post" : {
+            "description" : "Retrieves author information details using pause ID.",
+            "example" : "/v1/author/by_ids with JSON payload: {\"id\": [\"PAUSE_ID1\", \"PAUSE_ID2\"]}",
+            "operationId" : "PostAuthorByPauseID",
+            "parameters" : [],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {
+                           "fields" : {
+                              "description" : "Specifies which fields in the response should be provided.",
+                              "maxLength" : 2048,
+                              "type" : "string"
+                           },
+                           "id" : {
+                              "maxLength" : 2048,
+                              "type" : "string"
+                           }
+                        },
+                        "required" : [
+                           "id"
+                        ],
                         "type" : "object"
                      }
                   }
@@ -2421,6 +2757,7 @@
       "/v1/author/by_user" : {
          "get" : {
             "description" : "Retrieves author information details using user ID in query string.",
+            "example" : "/v1/author/by_user?user=oa-cmsLWTTOALauLxve1LA&user=2n2yGvQ4QxenVpSzkkTitQ",
             "operationId" : "GetAuthorByUserIDQuery",
             "parameters" : [
                {
@@ -2479,6 +2816,61 @@
                   "description" : "Error response."
                }
             }
+         },
+         "post" : {
+            "description" : "Retrieves author information details using user ID.",
+            "example" : "/v1/author/by_user woth JSON payload {\"user\": [\"oa-cmsLWTTOALauLxve1LA\",\"2n2yGvQ4QxenVpSzkkTitQ\"]}",
+            "operationId" : "PostAuthorByUserIDQuery",
+            "parameters" : [],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {
+                           "fields" : {
+                              "description" : "Specifies which fields in the response should be provided.",
+                              "maxLength" : 2048,
+                              "type" : "string"
+                           },
+                           "user" : {
+                              "description" : "This is the user id, which is different from the PAUSEID",
+                              "maxLength" : 2048,
+                              "type" : "string"
+                           }
+                        },
+                        "required" : [
+                           "user"
+                        ],
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/result_set"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
          }
       },
       "/v1/author/by_user/{user}" : {
@@ -2487,6 +2879,7 @@
             "operationId" : "GetAuthorByUserID",
             "parameters" : [
                {
+                  "description" : "This is the user id, which is different from the PAUSEID",
                   "in" : "path",
                   "name" : "user",
                   "required" : true,
@@ -2931,7 +3324,8 @@
                                  },
                                  "type" : "array"
                               }
-                           }
+                           },
+                           "type" : "object"
                         }
                      }
                   },
@@ -3026,7 +3420,8 @@
                                  },
                                  "type" : "array"
                               }
-                           }
+                           },
+                           "type" : "object"
                         }
                      }
                   },
@@ -3733,7 +4128,7 @@
             ],
             "requestBody" : {
                "content" : {
-                  "application/x-www-form-urlencoded" : {
+                  "application/json" : {
                      "encoding" : {},
                      "schema" : {
                         "$ref" : "#/components/schemas/search"
@@ -3748,6 +4143,166 @@
                      "application/json" : {
                         "schema" : {
                            "$ref" : "#/components/schemas/result_set"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/distribution/_search/scroll" : {
+         "delete" : {
+            "description" : "Clear a [scroll](https://www.elastic.co/guide/en/elasticsearch/reference/8.9/paginate-search-results.html#clear-scroll)",
+            "operationId" : "DeleteDistributionSearchScroll",
+            "parameters" : [],
+            "requestBody" : {
+               "content" : {
+                  "application/json" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "oneOf" : [
+                           {
+                              "properties" : {
+                                 "scroll_id" : {
+                                    "type" : "string"
+                                 }
+                              }
+                           },
+                           {
+                              "properties" : {
+                                 "scroll_id" : {
+                                    "items" : {
+                                       "type" : "string"
+                                    },
+                                    "type" : "array"
+                                 }
+                              }
+                           }
+                        ]
+                     }
+                  }
+               },
+               "required" : true
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "properties" : {
+                              "removed" : {
+                                 "type" : "boolean"
+                              }
+                           },
+                           "type" : "object"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         },
+         "get" : {
+            "description" : "Returns the result set for the scroll search.",
+            "operationId" : "GetDistributionSearchScroll",
+            "parameters" : [
+               {
+                  "description" : "Specifies the time to live of the [scroll search](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html#scroll-search-context).",
+                  "in" : "query",
+                  "name" : "scroll",
+                  "required" : true,
+                  "schema" : {
+                     "type" : "string"
+                  }
+               },
+               {
+                  "description" : "Specifies the [scroll ID](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html).",
+                  "in" : "query",
+                  "name" : "scroll_id",
+                  "required" : true,
+                  "schema" : {
+                     "type" : "string"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/scroll_result_set"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         },
+         "post" : {
+            "description" : "Returns the result set for the author search.",
+            "operationId" : "PostDistributionSearchScroll",
+            "parameters" : [],
+            "requestBody" : {
+               "content" : {
+                  "application/json" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "$ref" : "#/components/schemas/scroll"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/scroll_result_set"
                         }
                      }
                   },
@@ -4230,7 +4785,7 @@
             ],
             "requestBody" : {
                "content" : {
-                  "application/x-www-form-urlencoded" : {
+                  "application/json" : {
                      "encoding" : {},
                      "schema" : {
                         "$ref" : "#/components/schemas/search"
@@ -4245,6 +4800,166 @@
                      "application/json" : {
                         "schema" : {
                            "$ref" : "#/components/schemas/result_set"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/favorite/_search/scroll" : {
+         "delete" : {
+            "description" : "Clear a [scroll](https://www.elastic.co/guide/en/elasticsearch/reference/8.9/paginate-search-results.html#clear-scroll)",
+            "operationId" : "DeleteFavoriteSearchScroll",
+            "parameters" : [],
+            "requestBody" : {
+               "content" : {
+                  "application/json" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "oneOf" : [
+                           {
+                              "properties" : {
+                                 "scroll_id" : {
+                                    "type" : "string"
+                                 }
+                              }
+                           },
+                           {
+                              "properties" : {
+                                 "scroll_id" : {
+                                    "items" : {
+                                       "type" : "string"
+                                    },
+                                    "type" : "array"
+                                 }
+                              }
+                           }
+                        ]
+                     }
+                  }
+               },
+               "required" : true
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "properties" : {
+                              "removed" : {
+                                 "type" : "boolean"
+                              }
+                           },
+                           "type" : "object"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         },
+         "get" : {
+            "description" : "Returns the result set for the favorite search.",
+            "operationId" : "GetFavoriteSearchScroll",
+            "parameters" : [
+               {
+                  "description" : "Specifies the time to live of the [scroll search](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html#scroll-search-context).",
+                  "in" : "query",
+                  "name" : "scroll",
+                  "required" : true,
+                  "schema" : {
+                     "type" : "string"
+                  }
+               },
+               {
+                  "description" : "Specifies the [scroll ID](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html).",
+                  "in" : "query",
+                  "name" : "scroll_id",
+                  "required" : true,
+                  "schema" : {
+                     "type" : "string"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/scroll_result_set"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         },
+         "post" : {
+            "description" : "Returns the result set for the favorite search.",
+            "operationId" : "PostFavoriteSearchScroll",
+            "parameters" : [],
+            "requestBody" : {
+               "content" : {
+                  "application/json" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "$ref" : "#/components/schemas/scroll"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/scroll_result_set"
                         }
                      }
                   },
@@ -4327,7 +5042,8 @@
                               "took" : {
                                  "type" : "integer"
                               }
-                           }
+                           },
+                           "type" : "object"
                         }
                      }
                   },
@@ -4344,7 +5060,8 @@
                                  },
                                  "type" : "array"
                               }
-                           }
+                           },
+                           "type" : "object"
                         }
                      }
                   },
@@ -4403,7 +5120,8 @@
                               "took" : {
                                  "type" : "integer"
                               }
-                           }
+                           },
+                           "type" : "object"
                         }
                      }
                   },
@@ -4420,7 +5138,8 @@
                                  },
                                  "type" : "array"
                               }
-                           }
+                           },
+                           "type" : "object"
                         }
                      }
                   },
@@ -4532,7 +5251,8 @@
                                  },
                                  "type" : "array"
                               }
-                           }
+                           },
+                           "type" : "object"
                         }
                      }
                   },
@@ -4549,7 +5269,8 @@
                                  },
                                  "type" : "array"
                               }
-                           }
+                           },
+                           "type" : "object"
                         }
                      }
                   },
@@ -4618,7 +5339,8 @@
                                  },
                                  "type" : "array"
                               }
-                           }
+                           },
+                           "type" : "object"
                         }
                      }
                   },
@@ -4679,7 +5401,8 @@
                                  },
                                  "type" : "array"
                               }
-                           }
+                           },
+                           "type" : "object"
                         }
                      }
                   },
@@ -4987,7 +5710,7 @@
             ],
             "requestBody" : {
                "content" : {
-                  "application/x-www-form-urlencoded" : {
+                  "application/json" : {
                      "encoding" : {},
                      "schema" : {
                         "$ref" : "#/components/schemas/search"
@@ -5002,6 +5725,166 @@
                      "application/json" : {
                         "schema" : {
                            "$ref" : "#/components/schemas/result_set"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/file/_search/scroll" : {
+         "delete" : {
+            "description" : "Clear a [scroll](https://www.elastic.co/guide/en/elasticsearch/reference/8.9/paginate-search-results.html#clear-scroll)",
+            "operationId" : "DeleteFileSearchScroll",
+            "parameters" : [],
+            "requestBody" : {
+               "content" : {
+                  "application/json" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "oneOf" : [
+                           {
+                              "properties" : {
+                                 "scroll_id" : {
+                                    "type" : "string"
+                                 }
+                              }
+                           },
+                           {
+                              "properties" : {
+                                 "scroll_id" : {
+                                    "items" : {
+                                       "type" : "string"
+                                    },
+                                    "type" : "array"
+                                 }
+                              }
+                           }
+                        ]
+                     }
+                  }
+               },
+               "required" : true
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "properties" : {
+                              "removed" : {
+                                 "type" : "boolean"
+                              }
+                           },
+                           "type" : "object"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         },
+         "get" : {
+            "description" : "Returns the result set for the file search.",
+            "operationId" : "GetFileSearchScroll",
+            "parameters" : [
+               {
+                  "description" : "Specifies the time to live of the [scroll search](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html#scroll-search-context).",
+                  "in" : "query",
+                  "name" : "scroll",
+                  "required" : true,
+                  "schema" : {
+                     "type" : "string"
+                  }
+               },
+               {
+                  "description" : "Specifies the [scroll ID](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html).",
+                  "in" : "query",
+                  "name" : "scroll_id",
+                  "required" : true,
+                  "schema" : {
+                     "type" : "string"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/scroll_result_set"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         },
+         "post" : {
+            "description" : "Returns the result set for the file search.",
+            "operationId" : "PostFileSearchScroll",
+            "parameters" : [],
+            "requestBody" : {
+               "content" : {
+                  "application/json" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "$ref" : "#/components/schemas/scroll"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/scroll_result_set"
                         }
                      }
                   },
@@ -5051,7 +5934,8 @@
                                  },
                                  "type" : "array"
                               }
-                           }
+                           },
+                           "type" : "object"
                         }
                      }
                   },
@@ -5470,6 +6354,319 @@
             }
          }
       },
+      "/v1/module/_search" : {
+         "get" : {
+            "description" : "Returns the result set for the module search.",
+            "operationId" : "GetModuleSearch",
+            "parameters" : [
+               {
+                  "description" : "Specifies the [search query](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches).",
+                  "in" : "query",
+                  "name" : "q",
+                  "required" : true,
+                  "schema" : {
+                     "type" : "string"
+                  }
+               },
+               {
+                  "description" : "Specifies the maximum number of [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result elements.",
+                  "in" : "query",
+                  "name" : "size",
+                  "required" : false,
+                  "schema" : {
+                     "type" : "integer"
+                  }
+               },
+               {
+                  "description" : "Specifies the elements to sort the [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result.",
+                  "in" : "query",
+                  "name" : "sort",
+                  "required" : false,
+                  "schema" : {
+                     "type" : "string"
+                  }
+               },
+               {
+                  "description" : "Specifies which fields in the response should be provided.",
+                  "in" : "query",
+                  "name" : "fields",
+                  "required" : false,
+                  "schema" : {
+                     "type" : "string"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/result_set"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         },
+         "post" : {
+            "description" : "Returns the result set for the module search.",
+            "operationId" : "PostModuleSearch",
+            "parameters" : [
+               {
+                  "in" : "query",
+                  "name" : "query",
+                  "required" : true,
+                  "schema" : {
+                     "type" : "string"
+                  }
+               },
+               {
+                  "in" : "query",
+                  "name" : "size",
+                  "required" : false,
+                  "schema" : {
+                     "type" : "integer"
+                  }
+               },
+               {
+                  "description" : "Specifies the elements to sort the [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result.",
+                  "in" : "query",
+                  "name" : "sort",
+                  "required" : false,
+                  "schema" : {
+                     "type" : "string"
+                  }
+               },
+               {
+                  "description" : "Specifies which fields in the response should be provided.",
+                  "in" : "query",
+                  "name" : "fields",
+                  "required" : false,
+                  "schema" : {
+                     "maxLength" : 2048,
+                     "type" : "string"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/json" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "$ref" : "#/components/schemas/search"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/result_set"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/module/_search/scroll" : {
+         "delete" : {
+            "description" : "Clear a [scroll](https://www.elastic.co/guide/en/elasticsearch/reference/8.9/paginate-search-results.html#clear-scroll)",
+            "operationId" : "DeleteModuleSearchScroll",
+            "parameters" : [],
+            "requestBody" : {
+               "content" : {
+                  "application/json" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "oneOf" : [
+                           {
+                              "properties" : {
+                                 "scroll_id" : {
+                                    "type" : "string"
+                                 }
+                              }
+                           },
+                           {
+                              "properties" : {
+                                 "scroll_id" : {
+                                    "items" : {
+                                       "type" : "string"
+                                    },
+                                    "type" : "array"
+                                 }
+                              }
+                           }
+                        ]
+                     }
+                  }
+               },
+               "required" : true
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "properties" : {
+                              "removed" : {
+                                 "type" : "boolean"
+                              }
+                           },
+                           "type" : "object"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         },
+         "get" : {
+            "description" : "Returns the result set for the module search.",
+            "operationId" : "GetModuleSearchScroll",
+            "parameters" : [
+               {
+                  "description" : "Specifies the time to live of the [scroll search](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html#scroll-search-context).",
+                  "in" : "query",
+                  "name" : "scroll",
+                  "required" : true,
+                  "schema" : {
+                     "type" : "string"
+                  }
+               },
+               {
+                  "description" : "Specifies the [scroll ID](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html).",
+                  "in" : "query",
+                  "name" : "scroll_id",
+                  "required" : true,
+                  "schema" : {
+                     "type" : "string"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/scroll_result_set"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         },
+         "post" : {
+            "description" : "Returns the result set for the module search.",
+            "operationId" : "PostModuleSearchScroll",
+            "parameters" : [],
+            "requestBody" : {
+               "content" : {
+                  "application/json" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "$ref" : "#/components/schemas/scroll"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/scroll_result_set"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
       "/v1/module/{module}" : {
          "get" : {
             "description" : "Returns the corresponding `file` of the latest version of the `module`. Considering that Moose-2.0001 is the latest release, the result of [/module/Moose](https://fastapi.metacpan.org/v1/module/Moose) is the same as [/file/DOY/Moose-2.0001/lib/Moose.pm](https://fastapi.metacpan.org/v1/file/DOY/Moose-2.0001/lib/Moose.pm).",
@@ -5640,7 +6837,8 @@
                                  },
                                  "type" : "array"
                               }
-                           }
+                           },
+                           "type" : "object"
                         }
                      }
                   },
@@ -6324,7 +7522,6 @@
                },
                {
                   "in" : "query",
-                  "maxLength" : 2048,
                   "name" : "show_errors",
                   "required" : false,
                   "schema" : {
@@ -6679,6 +7876,166 @@
             }
          }
       },
+      "/v1/rating/_search/scroll" : {
+         "delete" : {
+            "description" : "Clear a [scroll](https://www.elastic.co/guide/en/elasticsearch/reference/8.9/paginate-search-results.html#clear-scroll)",
+            "operationId" : "DeleteRatingSearchScroll",
+            "parameters" : [],
+            "requestBody" : {
+               "content" : {
+                  "application/json" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "oneOf" : [
+                           {
+                              "properties" : {
+                                 "scroll_id" : {
+                                    "type" : "string"
+                                 }
+                              }
+                           },
+                           {
+                              "properties" : {
+                                 "scroll_id" : {
+                                    "items" : {
+                                       "type" : "string"
+                                    },
+                                    "type" : "array"
+                                 }
+                              }
+                           }
+                        ]
+                     }
+                  }
+               },
+               "required" : true
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "properties" : {
+                              "removed" : {
+                                 "type" : "boolean"
+                              }
+                           },
+                           "type" : "object"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         },
+         "get" : {
+            "description" : "Returns the result set for the rating search.",
+            "operationId" : "GetRatingSearchScroll",
+            "parameters" : [
+               {
+                  "description" : "Specifies the time to live of the [scroll search](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html#scroll-search-context).",
+                  "in" : "query",
+                  "name" : "scroll",
+                  "required" : true,
+                  "schema" : {
+                     "type" : "string"
+                  }
+               },
+               {
+                  "description" : "Specifies the [scroll ID](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html).",
+                  "in" : "query",
+                  "name" : "scroll_id",
+                  "required" : true,
+                  "schema" : {
+                     "type" : "string"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/scroll_result_set"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         },
+         "post" : {
+            "description" : "Returns the result set for the rating search.",
+            "operationId" : "PostRatingSearchScroll",
+            "parameters" : [],
+            "requestBody" : {
+               "content" : {
+                  "application/json" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "$ref" : "#/components/schemas/scroll"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/scroll_result_set"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
       "/v1/rating/by_distributions" : {
          "get" : {
             "description" : "Retrieves rating information details by distribution.",
@@ -7004,7 +8361,7 @@
             ],
             "requestBody" : {
                "content" : {
-                  "application/x-www-form-urlencoded" : {
+                  "application/json" : {
                      "encoding" : {},
                      "schema" : {
                         "$ref" : "#/components/schemas/search"
@@ -7019,6 +8376,166 @@
                      "application/json" : {
                         "schema" : {
                            "$ref" : "#/components/schemas/result_set"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         }
+      },
+      "/v1/release/_search/scroll" : {
+         "delete" : {
+            "description" : "Clear a [scroll](https://www.elastic.co/guide/en/elasticsearch/reference/8.9/paginate-search-results.html#clear-scroll)",
+            "operationId" : "DeleteReleaseSearchScroll",
+            "parameters" : [],
+            "requestBody" : {
+               "content" : {
+                  "application/json" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "oneOf" : [
+                           {
+                              "properties" : {
+                                 "scroll_id" : {
+                                    "type" : "string"
+                                 }
+                              }
+                           },
+                           {
+                              "properties" : {
+                                 "scroll_id" : {
+                                    "items" : {
+                                       "type" : "string"
+                                    },
+                                    "type" : "array"
+                                 }
+                              }
+                           }
+                        ]
+                     }
+                  }
+               },
+               "required" : true
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "properties" : {
+                              "removed" : {
+                                 "type" : "boolean"
+                              }
+                           },
+                           "type" : "object"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         },
+         "get" : {
+            "description" : "Returns the result set for the release search.",
+            "operationId" : "GetReleaseSearchScroll",
+            "parameters" : [
+               {
+                  "description" : "Specifies the time to live of the [scroll search](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html#scroll-search-context).",
+                  "in" : "query",
+                  "name" : "scroll",
+                  "required" : true,
+                  "schema" : {
+                     "type" : "string"
+                  }
+               },
+               {
+                  "description" : "Specifies the [scroll ID](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html).",
+                  "in" : "query",
+                  "name" : "scroll_id",
+                  "required" : true,
+                  "schema" : {
+                     "type" : "string"
+                  }
+               }
+            ],
+            "requestBody" : {
+               "content" : {
+                  "application/x-www-form-urlencoded" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "additionalProperties" : false,
+                        "properties" : {},
+                        "type" : "object"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/scroll_result_set"
+                        }
+                     }
+                  },
+                  "description" : "Successful response."
+               },
+               "default" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/error"
+                        }
+                     }
+                  },
+                  "description" : "Error response."
+               }
+            }
+         },
+         "post" : {
+            "description" : "Returns the result set for the release search.",
+            "operationId" : "PostReleaseSearchScroll",
+            "parameters" : [],
+            "requestBody" : {
+               "content" : {
+                  "application/json" : {
+                     "encoding" : {},
+                     "schema" : {
+                        "$ref" : "#/components/schemas/scroll"
+                     }
+                  }
+               },
+               "required" : false
+            },
+            "responses" : {
+               "200" : {
+                  "content" : {
+                     "application/json" : {
+                        "schema" : {
+                           "$ref" : "#/components/schemas/scroll_result_set"
                         }
                      }
                   },
@@ -7353,7 +8870,8 @@
                                  },
                                  "type" : "array"
                               }
-                           }
+                           },
+                           "type" : "object"
                         }
                      }
                   },
@@ -7474,7 +8992,7 @@
             ],
             "requestBody" : {
                "content" : {
-                  "application/x-www-form-urlencoded" : {
+                  "application/json" : {
                      "encoding" : {},
                      "schema" : {
                         "additionalProperties" : false,
@@ -7617,7 +9135,7 @@
             ],
             "requestBody" : {
                "content" : {
-                  "application/x-www-form-urlencoded" : {
+                  "application/json" : {
                      "encoding" : {},
                      "schema" : {
                         "additionalProperties" : false,
@@ -7808,7 +9326,8 @@
                               "total" : {
                                  "type" : "integer"
                               }
-                           }
+                           },
+                           "type" : "object"
                         }
                      }
                   },
@@ -7871,7 +9390,8 @@
                               "total" : {
                                  "type" : "integer"
                               }
-                           }
+                           },
+                           "type" : "object"
                         }
                      }
                   },
@@ -7991,7 +9511,7 @@
                {
                   "description" : "Specifies the page size, i.e. the number of elements returned in one page.",
                   "in" : "query",
-                  "name" : "page_size",
+                  "name" : "size",
                   "required" : false,
                   "schema" : {
                      "type" : "integer"
@@ -8141,7 +9661,8 @@
                               "took" : {
                                  "type" : "integer"
                               }
-                           }
+                           },
+                           "type" : "object"
                         }
                      }
                   },
@@ -8201,7 +9722,8 @@
                               "took" : {
                                  "type" : "integer"
                               }
-                           }
+                           },
+                           "type" : "object"
                         }
                      }
                   },
@@ -8448,7 +9970,8 @@
                               "total" : {
                                  "type" : "integer"
                               }
-                           }
+                           },
+                           "type" : "object"
                         }
                      }
                   },
@@ -8656,7 +10179,7 @@
             ],
             "requestBody" : {
                "content" : {
-                  "application/x-www-form-urlencoded" : {
+                  "application/json" : {
                      "encoding" : {},
                      "schema" : {
                         "additionalProperties" : false,
@@ -8816,7 +10339,7 @@
             ],
             "requestBody" : {
                "content" : {
-                  "application/x-www-form-urlencoded" : {
+                  "application/json" : {
                      "encoding" : {},
                      "schema" : {
                         "additionalProperties" : false,

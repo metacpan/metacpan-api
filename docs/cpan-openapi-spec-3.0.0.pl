@@ -45,6 +45,8 @@
                         '$ref' => "#/components/schemas/profile",
                     }
                 },
+                title => 'AuthorMapping',
+                type => 'object',
             },
             # NOTE: schemas -> changes
             changes =>
@@ -122,7 +124,8 @@
                         items => 
                         {
                             type => 'string',
-                        }
+                        },
+                        type => 'array',
                     },
                     name =>
                     {
@@ -181,6 +184,8 @@
                         format => 'float',
                     }
                 },
+                title => 'Changes',
+                type => 'object',
             },
             # NOTE: schemas -> cover
             cover =>
@@ -241,6 +246,8 @@
                         type => 'string',
                     },
                 },
+                title => 'Cover',
+                type => 'object',
             },
             # NOTE: schemas -> distribution
             distribution =>
@@ -325,6 +332,8 @@
                         },
                     },
                 },
+                title => 'Distribution',
+                type => 'object',
             },
             # NOTE: schemas -> distribution_mapping
             distribution_mapping =>
@@ -337,6 +346,8 @@
                         '$ref' => "#/components/schemas/distribution",
                     }
                 },
+                title => 'DistributionMapping',
+                type => 'object',
             },
             # NOTE: schemas -> distributions
             distributions =>
@@ -389,6 +400,8 @@
                         type => 'integer',
                     },
                 },
+                title => 'Distributions',
+                type => 'object',
             },
             # NOTE: schemas -> download_url
             download_url =>
@@ -427,6 +440,8 @@
                         type => 'string',
                     },
                 },
+                title => 'DownloadURL',
+                type => 'object',
             },
             # NOTE: schemas -> error
             error =>
@@ -442,6 +457,7 @@
                 required => [
                     'error'
                 ],
+                title => 'Error',
                 type => 'object',
             },
             # NOTE: schemas -> favorite
@@ -482,6 +498,8 @@
                         type => 'string',
                     },
                 },
+                title => 'Favorite',
+                type => 'object',
             },
             # NOTE: schemas -> favorites
             favorites =>
@@ -506,6 +524,8 @@
                         type => 'integer',
                     },
                 },
+                title => 'Favorites',
+                type => 'object',
             },
             # NOTE: schemas -> favorite_mapping
             favorite_mapping =>
@@ -518,6 +538,8 @@
                         '$ref' => "#/components/schemas/favorite",
                     }
                 },
+                title => 'FavoriteMapping',
+                type => 'object',
             },
             # NOTE: schemas -> file
             file =>
@@ -645,6 +667,8 @@
                     version => { type => 'string' },
                     version_numified => { type => 'number' },
                 },
+                title => 'File',
+                type => 'object',
             },
             # NOTE: schemas -> file_snapshot
             file_snapshot =>
@@ -694,6 +718,8 @@
                         type => 'string',
                     },
                 },
+                title => 'FileSnapshot',
+                type => 'object',
             },
             # NOTE: schemas -> file_preview
             file_preview =>
@@ -727,6 +753,8 @@
                     'stat.mime' => { type => 'integer' },
                     'stat.size' => { type => 'integer' },
                 },
+                title => 'FilePreview',
+                type => 'object',
             },
             # NOTE: schemas -> file_mapping
             file_mapping =>
@@ -739,6 +767,8 @@
                         '$ref' => "#/components/schemas/file",
                     }
                 },
+                title => 'FileMapping',
+                type => 'object',
             },
             # NOTE: schemas -> files
             files =>
@@ -763,6 +793,8 @@
                         type => 'integer',
                     },
                 },
+                title => 'Files',
+                type => 'object',
             },
             # NOTE: schemas -> files_categories
             files_categories =>
@@ -826,6 +858,8 @@
                         type => 'integer',
                     },
                 },
+                title => 'FilesCategories',
+                type => 'object',
             },
             # NOTE: schemas -> files_interesting
             files_interesting =>
@@ -850,6 +884,8 @@
                         type => 'integer',
                     },
                 },
+                title => 'FilesInteresting',
+                type => 'object',
             },
             # NOTE: schemas -> metadata
             metadata =>
@@ -1035,6 +1071,8 @@
                         type => 'string'
                     }
                 },
+                title => 'Metadata',
+                type => 'object',
             },
             # NOTE: schemas -> mirror
             mirror =>
@@ -1158,6 +1196,8 @@
                         type => 'string',
                     },
                 },
+                title => 'Mirror',
+                type => 'object',
             },
             # NOTE: schemas -> mirrors
             mirrors =>
@@ -1182,6 +1222,8 @@
                         type => 'integer',
                     },
                 },
+                title => 'Mirrors',
+                type => 'object',
             },
             # NOTE: schemas -> module
             module =>
@@ -1310,6 +1352,8 @@
                     },
                     version_numified => { type => 'number' },
                 },
+                title => 'Module',
+                type => 'object',
             },
             # NOTE: schemas -> module_mapping
             module_mapping =>
@@ -1322,6 +1366,8 @@
                         '$ref' => "#/components/schemas/module",
                     }
                 },
+                title => 'ModuleMapping',
+                type => 'object',
             },
             # NOTE: schemas -> package
             package =>
@@ -1360,6 +1406,8 @@
                         type => 'string',
                     },
                 },
+                title => 'Package',
+                type => 'object',
             },
             # NOTE: schemas -> permission
             permission =>
@@ -1387,6 +1435,8 @@
                         type => 'string',
                     },
                 },
+                title => 'Permission',
+                type => 'object',
             },
             # NOTE: schemas -> favorites
             permissions =>
@@ -1437,6 +1487,8 @@
                         type => 'integer',
                     },
                 },
+                title => 'Permissions',
+                type => 'object',
             },
             # NOTE: schemas -> profile
             profile =>
@@ -1620,6 +1672,8 @@
                         type => 'array',
                     },
                 },
+                title => 'Profile',
+                type => 'object',
             },
             # NOTE: schemas -> rating
             rating =>
@@ -1684,6 +1738,8 @@
                         type => 'string'
                     },
                 },
+                title => 'Rating',
+                type => 'object',
             },
             # NOTE: schemas -> rating_mapping
             rating_mapping =>
@@ -1696,6 +1752,8 @@
                         '$ref' => "#/components/schemas/rating",
                     }
                 },
+                title => 'RatingMapping',
+                type => 'object',
             },
             # NOTE: schemas -> release
             release =>
@@ -1917,6 +1975,8 @@
                     },
                     version_numified => { type => 'number' },
                 },
+                title => 'Release',
+                type => 'object',
             },
             # NOTE: schemas -> release_recents
             release_recents =>
@@ -1969,6 +2029,8 @@
                         type => 'integer',
                     },
                 },
+                title => 'ReleaseRecents',
+                type => 'object',
             },
             # NOTE: schemas -> release_mapping
             release_mapping =>
@@ -1981,6 +2043,8 @@
                         '$ref' => "#/components/schemas/release",
                     }
                 },
+                title => 'ReleaseMapping',
+                type => 'object',
             },
             # NOTE: schemas -> releases
             releases =>
@@ -2005,6 +2069,8 @@
                         type => 'integer',
                     },
                 },
+                title => 'Releases',
+                type => 'object',
             },
             # NOTE: schemas -> result_set
             result_set =>
@@ -2066,6 +2132,8 @@
                     took => { type => 'integer' },
                     timed_out => { type => 'boolean' },
                 },
+                title => 'ResultSet',
+                type => 'object',
             },
             # NOTE: schemas -> reverse_dependencies
             reverse_dependencies =>
@@ -2084,6 +2152,8 @@
                     took => { type => 'integer' },
                     timed_out => { type => 'boolean' },
                 },
+                title => 'ReverseDependencies',
+                type => 'object',
             },
             # NOTE: schemas -> river
             river =>
@@ -2124,6 +2194,50 @@
                         type => 'object'
                     },
                 },
+                title => 'River',
+                type => 'object',
+            },
+            # NOTE: schemas -> scroll
+            scroll =>
+            {
+                description => q{This is the object representing a scroll search follow-on query)},
+                properties => 
+                {
+                    scroll =>
+                    {
+                        description => "Specifies the [scroll query time to live](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html#scroll-search-context).",
+                        type => 'string',
+                    },
+                    size =>
+                    {
+                        description => "Specifies the [scroll page size](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html).",
+                        type => 'integer',
+                    },
+                    scroll_id =>
+                    {
+                        description => "Specifies the [search scroll ID](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html).",
+                        type => 'string',
+                    },
+                },
+                required => ["scroll", "scroll_id"],
+                title => 'Scroll search',
+                type => 'object',
+            },
+            # NOTE: schemas -> scroll_result_set
+            scroll_result_set =>
+            {
+                description => q{This is the object representing a scroll search result set)},
+                allOf => [
+                    { '$ref' => '#/components/schemas/result_set' },
+                    properties =>
+                    {
+                        _scroll_id => 
+                        {
+                            type => 'string',
+                        },
+                    },
+                ],
+                title => 'ResultSet',
             },
             # NOTE: schemas -> search
             search =>
@@ -2289,6 +2403,11 @@
                         },
                         type => 'object',
                     },
+                    from =>
+                    {
+                        description => "Specifies the offset, starting at 0, from which to return the results.",
+                        type => 'integer',
+                    },
                     query =>
                     {
                         description => "Specifies the [search query](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#post-searches).",
@@ -2305,6 +2424,8 @@
                         type => 'string',
                     },
                 },
+                title => 'Search',
+                type => 'object',
             },
         },
     },
@@ -2336,6 +2457,184 @@
                     in => 'query',
                     name => 'q',
                     required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                    style => 'simple',
+                },
+                {
+                    description => 'The offset starting from 0 within the total data.',
+                    in => 'query',
+                    name => 'from',
+                    required => \0,
+                    schema =>
+                    {
+                        type => 'integer',
+                    },
+                    style => 'simple',
+                },
+                {
+                    description => 'The size of each page, i.e. how many results are returned per page. This usually defaults to 10.',
+                    in => 'query',
+                    name => 'size',
+                    required => \0,
+                    schema =>
+                    {
+                        type => 'integer',
+                    },
+                    style => 'simple',
+                },
+                {
+                    description => "Specifies which fields in the response should be provided.",
+                    in => 'query',
+                    name => 'fields',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string'
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/result_set",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+            post => 
+            {
+                description => 'Retrieves author information details.',
+                operationId => 'PostAuthor',
+                parameters => [],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/json' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => 
+                                {
+                                    "q" => 
+                                    {
+                                        maxLength => 2048,
+                                        type => 'string',
+                                    },
+                                    from => 
+                                    {
+                                        type => 'integer',
+                                    },
+                                    size => 
+                                    {
+                                        type => 'integer',
+                                    },
+                                    fields => 
+                                    {
+                                        maxLength => 2048,
+                                        type => 'string',
+                                    },
+                                },
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/result_set",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Author.pm#L45>
+        # NOTE: /v1/author/by_ids
+        '/v1/author/by_ids' =>
+        {
+            get => 
+            {
+                description => 'Retrieves author information details using pause ID.',
+                example => '/v1/author/by_ids?id=PAUSE_ID1&id=PAUSE_ID2...',
+                operationId => 'GetAuthorByPauseID',
+                parameters => [
+                {
+                    in => 'query',
+                    name => 'id',
+                    required => \1,
                     schema =>
                     {
                         maxLength => 2048,
@@ -2403,38 +2702,12 @@
                     }
                 }
             },
-        },
-        # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Author.pm#L45>
-        # NOTE: /v1/author/by_ids
-        '/v1/author/by_ids' =>
-        {
-            get => 
+            post => 
             {
                 description => 'Retrieves author information details using pause ID.',
-                operationId => 'GetAuthorByPauseID',
-                parameters => [
-                {
-                    in => 'query',
-                    name => 'id',
-                    required => \1,
-                    schema =>
-                    {
-                        maxLength => 2048,
-                        type => 'string',
-                    },
-                    style => 'simple',
-                },
-                {
-                    description => "Specifies which fields in the response should be provided.",
-                    in => 'query',
-                    name => 'fields',
-                    required => \0,
-                    schema =>
-                    {
-                        maxLength => 2048,
-                        type => 'string'
-                    },
-                }],
+                example => '/v1/author/by_ids with JSON payload: {"id": ["PAUSE_ID1", "PAUSE_ID2"]}',
+                operationId => 'PostAuthorByPauseID',
+                parameters => [],
                 requestBody =>
                 {
                     content =>
@@ -2445,8 +2718,22 @@
                             schema =>
                             {
                                 additionalProperties => \0,
-                                properties => {},
-                                type => 'object'
+                                properties => 
+                                {
+                                    id => 
+                                    {
+                                        maxLength => 2048,
+                                        type => 'string',
+                                    },
+                                    fields =>
+                                    {
+                                        description => "Specifies which fields in the response should be provided.",
+                                        maxLength => 2048,
+                                        type => 'string',
+                                    },
+                                },
+                                type => 'object',
+                                required => ["id"],
                             }
                         }
                     },
@@ -2585,6 +2872,7 @@
                     }
                 }
             },
+            # There is no POST method for this endpoint.
         },
         # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Author.pm#L57>
         # NOTE: /v1/author/by_user
@@ -2593,6 +2881,7 @@
             get => 
             {
                 description => 'Retrieves author information details using user ID in query string.',
+                example => '/v1/author/by_user?user=oa-cmsLWTTOALauLxve1LA&user=2n2yGvQ4QxenVpSzkkTitQ',
                 operationId => 'GetAuthorByUserIDQuery',
                 parameters => [
                 {
@@ -2666,6 +2955,76 @@
                     }
                 }
             },
+            post => 
+            {
+                description => 'Retrieves author information details using user ID.',
+                example => '/v1/author/by_user woth JSON payload {"user": ["oa-cmsLWTTOALauLxve1LA","2n2yGvQ4QxenVpSzkkTitQ"]}',
+                operationId => 'PostAuthorByUserIDQuery',
+                parameters => [],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => 
+                                {
+                                    user =>
+                                    {
+                                        description => 'This is the user id, which is different from the PAUSEID',
+                                        maxLength => 2048,
+                                        type => 'string',
+                                    },
+                                    fields =>
+                                    {
+                                        description => "Specifies which fields in the response should be provided.",
+                                        maxLength => 2048,
+                                        type => 'string',
+                                    },
+                                },
+                                type => 'object',
+                                required => ["user"],
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/result_set",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
         },
         # <https://github.com/metacpan/metacpan-api/blob/97b4791bf274bfb4e25f3a122e7115a2e9315404/lib/MetaCPAN/Server/Controller/Author.pm#L51>
         # NOTE: /v1/author/by_user/{user}
@@ -2677,6 +3036,7 @@
                 operationId => 'GetAuthorByUserID',
                 parameters => [
                 {
+                    description => 'This is the user id, which is different from the PAUSEID',
                     in => 'path',
                     name => 'user',
                     required => \1,
@@ -2916,6 +3276,26 @@
                     },
                 },
                 {
+                    description => "Specifies the offset from which to return results.",
+                    in => 'query',
+                    name => 'from',
+                    required => \0,
+                    schema =>
+                    {
+                        type => 'integer',
+                    },
+                },
+                {
+                    description => "Specifies the time to live of the [scroll search](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html#scroll-search-context).",
+                    in => 'query',
+                    name => 'scroll',
+                    required => \0,
+                    schema =>
+                    {
+                        type => 'string',
+                    },
+                },
+                {
                     description => "Specifies the maximum number of [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result elements.",
                     in => 'query',
                     name => 'size',
@@ -3000,41 +3380,12 @@
                 operationId => 'PostAuthorSearch',
                 parameters => [
                 {
+                    description => "Specifies the time to live of the [scroll search](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html#scroll-search-context).",
                     in => 'query',
-                    name => 'query',
-                    required => \1,
-                    schema =>
-                    {
-                        type => 'string',
-                    },
-                },
-                {
-                    in => 'query',
-                    name => 'size',
+                    name => 'scroll',
                     required => \0,
                     schema =>
                     {
-                        type => 'integer',
-                    },
-                },
-                {
-                    description => "Specifies the elements to sort the [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result.",
-                    in => 'query',
-                    name => 'sort',
-                    required => \0,
-                    schema =>
-                    {
-                        type => 'string',
-                    },
-                },
-                {
-                    description => "Specifies which fields in the response should be provided.",
-                    in => 'query',
-                    name => 'fields',
-                    required => \0,
-                    schema =>
-                    {
-                        maxLength => 2048,
                         type => 'string',
                     },
                 }],
@@ -3042,7 +3393,7 @@
                 {
                     content =>
                     {
-                        'application/x-www-form-urlencoded' =>
+                        'application/json' =>
                         {
                             encoding => {},
                             schema =>
@@ -3086,7 +3437,7 @@
                 }
             },
         },
-        # NOTE: /v1/author/_search
+        # NOTE: /v1/author/_search/scroll
         '/v1/author/_search/scroll' =>
         {
             'delete' =>
@@ -3142,6 +3493,7 @@
                             {
                                 schema =>
                                 {
+                                    type => 'object',
                                     properties =>
                                     {
                                         # TODO: Need to find out what is returned upon clearing a scroll
@@ -3150,6 +3502,132 @@
                                             type => 'boolean',
                                         }
                                     }
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+            get => 
+            {
+                description => qq{Returns the result set for the author search.},
+                operationId => 'GetAuthorSearchScroll',
+                parameters => [
+                {
+                    description => "Specifies the time to live of the [scroll search](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html#scroll-search-context).",
+                    in => 'query',
+                    name => 'scroll',
+                    required => \1,
+                    schema =>
+                    {
+                        type => 'string',
+                    },
+                },
+                {
+                    description => "Specifies the [scroll ID](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html).",
+                    in => 'query',
+                    name => 'scroll_id',
+                    required => \1,
+                    schema =>
+                    {
+                        type => 'string',
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/scroll_result_set",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+            post => 
+            {
+                description => qq{Returns the result set for the author search.},
+                operationId => 'PostAuthorSearchScroll',
+                parameters => [],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/json' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                '$ref' => '#/components/schemas/scroll',
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/scroll_result_set",
                                 }
                             }
                         },
@@ -3579,6 +4057,7 @@
                                             type => 'array',
                                         },
                                     },
+                                    type => 'object',
                                 }
                             }
                         },
@@ -3701,6 +4180,7 @@
                                             type => 'array',
                                         },
                                     },
+                                    type => 'object',
                                 }
                             }
                         },
@@ -4828,7 +5308,7 @@
                 {
                     content =>
                     {
-                        'application/x-www-form-urlencoded' =>
+                        'application/json' =>
                         {
                             encoding => {},
                             schema =>
@@ -4850,6 +5330,219 @@
                                 schema =>
                                 {
                                     '$ref' => "#/components/schemas/result_set",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # NOTE: /v1/distribution/_search/scroll
+        '/v1/distribution/_search/scroll' =>
+        {
+            'delete' =>
+            {
+                description => qq{Clear a [scroll](https://www.elastic.co/guide/en/elasticsearch/reference/8.9/paginate-search-results.html#clear-scroll)},
+                operationId => 'DeleteDistributionSearchScroll',
+                parameters => [],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/json' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                oneOf => [
+                                    {
+                                        properties => 
+                                        {
+                                            scroll_id =>
+                                            {
+                                                type => 'string',
+                                            },
+                                        },
+                                    },
+                                    {
+                                        properties => 
+                                        {
+                                            scroll_id =>
+                                            {
+                                                items =>
+                                                {
+                                                    type => 'string',
+                                                },
+                                                type => 'array',
+                                            },
+                                        },
+                                    },
+                                ],
+                            }
+                        }
+                    },
+                    required => \1,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    type => 'object',
+                                    properties =>
+                                    {
+                                        # TODO: Need to find out what is returned upon clearing a scroll
+                                        removed =>
+                                        {
+                                            type => 'boolean',
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+            get => 
+            {
+                description => qq{Returns the result set for the scroll search.},
+                operationId => 'GetDistributionSearchScroll',
+                parameters => [
+                {
+                    description => "Specifies the time to live of the [scroll search](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html#scroll-search-context).",
+                    in => 'query',
+                    name => 'scroll',
+                    required => \1,
+                    schema =>
+                    {
+                        type => 'string',
+                    },
+                },
+                {
+                    description => "Specifies the [scroll ID](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html).",
+                    in => 'query',
+                    name => 'scroll_id',
+                    required => \1,
+                    schema =>
+                    {
+                        type => 'string',
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/scroll_result_set",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+            post => 
+            {
+                description => qq{Returns the result set for the author search.},
+                operationId => 'PostDistributionSearchScroll',
+                parameters => [],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/json' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                '$ref' => '#/components/schemas/scroll',
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/scroll_result_set",
                                 }
                             }
                         },
@@ -5211,6 +5904,7 @@
                                             type => 'integer',
                                         },
                                     },
+                                    type => 'object',
                                 }
                             }
                         },
@@ -5235,6 +5929,7 @@
                                             type => 'array',
                                         },
                                     },
+                                    type => 'object',
                                 }
                             }
                         },
@@ -5313,6 +6008,7 @@
                                             type => 'integer',
                                         },
                                     },
+                                    type => 'object',
                                 }
                             }
                         },
@@ -5337,6 +6033,7 @@
                                             type => 'array',
                                         },
                                     },
+                                    type => 'object',
                                 }
                             }
                         },
@@ -5487,6 +6184,7 @@
                                             type => 'array',
                                         },
                                     },
+                                    type => 'object',
                                 }
                             }
                         },
@@ -5511,6 +6209,7 @@
                                             type => 'array',
                                         },
                                     },
+                                    type => 'object',
                                 }
                             }
                         },
@@ -5600,6 +6299,7 @@
                                             type => 'array',
                                         },
                                     },
+                                    type => 'object',
                                 }
                             }
                         },
@@ -5681,6 +6381,7 @@
                                             type => 'array',
                                         },
                                     },
+                                    type => 'object',
                                 }
                             }
                         },
@@ -5892,7 +6593,7 @@
                 {
                     content =>
                     {
-                        'application/x-www-form-urlencoded' =>
+                        'application/json' =>
                         {
                             encoding => {},
                             schema =>
@@ -5914,6 +6615,219 @@
                                 schema =>
                                 {
                                     '$ref' => "#/components/schemas/result_set",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # NOTE: /v1/favorite/_search/scroll
+        '/v1/favorite/_search/scroll' =>
+        {
+            'delete' =>
+            {
+                description => qq{Clear a [scroll](https://www.elastic.co/guide/en/elasticsearch/reference/8.9/paginate-search-results.html#clear-scroll)},
+                operationId => 'DeleteFavoriteSearchScroll',
+                parameters => [],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/json' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                oneOf => [
+                                    {
+                                        properties => 
+                                        {
+                                            scroll_id =>
+                                            {
+                                                type => 'string',
+                                            },
+                                        },
+                                    },
+                                    {
+                                        properties => 
+                                        {
+                                            scroll_id =>
+                                            {
+                                                items =>
+                                                {
+                                                    type => 'string',
+                                                },
+                                                type => 'array',
+                                            },
+                                        },
+                                    },
+                                ],
+                            }
+                        }
+                    },
+                    required => \1,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    type => 'object',
+                                    properties =>
+                                    {
+                                        # TODO: Need to find out what is returned upon clearing a scroll
+                                        removed =>
+                                        {
+                                            type => 'boolean',
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+            get => 
+            {
+                description => qq{Returns the result set for the favorite search.},
+                operationId => 'GetFavoriteSearchScroll',
+                parameters => [
+                {
+                    description => "Specifies the time to live of the [scroll search](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html#scroll-search-context).",
+                    in => 'query',
+                    name => 'scroll',
+                    required => \1,
+                    schema =>
+                    {
+                        type => 'string',
+                    },
+                },
+                {
+                    description => "Specifies the [scroll ID](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html).",
+                    in => 'query',
+                    name => 'scroll_id',
+                    required => \1,
+                    schema =>
+                    {
+                        type => 'string',
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/scroll_result_set",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+            post => 
+            {
+                description => qq{Returns the result set for the favorite search.},
+                operationId => 'PostFavoriteSearchScroll',
+                parameters => [],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/json' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                '$ref' => '#/components/schemas/scroll',
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/scroll_result_set",
                                 }
                             }
                         },
@@ -6135,6 +7049,7 @@
                                             type => 'array',
                                         },
                                     },
+                                    type => 'object',
                                 }
                             }
                         },
@@ -6360,7 +7275,7 @@
                 {
                     content =>
                     {
-                        'application/x-www-form-urlencoded' =>
+                        'application/json' =>
                         {
                             encoding => {},
                             schema =>
@@ -6382,6 +7297,219 @@
                                 schema =>
                                 {
                                     '$ref' => "#/components/schemas/result_set",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # NOTE: /v1/file/_search/scroll
+        '/v1/file/_search/scroll' =>
+        {
+            'delete' =>
+            {
+                description => qq{Clear a [scroll](https://www.elastic.co/guide/en/elasticsearch/reference/8.9/paginate-search-results.html#clear-scroll)},
+                operationId => 'DeleteFileSearchScroll',
+                parameters => [],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/json' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                oneOf => [
+                                    {
+                                        properties => 
+                                        {
+                                            scroll_id =>
+                                            {
+                                                type => 'string',
+                                            },
+                                        },
+                                    },
+                                    {
+                                        properties => 
+                                        {
+                                            scroll_id =>
+                                            {
+                                                items =>
+                                                {
+                                                    type => 'string',
+                                                },
+                                                type => 'array',
+                                            },
+                                        },
+                                    },
+                                ],
+                            }
+                        }
+                    },
+                    required => \1,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    type => 'object',
+                                    properties =>
+                                    {
+                                        # TODO: Need to find out what is returned upon clearing a scroll
+                                        removed =>
+                                        {
+                                            type => 'boolean',
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+            get => 
+            {
+                description => qq{Returns the result set for the file search.},
+                operationId => 'GetFileSearchScroll',
+                parameters => [
+                {
+                    description => "Specifies the time to live of the [scroll search](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html#scroll-search-context).",
+                    in => 'query',
+                    name => 'scroll',
+                    required => \1,
+                    schema =>
+                    {
+                        type => 'string',
+                    },
+                },
+                {
+                    description => "Specifies the [scroll ID](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html).",
+                    in => 'query',
+                    name => 'scroll_id',
+                    required => \1,
+                    schema =>
+                    {
+                        type => 'string',
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/scroll_result_set",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+            post => 
+            {
+                description => qq{Returns the result set for the file search.},
+                operationId => 'PostFileSearchScroll',
+                parameters => [],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/json' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                '$ref' => '#/components/schemas/scroll',
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/scroll_result_set",
                                 }
                             }
                         },
@@ -6956,6 +8084,408 @@
                 }
             },
         },
+        # NOTE: /v1/module/_search
+        '/v1/module/_search' =>
+        {
+            get => 
+            {
+                description => qq{Returns the result set for the module search.},
+                operationId => 'GetModuleSearch',
+                parameters => [
+                {
+                    description => "Specifies the [search query](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches).",
+                    in => 'query',
+                    name => 'q',
+                    required => \1,
+                    schema =>
+                    {
+                        type => 'string',
+                    },
+                },
+                {
+                    description => "Specifies the maximum number of [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result elements.",
+                    in => 'query',
+                    name => 'size',
+                    required => \0,
+                    schema =>
+                    {
+                        type => 'integer',
+                    },
+                },
+                {
+                    description => "Specifies the elements to sort the [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result.",
+                    in => 'query',
+                    name => 'sort',
+                    required => \0,
+                    schema =>
+                    {
+                        type => 'string',
+                    },
+                },
+                {
+                    description => "Specifies which fields in the response should be provided.",
+                    in => 'query',
+                    name => 'fields',
+                    required => \0,
+                    schema =>
+                    {
+                        type => 'string',
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/result_set",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+            post => 
+            {
+                description => qq{Returns the result set for the module search.},
+                operationId => 'PostModuleSearch',
+                parameters => [
+                {
+                    in => 'query',
+                    name => 'query',
+                    required => \1,
+                    schema =>
+                    {
+                        type => 'string',
+                    },
+                },
+                {
+                    in => 'query',
+                    name => 'size',
+                    required => \0,
+                    schema =>
+                    {
+                        type => 'integer',
+                    },
+                },
+                {
+                    description => "Specifies the elements to sort the [search](https://github.com/metacpan/metacpan-api/blob/master/docs/API-docs.md#get-searches) result.",
+                    in => 'query',
+                    name => 'sort',
+                    required => \0,
+                    schema =>
+                    {
+                        type => 'string',
+                    },
+                },
+                {
+                    description => "Specifies which fields in the response should be provided.",
+                    in => 'query',
+                    name => 'fields',
+                    required => \0,
+                    schema =>
+                    {
+                        maxLength => 2048,
+                        type => 'string',
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/json' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                '$ref' => '#/components/schemas/search',
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/result_set",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # NOTE: /v1/module/_search/scroll
+        '/v1/module/_search/scroll' =>
+        {
+            'delete' =>
+            {
+                description => qq{Clear a [scroll](https://www.elastic.co/guide/en/elasticsearch/reference/8.9/paginate-search-results.html#clear-scroll)},
+                operationId => 'DeleteModuleSearchScroll',
+                parameters => [],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/json' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                oneOf => [
+                                    {
+                                        properties => 
+                                        {
+                                            scroll_id =>
+                                            {
+                                                type => 'string',
+                                            },
+                                        },
+                                    },
+                                    {
+                                        properties => 
+                                        {
+                                            scroll_id =>
+                                            {
+                                                items =>
+                                                {
+                                                    type => 'string',
+                                                },
+                                                type => 'array',
+                                            },
+                                        },
+                                    },
+                                ],
+                            }
+                        }
+                    },
+                    required => \1,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    type => 'object',
+                                    properties =>
+                                    {
+                                        # TODO: Need to find out what is returned upon clearing a scroll
+                                        removed =>
+                                        {
+                                            type => 'boolean',
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+            get => 
+            {
+                description => qq{Returns the result set for the module search.},
+                operationId => 'GetModuleSearchScroll',
+                parameters => [
+                {
+                    description => "Specifies the time to live of the [scroll search](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html#scroll-search-context).",
+                    in => 'query',
+                    name => 'scroll',
+                    required => \1,
+                    schema =>
+                    {
+                        type => 'string',
+                    },
+                },
+                {
+                    description => "Specifies the [scroll ID](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html).",
+                    in => 'query',
+                    name => 'scroll_id',
+                    required => \1,
+                    schema =>
+                    {
+                        type => 'string',
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/scroll_result_set",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+            post => 
+            {
+                description => qq{Returns the result set for the module search.},
+                operationId => 'PostModuleSearchScroll',
+                parameters => [],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/json' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                '$ref' => '#/components/schemas/scroll',
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/scroll_result_set",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
         # NOTE: /v1/package
         '/v1/package' =>
         {
@@ -7086,6 +8616,7 @@
                                             type => 'array',
                                         },
                                     },
+                                    type => 'object',
                                 }
                             }
                         },
@@ -8529,6 +10060,219 @@
                 }
             },
         },
+        # NOTE: /v1/rating/_search/scroll
+        '/v1/rating/_search/scroll' =>
+        {
+            'delete' =>
+            {
+                description => qq{Clear a [scroll](https://www.elastic.co/guide/en/elasticsearch/reference/8.9/paginate-search-results.html#clear-scroll)},
+                operationId => 'DeleteRatingSearchScroll',
+                parameters => [],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/json' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                oneOf => [
+                                    {
+                                        properties => 
+                                        {
+                                            scroll_id =>
+                                            {
+                                                type => 'string',
+                                            },
+                                        },
+                                    },
+                                    {
+                                        properties => 
+                                        {
+                                            scroll_id =>
+                                            {
+                                                items =>
+                                                {
+                                                    type => 'string',
+                                                },
+                                                type => 'array',
+                                            },
+                                        },
+                                    },
+                                ],
+                            }
+                        }
+                    },
+                    required => \1,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    type => 'object',
+                                    properties =>
+                                    {
+                                        # TODO: Need to find out what is returned upon clearing a scroll
+                                        removed =>
+                                        {
+                                            type => 'boolean',
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+            get => 
+            {
+                description => qq{Returns the result set for the rating search.},
+                operationId => 'GetRatingSearchScroll',
+                parameters => [
+                {
+                    description => "Specifies the time to live of the [scroll search](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html#scroll-search-context).",
+                    in => 'query',
+                    name => 'scroll',
+                    required => \1,
+                    schema =>
+                    {
+                        type => 'string',
+                    },
+                },
+                {
+                    description => "Specifies the [scroll ID](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html).",
+                    in => 'query',
+                    name => 'scroll_id',
+                    required => \1,
+                    schema =>
+                    {
+                        type => 'string',
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/scroll_result_set",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+            post => 
+            {
+                description => qq{Returns the result set for the rating search.},
+                operationId => 'PostRatingSearchScroll',
+                parameters => [],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/json' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                '$ref' => '#/components/schemas/scroll',
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/scroll_result_set",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
         # NOTE: /v1/release
         '/v1/release' =>
         {
@@ -8801,6 +10545,7 @@
                                             type => 'integer',
                                         },
                                     },
+                                    type => 'object',
                                 }
                             }
                         },
@@ -9230,6 +10975,7 @@
                                             type => 'array',
                                         },
                                     },
+                                    type => 'object',
                                 }
                             }
                         },
@@ -9376,7 +11122,7 @@
                 {
                     content =>
                     {
-                        'application/x-www-form-urlencoded' =>
+                        'application/json' =>
                         {
                             encoding => {},
                             schema =>
@@ -9554,7 +11300,7 @@
                 {
                     content =>
                     {
-                        'application/x-www-form-urlencoded' =>
+                        'application/json' =>
                         {
                             encoding => {},
                             schema =>
@@ -9807,7 +11553,8 @@
                                         {
                                             type => 'integer',
                                         },
-                                    }
+                                    },
+                                    type => 'object',
                                 }
                             }
                         },
@@ -9889,7 +11636,8 @@
                                         {
                                             type => 'integer',
                                         },
-                                    }
+                                    },
+                                    type => 'object',
                                 }
                             }
                         },
@@ -10037,7 +11785,7 @@
                 {
                     description => "Specifies the page size, i.e. the number of elements returned in one page.",
                     in => 'query',
-                    name => 'page_size',
+                    name => 'size',
                     required => \0,
                     schema =>
                     {
@@ -10238,6 +11986,7 @@
                                             type => 'integer',
                                         },
                                     },
+                                    type => 'object',
                                 }
                             }
                         },
@@ -10320,6 +12069,7 @@
                                             type => 'integer',
                                         },
                                     },
+                                    type => 'object',
                                 }
                             }
                         },
@@ -10736,7 +12486,7 @@
                 {
                     content =>
                     {
-                        'application/x-www-form-urlencoded' =>
+                        'application/json' =>
                         {
                             encoding => {},
                             schema =>
@@ -10758,6 +12508,219 @@
                                 schema =>
                                 {
                                     '$ref' => "#/components/schemas/result_set",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+        },
+        # NOTE: /v1/release/_search/scroll
+        '/v1/release/_search/scroll' =>
+        {
+            'delete' =>
+            {
+                description => qq{Clear a [scroll](https://www.elastic.co/guide/en/elasticsearch/reference/8.9/paginate-search-results.html#clear-scroll)},
+                operationId => 'DeleteReleaseSearchScroll',
+                parameters => [],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/json' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                oneOf => [
+                                    {
+                                        properties => 
+                                        {
+                                            scroll_id =>
+                                            {
+                                                type => 'string',
+                                            },
+                                        },
+                                    },
+                                    {
+                                        properties => 
+                                        {
+                                            scroll_id =>
+                                            {
+                                                items =>
+                                                {
+                                                    type => 'string',
+                                                },
+                                                type => 'array',
+                                            },
+                                        },
+                                    },
+                                ],
+                            }
+                        }
+                    },
+                    required => \1,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    type => 'object',
+                                    properties =>
+                                    {
+                                        # TODO: Need to find out what is returned upon clearing a scroll
+                                        removed =>
+                                        {
+                                            type => 'boolean',
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+            get => 
+            {
+                description => qq{Returns the result set for the release search.},
+                operationId => 'GetReleaseSearchScroll',
+                parameters => [
+                {
+                    description => "Specifies the time to live of the [scroll search](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html#scroll-search-context).",
+                    in => 'query',
+                    name => 'scroll',
+                    required => \1,
+                    schema =>
+                    {
+                        type => 'string',
+                    },
+                },
+                {
+                    description => "Specifies the [scroll ID](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/search-request-scroll.html).",
+                    in => 'query',
+                    name => 'scroll_id',
+                    required => \1,
+                    schema =>
+                    {
+                        type => 'string',
+                    },
+                }],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/x-www-form-urlencoded' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                additionalProperties => \0,
+                                properties => {},
+                                type => 'object'
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/scroll_result_set",
+                                }
+                            }
+                        },
+                        description => 'Successful response.',
+                    },
+                    default =>
+                    {
+                        content =>
+                        {
+                            "application/json" =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/error",
+                                }
+                            }
+                        },
+                        description => "Error response.",
+                    }
+                }
+            },
+            post => 
+            {
+                description => qq{Returns the result set for the release search.},
+                operationId => 'PostReleaseSearchScroll',
+                parameters => [],
+                requestBody =>
+                {
+                    content =>
+                    {
+                        'application/json' =>
+                        {
+                            encoding => {},
+                            schema =>
+                            {
+                                '$ref' => '#/components/schemas/scroll',
+                            }
+                        }
+                    },
+                    required => \0,
+                },
+                responses =>
+                {
+                    200 =>
+                    {
+                        content =>
+                        {
+                            'application/json' =>
+                            {
+                                schema =>
+                                {
+                                    '$ref' => "#/components/schemas/scroll_result_set",
                                 }
                             }
                         },
@@ -10920,7 +12883,7 @@
                 {
                     content =>
                     {
-                        'application/x-www-form-urlencoded' =>
+                        'application/json' =>
                         {
                             encoding => {},
                             schema =>
@@ -11120,7 +13083,7 @@
                 {
                     content =>
                     {
-                        'application/x-www-form-urlencoded' =>
+                        'application/json' =>
                         {
                             encoding => {},
                             schema =>
