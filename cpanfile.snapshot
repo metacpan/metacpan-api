@@ -3530,27 +3530,27 @@ DISTRIBUTIONS
     requirements:
       Exporter 5.57
       Module::Build 0.4004
-  Log-Any-1.716
-    pathname: P/PR/PREACTION/Log-Any-1.716.tar.gz
+  Log-Any-1.717
+    pathname: P/PR/PREACTION/Log-Any-1.717.tar.gz
     provides:
-      Log::Any 1.716
-      Log::Any::Adapter 1.716
-      Log::Any::Adapter::Base 1.716
-      Log::Any::Adapter::Capture 1.716
-      Log::Any::Adapter::File 1.716
-      Log::Any::Adapter::Multiplex 1.716
-      Log::Any::Adapter::Null 1.716
-      Log::Any::Adapter::Stderr 1.716
-      Log::Any::Adapter::Stdout 1.716
-      Log::Any::Adapter::Syslog 1.716
-      Log::Any::Adapter::Test 1.716
-      Log::Any::Adapter::Util 1.716
-      Log::Any::Manager 1.716
-      Log::Any::Proxy 1.716
-      Log::Any::Proxy::Null 1.716
-      Log::Any::Proxy::Test 1.716
-      Log::Any::Proxy::WithStackTrace 1.716
-      Log::Any::Test 1.716
+      Log::Any 1.717
+      Log::Any::Adapter 1.717
+      Log::Any::Adapter::Base 1.717
+      Log::Any::Adapter::Capture 1.717
+      Log::Any::Adapter::File 1.717
+      Log::Any::Adapter::Multiplex 1.717
+      Log::Any::Adapter::Null 1.717
+      Log::Any::Adapter::Stderr 1.717
+      Log::Any::Adapter::Stdout 1.717
+      Log::Any::Adapter::Syslog 1.717
+      Log::Any::Adapter::Test 1.717
+      Log::Any::Adapter::Util 1.717
+      Log::Any::Manager 1.717
+      Log::Any::Proxy 1.717
+      Log::Any::Proxy::Null 1.717
+      Log::Any::Proxy::Test 1.717
+      Log::Any::Proxy::WithStackTrace 1.717
+      Log::Any::Test 1.717
     requirements:
       ExtUtils::MakeMaker 0
   Log-Any-Adapter-Log4perl-0.09
