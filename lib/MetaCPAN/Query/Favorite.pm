@@ -127,8 +127,17 @@ sub leaderboard {
         size         => 0,
         query        => { match_all => {} },
         aggregations => {
-            leaderboard =>
-                { terms => { field => 'distribution', size => 600 }, },
+            leaderboard => {
+                terms => {
+                    field => 'distribution',
+                    size  => 100,
+                },
+            },
+            totals => {
+                cardinality => {
+                    field => "distribution",
+                },
+            },
         },
     };
 
@@ -138,13 +147,10 @@ sub leaderboard {
         body  => $body,
     );
 
-    my @leaders
-        = @{ $ret->{aggregations}{leaderboard}{buckets} }[ 0 .. 99 ];
-
     return {
-        leaderboard => \@leaders,
+        leaderboard => $ret->{aggregations}{leaderboard}{buckets},
+        total       => $ret->{aggregations}{totals}{value},
         took        => $ret->{took},
-        total       => $ret->{total}
     };
 }
 
