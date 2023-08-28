@@ -829,6 +829,10 @@ sub _get_depended_releases {
 
 sub recent {
     my ( $self, $page, $page_size, $type ) = @_;
+    $page      //= 1;
+    $page_size //= 10000;
+    $type      //= '';
+
     my $query;
     my $from = ( $page - 1 ) * $page_size;
 
