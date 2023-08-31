@@ -79,7 +79,7 @@ sub latest_by_author : Path('latest_by_author') : Args(1) {
 
 sub all_by_author : Path('all_by_author') : Args(1) {
     my ( $self, $c, $pauseid ) = @_;
-    my @params = @{ $c->req->params }{qw( page page_size )};
+    my @params = @{ $c->req->params }{qw( page_size page )};
     $c->stash_or_detach(
         $self->model($c)->all_by_author( $pauseid, @params ) );
 }
