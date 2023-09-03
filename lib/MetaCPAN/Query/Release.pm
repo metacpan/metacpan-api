@@ -426,8 +426,9 @@ sub by_author_and_names {
 }
 
 sub by_author {
-    my ( $self, $pauseid, $size ) = @_;
+    my ( $self, $pauseid, $size, $page ) = @_;
     $size //= 1000;
+    $page //= 1;
 
     my $body = {
         query => {
@@ -444,6 +445,7 @@ sub by_author {
             qw( abstract author authorized date distribution license metadata.version resources.repository status tests )
         ],
         size => $size,
+        from => ( $page - 1 ) * $size,
     };
 
     my $ret = $self->es->search(
