@@ -61,8 +61,8 @@ sub recent : Path('recent') : Args(0) {
 
 sub by_author : Path('by_author') : Args(1) {
     my ( $self, $c, $pauseid ) = @_;
-    $c->stash_or_detach(
-        $self->model($c)->by_author( $pauseid, $c->req->param('size') ) );
+    $c->stash_or_detach( $self->model($c)
+            ->by_author( $pauseid, @{ $c->req->params }{qw( size page )} ) );
 }
 
 sub latest_by_distribution : Path('latest_by_distribution') : Args(1) {
