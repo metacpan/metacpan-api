@@ -2290,16 +2290,16 @@ DISTRIBUTIONS
       strict 0
       version 0
       warnings 0
-  Email-Abstract-3.009
-    pathname: R/RJ/RJBS/Email-Abstract-3.009.tar.gz
+  Email-Abstract-3.010
+    pathname: R/RJ/RJBS/Email-Abstract-3.010.tar.gz
     provides:
-      Email::Abstract 3.009
-      Email::Abstract::EmailMIME 3.009
-      Email::Abstract::EmailSimple 3.009
-      Email::Abstract::MIMEEntity 3.009
-      Email::Abstract::MailInternet 3.009
-      Email::Abstract::MailMessage 3.009
-      Email::Abstract::Plugin 3.009
+      Email::Abstract 3.010
+      Email::Abstract::EmailMIME 3.010
+      Email::Abstract::EmailSimple 3.010
+      Email::Abstract::MIMEEntity 3.010
+      Email::Abstract::MailInternet 3.010
+      Email::Abstract::MailMessage 3.010
+      Email::Abstract::Plugin 3.010
     requirements:
       Carp 0
       Email::Simple 1.998
@@ -5283,10 +5283,10 @@ DISTRIBUTIONS
       Net::CIDR::Lite::Span 0.22
     requirements:
       ExtUtils::MakeMaker 0
-  Net-DNS-1.39
-    pathname: N/NL/NLNETLABS/Net-DNS-1.39.tar.gz
+  Net-DNS-1.40
+    pathname: N/NL/NLNETLABS/Net-DNS-1.40.tar.gz
     provides:
-      Net::DNS 1.39
+      Net::DNS 1.40
       Net::DNS::Domain 1913
       Net::DNS::DomainName 1898
       Net::DNS::DomainName1035 1898
@@ -5343,20 +5343,20 @@ DISTRIBUTIONS
       Net::DNS::RR::NSEC3PARAM 1896
       Net::DNS::RR::NULL 1896
       Net::DNS::RR::OPENPGPKEY 1896
-      Net::DNS::RR::OPT 1921
-      Net::DNS::RR::OPT::CHAIN 1921
-      Net::DNS::RR::OPT::CLIENT_SUBNET 1921
-      Net::DNS::RR::OPT::COOKIE 1921
-      Net::DNS::RR::OPT::DAU 1921
-      Net::DNS::RR::OPT::DHU 1921
-      Net::DNS::RR::OPT::EXPIRE 1921
-      Net::DNS::RR::OPT::EXTENDED_ERROR 1921
-      Net::DNS::RR::OPT::KEY_TAG 1921
-      Net::DNS::RR::OPT::N3U 1921
-      Net::DNS::RR::OPT::NSID 1921
-      Net::DNS::RR::OPT::PADDING 1921
-      Net::DNS::RR::OPT::REPORT_CHANNEL 1921
-      Net::DNS::RR::OPT::TCP_KEEPALIVE 1921
+      Net::DNS::RR::OPT 1934
+      Net::DNS::RR::OPT::CHAIN 1934
+      Net::DNS::RR::OPT::CLIENT_SUBNET 1934
+      Net::DNS::RR::OPT::COOKIE 1934
+      Net::DNS::RR::OPT::DAU 1934
+      Net::DNS::RR::OPT::DHU 1934
+      Net::DNS::RR::OPT::EXPIRE 1934
+      Net::DNS::RR::OPT::EXTENDED_ERROR 1934
+      Net::DNS::RR::OPT::KEY_TAG 1934
+      Net::DNS::RR::OPT::N3U 1934
+      Net::DNS::RR::OPT::NSID 1934
+      Net::DNS::RR::OPT::PADDING 1934
+      Net::DNS::RR::OPT::REPORT_CHANNEL 1934
+      Net::DNS::RR::OPT::TCP_KEEPALIVE 1934
       Net::DNS::RR::PTR 1896
       Net::DNS::RR::PX 1898
       Net::DNS::RR::RP 1898
@@ -5364,11 +5364,11 @@ DISTRIBUTIONS
       Net::DNS::RR::RT 1898
       Net::DNS::RR::SIG 1908
       Net::DNS::RR::SMIMEA 1896
-      Net::DNS::RR::SOA 1896
+      Net::DNS::RR::SOA 1931
       Net::DNS::RR::SPF 1896
       Net::DNS::RR::SRV 1898
       Net::DNS::RR::SSHFP 1896
-      Net::DNS::RR::SVCB 1896
+      Net::DNS::RR::SVCB 1930
       Net::DNS::RR::TKEY 1908
       Net::DNS::RR::TLSA 1896
       Net::DNS::RR::TSIG 1909
@@ -5377,9 +5377,9 @@ DISTRIBUTIONS
       Net::DNS::RR::X25 1896
       Net::DNS::RR::ZONEMD 1896
       Net::DNS::Resolver 1895
-      Net::DNS::Resolver::Base 1910
+      Net::DNS::Resolver::Base 1930
       Net::DNS::Resolver::MSWin32 1856
-      Net::DNS::Resolver::Recurse 1896
+      Net::DNS::Resolver::Recurse 1930
       Net::DNS::Resolver::UNIX 1856
       Net::DNS::Resolver::android 1856
       Net::DNS::Resolver::cygwin 1856
