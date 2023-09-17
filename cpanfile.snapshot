@@ -3711,42 +3711,42 @@ DISTRIBUTIONS
       perl 5.010
       strict 0
       warnings 0
-  MCE-1.888
-    pathname: M/MA/MARIOROY/MCE-1.888.tar.gz
+  MCE-1.889
+    pathname: M/MA/MARIOROY/MCE-1.889.tar.gz
     provides:
-      MCE 1.888
-      MCE::Candy 1.888
-      MCE::Channel 1.888
-      MCE::Channel::Mutex 1.888
-      MCE::Channel::MutexFast 1.888
-      MCE::Channel::Simple 1.888
-      MCE::Channel::SimpleFast 1.888
-      MCE::Channel::Threads 1.888
-      MCE::Channel::ThreadsFast 1.888
-      MCE::Child 1.888
-      MCE::Core::Input::Generator 1.888
-      MCE::Core::Input::Handle 1.888
-      MCE::Core::Input::Iterator 1.888
-      MCE::Core::Input::Request 1.888
-      MCE::Core::Input::Sequence 1.888
-      MCE::Core::Manager 1.888
-      MCE::Core::Validation 1.888
-      MCE::Core::Worker 1.888
-      MCE::Flow 1.888
-      MCE::Grep 1.888
-      MCE::Loop 1.888
-      MCE::Map 1.888
-      MCE::Mutex 1.888
-      MCE::Mutex::Channel 1.888
-      MCE::Mutex::Channel2 1.888
-      MCE::Mutex::Flock 1.888
-      MCE::Queue 1.888
-      MCE::Relay 1.888
-      MCE::Signal 1.888
-      MCE::Step 1.888
-      MCE::Stream 1.888
-      MCE::Subs 1.888
-      MCE::Util 1.888
+      MCE 1.889
+      MCE::Candy 1.889
+      MCE::Channel 1.889
+      MCE::Channel::Mutex 1.889
+      MCE::Channel::MutexFast 1.889
+      MCE::Channel::Simple 1.889
+      MCE::Channel::SimpleFast 1.889
+      MCE::Channel::Threads 1.889
+      MCE::Channel::ThreadsFast 1.889
+      MCE::Child 1.889
+      MCE::Core::Input::Generator 1.889
+      MCE::Core::Input::Handle 1.889
+      MCE::Core::Input::Iterator 1.889
+      MCE::Core::Input::Request 1.889
+      MCE::Core::Input::Sequence 1.889
+      MCE::Core::Manager 1.889
+      MCE::Core::Validation 1.889
+      MCE::Core::Worker 1.889
+      MCE::Flow 1.889
+      MCE::Grep 1.889
+      MCE::Loop 1.889
+      MCE::Map 1.889
+      MCE::Mutex 1.889
+      MCE::Mutex::Channel 1.889
+      MCE::Mutex::Channel2 1.889
+      MCE::Mutex::Flock 1.889
+      MCE::Queue 1.889
+      MCE::Relay 1.889
+      MCE::Signal 1.889
+      MCE::Step 1.889
+      MCE::Stream 1.889
+      MCE::Subs 1.889
+      MCE::Util 1.889
     requirements:
       Carp 0
       Errno 0
@@ -4222,8 +4222,8 @@ DISTRIBUTIONS
       URI::db 0.15
       URI::file 4.21
       perl 5.010001
-  Mojolicious-9.33
-    pathname: S/SR/SRI/Mojolicious-9.33.tar.gz
+  Mojolicious-9.34
+    pathname: S/SR/SRI/Mojolicious-9.34.tar.gz
     provides:
       Mojo undef
       Mojo::Asset undef
@@ -4291,7 +4291,7 @@ DISTRIBUTIONS
       Mojo::UserAgent::Transactor undef
       Mojo::Util undef
       Mojo::WebSocket undef
-      Mojolicious 9.33
+      Mojolicious 9.34
       Mojolicious::Command undef
       Mojolicious::Command::Author::cpanify undef
       Mojolicious::Command::Author::generate undef
