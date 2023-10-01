@@ -3061,19 +3061,19 @@ DISTRIBUTIONS
       HTTP::Date 0
       Module::Build::Tiny 0.035
       perl 5.008001
-  HTTP-Message-6.44
-    pathname: O/OA/OALDERS/HTTP-Message-6.44.tar.gz
+  HTTP-Message-6.45
+    pathname: O/OA/OALDERS/HTTP-Message-6.45.tar.gz
     provides:
-      HTTP::Config 6.44
-      HTTP::Headers 6.44
-      HTTP::Headers::Auth 6.44
-      HTTP::Headers::ETag 6.44
-      HTTP::Headers::Util 6.44
-      HTTP::Message 6.44
-      HTTP::Request 6.44
-      HTTP::Request::Common 6.44
-      HTTP::Response 6.44
-      HTTP::Status 6.44
+      HTTP::Config 6.45
+      HTTP::Headers 6.45
+      HTTP::Headers::Auth 6.45
+      HTTP::Headers::ETag 6.45
+      HTTP::Headers::Util 6.45
+      HTTP::Message 6.45
+      HTTP::Request 6.45
+      HTTP::Request::Common 6.45
+      HTTP::Response 6.45
+      HTTP::Status 6.45
     requirements:
       Carp 0
       Clone 0.46
@@ -4035,10 +4035,10 @@ DISTRIBUTIONS
       Text::ParseWords 0
       perl 5.006001
       version 0.87
-  Module-Build-Tiny-0.046
-    pathname: L/LE/LEONT/Module-Build-Tiny-0.046.tar.gz
+  Module-Build-Tiny-0.047
+    pathname: L/LE/LEONT/Module-Build-Tiny-0.047.tar.gz
     provides:
-      Module::Build::Tiny 0.046
+      Module::Build::Tiny 0.047
     requirements:
       CPAN::Meta 0
       DynaLoader 0
