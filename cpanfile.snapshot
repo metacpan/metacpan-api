@@ -3263,17 +3263,17 @@ DISTRIBUTIONS
       IO::String 1.08
     requirements:
       ExtUtils::MakeMaker 0
-  IPC-Run-20220807.0
-    pathname: T/TO/TODDR/IPC-Run-20220807.0.tar.gz
+  IPC-Run-20231003.0
+    pathname: T/TO/TODDR/IPC-Run-20231003.0.tar.gz
     provides:
-      IPC::Run 20220807.0
-      IPC::Run::Debug 20220807.0
-      IPC::Run::IO 20220807.0
-      IPC::Run::Timer 20220807.0
-      IPC::Run::Win32Helper 20220807.0
-      IPC::Run::Win32IO 20220807.0
-      IPC::Run::Win32Process 20220807.0
-      IPC::Run::Win32Pump 20220807.0
+      IPC::Run 20231003.0
+      IPC::Run::Debug 20231003.0
+      IPC::Run::IO 20231003.0
+      IPC::Run::Timer 20231003.0
+      IPC::Run::Win32Helper 20231003.0
+      IPC::Run::Win32IO 20231003.0
+      IPC::Run::Win32Process 20231003.0
+      IPC::Run::Win32Pump 20231003.0
     requirements:
       ExtUtils::MakeMaker 0
       Test::More 0.47
