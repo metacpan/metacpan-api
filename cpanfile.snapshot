@@ -1512,19 +1512,19 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  DateTime-1.59
-    pathname: D/DR/DROLSKY/DateTime-1.59.tar.gz
+  DateTime-1.63
+    pathname: D/DR/DROLSKY/DateTime-1.63.tar.gz
     provides:
-      DateTime 1.59
-      DateTime::Duration 1.59
-      DateTime::Helpers 1.59
-      DateTime::Infinite 1.59
-      DateTime::Infinite::Future 1.59
-      DateTime::Infinite::Past 1.59
-      DateTime::LeapSecond 1.59
-      DateTime::PP 1.59
-      DateTime::PPExtra 1.59
-      DateTime::Types 1.59
+      DateTime 1.63
+      DateTime::Duration 1.63
+      DateTime::Helpers 1.63
+      DateTime::Infinite 1.63
+      DateTime::Infinite::Future 1.63
+      DateTime::Infinite::Past 1.63
+      DateTime::LeapSecond 1.63
+      DateTime::PP 1.63
+      DateTime::PPExtra 1.63
+      DateTime::Types 1.63
     requirements:
       Carp 0
       DateTime::Locale 1.06
@@ -4222,8 +4222,8 @@ DISTRIBUTIONS
       URI::db 0.15
       URI::file 4.21
       perl 5.010001
-  Mojolicious-9.34
-    pathname: S/SR/SRI/Mojolicious-9.34.tar.gz
+  Mojolicious-9.35
+    pathname: S/SR/SRI/Mojolicious-9.35.tar.gz
     provides:
       Mojo undef
       Mojo::Asset undef
@@ -4291,7 +4291,7 @@ DISTRIBUTIONS
       Mojo::UserAgent::Transactor undef
       Mojo::Util undef
       Mojo::WebSocket undef
-      Mojolicious 9.34
+      Mojolicious 9.35
       Mojolicious::Command undef
       Mojolicious::Command::Author::cpanify undef
       Mojolicious::Command::Author::generate undef
