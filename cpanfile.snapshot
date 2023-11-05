@@ -1648,15 +1648,15 @@ DISTRIBUTIONS
       parent 0
       strict 0
       warnings 0
-  DateTime-Locale-1.39
-    pathname: D/DR/DROLSKY/DateTime-Locale-1.39.tar.gz
+  DateTime-Locale-1.40
+    pathname: D/DR/DROLSKY/DateTime-Locale-1.40.tar.gz
     provides:
-      DateTime::Locale 1.39
-      DateTime::Locale::Base 1.39
-      DateTime::Locale::Catalog 1.39
-      DateTime::Locale::Data 1.39
-      DateTime::Locale::FromData 1.39
-      DateTime::Locale::Util 1.39
+      DateTime::Locale 1.40
+      DateTime::Locale::Base 1.40
+      DateTime::Locale::Catalog 1.40
+      DateTime::Locale::Data 1.40
+      DateTime::Locale::FromData 1.40
+      DateTime::Locale::Util 1.40
     requirements:
       Carp 0
       Dist::CheckConflicts 0.02
@@ -3840,29 +3840,29 @@ DISTRIBUTIONS
       Test::Exception 0
       Test::More 0
       perl 5.006
-  MetaCPAN-Client-2.030000
-    pathname: M/MI/MICKEY/MetaCPAN-Client-2.030000.tar.gz
+  MetaCPAN-Client-2.031000
+    pathname: M/MI/MICKEY/MetaCPAN-Client-2.031000.tar.gz
     provides:
-      MetaCPAN::Client 2.030000
-      MetaCPAN::Client::Author 2.030000
-      MetaCPAN::Client::Cover 2.030000
-      MetaCPAN::Client::Distribution 2.030000
-      MetaCPAN::Client::DownloadURL 2.030000
-      MetaCPAN::Client::Favorite 2.030000
-      MetaCPAN::Client::File 2.030000
-      MetaCPAN::Client::Mirror 2.030000
-      MetaCPAN::Client::Module 2.030000
-      MetaCPAN::Client::Package 2.030000
-      MetaCPAN::Client::Permission 2.030000
-      MetaCPAN::Client::Pod 2.030000
-      MetaCPAN::Client::Rating 2.030000
-      MetaCPAN::Client::Release 2.030000
-      MetaCPAN::Client::Request 2.030000
-      MetaCPAN::Client::ResultSet 2.030000
-      MetaCPAN::Client::Role::Entity 2.030000
-      MetaCPAN::Client::Role::HasUA 2.030000
-      MetaCPAN::Client::Scroll 2.030000
-      MetaCPAN::Client::Types 2.030000
+      MetaCPAN::Client 2.031000
+      MetaCPAN::Client::Author 2.031000
+      MetaCPAN::Client::Cover 2.031000
+      MetaCPAN::Client::Distribution 2.031000
+      MetaCPAN::Client::DownloadURL 2.031000
+      MetaCPAN::Client::Favorite 2.031000
+      MetaCPAN::Client::File 2.031000
+      MetaCPAN::Client::Mirror 2.031000
+      MetaCPAN::Client::Module 2.031000
+      MetaCPAN::Client::Package 2.031000
+      MetaCPAN::Client::Permission 2.031000
+      MetaCPAN::Client::Pod 2.031000
+      MetaCPAN::Client::Rating 2.031000
+      MetaCPAN::Client::Release 2.031000
+      MetaCPAN::Client::Request 2.031000
+      MetaCPAN::Client::ResultSet 2.031000
+      MetaCPAN::Client::Role::Entity 2.031000
+      MetaCPAN::Client::Role::HasUA 2.031000
+      MetaCPAN::Client::Scroll 2.031000
+      MetaCPAN::Client::Types 2.031000
     requirements:
       Carp 0
       ExtUtils::MakeMaker 7.1101
@@ -6720,11 +6720,11 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  Pod-Markdown-3.300
-    pathname: R/RW/RWSTAUNER/Pod-Markdown-3.300.tar.gz
+  Pod-Markdown-3.400
+    pathname: R/RW/RWSTAUNER/Pod-Markdown-3.400.tar.gz
     provides:
-      Pod::Markdown 3.300
-      Pod::Perldoc::ToMarkdown 3.300
+      Pod::Markdown 3.400
+      Pod::Perldoc::ToMarkdown 3.400
     requirements:
       Encode 0
       ExtUtils::MakeMaker 0
