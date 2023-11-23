@@ -877,8 +877,9 @@ sub recent {
         size   => $page_size,
         from   => $from,
         query  => $query,
-        fields => [qw(name author status abstract date distribution)],
-        sort   => [ { 'date' => { order => 'desc' } } ]
+        fields =>
+            [qw(name author status abstract date distribution maturity)],
+        sort => [ { 'date' => { order => 'desc' } } ]
     };
 
     my $ret = $self->es->search(
