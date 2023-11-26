@@ -2764,17 +2764,25 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       File::Spec 0
       Test::More 0
-  Getopt-Long-Descriptive-0.111
-    pathname: R/RJ/RJBS/Getopt-Long-Descriptive-0.111.tar.gz
+  Getopt-Long-2.57
+    pathname: J/JV/JV/Getopt-Long-2.57.tar.gz
     provides:
-      Getopt::Long::Descriptive 0.111
-      Getopt::Long::Descriptive::Opts 0.111
-      Getopt::Long::Descriptive::Usage 0.111
+      Getopt::Long 2.57
+      Getopt::Long::Parser 2.57
+    requirements:
+      ExtUtils::MakeMaker 0
+      Pod::Usage 1.14
+  Getopt-Long-Descriptive-0.112
+    pathname: R/RJ/RJBS/Getopt-Long-Descriptive-0.112.tar.gz
+    provides:
+      Getopt::Long::Descriptive 0.112
+      Getopt::Long::Descriptive::Opts 0.112
+      Getopt::Long::Descriptive::Usage 0.112
     requirements:
       Carp 0
       ExtUtils::MakeMaker 6.78
       File::Basename 0
-      Getopt::Long 2.33
+      Getopt::Long 2.55
       List::Util 0
       Params::Validate 0.97
       Scalar::Util 0
@@ -3926,13 +3934,13 @@ DISTRIBUTIONS
       Moose::Role 0
       MooseX::Fastly::Role 0.01
       Net::Fastly 1.05
-  Minion-10.26
-    pathname: S/SR/SRI/Minion-10.26.tar.gz
+  Minion-10.27
+    pathname: S/SR/SRI/Minion-10.27.tar.gz
     provides:
       LinkCheck undef
       LinkCheck::Controller::Links undef
       LinkCheck::Task::CheckLinks undef
-      Minion 10.26
+      Minion 10.27
       Minion::Backend undef
       Minion::Backend::Pg undef
       Minion::Command::minion undef
@@ -7224,18 +7232,18 @@ DISTRIBUTIONS
       File::Temp 0
       Test::Builder 0.94
       Test::More 0.94
-  Sub-Exporter-0.990
-    pathname: R/RJ/RJBS/Sub-Exporter-0.990.tar.gz
+  Sub-Exporter-0.991
+    pathname: R/RJ/RJBS/Sub-Exporter-0.991.tar.gz
     provides:
-      Sub::Exporter 0.990
-      Sub::Exporter::Util 0.990
+      Sub::Exporter 0.991
+      Sub::Exporter::Util 0.991
     requirements:
       Carp 0
       Data::OptList 0.100
       ExtUtils::MakeMaker 6.78
       Params::Util 0.14
       Sub::Install 0.92
-      perl 5.008000
+      perl 5.012
       strict 0
       warnings 0
   Sub-Exporter-ForMethods-0.100055
@@ -7673,10 +7681,10 @@ DISTRIBUTIONS
       Test::Builder 0.13
       Test::Builder::Tester 1.02
       perl 5.006
-  Text-CSV_XS-1.52
-    pathname: H/HM/HMBRAND/Text-CSV_XS-1.52.tgz
+  Text-CSV_XS-1.53
+    pathname: H/HM/HMBRAND/Text-CSV_XS-1.53.tgz
     provides:
-      Text::CSV_XS 1.52
+      Text::CSV_XS 1.53
     requirements:
       Config 0
       ExtUtils::MakeMaker 0
