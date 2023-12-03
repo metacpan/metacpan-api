@@ -3934,13 +3934,13 @@ DISTRIBUTIONS
       Moose::Role 0
       MooseX::Fastly::Role 0.01
       Net::Fastly 1.05
-  Minion-10.27
-    pathname: S/SR/SRI/Minion-10.27.tar.gz
+  Minion-10.28
+    pathname: S/SR/SRI/Minion-10.28.tar.gz
     provides:
       LinkCheck undef
       LinkCheck::Controller::Links undef
       LinkCheck::Task::CheckLinks undef
-      Minion 10.27
+      Minion 10.28
       Minion::Backend undef
       Minion::Backend::Pg undef
       Minion::Command::minion undef
@@ -5291,10 +5291,10 @@ DISTRIBUTIONS
       Net::CIDR::Lite::Span 0.22
     requirements:
       ExtUtils::MakeMaker 0
-  Net-DNS-1.40
-    pathname: N/NL/NLNETLABS/Net-DNS-1.40.tar.gz
+  Net-DNS-1.41
+    pathname: N/NL/NLNETLABS/Net-DNS-1.41.tar.gz
     provides:
-      Net::DNS 1.40
+      Net::DNS 1.41
       Net::DNS::Domain 1913
       Net::DNS::DomainName 1898
       Net::DNS::DomainName1035 1898
@@ -5303,14 +5303,14 @@ DISTRIBUTIONS
       Net::DNS::Mailbox 1910
       Net::DNS::Mailbox1035 1910
       Net::DNS::Mailbox2535 1910
-      Net::DNS::Nameserver 1925
-      Net::DNS::Packet 1925
-      Net::DNS::Parameters 1921
+      Net::DNS::Nameserver 1949
+      Net::DNS::Packet 1947
+      Net::DNS::Parameters 1945
       Net::DNS::Question 1895
       Net::DNS::RR 1910
       Net::DNS::RR::A 1896
       Net::DNS::RR::AAAA 1896
-      Net::DNS::RR::AFSDB 1898
+      Net::DNS::RR::AFSDB 1945
       Net::DNS::RR::AMTRELAY 1896
       Net::DNS::RR::APL 1896
       Net::DNS::RR::APL::Item 1896
@@ -5329,11 +5329,11 @@ DISTRIBUTIONS
       Net::DNS::RR::GPOS 1910
       Net::DNS::RR::HINFO 1896
       Net::DNS::RR::HIP 1896
-      Net::DNS::RR::HTTPS 1896
+      Net::DNS::RR::HTTPS 1945
       Net::DNS::RR::IPSECKEY 1909
       Net::DNS::RR::ISDN 1896
       Net::DNS::RR::KEY 1896
-      Net::DNS::RR::KX 1898
+      Net::DNS::RR::KX 1945
       Net::DNS::RR::L32 1896
       Net::DNS::RR::L64 1896
       Net::DNS::RR::LOC 1896
@@ -5342,11 +5342,11 @@ DISTRIBUTIONS
       Net::DNS::RR::MG 1910
       Net::DNS::RR::MINFO 1896
       Net::DNS::RR::MR 1910
-      Net::DNS::RR::MX 1896
+      Net::DNS::RR::MX 1945
       Net::DNS::RR::NAPTR 1898
       Net::DNS::RR::NID 1896
       Net::DNS::RR::NS 1896
-      Net::DNS::RR::NSEC 1896
+      Net::DNS::RR::NSEC 1945
       Net::DNS::RR::NSEC3 1910
       Net::DNS::RR::NSEC3PARAM 1896
       Net::DNS::RR::NULL 1896
@@ -5366,17 +5366,17 @@ DISTRIBUTIONS
       Net::DNS::RR::OPT::REPORT_CHANNEL 1934
       Net::DNS::RR::OPT::TCP_KEEPALIVE 1934
       Net::DNS::RR::PTR 1896
-      Net::DNS::RR::PX 1898
-      Net::DNS::RR::RP 1898
+      Net::DNS::RR::PX 1945
+      Net::DNS::RR::RP 1945
       Net::DNS::RR::RRSIG 1896
-      Net::DNS::RR::RT 1898
+      Net::DNS::RR::RT 1945
       Net::DNS::RR::SIG 1908
       Net::DNS::RR::SMIMEA 1896
-      Net::DNS::RR::SOA 1931
+      Net::DNS::RR::SOA 1945
       Net::DNS::RR::SPF 1896
-      Net::DNS::RR::SRV 1898
+      Net::DNS::RR::SRV 1945
       Net::DNS::RR::SSHFP 1896
-      Net::DNS::RR::SVCB 1930
+      Net::DNS::RR::SVCB 1945
       Net::DNS::RR::TKEY 1908
       Net::DNS::RR::TLSA 1896
       Net::DNS::RR::TSIG 1909
@@ -5385,7 +5385,7 @@ DISTRIBUTIONS
       Net::DNS::RR::X25 1896
       Net::DNS::RR::ZONEMD 1896
       Net::DNS::Resolver 1895
-      Net::DNS::Resolver::Base 1930
+      Net::DNS::Resolver::Base 1947
       Net::DNS::Resolver::MSWin32 1856
       Net::DNS::Resolver::Recurse 1930
       Net::DNS::Resolver::UNIX 1856
