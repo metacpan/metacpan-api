@@ -517,7 +517,7 @@ sub latest_by_author {
         fields => [
             qw(author distribution name status abstract date download_url version authorized maturity)
         ],
-        size   => 1000,
+        size => 1000,
     };
 
     my $ret = $self->es->search(
