@@ -514,8 +514,10 @@ sub latest_by_author {
         },
         sort =>
             [ 'distribution', { 'version_numified' => { reverse => 1 } } ],
-        fields => [qw(author distribution name status abstract date)],
-        size   => 1000,
+        fields => [
+            qw(author distribution name status abstract date download_url version authorized maturity)
+        ],
+        size => 1000,
     };
 
     my $ret = $self->es->search(
