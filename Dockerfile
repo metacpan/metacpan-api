@@ -1,3 +1,4 @@
+# hadolint ignore=DL3007
 FROM metacpan/metacpan-base:latest
 
 COPY cpanfile cpanfile.snapshot /metacpan-api/
@@ -9,7 +10,7 @@ WORKDIR /metacpan-api
 # size of the images.
 RUN mkdir /CPAN \
     && apt-get update \
-    && apt-get install -y --no-install-recommends rsync=3.2.3-4+deb11u1 jq \
+    && apt-get satisfy -y --no-install-recommends 'rsync (>= 3.2.3)' 'jq (>= 1.6)' \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && cpm install --global \
