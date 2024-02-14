@@ -25,17 +25,18 @@ sub index : Path : ActionClass('REST') {
 sub index_POST {
     my ( $self, $c ) = @_;
     my $pause    = $c->stash->{pause};
-    my $req      = $c->req;
+    my $data     = $c->req->data;
     my $favorite = $c->model('CPAN::Favorite')->put(
         {
             user         => $c->user->id,
-            author       => $req->data->{author},
-            release      => $req->data->{release},
-            distribution => $req->data->{distribution},
-            author       => $req->data->{author},
+            author       => $data->{author},
+            release      => $data->{release},
+            distribution => $data->{distribution},
         },
         { refresh => 1 }
     );
+    $c->purge_author_key( $data->{author} )     if $data->{author};
+    $c->purge_dist_key( $data->{distribution} ) if $data->{distribution};
     $self->status_created(
         $c,
         location => $c->uri_for( join( '/',
@@ -50,6 +51,9 @@ sub index_DELETE {
         ->get( { user => $c->user->id, distribution => $distribution } );
     if ($favorite) {
         $favorite->delete( { refresh => 1 } );
+        $c->purge_author_key( $favorite->author )
+            if $favorite->author;
+        $c->purge_dist_key($distribution);
         $self->status_ok( $c,
             entity => $favorite->meta->get_data($favorite) );
     }
