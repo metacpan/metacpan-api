@@ -150,6 +150,17 @@ sub stash_or_detach {
         ['The requested info could not be found'] );
 }
 
+before perform_purges => sub {
+    my ($self) = @_;
+    if ( $self->has_surrogate_keys_to_purge ) {
+        my $log = $self->log;
+        return
+            unless $log->is_info;
+        $log->info( "CDN Purge: " . join ', ',
+            $self->surrogate_keys_to_purge );
+    }
+};
+
 1;
 
 __END__

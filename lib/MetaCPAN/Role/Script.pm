@@ -392,6 +392,15 @@ sub are_you_sure {
     return $iconfirmed;
 }
 
+before perform_purges => sub {
+    my ($self) = @_;
+    if ( $self->has_surrogate_keys_to_purge ) {
+        log_info {
+            "CDN Purge: " . join ', ', $self->surrogate_keys_to_purge;
+        };
+    }
+};
+
 1;
 
 __END__
