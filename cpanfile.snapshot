@@ -3424,11 +3424,11 @@ DISTRIBUTIONS
       Scalar::Util 0
       perl 5.006002
       strict 0
-  LWP-Protocol-https-6.12
-    pathname: O/OA/OALDERS/LWP-Protocol-https-6.12.tar.gz
+  LWP-Protocol-https-6.13
+    pathname: O/OA/OALDERS/LWP-Protocol-https-6.13.tar.gz
     provides:
-      LWP::Protocol::https 6.12
-      LWP::Protocol::https::Socket 6.12
+      LWP::Protocol::https 6.13
+      LWP::Protocol::https::Socket 6.13
     requirements:
       ExtUtils::MakeMaker 0
       IO::Socket::SSL 1.970
@@ -3772,12 +3772,12 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 6.42
       Test::More 0
       perl 5.005
-  MIME-Types-2.24
-    pathname: M/MA/MARKOV/MIME-Types-2.24.tar.gz
+  MIME-Types-2.26
+    pathname: M/MA/MARKOV/MIME-Types-2.26.tar.gz
     provides:
-      MIME::Type 2.24
-      MIME::Types 2.24
-      MojoX::MIME::Types 2.24
+      MIME::Type 2.26
+      MIME::Types 2.26
+      MojoX::MIME::Types 2.26
     requirements:
       ExtUtils::MakeMaker 0
       File::Basename 0
@@ -4084,10 +4084,10 @@ DISTRIBUTIONS
       CPAN::Meta::Prereqs 2.12091
       ExtUtils::MakeMaker 0
       parent 0
-  Module-Extract-Namespaces-1.023
-    pathname: B/BD/BDFOY/Module-Extract-Namespaces-1.023.tar.gz
+  Module-Extract-Namespaces-1.024
+    pathname: B/BR/BRIANDFOY/Module-Extract-Namespaces-1.024.tar.gz
     provides:
-      Module::Extract::Namespaces 1.023
+      Module::Extract::Namespaces 1.024
     requirements:
       ExtUtils::MakeMaker 6.64
       File::Spec::Functions 0
@@ -5279,10 +5279,10 @@ DISTRIBUTIONS
       Net::CIDR::Lite::Span 0.22
     requirements:
       ExtUtils::MakeMaker 0
-  Net-DNS-1.43
-    pathname: N/NL/NLNETLABS/Net-DNS-1.43.tar.gz
+  Net-DNS-1.44
+    pathname: N/NL/NLNETLABS/Net-DNS-1.44.tar.gz
     provides:
-      Net::DNS 1.43
+      Net::DNS 1.44
       Net::DNS::Domain 1913
       Net::DNS::DomainName 1898
       Net::DNS::DomainName1035 1898
@@ -5295,7 +5295,7 @@ DISTRIBUTIONS
       Net::DNS::Packet 1959
       Net::DNS::Parameters 1945
       Net::DNS::Question 1895
-      Net::DNS::RR 1910
+      Net::DNS::RR 1965
       Net::DNS::RR::A 1896
       Net::DNS::RR::AAAA 1896
       Net::DNS::RR::AFSDB 1945
@@ -5308,6 +5308,7 @@ DISTRIBUTIONS
       Net::DNS::RR::CERT 1896
       Net::DNS::RR::CNAME 1896
       Net::DNS::RR::CSYNC 1910
+      Net::DNS::RR::DELEG 1965
       Net::DNS::RR::DHCID 1896
       Net::DNS::RR::DNAME 1896
       Net::DNS::RR::DNSKEY 1910
@@ -5364,7 +5365,7 @@ DISTRIBUTIONS
       Net::DNS::RR::SPF 1896
       Net::DNS::RR::SRV 1945
       Net::DNS::RR::SSHFP 1896
-      Net::DNS::RR::SVCB 1945
+      Net::DNS::RR::SVCB 1967
       Net::DNS::RR::TKEY 1908
       Net::DNS::RR::TLSA 1896
       Net::DNS::RR::TSIG 1909
@@ -5373,9 +5374,9 @@ DISTRIBUTIONS
       Net::DNS::RR::X25 1896
       Net::DNS::RR::ZONEMD 1896
       Net::DNS::Resolver 1895
-      Net::DNS::Resolver::Base 1957
+      Net::DNS::Resolver::Base 1965
       Net::DNS::Resolver::MSWin32 1961
-      Net::DNS::Resolver::Recurse 1959
+      Net::DNS::Resolver::Recurse 1965
       Net::DNS::Resolver::UNIX 1856
       Net::DNS::Resolver::android 1856
       Net::DNS::Resolver::cygwin 1856
@@ -5541,10 +5542,10 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  OrePAN2-0.49
-    pathname: O/OA/OALDERS/OrePAN2-0.49.tar.gz
+  OrePAN2-0.52
+    pathname: O/OA/OALDERS/OrePAN2-0.52.tar.gz
     provides:
-      OrePAN2 0.49
+      OrePAN2 0.52
       OrePAN2::Auditor undef
       OrePAN2::CLI::Indexer undef
       OrePAN2::CLI::Inject undef
@@ -5556,13 +5557,14 @@ DISTRIBUTIONS
     requirements:
       Archive::Extract 0.72
       Archive::Tar 1.46
-      CPAN::Meta 2.13156
-      Class::Accessor::Lite 0.05
+      CPAN::Meta 2.131560
       Digest::MD5 0
       ExtUtils::MakeMaker 7.06
       File::Path 0
+      File::Spec 0
       File::Temp 0
       File::pushd 0
+      File::stat 0
       Getopt::Long 2.39
       HTTP::Tiny 0
       IO::File::AtomicChange 0
@@ -5576,18 +5578,20 @@ DISTRIBUTIONS
       Module::Build::Tiny 0.035
       Moo 1.007000
       MooX::Options 0
+      MooX::StrictConstructor 0
       Parse::CPAN::Meta 1.4414
       Parse::CPAN::Packages::Fast 0.09
       Parse::LocalDistribution 0.14
-      Parse::PMFile 0.29
       Path::Tiny 0
       Pod::Usage 0
-      Ref::Util 0
       Try::Tiny 0
-      Type::Params 0
+      Type::Tiny 2.000000
+      Types::Path::Tiny 0
+      Types::Self 0
       Types::URI 0
       autodie 0
       feature 0
+      namespace::clean 0
       parent 0
       perl 5.012000
       version 0.9912
@@ -6919,6 +6923,15 @@ DISTRIBUTIONS
       Regexp::Common 0
       Test::More 0.40
       perl 5.006
+  Role-Hooks-0.008
+    pathname: T/TO/TOBYINK/Role-Hooks-0.008.tar.gz
+    provides:
+      Role::Hooks 0.008
+    requirements:
+      Class::Method::Modifiers 0
+      ExtUtils::MakeMaker 6.17
+      List::Util 1.45
+      perl 5.008001
   Role-Tiny-2.002004
     pathname: H/HA/HAARG/Role-Tiny-2.002004.tar.gz
     provides:
@@ -8003,6 +8016,15 @@ DISTRIBUTIONS
       perl 5.008001
       strict 0
       warnings 0
+  Types-Self-0.002
+    pathname: T/TO/TOBYINK/Types-Self-0.002.tar.gz
+    provides:
+      Types::Self 0.002
+    requirements:
+      ExtUtils::MakeMaker 6.17
+      Role::Hooks 0
+      Types::Standard 1.012
+      perl 5.008001
   Types-Serialiser-1.01
     pathname: M/ML/MLEHMANN/Types-Serialiser-1.01.tar.gz
     provides:
@@ -8046,56 +8068,56 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  URI-5.26
-    pathname: O/OA/OALDERS/URI-5.26.tar.gz
+  URI-5.27
+    pathname: O/OA/OALDERS/URI-5.27.tar.gz
     provides:
-      URI 5.26
-      URI::Escape 5.26
-      URI::Heuristic 5.26
-      URI::IRI 5.26
-      URI::QueryParam 5.26
-      URI::Split 5.26
-      URI::URL 5.26
-      URI::WithBase 5.26
-      URI::data 5.26
-      URI::file 5.26
-      URI::file::Base 5.26
-      URI::file::FAT 5.26
-      URI::file::Mac 5.26
-      URI::file::OS2 5.26
-      URI::file::QNX 5.26
-      URI::file::Unix 5.26
-      URI::file::Win32 5.26
-      URI::ftp 5.26
-      URI::geo 5.26
-      URI::gopher 5.26
-      URI::http 5.26
-      URI::https 5.26
-      URI::icap 5.26
-      URI::icaps 5.26
-      URI::ldap 5.26
-      URI::ldapi 5.26
-      URI::ldaps 5.26
-      URI::mailto 5.26
-      URI::mms 5.26
-      URI::news 5.26
-      URI::nntp 5.26
-      URI::nntps 5.26
-      URI::pop 5.26
-      URI::rlogin 5.26
-      URI::rsync 5.26
-      URI::rtsp 5.26
-      URI::rtspu 5.26
-      URI::sftp 5.26
-      URI::sip 5.26
-      URI::sips 5.26
-      URI::snews 5.26
-      URI::ssh 5.26
-      URI::telnet 5.26
-      URI::tn3270 5.26
-      URI::urn 5.26
-      URI::urn::isbn 5.26
-      URI::urn::oid 5.26
+      URI 5.27
+      URI::Escape 5.27
+      URI::Heuristic 5.27
+      URI::IRI 5.27
+      URI::QueryParam 5.27
+      URI::Split 5.27
+      URI::URL 5.27
+      URI::WithBase 5.27
+      URI::data 5.27
+      URI::file 5.27
+      URI::file::Base 5.27
+      URI::file::FAT 5.27
+      URI::file::Mac 5.27
+      URI::file::OS2 5.27
+      URI::file::QNX 5.27
+      URI::file::Unix 5.27
+      URI::file::Win32 5.27
+      URI::ftp 5.27
+      URI::geo 5.27
+      URI::gopher 5.27
+      URI::http 5.27
+      URI::https 5.27
+      URI::icap 5.27
+      URI::icaps 5.27
+      URI::ldap 5.27
+      URI::ldapi 5.27
+      URI::ldaps 5.27
+      URI::mailto 5.27
+      URI::mms 5.27
+      URI::news 5.27
+      URI::nntp 5.27
+      URI::nntps 5.27
+      URI::pop 5.27
+      URI::rlogin 5.27
+      URI::rsync 5.27
+      URI::rtsp 5.27
+      URI::rtspu 5.27
+      URI::sftp 5.27
+      URI::sip 5.27
+      URI::sips 5.27
+      URI::snews 5.27
+      URI::ssh 5.27
+      URI::telnet 5.27
+      URI::tn3270 5.27
+      URI::urn 5.27
+      URI::urn::isbn 5.27
+      URI::urn::oid 5.27
     requirements:
       Carp 0
       Cwd 0
