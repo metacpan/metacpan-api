@@ -4,8 +4,8 @@ use lib 't/lib';
 
 use Test::More;
 
-use MetaCPAN::Script::Runner;
-use MetaCPAN::Script::Queue ();
+use MetaCPAN::Script::Runner ();
+use MetaCPAN::Script::Queue  ();
 
 my $config = MetaCPAN::Script::Runner::build_config;
 local @ARGV = ( '--dir', $config->{cpan} );

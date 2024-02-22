@@ -3,9 +3,7 @@ package MetaCPAN::Server::Test;
 use strict;
 use warnings;
 
-use HTTP::Request::Common qw(POST GET DELETE);
-use MetaCPAN::Server      ();
-use Plack::Test;
+use MetaCPAN::Server ();
 use Test::More;
 
 use base 'Exporter';
@@ -37,7 +35,7 @@ sub app {
     return $app;
 }
 
-require MetaCPAN::Model;
+use MetaCPAN::Model ();
 
 sub model {
     MetaCPAN::Model->new( es => ( $ENV{ES_TEST} ||= 'localhost:9200' ) );

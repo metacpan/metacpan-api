@@ -2,8 +2,7 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use MetaCPAN::Script::Runner;
-use Module::Pluggable search_dirs => ['t/lib'];
+use MetaCPAN::Script::Runner ();
 use Test::More;
 
 subtest 'runner succeeds' => sub {
