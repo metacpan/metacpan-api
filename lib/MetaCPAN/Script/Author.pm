@@ -6,16 +6,16 @@ use warnings;
 use Moose;
 with 'MooseX::Getopt', 'MetaCPAN::Role::Script';
 
-use DateTime::Format::ISO8601  ();
+use DateTime                   ();
 use Email::Valid               ();
 use Encode                     ();
-use File::stat                 ();
 use Cpanel::JSON::XS           qw( decode_json );
-use Log::Contextual            qw( :log );
+use Log::Contextual            qw( :log :dlog );
 use MetaCPAN::Document::Author ();
 use URI                        ();
 use XML::Simple                qw( XMLin );
 use MetaCPAN::Types::TypeTiny  qw( Str );
+use MetaCPAN::Util             qw(diff_struct);
 
 =head1 SYNOPSIS
 
@@ -48,12 +48,43 @@ sub run {
     $self->index->refresh;
 }
 
+my @author_config_fields = qw(
+    name
+    asciiname
+    profile
+    blog
+    perlmongers
+    donation
+    email
+    website
+    city
+    region
+    country
+    location
+    extra
+);
+
+my @cpan_fields = qw(
+    pauseid
+    name
+    email
+    website
+    asciiname
+    is_pause_custodial_account
+);
+
+my @compare_fields = do {
+    my %seen;
+    sort grep !$seen{$_}++, @cpan_fields, @author_config_fields;
+};
+
 sub index_authors {
     my $self    = shift;
-    my $type    = $self->index->type('author');
     my $authors = XMLin( $self->author_fh )->{cpanid};
+
     if ( $self->pauseid ) {
         log_info {"Indexing 1 author"};
+        $authors = { $self->pauseid => $authors->{ $self->pauseid } };
     }
     else {
         my $count = keys %$authors;
@@ -61,16 +92,7 @@ sub index_authors {
         log_info {"Indexing $count authors"};
     }
 
-    log_debug {"Getting last update dates"};
-    my $dates
-        = $type->raw->filter( { exists => { field => 'updated' } } )
-        ->size(10000)->all;
-    $dates = {
-        map {
-            $_->{pauseid} =>
-                DateTime::Format::ISO8601->parse_datetime( $_->{updated} )
-        } map { $_->{_source} } @{ $dates->{hits}->{hits} }
-    };
+    my @author_ids_to_purge;
 
     my $bulk = $self->es->bulk_helper(
         index     => $self->index->name,
@@ -79,131 +101,175 @@ sub index_authors {
         timeout   => '25m',
     );
 
-    my @author_ids_to_purge;
+    my $scroll = $self->es->scroll_helper(
+        index       => $self->index->name,
+        search_type => 'scan',
+        size        => 500,
+        body        => {
+            query => {
+                $self->pauseid
+                ? (
+                    term => {
+                        pauseid => $self->pauseid,
+                    },
+                    )
+                : ( match_all => {} ),
+            },
+            _source => [@compare_fields],
+        },
+    );
 
+    # update authors
+    while ( my $doc = $scroll->next ) {
+        my $pauseid    = $doc->{_id};
+        my $whois_data = delete $authors->{$pauseid} || next;
+        $self->update_author( $bulk, $pauseid, $whois_data, $doc->{_source} );
+    }
+
+    # new authors
     for my $pauseid ( keys %$authors ) {
-        next if ( $self->pauseid and $self->pauseid ne $pauseid );
-        my $data = $authors->{$pauseid};
-        my ( $name, $email, $homepage, $asciiname )
-            = ( @$data{qw(fullname email homepage asciiname)} );
-        $name      = undef if ( ref $name );
-        $asciiname = q{} unless defined $asciiname;
-        $email     = lc($pauseid) . '@cpan.org'
-            unless ( $email && Email::Valid->address($email) );
-        my $is_pause_custodial_account
-            = ( $name && $name =~ /\(PAUSE Custodial Account\)/ );
-        log_debug {
-            Encode::encode_utf8(
-                sprintf( "Indexing %s: %s <%s>", $pauseid, $name, $email ) );
-        };
-        my $conf = $self->author_config( $pauseid, $dates );
-        next unless ( $conf or $is_pause_custodial_account );
-        $conf ||= {};
-        my $put = {
-            pauseid   => $pauseid,
-            name      => $name,
-            asciiname => ref $asciiname ? undef : $asciiname,
-            email     => $email,
-            website   => $homepage,
-            map      { $_ => $conf->{$_} }
-                grep { defined $conf->{$_} } keys %$conf
-        };
-        $put->{website} = [ $put->{website} ]
-            unless ( ref $put->{website} eq 'ARRAY' );
-        $put->{website} = [
-
-            # normalize www.homepage.com to http://www.homepage.com
-            map     { $_->scheme ? $_->as_string : 'http://' . $_->as_string }
-                map { URI->new($_)->canonical }
-                grep {$_} @{ $put->{website} }
-        ];
-
-        $put->{is_pause_custodial_account} = 1 if $is_pause_custodial_account;
-
-        # Now check the format we have is actually correct
-        my @errors = MetaCPAN::Document::Author->validate($put);
-        next if scalar @errors;
-
-        my $author = $type->new_document($put);
-        $author->gravatar_url;    # build gravatar_url
-
-        # Do not import lat / lon's in the wrong order, or just invalid
-        if ( my $loc = $author->{location} ) {
-
-            my $lat = $loc->[1];
-            my $lon = $loc->[0];
-
-            if ( $lat > 90 or $lat < -90 ) {
-
-                # Invalid latitude
-                delete $author->{location};
-            }
-            elsif ( $lon > 180 or $lon < -180 ) {
-
-                # Invalid longitude
-                delete $author->{location};
-            }
-        }
-
-        push @author_ids_to_purge, $put->{pauseid};
-
-        # Only try put if this is a valid format
-        $bulk->update( {
-            id            => $pauseid,
-            doc           => $put,
-            doc_as_upsert => 1,
-        } );
+        my $whois_data = delete $authors->{$pauseid} || next;
+        $self->update_author( $bulk, $pauseid, $whois_data );
     }
 
     $bulk->flush;
     $self->index->refresh;
 
-    $self->purge_author_key(@author_ids_to_purge);
     $self->perform_purges;
 
     log_info {"done"};
 }
 
-sub author_config {
-    my ( $self, $pauseid, $dates ) = @_;
+sub author_data_from_cpan {
+    my $self = shift;
+    my ( $pauseid, $whois_data ) = @_;
 
-    my $fallback = $dates->{$pauseid} ? undef : {};
+    my $author_config = $self->author_config($pauseid) || {};
+
+    my $data = {
+        pauseid   => $pauseid,
+        name      => $whois_data->{fullname},
+        email     => $whois_data->{email},
+        website   => $whois_data->{homepage},
+        asciiname => $whois_data->{asciiname},
+        %$author_config,
+        is_pause_custodial_account => (
+            $whois_data->{fullname} =~ /\(PAUSE Custodial Account\)/ ? 1 : 0
+        ),
+    };
+
+    undef $data->{name}
+        if ref $data->{name};
+
+    $data->{asciiname} = q{}
+        if !defined $data->{asciiname};
+
+    $data->{email} = lc($pauseid) . '@cpan.org'
+        unless $data->{email} && Email::Valid->address( $data->{email} );
+
+    $data->{website} = [
+
+        # normalize www.homepage.com to http://www.homepage.com
+        map +( $_->scheme ? '' : 'http://' ) . $_->as_string,
+        map URI->new($_)->canonical,
+        grep $_,
+        map +( ref eq 'ARRAY' ? @$_ : $_ ),
+        $data->{website}
+    ];
+
+    # Do not import lat / lon's in the wrong order, or just invalid
+    if ( my $loc = $data->{location} ) {
+        if ( ref $loc ne 'ARRAY' || @$loc != 2 ) {
+            delete $data->{location};
+        }
+        else {
+            my $lat = $loc->[1];
+            my $lon = $loc->[0];
+
+            if ( !defined $lat or $lat > 90 or $lat < -90 ) {
+
+                # Invalid latitude
+                delete $data->{location};
+            }
+            elsif ( !defined $lon or $lon > 180 or $lon < -180 ) {
+
+                # Invalid longitude
+                delete $data->{location};
+            }
+        }
+    }
+
+    return $data;
+}
+
+sub update_author {
+    my $self = shift;
+    my ( $bulk, $pauseid, $whois_data, $current_data ) = @_;
+
+    my $data = $self->author_data_from_cpan( $pauseid, $whois_data );
+
+    log_debug {
+        Encode::encode_utf8( sprintf(
+            "Indexing %s: %s <%s>",
+            $pauseid, $data->{name}, $data->{email}
+        ) );
+    };
+
+    # Now check the format we have is actually correct
+    if ( my @errors = MetaCPAN::Document::Author->validate($data) ) {
+        Dlog_error {
+            "Invalid data for $pauseid: $_"
+        }
+        \@errors;
+        return;
+    }
+
+    return
+        unless diff_struct( $current_data, $data );
+
+    $data->{updated} = DateTime->now( time_zone => 'UTC' )->iso8601;
+
+    $bulk->update( {
+        id            => $pauseid,
+        doc           => $data,
+        doc_as_upsert => 1,
+    } );
+
+    $self->purge_author_key($pauseid);
+}
+
+sub author_config {
+    my ( $self, $pauseid ) = @_;
 
     my $dir = $self->cpan->child( 'authors',
         MetaCPAN::Util::author_dir($pauseid) );
 
-    my @files;
-    opendir( my $dh, $dir ) || return $fallback;
+    return undef
+        unless $dir->is_dir;
 
     # Get the most recent version
-    my ($file)
-        = sort { $dir->child($b)->stat->mtime <=> $dir->child($a)->stat->mtime }
-        grep   {m/author-.*?\.json/} readdir($dh);
-    return $fallback unless ($file);
-    $file = $dir->child($file);
-    return $fallback if !-e $file;
+    my ($file) = map $_->[0], sort { $a->[1] <=> $b->[1] }
+        map [ $_ => $_->stat->mtime ],
+        $dir->children(qr/\Aauthor-.*\.json\z/);
 
-    my $mtime = DateTime->from_epoch( epoch => $file->stat->mtime );
-
-    if ( $dates->{$pauseid} && $dates->{$pauseid} > $mtime ) {
-        log_debug {"Skipping $pauseid (newer version in index)"};
-        return undef;
-    }
+    return undef
+        unless $file;
 
     my $author;
     eval {
-        $author = decode_json( $file->slurp );
+        $author = decode_json( $file->slurp_raw );
         1;
     } or do {
         log_warn {"$file is broken: $@"};
-        return $fallback;
+        return undef;
     };
-    $author
-        = { map { $_ => $author->{$_} }
-            qw(name asciiname profile blog perlmongers donation email website city region country location extra)
-        };
-    $author->{updated} = $mtime->iso8601;
-    return $author;
+
+    return {
+        map {
+            my $value = $author->{$_};
+            defined $value ? ( $_ => $value ) : ()
+        } @author_config_fields
+    };
 }
 
 __PACKAGE__->meta->make_immutable;
