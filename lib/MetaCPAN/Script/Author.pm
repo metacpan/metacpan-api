@@ -224,8 +224,19 @@ sub update_author {
         return;
     }
 
-    return
-        unless diff_struct( $current_data, $data );
+    if ( my $diff = diff_struct( $current_data, $data ) ) {
+
+        # log a sampling of differences
+        if ( $self->has_surrogate_keys_to_purge % 10 == 9 ) {
+            Dlog_debug {
+                "Found difference in $pauseid: $_"
+            }
+            $diff;
+        }
+    }
+    else {
+        return;
+    }
 
     $data->{updated} = DateTime->now( time_zone => 'UTC' )->iso8601;
 

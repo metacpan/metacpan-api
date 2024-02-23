@@ -163,34 +163,36 @@ sub single_valued_arrayref_to_scalar {
 }
 
 sub diff_struct {
-    my (@queue) = [@_];
+    my (@queue) = [ @_, '' ];
 
     while ( my $check = shift @queue ) {
-        my ( $old, $new, $allow_extra ) = @$check;
+        my ( $old, $new, $path ) = @$check;
         if ( !defined $new ) {
-            return !!1
+            return [ $path, $old, $new ]
                 if defined $old;
         }
         elsif ( !is_ref($new) ) {
-            return !!1
+            return [ $path, $old, $new ]
                 if is_ref($old)
                 or $new ne $old;
         }
         elsif ( is_plain_arrayref($new) ) {
-            return !!1
+            return [ $path, $old, $new ]
                 if !is_plain_arrayref($old) || @$new != @$old;
-            push @queue, map [ $old->[$_], $new->[$_] ], 0 .. $#$new;
+            push @queue, map [ $old->[$_], $new->[$_], "$path/$_" ],
+                0 .. $#$new;
         }
         elsif ( is_plain_hashref($new) ) {
-            return !!1
+            return [ $path, $old, $new ]
                 if !is_plain_hashref($old) || keys %$new != keys %$old;
-            push @queue, map [ $old->{$_}, $new->{$_} ], keys %$new;
+            push @queue, map [ $old->{$_}, $new->{$_}, "$path/$_" ],
+                keys %$new;
         }
         else {
-            die "can't compare $new type data";
+            die "can't compare $new type data at $path";
         }
     }
-    return !!0;
+    return undef;
 }
 
 1;
