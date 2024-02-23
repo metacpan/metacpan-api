@@ -155,7 +155,8 @@ sub author_data_from_cpan {
         asciiname => $whois_data->{asciiname},
         %$author_config,
         is_pause_custodial_account => (
-            $whois_data->{fullname} =~ /\(PAUSE Custodial Account\)/ ? 1 : 0
+            ( $whois_data->{fullname} // '' )
+            =~ /\(PAUSE Custodial Account\)/ ? 1 : 0
         ),
     };
 
