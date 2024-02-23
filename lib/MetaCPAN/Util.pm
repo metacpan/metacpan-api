@@ -163,34 +163,38 @@ sub single_valued_arrayref_to_scalar {
 }
 
 sub diff_struct {
-    my (@queue) = [@_];
+    my ( $old_root, $new_root, $allow_extra ) = @_;
+    my (@queue) = [ $old_root, $new_root, '', $allow_extra ];
 
     while ( my $check = shift @queue ) {
-        my ( $old, $new, $allow_extra ) = @$check;
+        my ( $old, $new, $path, $allow_extra ) = @$check;
         if ( !defined $new ) {
-            return !!1
+            return [ $path, $old, $new ]
                 if defined $old;
         }
         elsif ( !is_ref($new) ) {
-            return !!1
+            return [ $path, $old, $new ]
                 if is_ref($old)
                 or $new ne $old;
         }
         elsif ( is_plain_arrayref($new) ) {
-            return !!1
+            return [ $path, $old, $new ]
                 if !is_plain_arrayref($old) || @$new != @$old;
-            push @queue, map [ $old->[$_], $new->[$_] ], 0 .. $#$new;
+            push @queue, map [ $old->[$_], $new->[$_], "$path/$_" ],
+                0 .. $#$new;
         }
         elsif ( is_plain_hashref($new) ) {
-            return !!1
-                if !is_plain_hashref($old) || keys %$new != keys %$old;
-            push @queue, map [ $old->{$_}, $new->{$_} ], keys %$new;
+            return [ $path, $old, $new ]
+                if !is_plain_hashref($old)
+                || !$allow_extra && keys %$new != keys %$old;
+            push @queue, map [ $old->{$_}, $new->{$_}, "$path/$_" ],
+                keys %$new;
         }
         else {
-            die "can't compare $new type data";
+            die "can't compare $new type data at $path";
         }
     }
-    return !!0;
+    return undef;
 }
 
 1;
