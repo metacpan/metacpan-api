@@ -103,6 +103,7 @@ sub index_authors {
 
     my $scroll = $self->es->scroll_helper(
         index       => $self->index->name,
+        type        => 'author',
         search_type => 'scan',
         size        => 500,
         body        => {
