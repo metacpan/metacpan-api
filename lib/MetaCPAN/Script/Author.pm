@@ -225,7 +225,7 @@ sub update_author {
         return;
     }
 
-    if ( my $diff = diff_struct( $current_data, $data ) ) {
+    if ( my $diff = diff_struct( $current_data, $data, 1 ) ) {
 
         # log a sampling of differences
         if ( $self->has_surrogate_keys_to_purge % 10 == 9 ) {
