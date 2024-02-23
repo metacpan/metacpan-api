@@ -8,15 +8,27 @@ use version;
 
 use Digest::SHA qw( sha1_base64 sha1_hex );
 use Encode      qw( decode_utf8 );
-use Ref::Util   qw( is_arrayref is_hashref );
+use Ref::Util   qw(
+    is_arrayref
+    is_hashref
+    is_plain_arrayref
+    is_plain_hashref
+    is_ref
+);
 use Sub::Exporter -setup => {
-    exports => [
-        'author_dir',      'digest',
-        'extract_section', 'fix_pod',
-        'fix_version',     'generate_sid',
-        'numify_version',  'pod_lines',
-        'strip_pod',       'single_valued_arrayref_to_scalar'
-    ]
+    exports => [ qw(
+        author_dir
+        diff_struct
+        digest
+        extract_section
+        fix_pod
+        fix_version
+        generate_sid
+        numify_version
+        pod_lines
+        strip_pod
+        single_valued_arrayref_to_scalar
+    ) ]
 };
 
 sub digest {
@@ -150,6 +162,37 @@ sub single_valued_arrayref_to_scalar {
     return $is_arrayref ? $array : @{$array};
 }
 
+sub diff_struct {
+    my (@queue) = [@_];
+
+    while ( my $check = shift @queue ) {
+        my ( $old, $new, $allow_extra ) = @$check;
+        if ( !defined $new ) {
+            return !!1
+                if defined $old;
+        }
+        elsif ( !is_ref($new) ) {
+            return !!1
+                if is_ref($old)
+                or $new ne $old;
+        }
+        elsif ( is_plain_arrayref($new) ) {
+            return !!1
+                if !is_plain_arrayref($old) || @$new != @$old;
+            push @queue, map [ $old->[$_], $new->[$_] ], 0 .. $#$new;
+        }
+        elsif ( is_plain_hashref($new) ) {
+            return !!1
+                if !is_plain_hashref($old) || keys %$new != keys %$old;
+            push @queue, map [ $old->{$_}, $new->{$_} ], keys %$new;
+        }
+        else {
+            die "can't compare $new type data";
+        }
+    }
+    return !!0;
+}
+
 1;
 
 __END__
@@ -215,5 +258,11 @@ yields:
       },
       ...
     ]
+
+=head2 diff_struct
+
+    my $changed = diff_struct($old_hashref, $new_hashref);
+
+Accepts two data structures and returns a true value if they are different.
 
 =cut
