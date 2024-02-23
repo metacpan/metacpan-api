@@ -167,8 +167,6 @@ sub run {
                 eval { $p->package( $_->{name} ) }
                 } @{ $file_data->{module} };
 
-            push @modules_to_purge, @modules;
-
             # For each of the packages in this file...
             foreach my $module (@modules) {
 
@@ -204,9 +202,11 @@ sub run {
                         )
                         );
                     $upgrade{ $file_data->{distribution} } = $file_data;
+                    push @modules_to_purge, @modules;
                 }
                 elsif ( $file_data->{status} eq 'latest' ) {
                     $downgrade{ $file_data->{release} } = $file_data;
+                    push @modules_to_purge, @modules;
                 }
             }
         }
