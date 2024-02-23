@@ -163,10 +163,11 @@ sub single_valued_arrayref_to_scalar {
 }
 
 sub diff_struct {
-    my (@queue) = [ @_, '' ];
+    my ( $old_root, $new_root, $allow_extra ) = @_;
+    my (@queue) = [ $old_root, $new_root, '', $allow_extra ];
 
     while ( my $check = shift @queue ) {
-        my ( $old, $new, $path ) = @$check;
+        my ( $old, $new, $path, $allow_extra ) = @$check;
         if ( !defined $new ) {
             return [ $path, $old, $new ]
                 if defined $old;
@@ -184,7 +185,8 @@ sub diff_struct {
         }
         elsif ( is_plain_hashref($new) ) {
             return [ $path, $old, $new ]
-                if !is_plain_hashref($old) || keys %$new != keys %$old;
+                if !is_plain_hashref($old)
+                || !$allow_extra && keys %$new != keys %$old;
             push @queue, map [ $old->{$_}, $new->{$_}, "$path/$_" ],
                 keys %$new;
         }
