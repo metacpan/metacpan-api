@@ -28,6 +28,14 @@ has cpan => (
         'Location of a local CPAN mirror, looks for $ENV{MINICPAN} and ~/CPAN',
 );
 
+has cpan_file_map => (
+    is      => 'ro',
+    isa     => HashRef,
+    lazy    => 1,
+    builder => '_build_cpan_file_map',
+    traits  => ['NoGetopt'],
+);
+
 has die_on_error => (
     is            => 'ro',
     isa           => Bool,
@@ -223,6 +231,24 @@ sub _build_cpan {
     die
         "Couldn't find a local cpan mirror. Please specify --cpan or set MINICPAN";
 
+}
+
+sub _build_cpan_file_map {
+    my $self = shift;
+    my $ls   = $self->cpan->child(qw(indices find-ls.gz));
+    unless ( -e $ls ) {
+        die "File $ls does not exist";
+    }
+    log_info {"Reading $ls"};
+    my $cpan = {};
+    open my $fh, "<:gzip", $ls;
+    while (<$fh>) {
+        my $path = ( split(/\s+/) )[-1];
+        next unless ( $path =~ /^authors\/id\/\w+\/\w+\/(\w+)\/(.*)$/ );
+        $cpan->{$1}{$2} = 1;
+    }
+    close $fh;
+    return $cpan;
 }
 
 sub _build_quarantine {
