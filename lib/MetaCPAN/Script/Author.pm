@@ -260,9 +260,13 @@ sub author_config {
     return undef
         unless $dir->is_dir;
 
+    my $author_cpan_files = $self->cpan_file_map->{$pauseid}
+        or return undef;
+
     # Get the most recent version
     my ($file) = map $_->[0], sort { $a->[1] <=> $b->[1] }
         map [ $_ => $_->stat->mtime ],
+        grep $author_cpan_files->{ $_->basename },
         $dir->children(qr/\Aauthor-.*\.json\z/);
 
     return undef

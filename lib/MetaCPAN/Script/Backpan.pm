@@ -31,13 +31,6 @@ has files_only => (
     documentation => 'only update the "file" index',
 );
 
-has _cpan_files_list => (
-    is      => 'ro',
-    isa     => HashRef,
-    lazy    => 1,
-    builder => '_build_cpan_files_list',
-);
-
 has _release_status => (
     is      => 'ro',
     isa     => HashRef,
@@ -49,25 +42,6 @@ has _bulk => (
     isa     => HashRef,
     default => sub { +{} },
 );
-
-sub _build_cpan_files_list {
-    my $self = shift;
-    my $ls   = $self->cpan->child(qw(indices find-ls.gz));
-    unless ( -e $ls ) {
-        log_error {"File $ls does not exist"};
-        exit;
-    }
-    log_info {"Reading $ls"};
-    my $cpan = {};
-    open my $fh, "<:gzip", $ls;
-    while (<$fh>) {
-        my $path = ( split(/\s+/) )[-1];
-        next unless ( $path =~ /^authors\/id\/\w+\/\w+\/(\w+)\/(.*)$/ );
-        $cpan->{$1}{$2} = 1;
-    }
-    close $fh;
-    return $cpan;
-}
 
 sub run {
     my $self = shift;
@@ -106,7 +80,7 @@ sub build_release_status_map {
         $self->_release_status->{$author}{$name} = [
             (
                 $self->undo
-                    or exists $self->_cpan_files_list->{$author}{$archive}
+                    or exists $self->cpan_file_map->{$author}{$archive}
             )
             ? 'cpan'
             : 'backpan',

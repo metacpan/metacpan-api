@@ -5,6 +5,8 @@ package    # no_index
     MetaCPAN::TestHelpers;
 
 use Cpanel::JSON::XS;
+use File::Copy  qw( copy );
+use File::pushd qw( pushd );
 use FindBin;
 use Git::Helpers qw( checkout_root );
 use MetaCPAN::Script::Runner;
@@ -30,6 +32,7 @@ our @EXPORT = qw(
     test_release
     tmp_dir
     try
+    write_find_ls
 );
 
 =head1 EXPORTS
@@ -143,6 +146,27 @@ sub test_cache_headers {
         $conf->{surrogate_control},
         "Cache Header: Surrogate-Control ok"
     ) if exists $conf->{surrogate_control};
+}
+
+sub write_find_ls {
+    my $cpan_dir = shift;
+
+    my $indices = $cpan_dir->child('indices');
+    $indices->mkpath;
+
+    my $find_ls = $indices->child('find-ls.gz')->openw(':gzip');
+
+    my $chdir = pushd($cpan_dir);
+
+    open my $fh, '-|', 'find', 'authors', '-ls'
+        or die "can't run find: $!";
+
+    copy $fh, $find_ls;
+
+    close $fh;
+    close $find_ls;
+
+    return;
 }
 
 1;

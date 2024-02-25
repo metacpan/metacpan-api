@@ -187,7 +187,7 @@ sub run {
     my @module_to_purge_dists = map { CPAN::DistnameInfo->new($_) } @files;
 
     $self->index;
-    $self->_cpan_files_list if ( $self->detect_backpan );
+    $self->cpan_file_map if ( $self->detect_backpan );
     $self->perms;
     my @pid;
 
@@ -388,29 +388,10 @@ sub import_archive {
     $self->update_release_contirbutors($contrib_data);
 }
 
-sub _build_cpan_files_list {
-    my $self = shift;
-    my $ls   = $self->cpan->child(qw(indices find-ls.gz));
-    unless ( -e $ls ) {
-        log_error {"File $ls does not exist"};
-        exit;
-    }
-    log_info {"Reading $ls"};
-    my $cpan = {};
-    open my $fh, "<:gzip", $ls;
-    while (<$fh>) {
-        my $path = ( split(/\s+/) )[-1];
-        next unless ( $path =~ /^authors\/id\/\w+\/\w+\/(.*)$/ );
-        $cpan->{$1} = 1;
-    }
-    close $fh;
-    return $cpan;
-}
-
 sub detect_status {
     my ( $self, $author, $archive ) = @_;
     return $self->status unless ( $self->detect_backpan );
-    if ( $self->_cpan_files_list->{ join( '/', $author, $archive ) } ) {
+    if ( $self->cpan_file_map->{$author}{$archive} ) {
         return 'cpan';
     }
     else {
