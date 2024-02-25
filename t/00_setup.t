@@ -11,6 +11,7 @@ use MetaCPAN::TestHelpers qw(
     fakecpan_dir
     get_config
     tmp_dir
+    write_find_ls
 );
 use MetaCPAN::TestServer ();
 use Module::Faker 0.015  ();    # Generates META.json.
@@ -93,6 +94,8 @@ $src_dir->child('bugs.tsv')->copy( $fakecpan_dir->child('bugs.tsv') );
 
 $src_dir->child('mirrors.json')
     ->copy( $fakecpan_dir->child(qw(indices mirrors.json)) );
+
+write_find_ls($fakecpan_dir);
 
 $server->index_permissions;
 $server->index_packages;

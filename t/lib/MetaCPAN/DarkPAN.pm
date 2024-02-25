@@ -3,7 +3,7 @@ package MetaCPAN::DarkPAN;
 use MetaCPAN::Moose;
 
 use CPAN::Repository::Perms;
-use MetaCPAN::TestHelpers     qw( get_config );
+use MetaCPAN::TestHelpers     qw( get_config write_find_ls );
 use MetaCPAN::Types::TypeTiny qw( Path );
 use MetaCPAN::Util            qw( author_dir );
 use OrePAN2::Indexer;
@@ -67,6 +67,7 @@ sub run {
     );
     $orepan->make_index( no_compress => 1, );
     $self->_write_06perms;
+    write_find_ls( $self->base_dir );
 }
 
 sub _write_06perms {
