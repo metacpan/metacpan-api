@@ -174,7 +174,8 @@ sub diff_struct {
         }
         elsif ( !is_ref($new) ) {
             return [ $path, $old, $new ]
-                if is_ref($old)
+                if !defined $old
+                or is_ref($old)
                 or $new ne $old;
         }
         elsif ( is_plain_arrayref($new) ) {
