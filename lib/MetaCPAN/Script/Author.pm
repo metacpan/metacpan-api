@@ -268,7 +268,7 @@ sub author_config {
         or return undef;
 
     # Get the most recent version
-    my ($file) = map $_->[0], sort { $a->[1] <=> $b->[1] }
+    my ($file) = map $_->[0], sort { $b->[1] <=> $a->[1] }
         map [ $_ => $_->stat->mtime ],
         grep $author_cpan_files->{ $_->basename },
         $dir->children(qr/\Aauthor-.*\.json\z/);
