@@ -163,6 +163,10 @@ sub author_data_from_cpan {
     undef $data->{name}
         if ref $data->{name};
 
+    if ( !length $data->{name} ) {
+        $data->{name} = $pauseid;
+    }
+
     $data->{asciiname} = q{}
         if !defined $data->{asciiname};
 
