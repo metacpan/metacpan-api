@@ -34,7 +34,8 @@ declare PerlMongers,
     as ArrayRef [ Dict [ url => Optional [Str], name => NonEmptySimpleStr ] ];
 coerce PerlMongers, from HashRef, via { [$_] };
 
-declare Blog, as ArrayRef [ Dict [ url => NonEmptySimpleStr, feed => Str ] ];
+declare Blog,
+    as ArrayRef [ Dict [ url => NonEmptySimpleStr, feed => Optional [Str] ] ];
 coerce Blog, from HashRef, via { [$_] };
 
 declare Stat,
