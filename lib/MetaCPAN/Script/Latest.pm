@@ -7,6 +7,7 @@ use Log::Contextual qw( :log );
 use Moose;
 use MooseX::Aliases;
 use Parse::CPAN::Packages::Fast;
+use CPAN::DistnameInfo;
 use Regexp::Common            qw(time);
 use Time::Local               qw( timelocal );
 use MetaCPAN::Types::TypeTiny qw( Bool Str );
@@ -88,7 +89,6 @@ sub run {
 
     my %upgrade;
     my %downgrade;
-    my @modules_to_purge;
     my %queued_distributions;
 
     my $total       = @filter;
@@ -141,11 +141,9 @@ sub run {
             'Searching for ' . @$filter . ' of ' . $total . ' modules'
         }
         if @module_filters > 1;
-        my $scroll
-            = $self->index->type('file')->filter($query)
-            ->source(
-            [qw< author date distribution module.name release status >] )
-            ->size(100)->raw->scroll;
+        my $scroll = $self->index->type('file')->filter($query)->source( [ qw(
+            author date distribution download_url module.name release status
+        ) ] )->size(100)->raw->scroll;
 
         $found_total += $scroll->total;
 
@@ -202,11 +200,9 @@ sub run {
                         )
                         );
                     $upgrade{ $file_data->{distribution} } = $file_data;
-                    push @modules_to_purge, @modules;
                 }
                 elsif ( $file_data->{status} eq 'latest' ) {
                     $downgrade{ $file_data->{release} } = $file_data;
-                    push @modules_to_purge, @modules;
                 }
             }
         }
@@ -217,11 +213,15 @@ sub run {
         type  => 'file'
     );
 
+    my %to_purge;
+
     while ( my ( $dist, $file_data ) = each %upgrade ) {
 
         # Don't reindex if already marked as latest.
         # This just means that it hasn't changed (query includes 'latest').
         next if ( !$self->force and $file_data->{status} eq 'latest' );
+
+        $to_purge{ $file_data->{download_url} } = 1;
 
         $self->reindex( $bulk, $file_data, 'latest' );
     }
@@ -238,17 +238,16 @@ sub run {
             && $upgrade{ $file_data->{distribution} }->{release} eq
             $file_data->{release} );
 
+        $to_purge{ $file_data->{download_url} } = 1;
+
         $self->reindex( $bulk, $file_data, 'cpan' );
     }
     $bulk->flush;
     $self->index->refresh;
 
-    # We just want the CPAN::DistnameInfo
-    my @module_to_purge_dists = map { $_->distribution } @modules_to_purge;
-
     # Call Fastly to purge
-    $self->purge_cpan_distnameinfos( \@module_to_purge_dists );
-
+    $self->purge_cpan_distnameinfos( [
+        map CPAN::DistnameInfo->new($_), keys %to_purge ] );
 }
 
 # Update the status for the release and all the files.
