@@ -395,10 +395,10 @@ DISTRIBUTIONS
       strict 0
       vars 0
       warnings 0
-  Carp-Assert-More-2.3.0
-    pathname: P/PE/PETDANCE/Carp-Assert-More-2.3.0.tar.gz
+  Carp-Assert-More-2.4.0
+    pathname: P/PE/PETDANCE/Carp-Assert-More-2.4.0.tar.gz
     provides:
-      Carp::Assert::More 2.003000
+      Carp::Assert::More 2.004000
     requirements:
       Carp 0
       ExtUtils::MakeMaker 0
@@ -2918,12 +2918,13 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       version 0
-  HTML-Tagset-3.20
-    pathname: P/PE/PETDANCE/HTML-Tagset-3.20.tar.gz
+  HTML-Tagset-3.22
+    pathname: P/PE/PETDANCE/HTML-Tagset-3.22.tar.gz
     provides:
-      HTML::Tagset 3.20
+      HTML::Tagset 3.22
     requirements:
       ExtUtils::MakeMaker 0
+      perl 5.010001
   HTML-Tiny-1.08
     pathname: A/AR/ARISTOTLE/HTML-Tiny-1.08.tar.gz
     provides:
@@ -4218,8 +4219,8 @@ DISTRIBUTIONS
       URI::db 0.15
       URI::file 4.21
       perl 5.010001
-  Mojolicious-9.35
-    pathname: S/SR/SRI/Mojolicious-9.35.tar.gz
+  Mojolicious-9.36
+    pathname: S/SR/SRI/Mojolicious-9.36.tar.gz
     provides:
       Mojo undef
       Mojo::Asset undef
@@ -4287,7 +4288,7 @@ DISTRIBUTIONS
       Mojo::UserAgent::Transactor undef
       Mojo::Util undef
       Mojo::WebSocket undef
-      Mojolicious 9.35
+      Mojolicious 9.36
       Mojolicious::Command undef
       Mojolicious::Command::Author::cpanify undef
       Mojolicious::Command::Author::generate undef
