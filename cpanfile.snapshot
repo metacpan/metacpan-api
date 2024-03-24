@@ -1487,10 +1487,10 @@ DISTRIBUTIONS
       perl 5.012
       strict 0
       warnings 0
-  Data-UUID-1.226
-    pathname: R/RJ/RJBS/Data-UUID-1.226.tar.gz
+  Data-UUID-1.227
+    pathname: G/GT/GTERMARS/Data-UUID-1.227.tar.gz
     provides:
-      Data::UUID 1.226
+      Data::UUID 1.227
     requirements:
       Digest::MD5 0
       ExtUtils::MakeMaker 0
@@ -3923,13 +3923,13 @@ DISTRIBUTIONS
       Moose::Role 0
       MooseX::Fastly::Role 0.01
       Net::Fastly 1.05
-  Minion-10.28
-    pathname: S/SR/SRI/Minion-10.28.tar.gz
+  Minion-10.29
+    pathname: S/SR/SRI/Minion-10.29.tar.gz
     provides:
       LinkCheck undef
       LinkCheck::Controller::Links undef
       LinkCheck::Task::CheckLinks undef
-      Minion 10.28
+      Minion 10.29
       Minion::Backend undef
       Minion::Backend::Pg undef
       Minion::Command::minion undef
@@ -8276,10 +8276,10 @@ DISTRIBUTIONS
       MIME::Charset v1.6.2
       Test::More 0.45
       perl 5.008
-  Variable-Magic-0.63
-    pathname: V/VP/VPIT/Variable-Magic-0.63.tar.gz
+  Variable-Magic-0.64
+    pathname: V/VP/VPIT/Variable-Magic-0.64.tar.gz
     provides:
-      Variable::Magic 0.63
+      Variable::Magic 0.64
     requirements:
       Carp 0
       Config 0
