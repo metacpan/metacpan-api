@@ -1649,15 +1649,15 @@ DISTRIBUTIONS
       parent 0
       strict 0
       warnings 0
-  DateTime-Locale-1.40
-    pathname: D/DR/DROLSKY/DateTime-Locale-1.40.tar.gz
+  DateTime-Locale-1.41
+    pathname: D/DR/DROLSKY/DateTime-Locale-1.41.tar.gz
     provides:
-      DateTime::Locale 1.40
-      DateTime::Locale::Base 1.40
-      DateTime::Locale::Catalog 1.40
-      DateTime::Locale::Data 1.40
-      DateTime::Locale::FromData 1.40
-      DateTime::Locale::Util 1.40
+      DateTime::Locale 1.41
+      DateTime::Locale::Base 1.41
+      DateTime::Locale::Catalog 1.41
+      DateTime::Locale::Data 1.41
+      DateTime::Locale::FromData 1.41
+      DateTime::Locale::Util 1.41
     requirements:
       Carp 0
       Dist::CheckConflicts 0.02
@@ -8168,54 +8168,54 @@ DISTRIBUTIONS
       Test::More 0.88
       URI 1.40
       perl 5.008001
-  URI-db-0.21
-    pathname: D/DW/DWHEELER/URI-db-0.21.tar.gz
+  URI-db-0.22
+    pathname: D/DW/DWHEELER/URI-db-0.22.tar.gz
     provides:
-      URI::cassandra 0.21
-      URI::cockroach 0.21
-      URI::cockroachdb 0.21
-      URI::couch 0.21
-      URI::couchdb 0.21
-      URI::cubrid 0.21
-      URI::db 0.21
-      URI::db2 0.21
-      URI::derby 0.21
-      URI::exasol 0.21
-      URI::firebird 0.21
-      URI::hive 0.21
-      URI::impala 0.21
-      URI::informix 0.21
-      URI::ingres 0.21
-      URI::interbase 0.21
-      URI::ldapdb 0.21
-      URI::maria 0.21
-      URI::mariadb 0.21
-      URI::max 0.21
-      URI::maxdb 0.21
-      URI::monet 0.21
-      URI::monetdb 0.21
-      URI::mongo 0.21
-      URI::mongodb 0.21
-      URI::mssql 0.21
-      URI::mysql 0.21
-      URI::oracle 0.21
-      URI::pg 0.21
-      URI::pgsql 0.21
-      URI::pgxc 0.21
-      URI::postgres 0.21
-      URI::postgresql 0.21
-      URI::postgresxc 0.21
-      URI::redshift 0.21
-      URI::snowflake 0.21
-      URI::sqlite 0.21
-      URI::sqlite3 0.21
-      URI::sqlserver 0.21
-      URI::sybase 0.21
-      URI::teradata 0.21
-      URI::unify 0.21
-      URI::vertica 0.21
-      URI::yugabyte 0.21
-      URI::yugabytedb 0.21
+      URI::cassandra 0.22
+      URI::cockroach 0.22
+      URI::cockroachdb 0.22
+      URI::couch 0.22
+      URI::couchdb 0.22
+      URI::cubrid 0.22
+      URI::db 0.22
+      URI::db2 0.22
+      URI::derby 0.22
+      URI::exasol 0.22
+      URI::firebird 0.22
+      URI::hive 0.22
+      URI::impala 0.22
+      URI::informix 0.22
+      URI::ingres 0.22
+      URI::interbase 0.22
+      URI::ldapdb 0.22
+      URI::maria 0.22
+      URI::mariadb 0.22
+      URI::max 0.22
+      URI::maxdb 0.22
+      URI::monet 0.22
+      URI::monetdb 0.22
+      URI::mongo 0.22
+      URI::mongodb 0.22
+      URI::mssql 0.22
+      URI::mysql 0.22
+      URI::oracle 0.22
+      URI::pg 0.22
+      URI::pgsql 0.22
+      URI::pgxc 0.22
+      URI::postgres 0.22
+      URI::postgresql 0.22
+      URI::postgresxc 0.22
+      URI::redshift 0.22
+      URI::snowflake 0.22
+      URI::sqlite 0.22
+      URI::sqlite3 0.22
+      URI::sqlserver 0.22
+      URI::sybase 0.22
+      URI::teradata 0.22
+      URI::unify 0.22
+      URI::vertica 0.22
+      URI::yugabyte 0.22
+      URI::yugabytedb 0.22
     requirements:
       Module::Build 0.30
       Test::More 0.88
