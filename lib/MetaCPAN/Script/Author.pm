@@ -78,9 +78,49 @@ my @compare_fields = do {
     sort grep !$seen{$_}++, @cpan_fields, @author_config_fields;
 };
 
+has whois_data => (
+    is      => 'ro',
+    traits  => ['NoGetopt'],
+    lazy    => 1,
+    builder => '_build_whois_data',
+);
+
+sub _build_whois_data {
+    my $self = shift;
+    my $data = XMLin(
+        $self->author_fh,
+        ForceArray    => 1,
+        SuppressEmpty => '',
+        NoAttr        => 1,
+        KeyAttr       => [],
+    );
+
+    my $whois_data = {};
+
+    for my $author ( @{ $data->{cpanid} } ) {
+        my $data = {
+            map {
+                my $content = $author->{$_};
+                @$content == 1
+                    && !ref $content->[0] ? ( $_ => $content->[0] ) : ();
+            } keys %$author
+        };
+
+        my $pauseid  = $data->{id};
+        my $existing = $whois_data->{$pauseid};
+        if (  !$existing
+            || $existing->{type} eq 'author' && $data->{type} eq 'list' )
+        {
+            $whois_data->{$pauseid} = $data;
+        }
+    }
+
+    return $whois_data;
+}
+
 sub index_authors {
     my $self    = shift;
-    my $authors = XMLin( $self->author_fh )->{cpanid};
+    my $authors = $self->whois_data;
 
     if ( $self->pauseid ) {
         log_info {"Indexing 1 author"};
