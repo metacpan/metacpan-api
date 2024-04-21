@@ -1649,15 +1649,15 @@ DISTRIBUTIONS
       parent 0
       strict 0
       warnings 0
-  DateTime-Locale-1.41
-    pathname: D/DR/DROLSKY/DateTime-Locale-1.41.tar.gz
+  DateTime-Locale-1.42
+    pathname: D/DR/DROLSKY/DateTime-Locale-1.42.tar.gz
     provides:
-      DateTime::Locale 1.41
-      DateTime::Locale::Base 1.41
-      DateTime::Locale::Catalog 1.41
-      DateTime::Locale::Data 1.41
-      DateTime::Locale::FromData 1.41
-      DateTime::Locale::Util 1.41
+      DateTime::Locale 1.42
+      DateTime::Locale::Base 1.42
+      DateTime::Locale::Catalog 1.42
+      DateTime::Locale::Data 1.42
+      DateTime::Locale::FromData 1.42
+      DateTime::Locale::Util 1.42
     requirements:
       Carp 0
       Dist::CheckConflicts 0.02
@@ -6056,10 +6056,10 @@ DISTRIBUTIONS
     requirements:
       Exporter 0
       perl 5.006
-  Parse-PMFile-0.45
-    pathname: I/IS/ISHIGAKI/Parse-PMFile-0.45.tar.gz
+  Parse-PMFile-0.47
+    pathname: I/IS/ISHIGAKI/Parse-PMFile-0.47.tar.gz
     provides:
-      Parse::PMFile 0.45
+      Parse::PMFile 0.47
     requirements:
       Dumpvalue 0
       ExtUtils::MakeMaker 0
@@ -7360,21 +7360,21 @@ DISTRIBUTIONS
       Scalar::Util 1.14
       perl 5.006
       strict 0
-  Term-Choose-1.763
-    pathname: K/KU/KUERBIS/Term-Choose-1.763.tar.gz
+  Term-Choose-1.764
+    pathname: K/KU/KUERBIS/Term-Choose-1.764.tar.gz
     provides:
-      Term::Choose 1.763
-      Term::Choose::Constants 1.763
-      Term::Choose::LineFold 1.763
-      Term::Choose::LineFold::CharWidthAmbiguousWide 1.763
-      Term::Choose::LineFold::CharWidthDefault 1.763
-      Term::Choose::Linux 1.763
-      Term::Choose::Opt::Mouse 1.763
-      Term::Choose::Opt::Search 1.763
-      Term::Choose::Opt::SkipItems 1.763
-      Term::Choose::Screen 1.763
-      Term::Choose::ValidateOptions 1.763
-      Term::Choose::Win32 1.763
+      Term::Choose 1.764
+      Term::Choose::Constants 1.764
+      Term::Choose::LineFold 1.764
+      Term::Choose::LineFold::CharWidthAmbiguousWide 1.764
+      Term::Choose::LineFold::CharWidthDefault 1.764
+      Term::Choose::Linux 1.764
+      Term::Choose::Opt::Mouse 1.764
+      Term::Choose::Opt::Search 1.764
+      Term::Choose::Opt::SkipItems 1.764
+      Term::Choose::Screen 1.764
+      Term::Choose::ValidateOptions 1.764
+      Term::Choose::Win32 1.764
     requirements:
       Carp 0
       Exporter 0
@@ -7691,10 +7691,10 @@ DISTRIBUTIONS
       Test::Builder 0.13
       Test::Builder::Tester 1.02
       perl 5.006
-  Text-CSV_XS-1.53
-    pathname: H/HM/HMBRAND/Text-CSV_XS-1.53.tgz
+  Text-CSV_XS-1.54
+    pathname: H/HM/HMBRAND/Text-CSV_XS-1.54.tgz
     provides:
-      Text::CSV_XS 1.53
+      Text::CSV_XS 1.54
     requirements:
       Config 0
       ExtUtils::MakeMaker 0
