@@ -13,7 +13,7 @@ has '+type' => ( default => 'file' );
 
 sub get : Local : Path('/download_url') : Args(1) {
     my ( $self, $c, $module ) = @_;
-    my $type = 'module';
+    my $type = $module eq 'perl' ? 'dist' : 'module';
     my $data
         = $self->model($c)
         ->find_download_url( $type, $module, $c->req->params );
