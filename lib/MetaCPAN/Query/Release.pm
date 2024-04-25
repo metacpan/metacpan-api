@@ -1012,7 +1012,7 @@ cpanm Foo~<2
 cpanm --dev Foo~<2
 => status: -backpan, module.version_numified: lt: 2, sort_by: status,version_numified,date
 
-    $release->find_download_url( 'Foo', { version => $version, dev => 0|1 });
+    $release->find_download_url( 'module', 'Foo', { version => $version, dev => 0|1 });
 
 Sorting:
 
@@ -1029,7 +1029,7 @@ Sorting:
 =cut
 
 sub find_download_url {
-    my ( $self, $module, $args ) = @_;
+    my ( $self, $type, $module, $args ) = @_;
     $args ||= {};
 
     my $dev              = $args->{dev};
@@ -1037,6 +1037,11 @@ sub find_download_url {
     my $explicit_version = $version && $version =~ /==/;
 
     my @filters;
+
+    die 'type must be module or dist'
+        unless $type eq 'module' || $type eq 'dist';
+    my $module_filter = $type eq 'module';
+
     if ( !$explicit_version ) {
         push @filters, { not => { term => { status => 'backpan' } } };
         if ( !$dev ) {
@@ -1044,53 +1049,65 @@ sub find_download_url {
         }
     }
 
-    my $version_filters = $self->_version_filters($version);
+    my $prefix = $module_filter ? 'module.' : '';
 
-    # filters to be applied to the nested modules
-    my $module_f = {
-        nested => {
-            path       => 'module',
-            inner_hits => { _source => 'version' },
-            filter     => {
-                bool => {
-                    must => [
-                        { term => { 'module.authorized' => 1 } },
-                        { term => { 'module.indexed'    => 1 } },
-                        { term => { 'module.name'       => $module } },
-                        (
-                            exists $version_filters->{must}
-                            ? @{ $version_filters->{must} }
-                            : ()
-                        )
-                    ],
-                    (
-                        exists $version_filters->{must_not}
-                        ? ( must_not => [ $version_filters->{must_not} ] )
-                        : ()
-                    )
-                }
-            }
+    my $version_filters
+        = $self->_version_filters( $version, $prefix . 'version_numified' );
+
+    my $entity_filter = {
+        bool => {
+            must => [
+                { term => { $prefix . 'authorized' => 1 } },
+                { term => { $prefix . 'indexed'    => 1 } },
+                { term => { $prefix . 'name'       => $module } },
+                (
+                    exists $version_filters->{must}
+                    ? @{ $version_filters->{must} }
+                    : ()
+                )
+            ],
+            (
+                exists $version_filters->{must_not}
+                ? ( must_not => [ $version_filters->{must_not} ] )
+                : ()
+            )
         }
     };
 
+    # filters to be applied to the nested modules
+    if ($module_filter) {
+        push @filters,
+            {
+            nested => {
+                path       => 'module',
+                inner_hits => { _source => 'version' },
+                filter     => $entity_filter,
+            }
+            };
+    }
+    else {
+        push @filters, $entity_filter;
+    }
+
     my $filter
         = @filters
-        ? { bool => { must => [ @filters, $module_f ] } }
-        : $module_f;
+        ? { bool => { must => \@filters } }
+        : $filters[0];
+
+    my $version_sort
+        = $module_filter
+        ? {
+        'module.version_numified' => {
+            mode          => 'max',
+            order         => 'desc',
+            nested_path   => 'module',
+            nested_filter => $entity_filter,
+        }
+        }
+        : { version_numified => { order => 'desc' } };
 
     # sort by score, then version desc, then date desc
-    my @sort = (
-        '_score',
-        {
-            'module.version_numified' => {
-                mode          => 'max',
-                order         => 'desc',
-                nested_path   => 'module',
-                nested_filter => $module_f->{nested}{filter}
-            }
-        },
-        { date => { order => 'desc' } }
-    );
+    my @sort = ( '_score', $version_sort, { date => { order => 'desc' } } );
 
     my $query;
 
@@ -1120,17 +1137,17 @@ sub find_download_url {
     }
 
     my $body = {
-        query => $query,
-        size => 1,
-        sort => \@sort,
+        query   => $query,
+        size    => 1,
+        sort    => \@sort,
         _source => [ 'release', 'download_url', 'date', 'status' ],
-        search_type => 'dfs_query_then_fetch',
     };
 
-    my $ret = $self->es->search(
-        index => $self->index_name,
-        type  => 'file',
-        body  => $body,
+    my $res = $self->es->search(
+        index       => $self->index_name,
+        type        => $module_filter ? 'file' : 'release',
+        body        => $body,
+        search_type => 'dfs_query_then_fetch',
     );
 
     return unless $res->{hits}{total};
@@ -1163,7 +1180,7 @@ sub find_download_url {
 }
 
 sub _version_filters {
-    my ( $self, $version ) = @_;
+    my ( $self, $version, $field ) = @_;
 
     return () unless $version;
 
@@ -1171,7 +1188,7 @@ sub _version_filters {
         return +{
             must => [ {
                 term => {
-                    'module.version_numified' => $self->_numify($version)
+                    $field => $self->_numify($version)
                 }
             } ]
         };
@@ -1191,18 +1208,14 @@ sub _version_filters {
 
         if ( keys %range ) {
             $filters{must}
-                = [ { range => { 'module.version_numified' => \%range } } ];
+                = [ { range => { $field => \%range } } ];
         }
 
         if (@exclusion) {
             $filters{must_not} = [];
-            push @{ $filters{must_not} }, map {
-                +{
-                    term => {
-                        'module.version_numified' => $self->_numify($_)
-                    }
-                }
-            } @exclusion;
+            push @{ $filters{must_not} },
+                map { +{ term => { $field => $self->_numify($_) } } }
+                @exclusion;
         }
 
         return \%filters;
@@ -1211,8 +1224,7 @@ sub _version_filters {
         return +{
             must => [ {
                 range => {
-                    'module.version_numified' =>
-                        { 'gte' => $self->_numify($version) }
+                    $field => { 'gte' => $self->_numify($version) }
                 },
             } ]
         };
