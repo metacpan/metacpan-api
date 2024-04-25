@@ -959,19 +959,27 @@ as unauthorized as well.
 sub set_authorized {
     my ( $self, $perms ) = @_;
 
-    # only authorized perl distributions make it into the CPAN
-    return () if ( $self->distribution eq 'perl' );
-    foreach my $module ( @{ $self->module } ) {
-        $module->_set_authorized(0)
-            if ( $perms->{ $module->name } && !grep { $_ eq $self->author }
-            @{ $perms->{ $module->name } } );
+    if ( $self->distribution eq 'perl' ) {
+        my $allowed = grep $_ eq $self->author, @{ $perms->{perl} };
+        foreach my $module ( @{ $self->module } ) {
+            $module->_set_authorized($allowed);
+        }
+        $self->_set_authorized($allowed);
     }
-    $self->_set_authorized(0)
-        if ( $self->authorized
-        && $self->documentation
-        && $perms->{ $self->documentation }
-        && !grep { $_ eq $self->author }
-        @{ $perms->{ $self->documentation } } );
+    else {
+        foreach my $module ( @{ $self->module } ) {
+            $module->_set_authorized(0)
+                if ( $perms->{ $module->name }
+                && !grep { $_ eq $self->author }
+                @{ $perms->{ $module->name } } );
+        }
+        $self->_set_authorized(0)
+            if ( $self->authorized
+            && $self->documentation
+            && $perms->{ $self->documentation }
+            && !grep { $_ eq $self->author }
+            @{ $perms->{ $self->documentation } } );
+    }
     return grep { !$_->authorized && $_->indexed } @{ $self->module };
 }
 

@@ -14,7 +14,8 @@ use MetaCPAN::Script::Runner  ();
 use MetaCPAN::Types::TypeTiny qw( Bool HashRef Int Str );
 use Moose;
 use PerlIO::gzip;
-use Try::Tiny qw( catch try );
+use Try::Tiny  qw( catch try );
+use Path::Tiny qw(path);
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt',
     'MetaCPAN::Script::Role::Contributor';
@@ -431,6 +432,24 @@ sub _build_perms {
         }
         close $fh;
     }
+
+    # we would like this data to come from CPAN directly eventually
+    #my $pumpking_file = $self->cpan->child(qw(modules 07pumpkings.txt));
+    my $pumpking_file
+        = path(__FILE__)->parent->child(qw(Release 07pumpkings.txt));
+    if ( -e $pumpking_file ) {
+        log_debug { "parsing ", $pumpking_file };
+        my $fh = $pumpking_file->openr;
+        while ( my $line = <$fh> ) {
+            chomp $line;
+            push( @{ $authors{perl} ||= [] }, $line );
+        }
+        close $fh;
+    }
+    else {
+        log_warn {"$pumpking_file could not be found."};
+    }
+
     return \%authors;
 }
 
