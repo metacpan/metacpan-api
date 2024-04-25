@@ -992,5 +992,238 @@ sub modules {
     };
 }
 
+=head2 find_download_url
+
+cpanm Foo
+=> status: latest, maturity: released
+
+cpanm --dev Foo
+=> status: -backpan, sort_by: version_numified,date
+
+cpanm Foo~1.0
+=> status: latest, maturity: released, module.version_numified: gte: 1.0
+
+cpanm --dev Foo~1.0
+-> status: -backpan, module.version_numified: gte: 1.0, sort_by: version_numified,date
+
+cpanm Foo~<2
+=> maturity: released, module.version_numified: lt: 2, sort_by: status,version_numified,date
+
+cpanm --dev Foo~<2
+=> status: -backpan, module.version_numified: lt: 2, sort_by: status,version_numified,date
+
+    $release->find_download_url( 'Foo', { version => $version, dev => 0|1 });
+
+Sorting:
+
+    if it's stable:
+      prefer latest > cpan > backpan
+      then sort by version desc
+      then sort by date descending (rev chron)
+
+    if it's dev:
+      sort by version desc
+      sort by date descending (reverse chronologically)
+
+
+=cut
+
+sub find_download_url {
+    my ( $self, $module, $args ) = @_;
+    $args ||= {};
+
+    my $dev              = $args->{dev};
+    my $version          = $args->{version};
+    my $explicit_version = $version && $version =~ /==/;
+
+    my @filters;
+    if ( !$explicit_version ) {
+        push @filters, { not => { term => { status => 'backpan' } } };
+        if ( !$dev ) {
+            push @filters, { term => { maturity => 'released' } };
+        }
+    }
+
+    my $version_filters = $self->_version_filters($version);
+
+    # filters to be applied to the nested modules
+    my $module_f = {
+        nested => {
+            path       => 'module',
+            inner_hits => { _source => 'version' },
+            filter     => {
+                bool => {
+                    must => [
+                        { term => { 'module.authorized' => 1 } },
+                        { term => { 'module.indexed'    => 1 } },
+                        { term => { 'module.name'       => $module } },
+                        (
+                            exists $version_filters->{must}
+                            ? @{ $version_filters->{must} }
+                            : ()
+                        )
+                    ],
+                    (
+                        exists $version_filters->{must_not}
+                        ? ( must_not => [ $version_filters->{must_not} ] )
+                        : ()
+                    )
+                }
+            }
+        }
+    };
+
+    my $filter
+        = @filters
+        ? { bool => { must => [ @filters, $module_f ] } }
+        : $module_f;
+
+    # sort by score, then version desc, then date desc
+    my @sort = (
+        '_score',
+        {
+            'module.version_numified' => {
+                mode          => 'max',
+                order         => 'desc',
+                nested_path   => 'module',
+                nested_filter => $module_f->{nested}{filter}
+            }
+        },
+        { date => { order => 'desc' } }
+    );
+
+    my $query;
+
+    if ($dev) {
+        $query = { filtered => { filter => $filter } };
+    }
+    else {
+        # if not dev, then prefer latest > cpan > backpan
+        $query = {
+            function_score => {
+                filter     => $filter,
+                score_mode => 'first',
+                boost_mode => 'replace',
+                functions  => [
+                    {
+                        filter => { term => { status => 'latest' } },
+                        weight => 3
+                    },
+                    {
+                        filter => { term => { status => 'cpan' } },
+                        weight => 2
+                    },
+                    { filter => { match_all => {} }, weight => 1 },
+                ]
+            }
+        };
+    }
+
+    my $body = {
+        query => $query,
+        size => 1,
+        sort => \@sort,
+        _source => [ 'release', 'download_url', 'date', 'status' ],
+        search_type => 'dfs_query_then_fetch',
+    };
+
+    my $ret = $self->es->search(
+        index => $self->index_name,
+        type  => 'file',
+        body  => $body,
+    );
+
+    return unless $res->{hits}{total};
+
+    my @checksums;
+
+    my $hit     = $res->{hits}{hits}[0];
+    my $release = exists $hit->{_source} ? $hit->{_source}{release} : undef;
+
+    if ($release) {
+        my $checksums = $self->get_checksums($release);
+        @checksums = (
+            (
+                $checksums->{checksum_md5}
+                ? ( checksum_md5 => $checksums->{checksum_md5} )
+                : ()
+            ),
+            (
+                $checksums->{checksum_sha256}
+                ? ( checksum_sha256 => $checksums->{checksum_sha256} )
+                : ()
+            ),
+        );
+    }
+
+    return +{
+        %{ $hit->{_source} },
+        %{ $hit->{inner_hits}{module}{hits}{hits}[0]{_source} }, @checksums,
+    };
+}
+
+sub _version_filters {
+    my ( $self, $version ) = @_;
+
+    return () unless $version;
+
+    if ( $version =~ s/^==\s*// ) {
+        return +{
+            must => [ {
+                term => {
+                    'module.version_numified' => $self->_numify($version)
+                }
+            } ]
+        };
+    }
+    elsif ( $version =~ /^[<>!]=?\s*/ ) {
+        my %ops = qw(< lt <= lte > gt >= gte);
+        my ( %filters, %range, @exclusion );
+        my @requirements = split /,\s*/, $version;
+        for my $r (@requirements) {
+            if ( $r =~ s/^([<>]=?)\s*// ) {
+                $range{ $ops{$1} } = $self->_numify($r);
+            }
+            elsif ( $r =~ s/\!=\s*// ) {
+                push @exclusion, $self->_numify($r);
+            }
+        }
+
+        if ( keys %range ) {
+            $filters{must}
+                = [ { range => { 'module.version_numified' => \%range } } ];
+        }
+
+        if (@exclusion) {
+            $filters{must_not} = [];
+            push @{ $filters{must_not} }, map {
+                +{
+                    term => {
+                        'module.version_numified' => $self->_numify($_)
+                    }
+                }
+            } @exclusion;
+        }
+
+        return \%filters;
+    }
+    elsif ( $version !~ /\s/ ) {
+        return +{
+            must => [ {
+                range => {
+                    'module.version_numified' =>
+                        { 'gte' => $self->_numify($version) }
+                },
+            } ]
+        };
+    }
+}
+
+sub _numify {
+    my ( $self, $ver ) = @_;
+    $ver =~ s/_//g;
+    version->new($ver)->numify;
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
