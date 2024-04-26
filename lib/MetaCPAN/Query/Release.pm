@@ -1058,10 +1058,13 @@ sub find_download_url {
         bool => {
             must => [
                 { term => { $prefix . 'authorized' => 1 } },
-                { term => { $prefix . 'indexed'    => 1 } },
                 (
-                    $module_filter ? { term => { $prefix . 'name' => $name } }
-                    : { term => { 'release' => $name } },
+                    $module_filter
+                    ? (
+                        { term => { $prefix . 'indexed' => 1 } },
+                        { term => { $prefix . 'name'    => $name } }
+                        )
+                    : { term => { 'distribution' => $name } },
                 ),
                 (
                     exists $version_filters->{must}
@@ -1143,7 +1146,16 @@ sub find_download_url {
         query   => $query,
         size    => 1,
         sort    => \@sort,
-        _source => [ 'release', 'download_url', 'date', 'status' ],
+        _source => [ qw(
+            checksum_md5
+            checksum_sha256
+            date
+            download_url
+            release
+            status
+            version
+            name
+        ) ],
     };
 
     my $res = $self->es->search(
@@ -1158,7 +1170,8 @@ sub find_download_url {
     my @checksums;
 
     my $hit     = $res->{hits}{hits}[0];
-    my $release = exists $hit->{_source} ? $hit->{_source}{release} : undef;
+    my $source  = $hit->{_source};
+    my $release = $source->{release};
 
     if ($release) {
         my $checksums = $self->get_checksums($release);
@@ -1176,10 +1189,17 @@ sub find_download_url {
         );
     }
 
-    return +{
-        %{ $hit->{_source} },
-        %{ $hit->{inner_hits}{module}{hits}{hits}[0]{_source} }, @checksums,
-    };
+    my $source_name = delete $source->{name};
+    if ( !$module_filter ) {
+        $source->{release} = $source_name;
+    }
+
+    my $module
+        = $hit->{inner_hits}{module}
+        ? $hit->{inner_hits}{module}{hits}{hits}[0]{_source}
+        : {};
+
+    return +{ %$source, %$module, @checksums, };
 }
 
 sub _version_filters {
