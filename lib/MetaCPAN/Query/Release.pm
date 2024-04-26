@@ -1029,7 +1029,7 @@ Sorting:
 =cut
 
 sub find_download_url {
-    my ( $self, $type, $module, $args ) = @_;
+    my ( $self, $type, $name, $args ) = @_;
     $args ||= {};
 
     my $dev              = $args->{dev};
@@ -1059,7 +1059,10 @@ sub find_download_url {
             must => [
                 { term => { $prefix . 'authorized' => 1 } },
                 { term => { $prefix . 'indexed'    => 1 } },
-                { term => { $prefix . 'name'       => $module } },
+                (
+                    $module_filter ? { term => { $prefix . 'name' => $name } }
+                    : { term => { 'release' => $name } },
+                ),
                 (
                     exists $version_filters->{must}
                     ? @{ $version_filters->{must} }
