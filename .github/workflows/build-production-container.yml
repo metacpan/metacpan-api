@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-22.04
     name: Docker push latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: docker build
         run: docker build . -t metacpan/metacpan-api:latest
       - name: Login to Docker Hub
