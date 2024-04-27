@@ -43,6 +43,7 @@ requires 'DateTime::Format::ISO8601';
 requires 'DBD::SQLite', '1.66';
 requires 'DBI', '1.643';
 requires 'Devel::ArgNames';
+requires 'Devel::Cover';
 requires 'Digest::MD5';
 requires 'Digest::SHA';
 requires 'ElasticSearchX::Model', '2.0.1';
