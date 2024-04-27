@@ -2068,6 +2068,64 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Scalar::Util 0
       perl 5.006
+  Devel-Cover-1.42
+    pathname: P/PJ/PJCJ/Devel-Cover-1.42.tar.gz
+    provides:
+      Devel::Cover 1.42
+      Devel::Cover::Annotation::Git 1.42
+      Devel::Cover::Annotation::Random 1.42
+      Devel::Cover::Annotation::Svk 1.42
+      Devel::Cover::Branch 1.42
+      Devel::Cover::Collection 1.42
+      Devel::Cover::Collection::Template::Provider 1.42
+      Devel::Cover::Condition 1.42
+      Devel::Cover::Condition_and_2 1.42
+      Devel::Cover::Condition_and_3 1.42
+      Devel::Cover::Condition_or_2 1.42
+      Devel::Cover::Condition_or_3 1.42
+      Devel::Cover::Condition_xor_4 1.42
+      Devel::Cover::Criterion 1.42
+      Devel::Cover::DB 1.42
+      Devel::Cover::DB::Criterion 1.42
+      Devel::Cover::DB::Digests 1.42
+      Devel::Cover::DB::File 1.42
+      Devel::Cover::DB::IO 1.42
+      Devel::Cover::DB::IO::Base 1.42
+      Devel::Cover::DB::IO::JSON 1.42
+      Devel::Cover::DB::IO::Sereal 1.42
+      Devel::Cover::DB::IO::Storable 1.42
+      Devel::Cover::DB::Run 1.42
+      Devel::Cover::DB::Structure 1.42
+      Devel::Cover::Html_Common 1.42
+      Devel::Cover::Op 1.42
+      Devel::Cover::Pod 1.42
+      Devel::Cover::Report::Compilation 1.42
+      Devel::Cover::Report::Html 1.42
+      Devel::Cover::Report::Html_basic 1.42
+      Devel::Cover::Report::Html_basic::Template::Provider 1.42
+      Devel::Cover::Report::Html_minimal 1.42
+      Devel::Cover::Report::Html_subtle 1.42
+      Devel::Cover::Report::Html_subtle::Template::Provider 1.42
+      Devel::Cover::Report::Json 1.42
+      Devel::Cover::Report::Sort 1.42
+      Devel::Cover::Report::Text 1.42
+      Devel::Cover::Report::Text2 1.42
+      Devel::Cover::Report::Vim 1.42
+      Devel::Cover::Report::Vim::Template::Provider 1.42
+      Devel::Cover::Statement 1.42
+      Devel::Cover::Subroutine 1.42
+      Devel::Cover::Test 1.42
+      Devel::Cover::Time 1.42
+      Devel::Cover::Truth_Table 1.42
+      Devel::Cover::Truth_Table::Row 1.42
+      Devel::Cover::Util 1.42
+      Devel::Cover::Web 1.42
+    requirements:
+      Digest::MD5 0
+      ExtUtils::MakeMaker 0
+      HTML::Entities 3.69
+      Storable 0
+      Test::More 0
   Devel-GlobalDestruction-0.14
     pathname: H/HA/HAARG/Devel-GlobalDestruction-0.14.tar.gz
     provides:
@@ -2506,13 +2564,16 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 6.17
       perl 5.006001
-  ExtUtils-Config-0.008
-    pathname: L/LE/LEONT/ExtUtils-Config-0.008.tar.gz
+  ExtUtils-Config-0.009
+    pathname: L/LE/LEONT/ExtUtils-Config-0.009.tar.gz
     provides:
-      ExtUtils::Config 0.008
+      ExtUtils::Config 0.009
+      ExtUtils::Config::MakeMaker 0.009
     requirements:
       Data::Dumper 0
-      ExtUtils::MakeMaker 6.30
+      ExtUtils::MakeMaker 0
+      ExtUtils::MakeMaker::Config 0
+      perl 5.006
       strict 0
       warnings 0
   ExtUtils-Depends-0.8001
@@ -2560,10 +2621,10 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  ExtUtils-InstallPaths-0.012
-    pathname: L/LE/LEONT/ExtUtils-InstallPaths-0.012.tar.gz
+  ExtUtils-InstallPaths-0.013
+    pathname: L/LE/LEONT/ExtUtils-InstallPaths-0.013.tar.gz
     provides:
-      ExtUtils::InstallPaths 0.012
+      ExtUtils::InstallPaths 0.013
     requirements:
       Carp 0
       ExtUtils::Config 0.002
