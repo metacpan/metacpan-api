@@ -243,16 +243,16 @@ sub delete_index {
 sub delete_all {
     my $self                = $_[0];
     my $runtime_environment = 'production';
-    my $is_development      = 0;
 
     $runtime_environment = $ENV{'PLACK_ENV'}
         if ( defined $ENV{'PLACK_ENV'} );
     $runtime_environment = $ENV{'MOJO_MODE'}
         if ( defined $ENV{'MOJO_MODE'} );
 
-    $is_development = 1
-        if ( $runtime_environment eq 'development'
-        || $runtime_environment eq 'testing' );
+    my $is_development
+        = $ENV{HARNESS_ACTIVE}
+        || $runtime_environment eq 'development'
+        || $runtime_environment eq 'testing';
 
     if ($is_development) {
         $self->are_you_sure("ALL Indices will be deleted !!!");
