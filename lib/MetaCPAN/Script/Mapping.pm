@@ -255,11 +255,9 @@ sub delete_all {
         || $runtime_environment eq 'testing' );
 
     if ($is_development) {
-        my $name = undef;
-
         $self->are_you_sure("ALL Indices will be deleted !!!");
 
-        foreach $name ( keys %{ $self->indices_info } ) {
+        foreach my $name ( keys %{ $self->indices_info } ) {
             $self->_delete_index($name);
         }
     }
@@ -652,9 +650,7 @@ sub _compare_mapping {
         $imatch = 1;
 
         if ( ref $rdeploy eq 'HASH' ) {
-            my $sfield = undef;
-
-            foreach $sfield ( sort keys %$rdeploy ) {
+            foreach my $sfield ( sort keys %$rdeploy ) {
                 if (   defined $rdeploy->{$sfield}
                     && defined $rmodel->{$sfield} )
                 {
@@ -730,9 +726,7 @@ sub _compare_mapping {
             }
         }
         elsif ( ref $rdeploy eq 'ARRAY' ) {
-            my $iindex = undef;
-
-            foreach $iindex (@$rdeploy) {
+            foreach my $iindex (@$rdeploy) {
                 if (   defined $rdeploy->[$iindex]
                     && defined $rmodel->[$iindex] )
                 {
