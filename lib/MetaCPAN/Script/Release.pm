@@ -433,13 +433,11 @@ sub _build_perms {
         close $fh;
     }
 
-    # we would like this data to come from CPAN directly eventually
-    #my $pumpking_file = $self->cpan->child(qw(modules 07pumpkings.txt));
-    my $pumpking_file
-        = path(__FILE__)->parent->child(qw(Release 07pumpkings.txt));
+    my $pumpking_file = $self->cpan->child(qw(authors 08pumpkings.txt.gz));
     if ( -e $pumpking_file ) {
         log_debug { "parsing ", $pumpking_file };
-        my $fh = $pumpking_file->openr;
+
+        my $fh = $pumpking_file->openr(':gzip');
         while ( my $line = <$fh> ) {
             chomp $line;
             push( @{ $authors{perl} ||= [] }, $line );
