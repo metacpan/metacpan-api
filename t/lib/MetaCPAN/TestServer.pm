@@ -156,8 +156,6 @@ sub _build_es_client {
 sub wait_for_es {
     my $self = shift;
 
-    sleep $_[0] if $_[0];
-
     $self->es_client->cluster->health(
         wait_for_status => 'yellow',
         timeout         => '30s'
