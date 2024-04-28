@@ -265,10 +265,7 @@ sub remote {
 sub run { }
 before run => sub {
     my $self = shift;
-
     $self->set_logger_once;
-
-    #Dlog_debug {"Connected to $_"} $self->remote;
 };
 
 sub _get_indices_info {
