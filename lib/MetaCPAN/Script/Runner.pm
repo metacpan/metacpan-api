@@ -3,10 +3,9 @@ package MetaCPAN::Script::Runner;
 use strict;
 use warnings;
 
-use Config::ZOMG        ();
-use File::Path          ();
-use Hash::Merge::Simple qw( merge );
-use Module::Pluggable search_path => ['MetaCPAN::Script'];
+use File::Path               ();
+use MetaCPAN::Server::Config ();
+use Module::Pluggable search_path => ['MetaCPAN::Script'];    # plugins()
 use Module::Runtime ();
 use Term::ANSIColor qw( colored );
 use Try::Tiny       qw( catch try );
@@ -21,7 +20,7 @@ sub run {
     die "Usage: metacpan [command] [args]" unless ($class);
     Module::Runtime::require_module( $plugins{$class} );
 
-    my $config = build_config();
+    my $config = MetaCPAN::Server::Config::config();
 
     foreach my $logger ( @{ $config->{logger} || [] } ) {
         my $path = $logger->{filename} or next;
@@ -73,21 +72,6 @@ sub run {
     }
 
     return ( $EXIT_CODE == 0 );
-}
-
-sub build_config {
-    my $config = Config::ZOMG->new(
-        name => 'metacpan',
-        path => 'etc'
-    )->load;
-    if ( $ENV{HARNESS_ACTIVE} ) {
-        my $tconf = Config::ZOMG->new(
-            name => 'metacpan',
-            file => 'etc/metacpan_testing.pl'
-        )->load;
-        $config = merge $config, $tconf;
-    }
-    return $config;
 }
 
 # AnyEvent::Run calls the main method

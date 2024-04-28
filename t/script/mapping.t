@@ -2,29 +2,30 @@ use strict;
 use warnings;
 use lib 't/lib';
 
+use MetaCPAN::Script::Mapping ();
+use MetaCPAN::Server::Config  ();
 use Test::More;
 
 my $config = MetaCPAN::Server::Config::config();
-$config->{es} = $config->{elasticsearch_servers};
 
 subtest 'create, delete index' => sub {
     subtest 'create index' => sub {
         my $smockindexjson = q({
-   "mock_index" : {
-      "properties" : {
-         "mock_field" : {
-            "type" : "string",
-            "ignore_above" : 2048,
-            "index" : "not_analyzed"
-         }
-      }
-   }
-});
-        local @ARGV = (
-            'mapping',    '--create_index',
-            'mock_index', '--patch_mapping',
-            $smockindexjson
+            "mock_index": {
+                "properties": {
+                    "mock_field": {
+                        "type": "string",
+                        "ignore_above": 2048,
+                        "index": "not_analyzed"
+                    }
+                }
+            }
+        });
+        my %args = (
+            '--create_index'  => 'mock_index',
+            '--patch_mapping' => $smockindexjson,
         );
+        local @ARGV = ( 'mapping', %args );
         my $mapping = MetaCPAN::Script::Mapping->new_with_options($config);
 
         ok( $mapping->run, "creation 'mock_index' succeeds" );
@@ -62,7 +63,7 @@ subtest 'create, delete index' => sub {
 };
 
 subtest 'mapping verification succeeds' => sub {
-    local @ARGV = ( 'mapping', '--verify' );
+    local @ARGV = ( 'mapping', '--verify', );
     my $mapping = MetaCPAN::Script::Mapping->new_with_options($config);
 
     ok( $mapping->run, "verification succeeds" );

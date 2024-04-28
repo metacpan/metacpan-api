@@ -2,8 +2,8 @@ package MetaCPAN::Server::Model::CPAN;
 
 use Moose;
 
-use MetaCPAN::Config ();
-use MetaCPAN::Model  ();
+use MetaCPAN::Model          ();
+use MetaCPAN::Server::Config ();
 
 extends 'Catalyst::Model';
 
@@ -22,7 +22,7 @@ has index => (
 has servers => (
     is      => 'ro',
     default => sub {
-        return MetaCPAN::Config::config()->{elasticsearch_servers};
+        return MetaCPAN::Server::Config::config()->{elasticsearch_servers};
     },
 );
 

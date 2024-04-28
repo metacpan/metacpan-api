@@ -3,14 +3,14 @@ package MetaCPAN::Server::Test;
 use strict;
 use warnings;
 
-use HTTP::Request::Common qw( DELETE GET POST ); ## no perlimports
-use MetaCPAN::Config      ();
-use MetaCPAN::Server      ();
-use Plack::Test           qw( test_psgi );          ## no perlimports
-use Test::More;
+use HTTP::Request::Common    qw( DELETE GET POST );    ## no perlimports
+use MetaCPAN::Model          ();
+use MetaCPAN::Server         ();
+use MetaCPAN::Server::Config ();
+use Plack::Test;                                       ## no perlimports
 
 use base 'Exporter';
-our @EXPORT = qw(
+our @EXPORT_OK = qw(
     POST GET DELETE
     model
     test_psgi app
@@ -38,14 +38,10 @@ sub app {
     return $app;
 }
 
-use MetaCPAN::Model ();
-
 sub model {
+    my $c = MetaCPAN::Server::Config::config();
     MetaCPAN::Model->new(
-        es => (
-            nodes => [ MetaCPAN::Config::config()->{elasticsearch_servers} ]
-        )
-    );
+        es => { nodes => [ $c->{elasticsearch_servers} ] } );
 }
 
 1;

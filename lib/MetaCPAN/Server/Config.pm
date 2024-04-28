@@ -1,10 +1,10 @@
-package MetaCPAN::Config;
+package MetaCPAN::Server::Config;
 
 use warnings;
 use strict;
 
-use FindBin         ();
 use Config::ZOMG    ();
+use FindBin         ();
 use Module::Runtime qw( require_module );
 
 sub config {
@@ -14,10 +14,12 @@ sub config {
     require_module('Git::Helpers');
     $config = _zomg( Git::Helpers::checkout_root() );
 
-    return $config if $config;
+    if ( !$config ) {
+        die "Couldn't find config file in $FindBin::RealBin/.. or "
+            . Git::Helpers::checkout_root();
+    }
 
-    die "Couldn't find config file in $FindBin::RealBin/.. or "
-        . Git::Helpers::checkout_root();
+    return $config;
 }
 
 sub _zomg {
@@ -29,7 +31,11 @@ sub _zomg {
         path         => $path,
     );
 
-    return $config->open;
+    my $c = $config->open;
+    if ( defined $c->{logger} && ref $c->{logger} ne 'ARRAY' ) {
+        $c->{logger} = [ $c->{logger} ];
+    }
+    return keys %{$c} ? $c : undef;
 }
 
 1;

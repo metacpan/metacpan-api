@@ -2,7 +2,7 @@ package MetaCPAN::Role::HasConfig;
 
 use Moose::Role;
 
-use MetaCPAN::Config          ();
+use MetaCPAN::Server::Config  ();
 use MetaCPAN::Types::TypeTiny qw( HashRef );
 use MetaCPAN::Util            qw( checkout_root );
 
@@ -20,7 +20,7 @@ has _config => (
 
 sub _build_config {
     my $self = shift;
-    return MetaCPAN::Config::config();
+    return MetaCPAN::Server::Config::config();
 }
 
 1;

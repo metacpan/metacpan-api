@@ -1,13 +1,11 @@
 use strict;
 use warnings;
-use lib 't/lib';
-
-use Test::More;
 
 use MetaCPAN::Script::Queue  ();
-use MetaCPAN::Script::Runner ();
+use MetaCPAN::Server::Config ();
+use Test::More;
 
-my $config = MetaCPAN::Script::Runner::build_config;
+my $config = MetaCPAN::Server::Config::config();
 local @ARGV = ( '--dir', $config->{cpan} );
 
 my $queue = MetaCPAN::Script::Queue->new_with_options($config);

@@ -8,7 +8,7 @@ use DateTime                  ();
 use DateTime::Format::ISO8601 ();
 use HTTP::Tiny                ();
 use Log::Contextual           qw( :log );
-use MetaCPAN::Config          ();
+use MetaCPAN::Server::Config  ();
 use MetaCPAN::Types::TypeTiny qw( ArrayRef Bool Str );
 use Moose;
 use Sys::Hostname qw( hostname );
@@ -82,7 +82,8 @@ has snap_name => (
 has host => (
     is      => 'ro',
     isa     => Str,
-    default => sub { MetaCPAN::Config::config()->{elasticsearch_servers} },
+    default =>
+        sub { MetaCPAN::Server::Config::config()->{elasticsearch_servers} },
     documentation => 'ES host, defaults to: http://localhost:9200',
 );
 
