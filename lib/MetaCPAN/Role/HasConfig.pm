@@ -2,8 +2,7 @@ package MetaCPAN::Role::HasConfig;
 
 use Moose::Role;
 
-use Config::ZOMG              ();
-use FindBin                   ();
+use MetaCPAN::Config          ();
 use MetaCPAN::Types::TypeTiny qw( HashRef );
 use MetaCPAN::Util            qw( checkout_root );
 
@@ -20,29 +19,8 @@ has _config => (
 );
 
 sub _build_config {
-    my $self   = shift;
-    my $config = $self->_zomg("$FindBin::RealBin/..");
-    return $config if $config;
-
-    $config = $self->_zomg( checkout_root() );
-
-    return $config if $config;
-
-    die "Couldn't find config file in $FindBin::RealBin/.. or "
-        . checkout_root();
-}
-
-sub _zomg {
     my $self = shift;
-    my $path = shift;
-
-    my $config = Config::ZOMG->new(
-        local_suffix => $ENV{HARNESS_ACTIVE} ? 'testing' : 'local',
-        name         => 'metacpan_server',
-        path         => $path,
-    );
-
-    return $config->open;
+    return MetaCPAN::Config::config();
 }
 
 1;
