@@ -2,9 +2,10 @@ package MetaCPAN::Role::Script;
 
 use Moose::Role;
 
+use Carp                                   ();
 use ElasticSearchX::Model::Document::Types qw( ES );
 use File::Path                             ();
-use IO::Prompt::Tiny                       qw( prompt );
+use IO::Prompt                             ();
 use Log::Contextual                        qw( :log :dlog );
 use MetaCPAN::Model                        ();
 use MetaCPAN::Types::TypeTiny              qw( Bool HashRef Int Path Str );
@@ -12,7 +13,7 @@ use MetaCPAN::Util                         qw( checkout_root );
 use Mojo::Server                           ();
 use Term::ANSIColor                        qw( colored );
 
-use Carp ();
+use IO::Prompt::Tiny qw( prompt );
 
 with( 'MetaCPAN::Role::HasConfig', 'MetaCPAN::Role::Fastly',
     'MetaCPAN::Role::Logger' );
