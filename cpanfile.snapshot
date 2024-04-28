@@ -334,6 +334,19 @@ DISTRIBUTIONS
       perl 5.014000
       strict 0
       warnings 0
+  CPAN-Meta-Requirements-2.143
+    pathname: R/RJ/RJBS/CPAN-Meta-Requirements-2.143.tar.gz
+    provides:
+      CPAN::Meta::Requirements 2.143
+      CPAN::Meta::Requirements::Range 2.143
+    requirements:
+      B 0
+      Carp 0
+      ExtUtils::MakeMaker 6.17
+      perl 5.010000
+      strict 0
+      version 0.88
+      warnings 0
   CPAN-Repository-0.010
     pathname: O/OA/OALDERS/CPAN-Repository-0.010.tar.gz
     provides:
@@ -353,6 +366,24 @@ DISTRIBUTIONS
       IO::File 1.14
       IO::Zlib 1.10
       Moo 0.009013
+  CPAN-Requirements-Dynamic-0.001
+    pathname: L/LE/LEONT/CPAN-Requirements-Dynamic-0.001.tar.gz
+    provides:
+      CPAN::Requirements::Dynamic 0.001
+    requirements:
+      CPAN::Meta::Prereqs 0
+      CPAN::Meta::Requirements::Range 0
+      Carp 0
+      ExtUtils::Config 0
+      ExtUtils::HasCompiler 0
+      ExtUtils::MakeMaker 0
+      IPC::Cmd 0
+      Module::Metadata 0
+      Parse::CPAN::Meta 0
+      Perl::OSType 0
+      perl 5.006
+      strict 0
+      warnings 0
   Canary-Stability-2013
     pathname: M/ML/MLEHMANN/Canary-Stability-2013.tar.gz
     provides:
@@ -2506,13 +2537,16 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 6.17
       perl 5.006001
-  ExtUtils-Config-0.008
-    pathname: L/LE/LEONT/ExtUtils-Config-0.008.tar.gz
+  ExtUtils-Config-0.009
+    pathname: L/LE/LEONT/ExtUtils-Config-0.009.tar.gz
     provides:
-      ExtUtils::Config 0.008
+      ExtUtils::Config 0.009
+      ExtUtils::Config::MakeMaker 0.009
     requirements:
       Data::Dumper 0
-      ExtUtils::MakeMaker 6.30
+      ExtUtils::MakeMaker 0
+      ExtUtils::MakeMaker::Config 0
+      perl 5.006
       strict 0
       warnings 0
   ExtUtils-Depends-0.8001
@@ -2560,10 +2594,10 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  ExtUtils-InstallPaths-0.012
-    pathname: L/LE/LEONT/ExtUtils-InstallPaths-0.012.tar.gz
+  ExtUtils-InstallPaths-0.013
+    pathname: L/LE/LEONT/ExtUtils-InstallPaths-0.013.tar.gz
     provides:
-      ExtUtils::InstallPaths 0.012
+      ExtUtils::InstallPaths 0.013
     requirements:
       Carp 0
       ExtUtils::Config 0.002
@@ -4032,12 +4066,13 @@ DISTRIBUTIONS
       Text::ParseWords 0
       perl 5.006001
       version 0.87
-  Module-Build-Tiny-0.047
-    pathname: L/LE/LEONT/Module-Build-Tiny-0.047.tar.gz
+  Module-Build-Tiny-0.048
+    pathname: L/LE/LEONT/Module-Build-Tiny-0.048.tar.gz
     provides:
-      Module::Build::Tiny 0.047
+      Module::Build::Tiny 0.048
     requirements:
       CPAN::Meta 0
+      CPAN::Requirements::Dynamic 0
       DynaLoader 0
       Exporter 5.57
       ExtUtils::CBuilder 0
