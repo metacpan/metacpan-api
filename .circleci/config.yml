@@ -63,16 +63,11 @@ jobs:
           name: generate coverage report
       - run:
           command: |
-            pushd metacpan-docker
-            docker-compose exec -T \
-              -e CIRCLE_PROJECT_USERNAME="$CIRCLE_PROJECT_USERNAME" \
-              -e CIRCLE_PROJECT_REPONAME="$CIRCLE_PROJECT_REPONAME" \
-              -e CIRCLE_BUILD_NUM="$CIRCLE_BUILD_NUM" \
-              -e CIRCLE_NODE_INDEX="$CIRCLE_NODE_INDEX" \
-              -e CIRCLE_SHA1="$CIRCLE_SHA1" \
-              -e CIRCLE_BRANCH="$CIRCLE_BRANCH" \
-              -e CIRCLE_PR_NUMBER="$CIRCLE_PR_NUMBER" \
-              api_test cover -report codecov
+            pushd metacpan-docker/src/metacpan-api
+            sudo apt install cpanminus
+            sudo cpanm --notest Devel::Cover Devel::Cover::Report::Codecov Devel::Cover::Report::Codecovbash
+            sudo chown -R circleci.circleci cover_db
+            cover -report codecov -ignore etc/metacpan.pl
           name: upload coverage report
       - run:
           command: |
