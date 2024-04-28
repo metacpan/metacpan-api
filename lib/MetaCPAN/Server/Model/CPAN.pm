@@ -1,10 +1,9 @@
 package MetaCPAN::Server::Model::CPAN;
 
-use strict;
-use warnings;
-
-use MetaCPAN::Model ();
 use Moose;
+
+use MetaCPAN::Config ();
+use MetaCPAN::Model  ();
 
 extends 'Catalyst::Model';
 
@@ -22,7 +21,9 @@ has index => (
 
 has servers => (
     is      => 'ro',
-    default => ':9200',
+    default => sub {
+        return MetaCPAN::Config::config()->{elasticsearch_servers};
+    },
 );
 
 sub _build_esx_model {

@@ -6,12 +6,14 @@ use Moose;
 extends 'Catalyst::Plugin::Session::Store';
 use MooseX::Types::ElasticSearch qw( ES );
 
+use MetaCPAN::Config ();
+
 has _session_es => (
     required => 1,
     is       => 'ro',
     coerce   => 1,
     isa      => ES,
-    default  => sub { shift->_session_plugin_config->{servers} || ':9200' }
+    default  => sub { MetaCPAN::Config::config()->{elasticsearch_servers} },
 );
 has _session_es_index => (
     required => 1,

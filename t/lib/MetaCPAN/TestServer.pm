@@ -2,6 +2,7 @@ package MetaCPAN::TestServer;
 
 use MetaCPAN::Moose;
 
+use MetaCPAN::Config                  ();
 use MetaCPAN::Script::Author          ();
 use MetaCPAN::Script::Cover           ();
 use MetaCPAN::Script::CPANTestersAPI  ();
@@ -81,7 +82,8 @@ sub _build_config {
 sub _build_es_home {
     my $self = shift;
 
-    my $es_home = $ENV{ES_TEST};
+    my $es_home = $ENV{ES_TEST}
+        || MetaCPAN::Config::config()->{elasticsearch_servers};
 
     if ( !$es_home ) {
         my $es_home = $ENV{ES_HOME} or die <<'USAGE';
