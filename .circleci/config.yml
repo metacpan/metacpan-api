@@ -8,7 +8,7 @@ workflows:
 jobs:
   build-and-test:
     machine: true
-    resource_class: medium
+    resource_class: large
     steps:
       - run:
           name: docker-compose version
