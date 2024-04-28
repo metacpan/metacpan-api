@@ -164,15 +164,15 @@ sub wait_for_es {
 }
 
 sub check_mappings {
-    my $self           = $_[0];
-    my %hshtestindices = (
+    my $self    = $_[0];
+    my %indices = (
         'cover'       => 'yellow',
         'cpan_v1_01'  => 'yellow',
         'contributor' => 'yellow',
         'cve'         => 'yellow',
         'user'        => 'yellow'
     );
-    my %hshtestaliases = ( 'cpan' => 'cpan_v1_01' );
+    my %aliases = ( 'cpan' => 'cpan_v1_01' );
 
     local @ARGV = qw(mapping --show_cluster_info);
 
@@ -189,25 +189,24 @@ sub check_mappings {
     ) );
 
     subtest 'only configured indices' => sub {
-        ok( defined $hshtestindices{$_}, "indice '$_' is configured" )
+        ok( defined $indices{$_}, "indice '$_' is configured" )
             foreach ( keys %{ $mapping->indices_info } );
     };
     subtest 'verify index health' => sub {
-        foreach ( keys %hshtestindices ) {
+        foreach ( keys %indices ) {
             ok( defined $mapping->indices_info->{$_},
-                "indice '$_' was created" );
+                "index '$_' was created" );
             is( $mapping->indices_info->{$_}->{'health'},
-                $hshtestindices{$_},
-                "indice '$_' correct state '$hshtestindices{$_}'" );
+                $indices{$_}, "index '$_' correct state '$indices{$_}'" );
         }
     };
     subtest 'verify aliases' => sub {
-        foreach ( keys %hshtestaliases ) {
+        foreach ( keys %aliases ) {
             ok( defined $mapping->aliases_info->{$_},
                 "alias '$_' was created" );
             is( $mapping->aliases_info->{$_}->{'index'},
-                $hshtestaliases{$_},
-                "alias '$_' correctly assigned to '$hshtestaliases{$_}'" );
+                $aliases{$_},
+                "alias '$_' correctly assigned to '$aliases{$_}'" );
         }
     };
 }
@@ -400,7 +399,7 @@ sub test_field_mismatch {
          "ignore_above" : 2048,
          "type" : "string"
       }
-   }
+    }
 });
         my $sfieldchangejson = q({
    "properties" : {
