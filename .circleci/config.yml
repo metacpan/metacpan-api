@@ -54,7 +54,7 @@ jobs:
       - run:
           command: |
             pushd metacpan-docker
-            docker-compose exec -T api_test env HARNESS_PERL_SWITCHES=-MDevel::Cover prove -lr --jobs 2 t
+            docker-compose exec -T api_test env HARNESS_PERL_SWITCHES="-MDevel::Cover=+ignore,^t/|^test-data/|^etc/" prove -lr --jobs 2 t
           name: run tests with coverage
       - run:
           command: |
@@ -67,7 +67,7 @@ jobs:
             sudo apt install cpanminus
             sudo cpanm --notest Devel::Cover Devel::Cover::Report::Codecov Devel::Cover::Report::Codecovbash
             sudo chown -R circleci.circleci cover_db
-            cover -report codecov -ignore etc/metacpan.pl
+            cover -report codecov
           name: upload coverage report
       - run:
           command: |
