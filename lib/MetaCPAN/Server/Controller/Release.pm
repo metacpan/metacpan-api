@@ -10,15 +10,6 @@ BEGIN { extends 'MetaCPAN::Server::Controller' }
 
 with 'MetaCPAN::Server::Role::JSONP';
 
-__PACKAGE__->config(
-    relationships => {
-        author => {
-            type    => 'Author',
-            foreign => 'pauseid',
-        }
-    }
-);
-
 sub find : Path('') : Args(1) {
     my ( $self, $c, $name ) = @_;
     my $file = $self->model($c)->find($name);

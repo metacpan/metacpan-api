@@ -11,23 +11,6 @@ BEGIN { extends 'MetaCPAN::Server::Controller' }
 
 with 'MetaCPAN::Server::Role::JSONP';
 
-__PACKAGE__->config(
-    relationships => {
-        author => {
-            type    => 'Author',
-            foreign => 'pauseid',
-        },
-        release => {
-            type => 'Release',
-            self => sub {
-                ElasticSearchX::Model::Util::digest( $_[0]->{author},
-                    $_[0]->{release} );
-            },
-            foreign => 'id',
-        }
-    }
-);
-
 sub find : Path('') {
     my ( $self, $c, $author, $release, @path ) = @_;
 
