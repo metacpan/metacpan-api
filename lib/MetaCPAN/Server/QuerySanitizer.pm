@@ -37,14 +37,6 @@ sub _scan_hash_tree {
             }
             _scan_hash_tree($v) if ref $v;
         }
-        if ( my $mscript = delete $struct->{metacpan_script} ) {
-            $struct->{script_score} = {
-                script => {
-                    lang => 'groovy',
-                    file => $mscript
-                },
-            };
-        }
     }
     elsif ( $ref eq 'ARRAY' ) {
         foreach my $item (@$struct) {
