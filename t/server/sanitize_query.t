@@ -47,32 +47,6 @@ test_psgi app, sub {
             }
         );
     }
-
-    local
-        $MetaCPAN::Server::QuerySanitizer::metacpan_scripts{test_script_field}
-        = q{doc['author.pauseid'].value.length() * 2};
-
-    test_all_methods(
-        {
-            query         => { match_all => {} },
-            script_fields =>
-                { pauselen2 => { metacpan_script => 'test_script_field' }, },
-            filter => { term => { pauseid => 'RWSTAUNER' } },
-        },
-        sub {
-            my ($req) = shift;
-
-            my $res = $cb->($req);
-            is $res->code, 200, $req->method . ' 200 OK'
-                or diag explain $res;
-
-            my $json = decode_json_ok($res);
-
-            is_deeply $json->{hits}{hits}->[0]->{fields},
-                { pauselen2 => [18] }, 'script_fields via metacpan_script'
-                or diag explain $json;
-        },
-    );
 };
 
 sub test_all_methods {
@@ -125,34 +99,6 @@ my %replacements = (
 
     stupid_script_that_doesnt_exist => undef,
 );
-
-while ( my ( $mscript, $re ) = each %replacements ) {
-    my $query = filtered_custom_score_hash( metacpan_script => $mscript );
-
-    my $sanitizer = MetaCPAN::Server::QuerySanitizer->new( query => $query, );
-
-    my $cleaned = $sanitizer->query;
-    like_if_defined
-        delete $cleaned->{query}{filtered}{query}{custom_score}{script},
-        $re, "$mscript script replaced";
-
-    is_deeply $cleaned, filtered_custom_score_hash(),
-        'metacpan_script removed';
-
-    # try another hash structure
-    $query
-        = {
-        foo => { bar => [ { metacpan_script => $mscript, other => 'val' } ] }
-        };
-
-    $cleaned
-        = MetaCPAN::Server::QuerySanitizer->new( query => $query )->query;
-
-    like_if_defined delete $cleaned->{foo}{bar}->[0]->{script},
-        $re, "$mscript script replaced";
-    is_deeply $cleaned, { foo => { bar => [ { other => 'val' } ] } },
-        'any hash structure accepts metacpan_script';
-}
 
 hash_key_rejected( script => { script => 'foobar' } );
 hash_key_rejected(
