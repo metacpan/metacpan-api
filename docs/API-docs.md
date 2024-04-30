@@ -51,36 +51,6 @@ Performing a search without any constraints is an easy way to get sample data
 * [`/rating/_search`](https://fastapi.metacpan.org/v1/rating/_search)
 * [`/release/_search`](https://fastapi.metacpan.org/v1/release/_search)
 
-## Joins
-
-ElasticSearch itself doesn't support joining data across multiple types. The API server can, however, handle a `join` query parameter if the underlying type was set up accordingly. Browse https://github.com/metacpan/metacpan-api/blob/master/lib/MetaCPAN/Server/Controller/ to see all join conditions. Here are some examples.
-
-Joins on documents:
-
-* [/author/PERLER?join=favorite](https://fastapi.metacpan.org/v1/author/PERLER?join=favorite)
-* [/author/PERLER?join=favorite&join=release](https://fastapi.metacpan.org/v1/author/PERLER?join=favorite&join=release)
-* [/release/Moose?join=author](https://fastapi.metacpan.org/v1/release/Moose?join=author)
-* [/module/Moose?join=release](https://fastapi.metacpan.org/v1/module/Moose?join=release)
-
-Joins on search results is work in progress.
-
-Restricting the joined results can be done by using the [boolean "should"](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/query-dsl-bool-query.html) occurrence type:
-
-```sh
-curl -XPOST https://fastapi.metacpan.org/v1/author/PERLER?join=release -d '
-{
-    "query": {
-        "bool": {
-            "should": [{
-                "term": {
-                    "release.status": "latest"
-                }
-            }]
-        }
-    }
-}'
-```
-
 ## JSONP
 
 Simply add a `callback` query parameter with the name of your callback, and you'll get a JSONP response.

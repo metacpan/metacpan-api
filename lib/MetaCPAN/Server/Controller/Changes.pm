@@ -12,8 +12,6 @@ BEGIN { extends 'MetaCPAN::Server::Controller' }
 
 with 'MetaCPAN::Server::Role::JSONP';
 
-# TODO: __PACKAGE__->config(relationships => ?)
-
 has '+type' => ( default => 'file' );
 
 sub index : Chained('/') : PathPart('changes') : CaptureArgs(0) {

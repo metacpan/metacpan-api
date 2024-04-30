@@ -10,21 +10,6 @@ BEGIN { extends 'MetaCPAN::Server::Controller' }
 
 with 'MetaCPAN::Server::Role::JSONP';
 
-__PACKAGE__->config(
-    relationships => {
-        release => {
-            type    => ['Release'],
-            self    => 'pauseid',
-            foreign => 'author',
-        },
-        favorite => {
-            type    => ['Favorite'],
-            self    => 'user',
-            foreign => 'user',
-        }
-    }
-);
-
 # https://fastapi.metacpan.org/v1/author/LLAP
 sub get : Path('') : Args(1) {
     my ( $self, $c, $id ) = @_;
