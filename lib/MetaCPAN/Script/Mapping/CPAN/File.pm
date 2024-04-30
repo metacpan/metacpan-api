@@ -116,6 +116,9 @@ sub mapping {
             },
             "ignore_above" : 2048
           },
+          "documentation_length" : {
+            "type" : "integer"
+          },
           "download_url" : {
             "type" : "string",
             "index" : "not_analyzed",

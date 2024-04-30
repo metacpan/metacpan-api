@@ -378,6 +378,18 @@ sub _build_documentation {
     return undef;
 }
 
+has documentation_length => (
+    is      => 'ro',
+    isa     => Maybe [Int],
+    lazy    => 1,
+    builder => '_build_documentation_length',
+);
+
+sub _build_documentation_length {
+    my ($self) = @_;
+    return length( $self->documentation );
+}
+
 =head2 suggest
 
 Autocomplete info for documentation.
