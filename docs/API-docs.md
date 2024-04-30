@@ -27,13 +27,13 @@ Part of being polite is letting us know who you are and how to reach you.  This 
 Available fields can be found by accessing the corresponding `_mapping` endpoint.
 
 
-* [/author/_mapping](https://fastapi.metacpan.org/v1/author/_mapping) - [explore](https://explorer.metacpan.org/?url=/author/_mapping)
-* [/distribution/_mapping](https://fastapi.metacpan.org/v1/distribution/_mapping) - [explore](https://explorer.metacpan.org/?url=/distribution/_mapping)
-* [/favorite/_mapping](https://fastapi.metacpan.org/v1/favorite/_mapping) - [explore](https://explorer.metacpan.org/?url=/favorite/_mapping)
-* [/file/_mapping](https://fastapi.metacpan.org/v1/file/_mapping) - [explore](https://explorer.metacpan.org/?url=/file/_mapping)
-* [/module/_mapping](https://fastapi.metacpan.org/v1/module/_mapping) - [explore](https://explorer.metacpan.org/?url=/module/_mapping)
-* [/rating/_mapping](https://fastapi.metacpan.org/v1/rating/_mapping) - [explore](https://explorer.metacpan.org/?url=/rating/_mapping)
-* [/release/_mapping](https://fastapi.metacpan.org/v1/release/_mapping) - [explore](https://explorer.metacpan.org/?url=/release/_mapping)
+* [`/author/_mapping`](https://fastapi.metacpan.org/v1/author/_mapping) - [explore](https://explorer.metacpan.org/?url=/author/_mapping)
+* [`/distribution/_mapping`](https://fastapi.metacpan.org/v1/distribution/_mapping) - [explore](https://explorer.metacpan.org/?url=/distribution/_mapping)
+* [`/favorite/_mapping`](https://fastapi.metacpan.org/v1/favorite/_mapping) - [explore](https://explorer.metacpan.org/?url=/favorite/_mapping)
+* [`/file/_mapping`](https://fastapi.metacpan.org/v1/file/_mapping) - [explore](https://explorer.metacpan.org/?url=/file/_mapping)
+* [`/module/_mapping`](https://fastapi.metacpan.org/v1/module/_mapping) - [explore](https://explorer.metacpan.org/?url=/module/_mapping)
+* [`/rating/_mapping`](https://fastapi.metacpan.org/v1/rating/_mapping) - [explore](https://explorer.metacpan.org/?url=/rating/_mapping)
+* [`/release/_mapping`](https://fastapi.metacpan.org/v1/release/_mapping) - [explore](https://explorer.metacpan.org/?url=/release/_mapping)
 
 
 ## Field documentation
@@ -44,12 +44,12 @@ Fields are documented in the API codebase: https://github.com/metacpan/metacpan-
 
 Performing a search without any constraints is an easy way to get sample data
 
-* [/author/_search](https://fastapi.metacpan.org/v1/author/_search)
-* [/distribution/_search](https://fastapi.metacpan.org/v1/distribution/_search)
-* [/favorite/_search](https://fastapi.metacpan.org/v1/favorite/_search)
-* [/file/_search](https://fastapi.metacpan.org/v1/file/_search)
-* [/rating/_search](https://fastapi.metacpan.org/v1/rating/_search)
-* [/release/_search](https://fastapi.metacpan.org/v1/release/_search)
+* [`/author/_search`](https://fastapi.metacpan.org/v1/author/_search)
+* [`/distribution/_search`](https://fastapi.metacpan.org/v1/distribution/_search)
+* [`/favorite/_search`](https://fastapi.metacpan.org/v1/favorite/_search)
+* [`/file/_search`](https://fastapi.metacpan.org/v1/file/_search)
+* [`/rating/_search`](https://fastapi.metacpan.org/v1/rating/_search)
+* [`/release/_search`](https://fastapi.metacpan.org/v1/release/_search)
 
 ## Joins
 
@@ -101,33 +101,33 @@ The `/download_url` endpoint exists specifically for the `cpanm` client.  It tak
 
 Obviously anyone can use this endpoint, but we'll only consider changes to this endpoint after considering how `cpanm` might be affected.
 
-* [https://fastapi.metacpan.org/v1/download_url/HTTP::Tiny](https://fastapi.metacpan.org/v1/download_url/HTTP::Tiny)
-* [https://fastapi.metacpan.org/v1/download_url/Moose?version===0.01](https://fastapi.metacpan.org/v1/download_url/Moose?version===0.01)
-* [https://fastapi.metacpan.org/v1/download_url/Moose?version=!=0.01](https://fastapi.metacpan.org/v1/download_url/Moose?version=!=0.01)
-* [https://fastapi.metacpan.org/v1/download_url/Moose?version=<=0.02](https://fastapi.metacpan.org/v1/download_url/Moose?version=<=0.02)
-* [https://fastapi.metacpan.org/v1/download_url/Try::Tiny?version=>0.21,<0.27,!=0.24](https://fastapi.metacpan.org/v1/download_url/Try::Tiny?version=>0.21,<0.27,!=0.24)
-* [https://fastapi.metacpan.org/v1/download_url/Try::Tiny?version=>0.21,<0.27&dev=1](https://fastapi.metacpan.org/v1/download_url/Try::Tiny?version=>0.21,<0.27&dev=1)
-* [https://fastapi.metacpan.org/v1/download_url/Try::Tiny?version=>0.21,<0.27,!=0.26&dev=1](https://fastapi.metacpan.org/v1/download_url/Try::Tiny?version=>0.21,<0.27,!=0.26&dev=1)
+* [`https://fastapi.metacpan.org/v1/download_url/HTTP::Tiny`](https://fastapi.metacpan.org/v1/download_url/HTTP::Tiny)
+* [`https://fastapi.metacpan.org/v1/download_url/Moose?version===0.01`](https://fastapi.metacpan.org/v1/download_url/Moose?version===0.01)
+* [`https://fastapi.metacpan.org/v1/download_url/Moose?version=!=0.01`](https://fastapi.metacpan.org/v1/download_url/Moose?version=!=0.01)
+* [`https://fastapi.metacpan.org/v1/download_url/Moose?version=<=0.02`](https://fastapi.metacpan.org/v1/download_url/Moose?version=<=0.02)
+* [`https://fastapi.metacpan.org/v1/download_url/Try::Tiny?version=>0.21,<0.27,!=0.24`](https://fastapi.metacpan.org/v1/download_url/Try::Tiny?version=>0.21,<0.27,!=0.24)
+* [`https://fastapi.metacpan.org/v1/download_url/Try::Tiny?version=>0.21,<0.27&dev=1`](https://fastapi.metacpan.org/v1/download_url/Try::Tiny?version=>0.21,<0.27&dev=1)
+* [`https://fastapi.metacpan.org/v1/download_url/Try::Tiny?version=>0.21,<0.27,!=0.26&dev=1`](https://fastapi.metacpan.org/v1/download_url/Try::Tiny?version=>0.21,<0.27,!=0.26&dev=1)
 
 ### `/release/{distribution}`
 
 ### `/release/{author}/{release}`
 
-The `/release` endpoint accepts either the name of a `distribution` (e.g. [/release/Moose](https://fastapi.metacpan.org/v1/release/Moose)), which returns the most recent release of the distribution. Or provide the full path which consists of its `author` and the name of the `release` (e.g. [/release/DOY/Moose-2.0001](https://fastapi.metacpan.org/v1/release/DOY/Moose-2.0001)).
+The `/release` endpoint accepts either the name of a `distribution` (e.g. [`/release/Moose`](https://fastapi.metacpan.org/v1/release/Moose)), which returns the most recent release of the distribution. Or provide the full path which consists of its `author` and the name of the `release` (e.g. [`/release/DOY/Moose-2.0001`](https://fastapi.metacpan.org/v1/release/DOY/Moose-2.0001)).
 
 ### `/author/{author}`
 
-`author` refers to the pauseid of the author. It must be uppercased (e.g. [/author/DOY](https://fastapi.metacpan.org/v1/author/DOY)).
+`author` refers to the pauseid of the author. It must be uppercased (e.g. [`/author/DOY`](https://fastapi.metacpan.org/v1/author/DOY)).
 
 ### `/module/{module}`
 
-Returns the corresponding `file` of the latest version of the `module`. Considering that Moose-2.0001 is the latest release, the result of [/module/Moose](https://fastapi.metacpan.org/v1/module/Moose) is the same as [/file/DOY/Moose-2.0001/lib/Moose.pm](https://fastapi.metacpan.org/v1/file/DOY/Moose-2.0001/lib/Moose.pm).
+Returns the corresponding `file` of the latest version of the `module`. Considering that Moose-2.0001 is the latest release, the result of [`/module/Moose`](https://fastapi.metacpan.org/v1/module/Moose) is the same as [`/file/DOY/Moose-2.0001/lib/Moose.pm`](https://fastapi.metacpan.org/v1/file/DOY/Moose-2.0001/lib/Moose.pm).
 
 ### `/pod/{module}`
 
 ### `/pod/{author}/{release}/{path}`
 
-Returns the POD of the given module. You can change the output format by either passing a `content-type` query parameter (e.g. [/pod/Moose?content-type=text/plain](https://fastapi.metacpan.org/v1/pod/Moose?content-type=text/plain) or by adding an `Accept` header to the HTTP request. Valid content types are:
+Returns the POD of the given module. You can change the output format by either passing a `content-type` query parameter (e.g. [`/pod/Moose?content-type=text/plain`](https://fastapi.metacpan.org/v1/pod/Moose?content-type=text/plain) or by adding an `Accept` header to the HTTP request. Valid content types are:
 
 * text/html (default)
 * text/plain
@@ -143,11 +143,11 @@ Returns the full source of the latest, authorized version of the given
 
 Names of latest releases by OALDERS:
 
-https://fastapi.metacpan.org/v1/release/_search?q=author:OALDERS%20AND%20status:latest&fields=name,status&size=100
+[`https://fastapi.metacpan.org/v1/release/_search?q=author:OALDERS%20AND%20status:latest&fields=name,status&size=100`](https://fastapi.metacpan.org/v1/release/_search?q=author:OALDERS%20AND%20status:latest&fields=name,status&size=100)
 
 5,000 CPAN Authors:
 
-[https://fastapi.metacpan.org/v1/author/_search?q=*&size=5000](https://fastapi.metacpan.org/author/_search?q=*)
+[`https://fastapi.metacpan.org/v1/author/_search?q=*&size=5000`](https://fastapi.metacpan.org/author/_search?q=*)
 
 All CPAN Authors Who Have Provided Twitter IDs:
 
@@ -159,11 +159,11 @@ https://fastapi.metacpan.org/v1/author/_search?q=updated:*&sort=updated:desc
 
 First 100 distributions which SZABGAB has given a ++:
 
- https://fastapi.metacpan.org/v1/favorite/_search?q=user:sWuxlxYeQBKoCQe1f-FQ_Q&size=100&fields=distribution
+https://fastapi.metacpan.org/v1/favorite/_search?q=user:sWuxlxYeQBKoCQe1f-FQ_Q&size=100&fields=distribution
 
 The 100 most recent releases ( similar to https://metacpan.org/recent )
 
- https://fastapi.metacpan.org/v1/release/_search?q=status:latest&fields=name,status,date&sort=date:desc&size=100
+https://fastapi.metacpan.org/v1/release/_search?q=status:latest&fields=name,status,date&sort=date:desc&size=100
 
 Number of ++'es that DOY's dists have received:
 
