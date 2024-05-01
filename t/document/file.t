@@ -96,8 +96,9 @@ END
 
     my $file = new_file_doc( content => \$content );
 
-    is( $file->abstract,      'mymodule1 abstract' );
-    is( $file->documentation, 'MyModule' );
+    is( $file->abstract,             'mymodule1 abstract' );
+    is( $file->documentation,        'MyModule' );
+    is( $file->documentation_length, 8 );
     is_deeply( $file->pod_lines, [ [ 3, 12 ], [ 18, 6 ] ] );
     is( $file->sloc, 3 );
     is( $file->slop, 11 );

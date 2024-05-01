@@ -347,6 +347,7 @@ sub import_archive {
 
         $file->clear_module if ( $file->is_pod_file );
         $file->documentation;
+        $file->documentation_length;
         $file->suggest;
 
         log_trace {"reindexing file $file->{path}"};
