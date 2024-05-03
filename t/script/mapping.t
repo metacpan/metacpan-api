@@ -4,8 +4,8 @@ use lib 't/lib';
 
 use Test::More;
 
-use MetaCPAN::Script::Runner qw(build_config);
-use MetaCPAN::Script::Mapping;
+use MetaCPAN::Script::Runner  ();
+use MetaCPAN::Script::Mapping ();
 
 my $config = MetaCPAN::Script::Runner::build_config;
 
