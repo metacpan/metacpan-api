@@ -297,8 +297,9 @@ sub build_query {
                             # prefer shorter module names
                             script_score => {
                                 script => {
-                                    lang => 'groovy',
-                                    file => 'prefer_shorter_module_names_400',
+                                    lang   => 'expression',
+                                    inline =>
+                                        "_score - (doc['documentation_length'].value == 0 ? 26 : doc['documentation_length'].value)/400",
                                 },
                             },
                             query => {
