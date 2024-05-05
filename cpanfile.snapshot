@@ -2559,10 +2559,10 @@ DISTRIBUTIONS
       File::Spec 0
       IO::File 0
       perl 5.006
-  ExtUtils-HasCompiler-0.024
-    pathname: L/LE/LEONT/ExtUtils-HasCompiler-0.024.tar.gz
+  ExtUtils-HasCompiler-0.025
+    pathname: L/LE/LEONT/ExtUtils-HasCompiler-0.025.tar.gz
     provides:
-      ExtUtils::HasCompiler 0.024
+      ExtUtils::HasCompiler 0.025
     requirements:
       Carp 0
       DynaLoader 0
@@ -5315,66 +5315,66 @@ DISTRIBUTIONS
       Net::CIDR::Lite::Span 0.22
     requirements:
       ExtUtils::MakeMaker 0
-  Net-DNS-1.44
-    pathname: N/NL/NLNETLABS/Net-DNS-1.44.tar.gz
+  Net-DNS-1.45
+    pathname: N/NL/NLNETLABS/Net-DNS-1.45.tar.gz
     provides:
-      Net::DNS 1.44
+      Net::DNS 1.45
       Net::DNS::Domain 1913
       Net::DNS::DomainName 1898
       Net::DNS::DomainName1035 1898
       Net::DNS::DomainName2535 1898
-      Net::DNS::Header 1953
+      Net::DNS::Header 1970
       Net::DNS::Mailbox 1910
       Net::DNS::Mailbox1035 1910
       Net::DNS::Mailbox2535 1910
       Net::DNS::Nameserver 1963
       Net::DNS::Packet 1959
-      Net::DNS::Parameters 1945
+      Net::DNS::Parameters 1972
       Net::DNS::Question 1895
       Net::DNS::RR 1965
-      Net::DNS::RR::A 1896
+      Net::DNS::RR::A 1972
       Net::DNS::RR::AAAA 1896
-      Net::DNS::RR::AFSDB 1945
+      Net::DNS::RR::AFSDB 1972
       Net::DNS::RR::AMTRELAY 1896
       Net::DNS::RR::APL 1896
       Net::DNS::RR::APL::Item 1896
       Net::DNS::RR::CAA 1910
       Net::DNS::RR::CDNSKEY 1909
       Net::DNS::RR::CDS 1909
-      Net::DNS::RR::CERT 1896
-      Net::DNS::RR::CNAME 1896
+      Net::DNS::RR::CERT 1972
+      Net::DNS::RR::CNAME 1972
       Net::DNS::RR::CSYNC 1910
       Net::DNS::RR::DELEG 1965
       Net::DNS::RR::DHCID 1896
       Net::DNS::RR::DNAME 1896
-      Net::DNS::RR::DNSKEY 1910
-      Net::DNS::RR::DS 1957
+      Net::DNS::RR::DNSKEY 1972
+      Net::DNS::RR::DS 1972
       Net::DNS::RR::EUI48 1896
       Net::DNS::RR::EUI64 1896
       Net::DNS::RR::GPOS 1910
       Net::DNS::RR::HINFO 1896
       Net::DNS::RR::HIP 1896
-      Net::DNS::RR::HTTPS 1945
+      Net::DNS::RR::HTTPS 1972
       Net::DNS::RR::IPSECKEY 1957
-      Net::DNS::RR::ISDN 1896
-      Net::DNS::RR::KEY 1896
+      Net::DNS::RR::ISDN 1972
+      Net::DNS::RR::KEY 1972
       Net::DNS::RR::KX 1945
       Net::DNS::RR::L32 1896
       Net::DNS::RR::L64 1896
       Net::DNS::RR::LOC 1896
       Net::DNS::RR::LP 1896
-      Net::DNS::RR::MB 1910
-      Net::DNS::RR::MG 1910
-      Net::DNS::RR::MINFO 1896
-      Net::DNS::RR::MR 1910
-      Net::DNS::RR::MX 1945
+      Net::DNS::RR::MB 1972
+      Net::DNS::RR::MG 1972
+      Net::DNS::RR::MINFO 1972
+      Net::DNS::RR::MR 1972
+      Net::DNS::RR::MX 1972
       Net::DNS::RR::NAPTR 1898
       Net::DNS::RR::NID 1896
-      Net::DNS::RR::NS 1896
-      Net::DNS::RR::NSEC 1945
-      Net::DNS::RR::NSEC3 1910
-      Net::DNS::RR::NSEC3PARAM 1896
-      Net::DNS::RR::NULL 1896
+      Net::DNS::RR::NS 1972
+      Net::DNS::RR::NSEC 1972
+      Net::DNS::RR::NSEC3 1972
+      Net::DNS::RR::NSEC3PARAM 1972
+      Net::DNS::RR::NULL 1972
       Net::DNS::RR::OPENPGPKEY 1896
       Net::DNS::RR::OPT 1934
       Net::DNS::RR::OPT::CHAIN 1934
@@ -5390,34 +5390,34 @@ DISTRIBUTIONS
       Net::DNS::RR::OPT::PADDING 1934
       Net::DNS::RR::OPT::REPORT_CHANNEL 1934
       Net::DNS::RR::OPT::TCP_KEEPALIVE 1934
-      Net::DNS::RR::PTR 1896
+      Net::DNS::RR::PTR 1972
       Net::DNS::RR::PX 1945
-      Net::DNS::RR::RP 1945
-      Net::DNS::RR::RRSIG 1957
-      Net::DNS::RR::RT 1945
-      Net::DNS::RR::SIG 1957
+      Net::DNS::RR::RP 1972
+      Net::DNS::RR::RRSIG 1972
+      Net::DNS::RR::RT 1972
+      Net::DNS::RR::SIG 1972
       Net::DNS::RR::SMIMEA 1896
-      Net::DNS::RR::SOA 1945
+      Net::DNS::RR::SOA 1972
       Net::DNS::RR::SPF 1896
       Net::DNS::RR::SRV 1945
       Net::DNS::RR::SSHFP 1896
-      Net::DNS::RR::SVCB 1967
+      Net::DNS::RR::SVCB 1970
       Net::DNS::RR::TKEY 1908
       Net::DNS::RR::TLSA 1896
-      Net::DNS::RR::TSIG 1909
-      Net::DNS::RR::TXT 1911
+      Net::DNS::RR::TSIG 1972
+      Net::DNS::RR::TXT 1972
       Net::DNS::RR::URI 1896
-      Net::DNS::RR::X25 1896
+      Net::DNS::RR::X25 1972
       Net::DNS::RR::ZONEMD 1896
       Net::DNS::Resolver 1895
-      Net::DNS::Resolver::Base 1965
+      Net::DNS::Resolver::Base 1969
       Net::DNS::Resolver::MSWin32 1961
       Net::DNS::Resolver::Recurse 1965
-      Net::DNS::Resolver::UNIX 1856
-      Net::DNS::Resolver::android 1856
+      Net::DNS::Resolver::UNIX 1972
+      Net::DNS::Resolver::android 1972
       Net::DNS::Resolver::cygwin 1856
-      Net::DNS::Resolver::os2 1856
-      Net::DNS::Resolver::os390 1856
+      Net::DNS::Resolver::os2 1972
+      Net::DNS::Resolver::os390 1972
       Net::DNS::Text 1894
       Net::DNS::Update 1895
       Net::DNS::ZoneFile 1957
@@ -7395,21 +7395,21 @@ DISTRIBUTIONS
       Scalar::Util 1.14
       perl 5.006
       strict 0
-  Term-Choose-1.764
-    pathname: K/KU/KUERBIS/Term-Choose-1.764.tar.gz
+  Term-Choose-1.765
+    pathname: K/KU/KUERBIS/Term-Choose-1.765.tar.gz
     provides:
-      Term::Choose 1.764
-      Term::Choose::Constants 1.764
-      Term::Choose::LineFold 1.764
-      Term::Choose::LineFold::CharWidthAmbiguousWide 1.764
-      Term::Choose::LineFold::CharWidthDefault 1.764
-      Term::Choose::Linux 1.764
-      Term::Choose::Opt::Mouse 1.764
-      Term::Choose::Opt::Search 1.764
-      Term::Choose::Opt::SkipItems 1.764
-      Term::Choose::Screen 1.764
-      Term::Choose::ValidateOptions 1.764
-      Term::Choose::Win32 1.764
+      Term::Choose 1.765
+      Term::Choose::Constants 1.765
+      Term::Choose::LineFold 1.765
+      Term::Choose::LineFold::CharWidthAmbiguousWide 1.765
+      Term::Choose::LineFold::CharWidthDefault 1.765
+      Term::Choose::Linux 1.765
+      Term::Choose::Opt::Mouse 1.765
+      Term::Choose::Opt::Search 1.765
+      Term::Choose::Opt::SkipItems 1.765
+      Term::Choose::Screen 1.765
+      Term::Choose::ValidateOptions 1.765
+      Term::Choose::Win32 1.765
     requirements:
       Carp 0
       Exporter 0
@@ -7458,17 +7458,16 @@ DISTRIBUTIONS
       perl 5.012
       strict 0
       warnings 0
-  Test-Compile-v3.3.1
-    pathname: E/EG/EGILES/Test-Compile-v3.3.1.tar.gz
+  Test-Compile-v3.3.2
+    pathname: E/EG/EGILES/Test-Compile-v3.3.2.tar.gz
     provides:
-      Test::Compile v3.3.1
-      Test::Compile::Internal v3.3.1
+      Test::Compile v3.3.2
+      Test::Compile::Internal v3.3.2
     requirements:
       Exporter 5.68
       Module::Build 0.38
       parent 0.225
       perl v5.10.0
-      version 0.77
   Test-Deep-1.204
     pathname: R/RJ/RJBS/Test-Deep-1.204.tar.gz
     provides:
