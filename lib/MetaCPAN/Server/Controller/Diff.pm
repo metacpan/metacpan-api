@@ -33,9 +33,8 @@ sub release : Chained('index') : PathPart('release') : Args(1) {
 
     my ( $latest, $previous );
     try {
-        $latest = $c->model('CPAN::Release')->raw->find($name);
-        $previous
-            = $c->model('CPAN::Release')->raw->predecessor($name)->{_source};
+        $latest   = $c->model('CPAN::Release')->find($name);
+        $previous = $c->model('CPAN::Release')->predecessor($name);
     }
     catch {
         $c->detach('/not_found');
