@@ -6781,49 +6781,6 @@ DISTRIBUTIONS
       perl 5.008
       strict 0
       warnings 0
-  Pod-POM-2.01
-    pathname: N/NE/NEILB/Pod-POM-2.01.tar.gz
-    provides:
-      Pod::POM 2.01
-      Pod::POM::Constants 2.01
-      Pod::POM::Node 2.01
-      Pod::POM::Node::Begin 2.01
-      Pod::POM::Node::Code 2.01
-      Pod::POM::Node::Content 2.01
-      Pod::POM::Node::For 2.01
-      Pod::POM::Node::Head1 2.01
-      Pod::POM::Node::Head2 2.01
-      Pod::POM::Node::Head3 2.01
-      Pod::POM::Node::Head4 2.01
-      Pod::POM::Node::Item 2.01
-      Pod::POM::Node::Over 2.01
-      Pod::POM::Node::Pod 2.01
-      Pod::POM::Node::Sequence 2.01
-      Pod::POM::Node::Text 2.01
-      Pod::POM::Node::Verbatim 2.01
-      Pod::POM::Nodes 2.01
-      Pod::POM::Test 2.01
-      Pod::POM::View 2.01
-      Pod::POM::View::HTML 2.01
-      Pod::POM::View::Pod 2.01
-      Pod::POM::View::Text 2.01
-    requirements:
-      Encode 0
-      Exporter 0
-      ExtUtils::MakeMaker 0
-      File::Basename 0
-      FindBin 0
-      Getopt::Long 0
-      Getopt::Std 0
-      Text::Wrap 0
-      constant 0
-      lib 0
-      overload 0
-      parent 0
-      perl 5.006
-      strict 0
-      vars 0
-      warnings 0
   Pod-Parser-1.67
     pathname: M/MA/MAREKR/Pod-Parser-1.67.tar.gz
     provides:
