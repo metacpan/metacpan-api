@@ -20,6 +20,7 @@ has query_release => (
         by_author
         by_author_and_name
         by_author_and_names
+        find
         get_contributors
         get_files
         latest_by_author
@@ -40,21 +41,6 @@ sub _build_query_release {
         es         => $self->es,
         index_name => $self->index->name,
     );
-}
-
-sub find {
-    my ( $self, $name ) = @_;
-    my $file = $self->filter( {
-        and => [
-            { term => { distribution => $name } },
-            { term => { status       => 'latest' } }
-        ]
-    } )->sort( [ { date => 'desc' } ] )->raw->first;
-    return unless $file;
-
-    my $data = $file->{_source}
-        || single_valued_arrayref_to_scalar( $file->{fields} );
-    return $data;
 }
 
 sub find_github_based {
