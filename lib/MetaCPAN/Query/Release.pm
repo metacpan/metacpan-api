@@ -1260,5 +1260,27 @@ sub _numify {
     version->new($ver)->numify;
 }
 
+sub predecessor {
+    my ( $self, $name ) = @_;
+
+    my $res = $self->es->search(
+        index => $self->index_name,
+        type  => 'release',
+        body  => {
+            query => {
+                bool => {
+                    must     => [ { term => { distribution => $name } }, ],
+                    must_not => [ { term => { status       => 'latest' } }, ],
+                },
+            },
+            sort => [ { date => 'desc' } ],
+            size => 1,
+        },
+    );
+    my ($release) = $res->{hits}{hits}[0];
+    return unless $release;
+    return $release->{_source};
+}
+
 __PACKAGE__->meta->make_immutable;
 1;

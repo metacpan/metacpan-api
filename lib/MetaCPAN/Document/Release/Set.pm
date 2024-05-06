@@ -25,6 +25,7 @@ has query_release => (
         latest_by_author
         latest_by_distribution
         modules
+        predecessor
         recent
         requires
         reverse_dependencies
@@ -54,16 +55,6 @@ sub find {
     my $data = $file->{_source}
         || single_valued_arrayref_to_scalar( $file->{fields} );
     return $data;
-}
-
-sub predecessor {
-    my ( $self, $name ) = @_;
-    return $self->filter( {
-        and => [
-            { term => { distribution => $name } },
-            { not  => { filter => { term => { status => 'latest' } } } },
-        ]
-    } )->sort( [ { date => 'desc' } ] )->first;
 }
 
 sub find_github_based {
