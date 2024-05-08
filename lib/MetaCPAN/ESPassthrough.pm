@@ -47,6 +47,7 @@ sub _build_to_app {
                         $env = { %$env, CONTENT_TYPE => 'application/json' };
                     }
                 }
+                local $env->{__PACKAGE__.'.request'} = _req($env);
                 return $app->($env);
             };
         };
@@ -61,7 +62,7 @@ sub _build_to_app {
 
             mount "/$url_base/_mapping" => sub {
                 my $env = shift;
-                my $req = Plack::Request->new($env);
+                my $req = _req($env);
                 if ( $req->path_info ) {
                     return _not_found();
                 }
@@ -74,7 +75,7 @@ sub _build_to_app {
             };
             mount "/$url_base/_search" => sub {
                 my $env = shift;
-                my $req = Plack::Request->new($env);
+                my $req = _req($env);
                 if ( $req->path_info ) {
                     return _not_found();
                 }
@@ -83,7 +84,7 @@ sub _build_to_app {
             };
             mount "/$url_base" => sub {
                 my $env = shift;
-                my $req = Plack::Request->new($env);
+                my $req = _req($env);
                 if ( my $path = $req->path_info ) {
                     my $item = $path =~ s{\A/}{}r;
                     if ( $item =~ m{/} ) {
@@ -96,10 +97,57 @@ sub _build_to_app {
                 return $self->_all( \%args, $req );
             };
         }
+        mount '/_search/scroll' => sub {
+            my $env = shift;
+            my $req = _req($env);
+
+            my $scroll_id;
+            my $scroll = $req->query_parameters->get('scroll');
+            if ( my $path = $req->path_info ) {
+                my $item = $path =~ s{\A/}{}r;
+                if ( $item =~ m{/} ) {
+                    return _not_found();
+                }
+                $scroll_id = $item;
+            }
+            elsif (my $qs_id = $res->query_parameters->get('scroll_id')) {
+                $scroll_id = $qs_id;
+            }
+            elsif (my $body = $req->body_parameters) {
+                $scroll_id = $body->get('scroll_id');
+                $scroll = $body->get('scroll')
+                    if $body->get('scroll');
+            }
+
+            my $res;
+            if ($req->method eq 'DELETE') {
+                $res = $self->es->clear_scroll(scroll_id => $scroll_id);
+            }
+            else {
+                $res = $self->es->scroll(
+                    scroll_id => $scroll_id,
+                    defined $scroll ? (scroll => $scroll) : (),
+                );
+            }
+
+            return _json_response(200, $res);
+        };
+
         mount '/' => sub {
             return _not_found();
         };
     };
+}
+
+sub _req {
+    my $env = shift;
+    my $req = $env->{__PACKAGE__.'.request'};
+    return $req
+        if $req;
+    $req = Plack::Request->new($env);
+    $req->request_body_parser->register( 'application/json',
+        'HTTP::Entity::Parser::JSON' );
+    return $req;
 }
 
 sub _search {
