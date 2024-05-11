@@ -86,20 +86,6 @@ sub test_bad_request {
     };
 }
 
-my %replacements = (
-    prefer_shorter_module_names_100 =>
-        qr#\Q_score - doc['documentation'].value.length()/100\E#,
-
-    prefer_shorter_module_names_400 =>
-        qr#\Qif(documentation == empty)\E.+\Q.length()/400\E#s,
-
-    score_version_numified => qr#\Qdoc['module.version_numified'].value\E#,
-
-    status_is_latest => qr#\Qdoc['status'].value == 'latest'\E#,
-
-    stupid_script_that_doesnt_exist => undef,
-);
-
 hash_key_rejected( script => { script => 'foobar' } );
 hash_key_rejected(
     script => { tree => { of => 'many', hashes => { script => 'foobar' } } }
