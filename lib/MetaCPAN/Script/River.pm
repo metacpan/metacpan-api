@@ -14,7 +14,7 @@ has river_url => (
     isa      => Uri,
     coerce   => 1,
     required => 1,
-    default  => 'http://neilb.org/river-of-cpan.json.gz',
+    default  => 'https://neilb.org/river-of-cpan.json.gz',
 );
 
 sub run {
