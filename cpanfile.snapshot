@@ -6148,11 +6148,11 @@ DISTRIBUTIONS
       strict 0
       warnings 0
       warnings::register 0
-  Path-Tiny-0.144
-    pathname: D/DA/DAGOLDEN/Path-Tiny-0.144.tar.gz
+  Path-Tiny-0.146
+    pathname: D/DA/DAGOLDEN/Path-Tiny-0.146.tar.gz
     provides:
-      Path::Tiny 0.144
-      Path::Tiny::Error 0.144
+      Path::Tiny 0.146
+      Path::Tiny::Error 0.146
     requirements:
       Carp 0
       Cwd 0
@@ -7458,11 +7458,11 @@ DISTRIBUTIONS
       perl 5.012
       strict 0
       warnings 0
-  Test-Compile-v3.3.2
-    pathname: E/EG/EGILES/Test-Compile-v3.3.2.tar.gz
+  Test-Compile-v3.3.3
+    pathname: E/EG/EGILES/Test-Compile-v3.3.3.tar.gz
     provides:
-      Test::Compile v3.3.2
-      Test::Compile::Internal v3.3.2
+      Test::Compile v3.3.3
+      Test::Compile::Internal v3.3.3
     requirements:
       Exporter 5.68
       Module::Build 0.38
