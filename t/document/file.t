@@ -110,6 +110,41 @@ END
     );
 };
 
+subtest 'slop without pod_lines' => sub {
+    my $content = <<'END';
+package Foo;
+use strict;
+
+=head1 NAME
+X<Foo> X<Bar>
+
+MyModule - mymodule1 abstract
+
+  not this
+
+=pod
+
+bla
+
+=cut
+
+more perl code
+
+=head1 SYNOPSIS
+
+more pod
+more
+
+even more
+
+END
+
+    my $file = new_file_doc( content => \$content );
+
+    is( $file->slop, 11, 'slop is correct without first calling pod_lines' );
+    is_deeply( $file->pod_lines, [ [ 3, 12 ], [ 18, 6 ] ] );
+};
+
 subtest 'just pod' => sub {
     my $content = <<'END';
 
