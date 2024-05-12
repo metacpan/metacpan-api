@@ -32,7 +32,6 @@ Available fields can be found by accessing the corresponding `_mapping` endpoint
 * [`/favorite/_mapping`](https://fastapi.metacpan.org/v1/favorite/_mapping) - [explore](https://explorer.metacpan.org/?url=/favorite/_mapping)
 * [`/file/_mapping`](https://fastapi.metacpan.org/v1/file/_mapping) - [explore](https://explorer.metacpan.org/?url=/file/_mapping)
 * [`/module/_mapping`](https://fastapi.metacpan.org/v1/module/_mapping) - [explore](https://explorer.metacpan.org/?url=/module/_mapping)
-* [`/rating/_mapping`](https://fastapi.metacpan.org/v1/rating/_mapping) - [explore](https://explorer.metacpan.org/?url=/rating/_mapping)
 * [`/release/_mapping`](https://fastapi.metacpan.org/v1/release/_mapping) - [explore](https://explorer.metacpan.org/?url=/release/_mapping)
 
 
@@ -48,7 +47,6 @@ Performing a search without any constraints is an easy way to get sample data
 * [`/distribution/_search`](https://fastapi.metacpan.org/v1/distribution/_search)
 * [`/favorite/_search`](https://fastapi.metacpan.org/v1/favorite/_search)
 * [`/file/_search`](https://fastapi.metacpan.org/v1/file/_search)
-* [`/rating/_search`](https://fastapi.metacpan.org/v1/rating/_search)
 * [`/release/_search`](https://fastapi.metacpan.org/v1/release/_search)
 
 ## JSONP

@@ -12,7 +12,6 @@ use MetaCPAN::Script::Mapping::CPAN::File         ();
 use MetaCPAN::Script::Mapping::CPAN::Mirror       ();
 use MetaCPAN::Script::Mapping::CPAN::Permission   ();
 use MetaCPAN::Script::Mapping::CPAN::Package      ();
-use MetaCPAN::Script::Mapping::CPAN::Rating       ();
 use MetaCPAN::Script::Mapping::CPAN::Release      ();
 use MetaCPAN::Script::Mapping::DeployStatement    ();
 use MetaCPAN::Script::Mapping::User::Account      ();
@@ -511,8 +510,6 @@ sub _build_mapping {
                 MetaCPAN::Script::Mapping::CPAN::Permission::mapping),
             package => decode_json(
                 MetaCPAN::Script::Mapping::CPAN::Package::mapping),
-            rating =>
-                decode_json(MetaCPAN::Script::Mapping::CPAN::Rating::mapping),
             release => decode_json(
                 MetaCPAN::Script::Mapping::CPAN::Release::mapping),
         },
