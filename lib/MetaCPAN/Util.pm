@@ -86,11 +86,7 @@ sub fix_version {
 
 sub author_dir {
     my $pauseid = shift;
-    my $dir     = 'id/'
-        . sprintf( "%s/%s/%s",
-        substr( $pauseid, 0, 1 ),
-        substr( $pauseid, 0, 2 ), $pauseid );
-    return $dir;
+    return sprintf( 'id/%1$.1s/%1$.2s/%1$s', $pauseid );
 }
 
 # TODO: E<escape>
@@ -114,42 +110,39 @@ sub extract_section {
 }
 
 sub pod_lines {
-    my $content = shift;
-    return [] unless ($content);
-    my @lines = split( "\n", $content );
-    my @return;
-    my $length = 0;
-    my $start  = 0;
-    my $slop   = 0;
+    my $content = shift or return [];
 
-    # Use c-style for loop to avoid copying all the strings.
-    my $num_lines = scalar @lines;
-    for ( my $i = 0; $i < $num_lines; ++$i ) {
-        my $line = $lines[$i];
+    my @return;
+    my $slop = 0;
+
+    my $pod_start;
+
+    my $ln = 0;
+    while ( $content =~ /(.*?)\n/g ) {
+        my $line = $1;
+        $ln++;
+
+        if ( $pod_start && $line =~ /\S/ ) {
+            $slop++;
+        }
 
         if ( $line =~ /\A=cut/ ) {
-            $length++;
-            $slop++;
-            push( @return, [ $start - 1, $length ] )
-                if ( $start && $length );
-            $start = $length = 0;
+            if ($pod_start) {
+                push @return, [ $pod_start, $ln ];
+            }
+
+            undef $pod_start;
         }
 
       # Match lines that actually look like valid pod: "=pod\n" or "=pod x\n".
-        elsif ( $line =~ /^=[a-zA-Z][a-zA-Z0-9]*(?:\s+|$)/ && !$length ) {
-
-            # Re-use iterator as line number.
-            $start = $i + 1;
-        }
-
-        if ($start) {
-            $length++;
-            $slop++ if ( $line =~ /\S/ );
+        elsif ( $line =~ /^=[a-zA-Z][a-zA-Z0-9]*(?:\s+|$)/ ) {
+            $pod_start ||= $ln;
         }
     }
 
-    push @return, [ $start - 1, $length ]
-        if ( $start && $length );
+    if ($pod_start) {
+        push @return, [ $pod_start, $ln ];
+    }
 
     return \@return, $slop;
 }
