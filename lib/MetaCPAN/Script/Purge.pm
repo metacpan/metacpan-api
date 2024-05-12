@@ -47,7 +47,6 @@ sub _build_bulk {
         file => $self->es->bulk_helper( index => $index, type => 'file' ),
         permission =>
             $self->es->bulk_helper( index => $index, type => 'permission' ),
-        rating => $self->es->bulk_helper( index => $index, type => 'rating' ),
         release =>
             $self->es->bulk_helper( index => $index, type => 'release' ),
     };
@@ -62,17 +61,6 @@ sub _get_scroller_release {
         type   => 'release',
         body   => { query => $query },
         fields => [qw( archive name )],
-    );
-}
-
-sub _get_scroller_rating {
-    my ( $self, $query ) = @_;
-    return $self->es->scroll_helper(
-        size   => 500,
-        scroll => '10m',
-        index  => $self->index->name,
-        type   => 'rating',
-        body   => { query => $query },
     );
 }
 
@@ -132,7 +120,6 @@ sub run {
         }
         $self->purge_author_releases;
         $self->purge_favorite;
-        $self->purge_rating;
         if ( !$self->release ) {
             $self->purge_author;
             $self->purge_contributor;
@@ -327,87 +314,6 @@ sub purge_contributor {
 
     log_info {
         'Finished purging contribution entries related to ' . $self->author
-    };
-}
-
-sub purge_rating {
-    my $self = shift;
-
-    if ( $self->release ) {
-        $self->purge_rating_release;
-    }
-    else {
-        $self->purge_rating_author;
-    }
-}
-
-sub purge_rating_release {
-    my $self = shift;
-    log_info {
-        'Looking all up ratings for release '
-            . $self->release
-            . ' author '
-            . $self->author
-    };
-
-    my @remove;
-
-    my $query = {
-        bool => {
-            must => [
-                { term => { author  => $self->author } },
-                { term => { release => $self->release } }
-            ]
-        }
-    };
-
-    my $scroll_rating = $self->_get_scroller_rating($query);
-
-    while ( my $r = $scroll_rating->next ) {
-        log_debug {
-            'Removing ratings for release '
-                . $self->release
-                . ' by author '
-                . $self->author
-        };
-        push @remove, $r->{_id};
-    }
-
-    if (@remove) {
-        $self->bulk->{rating}->delete_ids(@remove);
-        $self->bulk->{rating}->flush;
-    }
-
-    log_info {
-        'Finished purging rating entries for release '
-            . $self->release
-            . ' by author '
-            . $self->author
-    };
-}
-
-sub purge_rating_author {
-    my $self = shift;
-    log_info { 'Looking all up ratings for author ' . $self->author };
-
-    my @remove;
-
-    my $query = { term => { author => $self->author } };
-
-    my $scroll_rating = $self->_get_scroller_rating($query);
-
-    while ( my $r = $scroll_rating->next ) {
-        log_debug { 'Removing ratings related to author ' . $self->author };
-        push @remove, $r->{_id};
-    }
-
-    if (@remove) {
-        $self->bulk->{rating}->delete_ids(@remove);
-        $self->bulk->{rating}->flush;
-    }
-
-    log_info {
-        'Finished purging rating entries related to author ' . $self->author
     };
 }
 
