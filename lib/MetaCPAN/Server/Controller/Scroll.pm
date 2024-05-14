@@ -34,6 +34,25 @@ sub index : Path('/_search/scroll') : Args {
         };
     }
 
+    if ( $scroll_id eq 'FAKE_SCROLL_ID' ) {
+        $c->stash( {
+            _scroll_id => $scroll_id,
+            _shards    => {
+                failed     => 0,
+                successful => 0,
+                total      => 0,
+            },
+            hits => {
+                hits      => [],
+                max_score => undef,
+                total     => 0,
+            },
+            timed_out => \0,
+            took      => 0,
+        } );
+        return;
+    }
+
     my $res = eval {
         $c->model('CPAN')->es->scroll( {
             scroll_id => $scroll_id,

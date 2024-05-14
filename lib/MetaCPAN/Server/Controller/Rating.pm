@@ -29,20 +29,46 @@ sub _mapping : Path('_mapping') : Args(0) {
 }
 
 sub find : Path('_search') : Args(0) {
-    my ( $self, $c ) = @_;
+    my ( $self, $c, $scroll ) = @_;
+
+    my @hits;
+
+    # fake results for MetaCPAN::Client so it doesn't fail its tests
+    if ( ( $c->req->user_agent // '' )
+        =~ m{^MetaCPAN::Client-testing/([0-9.]+)} )
+    {
+        if ( $1 <= 2.031001 ) {
+            my $query = $c->read_param('query');
+            if (   $query
+                && $query->[0]
+                && $query->[0]{term}
+                && ( $query->[0]{term}{distribution} // '' ) eq 'Moose' )
+            {
+
+                push @hits,
+                    {
+                    _source => {
+                        distribution => "Moose"
+                    },
+                    };
+            }
+        }
+    }
+
     $c->stash_or_detach( {
-        timed_out => \0,
-        took      => 0,
-        _shards   => {
+        $c->req->param('scroll') ? ( _scroll_id => 'FAKE_SCROLL_ID' ) : (),
+        _shards => {
+            failed     => 0,
             successful => 0,
             total      => 0,
-            failed     => 0,
         },
         hits => {
-            total     => 0,
-            hits      => [],
+            hits      => \@hits,
             max_score => undef,
-        }
+            total     => scalar @hits,
+        },
+        timed_out => \0,
+        took      => 0,
     } );
 }
 
