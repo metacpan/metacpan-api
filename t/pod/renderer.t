@@ -51,11 +51,12 @@ EOF
 
 {
     my $pod = <<'EOF';
+=pod
+
 =head1 DESCRIPTION
 L<Plack>
+
 =cut
-
-
 EOF
 
     is( $factory->to_pod($source), $pod, 'pod' );

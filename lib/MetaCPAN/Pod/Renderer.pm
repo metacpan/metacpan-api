@@ -5,9 +5,8 @@ use MetaCPAN::Moose;
 use MetaCPAN::Pod::XHTML;
 use MetaCPAN::Types::TypeTiny qw( Uri );
 use Pod::Markdown;
-use Pod::POM ();
-use Pod::POM::View::Pod;
-use Pod::Text ();
+use Pod::Simple::JustPod ();
+use Pod::Text            ();
 
 has perldoc_url_prefix => (
     is      => 'ro',
@@ -34,7 +33,7 @@ sub markdown_renderer {
 
 sub pod_renderer {
     my $self = shift;
-    return Pod::POM->new;
+    return Pod::Simple::JustPod->new;
 }
 
 sub text_renderer {
@@ -83,9 +82,7 @@ sub to_pod {
     my $self   = shift;
     my $source = shift;
 
-    my $renderer = $self->pod_renderer;
-    my $pom      = $renderer->parse_text($source);
-    return Pod::POM::View::Pod->print($pom);
+    return $self->_generic_render( $self->pod_renderer, $source );
 }
 
 sub _generic_render {
