@@ -92,7 +92,7 @@ test_psgi app, sub {
     ok(
         $res = $cb->(
             POST '/rating/_search',
-            'User-Agent' => 'MetaCPAN::Client-testing/2.031001',
+            'User-Agent' => 'MetaCPAN::Client/2.031001',
             Content      => '{"query":{"term":{"distribution":"Moose"}}}',
         ),
         'POST /rating with MetaCPAN::Client test UA'
