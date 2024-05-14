@@ -28,21 +28,18 @@ sub _mapping : Path('_mapping') : Args(0) {
     $c->detach('/not_found');
 }
 
-sub find : Path('_search') : Args(0) {
+sub find : Path('_search') : Args(0) : ActionClass('~Deserialize') {
     my ( $self, $c, $scroll ) = @_;
 
     my @hits;
 
     # fake results for MetaCPAN::Client so it doesn't fail its tests
-    if ( ( $c->req->user_agent // '' )
-        =~ m{^MetaCPAN::Client-testing/([0-9.]+)} )
-    {
+    if ( ( $c->req->user_agent // '' ) =~ m{^MetaCPAN::Client/([0-9.]+)} ) {
         if ( $1 <= 2.031001 ) {
-            my $query = $c->read_param('query');
+            my $query = $c->req->data->{'query'};
             if (   $query
-                && $query->[0]
-                && $query->[0]{term}
-                && ( $query->[0]{term}{distribution} // '' ) eq 'Moose' )
+                && $query->{term}
+                && ( $query->{term}{distribution} // '' ) eq 'Moose' )
             {
 
                 push @hits,
@@ -72,7 +69,7 @@ sub find : Path('_search') : Args(0) {
     } );
 }
 
-sub all : Path('') : Args(0) {
+sub all : Path('') : Args(0) : ActionClass('~Deserialize') {
     my ( $self, $c ) = @_;
     $c->forward('find');
 }
