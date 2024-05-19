@@ -7,10 +7,9 @@ use namespace::autoclean;
 $ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0;
 
 use HTTP::Request::Common     qw( GET );
-use IO::String                ();
 use Log::Contextual           qw( :log :dlog );
 use MetaCPAN::Types::TypeTiny ();
-use Parse::CSV                ();
+use Text::CSV_XS              ();
 use Pithub                    ();
 use Ref::Util                 qw( is_hashref is_ref );
 use URI::Escape               qw( uri_escape );
@@ -197,18 +196,20 @@ sub index_rt_bugs {
 
 sub parse_tsv {
     my ( $self, $tsv ) = @_;
-    $tsv =~ s/^#\s*(dist\s.+)/$1/m;  # uncomment the field spec for Parse::CSV
+    $tsv
+        =~ s/^#\s*(dist\s.+)/$1/m; # uncomment the field spec for Text::CSV_XS
     $tsv =~ s/^#.*\n//mg;
 
+    open my $fh, '<', \$tsv;
+
     # NOTE: This is byte-oriented.
-    my $tsv_parser = Parse::CSV->new(
-        handle   => IO::String->new($tsv),
+    my $tsv_parser = Text::CSV_XS->new( {
         sep_char => "\t",
-        names    => 1,
-    );
+    } );
+    $tsv_parser->header($fh);
 
     my %summary;
-    while ( my $row = $tsv_parser->fetch ) {
+    while ( my $row = $tsv_parser->getline_hr($fh) ) {
         $summary{ $row->{dist} }{'bugs'}{'rt'} = {
             source => $self->rt_dist_url( $row->{dist} ),
             active => $row->{active},

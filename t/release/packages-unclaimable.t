@@ -3,8 +3,7 @@ use warnings;
 use lib 't/lib';
 
 use Cpanel::JSON::XS ();
-use IO::String       ();
-use List::AllUtils   qw( uniq );
+use List::Util       qw( uniq );
 use MetaCPAN::Server::Test;
 use MetaCPAN::TestHelpers qw( test_release );
 use Module::Metadata      ();
@@ -42,9 +41,10 @@ test_release(
 
             my $content = $self->file_content('lib/Packages/Unclaimable.pm');
 
+            open my $fh, '<', \$content;
+
             my $mm
-                = Module::Metadata->new_from_handle(
-                IO::String->new($content),
+                = Module::Metadata->new_from_handle( $fh,
                 'lib/Packages/Unclaimable.pm' );
 
             is_deeply [ uniq sort $mm->packages_inside ],

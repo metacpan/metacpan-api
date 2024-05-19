@@ -1,7 +1,7 @@
 use Mojolicious::Lite;
 
 use Mojo::Pg;
-use List::AllUtils 'first_index';
+use List::Util qw(first);
 
 my $user = getpwuid($<); # for vagrant user on dev box
 
@@ -82,8 +82,8 @@ sub _perform_sco {
   my $url = Mojo::URL->new('http://search.cpan.org/search?mode=all&n=100');
   $url->query([query => $search]);
   my $tx = $c->app->ua->get($url);
-  my $res = $tx->res->dom->find('.sr')->map('all_text');
-  my $idx = first_index { $_ eq $expect } @{$res->to_array};
+  my $res = $tx->res->dom->find('.sr')->map('all_text')->to_array;
+  my $idx = first { $res->[$_] eq $expect } @{$res->to_array};
   return $idx < 0 ? undef : $idx + 1;
 }
 
@@ -92,8 +92,8 @@ sub _perform_mweb {
   my $url = Mojo::URL->new('https://metacpan.org/search?size=100');
   $url->query([q => $search]);
   my $tx = $c->app->ua->get($url);
-  my $res = $tx->res->dom->find('.module-result big strong a')->map('all_text');
-  my $idx = first_index { $_ eq $expect } @{$res->to_array};
+  my $res = $tx->res->dom->find('.module-result big strong a')->map('all_text')->to_array;
+  my $idx = first { $res->[$_] eq $expect } 0 .. $#{$res};
   return $idx < 0 ? undef : $idx + 1;
 }
 

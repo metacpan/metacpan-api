@@ -7,7 +7,7 @@ use utf8;
 use Moose;
 use ElasticSearchX::Model::Document;
 
-use List::AllUtils             qw( any );
+use List::Util                 qw( any );
 use MetaCPAN::Document::Module ();
 use MetaCPAN::Types            qw( Module );
 use MetaCPAN::Types::TypeTiny  qw(
