@@ -19,8 +19,7 @@ sub run {
             "GET $module" );
         my $json = decode_json_ok($res);
 
-        use Data::Dump qw(pp);
-        print STDERR ( pp( scalar $json ), "\n" );
+        diag explain $json;
 
         #        my $got
         #            = [ map { $_->{_source}{documentation} }

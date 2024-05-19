@@ -4,7 +4,6 @@ use strict;
 use warnings;
 use feature qw( state );
 
-use Data::Printer;
 use DateTime;
 use IO::Zlib                  ();
 use Cpanel::JSON::XS          qw( decode_json encode_json );
@@ -112,7 +111,7 @@ sub run_restore {
 
         try { $raw = decode_json($line) }
         catch {
-            log_warn {"cannot decode JSON: $line --- $_"};
+            log_warn {"cannot decode JSON: $line --- $&"};
         };
 
         # Create our bulk_helper if we need,
