@@ -2509,26 +2509,6 @@ DISTRIBUTIONS
       perl 5.008001
       strict 0
       warnings 0
-  Exporter-Declare-0.114
-    pathname: E/EX/EXODIST/Exporter-Declare-0.114.tar.gz
-    provides:
-      Exporter::Declare 0.114
-      Exporter::Declare::Export undef
-      Exporter::Declare::Export::Alias undef
-      Exporter::Declare::Export::Generator undef
-      Exporter::Declare::Export::Sub undef
-      Exporter::Declare::Export::Variable undef
-      Exporter::Declare::Meta undef
-      Exporter::Declare::Specs undef
-    requirements:
-      Carp 0
-      Fennec::Lite 0.004
-      Meta::Builder 0.003
-      Scalar::Util 0
-      Test::Exception 0.29
-      Test::Simple 0.88
-      aliased 0
-      perl v5.8.0
   Exporter-Tiny-1.006002
     pathname: T/TO/TOBYINK/Exporter-Tiny-1.006002.tar.gz
     provides:
@@ -2618,15 +2598,6 @@ DISTRIBUTIONS
       Module::CPANfile 0
       Test::More 0.88
       version 0.76
-  Fennec-Lite-0.004
-    pathname: E/EX/EXODIST/Fennec-Lite-0.004.tar.gz
-    provides:
-      Fennec::Lite 0.004
-    requirements:
-      List::Util 0
-      Test::Builder 0
-      Test::More 0
-      perl 5.006
   File-Find-Object-0.3.8
     pathname: S/SH/SHLOMIF/File-Find-Object-0.3.8.tar.gz
     provides:
@@ -3597,27 +3568,27 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  Log-Contextual-0.008001
-    pathname: F/FR/FREW/Log-Contextual-0.008001.tar.gz
+  Log-Contextual-0.009000
+    pathname: H/HA/HAARG/Log-Contextual-0.009000.tar.gz
     provides:
-      Log::Contextual 0.008001
-      Log::Contextual::Easy::Default 0.008001
-      Log::Contextual::Easy::Package 0.008001
-      Log::Contextual::Role::Router 0.008001
-      Log::Contextual::Role::Router::HasLogger 0.008001
-      Log::Contextual::Role::Router::SetLogger 0.008001
-      Log::Contextual::Role::Router::WithLogger 0.008001
-      Log::Contextual::Router 0.008001
-      Log::Contextual::SimpleLogger 0.008001
-      Log::Contextual::TeeLogger 0.008001
-      Log::Contextual::WarnLogger 0.008001
+      Log::Contextual 0.009000
+      Log::Contextual::Easy::Default 0.009000
+      Log::Contextual::Easy::Package 0.009000
+      Log::Contextual::Role::Router 0.009000
+      Log::Contextual::Role::Router::HasLogger 0.009000
+      Log::Contextual::Role::Router::SetLogger 0.009000
+      Log::Contextual::Role::Router::WithLogger 0.009000
+      Log::Contextual::Router 0.009000
+      Log::Contextual::SimpleLogger 0.009000
+      Log::Contextual::TeeLogger 0.009000
+      Log::Contextual::WarnLogger 0.009000
     requirements:
       Carp 0
       Data::Dumper::Concise 0
-      Exporter::Declare 0.111
       ExtUtils::MakeMaker 0
-      Moo 1.003
+      Moo 1.003000
       Scalar::Util 0
+      perl 5.008001
   Log-Dispatch-2.71
     pathname: D/DR/DROLSKY/Log-Dispatch-2.71.tar.gz
     provides:
@@ -3859,41 +3830,29 @@ DISTRIBUTIONS
       Net::Domain 1.05
       Net::SMTP 1.03
       Test::More 0
-  Meta-Builder-0.004
-    pathname: E/EX/EXODIST/Meta-Builder-0.004.tar.gz
+  MetaCPAN-Client-2.032000
+    pathname: M/MI/MICKEY/MetaCPAN-Client-2.032000.tar.gz
     provides:
-      Meta::Builder 0.004
-      Meta::Builder::Base undef
-      Meta::Builder::Util undef
-    requirements:
-      Carp 0
-      Fennec::Lite 0
-      Test::Exception 0
-      Test::More 0
-      perl 5.006
-  MetaCPAN-Client-2.031001
-    pathname: M/MI/MICKEY/MetaCPAN-Client-2.031001.tar.gz
-    provides:
-      MetaCPAN::Client 2.031001
-      MetaCPAN::Client::Author 2.031001
-      MetaCPAN::Client::Cover 2.031001
-      MetaCPAN::Client::Distribution 2.031001
-      MetaCPAN::Client::DownloadURL 2.031001
-      MetaCPAN::Client::Favorite 2.031001
-      MetaCPAN::Client::File 2.031001
-      MetaCPAN::Client::Mirror 2.031001
-      MetaCPAN::Client::Module 2.031001
-      MetaCPAN::Client::Package 2.031001
-      MetaCPAN::Client::Permission 2.031001
-      MetaCPAN::Client::Pod 2.031001
-      MetaCPAN::Client::Rating 2.031001
-      MetaCPAN::Client::Release 2.031001
-      MetaCPAN::Client::Request 2.031001
-      MetaCPAN::Client::ResultSet 2.031001
-      MetaCPAN::Client::Role::Entity 2.031001
-      MetaCPAN::Client::Role::HasUA 2.031001
-      MetaCPAN::Client::Scroll 2.031001
-      MetaCPAN::Client::Types 2.031001
+      MetaCPAN::Client 2.032000
+      MetaCPAN::Client::Author 2.032000
+      MetaCPAN::Client::Cover 2.032000
+      MetaCPAN::Client::Distribution 2.032000
+      MetaCPAN::Client::DownloadURL 2.032000
+      MetaCPAN::Client::Favorite 2.032000
+      MetaCPAN::Client::File 2.032000
+      MetaCPAN::Client::Mirror 2.032000
+      MetaCPAN::Client::Module 2.032000
+      MetaCPAN::Client::Package 2.032000
+      MetaCPAN::Client::Permission 2.032000
+      MetaCPAN::Client::Pod 2.032000
+      MetaCPAN::Client::Rating 2.032000
+      MetaCPAN::Client::Release 2.032000
+      MetaCPAN::Client::Request 2.032000
+      MetaCPAN::Client::ResultSet 2.032000
+      MetaCPAN::Client::Role::Entity 2.032000
+      MetaCPAN::Client::Role::HasUA 2.032000
+      MetaCPAN::Client::Scroll 2.032000
+      MetaCPAN::Client::Types 2.032000
     requirements:
       Carp 0
       ExtUtils::MakeMaker 7.1101
@@ -4254,14 +4213,15 @@ DISTRIBUTIONS
       URI::db 0.15
       URI::file 4.21
       perl 5.010001
-  Mojolicious-9.36
-    pathname: S/SR/SRI/Mojolicious-9.36.tar.gz
+  Mojolicious-9.37
+    pathname: S/SR/SRI/Mojolicious-9.37.tar.gz
     provides:
       Mojo undef
       Mojo::Asset undef
       Mojo::Asset::File undef
       Mojo::Asset::Memory undef
       Mojo::Base undef
+      Mojo::BaseUtil undef
       Mojo::ByteStream undef
       Mojo::Cache undef
       Mojo::Collection undef
@@ -4323,7 +4283,7 @@ DISTRIBUTIONS
       Mojo::UserAgent::Transactor undef
       Mojo::Util undef
       Mojo::WebSocket undef
-      Mojolicious 9.36
+      Mojolicious 9.37
       Mojolicious::Command undef
       Mojolicious::Command::Author::cpanify undef
       Mojolicious::Command::Author::generate undef
@@ -7296,14 +7256,26 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  Sub-Override-0.10
-    pathname: O/OV/OVID/Sub-Override-0.10.tar.gz
+  Sub-Override-0.11
+    pathname: M/MV/MVSJES/Sub-Override-0.11.tar.gz
     provides:
-      Sub::Override 0.10
+      Sub::Override 0.11
     requirements:
       ExtUtils::MakeMaker 0
+      Sub::Prototype 0.02
       Test::Fatal 0.010
       Test::More 0.47
+  Sub-Prototype-0.03
+    pathname: E/ET/ETHER/Sub-Prototype-0.03.tar.gz
+    provides:
+      Sub::Prototype 0.03
+    requirements:
+      ExtUtils::MakeMaker 0
+      Sub::Exporter 0
+      XSLoader 0
+      perl 5.008001
+      strict 0
+      warnings 0
   Sub-Quote-2.006008
     pathname: H/HA/HAARG/Sub-Quote-2.006008.tar.gz
     provides:
