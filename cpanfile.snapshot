@@ -2066,14 +2066,6 @@ DISTRIBUTIONS
       perl 5.008004
       strict 0
       warnings 0
-  Devel-ArgNames-0.03
-    pathname: N/NU/NUFFIN/Devel-ArgNames-0.03.tar.gz
-    provides:
-      Devel::ArgNames 0.03
-    requirements:
-      ExtUtils::MakeMaker 0
-      PadWalker 0
-      Test::use::ok 0
   Devel-CheckCompiler-0.07
     pathname: S/SY/SYOHEX/Devel-CheckCompiler-0.07.tar.gz
     provides:
@@ -2341,16 +2333,6 @@ DISTRIBUTIONS
       Module::Pluggable 1.5
       Scalar::Util 0
       perl 5.006
-      strict 0
-      warnings 0
-  Email-Address-1.913
-    pathname: R/RJ/RJBS/Email-Address-1.913.tar.gz
-    provides:
-      Email::Address 1.913
-    requirements:
-      ExtUtils::MakeMaker 6.78
-      overload 0
-      perl 5.012
       strict 0
       warnings 0
   Email-Address-XS-1.05
@@ -2936,24 +2918,6 @@ DISTRIBUTIONS
       HTML::Tiny 1.08
     requirements:
       perl 5.006
-  HTML-TokeParser-Simple-3.16
-    pathname: O/OV/OVID/HTML-TokeParser-Simple-3.16.tar.gz
-    provides:
-      HTML::TokeParser::Simple 3.16
-      HTML::TokeParser::Simple::Token 3.16
-      HTML::TokeParser::Simple::Token::Comment 3.16
-      HTML::TokeParser::Simple::Token::Declaration 3.15
-      HTML::TokeParser::Simple::Token::ProcessInstruction 3.16
-      HTML::TokeParser::Simple::Token::Tag 3.16
-      HTML::TokeParser::Simple::Token::Tag::End 3.16
-      HTML::TokeParser::Simple::Token::Tag::Start 3.16
-      HTML::TokeParser::Simple::Token::Text 3.16
-    requirements:
-      HTML::Parser 3.25
-      HTML::TokeParser 2.24
-      Sub::Override 0
-      Test::More 0
-      perl 5.006
   HTML-Tree-5.07
     pathname: K/KE/KENTNL/HTML-Tree-5.07.tar.gz
     provides:
@@ -3178,27 +3142,6 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       perl 5.008001
-  IO-All-0.87
-    pathname: F/FR/FREW/IO-All-0.87.tar.gz
-    provides:
-      IO::All 0.87
-      IO::All::Base undef
-      IO::All::DBM undef
-      IO::All::Dir undef
-      IO::All::File undef
-      IO::All::Filesys undef
-      IO::All::Link undef
-      IO::All::MLDBM undef
-      IO::All::Pipe undef
-      IO::All::STDIO undef
-      IO::All::Socket undef
-      IO::All::String undef
-      IO::All::Temp undef
-    requirements:
-      Cwd 0
-      ExtUtils::MakeMaker 0
-      Scalar::Util 0
-      perl 5.008001
   IO-File-AtomicChange-0.08
     pathname: H/HI/HIROSE/IO-File-AtomicChange-0.08.tar.gz
     provides:
@@ -3259,12 +3202,6 @@ DISTRIBUTIONS
       Mozilla::CA 0
       Net::SSLeay 1.46
       Scalar::Util 0
-  IO-String-1.08
-    pathname: G/GA/GAAS/IO-String-1.08.tar.gz
-    provides:
-      IO::String 1.08
-    requirements:
-      ExtUtils::MakeMaker 0
   IPC-Run-20231003.0
     pathname: T/TO/TODDR/IPC-Run-20231003.0.tar.gz
     provides:
@@ -3713,42 +3650,42 @@ DISTRIBUTIONS
       perl 5.010
       strict 0
       warnings 0
-  MCE-1.889
-    pathname: M/MA/MARIOROY/MCE-1.889.tar.gz
+  MCE-1.890
+    pathname: M/MA/MARIOROY/MCE-1.890.tar.gz
     provides:
-      MCE 1.889
-      MCE::Candy 1.889
-      MCE::Channel 1.889
-      MCE::Channel::Mutex 1.889
-      MCE::Channel::MutexFast 1.889
-      MCE::Channel::Simple 1.889
-      MCE::Channel::SimpleFast 1.889
-      MCE::Channel::Threads 1.889
-      MCE::Channel::ThreadsFast 1.889
-      MCE::Child 1.889
-      MCE::Core::Input::Generator 1.889
-      MCE::Core::Input::Handle 1.889
-      MCE::Core::Input::Iterator 1.889
-      MCE::Core::Input::Request 1.889
-      MCE::Core::Input::Sequence 1.889
-      MCE::Core::Manager 1.889
-      MCE::Core::Validation 1.889
-      MCE::Core::Worker 1.889
-      MCE::Flow 1.889
-      MCE::Grep 1.889
-      MCE::Loop 1.889
-      MCE::Map 1.889
-      MCE::Mutex 1.889
-      MCE::Mutex::Channel 1.889
-      MCE::Mutex::Channel2 1.889
-      MCE::Mutex::Flock 1.889
-      MCE::Queue 1.889
-      MCE::Relay 1.889
-      MCE::Signal 1.889
-      MCE::Step 1.889
-      MCE::Stream 1.889
-      MCE::Subs 1.889
-      MCE::Util 1.889
+      MCE 1.890
+      MCE::Candy 1.890
+      MCE::Channel 1.890
+      MCE::Channel::Mutex 1.890
+      MCE::Channel::MutexFast 1.890
+      MCE::Channel::Simple 1.890
+      MCE::Channel::SimpleFast 1.890
+      MCE::Channel::Threads 1.890
+      MCE::Channel::ThreadsFast 1.890
+      MCE::Child 1.890
+      MCE::Core::Input::Generator 1.890
+      MCE::Core::Input::Handle 1.890
+      MCE::Core::Input::Iterator 1.890
+      MCE::Core::Input::Request 1.890
+      MCE::Core::Input::Sequence 1.890
+      MCE::Core::Manager 1.890
+      MCE::Core::Validation 1.890
+      MCE::Core::Worker 1.890
+      MCE::Flow 1.890
+      MCE::Grep 1.890
+      MCE::Loop 1.890
+      MCE::Map 1.890
+      MCE::Mutex 1.890
+      MCE::Mutex::Channel 1.890
+      MCE::Mutex::Channel2 1.890
+      MCE::Mutex::Flock 1.890
+      MCE::Queue 1.890
+      MCE::Relay 1.890
+      MCE::Signal 1.890
+      MCE::Step 1.890
+      MCE::Stream 1.890
+      MCE::Subs 1.890
+      MCE::Util 1.890
     requirements:
       Carp 0
       Errno 0
@@ -5916,13 +5853,6 @@ DISTRIBUTIONS
       perl 5.008001
       strict 0
       warnings 0
-  PadWalker-2.5
-    pathname: R/RO/ROBIN/PadWalker-2.5.tar.gz
-    provides:
-      PadWalker 2.5
-    requirements:
-      ExtUtils::MakeMaker 0
-      perl 5.008001
   Parallel-ForkManager-2.02
     pathname: Y/YA/YANICK/Parallel-ForkManager-2.02.tar.gz
     provides:
@@ -6019,19 +5949,6 @@ DISTRIBUTIONS
       CPAN::Version 0
       ExtUtils::MakeMaker 0
       IO::Uncompress::Gunzip 0
-  Parse-CSV-2.07
-    pathname: K/KW/KWILLIAMS/Parse-CSV-2.07.tar.gz
-    provides:
-      Parse::CSV 2.07
-    requirements:
-      Carp 0
-      ExtUtils::MakeMaker 0
-      IO::File 1.13
-      Module::Build 0.28
-      Params::Util 1.00
-      Text::CSV_XS 1.22
-      perl 5.005
-      strict 0
   Parse-LocalDistribution-0.19
     pathname: I/IS/ISHIGAKI/Parse-LocalDistribution-0.19.tar.gz
     provides:
@@ -7254,26 +7171,6 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       XSLoader 0
       perl 5.006
-      strict 0
-      warnings 0
-  Sub-Override-0.11
-    pathname: M/MV/MVSJES/Sub-Override-0.11.tar.gz
-    provides:
-      Sub::Override 0.11
-    requirements:
-      ExtUtils::MakeMaker 0
-      Sub::Prototype 0.02
-      Test::Fatal 0.010
-      Test::More 0.47
-  Sub-Prototype-0.03
-    pathname: E/ET/ETHER/Sub-Prototype-0.03.tar.gz
-    provides:
-      Sub::Prototype 0.03
-    requirements:
-      ExtUtils::MakeMaker 0
-      Sub::Exporter 0
-      XSLoader 0
-      perl 5.008001
       strict 0
       warnings 0
   Sub-Quote-2.006008
