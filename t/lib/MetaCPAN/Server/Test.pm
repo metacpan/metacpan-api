@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use HTTP::Request::Common qw(POST GET DELETE);
+use MetaCPAN::Config      ();
 use MetaCPAN::Server      ();
 use Plack::Test;
 use Test::More;
@@ -40,7 +41,11 @@ sub app {
 require MetaCPAN::Model;
 
 sub model {
-    MetaCPAN::Model->new( es => ( $ENV{ES_TEST} ||= 'localhost:9200' ) );
+    MetaCPAN::Model->new(
+        es => (
+            nodes => [ MetaCPAN::Config::config()->{elasticsearch_servers} ]
+        )
+    );
 }
 
 1;

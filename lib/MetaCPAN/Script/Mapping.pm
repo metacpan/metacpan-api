@@ -254,8 +254,6 @@ sub delete_all {
         || $runtime_environment eq 'testing';
 
     if ($is_development) {
-        $self->are_you_sure("ALL Indices will be deleted !!!");
-
         foreach my $name ( keys %{ $self->indices_info } ) {
             $self->_delete_index($name);
         }

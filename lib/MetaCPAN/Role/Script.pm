@@ -2,18 +2,16 @@ package MetaCPAN::Role::Script;
 
 use Moose::Role;
 
-use ElasticSearchX::Model::Document::Types qw(:all);
+use ElasticSearchX::Model::Document::Types qw( ES );
+use File::Path                             ();
 use Git::Helpers                           qw( checkout_root );
+use IO::Interactive                        qw( is_interactive );
+use IO::Prompt                             qw( prompt );
 use Log::Contextual                        qw( :log :dlog );
 use MetaCPAN::Model                        ();
 use MetaCPAN::Types::TypeTiny              qw( Bool HashRef Int Path Str );
 use Mojo::Server                           ();
 use Term::ANSIColor                        qw( colored );
-use IO::Interactive                        qw( is_interactive );
-use IO::Prompt                             qw( prompt );
-use File::Path                             ();
-
-use Carp ();
 
 with( 'MetaCPAN::Role::HasConfig', 'MetaCPAN::Role::Fastly',
     'MetaCPAN::Role::Logger' );
@@ -119,7 +117,9 @@ has aliases_info => (
 has port => (
     isa           => Int,
     is            => 'ro',
-    required      => 1,
+    lazy          => 1,
+    required      => 0,
+    default       => 5000,
     documentation => 'Port for the proxy, defaults to 5000',
 );
 
@@ -266,10 +266,7 @@ sub remote {
 sub run { }
 before run => sub {
     my $self = shift;
-
     $self->set_logger_once;
-
-    #Dlog_debug {"Connected to $_"} $self->remote;
 };
 
 sub _get_indices_info {

@@ -2,6 +2,7 @@ package MetaCPAN::Role::Logger;
 
 use v5.10;
 use Moose::Role;
+
 use MetaCPAN::Types::TypeTiny qw( Logger Str );
 use Log::Contextual           qw( set_logger );
 use Log::Log4perl ':easy';
@@ -45,8 +46,6 @@ sub set_logger_once {
     return;
 }
 
-# XXX NOT A MOOSE BUILDER
-# XXX This doesn't belong here.
 sub _build_logger {
     my ($config) = @_;
     my $log = Log::Log4perl->get_logger( $ARGV[0]

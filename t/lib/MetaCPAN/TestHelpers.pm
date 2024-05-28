@@ -1,19 +1,17 @@
+package MetaCPAN::TestHelpers;
+
 use strict;
 use warnings;
 
-package    # no_index
-    MetaCPAN::TestHelpers;
-
-use Cpanel::JSON::XS;
-use File::Copy  qw( copy );
-use File::pushd qw( pushd );
-use FindBin;
-use Git::Helpers qw( checkout_root );
-use MetaCPAN::Script::Runner;
-use Path::Tiny qw( path );
-use Test::More;
-use Test::Routine::Util;
-use Try::Tiny qw( catch try );
+use Cpanel::JSON::XS qw( decode_json encode_json );
+use File::Copy       qw( copy );
+use File::pushd      qw( pushd );
+use Git::Helpers     qw( checkout_root );
+use MetaCPAN::Config ();
+use Path::Tiny       qw( path );
+use Test::More import => [qw( diag is ok )];
+use Test::Routine::Util qw( run_tests );
+use Try::Tiny           qw( catch finally try );
 
 use base 'Exporter';
 our @EXPORT = qw(
@@ -98,13 +96,7 @@ sub test_release {
 }
 
 sub get_config {
-    my $config = do {
-
-        # build_config expects test to be t/*.t
-        local $FindBin::RealBin = path( checkout_root(), 't' );
-        MetaCPAN::Script::Runner->build_config;
-    };
-    return $config;
+    return MetaCPAN::Config::config();
 }
 
 sub tmp_dir {
