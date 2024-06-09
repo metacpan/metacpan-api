@@ -3650,42 +3650,42 @@ DISTRIBUTIONS
       perl 5.010
       strict 0
       warnings 0
-  MCE-1.890
-    pathname: M/MA/MARIOROY/MCE-1.890.tar.gz
+  MCE-1.893
+    pathname: M/MA/MARIOROY/MCE-1.893.tar.gz
     provides:
-      MCE 1.890
-      MCE::Candy 1.890
-      MCE::Channel 1.890
-      MCE::Channel::Mutex 1.890
-      MCE::Channel::MutexFast 1.890
-      MCE::Channel::Simple 1.890
-      MCE::Channel::SimpleFast 1.890
-      MCE::Channel::Threads 1.890
-      MCE::Channel::ThreadsFast 1.890
-      MCE::Child 1.890
-      MCE::Core::Input::Generator 1.890
-      MCE::Core::Input::Handle 1.890
-      MCE::Core::Input::Iterator 1.890
-      MCE::Core::Input::Request 1.890
-      MCE::Core::Input::Sequence 1.890
-      MCE::Core::Manager 1.890
-      MCE::Core::Validation 1.890
-      MCE::Core::Worker 1.890
-      MCE::Flow 1.890
-      MCE::Grep 1.890
-      MCE::Loop 1.890
-      MCE::Map 1.890
-      MCE::Mutex 1.890
-      MCE::Mutex::Channel 1.890
-      MCE::Mutex::Channel2 1.890
-      MCE::Mutex::Flock 1.890
-      MCE::Queue 1.890
-      MCE::Relay 1.890
-      MCE::Signal 1.890
-      MCE::Step 1.890
-      MCE::Stream 1.890
-      MCE::Subs 1.890
-      MCE::Util 1.890
+      MCE 1.893
+      MCE::Candy 1.893
+      MCE::Channel 1.893
+      MCE::Channel::Mutex 1.893
+      MCE::Channel::MutexFast 1.893
+      MCE::Channel::Simple 1.893
+      MCE::Channel::SimpleFast 1.893
+      MCE::Channel::Threads 1.893
+      MCE::Channel::ThreadsFast 1.893
+      MCE::Child 1.893
+      MCE::Core::Input::Generator 1.893
+      MCE::Core::Input::Handle 1.893
+      MCE::Core::Input::Iterator 1.893
+      MCE::Core::Input::Request 1.893
+      MCE::Core::Input::Sequence 1.893
+      MCE::Core::Manager 1.893
+      MCE::Core::Validation 1.893
+      MCE::Core::Worker 1.893
+      MCE::Flow 1.893
+      MCE::Grep 1.893
+      MCE::Loop 1.893
+      MCE::Map 1.893
+      MCE::Mutex 1.893
+      MCE::Mutex::Channel 1.893
+      MCE::Mutex::Channel2 1.893
+      MCE::Mutex::Flock 1.893
+      MCE::Queue 1.893
+      MCE::Relay 1.893
+      MCE::Signal 1.893
+      MCE::Step 1.893
+      MCE::Stream 1.893
+      MCE::Subs 1.893
+      MCE::Util 1.893
     requirements:
       Carp 0
       Errno 0
@@ -3853,13 +3853,13 @@ DISTRIBUTIONS
       Moose::Role 0
       MooseX::Fastly::Role 0.01
       Net::Fastly 1.05
-  Minion-10.29
-    pathname: S/SR/SRI/Minion-10.29.tar.gz
+  Minion-10.30
+    pathname: S/SR/SRI/Minion-10.30.tar.gz
     provides:
       LinkCheck undef
       LinkCheck::Controller::Links undef
       LinkCheck::Task::CheckLinks undef
-      Minion 10.29
+      Minion 10.30
       Minion::Backend undef
       Minion::Backend::Pg undef
       Minion::Command::minion undef
