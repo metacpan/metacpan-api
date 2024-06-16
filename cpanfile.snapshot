@@ -2753,11 +2753,11 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       File::Spec 0
       Test::More 0
-  Getopt-Long-2.57
-    pathname: J/JV/JV/Getopt-Long-2.57.tar.gz
+  Getopt-Long-2.58
+    pathname: J/JV/JV/Getopt-Long-2.58.tar.gz
     provides:
-      Getopt::Long 2.57
-      Getopt::Long::Parser 2.57
+      Getopt::Long 2.58
+      Getopt::Long::Parser 2.58
     requirements:
       ExtUtils::MakeMaker 0
       Pod::Usage 1.14
@@ -3650,42 +3650,42 @@ DISTRIBUTIONS
       perl 5.010
       strict 0
       warnings 0
-  MCE-1.893
-    pathname: M/MA/MARIOROY/MCE-1.893.tar.gz
+  MCE-1.896
+    pathname: M/MA/MARIOROY/MCE-1.896.tar.gz
     provides:
-      MCE 1.893
-      MCE::Candy 1.893
-      MCE::Channel 1.893
-      MCE::Channel::Mutex 1.893
-      MCE::Channel::MutexFast 1.893
-      MCE::Channel::Simple 1.893
-      MCE::Channel::SimpleFast 1.893
-      MCE::Channel::Threads 1.893
-      MCE::Channel::ThreadsFast 1.893
-      MCE::Child 1.893
-      MCE::Core::Input::Generator 1.893
-      MCE::Core::Input::Handle 1.893
-      MCE::Core::Input::Iterator 1.893
-      MCE::Core::Input::Request 1.893
-      MCE::Core::Input::Sequence 1.893
-      MCE::Core::Manager 1.893
-      MCE::Core::Validation 1.893
-      MCE::Core::Worker 1.893
-      MCE::Flow 1.893
-      MCE::Grep 1.893
-      MCE::Loop 1.893
-      MCE::Map 1.893
-      MCE::Mutex 1.893
-      MCE::Mutex::Channel 1.893
-      MCE::Mutex::Channel2 1.893
-      MCE::Mutex::Flock 1.893
-      MCE::Queue 1.893
-      MCE::Relay 1.893
-      MCE::Signal 1.893
-      MCE::Step 1.893
-      MCE::Stream 1.893
-      MCE::Subs 1.893
-      MCE::Util 1.893
+      MCE 1.896
+      MCE::Candy 1.896
+      MCE::Channel 1.896
+      MCE::Channel::Mutex 1.896
+      MCE::Channel::MutexFast 1.896
+      MCE::Channel::Simple 1.896
+      MCE::Channel::SimpleFast 1.896
+      MCE::Channel::Threads 1.896
+      MCE::Channel::ThreadsFast 1.896
+      MCE::Child 1.896
+      MCE::Core::Input::Generator 1.896
+      MCE::Core::Input::Handle 1.896
+      MCE::Core::Input::Iterator 1.896
+      MCE::Core::Input::Request 1.896
+      MCE::Core::Input::Sequence 1.896
+      MCE::Core::Manager 1.896
+      MCE::Core::Validation 1.896
+      MCE::Core::Worker 1.896
+      MCE::Flow 1.896
+      MCE::Grep 1.896
+      MCE::Loop 1.896
+      MCE::Map 1.896
+      MCE::Mutex 1.896
+      MCE::Mutex::Channel 1.896
+      MCE::Mutex::Channel2 1.896
+      MCE::Mutex::Flock 1.896
+      MCE::Queue 1.896
+      MCE::Relay 1.896
+      MCE::Signal 1.896
+      MCE::Step 1.896
+      MCE::Stream 1.896
+      MCE::Subs 1.896
+      MCE::Util 1.896
     requirements:
       Carp 0
       Errno 0
