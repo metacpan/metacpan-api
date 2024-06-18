@@ -8,7 +8,7 @@ use Cpanel::JSON::XS;
 use File::Copy  qw( copy );
 use File::pushd qw( pushd );
 use FindBin;
-use Git::Helpers qw( checkout_root );
+use MetaCPAN::Util qw( checkout_root );
 use MetaCPAN::Script::Runner;
 use Path::Tiny qw( path );
 use Test::More;

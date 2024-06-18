@@ -8,6 +8,7 @@ use version;
 
 use Digest::SHA qw( sha1_base64 sha1_hex );
 use Encode      qw( decode_utf8 );
+use IPC::Run3   ();
 use Ref::Util   qw(
     is_arrayref
     is_hashref
@@ -17,6 +18,7 @@ use Ref::Util   qw(
 );
 use Sub::Exporter -setup => {
     exports => [ qw(
+        checkout_root
         author_dir
         diff_struct
         digest
@@ -30,6 +32,19 @@ use Sub::Exporter -setup => {
         single_valued_arrayref_to_scalar
     ) ]
 };
+
+sub checkout_root {
+    IPC::Run3::run3( [qw(git rev-parse --show-toplevel)],
+        \undef, \my $stdout, \my $stderr );
+    if ($?) {
+        die $stderr;
+    }
+    chomp $stdout;
+    if ( !-d $stdout ) {
+        die "Failed to find git dir: '$stdout'";
+    }
+    return $stdout;
+}
 
 sub digest {
     my $digest = sha1_base64( join( "\0", grep {defined} @_ ) );

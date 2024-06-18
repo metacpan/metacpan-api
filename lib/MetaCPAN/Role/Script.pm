@@ -3,7 +3,7 @@ package MetaCPAN::Role::Script;
 use Moose::Role;
 
 use ElasticSearchX::Model::Document::Types qw(:all);
-use Git::Helpers                           qw( checkout_root );
+use MetaCPAN::Util                         qw( checkout_root );
 use Log::Contextual                        qw( :log :dlog );
 use MetaCPAN::Model                        ();
 use MetaCPAN::Types::TypeTiny              qw( Bool HashRef Int Path Str );
