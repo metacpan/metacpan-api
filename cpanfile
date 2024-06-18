@@ -141,6 +141,7 @@ requires 'Scalar::Util', '1.62'; # Moose
 requires 'Search::Elasticsearch', '== 2.03';
 requires 'Term::Choose', '1.754'; # Git::Helpers
 requires 'Throwable::Error';
+requires 'Term::Size::Any'; # for Catalyst
 requires 'Text::CSV_XS';
 requires 'Try::Tiny', '0.30';
 requires 'Type::Tiny', '2.000001';
