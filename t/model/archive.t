@@ -7,19 +7,20 @@ use MetaCPAN::TestHelpers qw( fakecpan_dir );
 use Test::Most import =>
     [qw( cmp_bag done_testing is isa_ok like ok require_ok subtest throws_ok )
     ];
+use Test::Fatal;
 
 my $CLASS = 'MetaCPAN::Model::Archive';
 require_ok $CLASS;
 
 subtest 'missing required arguments' => sub {
-    throws_ok { $CLASS->new } qr{archive};
+    like exception { $CLASS->new }, qr/^Attribute \(file\) is required/;
 };
 
 subtest 'file does not exist' => sub {
     my $file    = 'hlaglhalghalghj.blah';
     my $archive = $CLASS->new( file => $file );
 
-    throws_ok { $archive->files } qr{$file does not exist};
+    like exception { $archive->files }, qr{$file does not exist};
 };
 
 subtest 'archive extraction' => sub {
