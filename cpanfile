@@ -136,15 +136,12 @@ requires 'Pod::Simple', '3.43';
 requires 'Pod::Simple::XHTML', '3.24';
 requires 'Pod::Text', '4.14';
 requires 'Ref::Util';
-requires 'Regexp::Common';
-requires 'Regexp::Common::time';
 requires 'Safe', '2.35'; # bug fixes (used by Parse::PMFile)
 requires 'Scalar::Util', '1.62'; # Moose
 requires 'Search::Elasticsearch', '== 2.03';
 requires 'Term::Choose', '1.754'; # Git::Helpers
 requires 'Throwable::Error';
 requires 'Text::CSV_XS';
-requires 'Time::Local';
 requires 'Try::Tiny', '0.30';
 requires 'Type::Tiny', '2.000001';
 requires 'Types::Path::Tiny';
