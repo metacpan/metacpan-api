@@ -5,7 +5,7 @@ requires 'perl', '5.010';
 
 requires 'Archive::Any', '0.0946';
 requires 'Archive::Tar', '2.40';
-requires 'Authen::SASL', '2.16';
+requires 'Authen::SASL', '2.16'; # for Email::Sender::Transport::SMTP
 requires 'BackPAN::Index', '0.42';
 requires 'Captcha::reCAPTCHA', '0.99';
 requires 'Catalyst', '5.90128';
