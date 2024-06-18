@@ -2,7 +2,7 @@ use strict;
 use warnings;
 
 use MetaCPAN::Types::TypeTiny qw( Resources );
-use Test::Most import => [qw( done_testing is_deeply ok )];
+use Test::More;
 
 is_deeply(
     Resources->coerce( {
