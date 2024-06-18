@@ -1,19 +1,4 @@
-package Catalyst::Plugin::OAuth2::Provider;
-use Moose::Role;
-use CatalystX::InjectComponent;
-
-after 'setup_components' => sub {
-    my $class = shift;
-    CatalystX::InjectComponent->inject(
-        into      => $class,
-        component => 'Catalyst::Plugin::OAuth2::Provider::Controller',
-        as        => 'Controller::OAuth2',
-    );
-};
-
-1;
-
-package Catalyst::Plugin::OAuth2::Provider::Controller;
+package MetaCPAN::Server::Controller::OAuth2;
 
 use Moose;
 BEGIN { extends 'Catalyst::Controller' }
