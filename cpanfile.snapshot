@@ -608,17 +608,6 @@ DISTRIBUTIONS
       Carp 0
       ExtUtils::MakeMaker 0
       Moose::Role 0
-  CatalystX-InjectComponent-0.025
-    pathname: R/RO/ROKR/CatalystX-InjectComponent-0.025.tar.gz
-    provides:
-      CatalystX::InjectComponent 0.025
-    requirements:
-      Catalyst::Runtime 5.8
-      Class::Inspector 0
-      Devel::InnerPackage 0
-      ExtUtils::MakeMaker 6.30
-      Test::Most 0
-      parent 0
   CatalystX-RoleApplicator-0.005
     pathname: H/HD/HDP/CatalystX-RoleApplicator-0.005.tar.gz
     provides:

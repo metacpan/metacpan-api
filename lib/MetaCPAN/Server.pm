@@ -81,7 +81,6 @@ __PACKAGE__->setup( qw(
     Session::Store::ElasticSearch
     Session::State::Cookie
     Authentication
-    OAuth2::Provider
 ) );
 
 sub app {
