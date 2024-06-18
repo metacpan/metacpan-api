@@ -4,7 +4,6 @@ use Moose;
 
 ## no critic (Modules::RequireEndWithOne)
 use Catalyst qw( +MetaCPAN::Role::Fastly::Catalyst ), '-Log=warn,error,fatal';
-use CatalystX::RoleApplicator;
 use Digest::SHA ();
 use Log::Log4perl::Catalyst;
 use Plack::Builder qw( builder enable );
@@ -19,11 +18,11 @@ sub clear_stash {
     %{ $_[0]->stash } = ();
 }
 
-__PACKAGE__->apply_request_class_roles( qw(
+__PACKAGE__->request_class_traits( [ qw(
     Catalyst::TraitFor::Request::REST
     Catalyst::TraitFor::Request::REST::ForBrowsers
     MetaCPAN::Server::Role::Request
-) );
+) ] );
 __PACKAGE__->config(
     encoding           => 'UTF-8',
     default_view       => 'JSON',

@@ -18,7 +18,6 @@ requires 'Catalyst::Plugin::Session::Store';
 requires 'Catalyst::Plugin::Static::Simple';
 requires 'Catalyst::View::JSON', '0.37';
 requires 'CatalystX::Fastly::Role::Response', '0.06';
-requires 'CatalystX::RoleApplicator';
 requires 'CHI', '0.61';
 requires 'Config::General', '2.63';
 requires 'Config::ZOMG', '1.000000';
