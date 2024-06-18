@@ -313,17 +313,6 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  Carp-Assert-More-2.4.0
-    pathname: P/PE/PETDANCE/Carp-Assert-More-2.4.0.tar.gz
-    provides:
-      Carp::Assert::More 2.004000
-    requirements:
-      Carp 0
-      ExtUtils::MakeMaker 0
-      Scalar::Util 0
-      Test::Exception 0
-      Test::More 0.18
-      perl 5.010001
   Carp-Clan-6.08
     pathname: E/ET/ETHER/Carp-Clan-6.08.tar.gz
     provides:
@@ -1131,47 +1120,6 @@ DISTRIBUTIONS
       perl 5.012
       strict 0
       warnings 0
-  Data-Printer-1.002001
-    pathname: G/GA/GARU/Data-Printer-1.002001.tar.gz
-    provides:
-      DDP 1.002001
-      Data::Printer 1.002001
-      Data::Printer::Common undef
-      Data::Printer::Config undef
-      Data::Printer::Filter undef
-      Data::Printer::Filter::ARRAY undef
-      Data::Printer::Filter::CODE undef
-      Data::Printer::Filter::ContentType undef
-      Data::Printer::Filter::DB undef
-      Data::Printer::Filter::DateTime undef
-      Data::Printer::Filter::Digest undef
-      Data::Printer::Filter::FORMAT undef
-      Data::Printer::Filter::GLOB undef
-      Data::Printer::Filter::GenericClass undef
-      Data::Printer::Filter::HASH undef
-      Data::Printer::Filter::OBJECT undef
-      Data::Printer::Filter::REF undef
-      Data::Printer::Filter::Regexp undef
-      Data::Printer::Filter::SCALAR undef
-      Data::Printer::Filter::VSTRING undef
-      Data::Printer::Filter::Web undef
-      Data::Printer::Object undef
-      Data::Printer::Profile undef
-      Data::Printer::Profile::Dumper undef
-      Data::Printer::Profile::JSON undef
-      Data::Printer::Theme undef
-      Data::Printer::Theme::Classic undef
-      Data::Printer::Theme::Material undef
-      Data::Printer::Theme::Monokai undef
-      Data::Printer::Theme::Solarized undef
-    requirements:
-      ExtUtils::MakeMaker 0
-      Fcntl 0
-      File::Spec 0
-      File::Temp 0
-      Scalar::Util 0
-      Test::More 0
-      version 0.77
   Data-Section-0.200008
     pathname: R/RJ/RJBS/Data-Section-0.200008.tar.gz
     provides:
@@ -2423,30 +2371,6 @@ DISTRIBUTIONS
       URI::Escape 0
       parent 0
       perl v5.6.0
-  HTML-Form-6.11
-    pathname: S/SI/SIMBABQUE/HTML-Form-6.11.tar.gz
-    provides:
-      HTML::Form 6.11
-      HTML::Form::FileInput 6.11
-      HTML::Form::IgnoreInput 6.11
-      HTML::Form::ImageInput 6.11
-      HTML::Form::Input 6.11
-      HTML::Form::KeygenInput 6.11
-      HTML::Form::ListInput 6.11
-      HTML::Form::SubmitInput 6.11
-      HTML::Form::TextInput 6.11
-    requirements:
-      Carp 0
-      Encode 2
-      ExtUtils::MakeMaker 0
-      HTML::TokeParser 0
-      HTTP::Request 6
-      HTTP::Request::Common 6.03
-      Test::More 0.96
-      URI 1.10
-      parent 0
-      perl 5.008001
-      strict 0
   HTML-Parser-3.82
     pathname: O/OA/OALDERS/HTML-Parser-3.82.tar.gz
     provides:
@@ -2502,29 +2426,6 @@ DISTRIBUTIONS
       HTML::Tiny 1.08
     requirements:
       perl 5.006
-  HTML-Tree-5.07
-    pathname: K/KE/KENTNL/HTML-Tree-5.07.tar.gz
-    provides:
-      HTML::AsSubs 5.07
-      HTML::Element 5.07
-      HTML::Element::traverse 5.07
-      HTML::Parse 5.07
-      HTML::Tree 5.07
-      HTML::TreeBuilder 5.07
-    requirements:
-      Carp 0
-      Encode 0
-      Exporter 0
-      HTML::Entities 0
-      HTML::Parser 3.46
-      HTML::Tagset 3.02
-      Module::Build 0.2808
-      Scalar::Util 0
-      Test::Fatal 0
-      Test::More 0
-      base 0
-      integer 0
-      perl 5.008
   HTTP-Body-1.23
     pathname: G/GE/GETTY/HTTP-Body-1.23.tar.gz
     provides:
@@ -2541,23 +2442,6 @@ DISTRIBUTIONS
       File::Temp 0.14
       HTTP::Headers 0
       IO::File 1.14
-  HTTP-CookieMonster-0.11
-    pathname: O/OA/OALDERS/HTTP-CookieMonster-0.11.tar.gz
-    provides:
-      HTTP::CookieMonster 0.11
-      HTTP::CookieMonster::Cookie 0.11
-    requirements:
-      Carp 0
-      ExtUtils::MakeMaker 0
-      HTTP::Cookies 0
-      Moo 1.000003
-      Safe::Isa 0
-      Scalar::Util 0
-      Sub::Exporter 0
-      URI::Escape 0
-      perl 5.006
-      strict 0
-      warnings 0
   HTTP-Cookies-6.11
     pathname: O/OA/OALDERS/HTTP-Cookies-6.11.tar.gz
     provides:
@@ -2878,43 +2762,6 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 6.52
       Types::Serialiser 0
       common::sense 0
-  LWP-ConsoleLogger-1.000001
-    pathname: O/OA/OALDERS/LWP-ConsoleLogger-1.000001.tar.gz
-    provides:
-      LWP::ConsoleLogger 1.000001
-      LWP::ConsoleLogger::Easy 1.000001
-      LWP::ConsoleLogger::Everywhere 1.000001
-    requirements:
-      Class::Method::Modifiers 0
-      Data::Printer 0.36
-      DateTime 0
-      ExtUtils::MakeMaker 0
-      HTML::Restrict 0
-      HTTP::Body 0
-      HTTP::CookieMonster 0
-      HTTP::Request 0
-      HTTP::Response 0
-      JSON::MaybeXS 1.003005
-      List::AllUtils 0
-      Log::Dispatch 2.56
-      Module::Load::Conditional 0
-      Module::Runtime 0
-      Moo 0
-      MooX::StrictConstructor 0
-      Parse::MIME 0
-      Ref::Util 0
-      String::Trim 0
-      Sub::Exporter 0
-      Term::Size::Any 0
-      Text::SimpleTable::AutoWidth 0.09
-      Try::Tiny 0
-      Types::Common::Numeric 0
-      Types::Standard 0
-      URI::QueryParam 0
-      XML::Simple 0
-      perl 5.016
-      strict 0
-      warnings 0
   LWP-MediaTypes-6.04
     pathname: O/OA/OALDERS/LWP-MediaTypes-6.04.tar.gz
     provides:
@@ -2948,19 +2795,6 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       Test::More 0
-  List-AllUtils-0.19
-    pathname: D/DR/DROLSKY/List-AllUtils-0.19.tar.gz
-    provides:
-      List::AllUtils 0.19
-    requirements:
-      Exporter 0
-      ExtUtils::MakeMaker 0
-      List::SomeUtils 0.58
-      List::Util 1.56
-      List::UtilsBy 0.11
-      base 0
-      strict 0
-      warnings 0
   List-Compare-0.55
     pathname: J/JK/JKEENAN/List-Compare-0.55.tar.gz
     provides:
@@ -3022,13 +2856,6 @@ DISTRIBUTIONS
       XSLoader 0
       strict 0
       warnings 0
-  List-UtilsBy-0.12
-    pathname: P/PE/PEVANS/List-UtilsBy-0.12.tar.gz
-    provides:
-      List::UtilsBy 0.12
-    requirements:
-      Exporter 5.57
-      Module::Build 0.4004
   Log-Any-1.717
     pathname: P/PR/PREACTION/Log-Any-1.717.tar.gz
     provides:
@@ -5405,13 +5232,6 @@ DISTRIBUTIONS
       List::Util 0
       Parse::CPAN::Meta 0
       Parse::PMFile 0.37
-  Parse-MIME-1.006
-    pathname: A/AR/ARISTOTLE/Parse-MIME-1.006.tar.gz
-    provides:
-      Parse::MIME 1.006
-    requirements:
-      Exporter 0
-      perl 5.006
   Parse-PMFile-0.47
     pathname: I/IS/ISHIGAKI/Parse-PMFile-0.47.tar.gz
     provides:
@@ -5973,25 +5793,6 @@ DISTRIBUTIONS
       Digest::SHA 0
       Module::Build::Tiny 0.034
       Plack 0.9910
-  Plack-Test-Agent-1.5
-    pathname: O/OA/OALDERS/Plack-Test-Agent-1.5.tar.gz
-    provides:
-      Plack::Test::Agent 1.5
-      Test::WWW::Mechanize::Bound 1.5
-    requirements:
-      ExtUtils::MakeMaker 0
-      HTTP::Cookies 0
-      HTTP::Message::PSGI 0
-      HTTP::Request::Common 0
-      HTTP::Response 0
-      Plack::Loader 0
-      Plack::Util::Accessor 0
-      Test::TCP 0
-      Test::WWW::Mechanize 0
-      parent 0
-      perl 5.008
-      strict 0
-      warnings 0
   Plack-Test-ExternalServer-0.02
     pathname: E/ET/ETHER/Plack-Test-ExternalServer-0.02.tar.gz
     provides:
@@ -6443,18 +6244,6 @@ DISTRIBUTIONS
       perl 5.012
       strict 0
       warnings 0
-  String-Trim-0.005
-    pathname: D/DO/DOHERTY/String-Trim-0.005.tar.gz
-    provides:
-      String::Trim 0.005
-    requirements:
-      Data::Dumper 0
-      Exporter 5.57
-      ExtUtils::MakeMaker 6.31
-      File::Find 0
-      File::Temp 0
-      Test::Builder 0.94
-      Test::More 0.94
   Sub-Exporter-0.991
     pathname: R/RJ/RJBS/Sub-Exporter-0.991.tar.gz
     provides:
@@ -6682,14 +6471,6 @@ DISTRIBUTIONS
       Try::Tiny 0.07
       strict 0
       warnings 0
-  Test-LongString-0.17
-    pathname: R/RG/RGARCIA/Test-LongString-0.17.tar.gz
-    provides:
-      Test::LongString 0.17
-    requirements:
-      ExtUtils::MakeMaker 0
-      Test::Builder 0.12
-      Test::Builder::Tester 1.04
   Test-MockRandom-1.01
     pathname: D/DA/DAGOLDEN/Test-MockRandom-1.01.tar.gz
     provides:
@@ -6821,23 +6602,6 @@ DISTRIBUTIONS
       Module::Build::Tiny 0.035
       parent 0
       perl 5.010000
-  Test-WWW-Mechanize-1.60
-    pathname: P/PE/PETDANCE/Test-WWW-Mechanize-1.60.tar.gz
-    provides:
-      Test::WWW::Mechanize 1.60
-    requirements:
-      Carp 0
-      Carp::Assert::More 1.16
-      ExtUtils::MakeMaker 0
-      HTML::Form 0
-      HTML::TokeParser 0
-      HTTP::Message 6.29
-      LWP 6.02
-      Test::Builder 0
-      Test::LongString 0.15
-      WWW::Mechanize 1.68
-      parent 0
-      perl 5.010
   Test-Warn-0.37
     pathname: B/BI/BIGJ/Test-Warn-0.37.tar.gz
     provides:
@@ -6888,17 +6652,6 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Test::More 0
       perl 5.008001
-  Text-SimpleTable-AutoWidth-0.09
-    pathname: C/CU/CUB/Text-SimpleTable-AutoWidth-0.09.tar.gz
-    provides:
-      Text::SimpleTable::AutoWidth 0.09
-    requirements:
-      ExtUtils::MakeMaker 0
-      List::Util 0
-      Moo 0
-      Text::SimpleTable 0
-      strict 0
-      warnings 0
   Text-Template-1.61
     pathname: M/MS/MSCHOUT/Text-Template-1.61.tar.gz
     provides:
@@ -7453,33 +7206,6 @@ DISTRIBUTIONS
       Exporter 0
       Module::Build 0.4005
       perl 5.008001
-  WWW-Mechanize-2.18
-    pathname: O/OA/OALDERS/WWW-Mechanize-2.18.tar.gz
-    provides:
-      WWW::Mechanize 2.18
-      WWW::Mechanize::Image 2.18
-      WWW::Mechanize::Link 2.18
-    requirements:
-      Carp 0
-      ExtUtils::MakeMaker 0
-      Getopt::Long 0
-      HTML::Form 6.08
-      HTML::HeadParser 0
-      HTML::TokeParser 0
-      HTML::TreeBuilder 5
-      HTTP::Cookies 0
-      HTTP::Request 1.30
-      HTTP::Request::Common 0
-      LWP::UserAgent 0
-      Pod::Usage 0
-      Scalar::Util 1.14
-      Tie::RefHash 0
-      URI::URL 0
-      URI::file 0
-      base 0
-      perl 5.008
-      strict 0
-      warnings 0
   WWW-OAuth-1.000
     pathname: D/DB/DBOOK/WWW-OAuth-1.000.tar.gz
     provides:

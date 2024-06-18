@@ -149,7 +149,6 @@ requires 'Code::TidyAll::Plugin::UniqueLines';
 requires 'CPAN::Faker', '0.011';
 requires 'Devel::Confess';
 requires 'HTTP::Cookies', '6.10';
-requires 'LWP::ConsoleLogger::Easy', '0.000044';
 requires 'MetaCPAN::Client', '2.029000';
 requires 'Module::Faker', '== 0.017';
 requires 'Module::Faker::Dist', '== 0.017';
@@ -157,7 +156,6 @@ requires 'OrePAN2', '0.48';
 requires 'Parallel::ForkManager' => '2.02';
 requires 'Perl::Critic', '0.140';
 requires 'Perl::Tidy' => '== 20230309';
-requires 'Plack::Test::Agent', '1.5';
 requires 'PPI', '1.274'; # Perl::Critic
 requires 'PPIx::QuoteLike', '0.022'; # Perl::Critic
 requires 'PPIx::Regexp', '0.085'; # Perl::Critic
