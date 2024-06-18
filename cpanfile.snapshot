@@ -1,13 +1,5 @@
 # carton snapshot format: version 1.0
 DISTRIBUTIONS
-  Algorithm-C3-0.11
-    pathname: H/HA/HAARG/Algorithm-C3-0.11.tar.gz
-    provides:
-      Algorithm::C3 0.11
-    requirements:
-      Carp 0.01
-      ExtUtils::MakeMaker 0
-      perl 5.006
   Algorithm-Diff-1.201
     pathname: R/RJ/RJBS/Algorithm-Diff-1.201.tar.gz
     provides:
@@ -32,21 +24,6 @@ DISTRIBUTIONS
       POSIX::strftime::Compiler 0.30
       Time::Local 0
       perl 5.008001
-  App-Cache-0.37
-    pathname: L/LB/LBROCARD/App-Cache-0.37.tar.gz
-    provides:
-      App::Cache 0.37
-    requirements:
-      Class::Accessor::Chained::Fast 0
-      ExtUtils::MakeMaker 0
-      File::Find::Rule 0
-      File::HomeDir 0
-      File::stat 0
-      HTTP::Cookies 0
-      LWP::UserAgent 0
-      Path::Class 0
-      Storable 0
-      Test::More 0
   Archive-Any-0.0946
     pathname: O/OA/OALDERS/Archive-Any-0.0946.tar.gz
     provides:
@@ -183,38 +160,6 @@ DISTRIBUTIONS
     requirements:
       B 0
       ExtUtils::MakeMaker 0
-  BackPAN-Index-0.42
-    pathname: M/MS/MSCHWERN/BackPAN-Index-0.42.tar.gz
-    provides:
-      BackPAN::Index 0.42
-      BackPAN::Index::Database 0
-      BackPAN::Index::Dist 0
-      BackPAN::Index::File 0
-      BackPAN::Index::IndexFile 0
-      BackPAN::Index::Release 0
-      BackPAN::Index::Role::AsHash 0
-      BackPAN::Index::Role::HasCache 0
-      BackPAN::Index::Role::Log 0
-      BackPAN::Index::Schema 0
-      BackPAN::Index::Types 0
-      Parse::BACKPAN::Packages 0.40
-    requirements:
-      App::Cache 0.37
-      Archive::Extract 0
-      CLASS 1.00
-      CPAN::DistnameInfo 0.09
-      DBD::SQLite 1.25
-      DBIx::Class 0.08109
-      LWP::Simple 0
-      Module::Build 0.340201
-      Mouse 0.64
-      Path::Class 0.17
-      Test::Compile 0.11
-      Test::More 0.90
-      URI 1.54
-      autodie 0
-      parent 0
-      perl 5.008001
   Browser-Open-0.04
     pathname: C/CF/CFRANKS/Browser-Open-0.04.tar.gz
     provides:
@@ -241,12 +186,6 @@ DISTRIBUTIONS
       Storable 0
       Test::Deep 0
       Test::More 0
-  CLASS-v1.1.8
-    pathname: J/JD/JDEGUEST/CLASS-v1.1.8.tar.gz
-    provides:
-      CLASS 1.001008
-    requirements:
-      ExtUtils::MakeMaker 0
   CPAN-Checksums-2.14
     pathname: A/AN/ANDK/CPAN-Checksums-2.14.tar.gz
     provides:
@@ -707,33 +646,12 @@ DISTRIBUTIONS
     requirements:
       Class::Accessor 0
       Test::More 0
-  Class-Accessor-Grouped-0.10014
-    pathname: H/HA/HAARG/Class-Accessor-Grouped-0.10014.tar.gz
-    provides:
-      Class::Accessor::Grouped 0.10014
-    requirements:
-      Carp 0
-      Class::XSAccessor 1.19
-      ExtUtils::MakeMaker 0
-      Module::Runtime 0.012
-      Scalar::Util 0
-      Sub::Name 0.05
-      perl 5.006
   Class-Accessor-Lite-0.08
     pathname: K/KA/KAZUHO/Class-Accessor-Lite-0.08.tar.gz
     provides:
       Class::Accessor::Lite 0.08
     requirements:
       ExtUtils::MakeMaker 6.36
-  Class-C3-0.35
-    pathname: H/HA/HAARG/Class-C3-0.35.tar.gz
-    provides:
-      Class::C3 0.35
-    requirements:
-      Algorithm::C3 0.07
-      ExtUtils::MakeMaker 0
-      Scalar::Util 0
-      perl 5.006
   Class-C3-Adopt-NEXT-0.14
     pathname: E/ET/ETHER/Class-C3-Adopt-NEXT-0.14.tar.gz
     provides:
@@ -747,17 +665,6 @@ DISTRIBUTIONS
       strict 0
       warnings 0
       warnings::register 0
-  Class-C3-Componentised-1.001002
-    pathname: H/HA/HAARG/Class-C3-Componentised-1.001002.tar.gz
-    provides:
-      Class::C3::Componentised 1.001002
-      Class::C3::Componentised::ApplyHooks undef
-    requirements:
-      Class::C3 0.20
-      Class::Inspector 1.32
-      ExtUtils::MakeMaker 0
-      MRO::Compat 0.09
-      perl 5.006002
   Class-Data-Inheritable-0.09
     pathname: R/RS/RSHERER/Class-Data-Inheritable-0.09.tar.gz
     provides:
@@ -1052,18 +959,6 @@ DISTRIBUTIONS
       perl 5.008
       strict 0
       warnings 0
-  Context-Preserve-0.03
-    pathname: E/ET/ETHER/Context-Preserve-0.03.tar.gz
-    provides:
-      Context::Preserve 0.03
-    requirements:
-      Carp 0
-      Exporter 0
-      ExtUtils::MakeMaker 0
-      base 0
-      perl 5.006
-      strict 0
-      warnings 0
   Cookie-Baker-0.12
     pathname: K/KA/KAZEBURO/Cookie-Baker-0.12.tar.gz
     provides:
@@ -1221,128 +1116,6 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 6.48
       Test::Simple 0.90
-      perl 5.008001
-  DBIx-Class-0.082843
-    pathname: R/RI/RIBASUSHI/DBIx-Class-0.082843.tar.gz
-    provides:
-      DBIx::Class 0.082843
-      DBIx::Class::AccessorGroup undef
-      DBIx::Class::Admin undef
-      DBIx::Class::CDBICompat undef
-      DBIx::Class::Core undef
-      DBIx::Class::Cursor undef
-      DBIx::Class::DB undef
-      DBIx::Class::Exception undef
-      DBIx::Class::FilterColumn undef
-      DBIx::Class::InflateColumn undef
-      DBIx::Class::InflateColumn::DateTime undef
-      DBIx::Class::InflateColumn::File undef
-      DBIx::Class::Optional::Dependencies undef
-      DBIx::Class::Ordered undef
-      DBIx::Class::PK undef
-      DBIx::Class::PK::Auto undef
-      DBIx::Class::Relationship undef
-      DBIx::Class::Relationship::Base undef
-      DBIx::Class::ResultClass::HashRefInflator undef
-      DBIx::Class::ResultSet undef
-      DBIx::Class::ResultSet::Pager undef
-      DBIx::Class::ResultSetColumn undef
-      DBIx::Class::ResultSetManager undef
-      DBIx::Class::ResultSource undef
-      DBIx::Class::ResultSource::Table undef
-      DBIx::Class::ResultSource::View undef
-      DBIx::Class::ResultSourceHandle undef
-      DBIx::Class::ResultSourceProxy::Table undef
-      DBIx::Class::Row undef
-      DBIx::Class::SQLMaker undef
-      DBIx::Class::SQLMaker::ClassicExtensions undef
-      DBIx::Class::SQLMaker::LimitDialects undef
-      DBIx::Class::SQLMaker::OracleJoins undef
-      DBIx::Class::Schema undef
-      DBIx::Class::Schema::Versioned undef
-      DBIx::Class::Serialize::Storable undef
-      DBIx::Class::StartupCheck undef
-      DBIx::Class::Storage undef
-      DBIx::Class::Storage::DBI undef
-      DBIx::Class::Storage::DBI::ACCESS undef
-      DBIx::Class::Storage::DBI::ADO undef
-      DBIx::Class::Storage::DBI::ADO::MS_Jet undef
-      DBIx::Class::Storage::DBI::ADO::MS_Jet::Cursor undef
-      DBIx::Class::Storage::DBI::ADO::Microsoft_SQL_Server undef
-      DBIx::Class::Storage::DBI::ADO::Microsoft_SQL_Server::Cursor undef
-      DBIx::Class::Storage::DBI::AutoCast undef
-      DBIx::Class::Storage::DBI::Cursor undef
-      DBIx::Class::Storage::DBI::DB2 undef
-      DBIx::Class::Storage::DBI::Firebird undef
-      DBIx::Class::Storage::DBI::Firebird::Common undef
-      DBIx::Class::Storage::DBI::IdentityInsert undef
-      DBIx::Class::Storage::DBI::Informix undef
-      DBIx::Class::Storage::DBI::InterBase undef
-      DBIx::Class::Storage::DBI::MSSQL undef
-      DBIx::Class::Storage::DBI::NoBindVars undef
-      DBIx::Class::Storage::DBI::ODBC undef
-      DBIx::Class::Storage::DBI::ODBC::ACCESS undef
-      DBIx::Class::Storage::DBI::ODBC::DB2_400_SQL undef
-      DBIx::Class::Storage::DBI::ODBC::Firebird undef
-      DBIx::Class::Storage::DBI::ODBC::Microsoft_SQL_Server undef
-      DBIx::Class::Storage::DBI::ODBC::SQL_Anywhere undef
-      DBIx::Class::Storage::DBI::Oracle undef
-      DBIx::Class::Storage::DBI::Oracle::Generic undef
-      DBIx::Class::Storage::DBI::Oracle::WhereJoins undef
-      DBIx::Class::Storage::DBI::Pg undef
-      DBIx::Class::Storage::DBI::Replicated undef
-      DBIx::Class::Storage::DBI::Replicated::Balancer undef
-      DBIx::Class::Storage::DBI::Replicated::Balancer::First undef
-      DBIx::Class::Storage::DBI::Replicated::Balancer::Random undef
-      DBIx::Class::Storage::DBI::Replicated::Pool undef
-      DBIx::Class::Storage::DBI::Replicated::Replicant undef
-      DBIx::Class::Storage::DBI::Replicated::WithDSN undef
-      DBIx::Class::Storage::DBI::SQLAnywhere undef
-      DBIx::Class::Storage::DBI::SQLAnywhere::Cursor undef
-      DBIx::Class::Storage::DBI::SQLite undef
-      DBIx::Class::Storage::DBI::Sybase undef
-      DBIx::Class::Storage::DBI::Sybase::ASE undef
-      DBIx::Class::Storage::DBI::Sybase::ASE::NoBindVars undef
-      DBIx::Class::Storage::DBI::Sybase::FreeTDS undef
-      DBIx::Class::Storage::DBI::Sybase::MSSQL undef
-      DBIx::Class::Storage::DBI::Sybase::Microsoft_SQL_Server undef
-      DBIx::Class::Storage::DBI::Sybase::Microsoft_SQL_Server::NoBindVars undef
-      DBIx::Class::Storage::DBI::UniqueIdentifier undef
-      DBIx::Class::Storage::DBI::mysql undef
-      DBIx::Class::Storage::Debug::PrettyTrace undef
-      DBIx::Class::Storage::Statistics undef
-      DBIx::Class::Storage::TxnScopeGuard undef
-      DBIx::Class::UTF8Columns undef
-      SQL::Translator::Parser::DBIx::Class 1.10
-      SQL::Translator::Producer::DBIx::Class::File 0.1
-    requirements:
-      Class::Accessor::Grouped 0.10012
-      Class::C3::Componentised 1.0009
-      Class::Inspector 1.24
-      Config::Any 0.20
-      Context::Preserve 0.01
-      DBD::SQLite 1.29
-      DBI 1.57
-      Data::Dumper::Concise 2.020
-      Devel::GlobalDestruction 0.09
-      ExtUtils::MakeMaker 6.59
-      File::Temp 0.22
-      Hash::Merge 0.12
-      MRO::Compat 0.12
-      Module::Find 0.07
-      Moo 2.000
-      Package::Stash 0.28
-      Path::Class 0.18
-      SQL::Abstract::Classic 1.91
-      Scope::Guard 0.03
-      Sub::Name 0.04
-      Test::Deep 0.101
-      Test::Exception 0.31
-      Test::More 0.94
-      Test::Warn 0.21
-      Text::Balanced 2.00
-      Try::Tiny 0.07
-      namespace::clean 0.24
       perl 5.008001
   Data-Compare-1.29
     pathname: D/DC/DCANTRELL/Data-Compare-1.29.tar.gz
@@ -2015,19 +1788,6 @@ DISTRIBUTIONS
       perl 5.008004
       strict 0
       warnings 0
-  Devel-CheckCompiler-0.07
-    pathname: S/SY/SYOHEX/Devel-CheckCompiler-0.07.tar.gz
-    provides:
-      Devel::AssertC99 undef
-      Devel::CheckCompiler 0.07
-    requirements:
-      Exporter 0
-      ExtUtils::CBuilder 0
-      File::Temp 0
-      Module::Build::Tiny 0.035
-      Test::More 0.98
-      parent 0
-      perl 5.008001
   Devel-Confess-0.009004
     pathname: H/HA/HAARG/Devel-Confess-0.009004.tar.gz
     provides:
@@ -3917,21 +3677,6 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  Module-Build-XSUtil-0.19
-    pathname: H/HI/HIDEAKIO/Module-Build-XSUtil-0.19.tar.gz
-    provides:
-      Module::Build::XSUtil 0.19
-    requirements:
-      Devel::CheckCompiler 0
-      Devel::PPPort 0
-      Exporter 0
-      ExtUtils::CBuilder 0
-      File::Basename 0
-      File::Path 0
-      Module::Build 0.4005
-      XSLoader 0
-      parent 0
-      perl 5.008001
   Module-CPANfile-1.1004
     pathname: M/MI/MIYAGAWA/Module-CPANfile-1.1004.tar.gz
     provides:
@@ -5080,44 +4825,6 @@ DISTRIBUTIONS
       namespace::clean 0.19
       overload 0
       perl 5.008
-  Mouse-v2.5.10
-    pathname: S/SK/SKAJI/Mouse-v2.5.10.tar.gz
-    provides:
-      Mouse v2.5.10
-      Mouse::Exporter undef
-      Mouse::Meta::Attribute undef
-      Mouse::Meta::Class undef
-      Mouse::Meta::Method undef
-      Mouse::Meta::Method::Accessor undef
-      Mouse::Meta::Method::Constructor undef
-      Mouse::Meta::Method::Delegation undef
-      Mouse::Meta::Method::Destructor undef
-      Mouse::Meta::Module undef
-      Mouse::Meta::Role undef
-      Mouse::Meta::Role::Application undef
-      Mouse::Meta::Role::Application::RoleSummation undef
-      Mouse::Meta::Role::Composite undef
-      Mouse::Meta::Role::Method undef
-      Mouse::Meta::TypeConstraint undef
-      Mouse::Object undef
-      Mouse::PurePerl undef
-      Mouse::Role v2.5.10
-      Mouse::Spec v2.5.10
-      Mouse::TypeRegistry undef
-      Mouse::Util v2.5.10
-      Mouse::Util::MetaRole undef
-      Mouse::Util::TypeConstraints undef
-      Squirrel undef
-      Squirrel::Role undef
-      Test::Mouse undef
-      ouse undef
-    requirements:
-      ExtUtils::CBuilder 0
-      Module::Build 0.4005
-      Module::Build::XSUtil 0.19
-      Scalar::Util 1.14
-      XSLoader 0.02
-      perl 5.008005
   Mozilla-CA-20240313
     pathname: L/LW/LWP/Mozilla-CA-20240313.tar.gz
     provides:
@@ -6721,25 +6428,6 @@ DISTRIBUTIONS
       Test::Deep 0.101
       Text::Balanced 2.00
       perl 5.006
-  SQL-Abstract-Classic-1.91
-    pathname: R/RI/RIBASUSHI/SQL-Abstract-Classic-1.91.tar.gz
-    provides:
-      SQL::Abstract::Classic 1.91
-      SQL::Abstract::Util undef
-    requirements:
-      Exporter 5.57
-      ExtUtils::MakeMaker 6.59
-      List::Util 0
-      MRO::Compat 0.12
-      SQL::Abstract 1.79
-      Scalar::Util 0
-      Storable 0
-      Test::Deep 0.101
-      Test::Exception 0.31
-      Test::More 0.88
-      Test::Warn 0
-      Text::Balanced 2.00
-      perl 5.006
   SQL-Abstract-Pg-1.0
     pathname: S/SR/SRI/SQL-Abstract-Pg-1.0.tar.gz
     provides:
@@ -7168,16 +6856,6 @@ DISTRIBUTIONS
       perl 5.012
       strict 0
       warnings 0
-  Test-Compile-v3.3.3
-    pathname: E/EG/EGILES/Test-Compile-v3.3.3.tar.gz
-    provides:
-      Test::Compile v3.3.3
-      Test::Compile::Internal v3.3.3
-    requirements:
-      Exporter 5.68
-      Module::Build 0.38
-      parent 0.225
-      perl v5.10.0
   Test-Deep-1.204
     pathname: R/RJ/RJBS/Test-Deep-1.204.tar.gz
     provides:
