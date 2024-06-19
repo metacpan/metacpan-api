@@ -646,12 +646,6 @@ DISTRIBUTIONS
     requirements:
       Class::Accessor 0
       Test::More 0
-  Class-Accessor-Lite-0.08
-    pathname: K/KA/KAZUHO/Class-Accessor-Lite-0.08.tar.gz
-    provides:
-      Class::Accessor::Lite 0.08
-    requirements:
-      ExtUtils::MakeMaker 6.36
   Class-C3-Adopt-NEXT-0.14
     pathname: E/ET/ETHER/Class-C3-Adopt-NEXT-0.14.tar.gz
     provides:
@@ -4831,13 +4825,6 @@ DISTRIBUTIONS
       Mozilla::CA 20240313
     requirements:
       ExtUtils::MakeMaker 0
-  Net-CIDR-Lite-0.22
-    pathname: S/ST/STIGTSP/Net-CIDR-Lite-0.22.tar.gz
-    provides:
-      Net::CIDR::Lite 0.22
-      Net::CIDR::Lite::Span 0.22
-    requirements:
-      ExtUtils::MakeMaker 0
   Net-DNS-1.45
     pathname: N/NL/NLNETLABS/Net-DNS-1.45.tar.gz
     provides:
@@ -5529,20 +5516,6 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  Parallel-Scoreboard-0.08
-    pathname: K/KA/KAZUHO/Parallel-Scoreboard-0.08.tar.gz
-    provides:
-      Parallel::Scoreboard 0.08
-      Parallel::Scoreboard::PSGI::App undef
-      Parallel::Scoreboard::PSGI::App::JSON undef
-    requirements:
-      Class::Accessor::Lite 0.05
-      ExtUtils::MakeMaker 6.36
-      File::Temp 0
-      HTML::Entities 0
-      JSON 0
-      Test::More 0
-      Test::Warn 0
   Params-Util-1.102
     pathname: R/RE/REHSACK/Params-Util-1.102.tar.gz
     provides:
@@ -6167,20 +6140,6 @@ DISTRIBUTIONS
       Plack::Util::Accessor 0
       overload 0
       perl 5.006
-  Plack-Middleware-ServerStatus-Lite-0.36
-    pathname: K/KA/KAZEBURO/Plack-Middleware-ServerStatus-Lite-0.36.tar.gz
-    provides:
-      Plack::Middleware::ServerStatus::Lite 0.36
-    requirements:
-      Getopt::Long 2.38
-      JSON 2.53
-      Module::Build 0.38
-      Net::CIDR::Lite 0
-      Parallel::Scoreboard 0.03
-      Plack::Middleware 0
-      Pod::Usage 0
-      Try::Tiny 0.09
-      parent 0
   Plack-Middleware-Session-0.33
     pathname: M/MI/MIYAGAWA/Plack-Middleware-Session-0.33.tar.gz
     provides:
