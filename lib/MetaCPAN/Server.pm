@@ -9,7 +9,6 @@ use Digest::SHA ();
 use Log::Log4perl::Catalyst;
 use Plack::Builder qw( builder enable );
 use Plack::Middleware::ReverseProxy;
-use Plack::Middleware::ServerStatus::Lite;
 use Ref::Util qw( is_arrayref is_hashref );
 
 extends 'Catalyst';

@@ -127,7 +127,6 @@ requires 'Plack::App::Directory';
 requires 'Plack::Middleware::Header';
 requires 'Plack::Middleware::ReverseProxy';
 requires 'Plack::Middleware::Rewrite';
-requires 'Plack::Middleware::ServerStatus::Lite';
 requires 'Plack::Middleware::Session';
 requires 'Plack::Session::Store';
 requires 'Pod::Markdown', '3.300';
