@@ -2626,14 +2626,6 @@ DISTRIBUTIONS
       Exporter 5.57
       ExtUtils::MakeMaker 0
       perl 5.008
-  IO-Interactive-1.025
-    pathname: B/BD/BDFOY/IO-Interactive-1.025.tar.gz
-    provides:
-      IO::Interactive 1.025
-    requirements:
-      ExtUtils::MakeMaker 6.64
-      File::Spec::Functions 0
-      perl 5.008
   IO-Prompt-0.997004
     pathname: D/DC/DCONWAY/IO-Prompt-0.997004.tar.gz
     provides:
