@@ -59,7 +59,6 @@ requires 'File::pushd';
 requires 'File::stat';
 requires 'File::Temp';
 requires 'FindBin';
-requires 'Find::Lib';
 requires 'Getopt::Long::Descriptive', '0.103';
 requires 'Git::Helpers', '1.000001';
 requires 'Gravatar::URL';

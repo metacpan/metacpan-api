@@ -2407,14 +2407,6 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       perl 5.008001
-  Find-Lib-1.04
-    pathname: Y/YA/YANNK/Find-Lib-1.04.tar.gz
-    provides:
-      Find::Lib 1.04
-    requirements:
-      ExtUtils::MakeMaker 0
-      File::Spec 0
-      Test::More 0
   Getopt-Long-2.58
     pathname: J/JV/JV/Getopt-Long-2.58.tar.gz
     provides:
