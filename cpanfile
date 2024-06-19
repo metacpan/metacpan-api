@@ -31,7 +31,6 @@ requires 'CPAN::Meta::Requirements', '2.140';
 requires 'CPAN::Meta::YAML', '0.018';
 requires 'CPAN::Repository::Perms';
 requires 'Cwd';
-requires 'Data::DPath';
 requires 'Data::Dumper';
 requires 'DateTime', '1.54';
 requires 'DateTime::Format::ISO8601';

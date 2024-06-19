@@ -1123,34 +1123,6 @@ DISTRIBUTIONS
       Scalar::Util 0
       Test::More 0.88
       perl 5.006
-  Data-DPath-0.59
-    pathname: S/SC/SCHWIGON/Data-DPath-0.59.tar.gz
-    provides:
-      Data::DPath 0.59
-      Data::DPath::Attrs 0.59
-      Data::DPath::Context 0.59
-      Data::DPath::Filters 0.59
-      Data::DPath::Path 0.59
-      Data::DPath::Point 0.59
-      Data::DPath::Step 0.59
-    requirements:
-      Class::XSAccessor 0
-      Class::XSAccessor::Array 0
-      Data::Dumper 0
-      ExtUtils::MakeMaker 0
-      Iterator::Util 0
-      List::Util 1.45
-      POSIX 0
-      Safe 2.30
-      Scalar::Util 0
-      Sub::Exporter 0
-      Text::Balanced 2.02
-      aliased 0.33
-      constant 0
-      if 0
-      perl 5.008
-      strict 0
-      warnings 0
   Data-Dump-1.25
     pathname: G/GA/GARU/Data-Dump-1.25.tar.gz
     provides:
@@ -2933,23 +2905,6 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  Iterator-0.03
-    pathname: R/RO/ROODE/Iterator-0.03.tar.gz
-    provides:
-      Iterator 0.03
-    requirements:
-      Exception::Class 1.21
-      ExtUtils::MakeMaker 0
-      Test::Simple 0.40
-  Iterator-Util-0.02
-    pathname: R/RO/ROODE/Iterator-Util-0.02.tar.gz
-    provides:
-      Iterator::Util 0.02
-    requirements:
-      Exception::Class 1.21
-      ExtUtils::MakeMaker 0
-      Iterator 0.01
-      Test::Simple 0.40
   JSON-4.10
     pathname: I/IS/ISHIGAKI/JSON-4.10.tar.gz
     provides:
@@ -7867,17 +7822,6 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       perl 5.008001
-  aliased-0.34
-    pathname: E/ET/ETHER/aliased-0.34.tar.gz
-    provides:
-      aliased 0.34
-    requirements:
-      Carp 0
-      Exporter 0
-      Module::Build::Tiny 0.039
-      perl 5.006
-      strict 0
-      warnings 0
   bareword-filehandles-0.007
     pathname: I/IL/ILMARI/bareword-filehandles-0.007.tar.gz
     provides:
