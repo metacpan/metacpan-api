@@ -9,7 +9,6 @@ use MetaCPAN::Model                        ();
 use MetaCPAN::Types::TypeTiny              qw( Bool HashRef Int Path Str );
 use Mojo::Server                           ();
 use Term::ANSIColor                        qw( colored );
-use IO::Interactive                        qw( is_interactive );
 use IO::Prompt                             qw( prompt );
 use File::Path                             ();
 
@@ -392,7 +391,7 @@ sub are_you_sure {
     my ( $self, $msg ) = @_;
     my $iconfirmed = 0;
 
-    if (is_interactive) {
+    if ( -t *STDOUT ) {
         my $answer
             = prompt colored( ['bold red'], "*** Warning ***: $msg" ) . "\n"
             . 'Are you sure you want to do this (type "YES" to confirm) ? ';

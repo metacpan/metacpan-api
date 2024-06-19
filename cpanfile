@@ -63,7 +63,6 @@ requires 'Gravatar::URL';
 requires 'Hash::Merge::Simple';
 requires 'HTML::Entities';
 requires 'HTTP::Request::Common', '6.36';
-requires 'IO::Interactive';
 requires 'IO::Prompt';
 requires 'IO::Uncompress::Bunzip2', '2.106';
 requires 'IO::Zlib';

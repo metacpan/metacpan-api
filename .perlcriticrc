@@ -7,6 +7,7 @@ theme = core
 [-ControlStructures::ProhibitPostfixControls]
 [-Documentation::RequirePodLinksIncludeText]
 [-Documentation::RequirePodSections]
+[-InputOutput::ProhibitInteractiveTest]
 [-Modules::RequireVersionVar]
 [-RegularExpressions::RequireDotMatchAnything]
 [-RegularExpressions::RequireExtendedFormatting]
