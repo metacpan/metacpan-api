@@ -139,7 +139,7 @@ requires 'Types::URI';
 requires 'Twitter::API', '1.0006';
 requires 'URI', '5.10';
 requires 'version', '0.9929';
-requires 'XML::Simple';
+requires 'XML::XPath';
 requires 'YAML::XS', '0.83'; # Mojolicious::Plugin::OpenAPI YAML loading
 
 # test requirements

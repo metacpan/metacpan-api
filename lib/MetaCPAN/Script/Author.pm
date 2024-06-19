@@ -13,7 +13,7 @@ use Cpanel::JSON::XS           qw( decode_json );
 use Log::Contextual            qw( :log :dlog );
 use MetaCPAN::Document::Author ();
 use URI                        ();
-use XML::Simple                qw( XMLin );
+use XML::XPath                 ();
 use MetaCPAN::Types::TypeTiny  qw( Str );
 use MetaCPAN::Util             qw(diff_struct);
 
@@ -87,23 +87,16 @@ has whois_data => (
 
 sub _build_whois_data {
     my $self = shift;
-    my $data = XMLin(
-        $self->author_fh,
-        ForceArray    => 1,
-        SuppressEmpty => '',
-        NoAttr        => 1,
-        KeyAttr       => [],
-    );
 
     my $whois_data = {};
 
-    for my $author ( @{ $data->{cpanid} } ) {
+    my $xp = XML::XPath->new( filename => $self->author_fh );
+
+    for my $author ( $xp->find('/cpan-whois/cpanid')->get_nodelist ) {
         my $data = {
-            map {
-                my $content = $author->{$_};
-                @$content == 1
-                    && !ref $content->[0] ? ( $_ => $content->[0] ) : ();
-            } keys %$author
+            map +( $_->getLocalName, $_->string_value ),
+            grep $_->isa('XML::XPath::Node::Element'),
+            $author->getChildNodes
         };
 
         my $pauseid  = $data->{id};
