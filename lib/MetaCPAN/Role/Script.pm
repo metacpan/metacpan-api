@@ -9,7 +9,7 @@ use MetaCPAN::Model                        ();
 use MetaCPAN::Types::TypeTiny              qw( Bool HashRef Int Path Str );
 use Mojo::Server                           ();
 use Term::ANSIColor                        qw( colored );
-use IO::Prompt                             qw( prompt );
+use IO::Prompt::Tiny                       qw( prompt );
 use File::Path                             ();
 
 use Carp ();
