@@ -101,7 +101,6 @@ requires 'Mojolicious::Plugin::OpenAPI';
 requires 'Mojolicious::Plugin::Web::Auth', '0.17';
 requires 'Mojo::Pg', '4.08';
 requires 'Moose', '2.2201';
-requires 'MooseX::Aliases';
 requires 'MooseX::Attribute::Deflator', '2.1.5';
 requires 'MooseX::ChainedAccessors';
 requires 'MooseX::ClassAttribute';
