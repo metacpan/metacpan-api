@@ -153,7 +153,6 @@ requires 'Devel::Confess';
 requires 'HTTP::Cookies', '6.10';
 requires 'LWP::ConsoleLogger::Easy', '0.000044';
 requires 'MetaCPAN::Client', '2.029000';
-requires 'Module::Extract::Namespaces', '1.023';
 requires 'Module::Faker', '== 0.017';
 requires 'Module::Faker::Dist', '== 0.017';
 requires 'OrePAN2', '0.48';
