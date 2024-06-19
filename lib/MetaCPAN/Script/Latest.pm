@@ -5,7 +5,6 @@ use warnings;
 
 use Log::Contextual qw( :log );
 use Moose;
-use MooseX::Aliases;
 use Parse::CPAN::Packages::Fast;
 use CPAN::DistnameInfo;
 use DateTime::Format::ISO8601 ();
