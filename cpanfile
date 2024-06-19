@@ -16,7 +16,6 @@ requires 'Catalyst::Plugin::Session', '0.43';
 requires 'Catalyst::Plugin::Session::State::Cookie';
 requires 'Catalyst::Plugin::Session::Store';
 requires 'Catalyst::Plugin::Static::Simple';
-requires 'Catalyst::Plugin::Unicode::Encoding';
 requires 'Catalyst::View::JSON', '0.37';
 requires 'CatalystX::Fastly::Role::Response', '0.06';
 requires 'CatalystX::InjectComponent';
