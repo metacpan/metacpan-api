@@ -99,7 +99,6 @@ requires 'Mojolicious::Plugin::Web::Auth', '0.17';
 requires 'Mojo::Pg', '4.08';
 requires 'Moose', '2.2201';
 requires 'MooseX::Attribute::Deflator', '2.1.5';
-requires 'MooseX::ChainedAccessors';
 requires 'MooseX::ClassAttribute';
 requires 'MooseX::Fastly::Role', '0.02';
 requires 'MooseX::Getopt', '0.71';
