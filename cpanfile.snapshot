@@ -4491,23 +4491,6 @@ DISTRIBUTIONS
       parent 0.223
       strict 1.03
       warnings 1.03
-  MooseX-Attribute-Chained-1.0.3
-    pathname: T/TO/TOMHUKINS/MooseX-Attribute-Chained-1.0.3.tar.gz
-    provides:
-      Moose::Meta::Attribute::Custom::Trait::Chained v1.0.3
-      MooseX::Attribute::Chained v1.0.3
-      MooseX::Attribute::Chained::Method::Accessor v1.0.3
-      MooseX::Attribute::ChainedClone v1.0.3
-      MooseX::Attribute::ChainedClone::Method::Accessor v1.0.3
-      MooseX::ChainedAccessors v1.0.3
-      MooseX::ChainedAccessors::Accessor v1.0.3
-      MooseX::Traits::Attribute::Chained v1.0.3
-      MooseX::Traits::Attribute::ChainedClone v1.0.3
-    requirements:
-      Module::Build 0.28
-      Moose 0
-      Test::More 0.88
-      Try::Tiny 0
   MooseX-Attribute-Deflator-2.2.2
     pathname: P/PE/PERLER/MooseX-Attribute-Deflator-2.2.2.tar.gz
     provides:
