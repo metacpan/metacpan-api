@@ -7226,17 +7226,6 @@ DISTRIBUTIONS
       Fcntl 0
       URI 1.10
       perl 5.008001
-  XML-NamespaceSupport-1.12
-    pathname: P/PE/PERIGRIN/XML-NamespaceSupport-1.12.tar.gz
-    provides:
-      XML::NamespaceSupport 1.12
-    requirements:
-      ExtUtils::MakeMaker 6.17
-      constant 0
-      perl 5.006
-      strict 0
-      vars 0
-      warnings 0
   XML-Parser-2.47
     pathname: T/TO/TODDR/XML-Parser-2.47.tar.gz
     provides:
@@ -7251,54 +7240,39 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       LWP::UserAgent 0
       perl 5.004050
-  XML-SAX-1.02
-    pathname: G/GR/GRANTM/XML-SAX-1.02.tar.gz
+  XML-XPath-1.48
+    pathname: M/MA/MANWAR/XML-XPath-1.48.tar.gz
     provides:
-      XML::SAX 1.02
-      XML::SAX::DocumentLocator undef
-      XML::SAX::ParserFactory 1.02
-      XML::SAX::PurePerl 1.02
-      XML::SAX::PurePerl::DebugHandler undef
-      XML::SAX::PurePerl::Exception undef
-      XML::SAX::PurePerl::Productions undef
-      XML::SAX::PurePerl::Reader undef
-      XML::SAX::PurePerl::Reader::Stream undef
-      XML::SAX::PurePerl::Reader::String undef
-      XML::SAX::PurePerl::Reader::URI undef
+      XML::XPath 1.48
+      XML::XPath::Boolean 1.48
+      XML::XPath::Builder 1.48
+      XML::XPath::Expr 1.48
+      XML::XPath::Function 1.48
+      XML::XPath::Literal 1.48
+      XML::XPath::LocationPath 1.48
+      XML::XPath::Node 1.48
+      XML::XPath::Node::Attribute 1.48
+      XML::XPath::Node::AttributeImpl 1.48
+      XML::XPath::Node::Comment 1.48
+      XML::XPath::Node::Element 1.48
+      XML::XPath::Node::Namespace 1.48
+      XML::XPath::Node::PI 1.48
+      XML::XPath::Node::Text 1.48
+      XML::XPath::NodeSet 1.48
+      XML::XPath::Number 1.48
+      XML::XPath::Parser 1.48
+      XML::XPath::PerlSAX 1.48
+      XML::XPath::Root 1.48
+      XML::XPath::Step 1.48
+      XML::XPath::Variable 1.48
+      XML::XPath::XMLParser 1.48
     requirements:
       ExtUtils::MakeMaker 0
-      File::Temp 0
-      XML::NamespaceSupport 0.03
-      XML::SAX::Base 1.05
-  XML-SAX-Base-1.09
-    pathname: G/GR/GRANTM/XML-SAX-Base-1.09.tar.gz
-    provides:
-      XML::SAX::Base 1.09
-      XML::SAX::Base::NoHandler 1.09
-      XML::SAX::Exception 1.09
-    requirements:
-      ExtUtils::MakeMaker 0
-      perl 5.008
-  XML-SAX-Expat-0.51
-    pathname: B/BJ/BJOERN/XML-SAX-Expat-0.51.tar.gz
-    provides:
-      XML::SAX::Expat 0.51
-    requirements:
-      ExtUtils::MakeMaker 0
-      XML::NamespaceSupport 0.03
-      XML::Parser 2.27
-      XML::SAX 0.03
-      XML::SAX::Base 1.00
-  XML-Simple-2.25
-    pathname: G/GR/GRANTM/XML-Simple-2.25.tar.gz
-    provides:
-      XML::Simple 2.25
-    requirements:
-      ExtUtils::MakeMaker 0
-      XML::NamespaceSupport 1.04
-      XML::SAX 0.15
-      XML::SAX::Expat 0
-      perl 5.008
+      Path::Tiny 0.076
+      Scalar::Util 1.45
+      Test::More 0
+      XML::Parser 2.23
+      perl 5.010001
   XString-0.005
     pathname: A/AT/ATOOMIC/XString-0.005.tar.gz
     provides:
