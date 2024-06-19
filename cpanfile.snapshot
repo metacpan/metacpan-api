@@ -2626,17 +2626,17 @@ DISTRIBUTIONS
       Exporter 5.57
       ExtUtils::MakeMaker 0
       perl 5.008
-  IO-Prompt-0.997004
-    pathname: D/DC/DCONWAY/IO-Prompt-0.997004.tar.gz
+  IO-Prompt-Tiny-0.003
+    pathname: D/DA/DAGOLDEN/IO-Prompt-Tiny-0.003.tar.gz
     provides:
-      IO::Prompt 0.997004
-      IO::Prompt::ReturnVal 0.997004
+      IO::Prompt::Tiny 0.003
     requirements:
-      ExtUtils::MakeMaker 0
-      IO::Handle 0
-      Term::ReadKey 0
-      Test::More 0
-      Want 0
+      Carp 0
+      Exporter 0
+      ExtUtils::MakeMaker 6.17
+      perl 5.006
+      strict 0
+      warnings 0
   IO-Socket-SSL-2.086
     pathname: S/SU/SULLR/IO-Socket-SSL-2.086.tar.gz
     provides:
@@ -6347,12 +6347,6 @@ DISTRIBUTIONS
       Exporter 0
       ExtUtils::CBuilder 0
       ExtUtils::MakeMaker 0
-  TermReadKey-2.38
-    pathname: J/JS/JSTOWE/TermReadKey-2.38.tar.gz
-    provides:
-      Term::ReadKey 2.38
-    requirements:
-      ExtUtils::MakeMaker 6.58
   Test-Abortable-0.003
     pathname: R/RJ/RJBS/Test-Abortable-0.003.tar.gz
     provides:
@@ -7232,12 +7226,6 @@ DISTRIBUTIONS
       Fcntl 0
       URI 1.10
       perl 5.008001
-  Want-0.29
-    pathname: R/RO/ROBIN/Want-0.29.tar.gz
-    provides:
-      Want 0.29
-    requirements:
-      ExtUtils::MakeMaker 0
   XML-NamespaceSupport-1.12
     pathname: P/PE/PERIGRIN/XML-NamespaceSupport-1.12.tar.gz
     provides:
