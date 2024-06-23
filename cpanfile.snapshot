@@ -2201,10 +2201,10 @@ DISTRIBUTIONS
       base 0
       strict 0
       warnings 0
-  Dist-Data-0.006
-    pathname: G/GE/GETTY/Dist-Data-0.006.tar.gz
+  Dist-Data-0.007
+    pathname: G/GE/GETTY/Dist-Data-0.007.tar.gz
     provides:
-      Dist::Data 0.006
+      Dist::Data 0.007
     requirements:
       Archive::Any 0.0932
       CPAN::Meta 2.113640
@@ -2213,7 +2213,7 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       File::Find::Object v0.2.3
       File::Temp 0.22
-      Module::Extract::Namespaces 0.14
+      Module::Metadata 0
       Moo 0.009013
   Dist-Metadata-0.927
     pathname: R/RW/RWSTAUNER/Dist-Metadata-0.927.tar.gz
@@ -2538,13 +2538,13 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  ExtUtils-Helpers-0.026
-    pathname: L/LE/LEONT/ExtUtils-Helpers-0.026.tar.gz
+  ExtUtils-Helpers-0.027
+    pathname: L/LE/LEONT/ExtUtils-Helpers-0.027.tar.gz
     provides:
-      ExtUtils::Helpers 0.026
-      ExtUtils::Helpers::Unix 0.026
-      ExtUtils::Helpers::VMS 0.026
-      ExtUtils::Helpers::Windows 0.026
+      ExtUtils::Helpers 0.027
+      ExtUtils::Helpers::Unix 0.027
+      ExtUtils::Helpers::VMS 0.027
+      ExtUtils::Helpers::Windows 0.027
     requirements:
       Carp 0
       Exporter 5.57
@@ -2553,7 +2553,6 @@ DISTRIBUTIONS
       File::Copy 0
       File::Spec::Functions 0
       Text::ParseWords 3.24
-      perl 5.006
       strict 0
       warnings 0
   ExtUtils-InstallPaths-0.013
@@ -3650,42 +3649,42 @@ DISTRIBUTIONS
       perl 5.010
       strict 0
       warnings 0
-  MCE-1.896
-    pathname: M/MA/MARIOROY/MCE-1.896.tar.gz
+  MCE-1.897
+    pathname: M/MA/MARIOROY/MCE-1.897.tar.gz
     provides:
-      MCE 1.896
-      MCE::Candy 1.896
-      MCE::Channel 1.896
-      MCE::Channel::Mutex 1.896
-      MCE::Channel::MutexFast 1.896
-      MCE::Channel::Simple 1.896
-      MCE::Channel::SimpleFast 1.896
-      MCE::Channel::Threads 1.896
-      MCE::Channel::ThreadsFast 1.896
-      MCE::Child 1.896
-      MCE::Core::Input::Generator 1.896
-      MCE::Core::Input::Handle 1.896
-      MCE::Core::Input::Iterator 1.896
-      MCE::Core::Input::Request 1.896
-      MCE::Core::Input::Sequence 1.896
-      MCE::Core::Manager 1.896
-      MCE::Core::Validation 1.896
-      MCE::Core::Worker 1.896
-      MCE::Flow 1.896
-      MCE::Grep 1.896
-      MCE::Loop 1.896
-      MCE::Map 1.896
-      MCE::Mutex 1.896
-      MCE::Mutex::Channel 1.896
-      MCE::Mutex::Channel2 1.896
-      MCE::Mutex::Flock 1.896
-      MCE::Queue 1.896
-      MCE::Relay 1.896
-      MCE::Signal 1.896
-      MCE::Step 1.896
-      MCE::Stream 1.896
-      MCE::Subs 1.896
-      MCE::Util 1.896
+      MCE 1.897
+      MCE::Candy 1.897
+      MCE::Channel 1.897
+      MCE::Channel::Mutex 1.897
+      MCE::Channel::MutexFast 1.897
+      MCE::Channel::Simple 1.897
+      MCE::Channel::SimpleFast 1.897
+      MCE::Channel::Threads 1.897
+      MCE::Channel::ThreadsFast 1.897
+      MCE::Child 1.897
+      MCE::Core::Input::Generator 1.897
+      MCE::Core::Input::Handle 1.897
+      MCE::Core::Input::Iterator 1.897
+      MCE::Core::Input::Request 1.897
+      MCE::Core::Input::Sequence 1.897
+      MCE::Core::Manager 1.897
+      MCE::Core::Validation 1.897
+      MCE::Core::Worker 1.897
+      MCE::Flow 1.897
+      MCE::Grep 1.897
+      MCE::Loop 1.897
+      MCE::Map 1.897
+      MCE::Mutex 1.897
+      MCE::Mutex::Channel 1.897
+      MCE::Mutex::Channel2 1.897
+      MCE::Mutex::Flock 1.897
+      MCE::Queue 1.897
+      MCE::Relay 1.897
+      MCE::Signal 1.897
+      MCE::Step 1.897
+      MCE::Stream 1.897
+      MCE::Subs 1.897
+      MCE::Util 1.897
     requirements:
       Carp 0
       Errno 0
@@ -7551,10 +7550,10 @@ DISTRIBUTIONS
       Test::Builder 0.13
       Test::Builder::Tester 1.02
       perl 5.006
-  Text-CSV_XS-1.54
-    pathname: H/HM/HMBRAND/Text-CSV_XS-1.54.tgz
+  Text-CSV_XS-1.55
+    pathname: H/HM/HMBRAND/Text-CSV_XS-1.55.tgz
     provides:
-      Text::CSV_XS 1.54
+      Text::CSV_XS 1.55
     requirements:
       Config 0
       ExtUtils::MakeMaker 0
