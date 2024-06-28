@@ -10,7 +10,7 @@ use HTTP::Request::Common     qw( GET );
 use Log::Contextual           qw( :log :dlog );
 use MetaCPAN::Types::TypeTiny ();
 use Text::CSV_XS              ();
-use Pithub                    ();
+use Net::GitHub::V4           ();
 use Ref::Util                 qw( is_hashref is_ref );
 use URI::Escape               qw( uri_escape );
 
@@ -34,11 +34,10 @@ has github_token => (
     builder => '_build_github_token',
 );
 
-has pithub => (
+has github_graphql => (
     is      => 'ro',
-    isa     => 'Pithub',
     lazy    => 1,
-    builder => '_build_pithub',
+    builder => '_build_github_graphql',
 );
 
 has _bulk => (
@@ -57,17 +56,15 @@ sub _build_bulk {
 
 sub _build_github_token {
     my $self = shift;
-    exists $self->config->{github_token}
-        ? $self->config->{github_token}
-        : undef;
+    $self->config->{github_token};
 }
 
-sub _build_pithub {
+sub _build_github_graphql {
     my $self = shift;
-    return Pithub->new(
-        per_page        => 100,
-        auto_pagination => 1,
-        ( $self->github_token ? ( token => $self->github_token ) : () )
+    return Net::GitHub::V4->new(
+        (
+            $self->github_token ? ( access_token => $self->github_token ) : ()
+        ),
     );
 }
 
@@ -121,29 +118,49 @@ sub index_github_bugs {
 
     my %summary;
 
+    my $json = JSON::MaybeXS->new( allow_nonref => 1 );
+
     while ( my $release = $scroll->next ) {
         my $resources = $release->resources;
         my ( $user, $repo, $source )
             = $self->github_user_repo_from_resources($resources);
         next unless $user;
         log_debug {"Retrieving issues from $user/$repo"};
-        my $open = $self->pithub->issues->list(
-            user   => $user,
-            repo   => $repo,
-            params => { state => 'open' }
-        );
-        next unless ( $open->success );
-        my $closed = $self->pithub->issues->list(
-            user   => $user,
-            repo   => $repo,
-            params => { state => 'closed' }
-        );
-        next unless ( $closed->success );
 
-        my $rec = { open => 0, closed => 0, source => $source };
-        $rec->{open}++   while ( $open->next );
-        $rec->{closed}++ while ( $closed->next );
-        $rec->{active} = $rec->{open};
+        my $data = $self->github_graphql->query(
+            sprintf <<'END_QUERY', map $json->encode($_), $user, $repo );
+                query {
+                    repository(owner: %s, name: %s) {
+                        openIssues: issues(states: OPEN) {
+                            totalCount
+                        }
+                        closedIssues: issues(states: CLOSED) {
+                            totalCount
+                        }
+                        openPullRequests: pullRequests(states: OPEN) {
+                            totalCount
+                        }
+                        closedPullRequests: pullRequests(states: [CLOSED, MERGED]) {
+                            totalCount
+                        }
+                    }
+                }
+END_QUERY
+
+        my $open
+            = $data->{data}{repository}{openIssues}{totalCount}
+            + $data->{data}{repository}{openPullRequests}{totalCount};
+        my $closed
+            = $data->{data}{repository}{closedIssues}{totalCount}
+            + $data->{data}{repository}{closedPullRequests}{totalCount};
+
+        my $rec = {
+            active => $open,
+            open   => $open,
+            closed => $closed,
+            source => $source,
+        };
+
         $summary{ $release->{'distribution'} }{'bugs'}{'github'} = $rec;
     }
 
