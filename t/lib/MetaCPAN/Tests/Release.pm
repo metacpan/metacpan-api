@@ -6,11 +6,10 @@ use version;
 
 use HTTP::Request::Common;
 use List::Util ();
-use MetaCPAN::TestApp;
 use Test::More;
 use MetaCPAN::Types::TypeTiny qw( ArrayRef HashRef Str );
 
-with( 'MetaCPAN::Tests::Model', 'MetaCPAN::Tests::Role::HasApp' );
+with('MetaCPAN::Tests::Model');
 
 sub _build_type {'release'}
 
@@ -86,8 +85,9 @@ sub file_content {
     # I couldn't get the Source model to work outside the app (I got
     # "No handler available for type 'application/octet-stream'",
     # strangely), so just do the http request.
-    return $self->app->get("/source/$self->{author}/$self->{name}/$path")
-        ->content;
+    return $self->psgi_app( sub {
+        shift->( GET "/source/$self->{author}/$self->{name}/$path" )->content;
+    } );
 }
 
 sub file_by_path {

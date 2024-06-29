@@ -5,11 +5,9 @@ use warnings;
 
 use Log::Contextual qw( :log );
 use Moose;
-use MooseX::Aliases;
 use Parse::CPAN::Packages::Fast;
 use CPAN::DistnameInfo;
-use Regexp::Common            qw(time);
-use Time::Local               qw( timelocal );
+use DateTime::Format::ISO8601 ();
 use MetaCPAN::Types::TypeTiny qw( Bool Str );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
@@ -165,6 +163,10 @@ sub run {
                 eval { $p->package( $_->{name} ) }
                 } @{ $file_data->{module} };
 
+            $file_data->{date}
+                = DateTime::Format::ISO8601->parse_datetime(
+                $file_data->{date} );
+
             # For each of the packages in this file...
             foreach my $module (@modules) {
 
@@ -193,12 +195,7 @@ sub run {
                     # If multiple versions of a dist appear in 02packages
                     # only mark the most recent upload as latest.
                     next
-                        if (
-                        $upgrade
-                        && $self->compare_dates(
-                            $upgrade->{date}, $file_data->{date}
-                        )
-                        );
+                        if $upgrade && $upgrade->{date} > $file_data->{date};
                     $upgrade{ $file_data->{distribution} } = $file_data;
                 }
                 elsif ( $file_data->{status} eq 'latest' ) {
@@ -289,16 +286,6 @@ sub reindex {
             unless $self->dry_run;
     }
 
-}
-
-sub compare_dates {
-    my ( $self, $d1, $d2 ) = @_;
-    for ( $d1, $d2 ) {
-        if ( $_ =~ /$RE{time}{iso}{-keep}/ ) {
-            $_ = timelocal( $7, $6, $5, $4, $3 - 1, $2 );
-        }
-    }
-    return $d1 > $d2;
 }
 
 __PACKAGE__->meta->make_immutable;

@@ -5,8 +5,7 @@ requires 'perl', '5.010';
 
 requires 'Archive::Any', '0.0946';
 requires 'Archive::Tar', '2.40';
-requires 'Authen::SASL', '2.16';
-requires 'BackPAN::Index', '0.42';
+requires 'Authen::SASL', '2.16'; # for Email::Sender::Transport::SMTP
 requires 'Captcha::reCAPTCHA', '0.99';
 requires 'Catalyst', '5.90128';
 requires 'Catalyst::Action::RenderView', '0.16';
@@ -17,11 +16,8 @@ requires 'Catalyst::Plugin::Session', '0.43';
 requires 'Catalyst::Plugin::Session::State::Cookie';
 requires 'Catalyst::Plugin::Session::Store';
 requires 'Catalyst::Plugin::Static::Simple';
-requires 'Catalyst::Plugin::Unicode::Encoding';
 requires 'Catalyst::View::JSON', '0.37';
 requires 'CatalystX::Fastly::Role::Response', '0.06';
-requires 'CatalystX::InjectComponent';
-requires 'CatalystX::RoleApplicator';
 requires 'CHI', '0.61';
 requires 'Config::General', '2.63';
 requires 'Config::ZOMG', '1.000000';
@@ -33,7 +29,6 @@ requires 'CPAN::Meta::Requirements', '2.140';
 requires 'CPAN::Meta::YAML', '0.018';
 requires 'CPAN::Repository::Perms';
 requires 'Cwd';
-requires 'Data::DPath';
 requires 'Data::Dumper';
 requires 'DateTime', '1.54';
 requires 'DateTime::Format::ISO8601';
@@ -62,15 +57,13 @@ requires 'File::pushd';
 requires 'File::stat';
 requires 'File::Temp';
 requires 'FindBin';
-requires 'Find::Lib';
 requires 'Getopt::Long::Descriptive', '0.103';
 requires 'Git::Helpers', '1.000001';
 requires 'Gravatar::URL';
 requires 'Hash::Merge::Simple';
 requires 'HTML::Entities';
 requires 'HTTP::Request::Common', '6.36';
-requires 'IO::Interactive';
-requires 'IO::Prompt';
+requires 'IO::Prompt::Tiny';
 requires 'IO::Uncompress::Bunzip2', '2.106';
 requires 'IO::Zlib';
 requires 'IPC::Run3', '0.048';
@@ -102,10 +95,7 @@ requires 'Mojolicious::Plugin::OpenAPI';
 requires 'Mojolicious::Plugin::Web::Auth', '0.17';
 requires 'Mojo::Pg', '4.08';
 requires 'Moose', '2.2201';
-requires 'MooseX::Aliases';
 requires 'MooseX::Attribute::Deflator', '2.1.5';
-requires 'MooseX::ChainedAccessors';
-requires 'MooseX::ClassAttribute';
 requires 'MooseX::Fastly::Role', '0.02';
 requires 'MooseX::Getopt', '0.71';
 requires 'MooseX::Getopt::Dashes';
@@ -128,7 +118,6 @@ requires 'Plack::App::Directory';
 requires 'Plack::Middleware::Header';
 requires 'Plack::Middleware::ReverseProxy';
 requires 'Plack::Middleware::Rewrite';
-requires 'Plack::Middleware::ServerStatus::Lite';
 requires 'Plack::Middleware::Session';
 requires 'Plack::Session::Store';
 requires 'Pod::Markdown', '3.300';
@@ -136,15 +125,13 @@ requires 'Pod::Simple', '3.43';
 requires 'Pod::Simple::XHTML', '3.24';
 requires 'Pod::Text', '4.14';
 requires 'Ref::Util';
-requires 'Regexp::Common';
-requires 'Regexp::Common::time';
 requires 'Safe', '2.35'; # bug fixes (used by Parse::PMFile)
 requires 'Scalar::Util', '1.62'; # Moose
 requires 'Search::Elasticsearch', '== 2.03';
 requires 'Term::Choose', '1.754'; # Git::Helpers
 requires 'Throwable::Error';
+requires 'Term::Size::Any'; # for Catalyst
 requires 'Text::CSV_XS';
-requires 'Time::Local';
 requires 'Try::Tiny', '0.30';
 requires 'Type::Tiny', '2.000001';
 requires 'Types::Path::Tiny';
@@ -152,7 +139,7 @@ requires 'Types::URI';
 requires 'Twitter::API', '1.0006';
 requires 'URI', '5.10';
 requires 'version', '0.9929';
-requires 'XML::Simple';
+requires 'XML::XPath';
 requires 'YAML::XS', '0.83'; # Mojolicious::Plugin::OpenAPI YAML loading
 
 # test requirements
@@ -161,23 +148,21 @@ requires 'Code::TidyAll::Plugin::UniqueLines';
 requires 'CPAN::Faker', '0.011';
 requires 'Devel::Confess';
 requires 'HTTP::Cookies', '6.10';
-requires 'LWP::ConsoleLogger::Easy', '0.000044';
 requires 'MetaCPAN::Client', '2.029000';
-requires 'Module::Extract::Namespaces', '1.023';
 requires 'Module::Faker', '== 0.017';
 requires 'Module::Faker::Dist', '== 0.017';
 requires 'OrePAN2', '0.48';
 requires 'Parallel::ForkManager' => '2.02';
 requires 'Perl::Critic', '0.140';
 requires 'Perl::Tidy' => '== 20230309';
-requires 'Plack::Test::Agent', '1.5';
 requires 'PPI', '1.274'; # Perl::Critic
 requires 'PPIx::QuoteLike', '0.022'; # Perl::Critic
 requires 'PPIx::Regexp', '0.085'; # Perl::Critic
 requires 'String::Format', '1.18'; # Perl::Critic
+requires 'Test::Deep';
+requires 'Test::Fatal';
 requires 'Test::Harness', '3.44'; # Contains App::Prove
 requires 'Test::More', '1.302190';
-requires 'Test::Most';
 requires 'Test::Perl::Critic', '1.04';
 requires 'Test::RequiresInternet';
 requires 'Test::Routine', '0.012';

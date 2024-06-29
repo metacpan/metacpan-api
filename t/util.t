@@ -10,7 +10,8 @@ use MetaCPAN::Util qw(
     strip_pod
 );
 
-use Test::Most import => [qw( done_testing is lives_ok ok )];
+use Test::More;
+use Test::Fatal;
 
 ok( generate_sid(), 'generate_sid' );
 
@@ -43,10 +44,10 @@ ok( generate_sid(), 'generate_sid' );
         'v1.2'    => 'v1.2',
     );
     foreach my $before ( sort keys %versions ) {
-        lives_ok {
+        is exception {
             is( version($before), $versions{$before},
                 "$before => $versions{$before}" )
-        }
+        }, undef;
         "$before => $versions{$before} does not die";
     }
 }

@@ -4,12 +4,10 @@ use Moose;
 
 ## no critic (Modules::RequireEndWithOne)
 use Catalyst qw( +MetaCPAN::Role::Fastly::Catalyst ), '-Log=warn,error,fatal';
-use CatalystX::RoleApplicator;
 use Digest::SHA ();
 use Log::Log4perl::Catalyst;
 use Plack::Builder qw( builder enable );
 use Plack::Middleware::ReverseProxy;
-use Plack::Middleware::ServerStatus::Lite;
 use Ref::Util qw( is_arrayref is_hashref );
 
 extends 'Catalyst';
@@ -20,11 +18,11 @@ sub clear_stash {
     %{ $_[0]->stash } = ();
 }
 
-__PACKAGE__->apply_request_class_roles( qw(
+__PACKAGE__->request_class_traits( [ qw(
     Catalyst::TraitFor::Request::REST
     Catalyst::TraitFor::Request::REST::ForBrowsers
     MetaCPAN::Server::Role::Request
-) );
+) ] );
 __PACKAGE__->config(
     encoding           => 'UTF-8',
     default_view       => 'JSON',
@@ -82,7 +80,6 @@ __PACKAGE__->setup( qw(
     Session::Store::ElasticSearch
     Session::State::Cookie
     Authentication
-    OAuth2::Provider
 ) );
 
 sub app {
