@@ -3183,18 +3183,18 @@ DISTRIBUTIONS
       Term::ReadKey 0
       Test::More 0
       Want 0
-  IO-Socket-SSL-2.085
-    pathname: S/SU/SULLR/IO-Socket-SSL-2.085.tar.gz
+  IO-Socket-SSL-2.086
+    pathname: S/SU/SULLR/IO-Socket-SSL-2.086.tar.gz
     provides:
-      IO::Socket::SSL 2.085
+      IO::Socket::SSL 2.086
       IO::Socket::SSL::Intercept 2.056
-      IO::Socket::SSL::OCSP_Cache 2.085
-      IO::Socket::SSL::OCSP_Resolver 2.085
+      IO::Socket::SSL::OCSP_Cache 2.086
+      IO::Socket::SSL::OCSP_Resolver 2.086
       IO::Socket::SSL::PublicSuffix undef
-      IO::Socket::SSL::SSL_Context 2.085
-      IO::Socket::SSL::SSL_HANDLE 2.085
-      IO::Socket::SSL::Session_Cache 2.085
-      IO::Socket::SSL::Trace 2.085
+      IO::Socket::SSL::SSL_Context 2.086
+      IO::Socket::SSL::SSL_HANDLE 2.086
+      IO::Socket::SSL::Session_Cache 2.086
+      IO::Socket::SSL::Trace 2.086
       IO::Socket::SSL::Utils 2.015
     requirements:
       ExtUtils::MakeMaker 0
