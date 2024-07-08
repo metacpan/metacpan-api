@@ -105,5 +105,18 @@ sub _write_06perms {
     $modules_dir->child('06perms.txt')->spew($content);
 }
 
+sub _write_08pumpkings {
+    my $self = shift;
+
+    my @pumpkings = qw(
+        HAARG
+    );
+
+    my $content = join '', map "$_\n", @pumpkings;
+
+    $self->base_dir->child(qw(authors 08pumpkings.txt.gz))
+        ->spew( { binmode => ':gzip' }, $content );
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
