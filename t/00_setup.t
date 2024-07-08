@@ -95,6 +95,9 @@ $src_dir->child('bugs.tsv')->copy( $fakecpan_dir->child('bugs.tsv') );
 $src_dir->child('mirrors.json')
     ->copy( $fakecpan_dir->child(qw(indices mirrors.json)) );
 
+$src_dir->child('08pumpkings.txt.gz')
+    ->copy( $fakecpan_dir->child(qw(authors 08pumpkings.txt.gz)) );
+
 write_find_ls($fakecpan_dir);
 
 $server->index_permissions;
