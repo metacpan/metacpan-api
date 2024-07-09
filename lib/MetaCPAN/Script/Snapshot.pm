@@ -6,9 +6,8 @@ use warnings;
 use Cpanel::JSON::XS          qw( decode_json encode_json );
 use DateTime                  ();
 use DateTime::Format::ISO8601 ();
-use DDP;
 use HTTP::Tiny                ();
-use Log::Contextual           qw( :log );
+use Log::Contextual           qw( :log :dlog );
 use MetaCPAN::Types::TypeTiny qw( ArrayRef Bool Str );
 use Moose;
 use Sys::Hostname qw( hostname );
@@ -177,7 +176,7 @@ sub run_list_snaps {
 
     foreach my $snapshot ( @{ $data->{snapshots} || [] } ) {
         log_info { $snapshot->{snapshot} }
-        log_debug { np($snapshot) }
+        Dlog_debug {$_} $snapshot;
     }
 
     return $response;
@@ -292,7 +291,7 @@ sub _request {
 
         try {
             my $resp_json = decode_json( $response->{content} );
-            log_error { 'Error response: ' . np($resp_json) }
+            Dlog_error {"Error response: $_"} $resp_json;
         }
         catch {
             log_error { 'Error msg: ' . $response->{content} }

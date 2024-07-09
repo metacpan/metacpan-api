@@ -15,9 +15,15 @@ use FindBin;
     # can be overridden using the layout key
     # defining logger in metacpan_local.pl will
     # override and not append to this configuration
-    logger => [{
-        class => 'Log::Log4perl::Appender::File',
-        filename => $FindBin::RealBin . '/../var/log/metacpan.log',
-        syswrite => 1,
-    }]
+    logger => [
+        {
+            class => 'Log::Log4perl::Appender::File',
+            filename => $FindBin::RealBin . '/../var/log/metacpan.log',
+            syswrite => 1,
+        },
+        (-t *STDERR ? ({
+            class => 'Log::Log4perl::Appender::ScreenColoredLevels',
+            stdout => 0,
+        }) : ()),
+    ],
 }

@@ -3,14 +3,13 @@ package MetaCPAN::Role::Script;
 use Moose::Role;
 
 use ElasticSearchX::Model::Document::Types qw(:all);
-use Git::Helpers                           qw( checkout_root );
+use MetaCPAN::Util                         qw( checkout_root );
 use Log::Contextual                        qw( :log :dlog );
 use MetaCPAN::Model                        ();
 use MetaCPAN::Types::TypeTiny              qw( Bool HashRef Int Path Str );
 use Mojo::Server                           ();
 use Term::ANSIColor                        qw( colored );
-use IO::Interactive                        qw( is_interactive );
-use IO::Prompt                             qw( prompt );
+use IO::Prompt::Tiny                       qw( prompt );
 use File::Path                             ();
 
 use Carp ();
@@ -392,7 +391,7 @@ sub are_you_sure {
     my ( $self, $msg ) = @_;
     my $iconfirmed = 0;
 
-    if (is_interactive) {
+    if ( -t *STDOUT ) {
         my $answer
             = prompt colored( ['bold red'], "*** Warning ***: $msg" ) . "\n"
             . 'Are you sure you want to do this (type "YES" to confirm) ? ';

@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use Git::Helpers             qw( checkout_root );
+use MetaCPAN::Util           qw( checkout_root );
 use MetaCPAN::Script::River  ();
 use MetaCPAN::Script::Runner ();
 use MetaCPAN::Server::Test   qw( app GET test_psgi );

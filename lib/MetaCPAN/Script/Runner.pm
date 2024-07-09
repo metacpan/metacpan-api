@@ -6,7 +6,6 @@ use warnings;
 use Config::ZOMG        ();
 use File::Path          ();
 use Hash::Merge::Simple qw(merge);
-use IO::Interactive     qw(is_interactive);
 use Module::Pluggable search_path => ['MetaCPAN::Script'];
 use Module::Runtime ();
 use Try::Tiny       qw( catch try );
@@ -87,13 +86,6 @@ sub build_config {
             file => 'etc/metacpan_testing.pl'
         )->load;
         $config = merge $config, $tconf;
-    }
-    elsif ( is_interactive() ) {
-        my $iconf = Config::ZOMG->new(
-            name => 'metacpan',
-            file => 'etc/metacpan_interactive.pl'
-        )->load;
-        $config = merge $config, $iconf;
     }
     return $config;
 }
