@@ -160,6 +160,14 @@ DISTRIBUTIONS
     requirements:
       B 0
       ExtUtils::MakeMaker 0
+  Browser-Open-0.04
+    pathname: C/CF/CFRANKS/Browser-Open-0.04.tar.gz
+    provides:
+      Browser::Open 0.04
+    requirements:
+      ExtUtils::MakeMaker 0
+      Test::More 0.92
+      parent 0
   CGI-Simple-1.281
     pathname: M/MA/MANWAR/CGI-Simple-1.281.tar.gz
     provides:
@@ -178,6 +186,47 @@ DISTRIBUTIONS
       Storable 0
       Test::Deep 0
       Test::More 0
+  CHI-0.61
+    pathname: A/AS/ASB/CHI-0.61.tar.gz
+    provides:
+      CHI 0.61
+      CHI::CacheObject 0.61
+      CHI::Driver 0.61
+      CHI::Driver::Base::CacheContainer 0.61
+      CHI::Driver::CacheCache 0.61
+      CHI::Driver::FastMmap 0.61
+      CHI::Driver::File 0.61
+      CHI::Driver::Memory 0.61
+      CHI::Driver::Metacache 0.61
+      CHI::Driver::Null 0.61
+      CHI::Driver::RawMemory 0.61
+      CHI::Driver::Role::HasSubcaches 0.61
+      CHI::Driver::Role::IsSizeAware 0.61
+      CHI::Driver::Role::IsSubcache 0.61
+      CHI::Stats 0.61
+    requirements:
+      Carp::Assert 0.20
+      Class::Load 0
+      Data::UUID 0
+      Digest::JHash 0
+      Digest::MD5 0
+      ExtUtils::MakeMaker 0
+      File::Spec 0.80
+      Hash::MoreUtils 0
+      JSON::MaybeXS 1.003003
+      List::MoreUtils 0.13
+      Log::Any 0.08
+      Moo 1.003
+      MooX::Types::MooseLike 0.23
+      MooX::Types::MooseLike::Base 0
+      MooX::Types::MooseLike::Numeric 0
+      Storable 0
+      String::RewritePrefix 0
+      Task::Weaken 0
+      Time::Duration 1.06
+      Time::Duration::Parse 0.03
+      Time::HiRes 1.30
+      Try::Tiny 0.05
   CPAN-Checksums-2.14
     pathname: A/AN/ANDK/CPAN-Checksums-2.14.tar.gz
     provides:
@@ -312,6 +361,18 @@ DISTRIBUTIONS
       Scalar::Util 0
       perl 5.006
       strict 0
+      warnings 0
+  Carp-Assert-0.22
+    pathname: Y/YV/YVES/Carp-Assert-0.22.tar.gz
+    provides:
+      Carp::Assert 0.22
+    requirements:
+      Carp 0
+      Exporter 0
+      ExtUtils::MakeMaker 0
+      perl 5.006
+      strict 0
+      vars 0
       warnings 0
   Carp-Clan-6.08
     pathname: E/ET/ETHER/Carp-Clan-6.08.tar.gz
@@ -598,14 +659,6 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       base 1.01
-  Class-Accessor-Chained-0.01
-    pathname: R/RC/RCLAMP/Class-Accessor-Chained-0.01.tar.gz
-    provides:
-      Class::Accessor::Chained 0.01
-      Class::Accessor::Chained::Fast undef
-    requirements:
-      Class::Accessor 0
-      Test::More 0
   Class-C3-Adopt-NEXT-0.14
     pathname: E/ET/ETHER/Class-C3-Adopt-NEXT-0.14.tar.gz
     provides:
@@ -1132,6 +1185,13 @@ DISTRIBUTIONS
       perl 5.012
       strict 0
       warnings 0
+  Data-UUID-1.227
+    pathname: G/GT/GTERMARS/Data-UUID-1.227.tar.gz
+    provides:
+      Data::UUID 1.227
+    requirements:
+      Digest::MD5 0
+      ExtUtils::MakeMaker 0
   Data-Visitor-0.32
     pathname: E/ET/ETHER/Data-Visitor-0.32.tar.gz
     provides:
@@ -1763,6 +1823,18 @@ DISTRIBUTIONS
       Digest::SHA 1
       ExtUtils::MakeMaker 0
       perl 5.004
+  Digest-JHash-0.10
+    pathname: S/SH/SHLOMIF/Digest-JHash-0.10.tar.gz
+    provides:
+      Digest::JHash 0.10
+    requirements:
+      DynaLoader 0
+      Exporter 0
+      ExtUtils::MakeMaker 0
+      perl 5.008
+      strict 0
+      vars 0
+      warnings 0
   Digest-SHA1-2.13
     pathname: G/GA/GAAS/Digest-SHA1-2.13.tar.gz
     provides:
@@ -2354,6 +2426,47 @@ DISTRIBUTIONS
       perl 5.012
       strict 0
       warnings 0
+  Git-Helpers-1.000001
+    pathname: O/OA/OALDERS/Git-Helpers-1.000001.tar.gz
+    provides:
+      Git::Helpers 1.000001
+      Git::Helpers::CPAN 1.000001
+    requirements:
+      Browser::Open 0
+      Capture::Tiny 0
+      Carp 0
+      ExtUtils::MakeMaker 0
+      File::pushd 0
+      Getopt::Long 0
+      Git::Sub 0
+      MetaCPAN::Client 2.029000
+      Moo 0
+      MooX::Options 0
+      Pod::Usage 0
+      String::Trim 0
+      Sub::Exporter 0
+      Term::Choose 1.743
+      Try::Tiny 0
+      Types::Standard 0
+      URI 0
+      URI::Heuristic 0
+      URI::git 0
+      perl v5.12.0
+      strict 0
+      warnings 0
+  Git-Sub-0.163320
+    pathname: D/DO/DOLMEN/Git-Sub-0.163320.tar.gz
+    provides:
+      Git::Sub 0.163320
+    requirements:
+      Carp 0
+      ExtUtils::MakeMaker 0
+      File::Which 0
+      System::Sub 0.162800
+      perl 5.006
+      strict 0
+      subs 0
+      warnings 0
   Gravatar-URL-1.07
     pathname: M/MS/MSCHWERN/Gravatar-URL-1.07.tar.gz
     provides:
@@ -2392,27 +2505,6 @@ DISTRIBUTIONS
       URI::URL 0
       XSLoader 0
       strict 0
-  HTML-Restrict-v3.0.2
-    pathname: O/OA/OALDERS/HTML-Restrict-v3.0.2.tar.gz
-    provides:
-      HTML::Restrict 3.000002
-    requirements:
-      Carp 0
-      Data::Dump 0
-      ExtUtils::MakeMaker 0
-      HTML::Entities 0
-      HTML::Parser 0
-      List::Util 1.33
-      Moo 1.002000
-      Scalar::Util 0
-      Sub::Quote 0
-      Type::Tiny 1.002001
-      Types::Standard 1.000001
-      URI 0
-      namespace::clean 0
-      perl 5.006
-      strict 0
-      version 0
   HTML-Tagset-3.24
     pathname: P/PE/PETDANCE/HTML-Tagset-3.24.tar.gz
     provides:
@@ -2596,6 +2688,13 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 6.31
       Storable 0
       Test::Most 0
+  Hash-MoreUtils-0.06
+    pathname: R/RE/REHSACK/Hash-MoreUtils-0.06.tar.gz
+    provides:
+      Hash::MoreUtils 0.06
+    requirements:
+      ExtUtils::MakeMaker 0
+      perl 5.008001
   Hash-MultiValue-0.16
     pathname: A/AR/ARISTOTLE/Hash-MultiValue-0.16.tar.gz
     provides:
@@ -2637,22 +2736,21 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  IO-Socket-SSL-2.086
-    pathname: S/SU/SULLR/IO-Socket-SSL-2.086.tar.gz
+  IO-Socket-SSL-2.088
+    pathname: S/SU/SULLR/IO-Socket-SSL-2.088.tar.gz
     provides:
-      IO::Socket::SSL 2.086
+      IO::Socket::SSL 2.088
       IO::Socket::SSL::Intercept 2.056
-      IO::Socket::SSL::OCSP_Cache 2.086
-      IO::Socket::SSL::OCSP_Resolver 2.086
+      IO::Socket::SSL::OCSP_Cache 2.088
+      IO::Socket::SSL::OCSP_Resolver 2.088
       IO::Socket::SSL::PublicSuffix undef
-      IO::Socket::SSL::SSL_Context 2.086
-      IO::Socket::SSL::SSL_HANDLE 2.086
-      IO::Socket::SSL::Session_Cache 2.086
-      IO::Socket::SSL::Trace 2.086
+      IO::Socket::SSL::SSL_Context 2.088
+      IO::Socket::SSL::SSL_HANDLE 2.088
+      IO::Socket::SSL::Session_Cache 2.088
+      IO::Socket::SSL::Trace 2.088
       IO::Socket::SSL::Utils 2.015
     requirements:
       ExtUtils::MakeMaker 0
-      Mozilla::CA 0
       Net::SSLeay 1.46
       Scalar::Util 0
   IPC-Run-20231003.0
@@ -3282,20 +3380,6 @@ DISTRIBUTIONS
       perl 5.012
       strict 0
       warnings 0
-  Modern-Perl-1.20240115
-    pathname: C/CH/CHROMATIC/Modern-Perl-1.20240115.tar.gz
-    provides:
-      Modern::Perl 1.20240115
-      odern::Perl 1.20240115
-    requirements:
-      ExtUtils::MakeMaker 0
-      IO::File 0
-      IO::Handle 0
-      feature 0
-      mro 0
-      perl 5.010
-      strict 0
-      warnings 0
   Module-Build-0.4234
     pathname: L/LE/LEONT/Module-Build-0.4234.tar.gz
     provides:
@@ -3380,15 +3464,6 @@ DISTRIBUTIONS
       CPAN::Meta::Prereqs 2.12091
       ExtUtils::MakeMaker 0
       parent 0
-  Module-Extract-Namespaces-1.024
-    pathname: B/BR/BRIANDFOY/Module-Extract-Namespaces-1.024.tar.gz
-    provides:
-      Module::Extract::Namespaces 1.024
-    requirements:
-      ExtUtils::MakeMaker 6.64
-      File::Spec::Functions 0
-      PPI 1.270
-      perl 5.008
   Module-Faker-0.017
     pathname: R/RJ/RJBS/Module-Faker-0.017.tar.gz
     provides:
@@ -3774,6 +3849,16 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       Module::Runtime 0.014
+  MooX-Types-MooseLike-Numeric-1.03
+    pathname: M/MA/MATEU/MooX-Types-MooseLike-Numeric-1.03.tar.gz
+    provides:
+      MooX::Types::MooseLike::Numeric 1.03
+    requirements:
+      ExtUtils::MakeMaker 0
+      Moo 1.004002
+      MooX::Types::MooseLike 0.23
+      Test::Fatal 0.003
+      Test::More 0.96
   Moose-2.2207
     pathname: E/ET/ETHER/Moose-2.2207.tar.gz
     provides:
@@ -4240,6 +4325,23 @@ DISTRIBUTIONS
       parent 0.223
       strict 1.03
       warnings 1.03
+  MooseX-Attribute-Chained-1.0.3
+    pathname: T/TO/TOMHUKINS/MooseX-Attribute-Chained-1.0.3.tar.gz
+    provides:
+      Moose::Meta::Attribute::Custom::Trait::Chained v1.0.3
+      MooseX::Attribute::Chained v1.0.3
+      MooseX::Attribute::Chained::Method::Accessor v1.0.3
+      MooseX::Attribute::ChainedClone v1.0.3
+      MooseX::Attribute::ChainedClone::Method::Accessor v1.0.3
+      MooseX::ChainedAccessors v1.0.3
+      MooseX::ChainedAccessors::Accessor v1.0.3
+      MooseX::Traits::Attribute::Chained v1.0.3
+      MooseX::Traits::Attribute::ChainedClone v1.0.3
+    requirements:
+      Module::Build 0.28
+      Moose 0
+      Test::More 0.88
+      Try::Tiny 0
   MooseX-Attribute-Deflator-2.2.2
     pathname: P/PE/PERLER/MooseX-Attribute-Deflator-2.2.2.tar.gz
     provides:
@@ -5895,60 +5997,6 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       XSLoader 0
       perl 5.006
-  Regexp-Common-2017060201
-    pathname: A/AB/ABIGAIL/Regexp-Common-2017060201.tar.gz
-    provides:
-      Regexp::Common 2017060201
-      Regexp::Common::CC 2017060201
-      Regexp::Common::Entry 2017060201
-      Regexp::Common::SEN 2017060201
-      Regexp::Common::URI 2017060201
-      Regexp::Common::URI::RFC1035 2017060201
-      Regexp::Common::URI::RFC1738 2017060201
-      Regexp::Common::URI::RFC1808 2017060201
-      Regexp::Common::URI::RFC2384 2017060201
-      Regexp::Common::URI::RFC2396 2017060201
-      Regexp::Common::URI::RFC2806 2017060201
-      Regexp::Common::URI::fax 2017060201
-      Regexp::Common::URI::file 2017060201
-      Regexp::Common::URI::ftp 2017060201
-      Regexp::Common::URI::gopher 2017060201
-      Regexp::Common::URI::http 2017060201
-      Regexp::Common::URI::news 2017060201
-      Regexp::Common::URI::pop 2017060201
-      Regexp::Common::URI::prospero 2017060201
-      Regexp::Common::URI::tel 2017060201
-      Regexp::Common::URI::telnet 2017060201
-      Regexp::Common::URI::tv 2017060201
-      Regexp::Common::URI::wais 2017060201
-      Regexp::Common::_support 2017060201
-      Regexp::Common::balanced 2017060201
-      Regexp::Common::comment 2017060201
-      Regexp::Common::delimited 2017060201
-      Regexp::Common::lingua 2017060201
-      Regexp::Common::list 2017060201
-      Regexp::Common::net 2017060201
-      Regexp::Common::number 2017060201
-      Regexp::Common::profanity 2017060201
-      Regexp::Common::whitespace 2017060201
-      Regexp::Common::zip 2017060201
-    requirements:
-      Config 0
-      ExtUtils::MakeMaker 0
-      perl 5.010
-      strict 0
-      vars 0
-      warnings 0
-  Regexp-Common-time-0.16
-    pathname: M/MA/MANWAR/Regexp-Common-time-0.16.tar.gz
-    provides:
-      Regexp::Common::time 0.16
-    requirements:
-      ExtUtils::MakeMaker 0
-      Modern::Perl 0
-      Regexp::Common 0
-      Test::More 0.40
-      perl 5.006
   Role-Hooks-0.008
     pathname: T/TO/TOBYINK/Role-Hooks-0.008.tar.gz
     provides:
@@ -6236,6 +6284,18 @@ DISTRIBUTIONS
       perl 5.012
       strict 0
       warnings 0
+  String-Trim-0.005
+    pathname: D/DO/DOHERTY/String-Trim-0.005.tar.gz
+    provides:
+      String::Trim 0.005
+    requirements:
+      Data::Dumper 0
+      Exporter 5.57
+      ExtUtils::MakeMaker 6.31
+      File::Find 0
+      File::Temp 0
+      Test::Builder 0.94
+      Test::More 0.94
   Sub-Exporter-0.991
     pathname: R/RJ/RJBS/Sub-Exporter-0.991.tar.gz
     provides:
@@ -6318,6 +6378,23 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
+  System-Sub-0.162800
+    pathname: D/DO/DOLMEN/System-Sub-0.162800.tar.gz
+    provides:
+      System::Sub 0.162800
+      System::Sub::AutoLoad 0.162800
+    requirements:
+      Carp 0
+      ExtUtils::MakeMaker 0
+      File::Which 0
+      IPC::Run 0
+      Scalar::Util 1.11
+      Sub::Name 0
+      Symbol 0
+      constant 0
+      perl 5.006
+      strict 0
+      warnings 0
   Task-Weaken-1.06
     pathname: E/ET/ETHER/Task-Weaken-1.06.tar.gz
     provides:
@@ -6329,6 +6406,34 @@ DISTRIBUTIONS
       Scalar::Util 1.14
       perl 5.006
       strict 0
+  Term-Choose-1.765
+    pathname: K/KU/KUERBIS/Term-Choose-1.765.tar.gz
+    provides:
+      Term::Choose 1.765
+      Term::Choose::Constants 1.765
+      Term::Choose::LineFold 1.765
+      Term::Choose::LineFold::CharWidthAmbiguousWide 1.765
+      Term::Choose::LineFold::CharWidthDefault 1.765
+      Term::Choose::Linux 1.765
+      Term::Choose::Opt::Mouse 1.765
+      Term::Choose::Opt::Search 1.765
+      Term::Choose::Opt::SkipItems 1.765
+      Term::Choose::Screen 1.765
+      Term::Choose::ValidateOptions 1.765
+      Term::Choose::Win32 1.765
+    requirements:
+      Carp 0
+      Exporter 0
+      ExtUtils::MakeMaker 0
+      File::Spec::Functions 0
+      FindBin 0
+      Test::Fatal 0
+      Test::More 0
+      constant 0
+      lib 0
+      perl 5.010000
+      strict 0
+      warnings 0
   Term-Size-Any-0.002
     pathname: F/FE/FERREIRA/Term-Size-Any-0.002.tar.gz
     provides:
@@ -7119,6 +7224,15 @@ DISTRIBUTIONS
       URI 1.40
       URI::Nested 0.10
       perl 5.008001
+  URI-git-0.02
+    pathname: M/MI/MIYAGAWA/URI-git-0.02.tar.gz
+    provides:
+      URI::git 0.02
+    requirements:
+      ExtUtils::MakeMaker 6.42
+      Filter::Util::Call 0
+      Test::More 0
+      URI 0
   URI-ws-0.03
     pathname: P/PL/PLICEASE/URI-ws-0.03.tar.gz
     provides:
