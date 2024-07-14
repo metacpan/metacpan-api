@@ -109,7 +109,7 @@ sub bad_request {
 
 sub _build_code {
     my $digest = Digest::SHA::sha1_base64( rand() . $$ . {} . time );
-    $digest =~ tr/[+\/]/-_/;
+    $digest =~ tr{+/}{-_};
     return $digest;
 }
 
