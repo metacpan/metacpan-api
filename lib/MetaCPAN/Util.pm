@@ -48,7 +48,7 @@ sub checkout_root {
 
 sub digest {
     my $digest = sha1_base64( join( "\0", grep {defined} @_ ) );
-    $digest =~ tr/[+\/]/-_/;
+    $digest =~ tr{+/}{-_};
     return $digest;
 }
 
