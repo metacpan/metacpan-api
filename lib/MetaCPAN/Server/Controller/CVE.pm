@@ -4,7 +4,6 @@ use strict;
 use warnings;
 
 use Moose;
-use MetaCPAN::Util qw( digest );
 
 BEGIN { extends 'MetaCPAN::Server::Controller' }
 
