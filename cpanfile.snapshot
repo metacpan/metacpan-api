@@ -2484,16 +2484,16 @@ DISTRIBUTIONS
       URI::Escape 0
       parent 0
       perl v5.6.0
-  HTML-Parser-3.82
-    pathname: O/OA/OALDERS/HTML-Parser-3.82.tar.gz
+  HTML-Parser-3.83
+    pathname: O/OA/OALDERS/HTML-Parser-3.83.tar.gz
     provides:
-      HTML::Entities 3.82
-      HTML::Filter 3.82
-      HTML::HeadParser 3.82
-      HTML::LinkExtor 3.82
-      HTML::Parser 3.82
-      HTML::PullParser 3.82
-      HTML::TokeParser 3.82
+      HTML::Entities 3.83
+      HTML::Filter 3.83
+      HTML::HeadParser 3.83
+      HTML::LinkExtor 3.83
+      HTML::Parser 3.83
+      HTML::PullParser 3.83
+      HTML::TokeParser 3.83
     requirements:
       Carp 0
       Exporter 0
@@ -2809,13 +2809,13 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       Test::More 0
-  JSON-MaybeXS-1.004005
-    pathname: E/ET/ETHER/JSON-MaybeXS-1.004005.tar.gz
+  JSON-MaybeXS-1.004007
+    pathname: E/ET/ETHER/JSON-MaybeXS-1.004007.tar.gz
     provides:
-      JSON::MaybeXS 1.004005
+      JSON::MaybeXS 1.004007
     requirements:
       Carp 0
-      Cpanel::JSON::XS 2.3310
+      Cpanel::JSON::XS 4.38
       ExtUtils::MakeMaker 0
       JSON::PP 2.27300
       Scalar::Util 0
@@ -4553,10 +4553,10 @@ DISTRIBUTIONS
       namespace::clean 0.19
       overload 0
       perl 5.008
-  Mozilla-CA-20240313
-    pathname: L/LW/LWP/Mozilla-CA-20240313.tar.gz
+  Mozilla-CA-20240730
+    pathname: L/LW/LWP/Mozilla-CA-20240730.tar.gz
     provides:
-      Mozilla::CA 20240313
+      Mozilla::CA 20240730
     requirements:
       ExtUtils::MakeMaker 0
   Net-DNS-1.45
