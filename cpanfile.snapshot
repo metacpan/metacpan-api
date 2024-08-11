@@ -2809,10 +2809,10 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       Test::More 0
-  JSON-MaybeXS-1.004007
-    pathname: E/ET/ETHER/JSON-MaybeXS-1.004007.tar.gz
+  JSON-MaybeXS-1.004008
+    pathname: E/ET/ETHER/JSON-MaybeXS-1.004008.tar.gz
     provides:
-      JSON::MaybeXS 1.004007
+      JSON::MaybeXS 1.004008
     requirements:
       Carp 0
       Cpanel::JSON::XS 4.38
@@ -6704,10 +6704,10 @@ DISTRIBUTIONS
       Test::Builder 0.13
       Test::Builder::Tester 1.02
       perl 5.006
-  Text-CSV_XS-1.55
-    pathname: H/HM/HMBRAND/Text-CSV_XS-1.55.tgz
+  Text-CSV_XS-1.56
+    pathname: H/HM/HMBRAND/Text-CSV_XS-1.56.tgz
     provides:
-      Text::CSV_XS 1.55
+      Text::CSV_XS 1.56
     requirements:
       Config 0
       ExtUtils::MakeMaker 0
