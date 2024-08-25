@@ -1022,8 +1022,8 @@ DISTRIBUTIONS
       Test::More 0.88
       Tie::Hash 0
       perl 5.006
-  DBI-1.643
-    pathname: T/TI/TIMB/DBI-1.643.tar.gz
+  DBI-1.644
+    pathname: H/HM/HMBRAND/DBI-1.644.tar.gz
     provides:
       Bundle::DBI 12.008696
       DBD::DBM 0.08
@@ -1079,7 +1079,7 @@ DISTRIBUTIONS
       DBD::Sponge::dr 12.010003
       DBD::Sponge::st 12.010003
       DBDI 12.015129
-      DBI 1.643
+      DBI 1.644
       DBI::Const::GetInfo::ANSI 2.008697
       DBI::Const::GetInfo::ODBC 2.011374
       DBI::Const::GetInfoReturn 2.008697
@@ -1119,7 +1119,7 @@ DISTRIBUTIONS
       DBI::SQL::Nano::Table_ 1.015544
       DBI::Util::CacheMemory 0.010315
       DBI::Util::_accessor 0.009479
-      DBI::common 1.643
+      DBI::common 1.644
     requirements:
       ExtUtils::MakeMaker 6.48
       Test::Simple 0.90
@@ -3127,42 +3127,42 @@ DISTRIBUTIONS
       perl 5.010
       strict 0
       warnings 0
-  MCE-1.897
-    pathname: M/MA/MARIOROY/MCE-1.897.tar.gz
+  MCE-1.898
+    pathname: M/MA/MARIOROY/MCE-1.898.tar.gz
     provides:
-      MCE 1.897
-      MCE::Candy 1.897
-      MCE::Channel 1.897
-      MCE::Channel::Mutex 1.897
-      MCE::Channel::MutexFast 1.897
-      MCE::Channel::Simple 1.897
-      MCE::Channel::SimpleFast 1.897
-      MCE::Channel::Threads 1.897
-      MCE::Channel::ThreadsFast 1.897
-      MCE::Child 1.897
-      MCE::Core::Input::Generator 1.897
-      MCE::Core::Input::Handle 1.897
-      MCE::Core::Input::Iterator 1.897
-      MCE::Core::Input::Request 1.897
-      MCE::Core::Input::Sequence 1.897
-      MCE::Core::Manager 1.897
-      MCE::Core::Validation 1.897
-      MCE::Core::Worker 1.897
-      MCE::Flow 1.897
-      MCE::Grep 1.897
-      MCE::Loop 1.897
-      MCE::Map 1.897
-      MCE::Mutex 1.897
-      MCE::Mutex::Channel 1.897
-      MCE::Mutex::Channel2 1.897
-      MCE::Mutex::Flock 1.897
-      MCE::Queue 1.897
-      MCE::Relay 1.897
-      MCE::Signal 1.897
-      MCE::Step 1.897
-      MCE::Stream 1.897
-      MCE::Subs 1.897
-      MCE::Util 1.897
+      MCE 1.898
+      MCE::Candy 1.898
+      MCE::Channel 1.898
+      MCE::Channel::Mutex 1.898
+      MCE::Channel::MutexFast 1.898
+      MCE::Channel::Simple 1.898
+      MCE::Channel::SimpleFast 1.898
+      MCE::Channel::Threads 1.898
+      MCE::Channel::ThreadsFast 1.898
+      MCE::Child 1.898
+      MCE::Core::Input::Generator 1.898
+      MCE::Core::Input::Handle 1.898
+      MCE::Core::Input::Iterator 1.898
+      MCE::Core::Input::Request 1.898
+      MCE::Core::Input::Sequence 1.898
+      MCE::Core::Manager 1.898
+      MCE::Core::Validation 1.898
+      MCE::Core::Worker 1.898
+      MCE::Flow 1.898
+      MCE::Grep 1.898
+      MCE::Loop 1.898
+      MCE::Map 1.898
+      MCE::Mutex 1.898
+      MCE::Mutex::Channel 1.898
+      MCE::Mutex::Channel2 1.898
+      MCE::Mutex::Flock 1.898
+      MCE::Queue 1.898
+      MCE::Relay 1.898
+      MCE::Signal 1.898
+      MCE::Step 1.898
+      MCE::Stream 1.898
+      MCE::Subs 1.898
+      MCE::Util 1.898
     requirements:
       Carp 0
       Errno 0
@@ -4559,21 +4559,21 @@ DISTRIBUTIONS
       Mozilla::CA 20240730
     requirements:
       ExtUtils::MakeMaker 0
-  Net-DNS-1.45
-    pathname: N/NL/NLNETLABS/Net-DNS-1.45.tar.gz
+  Net-DNS-1.46
+    pathname: N/NL/NLNETLABS/Net-DNS-1.46.tar.gz
     provides:
-      Net::DNS 1.45
+      Net::DNS 1.46
       Net::DNS::Domain 1913
       Net::DNS::DomainName 1898
       Net::DNS::DomainName1035 1898
       Net::DNS::DomainName2535 1898
-      Net::DNS::Header 1970
+      Net::DNS::Header 1982
       Net::DNS::Mailbox 1910
       Net::DNS::Mailbox1035 1910
       Net::DNS::Mailbox2535 1910
       Net::DNS::Nameserver 1963
-      Net::DNS::Packet 1959
-      Net::DNS::Parameters 1972
+      Net::DNS::Packet 1982
+      Net::DNS::Parameters 1987
       Net::DNS::Question 1895
       Net::DNS::RR 1965
       Net::DNS::RR::A 1972
@@ -4620,24 +4620,24 @@ DISTRIBUTIONS
       Net::DNS::RR::NSEC3PARAM 1972
       Net::DNS::RR::NULL 1972
       Net::DNS::RR::OPENPGPKEY 1896
-      Net::DNS::RR::OPT 1934
-      Net::DNS::RR::OPT::CHAIN 1934
-      Net::DNS::RR::OPT::CLIENT_SUBNET 1934
-      Net::DNS::RR::OPT::COOKIE 1934
-      Net::DNS::RR::OPT::DAU 1934
-      Net::DNS::RR::OPT::DHU 1934
-      Net::DNS::RR::OPT::EXPIRE 1934
-      Net::DNS::RR::OPT::EXTENDED_ERROR 1934
-      Net::DNS::RR::OPT::KEY_TAG 1934
-      Net::DNS::RR::OPT::N3U 1934
-      Net::DNS::RR::OPT::NSID 1934
-      Net::DNS::RR::OPT::PADDING 1934
-      Net::DNS::RR::OPT::REPORT_CHANNEL 1934
-      Net::DNS::RR::OPT::TCP_KEEPALIVE 1934
+      Net::DNS::RR::OPT 1980
+      Net::DNS::RR::OPT::CHAIN 1980
+      Net::DNS::RR::OPT::CLIENT_SUBNET 1980
+      Net::DNS::RR::OPT::COOKIE 1980
+      Net::DNS::RR::OPT::DAU 1980
+      Net::DNS::RR::OPT::DHU 1980
+      Net::DNS::RR::OPT::EXPIRE 1980
+      Net::DNS::RR::OPT::EXTENDED_ERROR 1980
+      Net::DNS::RR::OPT::KEY_TAG 1980
+      Net::DNS::RR::OPT::N3U 1980
+      Net::DNS::RR::OPT::NSID 1980
+      Net::DNS::RR::OPT::PADDING 1980
+      Net::DNS::RR::OPT::REPORT_CHANNEL 1980
+      Net::DNS::RR::OPT::TCP_KEEPALIVE 1980
       Net::DNS::RR::PTR 1972
       Net::DNS::RR::PX 1945
       Net::DNS::RR::RP 1972
-      Net::DNS::RR::RRSIG 1972
+      Net::DNS::RR::RRSIG 1987
       Net::DNS::RR::RT 1972
       Net::DNS::RR::SIG 1972
       Net::DNS::RR::SMIMEA 1896
@@ -4648,20 +4648,20 @@ DISTRIBUTIONS
       Net::DNS::RR::SVCB 1970
       Net::DNS::RR::TKEY 1908
       Net::DNS::RR::TLSA 1896
-      Net::DNS::RR::TSIG 1972
+      Net::DNS::RR::TSIG 1980
       Net::DNS::RR::TXT 1972
       Net::DNS::RR::URI 1896
       Net::DNS::RR::X25 1972
       Net::DNS::RR::ZONEMD 1896
-      Net::DNS::Resolver 1895
-      Net::DNS::Resolver::Base 1969
-      Net::DNS::Resolver::MSWin32 1961
-      Net::DNS::Resolver::Recurse 1965
-      Net::DNS::Resolver::UNIX 1972
-      Net::DNS::Resolver::android 1972
-      Net::DNS::Resolver::cygwin 1856
-      Net::DNS::Resolver::os2 1972
-      Net::DNS::Resolver::os390 1972
+      Net::DNS::Resolver 1981
+      Net::DNS::Resolver::Base 1982
+      Net::DNS::Resolver::MSWin32 1981
+      Net::DNS::Resolver::Recurse 1981
+      Net::DNS::Resolver::UNIX 1981
+      Net::DNS::Resolver::android 1981
+      Net::DNS::Resolver::cygwin 1981
+      Net::DNS::Resolver::os2 1981
+      Net::DNS::Resolver::os390 1981
       Net::DNS::Text 1894
       Net::DNS::Update 1895
       Net::DNS::ZoneFile 1957
@@ -4942,100 +4942,100 @@ DISTRIBUTIONS
       POSIX 0
       Time::Local 0
       perl 5.008001
-  PPI-1.278
-    pathname: O/OA/OALDERS/PPI-1.278.tar.gz
+  PPI-1.279
+    pathname: M/MI/MITHALDU/PPI-1.279.tar.gz
     provides:
-      PPI 1.278
-      PPI::Cache 1.278
-      PPI::Document 1.278
-      PPI::Document::File 1.278
-      PPI::Document::Fragment 1.278
-      PPI::Document::Normalized 1.278
-      PPI::Dumper 1.278
-      PPI::Element 1.278
-      PPI::Exception 1.278
-      PPI::Exception::ParserRejection 1.278
-      PPI::Find 1.278
-      PPI::Lexer 1.278
-      PPI::Node 1.278
-      PPI::Normal 1.278
-      PPI::Normal::Standard 1.278
-      PPI::Singletons 1.278
-      PPI::Statement 1.278
-      PPI::Statement::Break 1.278
-      PPI::Statement::Compound 1.278
-      PPI::Statement::Data 1.278
-      PPI::Statement::End 1.278
-      PPI::Statement::Expression 1.278
-      PPI::Statement::Given 1.278
-      PPI::Statement::Include 1.278
-      PPI::Statement::Include::Perl6 1.278
-      PPI::Statement::Null 1.278
-      PPI::Statement::Package 1.278
-      PPI::Statement::Scheduled 1.278
-      PPI::Statement::Sub 1.278
-      PPI::Statement::Unknown 1.278
-      PPI::Statement::UnmatchedBrace 1.278
-      PPI::Statement::Variable 1.278
-      PPI::Statement::When 1.278
-      PPI::Structure 1.278
-      PPI::Structure::Block 1.278
-      PPI::Structure::Condition 1.278
-      PPI::Structure::Constructor 1.278
-      PPI::Structure::For 1.278
-      PPI::Structure::Given 1.278
-      PPI::Structure::List 1.278
-      PPI::Structure::Subscript 1.278
-      PPI::Structure::Unknown 1.278
-      PPI::Structure::When 1.278
-      PPI::Token 1.278
-      PPI::Token::ArrayIndex 1.278
-      PPI::Token::Attribute 1.278
-      PPI::Token::BOM 1.278
-      PPI::Token::Cast 1.278
-      PPI::Token::Comment 1.278
-      PPI::Token::DashedWord 1.278
-      PPI::Token::Data 1.278
-      PPI::Token::End 1.278
-      PPI::Token::HereDoc 1.278
-      PPI::Token::Label 1.278
-      PPI::Token::Magic 1.278
-      PPI::Token::Number 1.278
-      PPI::Token::Number::Binary 1.278
-      PPI::Token::Number::Exp 1.278
-      PPI::Token::Number::Float 1.278
-      PPI::Token::Number::Hex 1.278
-      PPI::Token::Number::Octal 1.278
-      PPI::Token::Number::Version 1.278
-      PPI::Token::Operator 1.278
-      PPI::Token::Pod 1.278
-      PPI::Token::Prototype 1.278
-      PPI::Token::Quote 1.278
-      PPI::Token::Quote::Double 1.278
-      PPI::Token::Quote::Interpolate 1.278
-      PPI::Token::Quote::Literal 1.278
-      PPI::Token::Quote::Single 1.278
-      PPI::Token::QuoteLike 1.278
-      PPI::Token::QuoteLike::Backtick 1.278
-      PPI::Token::QuoteLike::Command 1.278
-      PPI::Token::QuoteLike::Readline 1.278
-      PPI::Token::QuoteLike::Regexp 1.278
-      PPI::Token::QuoteLike::Words 1.278
-      PPI::Token::Regexp 1.278
-      PPI::Token::Regexp::Match 1.278
-      PPI::Token::Regexp::Substitute 1.278
-      PPI::Token::Regexp::Transliterate 1.278
-      PPI::Token::Separator 1.278
-      PPI::Token::Structure 1.278
-      PPI::Token::Symbol 1.278
-      PPI::Token::Unknown 1.278
-      PPI::Token::Whitespace 1.278
-      PPI::Token::Word 1.278
-      PPI::Tokenizer 1.278
-      PPI::Transform 1.278
-      PPI::Transform::UpdateCopyright 1.278
-      PPI::Util 1.278
-      PPI::XSAccessor 1.278
+      PPI 1.279
+      PPI::Cache 1.279
+      PPI::Document 1.279
+      PPI::Document::File 1.279
+      PPI::Document::Fragment 1.279
+      PPI::Document::Normalized 1.279
+      PPI::Dumper 1.279
+      PPI::Element 1.279
+      PPI::Exception 1.279
+      PPI::Exception::ParserRejection 1.279
+      PPI::Find 1.279
+      PPI::Lexer 1.279
+      PPI::Node 1.279
+      PPI::Normal 1.279
+      PPI::Normal::Standard 1.279
+      PPI::Singletons 1.279
+      PPI::Statement 1.279
+      PPI::Statement::Break 1.279
+      PPI::Statement::Compound 1.279
+      PPI::Statement::Data 1.279
+      PPI::Statement::End 1.279
+      PPI::Statement::Expression 1.279
+      PPI::Statement::Given 1.279
+      PPI::Statement::Include 1.279
+      PPI::Statement::Include::Perl6 1.279
+      PPI::Statement::Null 1.279
+      PPI::Statement::Package 1.279
+      PPI::Statement::Scheduled 1.279
+      PPI::Statement::Sub 1.279
+      PPI::Statement::Unknown 1.279
+      PPI::Statement::UnmatchedBrace 1.279
+      PPI::Statement::Variable 1.279
+      PPI::Statement::When 1.279
+      PPI::Structure 1.279
+      PPI::Structure::Block 1.279
+      PPI::Structure::Condition 1.279
+      PPI::Structure::Constructor 1.279
+      PPI::Structure::For 1.279
+      PPI::Structure::Given 1.279
+      PPI::Structure::List 1.279
+      PPI::Structure::Subscript 1.279
+      PPI::Structure::Unknown 1.279
+      PPI::Structure::When 1.279
+      PPI::Token 1.279
+      PPI::Token::ArrayIndex 1.279
+      PPI::Token::Attribute 1.279
+      PPI::Token::BOM 1.279
+      PPI::Token::Cast 1.279
+      PPI::Token::Comment 1.279
+      PPI::Token::DashedWord 1.279
+      PPI::Token::Data 1.279
+      PPI::Token::End 1.279
+      PPI::Token::HereDoc 1.279
+      PPI::Token::Label 1.279
+      PPI::Token::Magic 1.279
+      PPI::Token::Number 1.279
+      PPI::Token::Number::Binary 1.279
+      PPI::Token::Number::Exp 1.279
+      PPI::Token::Number::Float 1.279
+      PPI::Token::Number::Hex 1.279
+      PPI::Token::Number::Octal 1.279
+      PPI::Token::Number::Version 1.279
+      PPI::Token::Operator 1.279
+      PPI::Token::Pod 1.279
+      PPI::Token::Prototype 1.279
+      PPI::Token::Quote 1.279
+      PPI::Token::Quote::Double 1.279
+      PPI::Token::Quote::Interpolate 1.279
+      PPI::Token::Quote::Literal 1.279
+      PPI::Token::Quote::Single 1.279
+      PPI::Token::QuoteLike 1.279
+      PPI::Token::QuoteLike::Backtick 1.279
+      PPI::Token::QuoteLike::Command 1.279
+      PPI::Token::QuoteLike::Readline 1.279
+      PPI::Token::QuoteLike::Regexp 1.279
+      PPI::Token::QuoteLike::Words 1.279
+      PPI::Token::Regexp 1.279
+      PPI::Token::Regexp::Match 1.279
+      PPI::Token::Regexp::Substitute 1.279
+      PPI::Token::Regexp::Transliterate 1.279
+      PPI::Token::Separator 1.279
+      PPI::Token::Structure 1.279
+      PPI::Token::Symbol 1.279
+      PPI::Token::Unknown 1.279
+      PPI::Token::Whitespace 1.279
+      PPI::Token::Word 1.279
+      PPI::Tokenizer 1.279
+      PPI::Transform 1.279
+      PPI::Transform::UpdateCopyright 1.279
+      PPI::Util 1.279
+      PPI::XSAccessor 1.279
     requirements:
       Carp 0
       Clone 0.30
@@ -5232,18 +5232,18 @@ DISTRIBUTIONS
       perl 5.008001
       strict 0
       warnings 0
-  Parallel-ForkManager-2.02
-    pathname: Y/YA/YANICK/Parallel-ForkManager-2.02.tar.gz
+  Parallel-ForkManager-2.03
+    pathname: Y/YA/YANICK/Parallel-ForkManager-2.03.tar.gz
     provides:
-      Parallel::ForkManager 2.02
-      Parallel::ForkManager::Child 2.02
+      Parallel::ForkManager 2.03
+      Parallel::ForkManager::Child 2.03
     requirements:
       Carp 0
       ExtUtils::MakeMaker 0
       File::Path 0
       File::Spec 0
       File::Temp 0
-      Moo 0
+      Moo 1.001000
       Moo::Role 0
       POSIX 0
       Storable 0
