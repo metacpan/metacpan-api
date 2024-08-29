@@ -87,7 +87,7 @@ requires 'MIME::Base64', '3.15';
 requires 'Minion', '9.03';
 requires 'Minion::Backend::SQLite';
 requires 'Module::Load';
-requires 'Module::Metadata', '1.000022';
+requires 'Module::Metadata', '1.000038';
 requires 'Module::Pluggable';
 requires 'Module::Runtime';
 requires 'Mojolicious::Plugin::MountPSGI', '0.14';
