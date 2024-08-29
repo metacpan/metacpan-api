@@ -2736,18 +2736,18 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  IO-Socket-SSL-2.088
-    pathname: S/SU/SULLR/IO-Socket-SSL-2.088.tar.gz
+  IO-Socket-SSL-2.089
+    pathname: S/SU/SULLR/IO-Socket-SSL-2.089.tar.gz
     provides:
-      IO::Socket::SSL 2.088
+      IO::Socket::SSL 2.089
       IO::Socket::SSL::Intercept 2.056
-      IO::Socket::SSL::OCSP_Cache 2.088
-      IO::Socket::SSL::OCSP_Resolver 2.088
+      IO::Socket::SSL::OCSP_Cache 2.089
+      IO::Socket::SSL::OCSP_Resolver 2.089
       IO::Socket::SSL::PublicSuffix undef
-      IO::Socket::SSL::SSL_Context 2.088
-      IO::Socket::SSL::SSL_HANDLE 2.088
-      IO::Socket::SSL::Session_Cache 2.088
-      IO::Socket::SSL::Trace 2.088
+      IO::Socket::SSL::SSL_Context 2.089
+      IO::Socket::SSL::SSL_HANDLE 2.089
+      IO::Socket::SSL::Session_Cache 2.089
+      IO::Socket::SSL::Trace 2.089
       IO::Socket::SSL::Utils 2.015
     requirements:
       ExtUtils::MakeMaker 0
@@ -3297,24 +3297,27 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  MetaCPAN-Pod-XHTML-0.003002
-    pathname: H/HA/HAARG/MetaCPAN-Pod-XHTML-0.003002.tar.gz
+  MetaCPAN-Pod-HTML-0.004000
+    pathname: H/HA/HAARG/MetaCPAN-Pod-HTML-0.004000.tar.gz
     provides:
-      MetaCPAN::Pod::XHTML 0.003002
-      Pod::Simple::Role::StripVerbatimIndent 0.003002
-      Pod::Simple::Role::XHTML::RepairLinkEncoding 0.003002
-      Pod::Simple::Role::XHTML::WithAccurateTargets 0.003002
-      Pod::Simple::Role::XHTML::WithErrata 0.003002
-      Pod::Simple::Role::XHTML::WithExtraTargets 0.003002
-      Pod::Simple::Role::XHTML::WithLinkMappings 0.003002
-      Pod::Simple::Role::XHTML::WithPostProcess 0.003002
+      MetaCPAN::Pod::HTML 0.004000
+      MetaCPAN::Pod::XHTML 0.004000
+      Pod::Simple::Role::StripVerbatimIndent 0.004000
+      Pod::Simple::Role::WithHighlightConfig 0.004000
+      Pod::Simple::Role::XHTML::HTML5 0.004000
+      Pod::Simple::Role::XHTML::RepairLinkEncoding 0.004000
+      Pod::Simple::Role::XHTML::WithAccurateTargets 0.004000
+      Pod::Simple::Role::XHTML::WithErrata 0.004000
+      Pod::Simple::Role::XHTML::WithExtraTargets 0.004000
+      Pod::Simple::Role::XHTML::WithHighlightConfig 0.004000
+      Pod::Simple::Role::XHTML::WithLinkMappings 0.004000
+      Pod::Simple::Role::XHTML::WithPostProcess 0.004000
     requirements:
       ExtUtils::MakeMaker 0
       HTML::Entities 3.69
       Moo 2.003000
       Moo::Role 2.003000
-      Pod::Simple::Role::XHTML::WithHighlightConfig 0
-      Pod::Simple::XHTML 3.40
+      Pod::Simple::XHTML 3.45
       URL::Encode 0.03
       namespace::clean 0.27
   MetaCPAN-Role-0.06
@@ -3513,6 +3516,21 @@ DISTRIBUTIONS
       Module::Runtime 0.012
       Try::Tiny 0
       strict 0
+      warnings 0
+  Module-Metadata-1.000038
+    pathname: E/ET/ETHER/Module-Metadata-1.000038.tar.gz
+    provides:
+      Module::Metadata 1.000038
+    requirements:
+      Carp 0
+      Encode 0
+      ExtUtils::MakeMaker 0
+      Fcntl 0
+      File::Find 0
+      File::Spec 0
+      perl 5.006
+      strict 0
+      version 0.87
       warnings 0
   Module-Pluggable-5.2
     pathname: S/SI/SIMONW/Module-Pluggable-5.2.tar.gz
@@ -5938,15 +5956,53 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       File::Basename 0
       Test::More 0.6
-  Pod-Simple-XHTML-WithHighlightConfig-0.000002
-    pathname: H/HA/HAARG/Pod-Simple-XHTML-WithHighlightConfig-0.000002.tar.gz
+  Pod-Simple-3.45
+    pathname: K/KH/KHW/Pod-Simple-3.45.tar.gz
     provides:
-      Pod::Simple::Role::WithHighlightConfig undef
-      Pod::Simple::Role::XHTML::WithHighlightConfig 0.000002
-      Pod::Simple::XHTML::WithHighlightConfig 0.000002
+      Pod::Simple 3.45
+      Pod::Simple::BlackBox 3.45
+      Pod::Simple::Checker 3.45
+      Pod::Simple::Debug 3.45
+      Pod::Simple::DumpAsText 3.45
+      Pod::Simple::DumpAsXML 3.45
+      Pod::Simple::HTML 3.45
+      Pod::Simple::HTMLBatch 3.45
+      Pod::Simple::HTMLLegacy 5.01
+      Pod::Simple::JustPod undef
+      Pod::Simple::LinkSection 3.45
+      Pod::Simple::Methody 3.45
+      Pod::Simple::Progress 3.45
+      Pod::Simple::PullParser 3.45
+      Pod::Simple::PullParserEndToken 3.45
+      Pod::Simple::PullParserStartToken 3.45
+      Pod::Simple::PullParserTextToken 3.45
+      Pod::Simple::PullParserToken 3.45
+      Pod::Simple::RTF 3.45
+      Pod::Simple::Search 3.45
+      Pod::Simple::SimpleTree 3.45
+      Pod::Simple::Text 3.45
+      Pod::Simple::TextContent 3.45
+      Pod::Simple::TiedOutFH 3.45
+      Pod::Simple::Transcode 3.45
+      Pod::Simple::TranscodeDumb 3.45
+      Pod::Simple::TranscodeSmart 3.45
+      Pod::Simple::XHTML 3.45
+      Pod::Simple::XMLOutStream 3.45
     requirements:
-      Moo 0
-      Pod::Simple::XHTML 0
+      Carp 0
+      Config 0
+      Cwd 0
+      ExtUtils::MakeMaker 0
+      File::Basename 0
+      File::Find 0
+      File::Spec 0
+      Pod::Escapes 1.04
+      Symbol 0
+      Text::Wrap 98.112902
+      if 0
+      integer 0
+      overload 0
+      strict 0
   Pod-Spell-1.26
     pathname: H/HA/HAARG/Pod-Spell-1.26.tar.gz
     provides:
