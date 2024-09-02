@@ -3,8 +3,7 @@ package MetaCPAN::Server::Controller::User::Turing;
 use strict;
 use warnings;
 
-use Captcha::reCAPTCHA;
-use DateTime;
+use DateTime ();
 use Moose;
 
 BEGIN { extends 'Catalyst::Controller::REST' }

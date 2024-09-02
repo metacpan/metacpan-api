@@ -2,7 +2,7 @@ package MetaCPAN::Role::Script;
 
 use Moose::Role;
 
-use ElasticSearchX::Model::Document::Types qw(:all);
+use ElasticSearchX::Model::Document::Types qw( ES );
 use MetaCPAN::Util                         qw( checkout_root );
 use Log::Contextual                        qw( :log :dlog );
 use MetaCPAN::Model                        ();

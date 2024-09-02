@@ -5,7 +5,6 @@ use lib 't/lib';
 # USE `bin/prove_live` to run this
 # READ the README.txt in this dir
 
-use Data::Dumper;
 use MetaCPAN::Model::Search ();
 use MetaCPAN::TestServer    ();
 use Test::More;
@@ -32,13 +31,15 @@ my %tests = (
     'Perl::Critic'         => 'Perl::Critic',
 );
 
-for my $q (sort keys %tests) {
-    my $match = $tests{$q};
-    my $returned = $search->search_web($q);
+for my $q ( sort keys %tests ) {
+    my $match       = $tests{$q};
+    my $returned    = $search->search_web($q);
     my $first_match = $returned->{results}->[0]->[0];
 
-    is($first_match->{documentation}, $match, "Search for ${q} matched ${match}");
-#    or diag Dumper($first_match);
+    is( $first_match->{documentation},
+        $match, "Search for ${q} matched ${match}" );
+
+    #    or diag Dumper($first_match);
 }
 
 done_testing();

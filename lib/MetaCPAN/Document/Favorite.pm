@@ -6,7 +6,7 @@ use warnings;
 use Moose;
 use ElasticSearchX::Model::Document;
 
-use DateTime;
+use DateTime ();
 use MetaCPAN::Util;
 
 has id => (

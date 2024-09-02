@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use feature qw( state );
 
-use DateTime;
+use DateTime                  ();
 use IO::Zlib                  ();
 use Cpanel::JSON::XS          qw( decode_json encode_json );
 use Log::Contextual           qw( :log :dlog );
@@ -94,7 +94,7 @@ sub run_restore {
     my $self = shift;
 
     return log_fatal { $self->restore, q{ doesn't exist} }
-    unless ( -e $self->restore );
+        unless ( -e $self->restore );
     log_info { 'Restoring from ', $self->restore };
 
     my @bulk;

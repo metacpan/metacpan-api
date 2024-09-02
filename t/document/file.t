@@ -2,6 +2,7 @@ use strict;
 use warnings;
 use lib 't/lib';
 
+use CPAN::Meta               ();
 use MetaCPAN::Document::File ();
 use Test::More;
 

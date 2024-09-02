@@ -2,8 +2,8 @@
 
 use strict;
 use warnings;
-use Cpanel::JSON::XS;
-use File::Find;
+use Cpanel::JSON::XS qw( decode_json );
+use File::Find       qw( find );
 
 my @files;
 find(

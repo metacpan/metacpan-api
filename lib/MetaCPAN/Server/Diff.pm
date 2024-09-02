@@ -7,7 +7,7 @@ use Moose;
 use Encoding::FixLatin        ();
 use IPC::Run3                 qw( run3 );
 use MetaCPAN::Types::TypeTiny qw( ArrayRef );
-use File::Spec;
+use File::Spec                ();
 
 has git => (
     is       => 'ro',

@@ -6,13 +6,12 @@ use namespace::autoclean;
 # Some issue with rt.cpan.org's cert
 $ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0;
 
-use HTTP::Request::Common     qw( GET );
-use Log::Contextual           qw( :log :dlog );
-use MetaCPAN::Types::TypeTiny ();
-use Text::CSV_XS              ();
-use Net::GitHub::V4           ();
-use Ref::Util                 qw( is_hashref is_ref );
-use URI::Escape               qw( uri_escape );
+use HTTP::Request::Common qw( GET );
+use Log::Contextual       qw( :log :dlog );
+use Text::CSV_XS          ();
+use Net::GitHub::V4       ();
+use Ref::Util             qw( is_hashref is_ref );
+use URI::Escape           qw( uri_escape );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
@@ -231,7 +230,7 @@ sub parse_tsv {
             source => $self->rt_dist_url( $row->{dist} ),
             active => $row->{active},
             closed => $row->{inactive},
-            map      { $_ => $row->{$_} + 0 }
+            map { $_ => $row->{$_} + 0 }
                 grep { not /^(dist|active|inactive)$/ }
                 keys %$row,
         };

@@ -2,8 +2,8 @@
 # PODNAME: check_json.pl
 use 5.010;
 
-use Data::Dumper;
-use Cpanel::JSON::XS;
+use Data::Dumper     qw( Dumper );
+use Cpanel::JSON::XS qw( decode_json );
 
 foreach my $file (@ARGV) {
     say "Processing $file";

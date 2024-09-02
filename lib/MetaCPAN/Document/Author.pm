@@ -3,7 +3,7 @@ package MetaCPAN::Document::Author;
 use MetaCPAN::Moose;
 
 # load order important for next 2 modules
-use ElasticSearchX::Model::Document::Types qw(:all);
+use ElasticSearchX::Model::Document::Types qw( Location );
 use ElasticSearchX::Model::Document;
 
 # load order not important
