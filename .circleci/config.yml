@@ -66,12 +66,6 @@ jobs:
             pushd metacpan-docker
             docker-compose exec -T api_test cover -report json
           name: create coverage report
-      # The report ends up being owned by root, but we may not need to chown it.
-      - run:
-          command: |
-            pushd metacpan-docker/src/metacpan-api
-            sudo chown -R circleci.circleci cover_db
-          name: chown coverage report
       - codecov/upload:
           file: metacpan-docker/src/metacpan-api/cover_db/cover.json
       - run:
