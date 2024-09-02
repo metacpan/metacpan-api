@@ -3,9 +3,10 @@ use warnings;
 use lib 't/lib';
 
 use MetaCPAN::Server ();
+
 use Test::More;
 
-my $c = 'MetaCPAN::Server';
+my $c = MetaCPAN::Server::;
 
 subtest 'distribution reverse_dependencies' => sub {
     my $data = [

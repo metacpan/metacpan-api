@@ -3,8 +3,8 @@ package MetaCPAN::Tests::Controller::Search::DownloadURL;
 use strict;
 use warnings;
 
-use MetaCPAN::Server::Test;
-use MetaCPAN::TestHelpers;
+use MetaCPAN::Server::Test qw( app GET test_psgi );
+use MetaCPAN::TestHelpers  qw( decode_json_ok );
 use Moose;
 use Test::More;
 

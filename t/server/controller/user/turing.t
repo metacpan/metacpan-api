@@ -15,8 +15,8 @@ use lib 't/lib';
     }
 }
 
-use MetaCPAN::Server::Test;
-use MetaCPAN::TestHelpers qw( decode_json_ok encode_json );
+use MetaCPAN::Server::Test qw( app POST test_psgi );
+use MetaCPAN::TestHelpers  qw( decode_json_ok encode_json );
 use Test::More;
 
 test_psgi app, sub {

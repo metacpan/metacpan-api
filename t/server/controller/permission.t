@@ -2,9 +2,9 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use Cpanel::JSON::XS qw( decode_json );
-use MetaCPAN::Server::Test;
-use MetaCPAN::TestServer;
+use Cpanel::JSON::XS       qw( decode_json );
+use MetaCPAN::Server::Test qw( app GET test_psgi );
+use MetaCPAN::TestServer   ();
 use Test::More;
 
 my $server = MetaCPAN::TestServer->new;

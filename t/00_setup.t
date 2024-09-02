@@ -5,8 +5,7 @@ use lib 't/lib';
 use CPAN::Faker 0.010 ();
 use Devel::Confess;
 use MetaCPAN::Script::Tickets ();
-use MetaCPAN::Server::Test;
-use MetaCPAN::TestHelpers qw(
+use MetaCPAN::TestHelpers     qw(
     fakecpan_configs_dir
     fakecpan_dir
     get_config
@@ -14,7 +13,6 @@ use MetaCPAN::TestHelpers qw(
     write_find_ls
 );
 use MetaCPAN::TestServer ();
-use Module::Faker 0.015  ();    # Generates META.json.
 use Test::More 0.96;
 use URI::FromHash qw( uri );
 

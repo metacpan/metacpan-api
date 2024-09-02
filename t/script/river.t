@@ -5,7 +5,7 @@ use lib 't/lib';
 use MetaCPAN::Util           qw( checkout_root );
 use MetaCPAN::Script::River  ();
 use MetaCPAN::Script::Runner ();
-use MetaCPAN::Server::Test   qw( app GET test_psgi );
+use MetaCPAN::Server::Test   qw( app GET );
 use MetaCPAN::TestHelpers    qw( decode_json_ok );
 use Test::More;
 use URI ();

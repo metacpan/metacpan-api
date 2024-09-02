@@ -2,8 +2,8 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use MetaCPAN::Server::Test;
-use MetaCPAN::TestHelpers qw( decode_json_ok test_cache_headers );
+use MetaCPAN::Server::Test qw( app GET POST test_psgi );
+use MetaCPAN::TestHelpers  qw( decode_json_ok test_cache_headers );
 use Test::More;
 
 test_psgi app, sub {

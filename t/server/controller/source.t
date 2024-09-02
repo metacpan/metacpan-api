@@ -2,9 +2,9 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use Cpanel::JSON::XS ();
-use MetaCPAN::Server::Test;
-use MetaCPAN::TestHelpers qw( test_cache_headers );
+use Cpanel::JSON::XS       ();
+use MetaCPAN::Server::Test qw( app GET test_psgi );
+use MetaCPAN::TestHelpers  qw( test_cache_headers );
 use Test::More;
 
 my %tests = (

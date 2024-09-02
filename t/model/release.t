@@ -5,8 +5,7 @@ use lib 't/lib';
 use File::Temp               ();
 use LWP::Simple              qw( getstore );
 use MetaCPAN::Model::Release ();
-use MetaCPAN::Script::Runner;
-use MetaCPAN::TestHelpers qw( get_config );
+use MetaCPAN::TestHelpers    qw( get_config );
 use Test::More;
 use Test::RequiresInternet( 'metacpan.org' => 'https' );
 

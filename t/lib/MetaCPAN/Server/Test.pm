@@ -3,9 +3,9 @@ package MetaCPAN::Server::Test;
 use strict;
 use warnings;
 
-use HTTP::Request::Common qw(POST GET DELETE);
+use HTTP::Request::Common qw( DELETE GET POST );
 use MetaCPAN::Server      ();
-use Plack::Test;
+use Plack::Test           qw( test_psgi );
 use Test::More;
 
 use base 'Exporter';
@@ -37,7 +37,7 @@ sub app {
     return $app;
 }
 
-require MetaCPAN::Model;
+use MetaCPAN::Model ();
 
 sub model {
     MetaCPAN::Model->new( es => ( $ENV{ES_TEST} ||= 'localhost:9200' ) );
