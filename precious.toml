@@ -29,6 +29,7 @@ tidy-flags = [ "--backup-and-modify-in-place", "--backup-file-extension=/" ]
 ok-exit-codes = 0
 lint-failure-exit-codes = 2
 ignore-stderr = "Begin Error Output Stream"
+label = ["perltidy"]
 
 [commands.omegasort-gitignore]
 type = "both"

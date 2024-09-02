@@ -15,8 +15,8 @@ around append_for => sub {
                   utf8::is_utf8( $_->{content} )
                 ? encode_utf8( $_->{content} )
                 : $_->{content}
-            }
-            grep { $filename eq $_->{file} } @{ $self->append }
+        }
+        grep { $filename eq $_->{file} } @{ $self->append }
     ];
 };
 

@@ -1,27 +1,28 @@
 ## no critic
 {
-  name      => 'Binary-Data',
-  abstract  => 'Binary after __DATA__ token',
-  version   => '0.01',
+    name     => 'Binary-Data',
+    abstract => 'Binary after __DATA__ token',
+    version  => '0.01',
 
-  # Specify provides so that both modules are included
-  # in release 'provides' list and the release will get marked as latest.
-  provides  => {
-    'Binary::Data' => {
-      file    => 'lib/Binary/Data.pm',
-      version => '0.01'
+    # Specify provides so that both modules are included
+    # in release 'provides' list and the release will get marked as latest.
+    provides => {
+        'Binary::Data' => {
+            file    => 'lib/Binary/Data.pm',
+            version => '0.01'
+        },
+        'Binary::Data::WithPod' => {
+            file    => 'lib/Binary/Data/WithPod.pm',
+            version => '0.02'
+        }
     },
-    'Binary::Data::WithPod' => {
-      file    => 'lib/Binary/Data/WithPod.pm',
-      version => '0.02'
-    }
-  },
 
-  X_Module_Faker => {
-    cpan_author => 'BORISNAT',
-    append => [ {
-        file    => 'lib/Binary/Data.pm',
-        content => <<EOF
+    X_Module_Faker => {
+        cpan_author => 'BORISNAT',
+        append      => [
+            {
+                file    => 'lib/Binary/Data.pm',
+                content => <<EOF
 # Module::Faker should prepend 3 lines above this
 
   'hello';
@@ -35,10 +36,10 @@ not pod
 =he\x50\x00\x7b;\x{0d}=Ddhé\x{01}UÕÌ
 
 EOF
-    },
-    {
-        'file'    => 'lib/Binary/Data/WithPod.pm',
-        'content' => <<EOF
+            },
+            {
+                'file'    => 'lib/Binary/Data/WithPod.pm',
+                'content' => <<EOF
 # Module::Faker should prepend 3 lines above this
 
 =head1 NAME
@@ -65,6 +66,7 @@ pudding
 
 =cut
 EOF
-    } ]
-  }
+            }
+        ]
+    }
 }

@@ -40,7 +40,7 @@ test_psgi app, sub {
     my $cb = shift;
     for my $test (@tests) {
         my ( $k, $v ) = @{$test};
-        ok( my $res = $cb->( GET $k), "GET $k" );
+        ok( my $res = $cb->( GET $k ), "GET $k" );
 
         # TRAVIS 5.18
         is( $res->code, $v->{code}, "code " . $v->{code} );

@@ -31,7 +31,7 @@ sub run {
         $release
             ? log_debug {
             "@{[ $release->name ]} by @{[ $release->author ]} was first";
-        }
+            }
             : log_warn {
             "no release found for distribution @{[$distribution->name]}";
             };

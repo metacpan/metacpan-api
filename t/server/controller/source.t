@@ -62,7 +62,7 @@ my %tests = (
 test_psgi app, sub {
     my $cb = shift;
     while ( my ( $k, $v ) = each %tests ) {
-        ok( my $res = $cb->( GET $k), "GET $k" );
+        ok( my $res = $cb->( GET $k ), "GET $k" );
         is( $res->code, $v->{code}, "code " . $v->{code} );
 
         test_cache_headers( $res, $v );

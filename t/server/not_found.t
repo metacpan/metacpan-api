@@ -22,7 +22,7 @@ test_psgi app, sub {
     for my $test (@tests) {
         my ( $path, $code ) = @{$test};
 
-        ok( my $res = $cb->( GET $path), "GET $path" );
+        ok( my $res = $cb->( GET $path ), "GET $path" );
         is( $res->code, $code, "code $code" );
 
         # 404 should still be json

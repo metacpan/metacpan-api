@@ -6,10 +6,13 @@ use FindBin;
     # ElasticSearch instance, can be either a single server
     # or an arrayref of servers
     es => ':9200',
+
     # the port of the api server
     port => '5000',
+
     # log level
     level => 'info',
+
     # appender for Log4perl
     # default layout is "%d %p{1} %c: %m{chomp}%n"
     # can be overridden using the layout key
@@ -17,13 +20,17 @@ use FindBin;
     # override and not append to this configuration
     logger => [
         {
-            class => 'Log::Log4perl::Appender::File',
+            class    => 'Log::Log4perl::Appender::File',
             filename => $FindBin::RealBin . '/../var/log/metacpan.log',
             syswrite => 1,
         },
-        (-t *STDERR ? ({
-            class => 'Log::Log4perl::Appender::ScreenColoredLevels',
-            stdout => 0,
-        }) : ()),
+        (
+            -t *STDERR
+            ? ( {
+                class  => 'Log::Log4perl::Appender::ScreenColoredLevels',
+                stdout => 0,
+            } )
+            : ()
+        ),
     ],
 }
