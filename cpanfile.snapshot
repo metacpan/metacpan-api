@@ -24,6 +24,58 @@ DISTRIBUTIONS
       POSIX::strftime::Compiler 0.30
       Time::Local 0
       perl 5.008001
+  App-perlimports-0.000055
+    pathname: O/OA/OALDERS/App-perlimports-0.000055.tar.gz
+    provides:
+      App::perlimports 0.000055
+      App::perlimports::Annotations 0.000055
+      App::perlimports::CLI 0.000055
+      App::perlimports::Config 0.000055
+      App::perlimports::Document 0.000055
+      App::perlimports::ExportInspector 0.000055
+      App::perlimports::Include 0.000055
+      App::perlimports::Role::Logger 0.000055
+      App::perlimports::Sandbox 0.000055
+    requirements:
+      Capture::Tiny 0
+      Class::Inspector 1.36
+      Cpanel::JSON::XS 0
+      Data::Dumper 0
+      Data::UUID 0
+      ExtUtils::MakeMaker 0
+      File::Basename 0
+      File::XDG 1.01
+      Getopt::Long::Descriptive 0
+      List::Util 0
+      Log::Dispatch 2.70
+      Memoize 0
+      Module::Runtime 0
+      Moo 0
+      Moo::Role 0
+      MooX::StrictConstructor 0
+      PPI 1.276
+      PPI::Document 0
+      PPIx::Utils::Classification 0
+      Path::Iterator::Rule 0
+      Path::Tiny 0
+      Perl::Tidy 20220613
+      Pod::Usage 0
+      Ref::Util 0
+      Scalar::Util 0
+      Sereal::Decoder 0
+      Sereal::Encoder 0
+      Sub::HandlesVia 0
+      Symbol::Get 0.10
+      TOML::Tiny 0.16
+      Text::Diff 0
+      Text::SimpleTable::AutoWidth 0
+      Try::Tiny 0
+      Types::Standard 0
+      feature 0
+      perl v5.18.0
+      strict 0
+      utf8 0
+      warnings 0
   Archive-Any-0.0946
     pathname: O/OA/OALDERS/Archive-Any-0.0946.tar.gz
     provides:
@@ -332,6 +384,13 @@ DISTRIBUTIONS
       Test::More 0.88
       Test::Requires 0
       perl 5.008001
+  Call-Context-0.05
+    pathname: F/FE/FELIPE/Call-Context-0.05.tar.gz
+    provides:
+      Call::Context 0.05
+      Call::Context::X 0.05
+    requirements:
+      ExtUtils::MakeMaker 0
   Canary-Stability-2013
     pathname: M/ML/MLEHMANN/Canary-Stability-2013.tar.gz
     provides:
@@ -1733,6 +1792,16 @@ DISTRIBUTIONS
       perl 5.008004
       strict 0
       warnings 0
+  Devel-CheckLib-1.16
+    pathname: M/MA/MATTN/Devel-CheckLib-1.16.tar.gz
+    provides:
+      Devel::CheckLib 1.16
+    requirements:
+      Exporter 0
+      ExtUtils::MakeMaker 0
+      File::Spec 0
+      File::Temp 0.16
+      perl 5.004050
   Devel-Confess-0.009004
     pathname: H/HA/HAARG/Devel-Confess-0.009004.tar.gz
     provides:
@@ -2374,6 +2443,16 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       base 0
+      perl 5.006
+  File-XDG-1.03
+    pathname: P/PL/PLICEASE/File-XDG-1.03.tar.gz
+    provides:
+      File::XDG 1.03
+    requirements:
+      ExtUtils::MakeMaker 0
+      File::Path 2.07
+      Path::Tiny 0
+      Ref::Util 0
       perl 5.006
   File-pushd-1.016
     pathname: D/DA/DAGOLDEN/File-pushd-1.016.tar.gz
@@ -5674,27 +5753,23 @@ DISTRIBUTIONS
       strict 0
       version 0.77
       warnings 0
-  Perl-Tidy-20230309
-    pathname: S/SH/SHANCOCK/Perl-Tidy-20230309.tar.gz
+  Perl-Tidy-20240511
+    pathname: S/SH/SHANCOCK/Perl-Tidy-20240511.tar.gz
     provides:
-      Perl::Tidy 20230309
-      Perl::Tidy::Debugger 20230309
-      Perl::Tidy::DevNull 20230309
-      Perl::Tidy::Diagnostics 20230309
-      Perl::Tidy::FileWriter 20230309
-      Perl::Tidy::Formatter 20230309
-      Perl::Tidy::HtmlWriter 20230309
-      Perl::Tidy::IOScalar 20230309
-      Perl::Tidy::IOScalarArray 20230309
-      Perl::Tidy::IndentationItem 20230309
-      Perl::Tidy::LineBuffer 20230309
-      Perl::Tidy::LineSink 20230309
-      Perl::Tidy::LineSource 20230309
-      Perl::Tidy::Logger 20230309
-      Perl::Tidy::Tokenizer 20230309
-      Perl::Tidy::VerticalAligner 20230309
-      Perl::Tidy::VerticalAligner::Alignment 20230309
-      Perl::Tidy::VerticalAligner::Line 20230309
+      Perl::Tidy 20240511
+      Perl::Tidy::Debugger 20240511
+      Perl::Tidy::Diagnostics 20240511
+      Perl::Tidy::FileWriter 20240511
+      Perl::Tidy::Formatter 20240511
+      Perl::Tidy::HtmlWriter 20240511
+      Perl::Tidy::IOScalar 20240511
+      Perl::Tidy::IOScalarArray 20240511
+      Perl::Tidy::IndentationItem 20240511
+      Perl::Tidy::Logger 20240511
+      Perl::Tidy::Tokenizer 20240511
+      Perl::Tidy::VerticalAligner 20240511
+      Perl::Tidy::VerticalAligner::Alignment 20240511
+      Perl::Tidy::VerticalAligner::Line 20240511
     requirements:
       ExtUtils::MakeMaker 0
       perl 5.008
@@ -6215,6 +6290,51 @@ DISTRIBUTIONS
       overload 0
       strict 0
       warnings 0
+  Sereal-Decoder-5.004
+    pathname: Y/YV/YVES/Sereal-Decoder-5.004.tar.gz
+    provides:
+      Sereal::Decoder 5.004
+      Sereal::Decoder::Constants 5.004
+      Sereal::Performance undef
+    requirements:
+      Data::Dumper 0
+      Devel::CheckLib 1.16
+      ExtUtils::MakeMaker 7.0
+      ExtUtils::ParseXS 2.21
+      File::Find 0
+      File::Path 0
+      File::Spec 0
+      Scalar::Util 0
+      Test::Deep 0
+      Test::Differences 0
+      Test::LongString 0
+      Test::More 0.88
+      Test::Warn 0
+      XSLoader 0
+      perl 5.008
+  Sereal-Encoder-5.004
+    pathname: Y/YV/YVES/Sereal-Encoder-5.004.tar.gz
+    provides:
+      Sereal::Encoder 5.004
+      Sereal::Encoder::Constants 5.004
+    requirements:
+      Data::Dumper 0
+      Devel::CheckLib 1.16
+      ExtUtils::MakeMaker 7.0
+      ExtUtils::ParseXS 2.21
+      File::Find 0
+      File::Path 0
+      File::Spec 0
+      Hash::Util 0
+      Scalar::Util 0
+      Sereal::Decoder 5.004
+      Test::Deep 0
+      Test::Differences 0
+      Test::LongString 0
+      Test::More 0.88
+      Test::Warn 0
+      XSLoader 0
+      perl 5.008
   Sort-Versions-1.62
     pathname: N/NE/NEILB/Sort-Versions-1.62.tar.gz
     provides:
@@ -6384,6 +6504,47 @@ DISTRIBUTIONS
       Sub::Exporter::Progressive 0.001013
     requirements:
       ExtUtils::MakeMaker 0
+  Sub-HandlesVia-0.050000
+    pathname: T/TO/TOBYINK/Sub-HandlesVia-0.050000.tar.gz
+    provides:
+      Sub::HandlesVia 0.050000
+      Sub::HandlesVia::CodeGenerator 0.050000
+      Sub::HandlesVia::Declare 0.050000
+      Sub::HandlesVia::Handler 0.050000
+      Sub::HandlesVia::Handler::CodeRef 0.050000
+      Sub::HandlesVia::Handler::Traditional 0.050000
+      Sub::HandlesVia::HandlerLibrary 0.050000
+      Sub::HandlesVia::HandlerLibrary::Array 0.050000
+      Sub::HandlesVia::HandlerLibrary::Blessed 0.050000
+      Sub::HandlesVia::HandlerLibrary::Bool 0.050000
+      Sub::HandlesVia::HandlerLibrary::Code 0.050000
+      Sub::HandlesVia::HandlerLibrary::Counter 0.050000
+      Sub::HandlesVia::HandlerLibrary::Enum 0.050000
+      Sub::HandlesVia::HandlerLibrary::Hash 0.050000
+      Sub::HandlesVia::HandlerLibrary::Number 0.050000
+      Sub::HandlesVia::HandlerLibrary::Scalar 0.050000
+      Sub::HandlesVia::HandlerLibrary::String 0.050000
+      Sub::HandlesVia::Mite undef
+      Sub::HandlesVia::Toolkit 0.050000
+      Sub::HandlesVia::Toolkit::Mite 0.050000
+      Sub::HandlesVia::Toolkit::Moo 0.050000
+      Sub::HandlesVia::Toolkit::Moose 0.050000
+      Sub::HandlesVia::Toolkit::Moose::PackageTrait 0.050000
+      Sub::HandlesVia::Toolkit::Moose::RoleTrait 0.050000
+      Sub::HandlesVia::Toolkit::Mouse 0.050000
+      Sub::HandlesVia::Toolkit::Mouse::PackageTrait 0.050000
+      Sub::HandlesVia::Toolkit::Mouse::RoleTrait 0.050000
+      Sub::HandlesVia::Toolkit::ObjectPad 0.050000
+      Sub::HandlesVia::Toolkit::Plain 0.050000
+    requirements:
+      Class::Method::Modifiers 0
+      Exporter::Shiny 0
+      ExtUtils::MakeMaker 6.17
+      List::Util 1.54
+      Role::Hooks 0.008
+      Role::Tiny 0
+      Type::Tiny 1.004
+      perl 5.008001
   Sub-Identify-0.14
     pathname: R/RG/RGARCIA/Sub-Identify-0.14.tar.gz
     provides:
@@ -6434,6 +6595,13 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
+  Symbol-Get-0.12
+    pathname: F/FE/FELIPE/Symbol-Get-0.12.tar.gz
+    provides:
+      Symbol::Get 0.12
+    requirements:
+      Call::Context 0
+      ExtUtils::MakeMaker 0
   System-Sub-0.162800
     pathname: D/DO/DOLMEN/System-Sub-0.162800.tar.gz
     provides:
@@ -6451,6 +6619,23 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
+  TOML-Tiny-0.17
+    pathname: O/OA/OALDERS/TOML-Tiny-0.17.tar.gz
+    provides:
+      TOML::Tiny 0.17
+      TOML::Tiny::Grammar 0.17
+      TOML::Tiny::Parser 0.17
+      TOML::Tiny::Tokenizer 0.17
+      TOML::Tiny::Util 0.17
+      TOML::Tiny::Writer 0.17
+    requirements:
+      Carp 0
+      Data::Dumper 0
+      Encode 0
+      Exporter 0
+      ExtUtils::MakeMaker 0
+      Math::BigInt 1.999718
+      perl 5.018
   Task-Weaken-1.06
     pathname: E/ET/ETHER/Task-Weaken-1.06.tar.gz
     provides:
@@ -6618,6 +6803,14 @@ DISTRIBUTIONS
       Try::Tiny 0.07
       strict 0
       warnings 0
+  Test-LongString-0.17
+    pathname: R/RG/RGARCIA/Test-LongString-0.17.tar.gz
+    provides:
+      Test::LongString 0.17
+    requirements:
+      ExtUtils::MakeMaker 0
+      Test::Builder 0.12
+      Test::Builder::Tester 1.04
   Test-MockRandom-1.01
     pathname: D/DA/DAGOLDEN/Test-MockRandom-1.01.tar.gz
     provides:
@@ -6799,6 +6992,17 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Test::More 0
       perl 5.008001
+  Text-SimpleTable-AutoWidth-0.09
+    pathname: C/CU/CUB/Text-SimpleTable-AutoWidth-0.09.tar.gz
+    provides:
+      Text::SimpleTable::AutoWidth 0.09
+    requirements:
+      ExtUtils::MakeMaker 0
+      List::Util 0
+      Moo 0
+      Text::SimpleTable 0
+      strict 0
+      warnings 0
   Text-Template-1.61
     pathname: M/MS/MSCHOUT/Text-Template-1.61.tar.gz
     provides:
