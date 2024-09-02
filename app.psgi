@@ -8,7 +8,7 @@ BEGIN {
 }
 use lib "$root_dir/lib";
 
-use Config::ZOMG;
+use Config::ZOMG          ();
 use File::Path            ();
 use File::Spec            ();
 use Log::Log4perl         ();
@@ -46,7 +46,7 @@ BEGIN {
     $SIG{__WARN__} = sub { $logger->warn(@_) };
 }
 
-use MetaCPAN::Server;
+use MetaCPAN::Server ();
 
 STDERR->autoflush;
 

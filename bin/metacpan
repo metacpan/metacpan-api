@@ -14,9 +14,9 @@
 
 use strict;
 use warnings;
-use FindBin;
+use FindBin ();
 use lib "$FindBin::RealBin/../lib";
-use MetaCPAN::Script::Runner;
+use MetaCPAN::Script::Runner ();
 
 MetaCPAN::Script::Runner->run;
 

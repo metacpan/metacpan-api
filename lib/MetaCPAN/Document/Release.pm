@@ -2,7 +2,6 @@ package MetaCPAN::Document::Release;
 
 use Moose;
 
-use DateTime qw();
 use ElasticSearchX::Model::Document;
 use MetaCPAN::Types           qw( Dependency );
 use MetaCPAN::Types::TypeTiny qw(
@@ -293,7 +292,7 @@ sub set_first {
           # currently, the "first" property is not computed on all releases
           # since this feature has not been around when last reindexed
         ]
-    } )->count
+        } )->count
         ? 0
         : 1;
 

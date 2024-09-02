@@ -14,8 +14,7 @@ use MetaCPAN::Script::Runner  ();
 use MetaCPAN::Types::TypeTiny qw( Bool HashRef Int Str );
 use Moose;
 use PerlIO::gzip;
-use Try::Tiny  qw( catch try );
-use Path::Tiny qw(path);
+use Try::Tiny qw( catch try );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt',
     'MetaCPAN::Script::Role::Contributor';

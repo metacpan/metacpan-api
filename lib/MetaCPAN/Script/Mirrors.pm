@@ -3,9 +3,8 @@ package MetaCPAN::Script::Mirrors;
 use strict;
 use warnings;
 
-use Cpanel::JSON::XS           ();
-use Log::Contextual            qw( :log :dlog );
-use MetaCPAN::Document::Mirror ();
+use Cpanel::JSON::XS ();
+use Log::Contextual  qw( :log :dlog );
 use Moose;
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
