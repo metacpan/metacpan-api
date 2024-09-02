@@ -5,9 +5,9 @@ use warnings;
 use Moose;
 
 use Encoding::FixLatin        ();
+use File::Spec                ();
 use IPC::Run3                 qw( run3 );
 use MetaCPAN::Types::TypeTiny qw( ArrayRef );
-use File::Spec                ();
 
 has git => (
     is       => 'ro',

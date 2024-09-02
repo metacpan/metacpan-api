@@ -2,9 +2,9 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use MetaCPAN::Util           qw( checkout_root );
 use MetaCPAN::Script::Cover  ();
 use MetaCPAN::Script::Runner ();
+use MetaCPAN::Util           qw( checkout_root );
 use Test::More;
 use URI ();
 

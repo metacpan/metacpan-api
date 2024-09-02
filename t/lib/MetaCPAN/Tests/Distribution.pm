@@ -1,6 +1,6 @@
 package MetaCPAN::Tests::Distribution;
-use Test::Routine;
 use Test::More;
+use Test::Routine;
 use version;
 use MetaCPAN::Types::TypeTiny qw( Str );
 

@@ -7,8 +7,8 @@ use MetaCPAN::Types::TypeTiny qw( AbsPath ArrayRef Bool Str );
 
 use Archive::Any ();
 use Carp         qw( croak );
-use Path::Tiny   qw( path );
 use Digest::file qw( digest_file_hex );
+use Path::Tiny   qw( path );
 
 =head1 NAME
 

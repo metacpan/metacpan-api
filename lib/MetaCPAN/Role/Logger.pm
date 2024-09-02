@@ -2,10 +2,10 @@ package MetaCPAN::Role::Logger;
 
 use v5.10;
 use Moose::Role;
-use MetaCPAN::Types::TypeTiny qw( Logger Str );
-use Log::Contextual           qw( set_logger );
+use Log::Contextual qw( set_logger );
 use Log::Log4perl ':easy';
-use Path::Tiny qw( path );
+use MetaCPAN::Types::TypeTiny qw( Logger Str );
+use Path::Tiny                qw( path );
 
 has level => (
     is            => 'ro',

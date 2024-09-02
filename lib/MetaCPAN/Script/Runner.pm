@@ -8,8 +8,8 @@ use File::Path          ();
 use Hash::Merge::Simple qw( merge );
 use Module::Pluggable search_path => ['MetaCPAN::Script'];
 use Module::Runtime ();
-use Try::Tiny       qw( catch try );
 use Term::ANSIColor qw( colored );
+use Try::Tiny       qw( catch try );
 
 our $EXIT_CODE = 0;
 

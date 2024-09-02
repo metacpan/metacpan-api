@@ -3,8 +3,8 @@ use Mojo::Base -strict;
 use lib 't/lib';
 
 use MetaCPAN::TestServer ();
+use Test::Mojo           ();
 use Test::More;
-use Test::Mojo ();
 
 my $server = MetaCPAN::TestServer->new;
 

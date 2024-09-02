@@ -1,6 +1,6 @@
 package MetaCPAN::Tests::Extra;
-use Test::Routine;
 use Test::More;
+use Test::Routine;
 
 has _extra_tests => (
     is        => 'ro',

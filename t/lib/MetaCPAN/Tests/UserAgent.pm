@@ -3,12 +3,12 @@ use warnings;
 
 package MetaCPAN::Tests::UserAgent;
 
-use Test::Routine;
 use Test::More;
+use Test::Routine;
 
-use LWP::UserAgent ();
 use HTTP::Cookies  ();
 use HTTP::Request  ();
+use LWP::UserAgent ();
 
 has cb => (
     is       => 'ro',

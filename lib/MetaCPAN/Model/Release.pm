@@ -15,8 +15,8 @@ use MetaCPAN::Types::TypeTiny qw( AbsPath ArrayRef Str );
 use MetaCPAN::Util            qw( fix_version);
 use Module::Metadata 1.000012 ();    # Improved package detection.
 use MooseX::StrictConstructor;
-use Path::Tiny    qw( path );
 use Parse::PMFile ();
+use Path::Tiny    qw( path );
 use Try::Tiny     qw( catch try );
 
 with 'MetaCPAN::Role::Logger';

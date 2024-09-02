@@ -8,8 +8,8 @@ use ElasticSearchX::Model::Document;
 
 with 'ElasticSearchX::Model::Document::EmbeddedRole';
 
-use MetaCPAN::Util;
 use MetaCPAN::Types::TypeTiny qw( Str );
+use MetaCPAN::Util;
 
 has name => (
     is       => 'ro',

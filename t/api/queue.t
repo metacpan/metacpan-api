@@ -4,8 +4,8 @@ use lib 't/lib';
 
 use MetaCPAN::DarkPAN ();
 use Path::Tiny        qw( path );
-use Test::More;
 use Test::Mojo;
+use Test::More;
 
 my $t   = Test::Mojo->new('MetaCPAN::API');
 my $app = $t->app;

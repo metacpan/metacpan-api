@@ -2,8 +2,8 @@ package MetaCPAN::Role::HasConfig;
 
 use Moose::Role;
 
-use FindBin                   ();
 use Config::ZOMG              ();
+use FindBin                   ();
 use MetaCPAN::Types::TypeTiny qw( HashRef );
 use MetaCPAN::Util            qw( checkout_root );
 

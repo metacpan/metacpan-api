@@ -3,8 +3,8 @@ package MetaCPAN::Server::Controller::OAuth2;
 use Moose;
 BEGIN { extends 'Catalyst::Controller' }
 
-use Digest::SHA      ();
 use Cpanel::JSON::XS qw( decode_json encode_json );
+use Digest::SHA      ();
 use URI              ();
 
 has login   => ( is => 'ro' );

@@ -8,9 +8,9 @@ $ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0;
 
 use HTTP::Request::Common qw( GET );
 use Log::Contextual       qw( :log :dlog );
-use Text::CSV_XS          ();
 use Net::GitHub::V4       ();
 use Ref::Util             qw( is_hashref is_ref );
+use Text::CSV_XS          ();
 use URI::Escape           qw( uri_escape );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';

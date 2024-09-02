@@ -4,8 +4,8 @@ use lib 't/lib';
 
 use Devel::Confess;
 use MetaCPAN::DarkPAN                                ();
-use MetaCPAN::TestServer                             ();
 use MetaCPAN::Tests::Controller::Search::DownloadURL ();
+use MetaCPAN::TestServer                             ();
 use Test::More;
 use Test::RequiresInternet ( 'cpan.metacpan.org' => 80 );
 
