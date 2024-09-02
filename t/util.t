@@ -11,7 +11,7 @@ use MetaCPAN::Util qw(
 );
 
 use Test::More;
-use Test::Fatal;
+use Test::Fatal qw( exception );
 
 ok( generate_sid(), 'generate_sid' );
 

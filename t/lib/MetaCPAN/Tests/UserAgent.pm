@@ -6,9 +6,9 @@ package MetaCPAN::Tests::UserAgent;
 use Test::Routine;
 use Test::More;
 
-use LWP::UserAgent;
-use HTTP::Cookies;
-use HTTP::Request;
+use LWP::UserAgent ();
+use HTTP::Cookies  ();
+use HTTP::Request  ();
 
 has cb => (
     is       => 'ro',

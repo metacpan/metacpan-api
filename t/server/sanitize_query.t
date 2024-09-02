@@ -2,8 +2,8 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use MetaCPAN::Server::Test;
-use MetaCPAN::TestHelpers qw( decode_json_ok encode_json );
+use MetaCPAN::Server::Test qw( app GET POST test_psgi );
+use MetaCPAN::TestHelpers  qw( catch decode_json_ok encode_json try );
 use Test::More skip_all => 'Scripting is disabled';
 use URI ();
 

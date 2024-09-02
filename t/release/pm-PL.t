@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use MetaCPAN::Server::Test;
+use MetaCPAN::Server::Test qw( app GET model test_psgi );
 use Test::More;
 
 my $model = model();

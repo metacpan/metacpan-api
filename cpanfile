@@ -170,3 +170,4 @@ requires 'Test::Vars', '0.015';
 
 # author requirements
 requires 'Plack::Middleware::Rewrite';
+requires 'App::perlimports';

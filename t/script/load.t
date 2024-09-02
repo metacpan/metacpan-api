@@ -4,6 +4,7 @@ use lib 't/lib';
 
 use Test::More;
 
+## no perlimports
 use MetaCPAN::Script::Author                      ();
 use MetaCPAN::Script::Backpan                     ();
 use MetaCPAN::Script::Backup                      ();
@@ -49,6 +50,7 @@ use MetaCPAN::Script::Snapshot ();
 use MetaCPAN::Script::Suggest  ();
 use MetaCPAN::Script::Tickets  ();
 use MetaCPAN::Script::Watcher  ();
+## use perlimports
 
 pass 'all loaded Ok';
 

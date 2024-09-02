@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use MetaCPAN::Server::Test;
+use MetaCPAN::Server::Test qw( model );
 use Test::More;
 
 my $model   = model();

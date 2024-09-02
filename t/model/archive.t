@@ -5,8 +5,8 @@ use lib 't/lib';
 use Digest::SHA           qw( sha1_hex );
 use MetaCPAN::TestHelpers qw( fakecpan_dir );
 use Test::More;
-use Test::Fatal;
-use Test::Deep qw(cmp_bag);
+use Test::Fatal qw( exception );
+use Test::Deep  qw( cmp_bag );
 
 my $CLASS = 'MetaCPAN::Model::Archive';
 require_ok $CLASS;
