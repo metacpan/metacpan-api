@@ -154,7 +154,7 @@ requires 'Module::Faker::Dist', '== 0.017';
 requires 'OrePAN2', '0.48';
 requires 'Parallel::ForkManager' => '2.02';
 requires 'Perl::Critic', '0.140';
-requires 'Perl::Tidy' => '== 20230309';
+requires 'Perl::Tidy' => '== 20240511';
 requires 'PPI', '1.274'; # Perl::Critic
 requires 'PPIx::QuoteLike', '0.022'; # Perl::Critic
 requires 'PPIx::Regexp', '0.085'; # Perl::Critic
