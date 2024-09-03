@@ -12,6 +12,7 @@ workflows:
 jobs:
   build-and-test:
     machine: true
+    parallelism: 4
     resource_class: large
     steps:
       - run:
@@ -54,9 +55,25 @@ jobs:
             ./src/metacpan-api/wait-for-es.sh http://localhost:9200 elasticsearch_test
           name: wait for ES
       - run:
+          command: rm metacpan-docker/src/metacpan-api/t/testrules.yml
+      - run:
+          command: |
+            pushd metacpan-docker/src/metacpan-api
+            TESTFILES=$(find t -name '0*.t' | sort)
+            cd ../..
+            docker-compose exec -T api_test env HARNESS_PERL_SWITCHES="-MDevel::Cover=+ignore,^t/|^test-data/|^etc/" prove -l $TESTFILES
+          name: run setup tests first
+      - run:
           command: |
             pushd metacpan-docker
-            docker-compose exec -T api_test env HARNESS_PERL_SWITCHES="-MDevel::Cover=+ignore,^t/|^test-data/|^etc/" prove -lr --jobs 4 t
+            docker-compose exec -T api_test env HARNESS_PERL_SWITCHES="-MDevel::Cover=+ignore,^t/|^test-data/|^etc/" prove -lr --jobs 2 t/script/cover.t t/server/controller/user/favorite.t
+          name: run important tests second
+      - run:
+          command: |
+            pushd metacpan-docker/src/metacpan-api
+            TESTFILES=$(circleci tests glob "t/**/*.t" | grep -v "t/0.*.t" | circleci tests split --split-by=timings)
+            cd ../..
+            docker-compose exec -T api_test env HARNESS_PERL_SWITCHES="-MDevel::Cover=+ignore,^t/|^test-data/|^etc/" prove -lr --jobs 4 $TESTFILES
           name: run tests with coverage
       # We are relying on environment variables from the host to be available when
       # we publish the report, so we publish from the host rather than trying
