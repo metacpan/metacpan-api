@@ -1,7 +1,7 @@
 package MetaCPAN::Tests::PSGI;
 
-use Test::Routine;
 use Test::More;
+use Test::Routine;
 
 use MetaCPAN::Server::Test qw( app test_psgi );
 

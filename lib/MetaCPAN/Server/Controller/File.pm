@@ -3,7 +3,6 @@ package MetaCPAN::Server::Controller::File;
 use strict;
 use warnings;
 
-use ElasticSearchX::Model::Util;
 use Moose;
 use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
 

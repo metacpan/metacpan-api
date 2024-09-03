@@ -80,7 +80,7 @@ sub build_release_status_map {
             (
                 $self->undo
                     or exists $self->cpan_file_map->{$author}{$archive}
-            )
+                )
             ? 'cpan'
             : 'backpan',
             $release->{_id}

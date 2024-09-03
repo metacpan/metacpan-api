@@ -6,9 +6,9 @@
 use strict;
 use warnings;
 use Perl::PrereqScanner 1.014;
-use CPAN::Meta::Requirements;
+use CPAN::Meta::Requirements ();
 use File::Find::Rule::Perl;
-use List::Util qw(sum);
+use List::Util qw( sum );
 use version 0.77;
 
 # TODO: use CPAN::Meta::Prereqs
@@ -91,7 +91,7 @@ delete $reqs->{runtime}{perl}
     if version->parse( $reqs->{runtime}{perl} )
     <= version->parse($MIN_PERL_VERSION);
 
-use Data::Dumper;
+use Data::Dumper ();
 $Data::Dumper::Sortkeys = 1;
 print Data::Dumper->Dump( [$reqs], ['requires'] );
 

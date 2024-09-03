@@ -10,8 +10,8 @@ use MetaCPAN::Util qw(
     strip_pod
 );
 
-use Test::More;
 use Test::Fatal qw( exception );
+use Test::More;
 
 ok( generate_sid(), 'generate_sid' );
 

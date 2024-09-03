@@ -5,8 +5,8 @@ use warnings;
 
 use MetaCPAN::Server::Diff ();
 use Moose;
-use Try::Tiny qw( catch try );
 use namespace::autoclean;
+use Try::Tiny qw( catch try );
 
 BEGIN { extends 'MetaCPAN::Server::Controller' }
 

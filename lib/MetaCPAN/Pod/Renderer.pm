@@ -4,9 +4,9 @@ use MetaCPAN::Moose;
 
 use MetaCPAN::Pod::XHTML;
 use MetaCPAN::Types::TypeTiny qw( Uri );
-use Pod::Markdown;
-use Pod::Simple::JustPod ();
-use Pod::Text            ();
+use Pod::Markdown             ();
+use Pod::Simple::JustPod      ();
+use Pod::Text                 ();
 
 has perldoc_url_prefix => (
     is      => 'ro',

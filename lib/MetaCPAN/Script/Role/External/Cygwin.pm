@@ -65,7 +65,7 @@ MIRROR: {
 
     log_debug {
         sprintf "Found %d cygwin-CPAN packages",
-            scalar keys %{ $ret->{dist} }
+        scalar keys %{ $ret->{dist} }
     };
 
     return $ret;

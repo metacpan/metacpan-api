@@ -31,8 +31,8 @@ do {
     };
 
     my $meta = {
-        name   => 'File-Duplicates',
-        author => 'BORISNAT',
+        name     => 'File-Duplicates',
+        author   => 'BORISNAT',
         abstract =>
             'A dist with duplicate file names in different directories',
         version  => '1.000',
@@ -48,10 +48,10 @@ do {
             'url'     => 'http://search.cpan.org/perldoc?CPAN::Meta::Spec'
         },
 
-        # Pass some packages so that Module::Faker will add them to 02packages
-        # and this dist will get 'status' => 'latest'
-        # but omit the Dupe packages since the paths are explicitly not correct
-        # and we don't want Module::Faker to generate the missing ones for us.
+       # Pass some packages so that Module::Faker will add them to 02packages
+       # and this dist will get 'status' => 'latest'
+       # but omit the Dupe packages since the paths are explicitly not correct
+       # and we don't want Module::Faker to generate the missing ones for us.
         provides => {
             map { ( $_ => $provides->{$_} ) } grep {/File/} keys %$provides
         },
@@ -62,7 +62,7 @@ do {
         cpan_author   => $meta->{author},
         append        => [
             {
-                file => 'META.json',
+                file    => 'META.json',
                 content =>
                     JSON::encode_json( { %$meta, provides => $provides } ),
             },
@@ -87,7 +87,7 @@ do {
                 content => 'short path but no_index',
             },
             {
-                file => 'lib/Dupe.pm',
+                file    => 'lib/Dupe.pm',
                 content =>
                     'shortest indexed path though metadata is probably wrong',
             },

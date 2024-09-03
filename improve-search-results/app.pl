@@ -1,9 +1,9 @@
 use Mojolicious::Lite;
 
 use Mojo::Pg;
-use List::Util qw(first);
+use List::Util qw( first );
 
-my $user = getpwuid($<); # for vagrant user on dev box
+my $user = getpwuid($<);    # for vagrant user on dev box
 
 # carton exec /opt/perl-5.22.2/bin/perl ./app.pl daemon -m production -l http://*:5000
 
@@ -12,22 +12,22 @@ helper pg => sub { state $pg = Mojo::Pg->new("postgresql:///${user}") };
 app->pg->auto_migrate(1)->migrations->from_data;
 
 helper insert_search => sub {
-  my ($c, $search, $expect) = @_;
-  return !!$c->pg->db->query(<<'  SQL', $search, $expect)->rows;
+    my ( $c, $search, $expect ) = @_;
+    return !!$c->pg->db->query( <<'  SQL', $search, $expect )->rows;
     insert into searches (search, expect) values (?, ?)
   SQL
 };
 
 helper insert_source => sub {
-  my ($c, $name, $query) = @_;
-  return !!$c->pg->db->query(<<'  SQL', $name, $query)->rows;
+    my ( $c, $name, $query ) = @_;
+    return !!$c->pg->db->query( <<'  SQL', $name, $query )->rows;
     insert into sources (name, query) values (?, ?, ?)
   SQL
 };
 
 helper get_results => sub {
-  my $c = shift;
-  return $c->pg->db->query(<<'  SQL')->expand->hash->{results};
+    my $c = shift;
+    return $c->pg->db->query(<<'  SQL')->expand->hash->{results};
     select json_object_agg(search, results) as results
     from (
       select
@@ -42,8 +42,8 @@ helper get_results => sub {
 };
 
 helper perform_all_searches => sub {
-  my ($c) = @_;
-  my $queries = $c->pg->db->query(<<'  SQL');
+    my ($c) = @_;
+    my $queries = $c->pg->db->query(<<'  SQL');
     select
       searches.id as search_id,
       sources.id as source_id,
@@ -56,54 +56,58 @@ helper perform_all_searches => sub {
     left join results on searches.id = results.search_id
       and sources.id = results.source_id
   SQL
-  my $db = $c->pg->db;
-  my $sql = 'insert into results (search_id, source_id, rank) values (?, ?, ?)';
-  $queries->hashes->each(sub{
-    my $query = shift;
-    return if $query->{rank};
-    my $rank = $c->perform_one_search(@{$query}{qw/search expect name query/});
-    $db->query($sql, @{$query}{qw/search_id source_id/}, $rank);
-  });
+    my $db = $c->pg->db;
+    my $sql
+        = 'insert into results (search_id, source_id, rank) values (?, ?, ?)';
+    $queries->hashes->each( sub {
+        my $query = shift;
+        return if $query->{rank};
+        my $rank = $c->perform_one_search(
+            @{$query}{qw/search expect name query/} );
+        $db->query( $sql, @{$query}{qw/search_id source_id/}, $rank );
+    } );
 };
 
 helper perform_one_search => sub {
-  my ($c, $search, $expect, $name, $query) = @_;
+    my ( $c, $search, $expect, $name, $query ) = @_;
 
-  my $rank =
-    $name eq 'SCO'  ? _perform_sco($c, $search, $expect)  :
-    $name eq 'MWEB' ? _perform_mweb($c, $search, $expect) :
-                      _perform_mquery($c, $search, $expect, $query);
+    my $rank
+        = $name eq 'SCO'  ? _perform_sco( $c, $search, $expect )
+        : $name eq 'MWEB' ? _perform_mweb( $c, $search, $expect )
+        :                   _perform_mquery( $c, $search, $expect, $query );
 
-  return $rank // 100;
+    return $rank // 100;
 };
 
 sub _perform_sco {
-  my ($c, $search, $expect) = @_;
-  my $url = Mojo::URL->new('http://search.cpan.org/search?mode=all&n=100');
-  $url->query([query => $search]);
-  my $tx = $c->app->ua->get($url);
-  my $res = $tx->res->dom->find('.sr')->map('all_text')->to_array;
-  my $idx = first { $res->[$_] eq $expect } @{$res->to_array};
-  return $idx < 0 ? undef : $idx + 1;
+    my ( $c, $search, $expect ) = @_;
+    my $url = Mojo::URL->new('http://search.cpan.org/search?mode=all&n=100');
+    $url->query( [ query => $search ] );
+    my $tx  = $c->app->ua->get($url);
+    my $res = $tx->res->dom->find('.sr')->map('all_text')->to_array;
+    my $idx = first { $res->[$_] eq $expect } @{ $res->to_array };
+    return $idx < 0 ? undef : $idx + 1;
 }
 
 sub _perform_mweb {
-  my ($c, $search, $expect) = @_;
-  my $url = Mojo::URL->new('https://metacpan.org/search?size=100');
-  $url->query([q => $search]);
-  my $tx = $c->app->ua->get($url);
-  my $res = $tx->res->dom->find('.module-result big strong a')->map('all_text')->to_array;
-  my $idx = first { $res->[$_] eq $expect } 0 .. $#{$res};
-  return $idx < 0 ? undef : $idx + 1;
+    my ( $c, $search, $expect ) = @_;
+    my $url = Mojo::URL->new('https://metacpan.org/search?size=100');
+    $url->query( [ q => $search ] );
+    my $tx = $c->app->ua->get($url);
+    my $res
+        = $tx->res->dom->find('.module-result big strong a')->map('all_text')
+        ->to_array;
+    my $idx = first { $res->[$_] eq $expect } 0 .. $#{$res};
+    return $idx < 0 ? undef : $idx + 1;
 }
 
-sub _perform_mquery {}
+sub _perform_mquery { }
 
 get '/' => 'index';
 
 get '/results' => sub {
-  my $c = shift;
-  $c->render(json => $c->get_results);
+    my $c = shift;
+    $c->render( json => $c->get_results );
 };
 
 app->start;

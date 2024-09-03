@@ -3,8 +3,8 @@ package MetaCPAN::Server::Controller::Login::Google;
 use strict;
 use warnings;
 
-use HTTP::Request::Common qw( GET POST );
 use Cpanel::JSON::XS      qw( decode_json );
+use HTTP::Request::Common qw( GET POST );
 use LWP::UserAgent        ();
 use Moose;
 

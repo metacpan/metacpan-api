@@ -3,11 +3,11 @@ package MetaCPAN::Script::CPANTesters;
 use Moose;
 
 use DBI                                    ();
+use ElasticSearchX::Model::Document::Types qw( ESBulk );
 use File::stat                             qw( stat );
 use IO::Uncompress::Bunzip2                qw( bunzip2 );
 use Log::Contextual                        qw( :log :dlog );
 use MetaCPAN::Types::TypeTiny              qw( Bool Path Uri );
-use ElasticSearchX::Model::Document::Types qw( ESBulk );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt::Dashes';
 

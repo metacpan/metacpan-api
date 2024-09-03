@@ -5,10 +5,10 @@ use warnings;
 
 use Log::Contextual qw( :log );
 use Moose;
-use Parse::CPAN::Packages::Fast;
-use CPAN::DistnameInfo;
-use DateTime::Format::ISO8601 ();
-use MetaCPAN::Types::TypeTiny qw( Bool Str );
+use CPAN::DistnameInfo          ();
+use DateTime::Format::ISO8601   ();
+use MetaCPAN::Types::TypeTiny   qw( Bool Str );
+use Parse::CPAN::Packages::Fast ();
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 

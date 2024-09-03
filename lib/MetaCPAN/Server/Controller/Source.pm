@@ -4,8 +4,8 @@ use strict;
 use warnings;
 
 use Moose;
-use Plack::App::Directory;
-use Plack::MIME;
+use Plack::App::Directory ();
+use Plack::MIME           ();
 
 BEGIN { extends 'MetaCPAN::Server::Controller' }
 

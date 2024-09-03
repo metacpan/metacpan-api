@@ -63,7 +63,7 @@ my $app  = MetaCPAN::Server->new->to_app();
 my $test = Plack::Test->create($app);
 
 while ( my ( $k, $v ) = each %tests ) {
-    my $res = $test->request( GET $k);
+    my $res = $test->request( GET $k );
     ok( $res, "GET $k" );
     is( $res->code, $v->{code}, "code " . $v->{code} );
     is(
@@ -144,7 +144,7 @@ while ( my ( $k, $v ) = each %tests ) {
 
 {
     my $path = '/pod/BadPod?show_errors=1';
-    my $res  = $test->request( GET $path);
+    my $res  = $test->request( GET $path );
     ok( $res, "GET $path" );
     is( $res->code, 200, 'code 200' );
     like(

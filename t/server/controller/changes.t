@@ -128,7 +128,7 @@ done_testing;
 sub get_ok {
     my ( $cb, $path, $code ) = @_;
 
-    ok( my $res = $cb->( GET $path), "GET $path" );
+    ok( my $res = $cb->( GET $path ), "GET $path" );
     is( $res->code, $code, "code $code" );
     is(
         $res->header('content-type'),

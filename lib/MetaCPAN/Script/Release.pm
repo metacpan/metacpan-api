@@ -3,19 +3,18 @@ package MetaCPAN::Script::Release;
 use strict;
 use warnings;
 
-use CPAN::DistnameInfo ();
-use File::Find::Rule   ();
-use File::stat         ();
-use List::Util         qw( uniq );
-use Log::Contextual    qw( :log :dlog );
-use MetaCPAN::Util;
+use CPAN::DistnameInfo        ();
+use File::Find::Rule          ();
+use File::stat                ();
+use List::Util                qw( uniq );
+use Log::Contextual           qw( :log :dlog );
 use MetaCPAN::Model::Release  ();
 use MetaCPAN::Script::Runner  ();
 use MetaCPAN::Types::TypeTiny qw( Bool HashRef Int Str );
+use MetaCPAN::Util;
 use Moose;
 use PerlIO::gzip;
-use Try::Tiny  qw( catch try );
-use Path::Tiny qw(path);
+use Try::Tiny qw( catch try );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt',
     'MetaCPAN::Script::Role::Contributor';

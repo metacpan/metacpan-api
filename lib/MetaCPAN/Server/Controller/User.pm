@@ -3,9 +3,9 @@ package MetaCPAN::Server::Controller::User;
 use strict;
 use warnings;
 
-use DateTime;
+use DateTime ();
 use Moose;
-use Log::Log4perl::MDC;
+use Log::Log4perl::MDC ();
 
 BEGIN { extends 'Catalyst::Controller::REST' }
 

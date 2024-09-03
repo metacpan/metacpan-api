@@ -8,9 +8,9 @@ use Carp ();
 use MetaCPAN::Model::Search ();
 
 # New models
-use MetaCPAN::API::Model::User     ();
-use MetaCPAN::API::Model::Download ();
 use MetaCPAN::API::Model::Cover    ();
+use MetaCPAN::API::Model::Download ();
+use MetaCPAN::API::Model::User     ();
 
 has app => sub { Carp::croak 'app is required' }, weak => 1;
 

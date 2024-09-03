@@ -2,11 +2,10 @@ package MetaCPAN::Role::HasConfig;
 
 use Moose::Role;
 
-use FindBin                   ();
 use Config::ZOMG              ();
+use FindBin                   ();
 use MetaCPAN::Types::TypeTiny qw( HashRef );
 use MetaCPAN::Util            qw( checkout_root );
-use Module::Runtime           qw( require_module );
 
 # Done like this so can be required by a role
 sub config {

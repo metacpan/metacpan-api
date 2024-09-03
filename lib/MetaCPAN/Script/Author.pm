@@ -6,16 +6,16 @@ use warnings;
 use Moose;
 with 'MooseX::Getopt', 'MetaCPAN::Role::Script';
 
+use Cpanel::JSON::XS           qw( decode_json );
 use DateTime                   ();
 use Email::Valid               ();
 use Encode                     ();
-use Cpanel::JSON::XS           qw( decode_json );
 use Log::Contextual            qw( :log :dlog );
 use MetaCPAN::Document::Author ();
-use URI                        ();
-use XML::XPath                 ();
 use MetaCPAN::Types::TypeTiny  qw( Str );
 use MetaCPAN::Util             qw(diff_struct);
+use URI                        ();
+use XML::XPath                 ();
 
 =head1 SYNOPSIS
 

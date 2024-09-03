@@ -5,8 +5,8 @@ use lib 't/lib';
 use Cpanel::JSON::XS qw( decode_json );
 use MetaCPAN::Server ();
 use Plack::Test      ();
+use Ref::Util        qw( is_hashref );
 use Test::More;
-use Ref::Util qw( is_hashref );
 
 my $app  = MetaCPAN::Server->new->to_app();
 my $test = Plack::Test->create($app);

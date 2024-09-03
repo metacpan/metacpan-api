@@ -2,11 +2,11 @@ use strict;
 use warnings;
 use lib 't/lib';
 
+use Cpanel::JSON::XS        ();
 use MetaCPAN::Model::Search ();
 use MetaCPAN::TestServer    ();
+use Test::Deep              qw( cmp_deeply ignore );
 use Test::More;
-use Test::Deep       qw( cmp_deeply ignore );
-use Cpanel::JSON::XS ();
 
 # Just use this to get an es object.
 my $server = MetaCPAN::TestServer->new;

@@ -5,21 +5,21 @@ use Moose;
 use Cpanel::JSON::XS                              qw( decode_json );
 use DateTime                                      ();
 use Log::Contextual                               qw( :log );
+use MetaCPAN::Script::Mapping::Contributor        ();
+use MetaCPAN::Script::Mapping::Cover              ();
 use MetaCPAN::Script::Mapping::CPAN::Author       ();
 use MetaCPAN::Script::Mapping::CPAN::Distribution ();
 use MetaCPAN::Script::Mapping::CPAN::Favorite     ();
 use MetaCPAN::Script::Mapping::CPAN::File         ();
 use MetaCPAN::Script::Mapping::CPAN::Mirror       ();
-use MetaCPAN::Script::Mapping::CPAN::Permission   ();
 use MetaCPAN::Script::Mapping::CPAN::Package      ();
+use MetaCPAN::Script::Mapping::CPAN::Permission   ();
 use MetaCPAN::Script::Mapping::CPAN::Release      ();
+use MetaCPAN::Script::Mapping::CVE                ();
 use MetaCPAN::Script::Mapping::DeployStatement    ();
 use MetaCPAN::Script::Mapping::User::Account      ();
 use MetaCPAN::Script::Mapping::User::Identity     ();
 use MetaCPAN::Script::Mapping::User::Session      ();
-use MetaCPAN::Script::Mapping::Contributor        ();
-use MetaCPAN::Script::Mapping::Cover              ();
-use MetaCPAN::Script::Mapping::CVE                ();
 use MetaCPAN::Types::TypeTiny                     qw( Bool Str );
 
 use constant {

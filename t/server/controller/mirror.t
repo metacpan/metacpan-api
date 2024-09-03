@@ -34,7 +34,7 @@ test_psgi app, sub {
     my $cb = shift;
     for my $k ( sort keys %tests ) {
         my $v = $tests{$k};
-        ok( my $res = $cb->( GET $k), "GET $k" );
+        ok( my $res = $cb->( GET $k ), "GET $k" );
         is( $res->code, $v->{code}, "code " . $v->{code} );
         is(
             $res->header('content-type'),

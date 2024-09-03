@@ -5,10 +5,10 @@ use namespace::autoclean;
 
 use Cpanel::JSON::XS          qw( decode_json );
 use Log::Contextual           qw( :log :dlog );
-use Path::Tiny                qw( path );
-use Ref::Util                 qw( is_arrayref );
 use MetaCPAN::Types::TypeTiny qw( Bool Str Uri );
 use MetaCPAN::Util            qw( numify_version );
+use Path::Tiny                qw( path );
+use Ref::Util                 qw( is_arrayref );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 

@@ -4,8 +4,8 @@ use lib 't/lib';
 
 use MetaCPAN::Model::Release ();
 use MetaCPAN::TestHelpers    qw( fakecpan_dir get_config );
+use Test::Deep               qw( cmp_bag );
 use Test::More;
-use Test::Deep qw( cmp_bag );
 
 my $config = get_config();
 

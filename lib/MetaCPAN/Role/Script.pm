@@ -2,15 +2,15 @@ package MetaCPAN::Role::Script;
 
 use Moose::Role;
 
-use ElasticSearchX::Model::Document::Types qw(:all);
-use MetaCPAN::Util                         qw( checkout_root );
+use ElasticSearchX::Model::Document::Types qw( ES );
+use File::Path                             ();
+use IO::Prompt::Tiny                       qw( prompt );
 use Log::Contextual                        qw( :log :dlog );
 use MetaCPAN::Model                        ();
 use MetaCPAN::Types::TypeTiny              qw( Bool HashRef Int Path Str );
+use MetaCPAN::Util                         qw( checkout_root );
 use Mojo::Server                           ();
 use Term::ANSIColor                        qw( colored );
-use IO::Prompt::Tiny                       qw( prompt );
-use File::Path                             ();
 
 use Carp ();
 

@@ -4,10 +4,10 @@ use Test::Routine;
 
 use version;
 
-use HTTP::Request::Common qw( GET );
-use List::Util            ();
-use Test::More;
+use HTTP::Request::Common     qw( GET );
+use List::Util                ();
 use MetaCPAN::Types::TypeTiny qw( ArrayRef HashRef Str );
+use Test::More;
 
 with('MetaCPAN::Tests::Model');
 

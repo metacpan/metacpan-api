@@ -2,11 +2,10 @@ package MetaCPAN::Script::Package;
 
 use Moose;
 
-use CPAN::DistnameInfo          ();
-use IO::Uncompress::Gunzip      ();
-use Log::Contextual             qw( :log );
-use MetaCPAN::Document::Package ();
-use MetaCPAN::Types::TypeTiny   qw( Bool );
+use CPAN::DistnameInfo        ();
+use IO::Uncompress::Gunzip    ();
+use Log::Contextual           qw( :log );
+use MetaCPAN::Types::TypeTiny qw( Bool );
 
 with 'MooseX::Getopt', 'MetaCPAN::Role::Script';
 
