@@ -119,7 +119,7 @@ sub index_github_bugs {
 
     my $json = JSON::MaybeXS->new( allow_nonref => 1 );
 
-    while ( my $release = $scroll->next ) {
+RELEASE: while ( my $release = $scroll->next ) {
         my $resources = $release->resources;
         my ( $user, $repo, $source )
             = $self->github_user_repo_from_resources($resources);
@@ -145,6 +145,22 @@ sub index_github_bugs {
                     }
                 }
 END_QUERY
+
+        if ( my $error = $data->{error} ) {
+            for my $error (@$error) {
+                my $log_message
+                    = "[$release->{distribution}] $error->{message}";
+                if ( $error->{type} eq 'NOT_FOUND' ) {
+                    delete $summary{ $release->{'distribution'} }{'bugs'}
+                        {'github'};
+                    log_info {$log_message};
+                }
+                else {
+                    log_error {$log_message};
+                }
+                next RELEASE;
+            }
+        }
 
         my $open
             = $data->{data}{repository}{openIssues}{totalCount}
