@@ -1,3 +1,4 @@
+#!/usr/bin/env perl
 # PODNAME: foo
 
 use strict;
