@@ -29,7 +29,7 @@ sub auto : Private {
 sub index : Path {
     my ( $self, $c ) = @_;
     my @login = map { "<li><a href=\"/login/" . lc($_) . "\">$_</a></li>" }
-        sort grep {s/^Login:://} $c->controllers;
+        sort map /^Login::(.*)/, $c->controllers;
     $c->res->content_type('text/html');
     $c->res->body(qq{<pre><h1>Login via</h1><ul>@login</ul></pre>});
 }
