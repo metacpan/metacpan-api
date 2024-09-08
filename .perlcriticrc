@@ -12,6 +12,7 @@ theme = core
 [-RegularExpressions::RequireExtendedFormatting]
 [-RegularExpressions::RequireLineBoundaryMatching]
 [-Subroutines::ProhibitExplicitReturnUndef]
+[-TestingAndDebugging::ProhibitNoStrict]
 [-ValuesAndExpressions::ProhibitNoisyQuotes]
 [-Variables::ProhibitPunctuationVars]
 
