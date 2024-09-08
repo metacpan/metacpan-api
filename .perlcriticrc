@@ -5,7 +5,6 @@ verbose = 11
 theme = core
 
 [-ControlStructures::ProhibitPostfixControls]
-[-Documentation::RequirePodLinksIncludeText]
 [-Documentation::RequirePodSections]
 [-InputOutput::ProhibitInteractiveTest]
 [-Modules::RequireVersionVar]
@@ -13,8 +12,8 @@ theme = core
 [-RegularExpressions::RequireExtendedFormatting]
 [-RegularExpressions::RequireLineBoundaryMatching]
 [-Subroutines::ProhibitExplicitReturnUndef]
+[-TestingAndDebugging::ProhibitNoStrict]
 [-ValuesAndExpressions::ProhibitNoisyQuotes]
-[-ValuesAndExpressions::ProhibitAccessOfPrivateData]
 [-Variables::ProhibitPunctuationVars]
 
 [CodeLayout::RequireTrailingCommas]
