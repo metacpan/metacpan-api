@@ -3,9 +3,9 @@ package MetaCPAN::Server::Test;
 use strict;
 use warnings;
 
-use HTTP::Request::Common qw( DELETE GET POST );
+use HTTP::Request::Common qw( DELETE GET POST );    ## no perlimports
 use MetaCPAN::Server      ();
-use Plack::Test           qw( test_psgi );
+use Plack::Test           qw( test_psgi );          ## no perlimports
 use Test::More;
 
 use base 'Exporter';

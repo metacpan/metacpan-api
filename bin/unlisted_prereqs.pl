@@ -5,10 +5,10 @@
 
 use strict;
 use warnings;
-use Perl::PrereqScanner 1.014;
-use CPAN::Meta::Requirements ();
-use File::Find::Rule::Perl;
-use List::Util qw( sum );
+use Perl::PrereqScanner 1.014 ();
+use CPAN::Meta::Requirements  ();
+use File::Find::Rule::Perl    ();
+use List::Util                qw( sum );
 use version 0.77;
 
 # TODO: use CPAN::Meta::Prereqs
