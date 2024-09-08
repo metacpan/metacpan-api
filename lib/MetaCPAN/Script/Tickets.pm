@@ -146,7 +146,7 @@ RELEASE: while ( my $release = $scroll->next ) {
                 }
 END_QUERY
 
-        if ( my $error = $data->{error} ) {
+        if ( my $error = $data->{errors} ) {
             for my $error (@$error) {
                 my $log_message
                     = "[$release->{distribution}] $error->{message}";
