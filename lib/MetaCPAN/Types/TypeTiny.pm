@@ -109,6 +109,9 @@ declare Logger, as InstanceOf ['Log::Log4perl::Logger'];
 coerce Logger, from ArrayRef, via {
     return MetaCPAN::Role::Logger::_build_logger($_);
 };
+coerce Logger, from HashRef, via {
+    return MetaCPAN::Role::Logger::_build_logger( [$_] );
+};
 
 declare HashRefCPANMeta, as HashRef;
 coerce HashRefCPANMeta, from InstanceOf ['CPAN::Meta'], via {
