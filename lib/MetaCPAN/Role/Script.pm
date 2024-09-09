@@ -80,10 +80,11 @@ has es => (
 );
 
 has model => (
-    is      => 'ro',
-    lazy    => 1,
-    builder => '_build_model',
-    traits  => ['NoGetopt'],
+    is       => 'ro',
+    init_arg => undef,
+    lazy     => 1,
+    builder  => '_build_model',
+    traits   => ['NoGetopt'],
 );
 
 has index => (
