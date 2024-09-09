@@ -123,7 +123,9 @@ has aliases_info => (
 has port => (
     isa           => Int,
     is            => 'ro',
-    required      => 1,
+    required      => 0,
+    lazy          => 1,
+    default       => sub {5000},
     documentation => 'Port for the proxy, defaults to 5000',
 );
 
