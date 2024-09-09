@@ -217,7 +217,7 @@ sub put_mappings {
     ok( MetaCPAN::Script::Mapping->new_with_options( $self->_config )->run,
         'put mapping' );
     $self->check_mappings;
-    $self->wait_for_es();
+    $self->wait_for_es;
 }
 
 sub index_releases {

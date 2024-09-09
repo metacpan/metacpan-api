@@ -538,7 +538,6 @@ sub _build_mapping {
 sub _build_aliases {
     my $self = $_[0];
     return { 'cpan' => $self->cpan_index };
-
 }
 
 sub deploy_mapping {
