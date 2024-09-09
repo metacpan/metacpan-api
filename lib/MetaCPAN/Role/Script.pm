@@ -90,6 +90,7 @@ has index => (
     reader        => '_index',
     is            => 'ro',
     isa           => Str,
+    lazy          => 1,
     default       => 'cpan',
     documentation =>
         'Index to use, defaults to "cpan" (when used: also export ES_SCRIPT_INDEX)',
@@ -99,6 +100,7 @@ has cluster_info => (
     isa     => HashRef,
     traits  => ['Hash'],
     is      => 'rw',
+    lazy    => 1,
     default => sub { {} },
 );
 
@@ -106,6 +108,7 @@ has indices_info => (
     isa     => HashRef,
     traits  => ['Hash'],
     is      => 'rw',
+    lazy    => 1,
     default => sub { {} },
 );
 
