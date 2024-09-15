@@ -4,10 +4,8 @@ use lib 't/lib';
 
 use Test::More;
 
-use MetaCPAN::Script::Mapping ();
-use MetaCPAN::Script::Runner  ();
-
-my $config = MetaCPAN::Script::Runner::build_config;
+my $config = MetaCPAN::Server::Config::config();
+$config->{es} = $config->{elasticsearch_servers};
 
 subtest 'create, delete index' => sub {
     subtest 'create index' => sub {
