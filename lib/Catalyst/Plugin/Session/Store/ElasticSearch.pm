@@ -9,11 +9,11 @@ use MooseX::Types::ElasticSearch qw( ES );
 use MetaCPAN::Server::Config ();
 
 has _session_es => (
-    required => 1,
-    is       => 'ro',
-    coerce   => 1,
-    isa      => ES,
-    default  =>
+    is      => 'ro',
+    lazy    => 1,
+    coerce  => 1,
+    isa     => ES,
+    default =>
         sub { MetaCPAN::Server::Config::config()->{elasticsearch_servers} },
 );
 has _session_es_index => (
