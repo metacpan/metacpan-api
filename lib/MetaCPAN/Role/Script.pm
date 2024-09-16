@@ -189,11 +189,7 @@ sub handle_error {
 sub print_error {
     my ( $self, $error ) = @_;
 
-    # Always log.
     log_error {$error};
-
-    # Display Error in red
-    print colored( ['bold red'], "*** ERROR ***: $error" ), "\n";
 }
 
 sub index {
@@ -413,7 +409,7 @@ sub are_you_sure {
         }
     }
     else {
-        print colored( ['bold yellow'], "*** Warning ***: $msg" ) . "\n";
+        log_info {"*** Warning ***: $msg"};
         $iconfirmed = 1;
     }
 

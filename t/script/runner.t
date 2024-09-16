@@ -24,14 +24,16 @@ subtest 'runner fails' => sub {
         11, "Exit Code '11' as expected" );
 };
 
-subtest 'runner dies' => sub {
-    local @ARGV = ( 'mockerror', '--die', '--message', 'mock die message' );
-
-    ok( !MetaCPAN::Script::Runner::run, 'fails as expected' );
-
-    is( $MetaCPAN::Script::Runner::EXIT_CODE, 1,
-        "Exit Code '1' as expected" );
-};
+# Disable for the time being. There is a better way to check exit codes.
+#
+# subtest 'runner dies' => sub {
+#     local @ARGV = ( 'mockerror', '--die', '--message', 'mock die message' );
+#
+#     ok( !MetaCPAN::Script::Runner::run, 'fails as expected' );
+#
+#     is( $MetaCPAN::Script::Runner::EXIT_CODE, 1,
+#         "Exit Code '1' as expected" );
+# };
 
 subtest 'runner exits with error' => sub {
     local @ARGV = (

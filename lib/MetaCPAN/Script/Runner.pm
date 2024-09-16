@@ -60,9 +60,11 @@ sub run {
         }
 
         # Display Exception Message in red
-        print colored( ['bold red'],
-            "*** EXCEPTION [ $EXIT_CODE ] ***: " . $ex->{'message'} ),
-            "\n";
+        unless ( $ENV{HARNESS_ACTIVE} ) {
+            print colored( ['bold red'],
+                "*** exception [ $EXIT_CODE ] ***: " . $ex->{'message'} ),
+                "\n";
+        }
     };
 
     unless ( defined $ex ) {

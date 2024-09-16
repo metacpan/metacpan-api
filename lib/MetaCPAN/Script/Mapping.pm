@@ -487,7 +487,7 @@ sub show_info {
         'indices_info' => \%{ $self->indices_info },
         'aliases_info' => \%{ $self->aliases_info }
     };
-    print JSON->new->utf8->pretty->encode($info_rs);
+    log_info { JSON->new->utf8->pretty->encode($info_rs) };
 }
 
 sub _build_mapping {
