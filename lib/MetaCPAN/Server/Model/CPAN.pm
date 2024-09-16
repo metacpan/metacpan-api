@@ -7,11 +7,15 @@ use MetaCPAN::Server::Config ();
 
 extends 'Catalyst::Model';
 
-has esx_model => (
+has _esx_model => (
     is      => 'ro',
     lazy    => 1,
-    builder => '_build_esx_model',
     handles => ['es'],
+    default => sub {
+        MetaCPAN::Model->new(
+            es => MetaCPAN::Server::Config::config()->{elasticsearch_servers}
+        );
+    },
 );
 
 has index => (
@@ -19,25 +23,14 @@ has index => (
     default => 'cpan',
 );
 
-has servers => (
-    is      => 'ro',
-    default => sub {
-        return MetaCPAN::Server::Config::config()->{elasticsearch_servers};
-    },
-);
-
-sub _build_esx_model {
-    MetaCPAN::Model->new( es => shift->servers );
-}
-
 sub type {
     my $self = shift;
-    return $self->esx_model->index( $self->index )->type(shift);
+    return $self->_esx_model->index( $self->index )->type(shift);
 }
 
 sub BUILD {
     my ( $self, $args ) = @_;
-    my $index = $self->esx_model->index( $self->index );
+    my $index = $self->_esx_model->index( $self->index );
     my $class = ref $self;
     while ( my ( $k, $v ) = each %{ $index->types } ) {
         no strict 'refs';
