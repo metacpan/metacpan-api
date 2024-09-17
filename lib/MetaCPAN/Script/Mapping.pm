@@ -254,8 +254,6 @@ sub delete_all {
         || $runtime_environment eq 'testing';
 
     if ($is_development) {
-        $self->are_you_sure("ALL Indices will be deleted !!!");
-
         foreach my $name ( keys %{ $self->indices_info } ) {
             $self->_delete_index($name);
         }
@@ -489,7 +487,7 @@ sub show_info {
         'indices_info' => \%{ $self->indices_info },
         'aliases_info' => \%{ $self->aliases_info }
     };
-    print JSON->new->utf8->pretty->encode($info_rs);
+    log_info { JSON->new->utf8->pretty->encode($info_rs) };
 }
 
 sub _build_mapping {
@@ -538,7 +536,6 @@ sub _build_mapping {
 sub _build_aliases {
     my $self = $_[0];
     return { 'cpan' => $self->cpan_index };
-
 }
 
 sub deploy_mapping {

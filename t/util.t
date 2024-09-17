@@ -47,8 +47,7 @@ ok( generate_sid(), 'generate_sid' );
         is exception {
             is( version($before), $versions{$before},
                 "$before => $versions{$before}" )
-        }, undef;
-        "$before => $versions{$before} does not die";
+        }, undef, "$before => $versions{$before} does not die";
     }
 }
 

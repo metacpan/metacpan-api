@@ -2,25 +2,24 @@ package MetaCPAN::TestServer;
 
 use MetaCPAN::Moose;
 
-use MetaCPAN::Script::Author          ();
-use MetaCPAN::Script::Cover           ();
-use MetaCPAN::Script::CPANTestersAPI  ();
-use MetaCPAN::Script::Favorite        ();
-use MetaCPAN::Script::First           ();
-use MetaCPAN::Script::Latest          ();
-use MetaCPAN::Script::Mapping         ();
-use MetaCPAN::Script::Mapping::Cover  ();
-use MetaCPAN::Script::Mirrors         ();
-use MetaCPAN::Script::Package         ();
-use MetaCPAN::Script::Permission      ();
-use MetaCPAN::Script::Release         ();
-use MetaCPAN::Server                  ();
-use MetaCPAN::TestHelpers             qw( fakecpan_dir );
-use MetaCPAN::Types::TypeTiny         qw( HashRef Path Str );
-use Search::Elasticsearch             ();
-use Search::Elasticsearch::TestServer ();
+use MetaCPAN::Script::Author         ();
+use MetaCPAN::Script::Cover          ();
+use MetaCPAN::Script::CPANTestersAPI ();
+use MetaCPAN::Script::Favorite       ();
+use MetaCPAN::Script::First          ();
+use MetaCPAN::Script::Latest         ();
+use MetaCPAN::Script::Mapping        ();
+use MetaCPAN::Script::Mapping::Cover ();
+use MetaCPAN::Script::Mirrors        ();
+use MetaCPAN::Script::Package        ();
+use MetaCPAN::Script::Permission     ();
+use MetaCPAN::Script::Release        ();
+use MetaCPAN::Server                 ();
+use MetaCPAN::Server::Config         ();
+use MetaCPAN::TestHelpers            qw( fakecpan_dir );
+use MetaCPAN::Types::TypeTiny        qw( HashRef Path );
+use Search::Elasticsearch            ();
 use Test::More;
-use Try::Tiny qw( catch try );
 
 has es_client => (
     is      => 'ro',
@@ -29,25 +28,11 @@ has es_client => (
     builder => '_build_es_client',
 );
 
-has es_server => (
-    is      => 'ro',
-    isa     => 'Search::Elasticsearch::TestServer',
-    lazy    => 1,
-    builder => '_build_es_server',
-);
-
 has _config => (
     is      => 'ro',
     isa     => HashRef,
     lazy    => 1,
     builder => '_build_config',
-);
-
-has _es_home => (
-    is      => 'ro',
-    isa     => Str,
-    lazy    => 1,
-    builder => '_build_es_home',
 );
 
 has _cpan_dir => (
@@ -62,8 +47,6 @@ sub setup {
     my $self = shift;
 
     $self->es_client;
-
-    # Deploy project mappings
     $self->put_mappings;
 }
 
@@ -78,70 +61,11 @@ sub _build_config {
     return $config;
 }
 
-sub _build_es_home {
-    my $self = shift;
-
-    my $es_home = $ENV{ES_TEST};
-
-    if ( !$es_home ) {
-        my $es_home = $ENV{ES_HOME} or die <<'USAGE';
-Please set ${ES_TEST} to a running instance of Elasticsearch, eg
-'localhost:9200' or set $ENV{ES_HOME} to the directory containing
-Elasticsearch
-USAGE
-    }
-
-    return $es_home;
-}
-
-=head2 _build_es_server
-
-This starts an Elastisearch server on the fly.  It should only be called if the
-ES env var contains a path to Elasticsearch.  If the variable contains a port
-number then we'll assume the server has already been started on this port.
-
-=cut
-
-sub _build_es_server {
-    my $self = shift;
-
-    my $server = Search::Elasticsearch::TestServer->new(
-        conf      => [ 'cluster.name' => 'metacpan-test' ],
-        es_home   => $self->_es_home,
-        es_port   => 9700,
-        http_port => 9900,
-        instances => 1,
-    );
-
-    diag 'Connecting to Elasticsearch on ' . $self->_es_home;
-
-    try {
-        $ENV{ES_TEST} = $server->start->[0];
-    }
-    catch {
-        diag(<<"EOF");
-Failed to connect to the Elasticsearch test instance on ${\$self->_es_home}.
-Did you start one up? See https://github.com/metacpan/metacpan-api/wiki/Installation
-for more information.
-Error: $_
-EOF
-        BAIL_OUT('Test environment not set up properly');
-    };
-
-    diag( 'Connected to the Elasticsearch test instance on '
-            . $self->_es_home );
-}
-
 sub _build_es_client {
     my $self = shift;
 
-    # Don't try to start a test server if we've been passed the port number of
-    # a running instance.
-
-    $self->es_server unless $self->_es_home =~ m{:};
-
     my $es = Search::Elasticsearch->new(
-        nodes => $self->_es_home,
+        nodes => MetaCPAN::Server::Config::config()->{elasticsearch_servers},
         ( $ENV{ES_TRACE} ? ( trace_to => [ 'File', 'es.log' ] ) : () )
     );
 
@@ -154,8 +78,6 @@ sub _build_es_client {
 sub wait_for_es {
     my $self = shift;
 
-    sleep $_[0] if $_[0];
-
     $self->es_client->cluster->health(
         wait_for_status => 'yellow',
         timeout         => '30s'
@@ -164,15 +86,15 @@ sub wait_for_es {
 }
 
 sub check_mappings {
-    my $self           = $_[0];
-    my %hshtestindices = (
+    my $self    = $_[0];
+    my %indices = (
         'cover'       => 'yellow',
         'cpan_v1_01'  => 'yellow',
         'contributor' => 'yellow',
         'cve'         => 'yellow',
         'user'        => 'yellow'
     );
-    my %hshtestaliases = ( 'cpan' => 'cpan_v1_01' );
+    my %aliases = ( 'cpan' => 'cpan_v1_01' );
 
     local @ARGV = qw(mapping --show_cluster_info);
 
@@ -189,25 +111,24 @@ sub check_mappings {
     ) );
 
     subtest 'only configured indices' => sub {
-        ok( defined $hshtestindices{$_}, "indice '$_' is configured" )
+        ok( defined $indices{$_}, "indice '$_' is configured" )
             foreach ( keys %{ $mapping->indices_info } );
     };
     subtest 'verify index health' => sub {
-        foreach ( keys %hshtestindices ) {
+        foreach ( keys %indices ) {
             ok( defined $mapping->indices_info->{$_},
-                "indice '$_' was created" );
+                "index '$_' was created" );
             is( $mapping->indices_info->{$_}->{'health'},
-                $hshtestindices{$_},
-                "indice '$_' correct state '$hshtestindices{$_}'" );
+                $indices{$_}, "index '$_' correct state '$indices{$_}'" );
         }
     };
     subtest 'verify aliases' => sub {
-        foreach ( keys %hshtestaliases ) {
+        foreach ( keys %aliases ) {
             ok( defined $mapping->aliases_info->{$_},
                 "alias '$_' was created" );
             is( $mapping->aliases_info->{$_}->{'index'},
-                $hshtestaliases{$_},
-                "alias '$_' correctly assigned to '$hshtestaliases{$_}'" );
+                $aliases{$_},
+                "alias '$_' correctly assigned to '$aliases{$_}'" );
         }
     };
 }
@@ -215,11 +136,11 @@ sub check_mappings {
 sub put_mappings {
     my $self = shift;
 
-    local @ARGV = qw(mapping --delete);
+    local @ARGV = qw(mapping --delete --all);
     ok( MetaCPAN::Script::Mapping->new_with_options( $self->_config )->run,
         'put mapping' );
     $self->check_mappings;
-    $self->wait_for_es();
+    $self->wait_for_es;
 }
 
 sub index_releases {
@@ -400,7 +321,7 @@ sub test_field_mismatch {
          "ignore_above" : 2048,
          "type" : "string"
       }
-   }
+    }
 });
         my $sfieldchangejson = q({
    "properties" : {

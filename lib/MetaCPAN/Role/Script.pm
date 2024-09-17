@@ -2,6 +2,7 @@ package MetaCPAN::Role::Script;
 
 use Moose::Role;
 
+use Carp                                   ();
 use ElasticSearchX::Model::Document::Types qw( ES );
 use File::Path                             ();
 use IO::Prompt::Tiny                       qw( prompt );
@@ -11,8 +12,6 @@ use MetaCPAN::Types::TypeTiny              qw( Bool HashRef Int Path Str );
 use MetaCPAN::Util                         qw( checkout_root );
 use Mojo::Server                           ();
 use Term::ANSIColor                        qw( colored );
-
-use Carp ();
 
 with( 'MetaCPAN::Role::HasConfig', 'MetaCPAN::Role::Fastly',
     'MetaCPAN::Role::Logger' );
@@ -74,21 +73,24 @@ has es => (
     is            => 'ro',
     isa           => ES,
     required      => 1,
+    init_arg      => 'elasticsearch_servers',
     coerce        => 1,
     documentation => 'Elasticsearch http connection string',
 );
 
 has model => (
-    is      => 'ro',
-    lazy    => 1,
-    builder => '_build_model',
-    traits  => ['NoGetopt'],
+    is       => 'ro',
+    init_arg => undef,
+    lazy     => 1,
+    builder  => '_build_model',
+    traits   => ['NoGetopt'],
 );
 
 has index => (
     reader        => '_index',
     is            => 'ro',
     isa           => Str,
+    lazy          => 1,
     default       => 'cpan',
     documentation =>
         'Index to use, defaults to "cpan" (when used: also export ES_SCRIPT_INDEX)',
@@ -98,6 +100,7 @@ has cluster_info => (
     isa     => HashRef,
     traits  => ['Hash'],
     is      => 'rw',
+    lazy    => 1,
     default => sub { {} },
 );
 
@@ -105,6 +108,7 @@ has indices_info => (
     isa     => HashRef,
     traits  => ['Hash'],
     is      => 'rw',
+    lazy    => 1,
     default => sub { {} },
 );
 
@@ -118,7 +122,9 @@ has aliases_info => (
 has port => (
     isa           => Int,
     is            => 'ro',
-    required      => 1,
+    required      => 0,
+    lazy          => 1,
+    default       => sub {5000},
     documentation => 'Port for the proxy, defaults to 5000',
 );
 
@@ -156,11 +162,11 @@ sub BUILDARGS {
     my ( $self, @args ) = @_;
     my %args = @args == 1 ? %{ $args[0] } : @args;
 
-    if ( exists $args{'index'} ) {
+    if ( exists $args{index} ) {
         die
             "when setting --index, please export ES_SCRIPT_INDEX to the same value\n"
-            unless $ENV{'ES_SCRIPT_INDEX'}
-            and $args{'index'} eq $ENV{'ES_SCRIPT_INDEX'};
+            unless $ENV{ES_SCRIPT_INDEX}
+            and $args{index} eq $ENV{ES_SCRIPT_INDEX};
     }
 
     return \%args;
@@ -183,11 +189,7 @@ sub handle_error {
 sub print_error {
     my ( $self, $error ) = @_;
 
-    # Always log.
     log_error {$error};
-
-    # Display Error in red
-    print colored( ['bold red'], "*** ERROR ***: $error" ), "\n";
 }
 
 sub index {
@@ -265,10 +267,7 @@ sub remote {
 sub run { }
 before run => sub {
     my $self = shift;
-
     $self->set_logger_once;
-
-    #Dlog_debug {"Connected to $_"} $self->remote;
 };
 
 sub _get_indices_info {
@@ -410,7 +409,7 @@ sub are_you_sure {
         }
     }
     else {
-        print colored( ['bold yellow'], "*** Warning ***: $msg" ) . "\n";
+        log_info {"*** Warning ***: $msg"};
         $iconfirmed = 1;
     }
 

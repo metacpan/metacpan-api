@@ -1,3 +1,5 @@
+package MetaCPAN::TestHelpers;
+
 use strict;
 use warnings;
 
@@ -7,8 +9,7 @@ package    # no_index
 use Cpanel::JSON::XS         qw( decode_json encode_json );
 use File::Copy               qw( copy );
 use File::pushd              qw( pushd );
-use FindBin                  ();
-use MetaCPAN::Script::Runner ();
+use MetaCPAN::Server::Config ();
 use MetaCPAN::Util           qw( checkout_root );
 use Path::Tiny               qw( path );
 use Test::More;
@@ -98,13 +99,7 @@ sub test_release {
 }
 
 sub get_config {
-    my $config = do {
-
-        # build_config expects test to be t/*.t
-        local $FindBin::RealBin = path( checkout_root(), 't' );
-        MetaCPAN::Script::Runner->build_config;
-    };
-    return $config;
+    return MetaCPAN::Server::Config::config();
 }
 
 sub tmp_dir {
