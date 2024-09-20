@@ -1,0 +1,37 @@
+cpan: var/t/tmp/fakecpan
+die_on_error: 1
+level: warn
+port: 5000
+source_base: var/t/tmp/source
+
+elasticsearch_servers: http://elasticsearch_test:9200
+
+logger:
+  class: Log::Log4perl::Appender::Screen
+  name: testing
+
+model:
+  CPAN:
+    servers: __ENV(ES)__
+  User:
+    servers: __ENV(ES)__
+
+plugin:
+  Session:
+    servers: __ENV(ES)__
+
+controller:
+  User::Turing:
+    captcha_class: Captcha::Mock
+    private_key: testing
+
+github_key: foo
+github_secret: bar
+
+secret: weak
+
+smtp:
+  host: smtp.fastmail.com
+  port: 465
+  username: foo@metacpan.org
+  password: seekrit
