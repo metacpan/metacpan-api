@@ -3378,13 +3378,13 @@ DISTRIBUTIONS
       Moose::Role 0
       MooseX::Fastly::Role 0.01
       Net::Fastly 1.05
-  Minion-10.30
-    pathname: S/SR/SRI/Minion-10.30.tar.gz
+  Minion-10.31
+    pathname: S/SR/SRI/Minion-10.31.tar.gz
     provides:
       LinkCheck undef
       LinkCheck::Controller::Links undef
       LinkCheck::Task::CheckLinks undef
-      Minion 10.30
+      Minion 10.31
       Minion::Backend undef
       Minion::Backend::Pg undef
       Minion::Command::minion undef
@@ -4621,23 +4621,23 @@ DISTRIBUTIONS
       Mozilla::CA 20240730
     requirements:
       ExtUtils::MakeMaker 0
-  Net-DNS-1.46
-    pathname: N/NL/NLNETLABS/Net-DNS-1.46.tar.gz
+  Net-DNS-1.47
+    pathname: N/NL/NLNETLABS/Net-DNS-1.47.tar.gz
     provides:
-      Net::DNS 1.46
-      Net::DNS::Domain 1913
-      Net::DNS::DomainName 1898
-      Net::DNS::DomainName1035 1898
-      Net::DNS::DomainName2535 1898
+      Net::DNS 1.47
+      Net::DNS::Domain 1990
+      Net::DNS::DomainName 1990
+      Net::DNS::DomainName1035 1990
+      Net::DNS::DomainName2535 1990
       Net::DNS::Header 1982
-      Net::DNS::Mailbox 1910
-      Net::DNS::Mailbox1035 1910
-      Net::DNS::Mailbox2535 1910
-      Net::DNS::Nameserver 1963
+      Net::DNS::Mailbox 1990
+      Net::DNS::Mailbox1035 1990
+      Net::DNS::Mailbox2535 1990
+      Net::DNS::Nameserver 1990
       Net::DNS::Packet 1982
       Net::DNS::Parameters 1987
-      Net::DNS::Question 1895
-      Net::DNS::RR 1965
+      Net::DNS::Question 1990
+      Net::DNS::RR 1990
       Net::DNS::RR::A 1972
       Net::DNS::RR::AAAA 1896
       Net::DNS::RR::AFSDB 1972
@@ -4699,15 +4699,15 @@ DISTRIBUTIONS
       Net::DNS::RR::PTR 1972
       Net::DNS::RR::PX 1945
       Net::DNS::RR::RP 1972
-      Net::DNS::RR::RRSIG 1987
+      Net::DNS::RR::RRSIG 1990
       Net::DNS::RR::RT 1972
-      Net::DNS::RR::SIG 1972
+      Net::DNS::RR::SIG 1990
       Net::DNS::RR::SMIMEA 1896
       Net::DNS::RR::SOA 1972
       Net::DNS::RR::SPF 1896
       Net::DNS::RR::SRV 1945
       Net::DNS::RR::SSHFP 1896
-      Net::DNS::RR::SVCB 1970
+      Net::DNS::RR::SVCB 1990
       Net::DNS::RR::TKEY 1908
       Net::DNS::RR::TLSA 1896
       Net::DNS::RR::TSIG 1980
@@ -4724,11 +4724,11 @@ DISTRIBUTIONS
       Net::DNS::Resolver::cygwin 1981
       Net::DNS::Resolver::os2 1981
       Net::DNS::Resolver::os390 1981
-      Net::DNS::Text 1894
-      Net::DNS::Update 1895
-      Net::DNS::ZoneFile 1957
-      Net::DNS::ZoneFile::Generator 1957
-      Net::DNS::ZoneFile::Text 1957
+      Net::DNS::Text 1990
+      Net::DNS::Update 1990
+      Net::DNS::ZoneFile 1990
+      Net::DNS::ZoneFile::Generator 1990
+      Net::DNS::ZoneFile::Text 1990
     requirements:
       Carp 1.1
       Config 0
@@ -6896,15 +6896,18 @@ DISTRIBUTIONS
       Test::SharedFork 0.29
       Time::HiRes 0
       perl 5.008001
-  Test-Vars-0.015
-    pathname: G/GF/GFUJI/Test-Vars-0.015.tar.gz
+  Test-Vars-0.017
+    pathname: J/JK/JKEENAN/Test-Vars-0.017.tar.gz
     provides:
-      Test::Vars 0.015
+      Test::Vars 0.017
     requirements:
       B 0
-      ExtUtils::MakeMaker 6.59
+      ExtUtils::MakeMaker 6.17
+      ExtUtils::Manifest 0
+      IO::Pipe 0
       List::Util 1.33
-      Module::Build::Tiny 0.035
+      Storable 0
+      Symbol 0
       parent 0
       perl 5.010000
   Test-Warn-0.37
@@ -7649,11 +7652,11 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       perl 5.008001
-  YAML-LibYAML-v0.901.0
-    pathname: T/TI/TINITA/YAML-LibYAML-v0.901.0.tar.gz
+  YAML-LibYAML-v0.902.0
+    pathname: T/TI/TINITA/YAML-LibYAML-v0.902.0.tar.gz
     provides:
-      YAML::LibYAML v0.901.0
-      YAML::XS v0.901.0
+      YAML::LibYAML v0.902.0
+      YAML::XS v0.902.0
     requirements:
       B::Deparse 0
       Exporter 0
