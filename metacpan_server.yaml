@@ -1,0 +1,34 @@
+git: /usr/bin/git
+
+level: info
+elasticsearch_servers: http://localhost:9200
+minion_dsn: postgresql:///minion_queue
+port: 5000
+
+logger:
+  class: Log::Log4perl::Appender::File
+  filename: ../var/log/metacpan.log
+  syswrite: 1
+
+controller:
+  User::Turing:
+    private_key: 59125ffc09413eed3f2a2c07a37c7a44b95633e2
+
+smtp:
+  host: smtp.fastmail.com
+  port: 465
+  username: foo@metacpan.org
+  password: seekrit
+
+oauth:
+  github:
+    key: seekrit
+    secret: seekrit
+  google:
+    key: seekrit
+    secret: seekrit
+  twitter:
+    key: seekrit
+    secret: seekrit
+
+front_end_url: http://0.0.0.0:5001
