@@ -21,7 +21,6 @@ jobs:
           command: |
             git clone https://github.com/metacpan/metacpan-docker.git
             cd metacpan-docker
-            git switch oalders/cloud-config
           name: metacpan-docker checkout
       - checkout:
           path: metacpan-docker/src/metacpan-api
