@@ -63,20 +63,20 @@ sub _update_slice {
     my ( $self, $range ) = @_;
 
     my $files = $self->es->scroll_helper(
-        index       => $self->index->name,
-        type        => 'file',
-        search_type => 'scan',
-        scroll      => '5m',
-        fields      => [qw< id documentation >],
-        size        => 500,
-        body        => {
+        index  => $self->index->name,
+        type   => 'file',
+        scroll => '5m',
+        fields => [qw< id documentation >],
+        size   => 500,
+        body   => {
             query => {
                 bool => {
                     must => [
                         { exists => { field => "documentation" } }, $range
                     ],
-                }
-            }
+                },
+            },
+            sort => '_doc',
         },
     );
 

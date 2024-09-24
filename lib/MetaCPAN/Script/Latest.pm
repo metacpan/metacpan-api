@@ -265,14 +265,23 @@ sub reindex {
     $release->put unless ( $self->dry_run );
 
     # Get all the files for the release.
-    my $scroll = $self->index->type("file")->search_type('scan')->filter( {
-        bool => {
-            must => [
-                { term => { 'release' => $source->{release} } },
-                { term => { 'author'  => $source->{author} } }
-            ]
-        }
-    } )->size(100)->source( [ 'status', 'file' ] )->raw->scroll;
+    my $scroll = $self->es->scroll_helper(
+        index => $self->index->name,
+        type  => 'file',
+        size  => 100,
+        body  => {
+            query => {
+                bool => {
+                    must => [
+                        { term => { 'release' => $source->{release} } },
+                        { term => { 'author'  => $source->{author} } },
+                    ],
+                },
+            },
+            _source => [ 'status', 'file' ],
+            sort    => '_doc',
+        },
+    );
 
     while ( my $row = $scroll->next ) {
         my $source = $row->{_source};

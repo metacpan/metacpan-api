@@ -85,10 +85,12 @@ sub index_reports {
     bunzip2 "$db.bz2" => "$db", AutoClose => 1 if -e "$db.bz2";
 
     my $scroll = $es->scroll_helper(
-        index       => $self->index->name,
-        search_type => 'scan',
-        size        => '500',
-        type        => 'release',
+        index => $self->index->name,
+        size  => '500',
+        type  => 'release',
+        body  => {
+            sort => '_doc',
+        },
     );
 
     my %releases;

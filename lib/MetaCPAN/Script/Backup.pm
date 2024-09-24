@@ -75,10 +75,12 @@ sub run {
     my $scroll = $es->scroll_helper(
         index => $self->index->name,
         $self->type ? ( type => $self->type ) : (),
-        size        => $self->size,
-        search_type => 'scan',
-        fields      => [qw(_parent _source)],
-        scroll      => '1m',
+        size   => $self->size,
+        fields => [qw(_parent _source)],
+        scroll => '1m',
+        body   => {
+            sort => '_doc',
+        },
     );
 
     log_info { 'Backing up ', $scroll->total, ' documents' };
