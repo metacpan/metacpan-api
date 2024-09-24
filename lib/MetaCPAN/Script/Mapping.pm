@@ -411,17 +411,17 @@ sub _copy_slice {
     my ( $self, $query, $index, $type ) = @_;
 
     my $scroll = $self->es->scroll_helper(
-        search_type => 'scan',
-        size        => 250,
-        scroll      => '10m',
-        index       => $self->index->name,
-        type        => $type,
-        body        => {
+        size   => 250,
+        scroll => '10m',
+        index  => $self->index->name,
+        type   => $type,
+        body   => {
             query => {
                 filtered => {
                     query => $query
                 }
-            }
+            },
+            sort => '_doc',
         },
     );
 
@@ -453,12 +453,14 @@ sub empty_type {
     );
 
     my $scroll = $self->es->scroll_helper(
-        search_type => 'scan',
-        size        => 250,
-        scroll      => '10m',
-        index       => $self->index->name,
-        type        => $type,
-        body        => { query => { match_all => {} } },
+        size   => 250,
+        scroll => '10m',
+        index  => $self->index->name,
+        type   => $type,
+        body   => {
+            query => { match_all => {} },
+            sort  => '_doc',
+        },
     );
 
     my @ids;

@@ -109,8 +109,9 @@ sub backpan_changes {
                             filter => { term => { status => 'backpan' } }
                         }
                     },
-                }
-            }
+                },
+            },
+            sort => '_doc',
         }
     } );
     my @changes;
@@ -183,13 +184,12 @@ sub reindex_release {
 
     my $es     = $self->es;
     my $scroll = $es->scroll_helper( {
-        index       => $self->index->name,
-        type        => 'file',
-        scroll      => '1m',
-        size        => 1000,
-        search_type => 'scan',
-        fields      => [ '_parent', '_source' ],
-        body        => {
+        index  => $self->index->name,
+        type   => 'file',
+        scroll => '1m',
+        size   => 1000,
+        fields => [ '_parent', '_source' ],
+        body   => {
             query => {
                 filtered => {
                     query  => { match_all => {} },
@@ -208,8 +208,9 @@ sub reindex_release {
                         ]
                     }
                 }
-            }
-        }
+            },
+            sort => '_doc',
+        },
     } );
     return if ( $self->dry_run );
 

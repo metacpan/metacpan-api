@@ -62,10 +62,12 @@ sub index_reports {
     my $data = decode_json $json;
 
     my $scroll = $es->scroll_helper(
-        index       => $self->index->name,
-        search_type => 'scan',
-        size        => '500',
-        type        => 'release',
+        index => $self->index->name,
+        size  => '500',
+        type  => 'release',
+        body  => {
+            sort => '_doc',
+        },
     );
 
     # Create a cache of all releases (dist + version combos)

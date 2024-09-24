@@ -75,7 +75,7 @@ sub run {
 sub index_favorites {
     my $self = shift;
 
-    my $body;
+    my $query = { match_all => {} };
     my $age_filter;
     if ( $self->age ) {
         $age_filter = {
@@ -86,24 +86,20 @@ sub index_favorites {
     }
 
     if ( $self->distribution ) {
-        $body = {
-            query => {
-                term => { distribution => $self->distribution }
-            }
-        };
+        $query = { term => { distribution => $self->distribution } };
 
     }
     elsif ( $self->age ) {
         my $favs = $self->es->scroll_helper(
-            index       => $self->index->name,
-            type        => 'favorite',
-            search_type => 'scan',
-            scroll      => '5m',
-            fields      => [qw< distribution >],
-            size        => 500,
-            body        => {
+            index  => $self->index->name,
+            type   => 'favorite',
+            scroll => '5m',
+            fields => [qw< distribution >],
+            size   => 500,
+            body   => {
                 query => $age_filter,
-                ( $self->limit ? ( size => $self->limit ) : () )
+                ( $self->limit ? ( size => $self->limit ) : () ),
+                sort => '_doc',
             }
         );
 
@@ -116,11 +112,7 @@ sub index_favorites {
 
         my @keys = keys %recent_dists;
         if (@keys) {
-            $body = {
-                query => {
-                    terms => { distribution => \@keys }
-                }
-            };
+            $query = { terms => { distribution => \@keys } };
         }
     }
 
@@ -133,13 +125,15 @@ sub index_favorites {
     }
     else {
         my $favs = $self->es->scroll_helper(
-            index       => $self->index->name,
-            type        => 'favorite',
-            search_type => 'scan',
-            scroll      => '30s',
-            fields      => [qw< distribution >],
-            size        => 500,
-            ( $body ? ( body => $body ) : () ),
+            index  => $self->index->name,
+            type   => 'favorite',
+            scroll => '30s',
+            fields => [qw< distribution >],
+            size   => 500,
+            body   => {
+                query => $query,
+                sort  => '_doc',
+            },
         );
 
         while ( my $fav = $favs->next ) {
@@ -160,13 +154,12 @@ sub index_favorites {
         }
 
         my $files = $self->es->scroll_helper(
-            index       => $self->index->name,
-            type        => 'file',
-            search_type => 'scan',
-            scroll      => '15m',
-            fields      => [qw< id distribution >],
-            size        => 500,
-            body        => {
+            index  => $self->index->name,
+            type   => 'file',
+            scroll => '15m',
+            fields => [qw< id distribution >],
+            size   => 500,
+            body   => {
                 query => {
                     bool => {
                         must_not => [
@@ -174,7 +167,8 @@ sub index_favorites {
                         ],
                         @age_filter,
                     }
-                }
+                },
+                sort => '_doc',
             },
         );
 
@@ -236,14 +230,14 @@ sub index_favorites {
             );
 
             my $files = $self->es->scroll_helper(
-                index       => $self->index->name,
-                type        => 'file',
-                search_type => 'scan',
-                scroll      => '15s',
-                fields      => [qw< id >],
-                size        => 500,
-                body        => {
-                    query => { term => { distribution => $dist } }
+                index  => $self->index->name,
+                type   => 'file',
+                scroll => '15s',
+                fields => [qw< id >],
+                size   => 500,
+                body   => {
+                    query => { term => { distribution => $dist } },
+                    sort  => '_doc',
                 },
             );
 

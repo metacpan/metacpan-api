@@ -135,11 +135,10 @@ sub index_authors {
     );
 
     my $scroll = $self->es->scroll_helper(
-        index       => $self->index->name,
-        type        => 'author',
-        search_type => 'scan',
-        size        => 500,
-        body        => {
+        index => $self->index->name,
+        type  => 'author',
+        size  => 500,
+        body  => {
             query => {
                 $self->pauseid
                 ? (
@@ -150,6 +149,7 @@ sub index_authors {
                 : ( match_all => {} ),
             },
             _source => [@compare_fields],
+            sort    => '_doc',
         },
     );
 
