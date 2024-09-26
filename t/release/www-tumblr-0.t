@@ -3,14 +3,15 @@ use warnings;
 use lib 't/lib';
 
 use MetaCPAN::TestHelpers qw( test_release );
+use MetaCPAN::Util        qw(true false);
 use Test::More;
 
 test_release( {
     name         => 'WWW-Tumblr-0',
     distribution => 'WWW-Tumblr',
     author       => 'LOCAL',
-    authorized   => 1,
-    first        => 1,
+    authorized   => true,
+    first        => true,
     version      => '0',
 
     provides => [ 'WWW::Tumblr', ],

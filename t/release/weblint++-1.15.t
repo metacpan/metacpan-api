@@ -3,6 +3,7 @@ use warnings;
 use lib 't/lib';
 
 use MetaCPAN::TestHelpers qw( test_release );
+use MetaCPAN::Util        qw(true false);
 use Test::More;
 
 test_release( {
@@ -12,8 +13,8 @@ test_release( {
     distribution => 'weblint',
 
     author     => 'LOCAL',
-    authorized => 1,
-    first      => 1,
+    authorized => true,
+    first      => true,
     version    => '1.15',
 
     # No modules.

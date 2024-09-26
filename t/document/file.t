@@ -4,6 +4,7 @@ use lib 't/lib';
 
 use CPAN::Meta               ();
 use MetaCPAN::Document::File ();
+use MetaCPAN::Util           qw(true false);
 use Test::More;
 
 sub cpan_meta {
@@ -63,7 +64,7 @@ sub test_attributes {
 subtest 'helper' => sub {
     my $file = new_file_doc( module => { name => 'Foo::Bar' }, );
 
-    is $file->module->[0]->indexed, 1, 'Regular package name indexed';
+    is $file->module->[0]->indexed, true, 'Regular package name indexed';
 };
 
 subtest 'basic' => sub {
@@ -248,7 +249,7 @@ END
 
 subtest 'Packages starting with underscore are not indexed' => sub {
     my $file = new_file_doc( module => { name => '_Package::Foo' } );
-    is( $file->module->[0]->indexed, 0, 'Package is not indexed' );
+    is( $file->module->[0]->indexed, false, 'Package is not indexed' );
 };
 
 subtest 'files listed under other files' => sub {
@@ -267,7 +268,8 @@ END
         content => \$content,
     );
 
-    is( $file->indexed, 0, 'File listed under other files is not indexed' );
+    is( $file->indexed, false,
+        'File listed under other files is not indexed' );
 };
 
 subtest 'pod name/package mismatch' => sub {

@@ -2,24 +2,24 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use Cpanel::JSON::XS      ();
 use MetaCPAN::TestHelpers qw( test_release );
+use MetaCPAN::Util        qw(true false);
 use Test::More;
 
 test_release( {
     name        => 'local-lib-0.01',
     author      => 'BORISNAT',
     abstract    => 'Legitimate module',
-    authorized  => 1,
-    first       => 1,
+    authorized  => true,
+    first       => true,
     provides    => ['local::lib'],
     main_module => 'local::lib',
     modules     => {
         'lib/local/lib.pm' => [
             {
                 name             => 'local::lib',
-                indexed          => Cpanel::JSON::XS::true(),
-                authorized       => Cpanel::JSON::XS::true(),
+                indexed          => true,
+                authorized       => true,
                 version          => '0.01',
                 version_numified => 0.01,
                 associated_pod => 'BORISNAT/local-lib-0.01/lib/local/lib.pm',

@@ -8,19 +8,18 @@ use ElasticSearchX::Model::Document;
 
 # load order not important
 use Gravatar::URL             ();
-use MetaCPAN::Types           qw( Profile );
+use MetaCPAN::Types           qw( ESBool Profile );
 use MetaCPAN::Types::TypeTiny qw(
     ArrayRef
     ArrayRefPromote
     Blog
-    Bool
     Dict
     HashRef
     NonEmptySimpleStr
     PerlMongers
     Str
 );
-use MetaCPAN::Util;
+use MetaCPAN::Util qw(true false);
 
 has name => (
     is       => 'ro',
@@ -105,9 +104,9 @@ has updated => (
 
 has is_pause_custodial_account => (
     is      => 'ro',
-    isa     => Bool,
+    isa     => ESBool,
     coerce  => 1,
-    default => 0,
+    default => sub {false},
 );
 
 sub _build_gravatar_url {

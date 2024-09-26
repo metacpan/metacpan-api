@@ -2,9 +2,9 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use Cpanel::JSON::XS        ();
 use MetaCPAN::Model::Search ();
 use MetaCPAN::TestServer    ();
+use MetaCPAN::Util          qw(true false);
 use Test::Deep              qw( cmp_deeply ignore );
 use Test::More;
 
@@ -25,7 +25,7 @@ ok( $search, 'search' );
             results   => [],
             total     => 0,
             took      => ignore(),
-            collapsed => Cpanel::JSON::XS::true(),
+            collapsed => true,
         },
         'no results on fake module'
     );

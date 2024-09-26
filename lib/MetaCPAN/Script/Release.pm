@@ -11,7 +11,7 @@ use Log::Contextual           qw( :log :dlog );
 use MetaCPAN::Model::Release  ();
 use MetaCPAN::Script::Runner  ();
 use MetaCPAN::Types::TypeTiny qw( Bool HashRef Int Str );
-use MetaCPAN::Util;
+use MetaCPAN::Util            qw(true false);
 use Moose;
 use PerlIO::gzip;
 use Try::Tiny qw( catch try );
@@ -313,7 +313,7 @@ sub import_archive {
                $meta->{x_deprecated}
             or $document->has_abstract
             and $document->abstract =~ /DEPRECI?ATED/
-    ) ? 1 : 0;
+    ) ? true : false;
 
     $document->_set_deprecated($deprecated);
 
@@ -339,7 +339,7 @@ sub import_archive {
         }
 
         # check for DEPRECATED/DEPRECIATED in abstract of file
-        $file->_set_deprecated(1)
+        $file->_set_deprecated(true)
             if $deprecated
             or $file_x_deprecated
             or $file->abstract and $file->abstract =~ /DEPRECI?ATED/;
@@ -370,7 +370,7 @@ sub import_archive {
                 . " contains unauthorized modules: "
                 . join( ",", map { $_->name } @release_unauthorized );
         };
-        $document->_set_authorized(0);
+        $document->_set_authorized(false);
         $document->put;
     }
 

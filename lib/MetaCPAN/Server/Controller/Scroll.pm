@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use namespace::autoclean;
 
+use MetaCPAN::Util qw(true false);
 use Moose;
 use Try::Tiny qw( catch try );
 
@@ -47,7 +48,7 @@ sub index : Path('/_search/scroll') : Args {
                 max_score => undef,
                 total     => 0,
             },
-            timed_out => \0,
+            timed_out => false,
             took      => 0,
         } );
         return;

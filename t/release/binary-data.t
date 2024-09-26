@@ -2,23 +2,23 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use Cpanel::JSON::XS      ();
 use MetaCPAN::TestHelpers qw( test_release );
+use MetaCPAN::Util        qw(true false);
 use Test::More;
 
 test_release( {
     name        => 'Binary-Data-0.01',
     author      => 'BORISNAT',
-    authorized  => 1,
-    first       => 1,
+    authorized  => true,
+    first       => true,
     provides    => [ 'Binary::Data', 'Binary::Data::WithPod', ],
     main_module => 'Binary::Data',
     modules     => {
         'lib/Binary/Data.pm' => [
             {
                 name             => 'Binary::Data',
-                indexed          => Cpanel::JSON::XS::true(),
-                authorized       => Cpanel::JSON::XS::true(),
+                indexed          => true,
+                authorized       => true,
                 version          => '0.01',
                 version_numified => 0.01,
                 associated_pod   => undef,
@@ -27,8 +27,8 @@ test_release( {
         'lib/Binary/Data/WithPod.pm' => [
             {
                 name             => 'Binary::Data::WithPod',
-                indexed          => Cpanel::JSON::XS::true(),
-                authorized       => Cpanel::JSON::XS::true(),
+                indexed          => true,
+                authorized       => true,
                 version          => '0.02',
                 version_numified => 0.02,
                 associated_pod   =>

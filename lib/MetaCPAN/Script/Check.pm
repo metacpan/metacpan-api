@@ -7,6 +7,7 @@ use File::Spec::Functions qw( catfile );
 use Log::Contextual       qw( :log );
 use Moose;
 use MetaCPAN::Types::TypeTiny qw( Bool Int Str );
+use MetaCPAN::Util            qw( true false );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
@@ -94,7 +95,7 @@ sub check_modules {
                         bool => {
                             must => [
                                 { term => { 'module.name' => $pkg } },
-                                { term => { 'authorized'  => 'true' } },
+                                { term => { 'authorized'  => true } },
                                 { term => { 'maturity'    => 'released' } },
                             ],
                         },

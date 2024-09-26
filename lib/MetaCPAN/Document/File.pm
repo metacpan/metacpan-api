@@ -9,10 +9,9 @@ use ElasticSearchX::Model::Document;
 
 use List::Util                 qw( any );
 use MetaCPAN::Document::Module ();
-use MetaCPAN::Types            qw( Module );
+use MetaCPAN::Types            qw( ESBool Module );
 use MetaCPAN::Types::TypeTiny  qw(
     ArrayRef
-    Bool
     Int
     Maybe
     Num
@@ -20,7 +19,7 @@ use MetaCPAN::Types::TypeTiny  qw(
     Stat
     Str
 );
-use MetaCPAN::Util qw(numify_version);
+use MetaCPAN::Util qw(numify_version true false);
 use Plack::MIME    ();
 use Pod::Text      ();
 use Try::Tiny      qw( catch try );
@@ -50,8 +49,8 @@ it is also set if the entire release is marked deprecated (see L<MetaCPAN::Docum
 
 has deprecated => (
     is      => 'ro',
-    isa     => Bool,
-    default => 0,
+    isa     => ESBool,
+    default => sub {false},
     writer  => '_set_deprecated',
 );
 
@@ -260,9 +259,9 @@ File is binary or not.
 
 has binary => (
     is       => 'ro',
-    isa      => Bool,
+    isa      => ESBool,
     required => 1,
-    default  => 0,
+    default  => sub {false},
 );
 
 =head2 authorized
@@ -274,8 +273,8 @@ See L</set_authorized>.
 has authorized => (
     required => 1,
     is       => 'ro',
-    isa      => Bool,
-    default  => 1,
+    isa      => ESBool,
+    default  => sub {true},
     writer   => '_set_authorized',
 );
 
@@ -301,8 +300,8 @@ Return true if this object represents a directory.
 has directory => (
     is       => 'ro',
     required => 1,
-    isa      => Bool,
-    default  => 0,
+    isa      => ESBool,
+    default  => sub {false},
 );
 
 =head2 documentation
@@ -433,13 +432,13 @@ not. See L</set_indexed> for a more verbose explanation.
 has indexed => (
     required => 1,
     is       => 'ro',
-    isa      => Bool,
+    isa      => ESBool,
     lazy     => 1,
     default  => sub {
         my ($self) = @_;
-        return 0 if $self->is_in_other_files;
-        return 0 if !$self->metadata->should_index_file( $self->path );
-        return 1;
+        return false if $self->is_in_other_files;
+        return false if !$self->metadata->should_index_file( $self->path );
+        return true;
     },
     writer => '_set_indexed',
 );
@@ -897,7 +896,7 @@ sub set_indexed {
         if ( exists $meta->provides->{ $mod->name }
             and $self->path eq $meta->provides->{ $mod->name }{file} )
         {
-            $mod->_set_indexed(1);
+            $mod->_set_indexed(true);
             return;
         }
     }
@@ -905,16 +904,16 @@ sub set_indexed {
     # files listed under 'other files' are not shown in a search
     if ( $self->is_in_other_files() ) {
         foreach my $mod ( @{ $self->module } ) {
-            $mod->_set_indexed(0);
+            $mod->_set_indexed(false);
         }
-        $self->_set_indexed(0);
+        $self->_set_indexed(false);
         return;
     }
 
     # files under no_index directories should not be indexed
     foreach my $dir ( @{ $meta->no_index->{directory} } ) {
         if ( $self->path eq $dir or $self->path =~ /^$dir\// ) {
-            $self->_set_indexed(0);
+            $self->_set_indexed(false);
             return;
         }
     }
@@ -923,24 +922,26 @@ sub set_indexed {
         if ( $mod->name !~ /^[A-Za-z]/
             or !$meta->should_index_package( $mod->name ) )
         {
-            $mod->_set_indexed(0);
+            $mod->_set_indexed(false);
             next;
         }
 
         $mod->_set_indexed(
             $mod->hide_from_pause( ${ $self->content }, $self->name )
-            ? 0
-            : 1
+            ? false
+            : true
         );
     }
 
     $self->_set_indexed(
+        (
 
-        # .pm file with no package declaration but pod should be indexed
-        !@{ $self->module } ||
+            # .pm file with no package declaration but pod should be indexed
+            !@{ $self->module } ||
 
            # don't index if the documentation doesn't match any of its modules
-            !!grep { $self->documentation eq $_->name } @{ $self->module }
+                !!grep { $self->documentation eq $_->name } @{ $self->module }
+        ) ? true : false
     ) if ( $self->documentation );
 }
 
@@ -974,18 +975,18 @@ sub set_authorized {
     if ( $self->distribution eq 'perl' ) {
         my $allowed = grep $_ eq $self->author, @{ $perms->{perl} };
         foreach my $module ( @{ $self->module } ) {
-            $module->_set_authorized($allowed);
+            $module->_set_authorized( $allowed ? true : false );
         }
-        $self->_set_authorized($allowed);
+        $self->_set_authorized( $allowed ? true : false );
     }
     else {
         foreach my $module ( @{ $self->module } ) {
-            $module->_set_authorized(0)
+            $module->_set_authorized(false)
                 if ( $perms->{ $module->name }
                 && !grep { $_ eq $self->author }
                 @{ $perms->{ $module->name } } );
         }
-        $self->_set_authorized(0)
+        $self->_set_authorized(false)
             if ( $self->authorized
             && $self->documentation
             && $perms->{ $self->documentation }

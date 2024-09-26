@@ -13,7 +13,7 @@ use Encode                     ();
 use Log::Contextual            qw( :log :dlog );
 use MetaCPAN::Document::Author ();
 use MetaCPAN::Types::TypeTiny  qw( Str );
-use MetaCPAN::Util             qw(diff_struct);
+use MetaCPAN::Util             qw(diff_struct true false);
 use URI                        ();
 use XML::XPath                 ();
 
@@ -189,7 +189,7 @@ sub author_data_from_cpan {
         %$author_config,
         is_pause_custodial_account => (
             ( $whois_data->{fullname} // '' )
-            =~ /\(PAUSE Custodial Account\)/ ? 1 : 0
+            =~ /\(PAUSE Custodial Account\)/ ? true : false
         ),
     };
 

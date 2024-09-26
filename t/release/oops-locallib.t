@@ -2,23 +2,23 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use Cpanel::JSON::XS      ();
 use MetaCPAN::TestHelpers qw( test_release );
+use MetaCPAN::Util        qw(true false);
 use Test::More;
 
 test_release( {
     name        => 'Oops-LocalLib-0.01',
     author      => 'BORISNAT',
-    authorized  => 1,
-    first       => 1,
+    authorized  => true,
+    first       => true,
     provides    => [ 'Fruits', 'Oops::LocalLib', ],
     main_module => 'Oops::LocalLib',
     modules     => {
         'lib/Oops/LocalLib.pm' => [
             {
                 name             => 'Oops::LocalLib',
-                indexed          => Cpanel::JSON::XS::true(),
-                authorized       => Cpanel::JSON::XS::true(),
+                indexed          => true,
+                authorized       => true,
                 version          => '0.01',
                 version_numified => 0.01,
                 associated_pod   =>
@@ -28,8 +28,8 @@ test_release( {
         'foreign/Fruits.pm' => [
             {
                 name             => 'Fruits',
-                indexed          => Cpanel::JSON::XS::true(),
-                authorized       => Cpanel::JSON::XS::true(),
+                indexed          => true,
+                authorized       => true,
                 version          => '1',
                 version_numified => 1,
                 associated_pod   =>

@@ -3,6 +3,7 @@ package MetaCPAN::Server::Controller::Rating;
 use strict;
 use warnings;
 
+use MetaCPAN::Util qw( true false );
 use Moose;
 
 BEGIN { extends 'MetaCPAN::Server::Controller' }
@@ -64,7 +65,7 @@ sub find : Path('_search') : Args(0) : ActionClass('~Deserialize') {
             max_score => undef,
             total     => scalar @hits,
         },
-        timed_out => \0,
+        timed_out => false,
         took      => 0,
     } );
 }

@@ -2,22 +2,22 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use Cpanel::JSON::XS      ();
 use MetaCPAN::TestHelpers qw( test_release );
+use MetaCPAN::Util        qw(true false);
 use Test::More;
 
 test_release( {
     name       => 'Common-Files-1.1',
     author     => 'BORISNAT',
-    authorized => 1,
-    first      => 1,
+    authorized => true,
+    first      => true,
     provides   => ['Common::Files'],
     modules    => {
         'lib/Common/Files.pm' => [
             {
                 name             => 'Common::Files',
-                indexed          => Cpanel::JSON::XS::true(),
-                authorized       => Cpanel::JSON::XS::true(),
+                indexed          => true,
+                authorized       => true,
                 version          => '1.1',
                 version_numified => 1.1,
                 associated_pod   =>

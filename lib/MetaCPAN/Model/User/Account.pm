@@ -6,9 +6,9 @@ use warnings;
 use Moose;
 use ElasticSearchX::Model::Document;
 
-use MetaCPAN::Types           qw( Identity );
-use MetaCPAN::Types::TypeTiny qw( ArrayRef Bool Dict Str );
-use MetaCPAN::Util;
+use MetaCPAN::Types           qw( ESBool Identity );
+use MetaCPAN::Types::TypeTiny qw( ArrayRef Dict Str );
+use MetaCPAN::Util            qw(true false);
 
 =head1 PROPERTIES
 
@@ -91,7 +91,7 @@ is true if the user is connected to a PAUSE account or he L</passed_captcha>.
 has looks_human => (
     required => 1,
     is       => 'ro',
-    isa      => Bool,
+    isa      => ESBool,
     lazy     => 1,
     builder  => '_build_looks_human',
     clearer  => 'clear_looks_human',
@@ -99,7 +99,11 @@ has looks_human => (
 
 sub _build_looks_human {
     my $self = shift;
-    return $self->has_identity('pause') || ( $self->passed_captcha ? 1 : 0 );
+    return (
+        ( $self->has_identity('pause') || $self->passed_captcha )
+        ? true
+        : false
+    );
 }
 
 =head1 METHODS

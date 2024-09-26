@@ -2,7 +2,7 @@ package MetaCPAN::Query::Release;
 
 use MetaCPAN::Moose;
 
-use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
+use MetaCPAN::Util qw( single_valued_arrayref_to_scalar true false );
 
 with 'MetaCPAN::Query::Role::Common';
 
@@ -712,7 +712,7 @@ sub _get_latest_release {
                     must => [
                         { term => { distribution => $distribution } },
                         { term => { status       => 'latest' } },
-                        { term => { authorized   => 1 } },
+                        { term => { authorized   => true } },
                     ]
                 },
             },
@@ -743,8 +743,8 @@ sub _get_provided_modules {
                     must => [
                         { term => { 'release' => $release->{name} } },
                         { term => { 'author'  => $release->{author} } },
-                        { term => { 'module.authorized' => 1 } },
-                        { term => { 'module.indexed'    => 1 } },
+                        { term => { 'module.authorized' => true } },
+                        { term => { 'module.indexed'    => true } },
                     ]
                 }
             },
@@ -814,7 +814,7 @@ sub _get_depended_releases {
                     must => [
                         $dependency_filter,
                         { term => { status     => 'latest' } },
-                        { term => { authorized => 1 } },
+                        { term => { authorized => true } },
                     ],
                 },
             },
@@ -909,7 +909,7 @@ sub modules {
                 must => [
                     { term => { release   => $release } },
                     { term => { author    => $author } },
-                    { term => { directory => 0 } },
+                    { term => { directory => false } },
                     {
                         bool => {
                             should => [
@@ -922,8 +922,9 @@ sub modules {
                                                 }
                                             },
                                             {
-                                                term =>
-                                                    { 'module.indexed' => 1 }
+                                                term => {
+                                                    'module.indexed' => true
+                                                }
                                             }
                                         ]
                                     }
@@ -942,7 +943,7 @@ sub modules {
                                                 }
                                             },
                                             {
-                                                term => { 'indexed' => 1 }
+                                                term => { 'indexed' => true }
                                             },
                                         ]
                                     }
@@ -1057,11 +1058,11 @@ sub find_download_url {
     my $entity_filter = {
         bool => {
             must => [
-                { term => { $prefix . 'authorized' => 1 } },
+                { term => { $prefix . 'authorized' => true } },
                 (
                     $module_filter
                     ? (
-                        { term => { $prefix . 'indexed' => 1 } },
+                        { term => { $prefix . 'indexed' => true } },
                         { term => { $prefix . 'name'    => $name } }
                         )
                     : { term => { 'distribution' => $name } },

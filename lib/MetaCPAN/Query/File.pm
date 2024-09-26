@@ -2,7 +2,7 @@ package MetaCPAN::Query::File;
 
 use MetaCPAN::Moose;
 
-use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
+use MetaCPAN::Util qw( single_valued_arrayref_to_scalar true false );
 
 with 'MetaCPAN::Query::Role::Common';
 
@@ -276,7 +276,7 @@ sub interesting_files {
                 must => [
                     { term => { release   => $release } },
                     { term => { author    => $author } },
-                    { term => { directory => \0 } },
+                    { term => { directory => false } },
                     { bool => { should    => \@clauses } },
                 ],
                 must_not => [
