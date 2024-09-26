@@ -5,9 +5,6 @@ use warnings;
 
 sub mapping {
     '{
-        "_timestamp" : {
-           "enabled" : true
-        },
         "dynamic" : "false"
      }';
 }
