@@ -21,12 +21,14 @@ is( $release->main_module, 'Documentation::Hide', 'main_module ok' );
 ok( $release->first, 'Release is first' );
 
 {
-    my @files = $idx->type('file')->filter( {
-        and => [
-            { term   => { author  => $release->author } },
-            { term   => { release => $release->name } },
-            { exists => { field   => 'module.name' } },
-        ]
+    my @files = $idx->type('file')->query( {
+        bool => {
+            must => [
+                { term   => { author  => $release->author } },
+                { term   => { release => $release->name } },
+                { exists => { field   => 'module.name' } },
+            ],
+        },
     } )->all;
 
     is( @files, 1, 'includes one file with modules' );
@@ -43,12 +45,14 @@ ok( $release->first, 'Release is first' );
 }
 
 {
-    my @files = $idx->type('file')->filter( {
-        and => [
-            { term   => { author  => $release->author } },
-            { term   => { release => $release->name } },
-            { exists => { field   => 'documentation' } }
-        ]
+    my @files = $idx->type('file')->query( {
+        bool => {
+            must => [
+                { term   => { author  => $release->author } },
+                { term   => { release => $release->name } },
+                { exists => { field   => 'documentation' } }
+            ],
+        },
     } )->all;
     is( @files, 2, 'two files with documentation' );
 }

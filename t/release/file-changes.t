@@ -21,7 +21,7 @@ is( $release->changes_file, 'Changes',          'changes_file ok' );
 {
     my @files
         = $idx->type('file')
-        ->filter( { term => { release => 'File-Changes-1.0' } } )->all;
+        ->query( { term => { release => 'File-Changes-1.0' } } )->all;
 
     my ($changes) = grep { $_->name eq 'Changes' } @files;
     ok $changes, 'found Changes';

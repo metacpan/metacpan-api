@@ -35,7 +35,7 @@ is( $pm->module->[0]->version,
     # Verify all the files we expect to be contained in the release.
     my $files
         = $idx->type('file')
-        ->filter( { term => { release => 'uncommon-sense-0.01' }, } )
+        ->query( { term => { release => 'uncommon-sense-0.01' } } )
         ->raw->size(20)->all->{hits}->{hits};
     $files = [ map { $_->{_source} } @$files ];
 

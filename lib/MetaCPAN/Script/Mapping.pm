@@ -416,12 +416,8 @@ sub _copy_slice {
         index  => $self->index->name,
         type   => $type,
         body   => {
-            query => {
-                filtered => {
-                    query => $query
-                }
-            },
-            sort => '_doc',
+            query => $query,
+            sort  => '_doc',
         },
     );
 

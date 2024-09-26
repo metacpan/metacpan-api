@@ -7,8 +7,9 @@ use Test::More;
 
 my $model = model();
 my $idx   = $model->index('cpan');
-my @moose = $idx->type('release')
-    ->filter( { term => { distribution => 'Moose' } } )->all;
+my @moose
+    = $idx->type('release')->query( { term => { distribution => 'Moose' } } )
+    ->all;
 
 my $first = 0;
 map { $first++ } grep { $_->first } @moose;
@@ -22,7 +23,7 @@ is( $moose[1]->main_module, 'Moose', 'main_module ok' );
 ok(
     my $faq
         = $idx->type('file')
-        ->filter( { match_phrase => { documentation => 'Moose::FAQ' } } )
+        ->query( { match_phrase => { documentation => 'Moose::FAQ' } } )
         ->first,
     'get Moose::FAQ'
 );
@@ -35,7 +36,7 @@ ok( !$faq->binary, 'is not binary' );
 
 ok(
     my $binary
-        = $idx->type('file')->filter( { term => { name => 't' } } )->first,
+        = $idx->type('file')->query( { term => { name => 't' } } )->first,
     'get a t/ directory'
 );
 
@@ -44,8 +45,7 @@ ok( $binary->binary, 'is binary' );
 ok(
     my $ppport
         = $idx->type('file')
-        ->filter( { match_phrase => { documentation => 'ppport.h' } } )
-        ->first,
+        ->query( { match_phrase => { documentation => 'ppport.h' } } )->first,
     'get ppport.h'
 );
 
@@ -58,29 +58,35 @@ is( $moose->name, 'Moose.pm', 'defined in Moose.pm' );
 is( $moose->module->[0]->associated_pod, 'DOY/Moose-0.02/lib/Moose.pm' );
 
 my $signature;
-$signature = $idx->type('file')->filter( {
-    and => [
-        { term => { mime => 'text/x-script.perl' } },
-        { term => { name => 'SIGNATURE' } }
-    ]
+$signature = $idx->type('file')->query( {
+    bool => {
+        must => [
+            { term => { mime => 'text/x-script.perl' } },
+            { term => { name => 'SIGNATURE' } },
+        ],
+    },
 } )->first;
 ok( !$signature, 'SIGNATURE is not perl code' );
 
-$signature = $idx->type('file')->filter( {
-    and => [
-        { term => { documentation => 'SIGNATURE' } },
-        { term => { mime          => 'text/x-script.perl' } },
-        { term => { name          => 'SIGNATURE' } }
-    ]
+$signature = $idx->type('file')->query( {
+    bool => {
+        must => [
+            { term => { documentation => 'SIGNATURE' } },
+            { term => { mime          => 'text/x-script.perl' } },
+            { term => { name          => 'SIGNATURE' } },
+        ],
+    },
 } )->first;
 ok( !$signature, 'SIGNATURE is not documentation' );
 
-$signature = $idx->type('file')->filter( {
-    and => [
-        { term   => { name    => 'SIGNATURE' } },
-        { exists => { field   => 'documentation' } },
-        { term   => { indexed => 1 } },
-    ]
+$signature = $idx->type('file')->query( {
+    bool => {
+        must => [
+            { term   => { name    => 'SIGNATURE' } },
+            { exists => { field   => 'documentation' } },
+            { term   => { indexed => 1 } },
+        ],
+    },
 } )->first;
 ok( !$signature, 'SIGNATURE is not pod' );
 

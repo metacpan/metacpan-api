@@ -22,12 +22,14 @@ is( ref $release->metadata, 'HASH', 'comes with metadata in a hashref' );
 is( $release->metadata->{'meta-spec'}{version}, 2, 'meta_spec version is 2' );
 
 {
-    my @files = $idx->type('file')->filter( {
-        and => [
-            { term   => { author  => $release->author } },
-            { term   => { release => $release->name } },
-            { exists => { field   => 'module.name' } },
-        ]
+    my @files = $idx->type('file')->query( {
+        bool => {
+            must => [
+                { term   => { author  => $release->author } },
+                { term   => { release => $release->name } },
+                { exists => { field   => 'module.name' } },
+            ],
+        },
     } )->all;
     is( @files, 1, 'includes one file with modules' );
 

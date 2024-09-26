@@ -11,17 +11,10 @@ sub search {
     if ($q) {
         my @protocols = grep /^ (?: http | ftp | rsync ) $/x, split /\s+/, $q;
 
-        my $query = {
+        $query = {
             bool => {
-                must_not => {
-                    bool => {
-                        should => [
-                            map +{ filter => { missing => { field => $_ } } },
-                            @protocols
-                        ]
-                    }
-                }
-            }
+                must => [ map +{ exists => { field => $_ } }, @protocols ]
+            },
         };
     }
 

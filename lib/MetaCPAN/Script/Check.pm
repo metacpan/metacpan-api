@@ -90,13 +90,14 @@ sub check_modules {
                     fields => [
                         qw(name release author distribution version authorized indexed maturity date)
                     ],
-                    query  => { match_all => {} },
-                    filter => {
-                        and => [
-                            { term => { 'module.name' => $pkg } },
-                            { term => { 'authorized'  => 'true' } },
-                            { term => { 'maturity'    => 'released' } },
-                        ],
+                    query => {
+                        bool => {
+                            must => [
+                                { term => { 'module.name' => $pkg } },
+                                { term => { 'authorized'  => 'true' } },
+                                { term => { 'maturity'    => 'released' } },
+                            ],
+                        },
                     },
                 );
                 my @files = @{ $results->{hits}->{hits} };
@@ -109,16 +110,17 @@ sub check_modules {
                         size   => 1,
                         fields =>
                             [qw(name status authorized version id date)],
-                        query  => { match_all => {} },
-                        filter => {
-                            and => [
-                                {
-                                    term => {
-                                        'name' => $file->{fields}->{release}
-                                    }
-                                },
-                                { term => { 'status' => 'latest' } },
-                            ],
+                        query => {
+                            bool => {
+                                must => [
+                                    {
+                                        term => {
+                                            name => $file->{fields}->{release}
+                                        }
+                                    },
+                                    { term => { status => 'latest' } },
+                                ],
+                            },
                         },
                     );
 
@@ -138,13 +140,17 @@ sub check_modules {
                             size   => 1,
                             fields =>
                                 [qw(name status authorized version id date)],
-                            query  => { match_all => {} },
-                            filter => {
-                                and => [ {
-                                    term => {
-                                        'name' => $file->{fields}->{release}
-                                    }
-                                } ]
+                            query => {
+                                bool => {
+                                    must => [
+                                        {
+                                            term => {
+                                                name =>
+                                                    $file->{fields}->{release}
+                                            }
+                                        },
+                                    ],
+                                },
                             },
                         );
 

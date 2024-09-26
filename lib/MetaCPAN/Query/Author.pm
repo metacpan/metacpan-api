@@ -13,12 +13,8 @@ sub by_ids {
     map {uc} @{$ids};
 
     my $body = {
-        query => {
-            constant_score => {
-                filter => { ids => { values => $ids } }
-            }
-        },
-        size => scalar @{$ids},
+        query => { ids => { values => $ids } },
+        size  => scalar @{$ids},
     };
 
     my $authors = $self->es->search(
@@ -74,18 +70,18 @@ sub search {
                     {
                         match => {
                             'name.analyzed' =>
-                                { query => $query, operator => 'and' }
+                                { query => $query, operator => 'AND' }
                         }
                     },
                     {
                         match => {
                             'asciiname.analyzed' =>
-                                { query => $query, operator => 'and' }
+                                { query => $query, operator => 'AND' }
                         }
                     },
                     { match => { 'pauseid'    => uc($query) } },
                     { match => { 'profile.id' => lc($query) } },
-                ]
+                ],
             }
         },
         size => 10,

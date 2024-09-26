@@ -19,8 +19,7 @@ sub run {
     my $self          = shift;
     my $distributions = $self->index->type("distribution");
     $distributions
-        = $distributions->filter(
-        { term => { name => $self->distribution } } )
+        = $distributions->query( { term => { name => $self->distribution } } )
         if $self->distribution;
     $distributions = $distributions->size(500)->scroll;
 

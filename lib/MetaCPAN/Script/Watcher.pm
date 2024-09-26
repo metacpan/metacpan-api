@@ -102,13 +102,8 @@ sub backpan_changes {
         fields => [qw(author archive)],
         body   => {
             query => {
-                filtered => {
-                    query  => { match_all => {} },
-                    filter => {
-                        not => {
-                            filter => { term => { status => 'backpan' } }
-                        }
-                    },
+                bool => {
+                    must_not => [ { term => { status => 'backpan' } }, ],
                 },
             },
             sort => '_doc',
@@ -137,13 +132,21 @@ sub latest_release {
 
 sub skip {
     my ( $self, $author, $archive ) = @_;
-    return $self->index->type('release')->filter( {
-        and => [
-            { term => { status  => 'backpan' } },
-            { term => { archive => $archive } },
-            { term => { author  => $author } },
-        ]
-    } )->raw->count;
+    return $self->es->count( {
+        index => $self->index->name,
+        type  => 'release',
+        body  => {
+            query => {
+                bool => {
+                    must => [
+                        { term => { status  => 'backpan' } },
+                        { term => { archive => $archive } },
+                        { term => { author  => $author } },
+                    ],
+                },
+            },
+        },
+    } );
 }
 
 sub index_release {
@@ -173,11 +176,13 @@ sub index_release {
 sub reindex_release {
     my ( $self, $release ) = @_;
     my $info = CPAN::DistnameInfo->new( $release->{path} );
-    $release = $self->index->type('release')->filter( {
-        and => [
-            { term => { author  => $info->cpanid } },
-            { term => { archive => $info->filename } },
-        ]
+    $release = $self->index->type('release')->query( {
+        bool => {
+            must => [
+                { term => { author  => $info->cpanid } },
+                { term => { archive => $info->filename } },
+            ],
+        },
     } )->raw->first;
     return unless ($release);
     log_info {"Moving $release->{_source}->{name} to BackPAN"};
@@ -191,23 +196,20 @@ sub reindex_release {
         fields => [ '_parent', '_source' ],
         body   => {
             query => {
-                filtered => {
-                    query  => { match_all => {} },
-                    filter => {
-                        and => [
-                            {
-                                term => {
-                                    'release' => $release->{_source}->{name}
-                                }
-                            },
-                            {
-                                term => {
-                                    'author' => $release->{_source}->{author}
-                                }
+                bool => {
+                    must => [
+                        {
+                            term => {
+                                release => $release->{_source}->{name}
                             }
-                        ]
-                    }
-                }
+                        },
+                        {
+                            term => {
+                                author => $release->{_source}->{author}
+                            }
+                        },
+                    ],
+                },
             },
             sort => '_doc',
         },

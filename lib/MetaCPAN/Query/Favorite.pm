@@ -18,7 +18,7 @@ sub agg_by_distributions {
     my $body = {
         size  => 0,
         query => {
-            terms => { 'distribution' => $distributions }
+            terms => { distribution => $distributions }
         },
         aggregations => {
             favorites => {
@@ -30,9 +30,9 @@ sub agg_by_distributions {
             $user
             ? (
                 myfavorites => {
-                    filter       => { term => { 'user' => $user } },
+                    filter       => { term => { user => $user } },
                     aggregations => {
-                        enteries => {
+                        entries => {
                             terms => { field => 'distribution' }
                         }
                     }
@@ -135,7 +135,7 @@ sub leaderboard {
             },
             totals => {
                 cardinality => {
-                    field => "distribution",
+                    field => 'distribution',
                 },
             },
         },
