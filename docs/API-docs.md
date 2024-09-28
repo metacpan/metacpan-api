@@ -174,22 +174,24 @@ dependency.
 
 ```sh
 curl -XPOST https://fastapi.metacpan.org/v1/release/_search -d '{
-  "size": 5000,
-  "fields": [ "distribution" ],
-  "filter": {
-    "and": [
-      { "term": { "dependency.module": "MooseX::NonMoose" } },
-      { "term": {"maturity": "released"} },
-      { "term": {"status": "latest"} }
-    ]
-  }
+    "size" : 5000,
+    "fields" : [ "distribution" ],
+    "query" : {
+        "bool" : {
+            "must" : [
+                { "term" : { "dependency.module" : "MooseX::NonMoose" } },
+                { "term" : { "maturity" : "released" } },
+                { "term" : { "status" : "latest" } }
+            ]
+        }
+    }
 }'
 ```
 
-_Note it is also possible to use these queries in GET requests (useful for cross-domain JSONP requests) by appropriately encoding the JSON query into the `source` parameter of the URL.  For example the query above [would become](https://fastapi.metacpan.org/v1/release/_search?source=%7B%22query%22%3A%7B%22match_all%22%3A%7B%7D%7D%2C%22size%22%3A5000%2C%22fields%22%3A%5B%22distribution%22%5D%2C%22filter%22%3A%7B%22and%22%3A%5B%7B%22term%22%3A%7B%22release.dependency.module%22%3A%22MooseX%3A%3ANonMoose%22%7D%7D%2C%7B%22term%22%3A%7B%22release.maturity%22%3A%22released%22%7D%7D%2C%7B%22term%22%3A%7B%22release.status%22%3A%22latest%22%7D%7D%5D%7D%7D):_
+_Note it is also possible to use these queries in GET requests (useful for cross-domain JSONP requests) by appropriately encoding the JSON query into the `source` parameter of the URL.  For example the query above [would become](https://fastapi.metacpan.org/v1/release/_search?source=%7B%0A%20%20%20%20%22size%22%20%3A%205000%2C%0A%20%20%20%20%22fields%22%20%3A%20%5B%20%22distribution%22%20%5D%2C%0A%20%20%20%20%22query%22%20%3A%20%7B%0A%20%20%20%20%20%20%20%20%22bool%22%20%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22must%22%20%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%20%22term%22%20%3A%20%7B%20%22dependency.module%22%20%3A%20%22MooseX%3A%3ANonMoose%22%20%7D%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%20%22term%22%20%3A%20%7B%20%22maturity%22%20%3A%20%22released%22%20%7D%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%20%22term%22%20%3A%20%7B%20%22status%22%20%3A%20%22latest%22%20%7D%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%7D):_
 
 ```
-curl 'https://fastapi.metacpan.org/v1/release/_search?source=%7B%22query%22%3A%7B%22match_all%22%3A%7B%7D%7D%2C%22size%22%3A5000%2C%22fields%22%3A%5B%22distribution%22%5D%2C%22filter%22%3A%7B%22and%22%3A%5B%7B%22term%22%3A%7B%22release.dependency.module%22%3A%22MooseX%3A%3ANonMoose%22%7D%7D%2C%7B%22term%22%3A%7B%22release.maturity%22%3A%22released%22%7D%7D%2C%7B%22term%22%3A%7B%22release.status%22%3A%22latest%22%7D%7D%5D%7D%7D'
+curl 'https://fastapi.metacpan.org/v1/release/_search?source=%7B%0A%20%20%20%20%22size%22%20%3A%205000%2C%0A%20%20%20%20%22fields%22%20%3A%20%5B%20%22distribution%22%20%5D%2C%0A%20%20%20%20%22query%22%20%3A%20%7B%0A%20%20%20%20%20%20%20%20%22bool%22%20%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22must%22%20%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%20%22term%22%20%3A%20%7B%20%22dependency.module%22%20%3A%20%22MooseX%3A%3ANonMoose%22%20%7D%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%20%22term%22%20%3A%20%7B%20%22maturity%22%20%3A%20%22released%22%20%7D%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%20%22term%22%20%3A%20%7B%20%22status%22%20%3A%20%22latest%22%20%7D%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%7D'
 ```
 
 ### [The size of the CPAN unpacked](https://github.com/metacpan/metacpan-examples/blob/master/scripts/file/5-size-of-cpan.pl)
@@ -199,15 +201,15 @@ curl 'https://fastapi.metacpan.org/v1/release/_search?source=%7B%22query%22%3A%7
 
 ```sh
 curl -XPOST https://fastapi.metacpan.org/v1/release/_search?size=100 -d '{
-  "query": {
-    "range" : {
-        "date" : {
-            "gte" : "2010-06-05T00:00:00",
-            "lte" : "2011-06-05T00:00:00"
+    "query" : {
+        "range" : {
+            "date" : {
+                "gte" : "2010-06-05T00:00:00",
+                "lte" : "2011-06-05T00:00:00"
+            }
         }
-    }
-  },
-  "fields": ["license", "name", "distribution", "date", "version_numified"]
+    },
+    "fields": [ "license", "name", "distribution", "date", "version_numified" ]
 }'
 ```
 
@@ -215,17 +217,17 @@ curl -XPOST https://fastapi.metacpan.org/v1/release/_search?size=100 -d '{
 
 ```sh
 curl -XPOST https://fastapi.metacpan.org/v1/release/_search -d '{
-    "query": {
-        "match_all": {}
+    "query" : {
+        "match_all" : {}
     },
-    "aggs": {
-        "license": {
-            "terms": {
-                "field": "license"
+    "aggs" : {
+        "license" : {
+            "terms" : {
+                "field" : "license"
             }
         }
     },
-    "size": 0
+    "size" : 0
 }'
 ```
 
@@ -233,15 +235,18 @@ curl -XPOST https://fastapi.metacpan.org/v1/release/_search -d '{
 
 ```sh
 curl -XPOST https://fastapi.metacpan.org/v1/file/_search -d '{
-  "query": { "filtered":{"query":{"match_all":{}},"filter":{"term":{"level":0}}}
-   },
-  "aggs": {
-    "license": {
-      "terms": {
-        "size":100,
-        "field":"name"
-  } } },
-  "size":0
+    "query" : {
+        "term" : { "level" : 0 }
+    },
+    "aggs" : {
+        "license" : {
+            "terms" : {
+                "size" : 100,
+                "field" : "name"
+            }
+        }
+    },
+    "size" : 0
 }'
 ```
 
@@ -249,14 +254,15 @@ curl -XPOST https://fastapi.metacpan.org/v1/file/_search -d '{
 
 ```sh
 curl -XPOST https://fastapi.metacpan.org/v1/file/_search -d '{
-  "query": { "filtered":{
-      "query":{"match_all":{}},
-      "filter":{"and":[
-          {"term":{"module.name":"DBI::Profile"}},
-          {"term":{"module.version":"2.014123"}}
-      ]}
-  }},
-  "fields":["release"]
+    "query" : {
+        "bool" : {
+            "must" : [
+                { "term" : { "module.name" : "DBI::Profile" } },
+                { "term" : { "module.version" : "2.014123" } }
+            ]
+        }
+    },
+    "fields" : [ "release" ]
 }'
 ```
 
@@ -277,14 +283,24 @@ Note that "size" should be the number of distributions you are looking for.
 ```sh
 lynx --dump --post_data https://fastapi.metacpan.org/v1/release/_search <<EOL
 {
-    "query" : { "terms" : { "distribution" : [
-        "Mojolicious",
-        "MetaCPAN-API",
-        "DBIx-Class"
-    ] } },
-    "filter" : { "term" : { "status" : "latest" } },
+    "query" : {
+        "bool" : {
+            "must" : [
+                {
+                    "terms" : {
+                        "distribution" : [
+                            "Mojolicious",
+                            "MetaCPAN-API",
+                            "DBIx-Class"
+                        ]
+                    }
+                },
+                { "term" : { "status" : "latest" } }
+            ]
+        }
+    },
     "fields" : [ "distribution", "version" ],
-    "size"   : 3
+    "size" : 3
 }
 EOL
 ```
@@ -292,35 +308,36 @@ EOL
 ### Get a list of all files where the directory is false and the path is blank
 ```sh
 curl -XPOST https://fastapi.metacpan.org/v1/file/_search -d '{
-  "query": {
-    "match_all": {}
-  },
-  "size": 1000,
-  "fields": [ "name", "status", "directory", "path", "distribution" ],
-  "filter": {
-    "and": [
-      { "term": { "directory": false } }, { "term" : { "path" : "" } }
-    ]
-  }
+    "query" : {
+        "bool" : {
+            "must" : [
+                { "term" : { "directory" : false } },
+                { "term" : { "path" : "" } }
+            ]
+        }
+    },
+    "size" : 1000,
+    "fields" : [ "name", "status", "directory", "path", "distribution" ],
 }'
 ```
 
 ### List releases which have an email address for a bugtracker, but not an url
 ```sh
 curl -XPOST https://fastapi.metacpan.org/v1/release/_search -d '{
-  "query": {
-    "match_all": {}
-  },
-  "size": 10,
-  "fields": [ "name", "resources.bugtracker.mailto" ],
-  "filter": {
-    "and": [
-      { "term": {"maturity": "released"} },
-      { "term": {"status": "latest"} },
-      {  "exists" : { "field" : "resources.bugtracker.mailto" } },
-      {  "missing" : { "field" : "resources.bugtracker.web" } }
-    ]
-  }
+    "query" : {
+        "bool" : {
+            "must" : [
+                { "term" : {"maturity" : "released"} },
+                { "term" : {"status" : "latest"} },
+                {  "exists" : { "field" : "resources.bugtracker.mailto" } }
+            ],
+            "must_not" : [
+                { "exists" : { "field" : "resources.bugtracker.web" } }
+            ]
+        }
+    },
+    "size": 10,
+    "fields": [ "name", "resources.bugtracker.mailto" ],
 }'
 ```
 
@@ -330,18 +347,19 @@ curl -XPOST https://fastapi.metacpan.org/v1/release/_search -d '{
 ### Search the current PDL documentation for the string `axisvals`
 ```sh
 curl -XPOST https://fastapi.metacpan.org/v1/file/_search -d '{
-    "query" : { "filtered" : {
-      "query" : {
-        "query_string" : {
-          "query" : "axisvals",
-          "fields" : [ "pod.analyzed", "module.name" ] }
-      },
-      "filter" : { "and" : [
-        { "term" : { "distribution" : "PDL" } },
-        { "term" : { "status" : "latest" } }
-      ]}
-    }},
+    "query" : {
+        "bool" : {
+            "must" : [
+                "query_string" : {
+                    "query" : "axisvals",
+                    "fields" : [ "pod.analyzed", "module.name" ]
+                },
+                { "term" : { "distribution" : "PDL" } },
+                { "term" : { "status" : "latest" } }
+            ]
+        }
+    },
     "fields" : [ "documentation", "abstract", "module.name" ],
     "size" : 20
-  }'
+}'
 ```

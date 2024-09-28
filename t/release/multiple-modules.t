@@ -34,12 +34,14 @@ is_deeply(
 ok( !$release->first, 'Release is not first' );
 
 {
-    my @files = $idx->type('file')->filter( {
-        and => [
-            { term   => { author  => $release->author } },
-            { term   => { release => $release->name } },
-            { exists => { field   => 'module.name' } },
-        ]
+    my @files = $idx->type('file')->query( {
+        bool => {
+            must => [
+                { term   => { author  => $release->author } },
+                { term   => { release => $release->name } },
+                { exists => { field   => 'module.name' } },
+            ],
+        },
     } )->all;
     is( @files, 3, 'includes three files with modules' );
 
@@ -106,11 +108,13 @@ ok $release,        'got older version of release';
 ok $release->first, 'this version was first';
 
 ok(
-    my $file = $idx->type('file')->filter( {
-        and => [
-            { term         => { release       => 'Multiple-Modules-0.1' } },
-            { match_phrase => { documentation => 'Moose' } }
-        ]
+    my $file = $idx->type('file')->query( {
+        bool => {
+            must => [
+                { term         => { release => 'Multiple-Modules-0.1' } },
+                { match_phrase => { documentation => 'Moose' } },
+            ],
+        },
     } )->first,
     'get Moose.pm'
 );

@@ -13,20 +13,16 @@ my $test = Plack::Test->create($app);
 
 my $sbigqueryjson = q({
     "query": {
-        "query_string": {
-            "query": "cpanfile"
+        "bool": {
+            "must": [
+                { "query_string": {
+                    "query": "cpanfile"
+                } },
+                { "term": { "status": "latest" } }
+            ]
         }
     },
-    "filter": {
-        "and": [
-            {
-                "term": {
-                    "status": "latest"
-                }
-            }
-        ]
-    },
-    "fields": ["distribution", "release", "module.name", "name", "path", "download_url"],
+    "fields": [ "distribution", "release", "module.name", "name", "path", "download_url" ],
     "size": "5001"
 });
 

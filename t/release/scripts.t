@@ -21,11 +21,13 @@ is( $release->version, '0.01', 'version ok' );
 is( $release->main_module, 'Scripts', 'main_module ok' );
 
 {
-    my @files = $idx->type('file')->filter( {
-        and => [
-            { term => { mime         => 'text/x-script.perl' } },
-            { term => { distribution => 'Scripts' } }
-        ]
+    my @files = $idx->type('file')->query( {
+        bool => {
+            must => [
+                { term => { mime         => 'text/x-script.perl' } },
+                { term => { distribution => 'Scripts' } },
+            ],
+        },
     } )->all;
     is( @files, 4, 'four scripts found' );
     @files = sort { $a->name cmp $b->name }

@@ -16,8 +16,6 @@ sub run {
         scroll => '1m',
         index  => 'user',
         type   => 'session',
-        body   =>
-            { query => { filtered => { query => { match_all => {} }, }, }, },
     );
 
     my $bulk = $self->es->bulk_helper(

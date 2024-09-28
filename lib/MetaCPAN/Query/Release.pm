@@ -1100,14 +1100,19 @@ sub find_download_url {
         ? { bool => { must => \@filters } }
         : $filters[0];
 
-    my $version_sort
-        = $module_filter
+    my $version_sort = $module_filter
         ? {
         'module.version_numified' => {
             mode          => 'max',
             order         => 'desc',
             nested_path   => 'module',
             nested_filter => $entity_filter,
+
+            # TODO: ES6 - replace prior 2 lines with:
+            #nested => {
+            #    path => 'module',
+            #    filter => $entity_filter,
+            #},
         }
         }
         : { version_numified => { order => 'desc' } };

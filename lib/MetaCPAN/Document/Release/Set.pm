@@ -44,26 +44,30 @@ sub _build_query_release {
 }
 
 sub find_github_based {
-    shift->filter( {
-        and => [
-            { term => { status => 'latest' } },
-            {
-                or => [
-                    {
-                        prefix => {
-                            "resources.bugtracker.web" =>
-                                'http://github.com/'
-                        }
-                    },
-                    {
-                        prefix => {
-                            "resources.bugtracker.web" =>
-                                'https://github.com/'
-                        }
-                    },
-                ]
-            }
-        ]
+    shift->query( {
+        bool => {
+            must => [
+                { term => { status => 'latest' } },
+                {
+                    bool => {
+                        should => [
+                            {
+                                prefix => {
+                                    "resources.bugtracker.web" =>
+                                        'http://github.com/'
+                                }
+                            },
+                            {
+                                prefix => {
+                                    "resources.bugtracker.web" =>
+                                        'https://github.com/'
+                                }
+                            },
+                        ],
+                    }
+                },
+            ],
+        },
     } );
 }
 

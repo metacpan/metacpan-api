@@ -40,7 +40,7 @@ has river => (
 sub releases {
     my $self = shift;
     return $self->index->type("release")
-        ->filter( { term => { "distribution" => $self->name } } );
+        ->query( { term => { "distribution" => $self->name } } );
 }
 
 sub set_first_release {

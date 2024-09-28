@@ -15,8 +15,7 @@ my $search = MetaCPAN::Model::Search->new(
     index => 'cpan',
 );
 
-ok( $search,             'search' );
-ok( $search->_not_rogue, '_not_rogue' );
+ok( $search, 'search' );
 
 {
     my $results = $search->search_web('Fooxxxx');

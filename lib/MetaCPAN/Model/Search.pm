@@ -37,12 +37,6 @@ const my @ROGUE_DISTRIBUTIONS => qw(
     spodcxx
 );
 
-sub _not_rogue {
-    my @rogue_dists
-        = map { { term => { 'distribution' => $_ } } } @ROGUE_DISTRIBUTIONS;
-    return { not => { filter => { or => \@rogue_dists } } };
-}
-
 sub search_for_first_result {
     my ( $self, $search_term ) = @_;
     my $es_query   = $self->build_query($search_term);
@@ -218,133 +212,131 @@ sub build_query {
     $params //= {};
     ( my $clean = $search_term ) =~ s/::/ /g;
 
-    my $negative = {
+    my $query = {
         bool => {
-            should => [
-                { term => { 'mime' => { value => 'text/x-script.perl' } } },
-                { term => { 'deprecated' => { value => 1, boost => -100 } } },
+            filter => [
+                { term => { status     => 'latest' } },
+                { term => { authorized => 1 } },
+                { term => { indexed    => 1 } },
+                {
+                    bool => {
+                        should => [
+                            {
+                                bool => {
+                                    must => [
+                                        {
+                                            exists =>
+                                                { field => 'module.name' }
+                                        },
+                                        { term => { 'module.indexed' => 1 } }
+                                    ],
+                                }
+                            },
+                            { exists => { field => 'documentation' } },
+                        ],
+                    }
+                },
+            ],
+            must_not =>
+                [ { terms => { distribution => \@ROGUE_DISTRIBUTIONS } }, ],
+            must => [
+                {
+                    bool => {
+                        should => [
+
+                            # exact matches result in a huge boost
+                            {
+                                term => {
+                                    'documentation' => {
+                                        value => $search_term,
+                                        boost => 20,
+                                    }
+                                }
+                            },
+                            {
+                                term => {
+                                    'module.name' => {
+                                        value => $search_term,
+                                        boost => 20,
+                                    }
+                                }
+                            },
+
+            # take the maximum score from the module name and the abstract/pod
+                            {
+                                dis_max => {
+                                    queries => [
+                                        {
+                                            query_string => {
+                                                fields => [
+                                                    qw(documentation.analyzed^2 module.name.analyzed^2 distribution.analyzed),
+                                                    qw(documentation.camelcase module.name.camelcase distribution.camelcase)
+                                                ],
+                                                query            => $clean,
+                                                boost            => 3,
+                                                default_operator => 'AND',
+                                                allow_leading_wildcard => 0,
+                                                use_dis_max            => 1,
+
+                                            }
+                                        },
+                                        {
+                                            query_string => {
+                                                fields => [
+                                                    qw(abstract.analyzed pod.analyzed)
+                                                ],
+                                                query            => $clean,
+                                                default_operator => 'AND',
+                                                allow_leading_wildcard => 0,
+                                                use_dis_max            => 1,
+                                            },
+                                        },
+                                    ],
+                                }
+                            },
+                        ],
+                    }
+                },
             ],
         },
     };
 
-    my $positive = {
-        bool => {
-            should => [
+    $query = {
+        function_score => {
+            script_score => {
 
-                # exact matches result in a huge boost
-                {
-                    term => {
-                        'documentation' => {
-                            value => $search_term,
-                            boost => 20,
-                        }
-                    }
+                # prefer shorter module names
+                script => {
+                    lang   => 'expression',
+                    inline =>
+                        "_score - (doc['documentation_length'].value == 0 ? 26 : doc['documentation_length'].value)/400",
                 },
-                {
-                    term => {
-                        'module.name' => {
-                            value => $search_term,
-                            boost => 20,
-                        }
-                    }
+            },
+            query => {
+                boosting => {
+                    negative_boost => 0.5,
+                    positive       => $query,
+                    negative       => {
+                        bool => {
+                            should => [
+                                {
+                                    term => { 'mime' => 'text/x-script.perl' }
+                                },
+                                { term => { 'deprecated' => 1 } },
+                            ],
+                        },
+                    },
                 },
-
-            # take the maximum score from the module name and the abstract/pod
-                {
-                    dis_max => {
-                        queries => [
-                            {
-                                query_string => {
-                                    fields => [
-                                        qw(documentation.analyzed^2 module.name.analyzed^2 distribution.analyzed),
-                                        qw(documentation.camelcase module.name.camelcase distribution.camelcase)
-                                    ],
-                                    query                  => $clean,
-                                    boost                  => 3,
-                                    default_operator       => 'AND',
-                                    allow_leading_wildcard => 0,
-                                    use_dis_max            => 1,
-
-                                }
-                            },
-                            {
-                                query_string => {
-                                    fields =>
-                                        [qw(abstract.analyzed pod.analyzed)],
-                                    query                  => $clean,
-                                    default_operator       => 'AND',
-                                    allow_leading_wildcard => 0,
-                                    use_dis_max            => 1,
-
-                                }
-                            }
-                        ]
-                    }
-                }
-
-            ]
-        }
+            },
+        },
     };
 
     my $search = merge(
         $params,
         {
-            query => {
-                filtered => {
-                    query => {
-                        function_score => {
-
-                            # prefer shorter module names
-                            script_score => {
-                                script => {
-                                    lang   => 'expression',
-                                    inline =>
-                                        "_score - (doc['documentation_length'].value == 0 ? 26 : doc['documentation_length'].value)/400",
-                                },
-                            },
-                            query => {
-                                boosting => {
-                                    negative_boost => 0.5,
-                                    negative       => $negative,
-                                    positive       => $positive
-                                }
-                            }
-                        }
-                    },
-                    filter => {
-                        and => [
-                            $self->_not_rogue,
-                            { term => { status       => 'latest' } },
-                            { term => { 'authorized' => 1 } },
-                            { term => { 'indexed'    => 1 } },
-                            {
-                                or => [
-                                    {
-                                        and => [
-                                            {
-                                                exists => {
-                                                    field => 'module.name'
-                                                }
-                                            },
-                                            {
-                                                term =>
-                                                    { 'module.indexed' => 1 }
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        exists => { field => 'documentation' }
-                                    },
-                                ]
-                            }
-                        ]
-                    }
-                }
-            },
-            _source => [
-                "module",
-            ],
-            fields => [ qw(
+            query   => $query,
+            _source => [ "module", ],
+            fields  => [ qw(
                 abstract.analyzed
                 author
                 authorized

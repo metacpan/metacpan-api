@@ -15,11 +15,13 @@ Find an account based on its identity.
 
 sub find {
     my ( $self, $p ) = @_;
-    return $self->filter( {
-        and => [
-            { term => { 'identity.name' => $p->{name} } },
-            { term => { 'identity.key'  => $p->{key} } }
-        ]
+    return $self->query( {
+        bool => {
+            must => [
+                { term => { 'identity.name' => $p->{name} } },
+                { term => { 'identity.key'  => $p->{key} } },
+            ],
+        }
     } )->first;
 }
 
@@ -33,7 +35,7 @@ Find account by C<$code>. See L</code>.
 
 sub find_code {
     my ( $self, $token ) = @_;
-    return $self->filter( { term => { 'code' => $token } } )->first;
+    return $self->query( { term => { code => $token } } )->first;
 }
 
 =head2 find_token
@@ -46,7 +48,7 @@ Find account by C<$access_token>. See L</access_token>.
 
 sub find_token {
     my ( $self, $token ) = @_;
-    return $self->filter( { term => { 'access_token.token' => $token } } )
+    return $self->query( { term => { 'access_token.token' => $token } } )
         ->first;
 }
 
