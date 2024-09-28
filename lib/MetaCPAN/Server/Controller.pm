@@ -52,7 +52,7 @@ sub model {
     return $model;
 }
 
-sub mapping : Path('_mapping') {
+sub mapping : Path('_mapping') Args(0) {
     my ( $self, $c ) = @_;
     $c->stash(
         $c->model('CPAN')->es->indices->get_mapping(

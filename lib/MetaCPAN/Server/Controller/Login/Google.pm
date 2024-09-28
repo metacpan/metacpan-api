@@ -15,7 +15,7 @@ has [qw( consumer_key consumer_secret )] => (
     required => 1,
 );
 
-sub index : Path {
+sub index : Path Args(0) {
     my ( $self, $c ) = @_;
     my $req = $c->req;
 
