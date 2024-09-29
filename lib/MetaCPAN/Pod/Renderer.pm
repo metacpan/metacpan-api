@@ -2,7 +2,7 @@ package MetaCPAN::Pod::Renderer;
 
 use MetaCPAN::Moose;
 
-use MetaCPAN::Pod::XHTML;
+use MetaCPAN::Pod::HTML;
 use MetaCPAN::Types::TypeTiny qw( Uri );
 use Pod::Markdown             ();
 use Pod::Simple::JustPod      ();
@@ -44,12 +44,11 @@ sub text_renderer {
 sub html_renderer {
     my $self = shift;
 
-    my $parser = MetaCPAN::Pod::XHTML->new;
+    my $parser = MetaCPAN::Pod::HTML->new;
 
     $parser->html_footer('');
     $parser->html_header('');
     $parser->index(1);
-    $parser->anchor_items(1);
     $parser->no_errata_section( $self->no_errata_section );
     $parser->perldoc_url_prefix( $self->perldoc_url_prefix );
     $parser->link_mappings( $self->link_mappings );
