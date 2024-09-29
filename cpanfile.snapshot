@@ -4615,10 +4615,10 @@ DISTRIBUTIONS
       namespace::clean 0.19
       overload 0
       perl 5.008
-  Mozilla-CA-20240730
-    pathname: L/LW/LWP/Mozilla-CA-20240730.tar.gz
+  Mozilla-CA-20240924
+    pathname: L/LW/LWP/Mozilla-CA-20240924.tar.gz
     provides:
-      Mozilla::CA 20240730
+      Mozilla::CA 20240924
     requirements:
       ExtUtils::MakeMaker 0
   Net-DNS-1.47
@@ -5925,22 +5925,22 @@ DISTRIBUTIONS
       Plack::Util::Accessor 0
       overload 0
       perl 5.006
-  Plack-Middleware-Session-0.33
-    pathname: M/MI/MIYAGAWA/Plack-Middleware-Session-0.33.tar.gz
+  Plack-Middleware-Session-0.34
+    pathname: M/MI/MIYAGAWA/Plack-Middleware-Session-0.34.tar.gz
     provides:
-      Plack::Middleware::Session 0.33
+      Plack::Middleware::Session 0.34
       Plack::Middleware::Session::Cookie undef
-      Plack::Session 0.33
-      Plack::Session::Cleanup 0.33
-      Plack::Session::State 0.33
-      Plack::Session::State::Cookie 0.33
-      Plack::Session::Store 0.33
-      Plack::Session::Store::Cache 0.33
-      Plack::Session::Store::DBI 0.33
-      Plack::Session::Store::File 0.33
-      Plack::Session::Store::Null 0.33
+      Plack::Session 0.34
+      Plack::Session::Cleanup 0.34
+      Plack::Session::State 0.34
+      Plack::Session::State::Cookie 0.34
+      Plack::Session::Store 0.34
+      Plack::Session::Store::Cache 0.34
+      Plack::Session::Store::DBI 0.34
+      Plack::Session::Store::File 0.34
+      Plack::Session::Store::Null 0.34
     requirements:
-      Cookie::Baker 0.10
+      Cookie::Baker 0.12
       Digest::HMAC_SHA1 1.03
       Digest::SHA 0
       Module::Build::Tiny 0.034
