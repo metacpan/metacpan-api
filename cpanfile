@@ -81,7 +81,7 @@ requires 'Log::Log4perl::Layout::JSON';
 requires 'LWP::Protocol::https';
 requires 'LWP::UserAgent', '6.66';
 requires 'MetaCPAN::Moose';
-requires 'MetaCPAN::Pod::XHTML';
+requires 'MetaCPAN::Pod::HTML' => '0.004000';
 requires 'MetaCPAN::Role', '0.06';
 requires 'MIME::Base64', '3.15';
 requires 'Minion', '9.03';
