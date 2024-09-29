@@ -26,7 +26,7 @@ sub auto : Private {
     return 1;
 }
 
-sub index : Path {
+sub index : Path Args(0) {
     my ( $self, $c ) = @_;
     my @login = map { "<li><a href=\"/login/" . lc($_) . "\">$_</a></li>" }
         sort map /^Login::(.*)/, $c->controllers;

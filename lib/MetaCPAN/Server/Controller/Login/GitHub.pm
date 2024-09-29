@@ -13,7 +13,7 @@ has [qw(consumer_key consumer_secret)] => (
     required => 1,
 );
 
-sub index : Path {
+sub index : Path Args(0) {
     my ( $self, $c ) = @_;
     if ( my $code = $c->req->params->{code} ) {
         my $ua  = LWP::UserAgent->new;

@@ -31,7 +31,7 @@ sub auto : Private {
     return $c->user_exists;
 }
 
-sub index : Path {
+sub index : Path Args(0) {
     my ( $self, $c ) = @_;
     $c->stash( $c->user->data );
     delete $c->stash->{code};

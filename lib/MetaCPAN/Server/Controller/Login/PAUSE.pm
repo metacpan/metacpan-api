@@ -23,7 +23,7 @@ sub _build_cache {
     );
 }
 
-sub index : Path {
+sub index : Path Args(0) {
     my ( $self, $c ) = @_;
     my $code = $c->req->params->{code};
     my $id;

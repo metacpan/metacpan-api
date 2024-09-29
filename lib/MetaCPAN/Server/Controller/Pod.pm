@@ -77,7 +77,7 @@ sub find_dist_links {
     return $links;
 }
 
-sub render : Path('/pod_render') {
+sub render : Path('/pod_render') Args(0) {
     my ( $self, $c ) = @_;
     my $pod         = $c->req->parameters->{pod};
     my $show_errors = !!$c->req->parameters->{show_errors};

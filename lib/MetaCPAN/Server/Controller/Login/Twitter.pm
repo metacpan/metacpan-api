@@ -20,7 +20,7 @@ sub nt {
     );
 }
 
-sub index : Path {
+sub index : Path Args(0) {
     my ( $self, $c ) = @_;
     my $req = $c->req;
 

@@ -62,7 +62,7 @@ sub bad_request : Private {
     $c->forward( $c->view('JSON') );
 }
 
-sub robots : Path("robots.txt") {
+sub robots : Path("robots.txt") Args(0) {
     my ( $self, $c ) = @_;
     $c->res->content_type("text/plain");
     $c->res->body("User-agent: *\nDisallow: /\n");
