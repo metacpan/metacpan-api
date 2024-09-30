@@ -7,7 +7,7 @@ jobs:
   update-dep:
     runs-on: "ubuntu-22.04"
     container:
-      image: perl:5.36
+      image: perl:5.22
     steps:
       - name: install jq
         run: |
