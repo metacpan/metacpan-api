@@ -130,25 +130,6 @@ sub latest_release {
         ->sort( [ { 'date' => { order => "desc" } } ] )->first;
 }
 
-sub skip {
-    my ( $self, $author, $archive ) = @_;
-    return $self->es->count( {
-        index => $self->index->name,
-        type  => 'release',
-        body  => {
-            query => {
-                bool => {
-                    must => [
-                        { term => { status  => 'backpan' } },
-                        { term => { archive => $archive } },
-                        { term => { author  => $author } },
-                    ],
-                },
-            },
-        },
-    } );
-}
-
 sub index_release {
     my ( $self, $release ) = @_;
     my $archive = $self->cpan->child( $release->{path} )->stringify;
