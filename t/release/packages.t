@@ -2,8 +2,8 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use Cpanel::JSON::XS      ();
 use MetaCPAN::TestHelpers qw( test_release );
+use MetaCPAN::Util        qw(true false);
 use Test::More;
 
 test_release(
@@ -11,8 +11,8 @@ test_release(
         name        => 'Packages-1.103',
         author      => 'RWSTAUNER',
         abstract    => 'Package examples',
-        authorized  => 1,
-        first       => 1,
+        authorized  => true,
+        first       => true,
         provides    => [ 'Packages', 'Packages::BOM', ],
         status      => 'latest',
         main_module => 'Packages',
@@ -20,8 +20,8 @@ test_release(
             'lib/Packages.pm' => [
                 {
                     name             => 'Packages',
-                    indexed          => Cpanel::JSON::XS::true(),
-                    authorized       => Cpanel::JSON::XS::true(),
+                    indexed          => true,
+                    authorized       => true,
                     version          => '1.103',
                     version_numified => 1.103,
                     associated_pod   =>
@@ -31,8 +31,8 @@ test_release(
             'lib/Packages/BOM.pm' => [
                 {
                     name             => 'Packages::BOM',
-                    indexed          => Cpanel::JSON::XS::true(),
-                    authorized       => Cpanel::JSON::XS::true(),
+                    indexed          => true,
+                    authorized       => true,
                     version          => 0.04,
                     version_numified => 0.04,
                     associated_pod   =>

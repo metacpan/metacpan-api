@@ -8,6 +8,7 @@ use Moose;
 use CPAN::DistnameInfo          ();
 use DateTime::Format::ISO8601   ();
 use MetaCPAN::Types::TypeTiny   qw( Bool Str );
+use MetaCPAN::Util              qw( true false );
 use Parse::CPAN::Packages::Fast ();
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
@@ -99,7 +100,7 @@ sub run {
 
             push @module_filters,
                 [
-                { term  => { 'module.indexed' => 1 } },
+                { term  => { 'module.indexed' => true } },
                 { terms => { "module.name"    => \@modules } },
                 ];
         }
@@ -107,7 +108,7 @@ sub run {
     else {
         push @module_filters,
             [
-            { term   => { 'module.indexed' => 1 } },
+            { term   => { 'module.indexed' => true } },
             { exists => { field            => "module.name" } },
             ];
     }

@@ -3,11 +3,14 @@ package MetaCPAN::Types::Internal;
 use strict;
 use warnings;
 
-use ElasticSearchX::Model::Document::Types qw( Type );
-use MooseX::Getopt::OptionTypeMap          ();
-use MooseX::Types::Moose                   qw( ArrayRef HashRef );
+use ElasticSearchX::Model::Document::Mapping ();
+use ElasticSearchX::Model::Document::Types   qw( Type );
+use MetaCPAN::Util                           qw( is_bool true false );
+use MooseX::Getopt::OptionTypeMap            ();
+use MooseX::Types::Moose qw( Item Any Bool ArrayRef HashRef );
 
 use MooseX::Types -declare => [ qw(
+    ESBool
     Module
     Identity
     Dependency
@@ -62,6 +65,14 @@ coerce Profile, from HashRef,
 
 MooseX::Getopt::OptionTypeMap->add_option_type_to_map(
     'MooseX::Types::ElasticSearch::ES' => '=s' );
+
+subtype ESBool, as Item, where { is_bool($_) };
+coerce ESBool, from Bool, via {
+    $_ ? true : false
+};
+
+$ElasticSearchX::Model::Document::Mapping::MAPPING{ESBool}
+    = $ElasticSearchX::Model::Document::Mapping::MAPPING{ESBool};
 
 use MooseX::Attribute::Deflator;
 deflate 'ScalarRef', via {$$_};

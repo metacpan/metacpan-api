@@ -3,6 +3,7 @@ use warnings;
 use lib 't/lib';
 
 use MetaCPAN::TestHelpers qw( test_release );
+use MetaCPAN::Util        qw(true false);
 use Test::More;
 
 test_release(
@@ -10,8 +11,8 @@ test_release(
         name        => 'Meta-Provides-1.01',
         author      => 'RWSTAUNER',
         abstract    => 'has provides key in meta',
-        authorized  => 1,
-        first       => 1,
+        authorized  => true,
+        first       => true,
         provides    => [ 'Meta::Provides', ],
         status      => 'latest',
         main_module => 'Meta::Provides',
@@ -25,7 +26,7 @@ test_release(
                     must => [
                         { term   => { 'author'    => $release->author } },
                         { term   => { 'release'   => $release->name } },
-                        { term   => { 'directory' => \0 } },
+                        { term   => { 'directory' => false } },
                         { prefix => { 'path'      => 'lib/' } },
                     ],
                 },
@@ -45,7 +46,7 @@ test_release(
             foreach my $test (
                 [
                     'Provides.pm', 'Meta::Provides',
-                    [ { name => 'Meta::Provides', indexed => 1 }, ]
+                    [ { name => 'Meta::Provides', indexed => true }, ]
                 ],
                 )
             {

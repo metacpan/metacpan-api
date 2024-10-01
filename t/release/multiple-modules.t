@@ -3,6 +3,7 @@ use warnings;
 use lib 't/lib';
 
 use MetaCPAN::Server::Test qw( model );
+use MetaCPAN::Util         qw(true false);
 use Test::More;
 
 my $model   = model();
@@ -52,24 +53,24 @@ ok( !$release->first, 'Release is not first' );
             'A.pm',
             'Multiple::Modules::A',
             [
-                { name => 'Multiple::Modules::A',  indexed => 1 },
-                { name => 'Multiple::Modules::A2', indexed => 1 },
+                { name => 'Multiple::Modules::A',  indexed => true },
+                { name => 'Multiple::Modules::A2', indexed => true },
             ]
         ],
         [
             'B.pm',
             'Multiple::Modules::B',
             [
-                { name => 'Multiple::Modules::B', indexed => 1 },
+                { name => 'Multiple::Modules::B', indexed => true },
 
-                #{name => 'Multiple::Modules::_B2', indexed => 0}, # hidden
-                { name => 'Multiple::Modules::B::Secret', indexed => 0 },
+              #{name => 'Multiple::Modules::_B2', indexed => false }, # hidden
+                { name => 'Multiple::Modules::B::Secret', indexed => false },
             ]
         ],
         [
             'Modules.pm',
             'Multiple::Modules',
-            [ { name => 'Multiple::Modules', indexed => 1 }, ]
+            [ { name => 'Multiple::Modules', indexed => true }, ]
         ],
         )
     {

@@ -3,6 +3,7 @@ use warnings;
 use lib 't/lib';
 
 use MetaCPAN::TestHelpers qw( test_distribution test_release );
+use MetaCPAN::Util        qw(true false);
 use Test::More;
 
 test_distribution(
@@ -32,8 +33,8 @@ test_release( {
     distribution => 'Text-Tabs+Wrap',
 
     author     => 'LOCAL',
-    authorized => 1,
-    first      => 1,
+    authorized => true,
+    first      => true,
     version    => '2013.0523',
 
     # No modules.

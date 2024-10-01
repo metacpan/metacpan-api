@@ -3,10 +3,9 @@ package MetaCPAN::Document::Release;
 use Moose;
 
 use ElasticSearchX::Model::Document;
-use MetaCPAN::Types           qw( Dependency );
+use MetaCPAN::Types           qw( ESBool Dependency );
 use MetaCPAN::Types::TypeTiny qw(
     ArrayRef
-    Bool
     HashRefCPANMeta
     Num
     Resources
@@ -14,7 +13,7 @@ use MetaCPAN::Types::TypeTiny qw(
     Str
     Tests
 );
-use MetaCPAN::Util qw( numify_version );
+use MetaCPAN::Util qw( numify_version true false );
 
 =head1 PROPERTIES
 
@@ -228,16 +227,16 @@ has tests => (
 has authorized => (
     is       => 'ro',
     required => 1,
-    isa      => Bool,
-    default  => 1,
+    isa      => ESBool,
+    default  => sub {true},
     writer   => '_set_authorized',
 );
 
 has first => (
     is       => 'ro',
     required => 1,
-    isa      => Bool,
-    default  => 0,
+    isa      => ESBool,
+    default  => sub {false},
     writer   => '_set_first',
 );
 
@@ -263,8 +262,8 @@ has changes_file => (
 
 has deprecated => (
     is      => 'ro',
-    isa     => Bool,
-    default => sub {0},
+    isa     => ESBool,
+    default => sub {false},
     writer  => '_set_deprecated',
 );
 
@@ -294,7 +293,7 @@ sub set_first {
         # { term => { first => 1 } },
         # currently, the "first" property is not computed on all releases
         # since this feature has not been around when last reindexed
-    } )->count ? 0 : 1;
+    } )->count ? false : true;
 
     $self->_set_first($is_first);
 }

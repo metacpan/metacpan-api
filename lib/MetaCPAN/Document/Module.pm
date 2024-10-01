@@ -8,8 +8,9 @@ use ElasticSearchX::Model::Document;
 
 with 'ElasticSearchX::Model::Document::EmbeddedRole';
 
-use MetaCPAN::Types::TypeTiny qw( Bool Maybe Num Str );
-use MetaCPAN::Util;
+use MetaCPAN::Types           qw( ESBool );
+use MetaCPAN::Types::TypeTiny qw( Maybe Num Str );
+use MetaCPAN::Util            qw(true false);
 
 =head1 SYNOPSIS
 
@@ -73,16 +74,16 @@ has version => ( is => 'ro' );
 has indexed => (
     is       => 'ro',
     required => 1,
-    isa      => Bool,
-    default  => 1,
+    isa      => ESBool,
+    default  => sub {true},
     writer   => '_set_indexed',
 );
 
 has authorized => (
     is       => 'ro',
     required => 1,
-    isa      => Bool,
-    default  => 1,
+    isa      => ESBool,
+    default  => sub {true},
     writer   => '_set_authorized',
 );
 

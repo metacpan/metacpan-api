@@ -3,6 +3,7 @@ use warnings;
 use lib 't/lib';
 
 use MetaCPAN::Server::Test qw( model );
+use MetaCPAN::Util         qw(true false);
 use Test::More skip_all => 'Scripting is disabled';
 
 my $model   = model();
@@ -44,12 +45,12 @@ is( $release->main_module, 'Scripts', 'main_module ok' );
         [
             {
                 documentation => 'catalyst',
-                indexed       => 1,
+                indexed       => true,
                 mime          => 'text/x-script.perl'
             },
             {
                 documentation => 'starman',
-                indexed       => 1,
+                indexed       => true,
                 mime          => 'text/x-script.perl'
             }
         ],

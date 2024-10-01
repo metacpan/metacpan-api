@@ -3,6 +3,7 @@ use warnings;
 use lib 't/lib';
 
 use MetaCPAN::TestHelpers qw( test_release );
+use MetaCPAN::Util        qw(true false);
 use Ref::Util             qw( is_hashref );
 use Test::More;
 
@@ -15,8 +16,8 @@ test_release( {
     name         => 'P-1.0.20',
     distribution => 'P',
     author       => 'LOCAL',
-    authorized   => 1,
-    first        => 1,
+    authorized   => true,
+    first        => true,
     version      => 'v1.0.20',
 
     provides => [ 'P', ],

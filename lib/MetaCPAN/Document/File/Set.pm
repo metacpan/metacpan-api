@@ -6,7 +6,7 @@ use List::Util                qw( max );
 use MetaCPAN::Query::Favorite ();
 use MetaCPAN::Query::File     ();
 use MetaCPAN::Query::Release  ();
-use MetaCPAN::Util            qw( single_valued_arrayref_to_scalar );
+use MetaCPAN::Util qw( single_valued_arrayref_to_scalar true false );
 
 extends 'ElasticSearchX::Model::Document::Set';
 
@@ -78,8 +78,8 @@ sub find {
     my @candidates = $self->index->type('file')->query( {
         bool => {
             must => [
-                { term => { indexed    => 1 } },
-                { term => { authorized => 1 } },
+                { term => { indexed    => true } },
+                { term => { authorized => true } },
                 { term => { status     => 'latest' } },
                 {
                     bool => {
@@ -100,8 +100,8 @@ sub find {
                                                             [
                                                             { term =>
                                                                     { "module.authorized"
-                                                                        => 1 }
-                                                            },
+                                                                        => true
+                                                                    } },
                                                             { exists =>
                                                                     { field =>
                                                                         'module.associated_pod'
@@ -175,7 +175,10 @@ sub documented_modules {
                                             exists =>
                                                 { field => 'module.name' }
                                         },
-                                        { term => { 'module.indexed' => 1 } },
+                                        {
+                                            term =>
+                                                { 'module.indexed' => true }
+                                        },
                                     ],
                                 }
                             },
@@ -186,7 +189,7 @@ sub documented_modules {
                                             exists =>
                                                 { field => 'pod.analyzed' }
                                         },
-                                        { term => { indexed => 1 } },
+                                        { term => { indexed => true } },
                                     ],
                                 }
                             },
@@ -217,8 +220,8 @@ sub history {
                     filter => {
                         bool => {
                             must => [
-                                { term => { "module.authorized" => 1 } },
-                                { term => { "module.indexed"    => 1 } },
+                                { term => { "module.authorized" => true } },
+                                { term => { "module.indexed"    => true } },
                                 { term => { "module.name" => $module } },
                             ]
                         }
@@ -242,8 +245,8 @@ sub history {
         bool => {
             must => [
                 { match_phrase => { documentation => $module } },
-                { term         => { indexed       => 1 } },
-                { term         => { authorized    => 1 } },
+                { term         => { indexed       => true } },
+                { term         => { authorized    => true } },
             ]
         }
         } )
@@ -252,8 +255,8 @@ sub history {
         : $self->query(
         bool => {
             must => [
-                { term => { indexed    => 1 } },
-                { term => { authorized => 1 } },
+                { term => { indexed    => true } },
+                { term => { authorized => true } },
             ]
         }
         );
@@ -279,8 +282,8 @@ sub autocomplete {
                 },
                 { exists => { field      => 'documentation' } },
                 { term   => { status     => 'latest' } },
-                { term   => { indexed    => 1 } },
-                { term   => { authorized => 1 } }
+                { term   => { indexed    => true } },
+                { term   => { authorized => true } }
             ],
             must_not =>
                 [ { terms => { distribution => \@ROGUE_DISTRIBUTIONS } }, ],
@@ -340,8 +343,8 @@ sub autocomplete_suggester {
             query => {
                 bool => {
                     must => [
-                        { term  => { indexed       => 1 } },
-                        { term  => { authorized    => 1 } },
+                        { term  => { indexed       => true } },
+                        { term  => { authorized    => true } },
                         { term  => { status        => 'latest' } },
                         { terms => { documentation => [ keys %docs ] } },
                     ],
@@ -390,7 +393,7 @@ sub autocomplete_suggester {
 sub find_changes_files {
     my ( $self, $author, $release ) = @_;
     my $result = $self->files_by_category( $author, $release, ['changelog'],
-        { fields => \1 } );
+        { fields => true } );
     my ($file) = @{ $result->{categories}{changelog} || [] };
     return $file;
 }

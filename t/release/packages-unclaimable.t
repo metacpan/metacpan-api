@@ -2,9 +2,9 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use Cpanel::JSON::XS      ();
 use List::Util            qw( uniq );
 use MetaCPAN::TestHelpers qw( test_release );
+use MetaCPAN::Util        qw( true false );
 use Module::Metadata      ();
 use Test::More;
 
@@ -14,8 +14,8 @@ test_release(
         author   => 'RWSTAUNER',
         abstract =>
             'Dist that appears to declare packages that are not allowed',
-        authorized  => 1,
-        first       => 1,
+        authorized  => true,
+        first       => true,
         provides    => [ 'Packages::Unclaimable', ],
         status      => 'latest',
         main_module => 'Packages::Unclaimable',
@@ -23,8 +23,8 @@ test_release(
             'lib/Packages/Unclaimable.pm' => [
                 {
                     name             => 'Packages::Unclaimable',
-                    indexed          => Cpanel::JSON::XS::true(),
-                    authorized       => Cpanel::JSON::XS::true(),
+                    indexed          => true,
+                    authorized       => true,
                     version          => 2,
                     version_numified => 2,
                     associated_pod   =>

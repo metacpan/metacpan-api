@@ -3,12 +3,11 @@ package MetaCPAN::Model::Search;
 use MetaCPAN::Moose;
 
 use Const::Fast               qw( const );
-use Cpanel::JSON::XS          ();
 use Hash::Merge               qw( merge );
 use List::Util                qw( min uniq );
 use Log::Contextual           qw( :log :dlog );
 use MetaCPAN::Types::TypeTiny qw( Object Str );
-use MetaCPAN::Util            qw( single_valued_arrayref_to_scalar );
+use MetaCPAN::Util qw( single_valued_arrayref_to_scalar true false );
 use MooseX::StrictConstructor;
 
 has es => (
@@ -128,7 +127,7 @@ sub _search_expanded {
         results   => $results,
         total     => $es_results->{hits}->{total},
         took      => $es_results->{took},
-        collapsed => Cpanel::JSON::XS::false(),
+        collapsed => false,
     };
     return $return;
 }
@@ -188,7 +187,7 @@ sub _search_collapsed {
         results   => [],
         total     => $es_results->{aggregations}{total_dists}{value},
         took      => $es_results->{took},
-        collapsed => Cpanel::JSON::XS::true(),
+        collapsed => true,
     };
 
     my $last = min( $total_size - 1,
@@ -216,8 +215,8 @@ sub build_query {
         bool => {
             filter => [
                 { term => { status     => 'latest' } },
-                { term => { authorized => 1 } },
-                { term => { indexed    => 1 } },
+                { term => { authorized => true } },
+                { term => { indexed    => true } },
                 {
                     bool => {
                         should => [
@@ -228,7 +227,10 @@ sub build_query {
                                             exists =>
                                                 { field => 'module.name' }
                                         },
-                                        { term => { 'module.indexed' => 1 } }
+                                        {
+                                            term =>
+                                                { 'module.indexed' => true }
+                                        }
                                     ],
                                 }
                             },
@@ -275,8 +277,9 @@ sub build_query {
                                                 query            => $clean,
                                                 boost            => 3,
                                                 default_operator => 'AND',
-                                                allow_leading_wildcard => 0,
-                                                use_dis_max            => 1,
+                                                allow_leading_wildcard =>
+                                                    false,
+                                                use_dis_max => true,
 
                                             }
                                         },
@@ -287,8 +290,9 @@ sub build_query {
                                                 ],
                                                 query            => $clean,
                                                 default_operator => 'AND',
-                                                allow_leading_wildcard => 0,
-                                                use_dis_max            => 1,
+                                                allow_leading_wildcard =>
+                                                    false,
+                                                use_dis_max => true,
                                             },
                                         },
                                     ],
@@ -322,7 +326,7 @@ sub build_query {
                                 {
                                     term => { 'mime' => 'text/x-script.perl' }
                                 },
-                                { term => { 'deprecated' => 1 } },
+                                { term => { 'deprecated' => true } },
                             ],
                         },
                     },

@@ -12,7 +12,7 @@ use File::Spec                ();
 use Log::Contextual           qw( :log :dlog );
 use MetaCPAN::Model::Archive  ();
 use MetaCPAN::Types::TypeTiny qw( AbsPath ArrayRef Str );
-use MetaCPAN::Util            qw( fix_version);
+use MetaCPAN::Util            qw( fix_version true false );
 use Module::Metadata 1.000012 ();    # Improved package detection.
 use MooseX::StrictConstructor;
 use Parse::PMFile ();
@@ -355,14 +355,15 @@ sub _build_files {
             my $file = $file_set->new_document(
                 Dlog_trace {"adding file $_"} +{
                     author  => $self->author,
-                    binary  => -B $child,
+                    binary  => -B $child      ? true : false,
                     content => $child->is_dir ? \""
                     : \( scalar $child->slurp ),
                     date         => $self->date,
-                    directory    => $child->is_dir,
+                    directory    => $child->is_dir ? true : false,
                     distribution => $self->distribution,
-                    indexed => $self->metadata->should_index_file($fpath) ? 1
-                    : 0,
+                    indexed      => $self->metadata->should_index_file($fpath)
+                    ? true
+                    : false,
                     local_path   => $child,
                     maturity     => $self->maturity,
                     metadata     => $self->metadata,
@@ -491,7 +492,7 @@ sub _modules_from_meta {
         $file->add_module( {
             name    => $module,
             version => $data->{version},
-            indexed => 1,
+            indexed => true,
         } );
         push( @modules, $file );
     }

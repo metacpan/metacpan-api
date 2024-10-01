@@ -8,6 +8,7 @@ use Moose;
 use ElasticSearchX::Model::Document;
 
 use MetaCPAN::Types::TypeTiny qw( BugSummary RiverSummary );
+use MetaCPAN::Util            qw(true false);
 
 has name => (
     is       => 'ro',
@@ -49,11 +50,11 @@ sub set_first_release {
     my @releases = $self->releases->sort( ["date"] )->all;
 
     my $first = shift @releases;
-    $first->_set_first(1);
+    $first->_set_first(true);
     $first->put;
 
     for my $rel (@releases) {
-        $rel->_set_first(0);
+        $rel->_set_first(false);
         $rel->put;
     }
 

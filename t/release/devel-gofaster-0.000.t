@@ -3,14 +3,15 @@ use warnings;
 use lib 't/lib';
 
 use MetaCPAN::TestHelpers qw( test_release );
+use MetaCPAN::Util        qw(true false);
 use Test::More;
 
 test_release( {
     name         => 'Devel-GoFaster-0.000',
     distribution => 'Devel-GoFaster',
     author       => 'LOCAL',
-    authorized   => 1,
-    first        => 1,
+    authorized   => true,
+    first        => true,
     version      => '0.000',
 
     provides => [ 'Devel::GoFaster', ],

@@ -16,6 +16,7 @@ use Ref::Util   qw(
     is_plain_hashref
     is_ref
 );
+use Cpanel::JSON::XS ();
 use Sub::Exporter -setup => {
     exports => [ qw(
         checkout_root
@@ -30,8 +31,15 @@ use Sub::Exporter -setup => {
         pod_lines
         strip_pod
         single_valued_arrayref_to_scalar
+        true
+        false
+        is_bool
     ) ]
 };
+
+*true    = \&Cpanel::JSON::XS::true;
+*false   = \&Cpanel::JSON::XS::false;
+*is_bool = \&Cpanel::JSON::XS::is_bool;
 
 sub checkout_root {
     IPC::Run3::run3( [qw(git rev-parse --show-toplevel)],

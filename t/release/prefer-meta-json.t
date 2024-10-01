@@ -3,6 +3,7 @@ use warnings;
 use lib 't/lib';
 
 use MetaCPAN::Server::Test qw( model );
+use MetaCPAN::Util         qw(true false);
 use Test::More;
 
 my $model   = model();
@@ -41,10 +42,10 @@ is( $release->metadata->{'meta-spec'}{version}, 2, 'meta_spec version is 2' );
     is( scalar @modules, 2, 'file contains two modules' );
 
     is( $modules[0]->name,    'Prefer::Meta::JSON', 'module name ok' );
-    is( $modules[0]->indexed, 1,                    'main module indexed' );
+    is( $modules[0]->indexed, true,                 'main module indexed' );
 
     is( $modules[1]->name, 'Prefer::Meta::JSON::Gremlin', 'module name ok' );
-    is( $modules[1]->indexed, 0, 'module not indexed' );
+    is( $modules[1]->indexed, false, 'module not indexed' );
 }
 
 done_testing;
