@@ -214,6 +214,10 @@ sub diff_struct {
             push @queue, map [ $old->{$_}, $new->{$_}, "$path/$_" ],
                 keys %$new;
         }
+        elsif ( is_bool($new) ) {
+            return [ $path, $old, $new ]
+                if !is_bool($old) || $old != $new;
+        }
         else {
             die "can't compare $new type data at $path";
         }
