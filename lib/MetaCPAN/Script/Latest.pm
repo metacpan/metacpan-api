@@ -139,9 +139,19 @@ sub run {
             'Searching for ' . @$filter . ' of ' . $total . ' modules'
         }
         if @module_filters > 1;
-        my $scroll = $self->index->type('file')->query($query)->source( [ qw(
-            author date distribution download_url module.name release status
-        ) ] )->size(100)->raw->scroll;
+
+        my $scroll = $self->es->scroll_helper( {
+            index => $self->index->name,
+            type  => 'file',
+            size  => 100,
+            body  => {
+                query   => $query,
+                _source => [
+                    qw(author date distribution download_url module.name release status)
+                ],
+                sort => '_doc',
+            },
+        } );
 
         $found_total += $scroll->total;
 
