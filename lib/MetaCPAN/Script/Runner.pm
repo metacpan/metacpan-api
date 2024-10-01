@@ -29,6 +29,14 @@ sub run {
             or File::Path::mkpath($path);
     }
 
+    if ( -t *STDERR ) {
+        push @{ $config->{logger} },
+            {
+            class  => 'Log::Log4perl::Appender::ScreenColoredLevels',
+            stdout => 0,
+            };
+    }
+
     my $obj = undef;
     my $ex  = undef;
     try {
