@@ -86,16 +86,6 @@ has model => (
     traits   => ['NoGetopt'],
 );
 
-has index => (
-    reader        => '_index',
-    is            => 'ro',
-    isa           => Str,
-    lazy          => 1,
-    default       => 'cpan',
-    documentation =>
-        'Index to use, defaults to "cpan" (when used: also export ES_SCRIPT_INDEX)',
-);
-
 has cluster_info => (
     isa     => HashRef,
     traits  => ['Hash'],
@@ -158,20 +148,6 @@ has queue => (
     documentation => 'add indexing jobs to the minion queue',
 );
 
-sub BUILDARGS {
-    my ( $self, @args ) = @_;
-    my %args = @args == 1 ? %{ $args[0] } : @args;
-
-    if ( exists $args{index} ) {
-        die
-            "when setting --index, please export ES_SCRIPT_INDEX to the same value\n"
-            unless $ENV{ES_SCRIPT_INDEX}
-            and $args{index} eq $ENV{ES_SCRIPT_INDEX};
-    }
-
-    return \%args;
-}
-
 sub handle_error {
     my ( $self, $error, $die_always ) = @_;
 
@@ -194,7 +170,7 @@ sub print_error {
 
 sub index {
     my $self = shift;
-    return $self->model->index( $self->_index );
+    return $self->model->index('cpan');
 }
 
 sub _build_model {

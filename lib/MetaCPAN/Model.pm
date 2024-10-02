@@ -44,7 +44,7 @@ analyzer edge => (
 
 index cpan => (
     namespace => 'MetaCPAN::Document',
-    alias_for => ( $ENV{'ES_SCRIPT_INDEX'} || 'cpan_v1_01' ),
+    alias_for => 'cpan_v1_01',
     shards    => 3
 );
 

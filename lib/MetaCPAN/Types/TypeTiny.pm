@@ -18,6 +18,8 @@ use Type::Library -base, -declare => ( qw(
 
     Logger
     HashRefCPANMeta
+
+    CommaSepOption
 ) );
 use Type::Utils qw( as coerce declare extends from via );
 
@@ -125,5 +127,10 @@ if ( eval { require MooseX::Getopt; 1 } ) {
         MooseX::Getopt::OptionTypeMap->add_option_type_to_map( $type, '=s' );
     }
 }
+
+declare CommaSepOption, as ArrayRef [ StrMatch [qr{^[^, ]+$}] ];
+coerce CommaSepOption, from ArrayRef [Str], via {
+    return [ map split(/\s*,\s*/), @$_ ];
+};
 
 1;
