@@ -5,15 +5,15 @@ use lib 't/lib';
 # USE `bin/prove_live` to run this
 # READ the README.txt in this dir
 
-use MetaCPAN::Model::Search ();
+use MetaCPAN::Query::Search ();
 use MetaCPAN::TestServer    ();
 use Test::More;
 
 # Just use this to get an es object.
 my $server = MetaCPAN::TestServer->new;
-my $search = MetaCPAN::Model::Search->new(
-    es    => $server->es_client,
-    index => 'cpan',
+my $search = MetaCPAN::Query::Search->new(
+    es          => $server->es_client,
+    index_name => 'cpan',
 );
 
 my %tests = (

@@ -1,4 +1,4 @@
-package MetaCPAN::Model::Search;
+package MetaCPAN::Query::Search;
 
 use MetaCPAN::Moose;
 
@@ -10,18 +10,7 @@ use MetaCPAN::Types::TypeTiny qw( Object Str );
 use MetaCPAN::Util qw( single_valued_arrayref_to_scalar true false );
 use MooseX::StrictConstructor;
 
-has es => (
-    is       => 'ro',
-    isa      => Object,
-    handles  => { _run_query => 'search', },
-    required => 1,
-);
-
-has index => (
-    is       => 'ro',
-    isa      => Str,
-    required => 1,
-);
+with 'MetaCPAN::Query::Role::Common';
 
 const my $RESULTS_PER_RUN => 200;
 const my @ROGUE_DISTRIBUTIONS => qw(
@@ -368,8 +357,8 @@ sub build_query {
 
 sub run_query {
     my ( $self, $type, $es_query ) = @_;
-    return $self->_run_query(
-        index       => $self->index,
+    return $self->es->search(
+        index       => $self->index_name,
         type        => $type,
         body        => $es_query,
         search_type => 'dfs_query_then_fetch',

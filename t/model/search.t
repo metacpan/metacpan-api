@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use MetaCPAN::Model::Search ();
+use MetaCPAN::Query::Search ();
 use MetaCPAN::TestServer    ();
 use MetaCPAN::Util          qw(true false);
 use Test::Deep              qw( cmp_deeply ignore );
@@ -10,9 +10,9 @@ use Test::More;
 
 # Just use this to get an es object.
 my $server = MetaCPAN::TestServer->new;
-my $search = MetaCPAN::Model::Search->new(
-    es    => $server->es_client,
-    index => 'cpan',
+my $search = MetaCPAN::Query::Search->new(
+    es         => $server->es_client,
+    index_name => 'cpan',
 );
 
 ok( $search, 'search' );
