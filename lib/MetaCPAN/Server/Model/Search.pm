@@ -4,20 +4,20 @@ use strict;
 use warnings;
 
 use Moose;
-use MetaCPAN::Model::Search ();
+use MetaCPAN::Query::Search ();
 
 extends 'MetaCPAN::Server::Model::CPAN';
 
 has search => (
     is      => 'ro',
-    isa     => 'MetaCPAN::Model::Search',
+    isa     => 'MetaCPAN::Query::Search',
     lazy    => 1,
     handles => [qw( search_for_first_result search_web )],
     default => sub {
         my $self = shift;
-        return MetaCPAN::Model::Search->new(
-            es    => $self->es,
-            index => $self->index,
+        return MetaCPAN::Query::Search->new(
+            es         => $self->es,
+            index_name => $self->index,
         );
     },
 );
