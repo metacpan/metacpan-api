@@ -6109,18 +6109,6 @@ DISTRIBUTIONS
       Test::More 0
       parent 0
       perl 5.008001
-  Plack-Middleware-Rewrite-2.102
-    pathname: A/AR/ARISTOTLE/Plack-Middleware-Rewrite-2.102.tar.gz
-    provides:
-      Plack::Middleware::Rewrite 2.102
-    requirements:
-      Plack 0.9942
-      Plack::Middleware 0
-      Plack::Request 0
-      Plack::Util 0
-      Plack::Util::Accessor 0
-      overload 0
-      perl 5.006
   Plack-Middleware-Session-0.34
     pathname: M/MI/MIYAGAWA/Plack-Middleware-Session-0.34.tar.gz
     provides:
