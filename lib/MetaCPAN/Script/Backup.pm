@@ -8,7 +8,7 @@ use Cpanel::JSON::XS          qw( decode_json encode_json );
 use DateTime                  ();
 use IO::Zlib                  ();
 use Log::Contextual           qw( :log :dlog );
-use MetaCPAN::Types::TypeTiny qw( Bool Int Path Str );
+use MetaCPAN::Types::TypeTiny qw( Bool Int Path Str CommaSepOption );
 use Moose;
 use Try::Tiny qw( catch try );
 
@@ -20,6 +20,15 @@ has batch_size => (
     default       => 100,
     documentation =>
         'Number of documents to restore in one batch, defaults to 100',
+);
+
+has index => (
+    reader        => '_index',
+    is            => 'ro',
+    isa           => CommaSepOption,
+    coerce        => 1,
+    default       => 'cpan',
+    documentation => 'ES indexes to backup, defaults to "cpan"',
 );
 
 has type => (
@@ -61,34 +70,38 @@ sub run {
     return $self->run_restore if $self->restore;
 
     my $es = $self->es;
-    $self->index->refresh;
 
-    my $filename = join( '-',
-        DateTime->now->strftime('%F'),
-        grep {defined} $self->index->name,
-        $self->type );
+    for my $index ( @{ $self->_index } ) {
 
-    my $file = $self->home->child( qw(var backup), "$filename.json.gz" );
-    $file->parent->mkpath unless ( -e $file->parent );
-    my $fh = IO::Zlib->new( "$file", 'wb4' );
+        $self->es->indices->refresh( index => $index );
 
-    my $scroll = $es->scroll_helper(
-        index => $self->index->name,
-        $self->type ? ( type => $self->type ) : (),
-        size   => $self->size,
-        fields => [qw(_parent _source)],
-        scroll => '1m',
-        body   => {
-            sort => '_doc',
-        },
-    );
+        my $filename = join( '-',
+            DateTime->now->strftime('%F'),
+            grep {defined} $index,
+            $self->type );
 
-    log_info { 'Backing up ', $scroll->total, ' documents' };
+        my $file = $self->home->child( qw(var backup), "$filename.json.gz" );
+        $file->parent->mkpath unless ( -e $file->parent );
+        my $fh = IO::Zlib->new( "$file", 'wb4' );
 
-    while ( my $result = $scroll->next ) {
-        print $fh encode_json($result), $/;
+        my $scroll = $es->scroll_helper(
+            index => $index,
+            $self->type ? ( type => $self->type ) : (),
+            size   => $self->size,
+            fields => [qw(_parent _source)],
+            scroll => '1m',
+            body   => {
+                sort => '_doc',
+            },
+        );
+
+        log_info { 'Backing up ', $scroll->total, ' documents' };
+
+        while ( my $result = $scroll->next ) {
+            print $fh encode_json($result), $/;
+        }
+        close $fh;
     }
-    close $fh;
     log_info {'done'};
 }
 
