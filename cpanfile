@@ -58,7 +58,6 @@ requires 'File::stat';
 requires 'File::Temp';
 requires 'FindBin';
 requires 'Getopt::Long::Descriptive', '0.103';
-requires 'Git::Helpers', '1.000001';
 requires 'Gravatar::URL';
 requires 'Hash::Merge::Simple';
 requires 'HTML::Entities';
