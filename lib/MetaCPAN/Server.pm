@@ -107,10 +107,6 @@ sub app {
             };
         };
 
-        if ( $ENV{PLACK_ENV} && $ENV{PLACK_ENV} eq 'development' ) {
-            enable 'Rewrite', rules => sub {s{^/?v\d+/}{}};
-        }
-
         $class->apply_default_middlewares( $class->psgi_app );
     };
 }

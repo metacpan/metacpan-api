@@ -115,7 +115,6 @@ requires 'Plack', '1.0048';
 requires 'Plack::App::Directory';
 requires 'Plack::Middleware::Header';
 requires 'Plack::Middleware::ReverseProxy';
-requires 'Plack::Middleware::Rewrite';
 requires 'Plack::Middleware::Session';
 requires 'Plack::Session::Store';
 requires 'Pod::Markdown', '3.300';
@@ -167,5 +166,4 @@ requires 'Test::Routine', '0.012';
 requires 'Test::Vars', '0.015';
 
 # author requirements
-requires 'Plack::Middleware::Rewrite';
 requires 'App::perlimports';
