@@ -4,7 +4,6 @@ use Moose::Role;
 
 use MetaCPAN::Server::Config  ();
 use MetaCPAN::Types::TypeTiny qw( HashRef );
-use MetaCPAN::Util            qw( checkout_root );
 
 # Done like this so can be required by a role
 sub config {
