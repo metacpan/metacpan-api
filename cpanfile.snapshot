@@ -2312,23 +2312,6 @@ DISTRIBUTIONS
       File::Spec 0
       IO::File 0
       perl 5.006
-  ExtUtils-HasCompiler-0.025
-    pathname: L/LE/LEONT/ExtUtils-HasCompiler-0.025.tar.gz
-    provides:
-      ExtUtils::HasCompiler 0.025
-    requirements:
-      Carp 0
-      DynaLoader 0
-      Exporter 0
-      ExtUtils::MakeMaker 0
-      ExtUtils::Mksymlists 0
-      File::Basename 0
-      File::Spec::Functions 0
-      File::Temp 0
-      base 0
-      perl 5.006
-      strict 0
-      warnings 0
   ExtUtils-Helpers-0.028
     pathname: L/LE/LEONT/ExtUtils-Helpers-0.028.tar.gz
     provides:
