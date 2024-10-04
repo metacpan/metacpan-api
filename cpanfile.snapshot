@@ -6062,17 +6062,6 @@ DISTRIBUTIONS
       parent 0
       strict 0
       warnings 0
-  Plack-Middleware-Header-0.04
-    pathname: C/CH/CHIBA/Plack-Middleware-Header-0.04.tar.gz
-    provides:
-      Plack::Middleware::Header 0.04
-    requirements:
-      ExtUtils::MakeMaker 6.42
-      Filter::Util::Call 0
-      Plack::Middleware 0
-      Test::More 0
-      parent 0
-      perl 5.008001
   Plack-Middleware-MethodOverride-0.20
     pathname: M/MI/MIYAGAWA/Plack-Middleware-MethodOverride-0.20.tar.gz
     provides:

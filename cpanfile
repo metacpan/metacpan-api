@@ -113,7 +113,6 @@ requires 'PAUSE::Permissions', '0.17';
 requires 'PerlIO::gzip';
 requires 'Plack', '1.0048';
 requires 'Plack::App::Directory';
-requires 'Plack::Middleware::Header';
 requires 'Plack::Middleware::ReverseProxy';
 requires 'Plack::Middleware::Session';
 requires 'Plack::Session::Store';
