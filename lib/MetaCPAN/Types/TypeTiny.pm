@@ -132,5 +132,8 @@ declare CommaSepOption, as ArrayRef [ StrMatch [qr{^[^, ]+$}] ];
 coerce CommaSepOption, from ArrayRef [Str], via {
     return [ map split(/\s*,\s*/), @$_ ];
 };
+coerce CommaSepOption, from Str, via {
+    return [ map split(/\s*,\s*/), $_ ];
+};
 
 1;
