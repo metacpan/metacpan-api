@@ -1,6 +1,7 @@
 ---
 git: /usr/bin/git
 
+cpan: /CPAN
 secret: "the stone roses"
 level: info
 elasticsearch_servers: http://localhost:9200
