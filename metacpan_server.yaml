@@ -1,5 +1,7 @@
+---
 git: /usr/bin/git
 
+secret: "the stone roses"
 level: info
 elasticsearch_servers: http://localhost:9200
 minion_dsn: postgresql:///minion_queue
