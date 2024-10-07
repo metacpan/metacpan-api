@@ -1,8 +1,11 @@
+---
 git: /usr/bin/git
 
+cpan: /CPAN
+secret: "the stone roses"
 level: info
-elasticsearch_servers: http://localhost:9200
-minion_dsn: postgresql:///minion_queue
+elasticsearch_servers: http://elasticsearch:9200
+minion_dsn: "postgresql://metacpan:t00lchain@pghost:5432/minion_queue"
 port: 5000
 
 logger:
