@@ -116,8 +116,8 @@ sub _build_gravatar_url {
     # because we want to show the author's CPAN identity.
     # Using another e-mail than the CPAN one removes flexibility for
     # the author and ultimately could be a privacy leak.
-    # The author can manage this identity both on his gravatar account
-    # (by assigning an image to his author@cpan.org)
+    # The author can manage this identity both on their gravatar account
+    # (by assigning an image to their author@cpan.org)
     # and now by changing this URL from metacpa.org
     return Gravatar::URL::gravatar_url(
         email => $self->pauseid . '@cpan.org',
