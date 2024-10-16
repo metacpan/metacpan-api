@@ -16,14 +16,14 @@ has cve_url => (
     is      => 'ro',
     isa     => Uri,
     coerce  => 1,
-    default => 'https://hackeriet.github.io/cpansa-feed/cpansa.json',
+    default => 'https://cpan-security.github.io/cpansa-feed/cpansa.json',
 );
 
 has cve_dev_url => (
     is      => 'ro',
     isa     => Uri,
     coerce  => 1,
-    default => 'https://hackeriet.github.io/cpansa-feed/cpansa_dev.json',
+    default => 'https://cpan-security.github.io/cpansa-feed/cpansa_dev.json',
 );
 
 has test => (
