@@ -530,8 +530,8 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       MRO::Compat 0
       perl 5.008005
-  Catalyst-Plugin-Authentication-0.10023
-    pathname: B/BO/BOBTFISH/Catalyst-Plugin-Authentication-0.10023.tar.gz
+  Catalyst-Plugin-Authentication-0.10024
+    pathname: J/JJ/JJNAPIORK/Catalyst-Plugin-Authentication-0.10024.tar.gz
     provides:
       Catalyst::Authentication::Credential::NoPassword undef
       Catalyst::Authentication::Credential::Password undef
@@ -543,26 +543,20 @@ DISTRIBUTIONS
       Catalyst::Authentication::Store::Null undef
       Catalyst::Authentication::User undef
       Catalyst::Authentication::User::Hash undef
-      Catalyst::Plugin::Authentication 0.10023
+      Catalyst::Plugin::Authentication 0.10024
       Catalyst::Plugin::Authentication::Credential::Password undef
       Catalyst::Plugin::Authentication::Store::Minimal undef
       Catalyst::Plugin::Authentication::User undef
       Catalyst::Plugin::Authentication::User::Hash undef
     requirements:
-      Catalyst::Plugin::Session 0.10
       Catalyst::Runtime 0
-      Class::Inspector 0
-      Class::MOP 0
-      ExtUtils::MakeMaker 6.59
+      ExtUtils::MakeMaker 0
       MRO::Compat 0
       Moose 0
       MooseX::Emulate::Class::Accessor::Fast 0
       String::RewritePrefix 0
-      Test::Exception 0
-      Test::More 0.88
       Try::Tiny 0
       namespace::autoclean 0
-      perl 5.008001
   Catalyst-Plugin-ConfigLoader-0.35
     pathname: H/HA/HAARG/Catalyst-Plugin-ConfigLoader-0.35.tar.gz
     provides:
@@ -1112,14 +1106,14 @@ DISTRIBUTIONS
       Test::More 0.88
       Time::HiRes 0
       version 0
-  DBD-SQLite-1.74
-    pathname: I/IS/ISHIGAKI/DBD-SQLite-1.74.tar.gz
+  DBD-SQLite-1.76
+    pathname: I/IS/ISHIGAKI/DBD-SQLite-1.76.tar.gz
     provides:
-      DBD::SQLite 1.74
+      DBD::SQLite 1.76
       DBD::SQLite::Constants undef
       DBD::SQLite::GetInfo undef
-      DBD::SQLite::VirtualTable 1.74
-      DBD::SQLite::VirtualTable::Cursor 1.74
+      DBD::SQLite::VirtualTable 1.76
+      DBD::SQLite::VirtualTable::Cursor 1.76
       DBD::SQLite::VirtualTable::FileContent undef
       DBD::SQLite::VirtualTable::FileContent::Cursor undef
       DBD::SQLite::VirtualTable::PerlData undef
@@ -1919,17 +1913,17 @@ DISTRIBUTIONS
     requirements:
       Devel::StackTrace 0
       ExtUtils::MakeMaker 0
-  Digest-HMAC-1.04
-    pathname: A/AR/ARODLAND/Digest-HMAC-1.04.tar.gz
+  Digest-HMAC-1.05
+    pathname: A/AR/ARODLAND/Digest-HMAC-1.05.tar.gz
     provides:
-      Digest::HMAC 1.04
-      Digest::HMAC_MD5 1.04
-      Digest::HMAC_SHA1 1.04
+      Digest::HMAC 1.05
+      Digest::HMAC_MD5 1.05
+      Digest::HMAC_SHA1 1.05
     requirements:
       Digest::MD5 2
       Digest::SHA 1
       ExtUtils::MakeMaker 0
-      perl 5.004
+      perl 5.008001
   Digest-JHash-0.10
     pathname: S/SH/SHLOMIF/Digest-JHash-0.10.tar.gz
     provides:
@@ -2889,15 +2883,15 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 6.64
       Scalar::Util 0
       perl 5.008001
-  Hash-Merge-Simple-0.051
-    pathname: R/RO/ROKR/Hash-Merge-Simple-0.051.tar.gz
+  Hash-Merge-Simple-0.052
+    pathname: H/HA/HAARG/Hash-Merge-Simple-0.052.tar.gz
     provides:
-      Hash::Merge::Simple 0.051
+      Hash::Merge::Simple 0.052
     requirements:
       Clone 0
-      ExtUtils::MakeMaker 6.31
+      ExtUtils::MakeMaker 0
       Storable 0
-      Test::Most 0
+      perl 5.006000
   Hash-MoreUtils-0.06
     pathname: R/RE/REHSACK/Hash-MoreUtils-0.06.tar.gz
     provides:
@@ -4146,21 +4140,19 @@ DISTRIBUTIONS
       Text::LineFold 0
       perl 5.008001
       strictures 2
-  MooX-StrictConstructor-0.011
-    pathname: H/HA/HARTZELL/MooX-StrictConstructor-0.011.tar.gz
+  MooX-StrictConstructor-0.013
+    pathname: H/HA/HAARG/MooX-StrictConstructor-0.013.tar.gz
     provides:
-      Method::Generate::Constructor::Role::StrictConstructor 0.011
-      MooX::StrictConstructor 0.011
+      MooX::StrictConstructor 0.013
+      MooX::StrictConstructor::Role::BuildAll 0.013
+      MooX::StrictConstructor::Role::Constructor 0.013
+      MooX::StrictConstructor::Role::Constructor::Base 0.013
+      MooX::StrictConstructor::Role::Constructor::Late 0.013
     requirements:
-      B 0
-      Class::Method::Modifiers 0
-      ExtUtils::MakeMaker 6.17
-      Moo 1.001000
+      ExtUtils::MakeMaker 0
+      Moo 2.004000
       Moo::Role 0
-      constant 0
-      perl 5.006
-      strict 0
-      strictures 1
+      perl 5.008
   MooX-Traits-0.005
     pathname: T/TO/TOBYINK/MooX-Traits-0.005.tar.gz
     provides:
@@ -6402,13 +6394,14 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Scalar::Util 0
       perl 5.006
-  Scalar-List-Utils-1.66
-    pathname: P/PE/PEVANS/Scalar-List-Utils-1.66.tar.gz
+  Scalar-List-Utils-1.68
+    pathname: P/PE/PEVANS/Scalar-List-Utils-1.68.tar.gz
     provides:
-      List::Util 1.66
-      List::Util::XS 1.66
-      Scalar::Util 1.66
-      Sub::Util 1.66
+      List::Util 1.68
+      List::Util::XS 1.68
+      Scalar::List::Utils 1.68
+      Scalar::Util 1.68
+      Sub::Util 1.68
     requirements:
       ExtUtils::MakeMaker 0
       perl 5.006
@@ -7007,22 +7000,6 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Test::More 0.88
       Text::Diff 1.43
-  Test-Exception-0.43
-    pathname: E/EX/EXODIST/Test-Exception-0.43.tar.gz
-    provides:
-      Test::Exception 0.43
-    requirements:
-      Carp 0
-      Exporter 0
-      ExtUtils::MakeMaker 0
-      Sub::Uplevel 0.18
-      Test::Builder 0.7
-      Test::Builder::Tester 1.07
-      Test::Harness 2.03
-      base 0
-      perl 5.006001
-      strict 0
-      warnings 0
   Test-Fatal-0.017
     pathname: R/RJ/RJBS/Test-Fatal-0.017.tar.gz
     provides:
@@ -7106,20 +7083,6 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 6.17
       strict 0
       warnings 0
-  Test-Most-0.38
-    pathname: O/OV/OVID/Test-Most-0.38.tar.gz
-    provides:
-      Test::Most 0.38
-      Test::Most::Exception 0.38
-    requirements:
-      Exception::Class 1.14
-      ExtUtils::MakeMaker 0
-      Test::Deep 0.119
-      Test::Differences 0.64
-      Test::Exception 0.43
-      Test::Harness 3.35
-      Test::More 1.302047
-      Test::Warn 0.30
   Test-Perl-Critic-1.04
     pathname: P/PE/PETDANCE/Test-Perl-Critic-1.04.tar.gz
     provides:
@@ -7485,7 +7448,7 @@ DISTRIBUTIONS
       Exporter 0
       ExtUtils::MakeMaker 0
       constant 0
-      perl 5.00503
+      perl 5.005030
   Text-SimpleTable-2.07
     pathname: M/MR/MRAMBERG/Text-SimpleTable-2.07.tar.gz
     provides:
@@ -7844,62 +7807,57 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  URI-5.30
-    pathname: O/OA/OALDERS/URI-5.30.tar.gz
+  URI-5.29
+    pathname: O/OA/OALDERS/URI-5.29.tar.gz
     provides:
-      URI 5.30
-      URI::Escape 5.30
-      URI::Heuristic 5.30
-      URI::IRI 5.30
-      URI::QueryParam 5.30
-      URI::Split 5.30
-      URI::URL 5.30
-      URI::WithBase 5.30
-      URI::data 5.30
-      URI::file 5.30
-      URI::file::Base 5.30
-      URI::file::FAT 5.30
-      URI::file::Mac 5.30
-      URI::file::OS2 5.30
-      URI::file::QNX 5.30
-      URI::file::Unix 5.30
-      URI::file::Win32 5.30
-      URI::ftp 5.30
-      URI::ftpes 5.30
-      URI::ftps 5.30
-      URI::geo 5.30
-      URI::gopher 5.30
-      URI::http 5.30
-      URI::https 5.30
-      URI::icap 5.30
-      URI::icaps 5.30
-      URI::irc 5.30
-      URI::ircs 5.30
-      URI::ldap 5.30
-      URI::ldapi 5.30
-      URI::ldaps 5.30
-      URI::mailto 5.30
-      URI::mms 5.30
-      URI::news 5.30
-      URI::nntp 5.30
-      URI::nntps 5.30
-      URI::otpauth 5.30
-      URI::pop 5.30
-      URI::rlogin 5.30
-      URI::rsync 5.30
-      URI::rtsp 5.30
-      URI::rtspu 5.30
-      URI::scp 5.30
-      URI::sftp 5.30
-      URI::sip 5.30
-      URI::sips 5.30
-      URI::snews 5.30
-      URI::ssh 5.30
-      URI::telnet 5.30
-      URI::tn3270 5.30
-      URI::urn 5.30
-      URI::urn::isbn 5.30
-      URI::urn::oid 5.30
+      URI 5.29
+      URI::Escape 5.29
+      URI::Heuristic 5.29
+      URI::IRI 5.29
+      URI::QueryParam 5.29
+      URI::Split 5.29
+      URI::URL 5.29
+      URI::WithBase 5.29
+      URI::data 5.29
+      URI::file 5.29
+      URI::file::Base 5.29
+      URI::file::FAT 5.29
+      URI::file::Mac 5.29
+      URI::file::OS2 5.29
+      URI::file::QNX 5.29
+      URI::file::Unix 5.29
+      URI::file::Win32 5.29
+      URI::ftp 5.29
+      URI::geo 5.29
+      URI::gopher 5.29
+      URI::http 5.29
+      URI::https 5.29
+      URI::icap 5.29
+      URI::icaps 5.29
+      URI::ldap 5.29
+      URI::ldapi 5.29
+      URI::ldaps 5.29
+      URI::mailto 5.29
+      URI::mms 5.29
+      URI::news 5.29
+      URI::nntp 5.29
+      URI::nntps 5.29
+      URI::otpauth 5.29
+      URI::pop 5.29
+      URI::rlogin 5.29
+      URI::rsync 5.29
+      URI::rtsp 5.29
+      URI::rtspu 5.29
+      URI::sftp 5.29
+      URI::sip 5.29
+      URI::sips 5.29
+      URI::snews 5.29
+      URI::ssh 5.29
+      URI::telnet 5.29
+      URI::tn3270 5.29
+      URI::urn 5.29
+      URI::urn::isbn 5.29
+      URI::urn::oid 5.29
     requirements:
       Carp 0
       Cwd 0
@@ -8133,7 +8091,7 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       LWP::UserAgent 0
-      perl 5.00405
+      perl 5.004050
   XML-XPath-1.48
     pathname: M/MA/MANWAR/XML-XPath-1.48.tar.gz
     provides:
