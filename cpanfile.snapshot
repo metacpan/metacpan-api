@@ -229,14 +229,6 @@ DISTRIBUTIONS
     requirements:
       B 0
       ExtUtils::MakeMaker 0
-  Browser-Open-0.04
-    pathname: C/CF/CFRANKS/Browser-Open-0.04.tar.gz
-    provides:
-      Browser::Open 0.04
-    requirements:
-      ExtUtils::MakeMaker 0
-      Test::More 0.92
-      parent 0
   CGI-Simple-1.281
     pathname: M/MA/MANWAR/CGI-Simple-1.281.tar.gz
     provides:
@@ -2320,23 +2312,6 @@ DISTRIBUTIONS
       File::Spec 0
       IO::File 0
       perl 5.006
-  ExtUtils-HasCompiler-0.025
-    pathname: L/LE/LEONT/ExtUtils-HasCompiler-0.025.tar.gz
-    provides:
-      ExtUtils::HasCompiler 0.025
-    requirements:
-      Carp 0
-      DynaLoader 0
-      Exporter 0
-      ExtUtils::MakeMaker 0
-      ExtUtils::Mksymlists 0
-      File::Basename 0
-      File::Spec::Functions 0
-      File::Temp 0
-      base 0
-      perl 5.006
-      strict 0
-      warnings 0
   ExtUtils-Helpers-0.028
     pathname: L/LE/LEONT/ExtUtils-Helpers-0.028.tar.gz
     provides:
@@ -2626,47 +2601,6 @@ DISTRIBUTIONS
       overload 0
       perl 5.012
       strict 0
-      warnings 0
-  Git-Helpers-1.000001
-    pathname: O/OA/OALDERS/Git-Helpers-1.000001.tar.gz
-    provides:
-      Git::Helpers 1.000001
-      Git::Helpers::CPAN 1.000001
-    requirements:
-      Browser::Open 0
-      Capture::Tiny 0
-      Carp 0
-      ExtUtils::MakeMaker 0
-      File::pushd 0
-      Getopt::Long 0
-      Git::Sub 0
-      MetaCPAN::Client 2.029000
-      Moo 0
-      MooX::Options 0
-      Pod::Usage 0
-      String::Trim 0
-      Sub::Exporter 0
-      Term::Choose 1.743
-      Try::Tiny 0
-      Types::Standard 0
-      URI 0
-      URI::Heuristic 0
-      URI::git 0
-      perl v5.12.0
-      strict 0
-      warnings 0
-  Git-Sub-0.163320
-    pathname: D/DO/DOLMEN/Git-Sub-0.163320.tar.gz
-    provides:
-      Git::Sub 0.163320
-    requirements:
-      Carp 0
-      ExtUtils::MakeMaker 0
-      File::Which 0
-      System::Sub 0.162800
-      perl 5.006
-      strict 0
-      subs 0
       warnings 0
   Gravatar-URL-1.07
     pathname: M/MS/MSCHWERN/Gravatar-URL-1.07.tar.gz
@@ -6128,17 +6062,6 @@ DISTRIBUTIONS
       parent 0
       strict 0
       warnings 0
-  Plack-Middleware-Header-0.04
-    pathname: C/CH/CHIBA/Plack-Middleware-Header-0.04.tar.gz
-    provides:
-      Plack::Middleware::Header 0.04
-    requirements:
-      ExtUtils::MakeMaker 6.42
-      Filter::Util::Call 0
-      Plack::Middleware 0
-      Test::More 0
-      parent 0
-      perl 5.008001
   Plack-Middleware-MethodOverride-0.20
     pathname: M/MI/MIYAGAWA/Plack-Middleware-MethodOverride-0.20.tar.gz
     provides:
@@ -6175,18 +6098,6 @@ DISTRIBUTIONS
       Test::More 0
       parent 0
       perl 5.008001
-  Plack-Middleware-Rewrite-2.102
-    pathname: A/AR/ARISTOTLE/Plack-Middleware-Rewrite-2.102.tar.gz
-    provides:
-      Plack::Middleware::Rewrite 2.102
-    requirements:
-      Plack 0.9942
-      Plack::Middleware 0
-      Plack::Request 0
-      Plack::Util 0
-      Plack::Util::Accessor 0
-      overload 0
-      perl 5.006
   Plack-Middleware-Session-0.34
     pathname: M/MI/MIYAGAWA/Plack-Middleware-Session-0.34.tar.gz
     provides:
@@ -6676,18 +6587,6 @@ DISTRIBUTIONS
       perl 5.012
       strict 0
       warnings 0
-  String-Trim-0.005
-    pathname: D/DO/DOHERTY/String-Trim-0.005.tar.gz
-    provides:
-      String::Trim 0.005
-    requirements:
-      Data::Dumper 0
-      Exporter 5.57
-      ExtUtils::MakeMaker 6.31
-      File::Find 0
-      File::Temp 0
-      Test::Builder 0.94
-      Test::More 0.94
   Sub-Exporter-0.991
     pathname: R/RJ/RJBS/Sub-Exporter-0.991.tar.gz
     provides:
@@ -6811,23 +6710,6 @@ DISTRIBUTIONS
     requirements:
       Call::Context 0
       ExtUtils::MakeMaker 0
-  System-Sub-0.162800
-    pathname: D/DO/DOLMEN/System-Sub-0.162800.tar.gz
-    provides:
-      System::Sub 0.162800
-      System::Sub::AutoLoad 0.162800
-    requirements:
-      Carp 0
-      ExtUtils::MakeMaker 0
-      File::Which 0
-      IPC::Run 0
-      Scalar::Util 1.11
-      Sub::Name 0
-      Symbol 0
-      constant 0
-      perl 5.006
-      strict 0
-      warnings 0
   TOML-Tiny-0.18
     pathname: O/OA/OALDERS/TOML-Tiny-0.18.tar.gz
     provides:
@@ -6856,34 +6738,6 @@ DISTRIBUTIONS
       Scalar::Util 1.14
       perl 5.006
       strict 0
-  Term-Choose-1.765
-    pathname: K/KU/KUERBIS/Term-Choose-1.765.tar.gz
-    provides:
-      Term::Choose 1.765
-      Term::Choose::Constants 1.765
-      Term::Choose::LineFold 1.765
-      Term::Choose::LineFold::CharWidthAmbiguousWide 1.765
-      Term::Choose::LineFold::CharWidthDefault 1.765
-      Term::Choose::Linux 1.765
-      Term::Choose::Opt::Mouse 1.765
-      Term::Choose::Opt::Search 1.765
-      Term::Choose::Opt::SkipItems 1.765
-      Term::Choose::Screen 1.765
-      Term::Choose::ValidateOptions 1.765
-      Term::Choose::Win32 1.765
-    requirements:
-      Carp 0
-      Exporter 0
-      ExtUtils::MakeMaker 0
-      File::Spec::Functions 0
-      FindBin 0
-      Test::Fatal 0
-      Test::More 0
-      constant 0
-      lib 0
-      perl 5.010000
-      strict 0
-      warnings 0
   Term-Size-Any-0.002
     pathname: F/FE/FERREIRA/Term-Size-Any-0.002.tar.gz
     provides:
@@ -7962,15 +7816,6 @@ DISTRIBUTIONS
       URI 1.40
       URI::Nested 0.10
       perl 5.008001
-  URI-git-0.02
-    pathname: M/MI/MIYAGAWA/URI-git-0.02.tar.gz
-    provides:
-      URI::git 0.02
-    requirements:
-      ExtUtils::MakeMaker 6.42
-      Filter::Util::Call 0
-      Test::More 0
-      URI 0
   URI-ws-0.03
     pathname: P/PL/PLICEASE/URI-ws-0.03.tar.gz
     provides:

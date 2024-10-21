@@ -5,11 +5,11 @@ use lib 't/lib';
 
 use MetaCPAN::Script::Cover  ();
 use MetaCPAN::Server::Config ();
-use MetaCPAN::Util           qw( checkout_root );
+use MetaCPAN::Util           qw( root_dir );
 use Test::More;
 use URI ();
 
-my $root = checkout_root();
+my $root = root_dir();
 my $file = URI->new('t/var/cover.json')->abs("file://$root/");
 
 my $config = MetaCPAN::Server::Config::config();
