@@ -126,24 +126,33 @@ RELEASE: while ( my $release = $scroll->next ) {
         next unless $user;
         log_debug {"Retrieving issues from $user/$repo"};
 
-        my $data = $self->github_graphql->query(
-            sprintf <<'END_QUERY', map $json->encode($_), $user, $repo );
-                query {
-                    repository(owner: %s, name: %s) {
-                        openIssues: issues(states: OPEN) {
-                            totalCount
-                        }
-                        closedIssues: issues(states: CLOSED) {
-                            totalCount
-                        }
-                        openPullRequests: pullRequests(states: OPEN) {
-                            totalCount
-                        }
-                        closedPullRequests: pullRequests(states: [CLOSED, MERGED]) {
-                            totalCount
-                        }
+        my $dist_summary = $summary{ $release->{'distribution'} } ||= {};
+
+        my $vars = {
+            user => $user,
+            repo => $repo,
+        };
+        my $data = $self->github_graphql->query( <<'END_QUERY', $vars );
+            query($user:String!, $repo:String!) {
+                repository(owner: $user, name: $repo) {
+                    openIssues: issues(states: OPEN) {
+                        totalCount
                     }
+                    closedIssues: issues(states: CLOSED) {
+                        totalCount
+                    }
+                    openPullRequests: pullRequests(states: OPEN) {
+                        totalCount
+                    }
+                    closedPullRequests: pullRequests(states: [CLOSED, MERGED]) {
+                        totalCount
+                    }
+                    watchers: watchers {
+                        totalCount
+                    }
+                    stargazerCount: stargazerCount
                 }
+            }
 END_QUERY
 
         if ( my $error = $data->{errors} ) {
@@ -151,32 +160,38 @@ END_QUERY
                 my $log_message
                     = "[$release->{distribution}] $error->{message}";
                 if ( $error->{type} eq 'NOT_FOUND' ) {
-                    delete $summary{ $release->{'distribution'} }{'bugs'}
-                        {'github'};
+                    delete $dist_summary->{'bugs'}{'github'};
+                    delete $dist_summary->{'repo'}{'github'};
                     log_info {$log_message};
                 }
                 else {
                     log_error {$log_message};
                 }
+            }
+            if (@$error) {
                 next RELEASE;
             }
         }
 
+        my $repo_data = $data->{data}{repository};
         my $open
-            = $data->{data}{repository}{openIssues}{totalCount}
-            + $data->{data}{repository}{openPullRequests}{totalCount};
+            = $repo_data->{openIssues}{totalCount}
+            + $repo_data->{openPullRequests}{totalCount};
         my $closed
-            = $data->{data}{repository}{closedIssues}{totalCount}
-            + $data->{data}{repository}{closedPullRequests}{totalCount};
+            = $repo_data->{closedIssues}{totalCount}
+            + $repo_data->{closedPullRequests}{totalCount};
 
-        my $rec = {
+        $dist_summary->{'bugs'}{'github'} = {
             active => $open,
             open   => $open,
             closed => $closed,
             source => $source,
         };
 
-        $summary{ $release->{'distribution'} }{'bugs'}{'github'} = $rec;
+        $dist_summary->{'repo'}{'github'} = {
+            stars    => $repo_data->{stargazerCount},
+            watchers => $repo_data->{watchers}{totalCount},
+        };
     }
 
     log_info {"writing github data"};
