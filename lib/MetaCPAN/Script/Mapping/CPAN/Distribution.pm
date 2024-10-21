@@ -65,6 +65,22 @@ sub mapping {
                  }
               }
            },
+           "repo" : {
+              "dynamic" : true,
+              "properties" : {
+                 "github" : {
+                    "dynamic" : true,
+                    "properties" : {
+                       "stars" : {
+                          "type" : "integer"
+                       },
+                       "watchers" : {
+                          "type" : "integer"
+                       }
+                    }
+                 }
+              }
+           },
            "name" : {
               "ignore_above" : 2048,
               "index" : "not_analyzed",
