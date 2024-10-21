@@ -147,6 +147,10 @@ RELEASE: while ( my $release = $scroll->next ) {
                     closedPullRequests: pullRequests(states: [CLOSED, MERGED]) {
                         totalCount
                     }
+                    watchers: watchers {
+                        totalCount
+                    }
+                    stargazerCount: stargazerCount
                 }
             }
 END_QUERY
@@ -157,6 +161,7 @@ END_QUERY
                     = "[$release->{distribution}] $error->{message}";
                 if ( $error->{type} eq 'NOT_FOUND' ) {
                     delete $dist_summary->{'bugs'}{'github'};
+                    delete $dist_summary->{'repo'}{'github'};
                     log_info {$log_message};
                 }
                 else {
@@ -183,6 +188,10 @@ END_QUERY
             source => $source,
         };
 
+        $dist_summary->{'repo'}{'github'} = {
+            stars    => $repo_data->{stargazerCount},
+            watchers => $repo_data->{watchers}{totalCount},
+        };
     }
 
     log_info {"writing github data"};
