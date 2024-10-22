@@ -10,7 +10,7 @@ use Cpanel::JSON::XS         qw( decode_json encode_json );
 use File::Copy               qw( copy );
 use File::pushd              qw( pushd );
 use MetaCPAN::Server::Config ();
-use MetaCPAN::Util           qw( checkout_root );
+use MetaCPAN::Util           qw( root_dir );
 use Path::Tiny               qw( path );
 use Test::More;
 use Test::Routine::Util qw( run_tests );
@@ -103,7 +103,7 @@ sub get_config {
 }
 
 sub tmp_dir {
-    my $dir = path( checkout_root(), 'var', 't', 'tmp' );
+    my $dir = path( root_dir(), 'var', 't', 'tmp' );
     $dir->mkpath;
     return $dir;
 }
@@ -116,7 +116,7 @@ sub fakecpan_dir {
 }
 
 sub fakecpan_configs_dir {
-    my $source = path( checkout_root(), 'test-data', 'fakecpan' );
+    my $source = path( root_dir(), 'test-data', 'fakecpan' );
     $source->mkpath;
     return $source;
 }

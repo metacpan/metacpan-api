@@ -3,20 +3,15 @@ package MetaCPAN::Server::Config;
 use warnings;
 use strict;
 
-use Config::ZOMG    ();
-use FindBin         ();
-use Module::Runtime qw( require_module );
+use Config::ZOMG   ();
+use MetaCPAN::Util qw(root_dir);
 
 sub config {
-    my $config = _zomg("$FindBin::RealBin/..");
-    return $config if $config;
-
-    require_module('Git::Helpers');
-    $config = _zomg( Git::Helpers::checkout_root() );
+    my $root   = root_dir();
+    my $config = _zomg($root);
 
     if ( !$config ) {
-        die "Couldn't find config file in $FindBin::RealBin/.. or "
-            . Git::Helpers::checkout_root();
+        die "Couldn't find config file in $root";
     }
 
     return $config;

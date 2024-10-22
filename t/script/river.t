@@ -5,7 +5,7 @@ use lib 't/lib';
 use MetaCPAN::Script::River ();
 use MetaCPAN::Server::Test  qw( app GET );
 use MetaCPAN::TestHelpers   qw( decode_json_ok );
-use MetaCPAN::Util          qw( checkout_root );
+use MetaCPAN::Util          qw( root_dir );
 use Plack::Test             ();
 use Test::More;
 use URI ();
@@ -13,7 +13,7 @@ use URI ();
 my $config = MetaCPAN::Server::Config::config();
 
 # local json file with structure from https://github.com/metacpan/metacpan-api/issues/460
-my $root = checkout_root();
+my $root = root_dir();
 my $file = URI->new('t/var/river.json')->abs("file://$root/");
 $config->{'river_url'} = "$file";
 

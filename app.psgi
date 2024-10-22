@@ -61,6 +61,9 @@ my $static
 
 my $urlmap = Plack::App::URLMap->new;
 $urlmap->map( '/static' => $static );
-$urlmap->map( '/'       => MetaCPAN::Server->app );
+if ( $ENV{PLACK_ENV} && $ENV{PLACK_ENV} eq 'development' ) {
+    $urlmap->map( '/v1' => MetaCPAN::Server->app );
+}
+$urlmap->map( '/' => MetaCPAN::Server->app );
 
 return $urlmap->to_app;

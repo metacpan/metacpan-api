@@ -5,7 +5,7 @@ use Mojo::Base 'Mojolicious::Plugin';
 use Carp ();
 
 # Models from the catalyst app
-use MetaCPAN::Model::Search ();
+use MetaCPAN::Query::Search ();
 
 # New models
 use MetaCPAN::API::Model::Cover    ();
@@ -21,9 +21,9 @@ has download => sub {
 
 has search => sub {
     my $self = shift;
-    return MetaCPAN::Model::Search->new(
-        es    => $self->app->es,
-        index => 'cpan',
+    return MetaCPAN::Query::Search->new(
+        es         => $self->app->es,
+        index_name => 'cpan',
     );
 };
 

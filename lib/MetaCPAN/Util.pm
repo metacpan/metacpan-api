@@ -6,10 +6,12 @@ use strict;
 use warnings;
 use version;
 
-use Digest::SHA qw( sha1_base64 sha1_hex );
-use Encode      qw( decode_utf8 );
-use IPC::Run3   ();
-use Ref::Util   qw(
+use Cwd            ();
+use Digest::SHA    qw( sha1_base64 sha1_hex );
+use Encode         qw( decode_utf8 );
+use File::Basename ();
+use File::Spec     ();
+use Ref::Util      qw(
     is_arrayref
     is_hashref
     is_plain_arrayref
@@ -19,7 +21,7 @@ use Ref::Util   qw(
 use Cpanel::JSON::XS ();
 use Sub::Exporter -setup => {
     exports => [ qw(
-        checkout_root
+        root_dir
         author_dir
         diff_struct
         digest
@@ -41,17 +43,11 @@ use Sub::Exporter -setup => {
 *false   = \&Cpanel::JSON::XS::false;
 *is_bool = \&Cpanel::JSON::XS::is_bool;
 
-sub checkout_root {
-    IPC::Run3::run3( [qw(git rev-parse --show-toplevel)],
-        \undef, \my $stdout, \my $stderr );
-    if ($?) {
-        die $stderr;
-    }
-    chomp $stdout;
-    if ( !-d $stdout ) {
-        die "Failed to find git dir: '$stdout'";
-    }
-    return $stdout;
+sub root_dir {
+    Cwd::abs_path( File::Spec->catdir(
+        File::Basename::dirname(__FILE__),
+        ( File::Spec->updir ) x 2
+    ) );
 }
 
 sub digest {
