@@ -7,11 +7,11 @@ use namespace::autoclean;
 $ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0;
 
 use HTTP::Request::Common qw( GET );
-use Log::Contextual qw( :log :dlog );
-use Net::GitHub::V4 ();
-use Ref::Util qw( is_hashref is_ref );
-use Text::CSV_XS ();
-use URI::Escape qw( uri_escape );
+use Log::Contextual       qw( :log :dlog );
+use Net::GitHub::V4       ();
+use Ref::Util             qw( is_hashref is_ref );
+use Text::CSV_XS          ();
+use URI::Escape           qw( uri_escape );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
@@ -253,7 +253,7 @@ sub parse_tsv {
             source => $self->rt_dist_url( $row->{dist} ),
             active => $row->{active},
             closed => $row->{inactive},
-            map      { $_ => $row->{$_} + 0 }
+            map { $_ => $row->{$_} + 0 }
                 grep { not /^(dist|active|inactive)$/ }
                 keys %$row,
         };
