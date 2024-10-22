@@ -21,12 +21,6 @@ has rt_summary_url => (
     default  => 'https://rt.cpan.org/Public/bugs-per-dist.tsv',
 );
 
-has github_issues => (
-    is       => 'ro',
-    required => 1,
-    default  => 'https://api.github.com/repos/%s/%s/issues?per_page=100',
-);
-
 has github_token => (
     is      => 'ro',
     lazy    => 1,
@@ -116,8 +110,6 @@ sub index_github_bugs {
     log_debug { sprintf( "Found %s repos", $scroll->total ) };
 
     my %summary;
-
-    my $json = JSON::MaybeXS->new( allow_nonref => 1 );
 
 RELEASE: while ( my $release = $scroll->next ) {
         my $resources = $release->resources;
@@ -312,4 +304,3 @@ http://fastapi.metacpan.org/v1/distribution/Moose
 http://fastapi.metacpan.org/v1/distribution/HTTP-BrowserDetect
 
 =cut
-
