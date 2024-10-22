@@ -7,11 +7,11 @@ use namespace::autoclean;
 $ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0;
 
 use HTTP::Request::Common qw( GET );
-use Log::Contextual       qw( :log :dlog );
-use Net::GitHub::V4       ();
-use Ref::Util             qw( is_hashref is_ref );
-use Text::CSV_XS          ();
-use URI::Escape           qw( uri_escape );
+use Log::Contextual qw( :log :dlog );
+use Net::GitHub::V4 ();
+use Ref::Util qw( is_hashref is_ref );
+use Text::CSV_XS ();
+use URI::Escape qw( uri_escape );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
@@ -19,12 +19,6 @@ has rt_summary_url => (
     is       => 'ro',
     required => 1,
     default  => 'https://rt.cpan.org/Public/bugs-per-dist.tsv',
-);
-
-has github_issues => (
-    is       => 'ro',
-    required => 1,
-    default  => 'https://api.github.com/repos/%s/%s/issues?per_page=100',
 );
 
 has github_token => (
@@ -116,8 +110,6 @@ sub index_github_bugs {
     log_debug { sprintf( "Found %s repos", $scroll->total ) };
 
     my %summary;
-
-    my $json = JSON::MaybeXS->new( allow_nonref => 1 );
 
 RELEASE: while ( my $release = $scroll->next ) {
         my $resources = $release->resources;
@@ -261,7 +253,7 @@ sub parse_tsv {
             source => $self->rt_dist_url( $row->{dist} ),
             active => $row->{active},
             closed => $row->{inactive},
-            map { $_ => $row->{$_} + 0 }
+            map      { $_ => $row->{$_} + 0 }
                 grep { not /^(dist|active|inactive)$/ }
                 keys %$row,
         };
@@ -312,4 +304,3 @@ http://fastapi.metacpan.org/v1/distribution/Moose
 http://fastapi.metacpan.org/v1/distribution/HTTP-BrowserDetect
 
 =cut
-

@@ -117,11 +117,6 @@ ok(
             scheme => 'file',
             path   => $fakecpan_dir->child('bugs.tsv')->absolute->stringify,
         ),
-        github_issues => uri(
-            scheme => 'file',
-            path   => $fakecpan_dir->child('github')->absolute->stringify
-                . '/%s/%s.json?per_page=100'
-        ),
     } )->run,
     'tickets'
 );
