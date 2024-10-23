@@ -8,6 +8,7 @@ use File::Find::Rule          ();
 use File::stat                ();
 use List::Util                qw( uniq );
 use Log::Contextual           qw( :log :dlog );
+use MetaCPAN::ESConfig        qw( es_doc_path );
 use MetaCPAN::Model::Release  ();
 use MetaCPAN::Script::Runner  ();
 use MetaCPAN::Types::TypeTiny qw( Bool HashRef Int Str );
@@ -197,9 +198,8 @@ sub run {
 
         if ( $self->skip ) {
             my $count = $self->es->count(
-                index => $self->index->name,
-                type  => 'release',
-                body  => {
+                es_doc_path('release'),
+                body => {
                     query => {
                         bool => {
                             must => [

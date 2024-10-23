@@ -3,6 +3,7 @@ package MetaCPAN::Script::Checksum;
 use Moose;
 
 use Log::Contextual           qw( :log );
+use MetaCPAN::ESConfig        qw( es_doc_path );
 use MetaCPAN::Types::TypeTiny qw( Bool Int );
 
 use Digest::file qw( digest_file_hex );
@@ -32,10 +33,7 @@ sub run {
 
     my $bulk;
     if ( !$self->dry_run ) {
-        $bulk = $self->es->bulk_helper(
-            index => $self->index->name,
-            type  => 'release',
-        );
+        $bulk = $self->es->bulk_helper( es_doc_path('release') );
     }
     else {
         log_warn {"--- DRY-RUN ---"};
@@ -44,8 +42,7 @@ sub run {
     log_info {"Searching for releases missing checksums"};
 
     my $scroll = $self->es->scroll_helper(
-        index  => $self->index->name,
-        type   => 'release',
+        es_doc_path('release'),
         scroll => '10m',
         body   => {
             query => {

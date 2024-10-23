@@ -2,6 +2,8 @@ package MetaCPAN::Query::CVE;
 
 use MetaCPAN::Moose;
 
+use MetaCPAN::ESConfig qw( es_doc_path );
+
 with 'MetaCPAN::Query::Role::Common';
 
 sub find_cves_by_cpansa {
@@ -10,9 +12,8 @@ sub find_cves_by_cpansa {
     my $query = +{ term => { cpansa_id => $cpansa_id } };
 
     my $res = $self->es->search(
-        index => $self->index_name,
-        type  => 'cve',
-        body  => {
+        es_doc_path('cve'),
+        body => {
             query => $query,
             size  => 999,
         }
@@ -27,9 +28,8 @@ sub find_cves_by_release {
     my $query = +{ match => { releases => "$author/$release" } };
 
     my $res = $self->es->search(
-        index => $self->index_name,
-        type  => 'cve',
-        body  => {
+        es_doc_path('cve'),
+        body => {
             query => $query,
             size  => 999,
         }
@@ -49,9 +49,8 @@ sub find_cves_by_dist {
     };
 
     my $res = $self->es->search(
-        index => $self->index_name,
-        type  => 'cve',
-        body  => {
+        es_doc_path('cve'),
+        body => {
             query => $query,
             size  => 999,
         }

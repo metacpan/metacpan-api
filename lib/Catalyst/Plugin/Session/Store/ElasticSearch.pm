@@ -6,6 +6,7 @@ use Moose;
 extends 'Catalyst::Plugin::Session::Store';
 use MooseX::Types::ElasticSearch qw( ES );
 
+use MetaCPAN::ESConfig       qw( es_doc_path );
 use MetaCPAN::Server::Config ();
 
 has _session_es => (
@@ -16,26 +17,12 @@ has _session_es => (
     default =>
         sub { MetaCPAN::Server::Config::config()->{elasticsearch_servers} },
 );
-has _session_es_index => (
-    required => 1,
-    is       => 'ro',
-    default  => sub { shift->_session_plugin_config->{index} || 'user' }
-);
-has _session_es_type => (
-    required => 1,
-    is       => 'ro',
-    default  => sub { shift->_session_plugin_config->{type} || 'session' }
-);
 
 sub get_session_data {
     my ( $self, $key ) = @_;
     if ( my ($sid) = $key =~ /^\w+:(.*)/ ) {
         my $data = eval {
-            $self->_session_es->get(
-                index => $self->_session_es_index,
-                type  => $self->_session_es_type,
-                id    => $sid,
-            );
+            $self->_session_es->get( es_doc_path('session'), id => $sid, );
         } || return undef;
         if ( $key =~ /^expires:/ ) {
             return $data->{_source}->{_expires};
@@ -51,8 +38,7 @@ sub store_session_data {
     if ( my ($sid) = $key =~ /^session:(.*)/ ) {
         $session->{_expires} = $self->session_expires;
         $self->_session_es->index(
-            index   => $self->_session_es_index,
-            type    => $self->_session_es_type,
+            es_doc_path('session'),
             id      => $sid,
             body    => $session,
             refresh => 1,
@@ -65,8 +51,7 @@ sub delete_session_data {
     if ( my ($sid) = $key =~ /^session:(.*)/ ) {
         eval {
             $self->_session_es->delete(
-                index   => $self->_session_es_index,
-                type    => $self->_session_es_type,
+                es_doc_path('session'),
                 id      => $sid,
                 refresh => 1,
             );
@@ -92,8 +77,6 @@ sub delete_expired_sessions { }
  MyApp->config(
      'Plugin::Session' => {
          servers => ':9200',
-         index   => 'user',
-         type    => 'session',
      } );
 
 =head1 DESCRIPTION

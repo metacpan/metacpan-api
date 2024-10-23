@@ -6,6 +6,7 @@ use warnings;
 use Moose;
 
 use Log::Contextual           qw( :log :dlog );
+use MetaCPAN::ESConfig        qw( es_doc_path );
 use MetaCPAN::Types::TypeTiny qw( Bool HashRef Str );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt::Dashes';
@@ -64,8 +65,7 @@ sub build_release_status_map {
     my $scroll = $self->es->scroll_helper(
         size   => 500,
         scroll => '5m',
-        index  => $self->index->name,
-        type   => 'release',
+        es_doc_path('release'),
         fields => [ 'author', 'archive', 'name' ],
         body   => $self->_get_release_query,
     );
@@ -123,8 +123,7 @@ sub update_releases {
     log_info {"update_releases"};
 
     $self->_bulk->{release} ||= $self->es->bulk_helper(
-        index     => $self->index->name,
-        type      => 'release',
+        es_doc_path('release'),
         max_count => 250,
         timeout   => '5m',
     );
@@ -164,8 +163,7 @@ sub update_files_author {
     my $scroll = $self->es->scroll_helper(
         size   => 500,
         scroll => '5m',
-        index  => $self->index->name,
-        type   => 'file',
+        es_doc_path('file'),
         fields => ['release'],
         body   => {
             query => {
@@ -180,8 +178,7 @@ sub update_files_author {
     );
 
     $self->_bulk->{file} ||= $self->es->bulk_helper(
-        index     => $self->index->name,
-        type      => 'file',
+        es_doc_path('file'),
         max_count => 250,
         timeout   => '5m',
     );

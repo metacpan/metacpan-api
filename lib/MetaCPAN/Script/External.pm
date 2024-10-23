@@ -6,6 +6,7 @@ use namespace::autoclean;
 use Email::Sender::Simple ();
 use Email::Simple         ();
 use Log::Contextual       qw( :log );
+use MetaCPAN::ESConfig    qw( es_doc_path );
 
 use MetaCPAN::Types::TypeTiny qw( Str );
 
@@ -63,8 +64,7 @@ sub update {
     my $external_source = $self->external_source;
 
     my $scroll = $self->es->scroll_helper(
-        index  => $self->index->name,
-        type   => 'distribution',
+        es_doc_path('distribution'),
         scroll => '10m',
         body   => {
             query => {
@@ -89,10 +89,7 @@ sub update {
         }
     }
 
-    my $bulk = $self->es->bulk_helper(
-        index => $self->index->name,
-        type  => 'distribution',
-    );
+    my $bulk = $self->es->bulk_helper( es_doc_path('distribution'), );
 
     for my $d ( keys %{$dist} ) {
         log_debug {"[$external_source] adding $d"};

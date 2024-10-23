@@ -2,7 +2,8 @@ package MetaCPAN::Query::Permission;
 
 use MetaCPAN::Moose;
 
-use Ref::Util qw( is_arrayref );
+use MetaCPAN::ESConfig qw( es_doc_path );
+use Ref::Util          qw( is_arrayref );
 
 with 'MetaCPAN::Query::Role::Common';
 
@@ -21,11 +22,7 @@ sub by_author {
         size => 5_000,
     };
 
-    my $ret = $self->es->search(
-        index => $self->index_name,
-        type  => 'permission',
-        body  => $body,
-    );
+    my $ret = $self->es->search( es_doc_path('permission'), body => $body, );
 
     my $data = [
         sort { $a->{module_name} cmp $b->{module_name} }
@@ -51,11 +48,7 @@ sub by_modules {
         size => 1_000,
     };
 
-    my $ret = $self->es->search(
-        index => $self->index_name,
-        type  => 'permission',
-        body  => $body,
-    );
+    my $ret = $self->es->search( es_doc_path('permission'), body => $body, );
 
     my $data = [
         sort { $a->{module_name} cmp $b->{module_name} }

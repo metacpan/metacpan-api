@@ -2,7 +2,8 @@ package MetaCPAN::Query::File;
 
 use MetaCPAN::Moose;
 
-use MetaCPAN::Util qw( single_valued_arrayref_to_scalar true false );
+use MetaCPAN::ESConfig qw( es_doc_path );
+use MetaCPAN::Util     qw( single_valued_arrayref_to_scalar true false );
 
 with 'MetaCPAN::Query::Role::Common';
 
@@ -31,9 +32,7 @@ sub dir {
     };
 
     my $data = $self->es->search( {
-        index => $self->index_name,
-        type  => 'file',
-        body  => $body,
+        es_doc_path('file'), body => $body,
     } );
 
     my $dir = [ map { $_->{fields} } @{ $data->{hits}{hits} } ];
@@ -297,9 +296,7 @@ sub interesting_files {
     };
 
     my $data = $self->es->search( {
-        index => $self->index_name,
-        type  => 'file',
-        body  => $body,
+        es_doc_path('file'), body => $body,
     } );
 
     $return->{took}  = $data->{took};

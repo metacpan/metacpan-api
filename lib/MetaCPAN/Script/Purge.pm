@@ -3,6 +3,7 @@ package MetaCPAN::Script::Purge;
 use Moose;
 
 use Log::Contextual           qw( :log );
+use MetaCPAN::ESConfig        qw( es_doc_path );
 use MetaCPAN::Types::TypeTiny qw( Bool HashRef Str );
 use MetaCPAN::Util            qw( author_dir );
 
@@ -34,21 +35,17 @@ has bulk => (
 );
 
 sub _build_bulk {
-    my $self  = shift;
-    my $index = $self->index->name;
+    my $self = shift;
     return +{
-        author => $self->es->bulk_helper( index => $index, type => 'author' ),
-        contributor => $self->es->bulk_helper(
-            index => 'contributor',
-            type  => 'contributor'
-        ),
-        favorite =>
-            $self->es->bulk_helper( index => $index, type => 'favorite' ),
-        file => $self->es->bulk_helper( index => $index, type => 'file' ),
-        permission =>
-            $self->es->bulk_helper( index => $index, type => 'permission' ),
-        release =>
-            $self->es->bulk_helper( index => $index, type => 'release' ),
+        map { ; $_ => $self->es->bulk_helper( es_doc_path($_) ) }
+            qw(
+            author
+            contributor
+            favorite
+            file
+            permission
+            release
+            )
     };
 }
 
@@ -57,8 +54,7 @@ sub _get_scroller_release {
     return $self->es->scroll_helper(
         size   => 500,
         scroll => '10m',
-        index  => $self->index->name,
-        type   => 'release',
+        es_doc_path('release'),
         body   => { query => $query },
         fields => [qw( archive name )],
     );
@@ -69,8 +65,7 @@ sub _get_scroller_file {
     return $self->es->scroll_helper(
         size   => 500,
         scroll => '10m',
-        index  => $self->index->name,
-        type   => 'file',
+        es_doc_path('file'),
         body   => { query => $query },
         fields => [qw( name )],
     );
@@ -81,9 +76,8 @@ sub _get_scroller_favorite {
     return $self->es->scroll_helper(
         size   => 500,
         scroll => '10m',
-        index  => $self->index->name,
-        type   => 'favorite',
-        body   => { query => $query },
+        es_doc_path('favorite'),
+        body => { query => $query },
     );
 }
 
@@ -92,8 +86,7 @@ sub _get_scroller_contributor {
     return $self->es->scroll_helper(
         size   => 500,
         scroll => '10m',
-        index  => 'contributor',
-        type   => 'contributor',
+        es_doc_path('contributor'),
         body   => { query => $query },
         fields => [qw( release_name )],
     );

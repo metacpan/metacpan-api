@@ -428,18 +428,14 @@ sub empty_type {
     my $type = $self->delete_from_type;
     log_info {"Emptying type: $type"};
 
-    my $bulk = $self->es->bulk_helper(
-        index     => $self->index->name,
-        type      => $type,
-        max_count => 500,
-    );
+    my $bulk
+        = $self->es->bulk_helper( es_doc_path($type), max_count => 500, );
 
     my $scroll = $self->es->scroll_helper(
         size   => 250,
         scroll => '10m',
-        index  => $self->index->name,
-        type   => $type,
-        body   => {
+        es_doc_path($type),
+        body => {
             query => { match_all => {} },
             sort  => '_doc',
         },

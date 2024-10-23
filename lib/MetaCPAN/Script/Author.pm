@@ -12,6 +12,7 @@ use Email::Valid               ();
 use Encode                     ();
 use Log::Contextual            qw( :log :dlog );
 use MetaCPAN::Document::Author ();
+use MetaCPAN::ESConfig         qw( es_doc_path );
 use MetaCPAN::Types::TypeTiny  qw( Str );
 use MetaCPAN::Util             qw(diff_struct true false);
 use URI                        ();
@@ -128,17 +129,15 @@ sub index_authors {
     my @author_ids_to_purge;
 
     my $bulk = $self->es->bulk_helper(
-        index     => $self->index->name,
-        type      => 'author',
+        es_doc_path('author'),
         max_count => 250,
         timeout   => '25m',
     );
 
     my $scroll = $self->es->scroll_helper(
-        index => $self->index->name,
-        type  => 'author',
-        size  => 500,
-        body  => {
+        es_doc_path('author'),
+        size => 500,
+        body => {
             query => {
                 $self->pauseid
                 ? (
