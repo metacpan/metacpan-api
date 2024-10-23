@@ -75,7 +75,7 @@ my @ROGUE_DISTRIBUTIONS = qw(
 
 sub find {
     my ( $self, $module ) = @_;
-    my @candidates = $self->index->type('file')->query( {
+    my @candidates = $self->index->model->doc('file')->query( {
         bool => {
             must => [
                 { term => { indexed    => true } },

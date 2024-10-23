@@ -6,7 +6,6 @@ use MetaCPAN::Server::Test qw( model );
 use Test::More;
 
 my $model = model();
-my $idx   = $model->index('cpan');
 
 my %modules = (
     'Versions::Our'                 => '1.45',
@@ -17,7 +16,7 @@ my %modules = (
 
 while ( my ( $module, $version ) = each %modules ) {
 
-    ok( my $file = $idx->type('file')->find($module), "find $module" )
+    ok( my $file = $model->doc('file')->find($module), "find $module" )
         or next;
 
     ( my $path = "lib/$module.pm" ) =~ s/::/\//;

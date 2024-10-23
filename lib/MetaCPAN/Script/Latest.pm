@@ -263,7 +263,7 @@ sub reindex {
     my ( $self, $bulk, $source, $status ) = @_;
 
     # Update the status on the release.
-    my $release = $self->index->type('release')->get( {
+    my $release = $self->model->doc('release')->get( {
         author => $source->{author},
         name   => $source->{release},
     } );

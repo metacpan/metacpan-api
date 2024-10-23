@@ -7,8 +7,7 @@ use MetaCPAN::Util         qw(true false);
 use Test::More;
 
 my $model   = model();
-my $idx     = $model->index('cpan');
-my $release = $idx->type('release')->get( {
+my $release = $model->doc('release')->get( {
     author => 'LOCAL',
     name   => 'Multiple-Modules-1.01'
 } );
@@ -35,7 +34,7 @@ is_deeply(
 ok( !$release->first, 'Release is not first' );
 
 {
-    my @files = $idx->type('file')->query( {
+    my @files = $model->doc('file')->query( {
         bool => {
             must => [
                 { term   => { author  => $release->author } },
@@ -101,7 +100,7 @@ ok( !$release->first, 'Release is not first' );
     }
 }
 
-$release = $idx->type('release')->get( {
+$release = $model->doc('release')->get( {
     author => 'LOCAL',
     name   => 'Multiple-Modules-0.1'
 } );
@@ -109,7 +108,7 @@ ok $release,        'got older version of release';
 ok $release->first, 'this version was first';
 
 ok(
-    my $file = $idx->type('file')->query( {
+    my $file = $model->doc('file')->query( {
         bool => {
             must => [
                 { term         => { release => 'Multiple-Modules-0.1' } },

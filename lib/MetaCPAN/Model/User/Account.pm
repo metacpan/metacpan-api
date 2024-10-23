@@ -121,8 +121,8 @@ after add_identity => sub {
     my ( $self, $identity ) = @_;
     if ( $identity->{name} eq 'pause' ) {
         $self->clear_looks_human;
-        my $profile = $self->index->model->index('cpan')->type('author')
-            ->get( $identity->{key} );
+        my $profile
+            = $self->index->model->doc('author')->get( $identity->{key} );
 
         # Not every user is an author
         if ($profile) {
@@ -157,8 +157,7 @@ sub remove_identity {
     @$ids = grep { $_->{name} ne $identity } @$ids;
 
     if ( $identity eq 'pause' ) {
-        my $profile = $self->index->model->index('cpan')->type('author')
-            ->get( $id->{key} );
+        my $profile = $self->index->model->doc('author')->get( $id->{key} );
 
         if ( $profile && $profile->user eq $self->id ) {
             $profile->_clear_user;

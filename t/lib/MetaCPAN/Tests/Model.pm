@@ -40,23 +40,12 @@ has _type => (
     builder => '_build_type',
 );
 
-has _model => (
+has model => (
     is      => 'ro',
     isa     => 'MetaCPAN::Model',
     lazy    => 1,
     default => sub { MetaCPAN::Server::Test::model() },
 );
-
-has _es_index_name => (
-    is      => 'ro',
-    isa     => Str,
-    default => 'cpan',
-);
-
-sub index {
-    my ($self) = @_;
-    return $self->_model->index( $self->_es_index_name );
-}
 
 has search => (
     is      => 'ro',
@@ -68,7 +57,7 @@ has search => (
 sub _do_search {
     my ($self) = @_;
     my ( $method, @params ) = @{ $self->search };
-    return $self->index->type( $self->_type )->$method(@params);
+    return $self->model->doc( $self->_type )->$method(@params);
 }
 
 has data => (
