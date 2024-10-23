@@ -16,7 +16,7 @@ sub get : Path('') : Args(1) {
     $c->cdn_max_age('1y');
     my $file = $self->model($c)->raw->get($id);
     $c->stash_or_detach(
-        $c->model('CPAN::Release')->author_status( $id, $file ) );
+        $c->model('ESModel')->doc('release')->author_status( $id, $file ) );
 }
 
 # /author/search?q=QUERY

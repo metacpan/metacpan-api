@@ -1,10 +1,8 @@
-package MetaCPAN::Server::Model::Search;
-
-use strict;
-use warnings;
+package MetaCPAN::Server::Model::ESModel;
 
 use Moose;
-use MetaCPAN::Query::Search ();
+
+use MetaCPAN::Model ();
 
 extends 'Catalyst::Model';
 
@@ -13,13 +11,12 @@ has es => (
     writer => '_set_es',
 );
 
-has search => (
+has _esx_model => (
     is      => 'ro',
-    isa     => 'MetaCPAN::Query::Search',
     lazy    => 1,
     default => sub {
         my $self = shift;
-        return MetaCPAN::Query::Search->new( es => $self->es );
+        MetaCPAN::Model->new( es => $self->es );
     },
 );
 
@@ -28,7 +25,7 @@ sub ACCEPT_CONTEXT {
     if ( !$self->es ) {
         $self->_set_es( $c->model('ES') );
     }
-    return $self->search;
+    return $self->_esx_model;
 }
 
 1;

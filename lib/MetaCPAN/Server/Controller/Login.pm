@@ -37,7 +37,7 @@ sub index : Path Args(0) {
 
 sub update_user {
     my ( $self, $c, $type, $id, $data ) = @_;
-    my $model = $c->model('User::Account');
+    my $model = $c->model('ESModel')->doc('account');
     my $user  = $model->find( { name => $type, key => $id } );
     unless ($user) {
         $user = $model->get( $c->user->id )

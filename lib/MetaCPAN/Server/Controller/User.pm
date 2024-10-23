@@ -24,7 +24,9 @@ sub auto : Private {
     $c->cdn_never_cache(1);
 
     if ( my $token = $c->req->params->{access_token} ) {
-        if ( my $user = $c->model('User::Account')->find_token($token) ) {
+        if ( my $user
+            = $c->model('ESModel')->doc('account')->find_token($token) )
+        {
             $c->authenticate( { user => $user } );
             Log::Log4perl::MDC->put( user => $user->id );
         }
@@ -73,7 +75,8 @@ sub profile : Local : ActionClass('REST') {
         $self->status_not_found( $c, message => 'Profile doesn\'t exist' );
         $c->detach;
     }
-    my $profile = $c->model('CPAN::Author')->raw->get( $pause->key );
+    my $profile
+        = $c->model('ESModel')->doc('author')->raw->get( $pause->key );
     $c->stash->{profile} = $profile->{_source};
 }
 
@@ -95,7 +98,8 @@ sub profile_PUT {
         donation city region country
         location extra perlmongers);
     $profile->{updated} = DateTime->now->iso8601;
-    my @errors = $c->model('CPAN::Author')->new_document->validate($profile);
+    my @errors = $c->model('ESModel')->doc('author')
+        ->new_document->validate($profile);
 
     if (@errors) {
         $self->status_bad_request( $c, message => 'Validation failed' );
@@ -103,7 +107,8 @@ sub profile_PUT {
     }
     else {
         $profile
-            = $c->model('CPAN::Author')->put( $profile, { refresh => true } );
+            = $c->model('ESModel')->doc('author')
+            ->put( $profile, { refresh => true } );
         $self->status_created(
             $c,
             location => $c->uri_for( '/author/' . $profile->{pauseid} ),

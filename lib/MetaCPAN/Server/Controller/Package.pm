@@ -11,7 +11,7 @@ with 'MetaCPAN::Server::Role::JSONP';
 sub modules : Path('modules') : Args(1) {
     my ( $self, $c, $dist ) = @_;
 
-    my $last = $c->model('CPAN::Release')->find($dist);
+    my $last = $c->model('ESModel')->doc('release')->find($dist);
     $c->detach( '/not_found', ["Cannot find last release for $dist"] )
         unless $last;
     $c->stash_or_detach(

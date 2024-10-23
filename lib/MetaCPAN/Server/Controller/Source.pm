@@ -63,7 +63,7 @@ sub module : Chained('index') : PathPart('') : Args(1) {
 
     $c->cdn_never_cache(1);
 
-    $module = $c->model('CPAN::File')->find($module)
+    $module = $c->model('ESModel')->doc('file')->find($module)
         or $c->detach( '/not_found', [] );
     $c->forward( 'get', [ map { $module->$_ } qw(author release path) ] );
 }

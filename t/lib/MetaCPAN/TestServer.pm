@@ -256,7 +256,7 @@ sub index_favorite {
 sub prepare_user_test_data {
     my $self = shift;
     ok(
-        my $user = MetaCPAN::Server->model('User::Account')->put( {
+        my $user = MetaCPAN::Server->model('ESModel')->doc('account')->put( {
             access_token => [ { client => 'testing', token => 'testing' } ]
         } ),
         'prepare user'
@@ -266,7 +266,7 @@ sub prepare_user_test_data {
     ok( $user->put( { refresh => true } ), 'put user' );
 
     ok(
-        MetaCPAN::Server->model('User::Account')->put(
+        MetaCPAN::Server->model('ESModel')->doc('account')->put(
             { access_token => [ { client => 'testing', token => 'bot' } ] },
             { refresh      => true }
         ),
