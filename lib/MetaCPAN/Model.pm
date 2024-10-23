@@ -37,6 +37,12 @@ for my $index ( sort keys %indexes ) {
     index $index => %{ $indexes{$index} };
 }
 
+sub doc {
+    my ( $self, $doc ) = @_;
+    my $doc_config = es_config->documents->{$doc};
+    return $self->index( $doc_config->{index} )->type( $doc_config->{type} );
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
 
