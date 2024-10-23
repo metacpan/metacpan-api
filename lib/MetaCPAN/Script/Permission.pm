@@ -25,7 +25,7 @@ has clean_up => (
 sub run {
     my $self = shift;
     $self->index_permissions;
-    $self->index->refresh;
+    $self->es->indices->refresh;
 }
 
 sub index_permissions {

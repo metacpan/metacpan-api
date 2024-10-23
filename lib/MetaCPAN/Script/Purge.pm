@@ -135,7 +135,7 @@ sub run {
         }
     }
 
-    $self->index->refresh;
+    $self->es->indices->refresh;
 }
 
 sub purge_author_releases {

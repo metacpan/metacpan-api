@@ -25,7 +25,7 @@ has clean_up => (
 sub run {
     my $self = shift;
     $self->index_packages;
-    $self->index->refresh;
+    $self->es->indices->refresh;
 }
 
 sub _get_02packages_fh {

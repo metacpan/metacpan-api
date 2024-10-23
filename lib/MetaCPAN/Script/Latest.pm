@@ -63,7 +63,7 @@ sub run {
     }
 
     my $p = $self->packages;
-    $self->index->refresh;
+    $self->es->indices->refresh;
 
     # If a distribution name is passed get all the package names
     # from 02packages that match that distribution so we can limit
@@ -251,7 +251,7 @@ sub run {
         $self->reindex( $bulk, $file_data, 'cpan' );
     }
     $bulk->flush;
-    $self->index->refresh;
+    $self->es->indices->refresh;
 
     # Call Fastly to purge
     $self->purge_cpan_distnameinfos( [

@@ -45,7 +45,7 @@ sub run {
   # ) unless $index =~ /author/;
 
     $self->index_authors;
-    $self->index->refresh;
+    $self->es->indices->refresh;
 }
 
 my @author_config_fields = qw(
@@ -167,7 +167,7 @@ sub index_authors {
     }
 
     $bulk->flush;
-    $self->index->refresh;
+    $self->es->indices->refresh;
 
     $self->perform_purges;
 
