@@ -6,8 +6,7 @@ use MetaCPAN::Server::Test qw( model );
 use Test::More;
 
 my $model   = model();
-my $idx     = $model->index('cpan');
-my $release = $idx->type('release')->get( {
+my $release = $model->doc('release')->get( {
     author => 'MO',
     name   => 'Documentation-Hide-0.01'
 } );
@@ -21,7 +20,7 @@ is( $release->main_module, 'Documentation::Hide', 'main_module ok' );
 ok( $release->first, 'Release is first' );
 
 {
-    my @files = $idx->type('file')->query( {
+    my @files = $model->doc('file')->query( {
         bool => {
             must => [
                 { term   => { author  => $release->author } },
@@ -45,7 +44,7 @@ ok( $release->first, 'Release is first' );
 }
 
 {
-    my @files = $idx->type('file')->query( {
+    my @files = $model->doc('file')->query( {
         bool => {
             must => [
                 { term   => { author  => $release->author } },

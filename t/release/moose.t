@@ -7,10 +7,9 @@ use MetaCPAN::Util         qw( true false hit_total );
 use Test::More;
 
 my $model = model();
-my $idx   = $model->index('cpan');
 my @moose
-    = $idx->type('release')->query( { term => { distribution => 'Moose' } } )
-    ->all;
+    = $model->doc('release')
+    ->query( { term => { distribution => 'Moose' } } )->all;
 
 my $first = 0;
 map { $first++ } grep { $_->first } @moose;
@@ -23,7 +22,7 @@ is( $moose[1]->main_module, 'Moose', 'main_module ok' );
 
 ok(
     my $faq
-        = $idx->type('file')
+        = $model->doc('file')
         ->query( { match_phrase => { documentation => 'Moose::FAQ' } } )
         ->first,
     'get Moose::FAQ'
@@ -37,7 +36,7 @@ ok( !$faq->binary, 'is not binary' );
 
 ok(
     my $binary
-        = $idx->type('file')->query( { term => { name => 't' } } )->first,
+        = $model->doc('file')->query( { term => { name => 't' } } )->first,
     'get a t/ directory'
 );
 
@@ -45,21 +44,21 @@ ok( $binary->binary, 'is binary' );
 
 ok(
     my $ppport
-        = $idx->type('file')
+        = $model->doc('file')
         ->query( { match_phrase => { documentation => 'ppport.h' } } )->first,
     'get ppport.h'
 );
 
 is( $ppport->name, 'ppphdoc', 'name doesn\'t contain a dot' );
 
-ok( my $moose = $idx->type('file')->find('Moose'), 'find Moose module' );
+ok( my $moose = $model->doc('file')->find('Moose'), 'find Moose module' );
 
 is( $moose->name, 'Moose.pm', 'defined in Moose.pm' );
 
 is( $moose->module->[0]->associated_pod, 'DOY/Moose-0.02/lib/Moose.pm' );
 
 my $signature;
-$signature = $idx->type('file')->query( {
+$signature = $model->doc('file')->query( {
     bool => {
         must => [
             { term => { mime => 'text/x-script.perl' } },
@@ -69,7 +68,7 @@ $signature = $idx->type('file')->query( {
 } )->first;
 ok( !$signature, 'SIGNATURE is not perl code' );
 
-$signature = $idx->type('file')->query( {
+$signature = $model->doc('file')->query( {
     bool => {
         must => [
             { term => { documentation => 'SIGNATURE' } },
@@ -80,7 +79,7 @@ $signature = $idx->type('file')->query( {
 } )->first;
 ok( !$signature, 'SIGNATURE is not documentation' );
 
-$signature = $idx->type('file')->query( {
+$signature = $model->doc('file')->query( {
     bool => {
         must => [
             { term   => { name    => 'SIGNATURE' } },
@@ -92,7 +91,7 @@ $signature = $idx->type('file')->query( {
 ok( !$signature, 'SIGNATURE is not pod' );
 
 {
-    my $files  = $idx->type('file');
+    my $files  = $model->doc('file');
     my $module = $files->history( module => 'Moose' )->raw->all;
     my $file   = $files->history( file => 'Moose', 'lib/Moose.pm' )->raw->all;
 

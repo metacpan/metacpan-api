@@ -10,7 +10,7 @@ sub get_cpan_author_contributors {
     my @ret;
     my $es = $self->es;
 
-    my $type = $self->index->type('release');
+    my $type = $self->model->doc('release');
     my $data;
     eval {
         $data = $type->get_contributors( $author, $release );

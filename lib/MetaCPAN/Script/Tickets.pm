@@ -108,7 +108,7 @@ sub index_github_bugs {
     log_debug {'Fetching GitHub issues'};
 
     my $scroll
-        = $self->index->type('release')->find_github_based->scroll('5m');
+        = $self->model->doc('release')->find_github_based->scroll('5m');
     log_debug { sprintf( "Found %s repos", $scroll->total ) };
 
     my %summary;

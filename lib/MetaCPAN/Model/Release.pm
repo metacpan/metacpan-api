@@ -84,7 +84,7 @@ has date => (
     },
 );
 
-has index => ( is => 'ro' );
+has model => ( is => 'ro' );
 
 has metadata => (
     is      => 'ro',
@@ -222,8 +222,7 @@ sub _build_document {
         || $document->{abstract} eq 'null' );
 
     $document
-        = $self->index->type('release')
-        ->put( $document, { refresh => true } );
+        = $self->model->doc('release')->put( $document, { refresh => true } );
 
     # create distribution if doesn't exist
     my $dist_count = $self->es->count(
@@ -232,7 +231,7 @@ sub _build_document {
         body  => { query => { term => { name => $self->distribution } } },
     );
     if ( !$dist_count->{count} ) {
-        $self->index->type('distribution')
+        $self->model->doc('distribution')
             ->put( { name => $self->distribution }, { create => 1 } );
     }
     return $document;
@@ -333,7 +332,7 @@ sub _build_files {
 
     my @files;
     log_debug { 'Indexing ', scalar @{ $self->archive->files }, ' files' };
-    my $file_set = $self->index->type('file');
+    my $file_set = $self->model->doc('file');
 
     my $extract_dir = $self->extract;
     File::Find::find(

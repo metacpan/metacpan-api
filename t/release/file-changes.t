@@ -6,8 +6,7 @@ use MetaCPAN::Server::Test qw( model );
 use Test::More;
 
 my $model   = model();
-my $idx     = $model->index('cpan');
-my $release = $idx->type('release')->get( {
+my $release = $model->doc('release')->get( {
     author => 'LOCAL',
     name   => 'File-Changes-1.0'
 } );
@@ -20,7 +19,7 @@ is( $release->changes_file, 'Changes',          'changes_file ok' );
 
 {
     my @files
-        = $idx->type('file')
+        = $model->doc('file')
         ->query( { term => { release => 'File-Changes-1.0' } } )->all;
 
     my ($changes) = grep { $_->name eq 'Changes' } @files;

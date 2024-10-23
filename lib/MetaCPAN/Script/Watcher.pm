@@ -126,7 +126,7 @@ sub backpan_changes {
 sub latest_release {
     my $self = shift;
     return undef if ( $self->backpan );
-    return $self->index->type('release')
+    return $self->model->doc('release')
         ->sort( [ { 'date' => { order => "desc" } } ] )->first;
 }
 
@@ -157,7 +157,7 @@ sub index_release {
 sub reindex_release {
     my ( $self, $release ) = @_;
     my $info = CPAN::DistnameInfo->new( $release->{path} );
-    $release = $self->index->type('release')->query( {
+    $release = $self->model->doc('release')->query( {
         bool => {
             must => [
                 { term => { author  => $info->cpanid } },

@@ -6,14 +6,13 @@ use MetaCPAN::Server::Test qw( app GET model test_psgi );
 use Test::More;
 
 my $model = model();
-my $idx   = $model->index('cpan');
 
 # Module::Faker will generate a regular pm for the main module.
-is( $idx->type('file')->find('uncommon::sense')->path,
+is( $model->doc('file')->find('uncommon::sense')->path,
     'lib/uncommon/sense.pm', 'find main module' );
 
 # This should be the .pm.PL file we specified.
-ok( my $pm = $idx->type('file')->find('less::sense'),
+ok( my $pm = $model->doc('file')->find('less::sense'),
     'find sense.pm.PL module' );
 
 is( $pm->name, 'sense.pm.PL', 'name is correct' );
@@ -34,7 +33,7 @@ is( $pm->module->[0]->version,
 {
     # Verify all the files we expect to be contained in the release.
     my $files
-        = $idx->type('file')
+        = $model->doc('file')
         ->query( { term => { release => 'uncommon-sense-0.01' } } )
         ->raw->size(20)->all->{hits}->{hits};
     $files = [ map { $_->{_source} } @$files ];
