@@ -16,10 +16,7 @@ has query_package => (
 
 sub _build_query_package {
     my $self = shift;
-    return MetaCPAN::Query::Package->new(
-        es         => $self->es,
-        index_name => $self->index->name,
-    );
+    return MetaCPAN::Query::Package->new( es => $self->es );
 }
 
 __PACKAGE__->meta->make_immutable;

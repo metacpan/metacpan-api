@@ -16,10 +16,7 @@ has query_cover => (
 
 sub _build_query_cover {
     my $self = shift;
-    return MetaCPAN::Query::Cover->new(
-        es         => $self->es,
-        index_name => 'cover',
-    );
+    return MetaCPAN::Query::Cover->new( es => $self->es );
 }
 
 __PACKAGE__->meta->make_immutable;

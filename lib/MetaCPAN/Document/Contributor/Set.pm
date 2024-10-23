@@ -16,10 +16,7 @@ has query_contributor => (
 
 sub _build_query_contributor {
     my $self = shift;
-    return MetaCPAN::Query::Contributor->new(
-        es         => $self->es,
-        index_name => 'contributor',
-    );
+    return MetaCPAN::Query::Contributor->new( es => $self->es );
 }
 
 __PACKAGE__->meta->make_immutable;

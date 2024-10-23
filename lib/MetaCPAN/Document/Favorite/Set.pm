@@ -20,10 +20,7 @@ has query_favorite => (
 
 sub _build_query_favorite {
     my $self = shift;
-    return MetaCPAN::Query::Favorite->new(
-        es         => $self->es,
-        index_name => $self->index->name,
-    );
+    return MetaCPAN::Query::Favorite->new( es => $self->es );
 }
 
 __PACKAGE__->meta->make_immutable;

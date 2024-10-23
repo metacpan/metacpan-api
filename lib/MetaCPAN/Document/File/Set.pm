@@ -25,10 +25,7 @@ has query_file => (
 
 sub _build_query_file {
     my $self = shift;
-    return MetaCPAN::Query::File->new(
-        es         => $self->es,
-        index_name => $self->index->name,
-    );
+    return MetaCPAN::Query::File->new( es => $self->es );
 }
 
 has query_favorite => (
@@ -41,10 +38,7 @@ has query_favorite => (
 
 sub _build_query_favorite {
     my $self = shift;
-    return MetaCPAN::Query::Favorite->new(
-        es         => $self->es,
-        index_name => $self->index->name,
-    );
+    return MetaCPAN::Query::Favorite->new( es => $self->es );
 }
 
 has query_release => (
@@ -57,10 +51,7 @@ has query_release => (
 
 sub _build_query_release {
     my $self = shift;
-    return MetaCPAN::Query::Release->new(
-        es         => $self->es,
-        index_name => $self->index->name,
-    );
+    return MetaCPAN::Query::Release->new( es => $self->es );
 }
 
 my @ROGUE_DISTRIBUTIONS = qw(
