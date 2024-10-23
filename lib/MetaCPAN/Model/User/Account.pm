@@ -6,9 +6,10 @@ use warnings;
 use Moose;
 use ElasticSearchX::Model::Document;
 
-use MetaCPAN::Types           qw( ESBool Identity );
-use MetaCPAN::Types::TypeTiny qw( ArrayRef Dict Str );
-use MetaCPAN::Util            qw(true false);
+use MetaCPAN::Model::User::Identity ();
+use MetaCPAN::Types                 qw( ESBool Identity );
+use MetaCPAN::Types::TypeTiny       qw( ArrayRef Dict Str );
+use MetaCPAN::Util                  qw(true false);
 
 =head1 PROPERTIES
 
