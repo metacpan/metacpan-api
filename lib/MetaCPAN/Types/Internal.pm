@@ -85,7 +85,7 @@ coerce ESBool, from Bool, via {
 };
 
 $ElasticSearchX::Model::Document::Mapping::MAPPING{ESBool}
-    = $ElasticSearchX::Model::Document::Mapping::MAPPING{ESBool};
+    = $ElasticSearchX::Model::Document::Mapping::MAPPING{Bool};
 
 use MooseX::Attribute::Deflator;
 deflate 'ScalarRef', via {$$_};
