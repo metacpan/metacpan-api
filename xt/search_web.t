@@ -13,7 +13,6 @@ use Test::More;
 my $server = MetaCPAN::TestServer->new;
 my $search = MetaCPAN::Query::Search->new(
     es          => $server->es_client,
-    index_name => 'cpan',
 );
 
 my %tests = (

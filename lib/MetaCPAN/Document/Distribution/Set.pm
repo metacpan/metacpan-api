@@ -16,10 +16,7 @@ has query_distribution => (
 
 sub _build_query_distribution {
     my $self = shift;
-    return MetaCPAN::Query::Distribution->new(
-        es         => $self->es,
-        index_name => 'cpan',
-    );
+    return MetaCPAN::Query::Distribution->new( es => $self->es );
 }
 
 __PACKAGE__->meta->make_immutable;

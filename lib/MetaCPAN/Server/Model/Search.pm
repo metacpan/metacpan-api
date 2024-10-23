@@ -15,10 +15,7 @@ has search => (
     handles => [qw( search_for_first_result search_web )],
     default => sub {
         my $self = shift;
-        return MetaCPAN::Query::Search->new(
-            es         => $self->es,
-            index_name => $self->index,
-        );
+        return MetaCPAN::Query::Search->new( es => $self->es, );
     },
 );
 

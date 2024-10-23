@@ -16,10 +16,7 @@ has query_permission => (
 
 sub _build_query_permission {
     my $self = shift;
-    return MetaCPAN::Query::Permission->new(
-        es         => $self->es,
-        index_name => $self->index->name,
-    );
+    return MetaCPAN::Query::Permission->new( es => $self->es );
 }
 
 __PACKAGE__->meta->make_immutable;
