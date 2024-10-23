@@ -2,6 +2,8 @@ package MetaCPAN::TestServer;
 
 use MetaCPAN::Moose;
 
+use Cpanel::JSON::XS                 qw( encode_json );
+use MetaCPAN::ESConfig               qw( es_config );
 use MetaCPAN::Script::Author         ();
 use MetaCPAN::Script::Cover          ();
 use MetaCPAN::Script::CPANTestersAPI ();
@@ -285,7 +287,7 @@ sub test_index_missing {
     my $self = $_[0];
 
     subtest 'missing index' => sub {
-        my $scoverindexjson = MetaCPAN::Script::Mapping::Cover::mapping;
+        my $cover_mapping_json = encode_json( es_config->mapping('cover') );
 
         subtest 'delete cover index' => sub {
             local @ARGV = qw(mapping --delete_index cover);
@@ -300,7 +302,7 @@ sub test_index_missing {
             local @ARGV = (
                 'mapping', '--create_index',
                 'cover',   '--patch_mapping',
-                qq({ "cover": $scoverindexjson })
+                qq({ "cover": $cover_mapping_json })
             );
             my $mapping
                 = MetaCPAN::Script::Mapping->new_with_options(
