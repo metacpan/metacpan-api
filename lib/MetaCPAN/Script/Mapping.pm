@@ -45,7 +45,7 @@ has arg_list_types => (
     is            => 'ro',
     isa           => Bool,
     default       => 0,
-    documentation => 'list available index type names',
+    documentation => 'list available document type names',
 );
 
 has arg_cluster_info => (
@@ -457,7 +457,7 @@ sub empty_type {
 
 sub list_types {
     my $self = shift;
-    print "$_\n" for sort keys %{ $self->index->types };
+    print "$_\n" for sort keys %{ es_config->documents };
 }
 
 sub show_info {
