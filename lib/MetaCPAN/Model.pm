@@ -4,7 +4,7 @@ package MetaCPAN::Model;
 use Moose;
 
 use ElasticSearchX::Model;
-use MetaCPAN::ESConfig qw(es_config);
+use MetaCPAN::ESConfig qw(es_config es_doc_path);
 use Module::Runtime    qw(require_module);
 
 my %indexes;
@@ -34,6 +34,12 @@ for my $alias ( sort keys %$aliases ) {
 
 for my $index ( sort keys %indexes ) {
     index $index => %{ $indexes{$index} };
+}
+
+sub doc {
+    my ( $self, $doc ) = @_;
+    my %doc_config = es_doc_path($doc);
+    return $self->index( $doc_config{index} )->type( $doc_config{type} );
 }
 
 __PACKAGE__->meta->make_immutable;
