@@ -3,8 +3,9 @@ package MetaCPAN::Document::Release;
 use Moose;
 
 use ElasticSearchX::Model::Document;
-use MetaCPAN::Types           qw( ESBool Dependency );
-use MetaCPAN::Types::TypeTiny qw(
+use MetaCPAN::Document::Dependency ();
+use MetaCPAN::Types                qw( ESBool Dependency );
+use MetaCPAN::Types::TypeTiny      qw(
     ArrayRef
     HashRefCPANMeta
     Num
