@@ -23,7 +23,7 @@ sub for_session {
 
 sub from_session {
     my ( $self, $c, $id ) = @_;
-    my $user = $c->model('User::Account')->get($id);
+    my $user = $c->model('ESModel')->doc('account')->get($id);
     $self->_set_obj($user) if ($user);
     return $user ? $self : undef;
 }

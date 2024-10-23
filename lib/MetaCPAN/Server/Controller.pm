@@ -41,7 +41,7 @@ sub apply_request_filter {
 
 sub model {
     my ( $self, $c ) = @_;
-    my $model = $c->model('CPAN')->type( $self->type );
+    my $model = $c->model('ESModel')->doc( $self->type );
     $model = $model->fields( [ map { split(/,/) } $c->req->param('fields') ] )
         if $c->req->param('fields');
     if ( my ($size) = $c->req->param('size') ) {
@@ -55,7 +55,7 @@ sub model {
 
 sub mapping : Path('_mapping') Args(0) {
     my ( $self, $c ) = @_;
-    $c->stash( $c->model('CPAN')
+    $c->stash( $c->model('ESModel')
             ->es->indices->get_mapping( es_doc_path( $self->type ) ) );
 }
 
