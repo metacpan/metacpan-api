@@ -86,6 +86,12 @@ has skip_existing_mapping => (
     documentation => 'do NOT copy mappings other than patch_mapping',
 );
 
+has copy_from_index => (
+    is            => 'ro',
+    isa           => Str,
+    documentation => 'index to copy type from',
+);
+
 has copy_to_index => (
     is            => 'ro',
     isa           => Str,
@@ -336,9 +342,13 @@ sub create_index {
 
 sub copy_type {
     my ( $self, $index, $type ) = @_;
-    $index //= $self->copy_to_index;
+    my $from_index = $self->copy_from_index
+        or die "can't copy without a source index";
+    $index //= $self->copy_to_index
+        or die "can't copy without a destination index";
 
-    $self->_check_index_exists( $index, EXPECTED );
+    $self->_check_index_exists( $from_index, EXPECTED );
+    $self->_check_index_exists( $index,      EXPECTED );
     $type //= $self->arg_copy_type;
     $type or die "can't copy without a type\n";
 
@@ -358,7 +368,7 @@ sub copy_type {
         };
     }
 
-    return $self->_copy_slice( $query, $index, $type ) if $query;
+    return $self->_copy_slice( $query, $from_index, $index, $type ) if $query;
 
     # else ... do copy by monthly slices
 
@@ -374,7 +384,7 @@ sub copy_type {
 
         log_info {"copying data for month: $gte"};
         eval {
-            $self->_copy_slice( $q, $index, $type );
+            $self->_copy_slice( $q, $from_index, $index, $type );
             1;
         } or do {
             my $err = $@ || 'zombie error';
@@ -384,12 +394,12 @@ sub copy_type {
 }
 
 sub _copy_slice {
-    my ( $self, $query, $index, $type ) = @_;
+    my ( $self, $query, $from_index, $index, $type ) = @_;
 
     my $scroll = $self->es->scroll_helper(
         size   => 250,
         scroll => '10m',
-        index  => $self->index->name,
+        index  => $from_index,
         type   => $type,
         body   => {
             query => $query,
