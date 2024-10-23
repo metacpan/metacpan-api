@@ -187,7 +187,6 @@ sub run {
     # logic - feel free to clean up so the CP::DistInfo isn't
     my @module_to_purge_dists = map { CPAN::DistnameInfo->new($_) } @files;
 
-    $self->index;
     $self->cpan_file_map if ( $self->detect_backpan );
     $self->perms;
     my @pid;
