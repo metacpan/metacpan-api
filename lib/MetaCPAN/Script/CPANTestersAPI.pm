@@ -44,7 +44,7 @@ has _bulk => (
 sub run {
     my $self = shift;
     $self->index_reports;
-    $self->index->refresh;
+    $self->es->indices->refresh;
 }
 
 sub index_reports {
