@@ -5,6 +5,7 @@ use Moose;
 use CPAN::DistnameInfo        ();
 use IO::Uncompress::Gunzip    ();
 use Log::Contextual           qw( :log );
+use MetaCPAN::ESConfig        qw( es_doc_path );
 use MetaCPAN::Types::TypeTiny qw( Bool );
 use MetaCPAN::Util            qw( true false );
 
@@ -52,10 +53,7 @@ sub index_packages {
     }
     log_debug {$meta};
 
-    my $bulk = $self->es->bulk_helper(
-        index => $self->index->name,
-        type  => 'package',
-    );
+    my $bulk = $self->es->bulk_helper( es_doc_path('package') );
 
     my %seen;
     log_debug {"adding data"};
@@ -98,8 +96,7 @@ sub run_cleanup {
     log_debug {"checking package data to remove"};
 
     my $scroll = $self->es->scroll_helper(
-        index  => $self->index->name,
-        type   => 'package',
+        es_doc_path('package'),
         scroll => '30m',
         body   => { query => { match_all => {} } },
     );

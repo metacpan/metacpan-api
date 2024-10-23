@@ -6,6 +6,7 @@ use warnings;
 use File::Spec::Functions qw( catfile );
 use Log::Contextual       qw( :log );
 use Moose;
+use MetaCPAN::ESConfig        qw( es_doc_path );
 use MetaCPAN::Types::TypeTiny qw( Bool Int Str );
 use MetaCPAN::Util            qw( true false );
 
@@ -85,8 +86,7 @@ sub check_modules {
 
              # look up this module in ElasticSearch and see what we have on it
                 my $results = $es->search(
-                    index => $self->index->name,
-                    type  => 'file',
+                    es_doc_path('file'),
                     query => {
                         bool => {
                             must => [
@@ -114,8 +114,7 @@ sub check_modules {
                 # now find the first latest releases for these files
                 foreach my $file (@files) {
                     my $release_results = $es->search(
-                        index => $self->index->name,
-                        type  => 'release',
+                        es_doc_path('release'),
                         query => {
                             bool => {
                                 must => [
@@ -145,8 +144,7 @@ sub check_modules {
                 if ( !@releases ) {
                     foreach my $file (@files) {
                         my $release_results = $es->search(
-                            index => $self->index->name,
-                            type  => 'release',
+                            es_doc_path('release'),
                             query => {
                                 bool => {
                                     must => [

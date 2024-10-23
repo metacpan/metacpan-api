@@ -1,5 +1,6 @@
 package MetaCPAN::API::Model::User;
 
+use MetaCPAN::ESConfig qw( es_doc_path );
 use MetaCPAN::Moose;
 
 with 'MetaCPAN::API::Model::Role::ES';
@@ -17,8 +18,7 @@ sub lookup {
     };
 
     my $res = $self->_run_query(
-        index       => 'user',
-        type        => 'account',
+        es_doc_path('account'),
         body        => { query => $query },
         search_type => 'dfs_query_then_fetch',
     );

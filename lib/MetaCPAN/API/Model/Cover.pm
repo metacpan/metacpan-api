@@ -1,5 +1,6 @@
 package MetaCPAN::API::Model::Cover;
 
+use MetaCPAN::ESConfig qw( es_doc_path );
 use MetaCPAN::Moose;
 
 use MetaCPAN::Util qw(hit_total);
@@ -12,9 +13,8 @@ sub find_release_coverage {
     my $query = +{ term => { release => $release } };
 
     my $res = $self->_run_query(
-        index => 'cover',
-        type  => 'cover',
-        body  => {
+        es_doc_path('cover'),
+        body => {
             query => $query,
             size  => 999,
         }

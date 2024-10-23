@@ -5,6 +5,7 @@ use namespace::autoclean;
 
 use Cpanel::JSON::XS          qw( decode_json );
 use Log::Contextual           qw( :log :dlog );
+use MetaCPAN::ESConfig        qw( es_doc_path );
 use MetaCPAN::Types::TypeTiny qw( Bool Str Uri );
 use Path::Tiny                qw( path );
 use MetaCPAN::Util            qw( hit_total true false );
@@ -53,10 +54,7 @@ sub run {
 sub index_cover_data {
     my ( $self, $data ) = @_;
 
-    my $bulk = $self->es->bulk_helper(
-        index => 'cover',
-        type  => 'cover',
-    );
+    my $bulk = $self->es->bulk_helper( es_doc_path('cover') );
 
     log_info {'Updating the cover index'};
 
@@ -64,10 +62,9 @@ sub index_cover_data {
         for my $version ( keys %{ $data->{$dist} } ) {
             my $release   = $dist . '-' . $version;
             my $rel_check = $self->es->search(
-                index => 'cpan',
-                type  => 'release',
-                size  => 0,
-                body  => {
+                es_doc_path('release'),
+                size => 0,
+                body => {
                     query => { term => { name => $release } },
                 },
             );

@@ -10,6 +10,7 @@ use DateTime                  ();
 use File::Find                ();
 use File::Spec                ();
 use Log::Contextual           qw( :log :dlog );
+use MetaCPAN::ESConfig        qw( es_doc_path );
 use MetaCPAN::Model::Archive  ();
 use MetaCPAN::Types::TypeTiny qw( AbsPath ArrayRef Str );
 use MetaCPAN::Util            qw( fix_version true false );
@@ -225,11 +226,8 @@ sub _build_document {
         = $self->model->doc('release')->put( $document, { refresh => true } );
 
     # create distribution if doesn't exist
-    my $dist_count = $self->es->count(
-        index => 'cpan',
-        type  => 'distribution',
-        body  => { query => { term => { name => $self->distribution } } },
-    );
+    my $dist_count = $self->es->count( es_doc_path('distribution'),
+        body => { query => { term => { name => $self->distribution } } }, );
     if ( !$dist_count->{count} ) {
         $self->model->doc('distribution')
             ->put( { name => $self->distribution }, { create => 1 } );

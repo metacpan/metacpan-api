@@ -4,6 +4,7 @@ use Moose;
 
 use Log::Contextual qw( :log );
 
+use MetaCPAN::ESConfig        qw( es_doc_path );
 use MetaCPAN::Types::TypeTiny qw( Bool Int Str );
 use MetaCPAN::Util            qw( true false );
 
@@ -92,8 +93,7 @@ sub index_favorites {
     }
     elsif ( $self->age ) {
         my $favs = $self->es->scroll_helper(
-            index  => $self->index->name,
-            type   => 'favorite',
+            es_doc_path('favorite'),
             scroll => '5m',
             body   => {
                 query   => $age_filter,
@@ -125,8 +125,7 @@ sub index_favorites {
     }
     else {
         my $favs = $self->es->scroll_helper(
-            index  => $self->index->name,
-            type   => 'favorite',
+            es_doc_path('favorite'),
             scroll => '30s',
             body   => {
                 query   => $query,
@@ -154,8 +153,7 @@ sub index_favorites {
         }
 
         my $files = $self->es->scroll_helper(
-            index  => $self->index->name,
-            type   => 'file',
+            es_doc_path('file'),
             scroll => '15m',
             body   => {
                 query => {
@@ -223,15 +221,13 @@ sub index_favorites {
         }
         else {
             my $bulk = $self->es->bulk_helper(
-                index     => $self->index->name,
-                type      => 'file',
+                es_doc_path('file'),
                 max_count => 250,
                 timeout   => '120m',
             );
 
             my $files = $self->es->scroll_helper(
-                index  => $self->index->name,
-                type   => 'file',
+                es_doc_path('file'),
                 scroll => '15s',
                 body   => {
                     query   => { term => { distribution => $dist } },

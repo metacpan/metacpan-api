@@ -7,6 +7,7 @@ use Log::Contextual qw( :log );
 use Moose;
 use CPAN::DistnameInfo          ();
 use DateTime::Format::ISO8601   ();
+use MetaCPAN::ESConfig          qw( es_doc_path );
 use MetaCPAN::Types::TypeTiny   qw( Bool Str );
 use MetaCPAN::Util              qw( true false );
 use Parse::CPAN::Packages::Fast ();
@@ -142,10 +143,9 @@ sub run {
         if @module_filters > 1;
 
         my $scroll = $self->es->scroll_helper( {
-            index => $self->index->name,
-            type  => 'file',
-            size  => 100,
-            body  => {
+            es_doc_path('file'),
+            size => 100,
+            body => {
                 query   => $query,
                 _source => [
                     qw(author date distribution download_url module.name release status)
@@ -216,10 +216,7 @@ sub run {
         }
     }
 
-    my $bulk = $self->es->bulk_helper(
-        index => $self->index->name,
-        type  => 'file'
-    );
+    my $bulk = $self->es->bulk_helper( es_doc_path('file') );
 
     my %to_purge;
 
@@ -277,10 +274,9 @@ sub reindex {
 
     # Get all the files for the release.
     my $scroll = $self->es->scroll_helper(
-        index => $self->index->name,
-        type  => 'file',
-        size  => 100,
-        body  => {
+        es_doc_path('file'),
+        size => 100,
+        body => {
             query => {
                 bool => {
                     must => [

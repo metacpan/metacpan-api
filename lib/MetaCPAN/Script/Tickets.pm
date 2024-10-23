@@ -8,6 +8,7 @@ $ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0;
 
 use HTTP::Request::Common qw( GET );
 use Log::Contextual       qw( :log :dlog );
+use MetaCPAN::ESConfig    qw( es_doc_path );
 use MetaCPAN::Util        qw( true false );
 use Net::GitHub::V4       ();
 use Ref::Util             qw( is_hashref is_ref );
@@ -42,10 +43,7 @@ has _bulk => (
 
 sub _build_bulk {
     my $self = shift;
-    $self->es->bulk_helper(
-        index => $self->index->name,
-        type  => 'distribution',
-    );
+    $self->es->bulk_helper( es_doc_path('distribution') );
 }
 
 sub _build_github_token {
@@ -78,9 +76,8 @@ sub check_all_distributions {
     # first: make sure all distributions have an entry
     my $scroll = $self->es->scroll_helper(
         scroll => '5m',
-        index  => $self->index->name,
-        type   => 'release',
-        body   => {
+        es_doc_path('release'),
+        body => {
             query => {
                 bool =>
                     { must_not => [ { term => { status => 'backpan' } } ] }

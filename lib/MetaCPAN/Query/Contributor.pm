@@ -2,7 +2,8 @@ package MetaCPAN::Query::Contributor;
 
 use MetaCPAN::Moose;
 
-use MetaCPAN::Util qw(hit_total);
+use MetaCPAN::ESConfig qw( es_doc_path );
+use MetaCPAN::Util     qw(hit_total);
 
 with 'MetaCPAN::Query::Role::Common';
 
@@ -19,9 +20,8 @@ sub find_release_contributors {
     };
 
     my $res = $self->es->search(
-        index => $self->index_name,
-        type  => 'contributor',
-        body  => {
+        es_doc_path('contributor'),
+        body => {
             query => $query,
             size  => 999,
         }
@@ -38,9 +38,8 @@ sub find_author_contributions {
     my $query = +{ term => { pauseid => $pauseid } };
 
     my $res = $self->es->search(
-        index => $self->index_name,
-        type  => 'contributor',
-        body  => {
+        es_doc_path('contributor'),
+        body => {
             query => $query,
             size  => 999,
         }

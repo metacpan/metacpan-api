@@ -6,6 +6,7 @@ use Const::Fast               qw( const );
 use Hash::Merge               qw( merge );
 use List::Util                qw( min uniq );
 use Log::Contextual           qw( :log :dlog );
+use MetaCPAN::ESConfig        qw( es_doc_path );
 use MetaCPAN::Types::TypeTiny qw( Object Str );
 use MetaCPAN::Util            qw( hit_total true false );
 use MooseX::StrictConstructor;
@@ -355,10 +356,9 @@ sub build_query {
 }
 
 sub run_query {
-    my ( $self, $type, $es_query ) = @_;
+    my ( $self, $doc, $es_query ) = @_;
     return $self->es->search(
-        index       => $self->index_name,
-        type        => $type,
+        es_doc_path($doc),
         body        => $es_query,
         search_type => 'dfs_query_then_fetch',
     );

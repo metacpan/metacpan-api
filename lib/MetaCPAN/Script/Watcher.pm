@@ -7,6 +7,7 @@ use Moose;
 use CPAN::DistnameInfo        ();
 use Cpanel::JSON::XS          qw( decode_json );
 use Log::Contextual           qw( :log );
+use MetaCPAN::ESConfig        qw( es_doc_path );
 use MetaCPAN::Types::TypeTiny qw( Bool );
 use MetaCPAN::Util            qw( true false );
 
@@ -96,9 +97,8 @@ sub backpan_changes {
     my $self   = shift;
     my $scroll = $self->es->scroll_helper( {
         scroll => '1m',
-        index  => $self->index->name,
-        type   => 'release',
-        body   => {
+        es_doc_path('release'),
+        body => {
             query => {
                 bool => {
                     must_not => [ { term => { status => 'backpan' } }, ],
@@ -170,8 +170,7 @@ sub reindex_release {
 
     my $es     = $self->es;
     my $scroll = $es->scroll_helper( {
-        index  => $self->index->name,
-        type   => 'file',
+        es_doc_path('file'),
         scroll => '1m',
         body   => {
             query => {
@@ -199,10 +198,7 @@ sub reindex_release {
 
     my %bulk_helper;
     for (qw/ file release /) {
-        $bulk_helper{$_} = $self->es->bulk_helper(
-            index => $self->index->name,
-            type  => $_,
-        );
+        $bulk_helper{$_} = $self->es->bulk_helper( es_doc_path($_) );
     }
 
     while ( my $row = $scroll->next ) {

@@ -3,6 +3,7 @@ package MetaCPAN::Document::File::Set;
 use Moose;
 
 use List::Util                qw( max );
+use MetaCPAN::ESConfig        qw( es_doc_path );
 use MetaCPAN::Query::Favorite ();
 use MetaCPAN::Query::File     ();
 use MetaCPAN::Query::Release  ();
@@ -123,8 +124,7 @@ sub find {
     };
 
     my $res = $self->es->search(
-        index       => $self->index->name,
-        type        => 'file',
+        es_doc_path('file'),
         search_type => 'dfs_query_then_fetch',
         body        => {
             query => $query,
@@ -307,9 +307,8 @@ sub autocomplete {
 
     my $data = $self->es->search(
         search_type => 'dfs_query_then_fetch',
-        index       => $self->index->name,
-        type        => 'file',
-        body        => {
+        es_doc_path('file'),
+        body => {
             query   => $query,
             sort    => [ '_score', 'documentation' ],
             _source => [qw( documentation release author distribution )],
@@ -329,8 +328,8 @@ sub autocomplete_suggester {
     my $search_size = 100;
 
     my $suggestions = $self->es->suggest( {
-        index => $self->index->name,
-        body  => {
+        es_doc_path('file'),
+        body => {
             documentation => {
                 text       => $query,
                 completion => {
@@ -349,9 +348,8 @@ sub autocomplete_suggester {
     }
 
     my $data = $self->es->search( {
-        index => $self->index->name,
-        type  => 'file',
-        body  => {
+        es_doc_path('file'),
+        body => {
             query => {
                 bool => {
                     must => [

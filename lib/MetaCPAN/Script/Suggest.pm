@@ -7,6 +7,7 @@ use Moose;
 
 use DateTime                  ();
 use Log::Contextual           qw( :log );
+use MetaCPAN::ESConfig        qw( es_doc_path );
 use MetaCPAN::Types::TypeTiny qw( Bool Int );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
@@ -63,8 +64,7 @@ sub _update_slice {
     my ( $self, $range ) = @_;
 
     my $files = $self->es->scroll_helper(
-        index  => $self->index->name,
-        type   => 'file',
+        es_doc_path('file'),
         scroll => '5m',
         body   => {
             query => {
@@ -81,8 +81,7 @@ sub _update_slice {
     );
 
     my $bulk = $self->es->bulk_helper(
-        index     => $self->index->name,
-        type      => 'file',
+        es_doc_path('file'),
         max_count => 250,
         timeout   => '5m',
     );
