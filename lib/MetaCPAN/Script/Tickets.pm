@@ -8,6 +8,7 @@ $ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0;
 
 use HTTP::Request::Common qw( GET );
 use Log::Contextual       qw( :log :dlog );
+use MetaCPAN::ESConfig    qw( es_doc_path );
 use Net::GitHub::V4       ();
 use Ref::Util             qw( is_hashref is_ref );
 use Text::CSV_XS          ();
@@ -41,10 +42,7 @@ has _bulk => (
 
 sub _build_bulk {
     my $self = shift;
-    $self->es->bulk_helper(
-        index => $self->index->name,
-        type  => 'distribution',
-    );
+    $self->es->bulk_helper( es_doc_path('distribution') );
 }
 
 sub _build_github_token {
@@ -78,8 +76,7 @@ sub check_all_distributions {
     my $scroll = $self->es->scroll_helper(
         size   => 500,
         scroll => '5m',
-        index  => $self->index->name,
-        type   => 'release',
+        es_doc_path('release'),
         fields => ['distribution'],
         body   => {
             query => {
@@ -106,7 +103,7 @@ sub index_github_bugs {
     log_debug {'Fetching GitHub issues'};
 
     my $scroll
-        = $self->index->type('release')->find_github_based->scroll('5m');
+        = $self->model->doc('release')->find_github_based->scroll('5m');
     log_debug { sprintf( "Found %s repos", $scroll->total ) };
 
     my %summary;

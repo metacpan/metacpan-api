@@ -4,6 +4,4 @@ use Moose::Role;
 
 has es => ( is => 'ro', );
 
-has index_name => ( is => 'ro', );
-
 1;

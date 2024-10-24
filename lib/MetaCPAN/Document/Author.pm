@@ -7,9 +7,10 @@ use ElasticSearchX::Model::Document::Types qw( Location );
 use ElasticSearchX::Model::Document;
 
 # load order not important
-use Gravatar::URL             ();
-use MetaCPAN::Types           qw( ESBool Profile );
-use MetaCPAN::Types::TypeTiny qw(
+use Gravatar::URL                       ();
+use MetaCPAN::Document::Author::Profile ();
+use MetaCPAN::Types                     qw( ESBool Profile );
+use MetaCPAN::Types::TypeTiny           qw(
     ArrayRef
     ArrayRefPromote
     Blog

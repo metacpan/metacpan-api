@@ -6,21 +6,29 @@ use warnings;
 use Moose;
 use MetaCPAN::Query::Search ();
 
-extends 'MetaCPAN::Server::Model::CPAN';
+extends 'Catalyst::Model';
+
+has es => (
+    is     => 'ro',
+    writer => '_set_es',
+);
 
 has search => (
     is      => 'ro',
     isa     => 'MetaCPAN::Query::Search',
     lazy    => 1,
-    handles => [qw( search_for_first_result search_web )],
     default => sub {
         my $self = shift;
-        return MetaCPAN::Query::Search->new(
-            es         => $self->es,
-            index_name => $self->index,
-        );
+        return MetaCPAN::Query::Search->new( es => $self->es );
     },
 );
 
-1;
+sub ACCEPT_CONTEXT {
+    my ( $self, $c ) = @_;
+    if ( !$self->es ) {
+        $self->_set_es( $c->model('ESModel')->es );
+    }
+    return $self->search;
+}
 
+1;

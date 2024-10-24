@@ -2,6 +2,8 @@ package MetaCPAN::Query::Package;
 
 use MetaCPAN::Moose;
 
+use MetaCPAN::ESConfig qw( es_doc_path );
+
 with 'MetaCPAN::Query::Role::Common';
 
 sub get_modules {
@@ -19,9 +21,8 @@ sub get_modules {
     };
 
     my $res = $self->es->search(
-        index => $self->index_name,
-        type  => 'package',
-        body  => {
+        es_doc_path('package'),
+        body => {
             query   => $query,
             size    => 999,
             _source => [qw< module_name >],

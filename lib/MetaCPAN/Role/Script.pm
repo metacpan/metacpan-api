@@ -168,11 +168,6 @@ sub print_error {
     log_error {$error};
 }
 
-sub index {
-    my $self = shift;
-    return $self->model->index('cpan');
-}
-
 sub _build_model {
     my $self = shift;
 

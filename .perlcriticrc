@@ -16,6 +16,9 @@ theme = core
 [-ValuesAndExpressions::ProhibitNoisyQuotes]
 [-Variables::ProhibitPunctuationVars]
 
+# doesn't understand signatures
+[-Subroutines::ProhibitSubroutinePrototypes]
+
 [CodeLayout::RequireTrailingCommas]
 severity = 4
 

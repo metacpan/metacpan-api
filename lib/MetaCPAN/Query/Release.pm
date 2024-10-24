@@ -2,7 +2,8 @@ package MetaCPAN::Query::Release;
 
 use MetaCPAN::Moose;
 
-use MetaCPAN::Util qw( single_valued_arrayref_to_scalar true false );
+use MetaCPAN::ESConfig qw( es_doc_path );
+use MetaCPAN::Util     qw( single_valued_arrayref_to_scalar true false );
 
 with 'MetaCPAN::Query::Role::Common';
 
@@ -38,9 +39,8 @@ sub author_status {
 sub aggregate_status_by_author {
     my ( $self, $pauseid ) = @_;
     my $agg = $self->es->search( {
-        index => $self->index_name,
-        type  => 'release',
-        body  => {
+        es_doc_path('release'),
+        body => {
             query => {
                 term => { author => $pauseid }
             },
@@ -74,9 +74,8 @@ sub get_contributors {
     };
 
     my $res = $self->es->search(
-        index => $self->index_name,
-        type  => 'release',
-        body  => {
+        es_doc_path('release'),
+        body => {
             query   => $query,
             size    => 999,
             _source => [qw< metadata.author metadata.x_contributors >],
@@ -101,17 +100,10 @@ sub get_contributors {
 
     # this check is against a failure in tests (because fake author)
     return
-        unless $self->es->exists(
-        index => $self->index_name,
-        type  => 'author',
-        id    => $author_name,
+        unless $self->es->exists( es_doc_path('author'), id => $author_name,
         );
 
-    my $author = $self->es->get(
-        index => $self->index_name,
-        type  => 'author',
-        id    => $author_name,
-    );
+    my $author = $self->es->get( es_doc_path('author'), id => $author_name, );
 
     my $author_email        = $author->{_source}{email};
     my $author_gravatar_url = $author->{_source}{gravatar_url};
@@ -178,9 +170,8 @@ sub get_contributors {
         if ( !$contrib->{pauseid} ) {
             for my $email ( @{ $contrib->{email} } ) {
                 my $check_author = $self->es->search(
-                    index => $self->index_name,
-                    type  => 'author',
-                    body  => {
+                    es_doc_path('author'),
+                    body => {
                         query => { term => { email => $email } },
                         size  => 10,
                     }
@@ -204,9 +195,8 @@ sub get_contributors {
     };
 
     my $contrib_authors = $self->es->search(
-        index => $self->index_name,
-        type  => 'author',
-        body  => {
+        es_doc_path('author'),
+        body => {
             query   => $contrib_query,
             size    => 999,
             _source => [qw< pauseid gravatar_url >],
@@ -239,9 +229,8 @@ sub get_files {
     };
 
     my $ret = $self->es->search(
-        index => $self->index_name,
-        type  => 'file',
-        body  => {
+        es_doc_path('file'),
+        body => {
             query   => $query,
             size    => 999,
             _source => [qw< name path >],
@@ -259,9 +248,8 @@ sub get_checksums {
     my $query = +{ query => { term => { name => $release } } };
 
     my $ret = $self->es->search(
-        index => $self->index_name,
-        type  => 'release',
-        body  => {
+        es_doc_path('release'),
+        body => {
             query   => $query,
             size    => 1,
             _source => [qw< checksum_md5 checksum_sha256 >],
@@ -325,11 +313,7 @@ sub activity {
         size => 0,
     };
 
-    my $ret = $self->es->search(
-        index => $self->index_name,
-        type  => 'release',
-        body  => $body,
-    );
+    my $ret = $self->es->search( es_doc_path('release'), body => $body, );
 
     my $data = { map { $_->{key} => $_->{doc_count} }
             @{ $ret->{aggregations}{histo}{entries}{buckets} } };
@@ -358,11 +342,7 @@ sub by_author_and_name {
         }
     };
 
-    my $ret = $self->es->search(
-        index => $self->index_name,
-        type  => 'release',
-        body  => $body,
-    );
+    my $ret = $self->es->search( es_doc_path('release'), body => $body, );
 
     my $data = $ret->{hits}{hits}[0]{_source};
     single_valued_arrayref_to_scalar($data);
@@ -405,11 +385,7 @@ sub by_author_and_names {
         }
     };
 
-    my $ret = $self->es->search(
-        index => $self->index_name,
-        type  => 'release',
-        body  => $body,
-    );
+    my $ret = $self->es->search( es_doc_path('release'), body => $body, );
 
     my @releases;
     for my $hit ( @{ $ret->{hits}{hits} } ) {
@@ -448,11 +424,7 @@ sub by_author {
         from => ( $page - 1 ) * $size,
     };
 
-    my $ret = $self->es->search(
-        index => $self->index_name,
-        type  => 'release',
-        body  => $body,
-    );
+    my $ret = $self->es->search( es_doc_path('release'), body => $body, );
 
     my $data = [ map { $_->{_source} } @{ $ret->{hits}{hits} } ];
     single_valued_arrayref_to_scalar($data);
@@ -484,11 +456,7 @@ sub latest_by_distribution {
         size => 1
     };
 
-    my $ret = $self->es->search(
-        index => $self->index_name,
-        type  => 'release',
-        body  => $body,
-    );
+    my $ret = $self->es->search( es_doc_path('release'), body => $body, );
 
     my $data = $ret->{hits}{hits}[0]{_source};
     single_valued_arrayref_to_scalar($data);
@@ -520,11 +488,7 @@ sub latest_by_author {
         size => 1000,
     };
 
-    my $ret = $self->es->search(
-        index => $self->index_name,
-        type  => 'release',
-        body  => $body,
-    );
+    my $ret = $self->es->search( es_doc_path('release'), body => $body, );
 
     my $data = [ map { $_->{fields} } @{ $ret->{hits}{hits} } ];
     single_valued_arrayref_to_scalar($data);
@@ -546,11 +510,7 @@ sub all_by_author {
         size => $size,
         from => ( $page - 1 ) * $size,
     };
-    my $ret = $self->es->search(
-        index => $self->index_name,
-        type  => 'release',
-        body  => $body,
-    );
+    my $ret = $self->es->search( es_doc_path('release'), body => $body, );
 
     my $data = [ map { $_->{fields} } @{ $ret->{hits}{hits} } ];
     single_valued_arrayref_to_scalar($data);
@@ -619,11 +579,7 @@ sub versions {
         ],
     };
 
-    my $ret = $self->es->search(
-        index => $self->index_name,
-        type  => 'release',
-        body  => $body,
-    );
+    my $ret = $self->es->search( es_doc_path('release'), body => $body, );
 
     my $data = [ map { $_->{fields} } @{ $ret->{hits}{hits} } ];
     single_valued_arrayref_to_scalar($data);
@@ -665,11 +621,7 @@ sub top_uploaders {
         size => 0,
     };
 
-    my $ret = $self->es->search(
-        index => $self->index_name,
-        type  => 'release',
-        body  => $body,
-    );
+    my $ret = $self->es->search( es_doc_path('release'), body => $body, );
 
     my $counts = { map { $_->{key} => $_->{doc_count} }
             @{ $ret->{aggregations}{author}{entries}{buckets} } };
@@ -704,9 +656,8 @@ sub _get_latest_release {
     my ( $self, $distribution ) = @_;
 
     my $release = $self->es->search(
-        index => $self->index_name,
-        type  => 'release',
-        body  => {
+        es_doc_path('release'),
+        body => {
             query => {
                 bool => {
                     must => [
@@ -735,9 +686,8 @@ sub _get_provided_modules {
     my ( $self, $release ) = @_;
 
     my $provided_modules = $self->es->search(
-        index => $self->index_name,
-        type  => 'file',
-        body  => {
+        es_doc_path('file'),
+        body => {
             query => {
                 bool => {
                     must => [
@@ -806,9 +756,8 @@ sub _get_depended_releases {
     };
 
     my $depended = $self->es->search(
-        index => $self->index_name,
-        type  => 'release',
-        body  => {
+        es_doc_path('release'),
+        body => {
             query => {
                 bool => {
                     must => [
@@ -884,11 +833,7 @@ sub recent {
         sort => [ { 'date' => { order => 'desc' } } ]
     };
 
-    my $ret = $self->es->search(
-        index => $self->index_name,
-        type  => 'release',
-        body  => $body,
-    );
+    my $ret = $self->es->search( es_doc_path('release'), body => $body, );
 
     my $data = [ map { $_->{fields} } @{ $ret->{hits}{hits} } ];
     single_valued_arrayref_to_scalar($data);
@@ -974,11 +919,7 @@ sub modules {
         ) ],
     };
 
-    my $ret = $self->es->search(
-        index => $self->index_name,
-        type  => 'file',
-        body  => $body,
-    );
+    my $ret = $self->es->search( es_doc_path('file'), body => $body, );
 
     my @files = map +{
         %{ ( single_valued_arrayref_to_scalar( $_->{fields} ) )[0] },
@@ -1165,8 +1106,7 @@ sub find_download_url {
     };
 
     my $res = $self->es->search(
-        index       => $self->index_name,
-        type        => $module_filter ? 'file' : 'release',
+        es_doc_path( $module_filter ? 'file' : 'release' ),
         body        => $body,
         search_type => 'dfs_query_then_fetch',
     );
@@ -1270,9 +1210,8 @@ sub predecessor {
     my ( $self, $name ) = @_;
 
     my $res = $self->es->search(
-        index => $self->index_name,
-        type  => 'release',
-        body  => {
+        es_doc_path('release'),
+        body => {
             query => {
                 bool => {
                     must     => [ { term => { distribution => $name } }, ],
@@ -1292,9 +1231,8 @@ sub find {
     my ( $self, $name ) = @_;
 
     my $res = $self->es->search(
-        index => $self->index_name,
-        type  => 'release',
-        body  => {
+        es_doc_path('release'),
+        body => {
             query => {
                 bool => {
                     must => [

@@ -8,6 +8,7 @@ use File::Find::Rule          ();
 use File::stat                ();
 use List::Util                qw( uniq );
 use Log::Contextual           qw( :log :dlog );
+use MetaCPAN::ESConfig        qw( es_doc_path );
 use MetaCPAN::Model::Release  ();
 use MetaCPAN::Script::Runner  ();
 use MetaCPAN::Types::TypeTiny qw( Bool HashRef Int Str );
@@ -186,7 +187,6 @@ sub run {
     # logic - feel free to clean up so the CP::DistInfo isn't
     my @module_to_purge_dists = map { CPAN::DistnameInfo->new($_) } @files;
 
-    $self->index;
     $self->cpan_file_map if ( $self->detect_backpan );
     $self->perms;
     my @pid;
@@ -197,9 +197,8 @@ sub run {
 
         if ( $self->skip ) {
             my $count = $self->es->count(
-                index => $self->index->name,
-                type  => 'release',
-                body  => {
+                es_doc_path('release'),
+                body => {
                     query => {
                         bool => {
                             must => [
@@ -254,7 +253,7 @@ sub run {
             };
         }
     }
-    $self->index->refresh unless $self->queue;
+    $self->es->indices->refresh unless $self->queue;
 
     # Call Fastly to purge
     $self->purge_cpan_distnameinfos( \@module_to_purge_dists );
@@ -270,7 +269,7 @@ sub _get_release_model {
         bulk     => $bulk,
         distinfo => $d,
         file     => $archive_path,
-        index    => $self->index,
+        model    => $self->model,
         level    => $self->level,
         logger   => $self->logger,
         status   => $self->detect_status( $d->cpanid, $d->filename ),
@@ -285,7 +284,7 @@ sub import_archive {
     my $self         = shift;
     my $archive_path = shift;
 
-    my $bulk  = $self->index->bulk( size => $self->_bulk_size );
+    my $bulk  = $self->model->bulk( size => $self->_bulk_size );
     my $model = $self->_get_release_model( $archive_path, $bulk );
 
     log_debug {'Gathering modules'};

@@ -3,8 +3,10 @@ package MetaCPAN::Script::Session;
 use strict;
 use warnings;
 
-use DateTime ();
 use Moose;
+
+use DateTime           ();
+use MetaCPAN::ESConfig qw( es_doc_path );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
@@ -14,15 +16,11 @@ sub run {
     my $scroll = $self->es->scroll_helper(
         size   => 10_000,
         scroll => '1m',
-        index  => 'user',
-        type   => 'session',
+        es_doc_path('session'),
     );
 
-    my $bulk = $self->es->bulk_helper(
-        index     => 'user',
-        type      => 'session',
-        max_count => 10_000
-    );
+    my $bulk = $self->es->bulk_helper( es_doc_path('session'),
+        max_count => 10_000 );
 
     my $cutoff = DateTime->now->subtract( months => 1 )->epoch;
 

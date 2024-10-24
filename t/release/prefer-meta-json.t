@@ -7,8 +7,7 @@ use MetaCPAN::Util         qw(true false);
 use Test::More;
 
 my $model   = model();
-my $idx     = $model->index('cpan');
-my $release = $idx->type('release')->get( {
+my $release = $model->doc('release')->get( {
     author => 'LOCAL',
     name   => 'Prefer-Meta-JSON-1.1'
 } );
@@ -23,7 +22,7 @@ is( ref $release->metadata, 'HASH', 'comes with metadata in a hashref' );
 is( $release->metadata->{'meta-spec'}{version}, 2, 'meta_spec version is 2' );
 
 {
-    my @files = $idx->type('file')->query( {
+    my @files = $model->doc('file')->query( {
         bool => {
             must => [
                 { term   => { author  => $release->author } },

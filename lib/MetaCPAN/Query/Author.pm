@@ -2,8 +2,9 @@ package MetaCPAN::Query::Author;
 
 use MetaCPAN::Moose;
 
-use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
-use Ref::Util      qw( is_arrayref );
+use MetaCPAN::ESConfig qw( es_doc_path );
+use MetaCPAN::Util     qw( single_valued_arrayref_to_scalar );
+use Ref::Util          qw( is_arrayref );
 
 with 'MetaCPAN::Query::Role::Common';
 
@@ -17,11 +18,7 @@ sub by_ids {
         size  => scalar @{$ids},
     };
 
-    my $authors = $self->es->search(
-        index => $self->index_name,
-        type  => 'author',
-        body  => $body,
-    );
+    my $authors = $self->es->search( es_doc_path('author'), body => $body, );
 
     my @authors = map {
         single_valued_arrayref_to_scalar( $_->{_source} );
@@ -40,9 +37,8 @@ sub by_user {
     $users = [$users] unless is_arrayref($users);
 
     my $authors = $self->es->search(
-        index => $self->index_name,
-        type  => 'author',
-        body  => {
+        es_doc_path('author'),
+        body => {
             query => { terms => { user => $users } },
             size  => 500,
         }
@@ -88,11 +84,7 @@ sub search {
         from => $from || 0,
     };
 
-    my $ret = $self->es->search(
-        index => $self->index_name,
-        type  => 'author',
-        body  => $body,
-    );
+    my $ret = $self->es->search( es_doc_path('author'), body => $body, );
 
     my @authors = map {
         single_valued_arrayref_to_scalar( $_->{_source} );
@@ -121,11 +113,7 @@ sub prefix_search {
         from => $from,
     };
 
-    my $ret = $self->es->search(
-        index => $self->index_name,
-        type  => 'author',
-        body  => $body,
-    );
+    my $ret = $self->es->search( es_doc_path('author'), body => $body, );
 
     my @authors = map {
         single_valued_arrayref_to_scalar( $_->{_source} );

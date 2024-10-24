@@ -20,10 +20,7 @@ has query_cve => (
 
 sub _build_query_cve {
     my $self = shift;
-    return MetaCPAN::Query::CVE->new(
-        es         => $self->es,
-        index_name => 'cve',
-    );
+    return MetaCPAN::Query::CVE->new( es => $self->es );
 }
 
 __PACKAGE__->meta->make_immutable;

@@ -25,7 +25,8 @@ sub get : Chained('index') : PathPart('') : Args(2) {
     $c->cdn_max_age('1y');
 
     my $file
-        = $c->model('CPAN::File')->find_changes_files( $author, $release );
+        = $c->model('ESModel')->doc('file')
+        ->find_changes_files( $author, $release );
     $file or $c->detach( '/not_found', [] );
 
     my $source = $c->model('Source')->path( @$file{qw(author release path)} )
@@ -52,7 +53,7 @@ sub get : Chained('index') : PathPart('') : Args(2) {
 
 sub find : Chained('index') : PathPart('') : Args(1) {
     my ( $self, $c, $name ) = @_;
-    my $release = eval { $c->model('CPAN::Release')->find($name); }
+    my $release = eval { $c->model('ESModel')->doc('release')->find($name); }
         or $c->detach( '/not_found', [] );
 
     $c->forward( 'get', [ @$release{qw( author name )} ] );
@@ -76,7 +77,8 @@ sub by_releases : Path('by_releases') : Args(0) {
         return;
     }
 
-    my $ret = $c->model('CPAN::Release')->by_author_and_names( \@releases );
+    my $ret = $c->model('ESModel')->doc('release')
+        ->by_author_and_names( \@releases );
 
     my @changes;
     for my $release ( @{ $ret->{releases} } ) {

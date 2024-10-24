@@ -6,8 +6,7 @@ use MetaCPAN::Server::Test qw( model );
 use Test::More;
 
 my $model   = model();
-my $idx     = $model->index('cpan');
-my $release = $idx->type('release')->get( {
+my $release = $model->doc('release')->get( {
     author => 'RWSTAUNER',
     name   => 'perl-1'
 } );

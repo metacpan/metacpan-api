@@ -3,6 +3,7 @@ package MetaCPAN::Document::File::Set;
 use Moose;
 
 use List::Util                qw( max );
+use MetaCPAN::ESConfig        qw( es_doc_path );
 use MetaCPAN::Query::Favorite ();
 use MetaCPAN::Query::File     ();
 use MetaCPAN::Query::Release  ();
@@ -24,10 +25,7 @@ has query_file => (
 
 sub _build_query_file {
     my $self = shift;
-    return MetaCPAN::Query::File->new(
-        es         => $self->es,
-        index_name => $self->index->name,
-    );
+    return MetaCPAN::Query::File->new( es => $self->es );
 }
 
 has query_favorite => (
@@ -40,10 +38,7 @@ has query_favorite => (
 
 sub _build_query_favorite {
     my $self = shift;
-    return MetaCPAN::Query::Favorite->new(
-        es         => $self->es,
-        index_name => $self->index->name,
-    );
+    return MetaCPAN::Query::Favorite->new( es => $self->es );
 }
 
 has query_release => (
@@ -56,10 +51,7 @@ has query_release => (
 
 sub _build_query_release {
     my $self = shift;
-    return MetaCPAN::Query::Release->new(
-        es         => $self->es,
-        index_name => $self->index->name,
-    );
+    return MetaCPAN::Query::Release->new( es => $self->es );
 }
 
 my @ROGUE_DISTRIBUTIONS = qw(
@@ -75,7 +67,7 @@ my @ROGUE_DISTRIBUTIONS = qw(
 
 sub find {
     my ( $self, $module ) = @_;
-    my @candidates = $self->index->type('file')->query( {
+    my @candidates = $self->index->model->doc('file')->query( {
         bool => {
             must => [
                 { term => { indexed    => true } },
@@ -307,10 +299,9 @@ sub autocomplete_suggester {
 
     my $search_size = 100;
 
-    my $suggestions
-        = $self->search_type('dfs_query_then_fetch')->es->suggest( {
-        index => $self->index->name,
-        body  => {
+    my $suggestions = $self->es->suggest( {
+        es_doc_path('file'),
+        body => {
             documentation => {
                 text       => $query,
                 completion => {
@@ -319,7 +310,7 @@ sub autocomplete_suggester {
                 }
             }
         },
-        } );
+    } );
 
     my %docs;
 
@@ -337,9 +328,8 @@ sub autocomplete_suggester {
         release
     );
     my $data = $self->es->search( {
-        index => $self->index->name,
-        type  => 'file',
-        body  => {
+        es_doc_path('file'),
+        body => {
             query => {
                 bool => {
                     must => [

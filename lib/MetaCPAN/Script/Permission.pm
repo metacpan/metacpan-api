@@ -3,6 +3,7 @@ package MetaCPAN::Script::Permission;
 use Moose;
 
 use Log::Contextual           qw( :log );
+use MetaCPAN::ESConfig        qw( es_doc_path );
 use MetaCPAN::Types::TypeTiny qw( Bool );
 use PAUSE::Permissions        ();
 
@@ -24,7 +25,7 @@ has clean_up => (
 sub run {
     my $self = shift;
     $self->index_permissions;
-    $self->index->refresh;
+    $self->es->indices->refresh;
 }
 
 sub index_permissions {
@@ -33,10 +34,7 @@ sub index_permissions {
     my $file_path = $self->cpan->child(qw(modules 06perms.txt))->absolute;
     my $pp        = PAUSE::Permissions->new( path => $file_path );
 
-    my $bulk = $self->es->bulk_helper(
-        index => $self->index->name,
-        type  => 'permission',
-    );
+    my $bulk = $self->es->bulk_helper( es_doc_path('permission') );
 
     my %seen;
     log_debug {"building permission data to add"};
@@ -82,8 +80,7 @@ sub run_cleanup {
     log_debug {"checking permission data to remove"};
 
     my $scroll = $self->es->scroll_helper(
-        index  => $self->index->name,
-        type   => 'permission',
+        es_doc_path('permission'),
         scroll => '30m',
         body   => { query => { match_all => {} } },
     );

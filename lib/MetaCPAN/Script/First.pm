@@ -17,7 +17,7 @@ has distribution => (
 
 sub run {
     my $self          = shift;
-    my $distributions = $self->index->type("distribution");
+    my $distributions = $self->model->doc("distribution");
     $distributions
         = $distributions->query( { term => { name => $self->distribution } } )
         if $self->distribution;

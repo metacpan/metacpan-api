@@ -3,7 +3,8 @@ package MetaCPAN::Server::Controller;
 use Moose;
 use namespace::autoclean;
 
-use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
+use MetaCPAN::ESConfig qw( es_doc_path );
+use MetaCPAN::Util     qw( single_valued_arrayref_to_scalar );
 
 BEGIN { extends 'Catalyst::Controller'; }
 
@@ -40,7 +41,7 @@ sub apply_request_filter {
 
 sub model {
     my ( $self, $c ) = @_;
-    my $model = $c->model('CPAN')->type( $self->type );
+    my $model = $c->model('ESModel')->doc( $self->type );
     $model = $model->fields( [ map { split(/,/) } $c->req->param('fields') ] )
         if $c->req->param('fields');
     if ( my ($size) = $c->req->param('size') ) {
@@ -54,12 +55,8 @@ sub model {
 
 sub mapping : Path('_mapping') Args(0) {
     my ( $self, $c ) = @_;
-    $c->stash(
-        $c->model('CPAN')->es->indices->get_mapping(
-            index => $c->model('CPAN')->index,
-            type  => $self->type
-        )
-    );
+    $c->stash( $c->model('ESModel')
+            ->es->indices->get_mapping( es_doc_path( $self->type ) ) );
 }
 
 sub get : Path('') : Args(1) {
@@ -104,9 +101,8 @@ sub search : Path('_search') : ActionClass('~Deserialize') {
     delete $params->{callback};
     eval {
         my $res = $self->model($c)->es->search( {
-            index => $c->model('CPAN')->index,
-            type  => $self->type,
-            body  => $c->req->data || delete $params->{source},
+            es_doc_path( $self->type ),
+            body => $c->req->data || delete $params->{source},
             %$params,
         } );
         single_valued_arrayref_to_scalar( $_->{fields} )

@@ -118,7 +118,7 @@ sub filter_files {
 
     my $release = $self->data;
     return [
-        $self->index->type('file')->query( {
+        $self->model->doc('file')->query( {
             bool => {
                 must => [
                     { term => { 'author'  => $release->author } },

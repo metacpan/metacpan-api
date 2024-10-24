@@ -5,8 +5,9 @@ use warnings;
 
 use Moose;
 
-use Log::Contextual qw( :log );
-use Ref::Util       qw( is_arrayref );
+use MetaCPAN::ESConfig qw( es_doc_path );
+use Log::Contextual    qw( :log );
+use Ref::Util          qw( is_arrayref );
 
 use MetaCPAN::Types::TypeTiny qw( Bool HashRef Int Str );
 
@@ -84,8 +85,7 @@ sub run {
     my $scroll = $self->es->scroll_helper(
         size   => 500,
         scroll => $timeout,
-        index  => $self->index->name,
-        type   => 'release',
+        es_doc_path('release'),
         body   => { query => $query },
         fields => [qw( author distribution name )],
     );
