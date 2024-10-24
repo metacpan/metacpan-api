@@ -708,11 +708,24 @@ sub _compare_mapping {
                         $imatch = 0;
 
                     }
+
                     unless ( defined $rmodel->{$sfield} ) {
-                        log_error {
-                            'Missing definition: ' . $sname . '.' . $sfield
-                        };
-                        $imatch = 0;
+                        if (   $sfield eq 'payloads'
+                            && $rmodel->{type}
+                            && $rmodel->{type} eq 'completion'
+                            && !$rdeploy->{$sfield} )
+                        {
+                            # ES5 doesn't allow payloads option. we've removed
+                            # it from our mapping. but it gets a default
+                            # value. ignore the default.
+                        }
+                        else {
+                            log_error {
+                                'Missing definition: ' . $sname . '.'
+                                    . $sfield
+                            };
+                            $imatch = 0;
+                        }
                     }
                 }
             }
