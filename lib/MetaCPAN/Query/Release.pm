@@ -1090,7 +1090,7 @@ sub find_download_url {
             nested => {
                 path       => 'module',
                 inner_hits => { _source => 'version' },
-                filter     => $entity_filter,
+                query      => $entity_filter,
             }
             };
     }
