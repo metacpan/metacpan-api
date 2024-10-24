@@ -414,9 +414,8 @@ sub _build_suggest {
     $weight = 0 if $weight < 0;
 
     return +{
-        input   => [$doc],
-        payload => { doc_name => $doc },
-        weight  => $weight,
+        input  => [$doc],
+        weight => $weight,
     };
 }
 
