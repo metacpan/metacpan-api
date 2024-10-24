@@ -8,7 +8,7 @@ use CPAN::DistnameInfo        ();
 use Cpanel::JSON::XS          qw( decode_json );
 use Log::Contextual           qw( :log );
 use MetaCPAN::Types::TypeTiny qw( Bool );
-use MetaCPAN::Util;
+use MetaCPAN::Util            qw( true false );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 

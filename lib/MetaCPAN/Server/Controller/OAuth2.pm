@@ -5,6 +5,7 @@ BEGIN { extends 'Catalyst::Controller' }
 
 use Cpanel::JSON::XS qw( decode_json encode_json );
 use Digest::SHA      ();
+use MetaCPAN::Util   qw( true false );
 use URI              ();
 
 has login   => ( is => 'ro' );
@@ -50,7 +51,7 @@ sub authorize : Local {
     my $code = $self->_build_code;
     $uri->query_form( { code => $code, $state ? ( state => $state ) : () } );
     $c->user->_set_code($code);
-    $c->user->put( { refresh => 1 } );
+    $c->user->put( { refresh => true } );
     $c->res->redirect($uri);
 }
 
@@ -89,7 +90,7 @@ sub access_token : Local {
             { token => $access_token, client => $client_id } );
     }
     $user->clear_token;
-    $user->put( { refresh => 1 } );
+    $user->put( { refresh => true } );
 
     $c->res->content_type('application/json');
     $c->res->body( encode_json(

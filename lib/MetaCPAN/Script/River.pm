@@ -6,6 +6,7 @@ use namespace::autoclean;
 use Cpanel::JSON::XS          qw( decode_json );
 use Log::Contextual           qw( :log :dlog );
 use MetaCPAN::Types::TypeTiny qw( Uri );
+use MetaCPAN::Util            qw( true false );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
@@ -42,7 +43,7 @@ sub index_river_summaries {
                 name  => $dist,
                 river => $summary,
             },
-            doc_as_upsert => 1,
+            doc_as_upsert => true,
         } );
     }
     $bulk->flush;

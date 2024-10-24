@@ -2,7 +2,7 @@ package MetaCPAN::Script::Role::Contributor;
 
 use Moose::Role;
 
-use MetaCPAN::Util qw( digest );
+use MetaCPAN::Util qw( digest true false );
 use Ref::Util      qw( is_arrayref );
 
 sub get_cpan_author_contributors {
@@ -58,7 +58,7 @@ sub update_release_contirbutors {
                 release_author => $d->{release_author},
                 distribution   => $d->{distribution},
             },
-            doc_as_upsert => 1,
+            doc_as_upsert => true,
         } );
     }
 
