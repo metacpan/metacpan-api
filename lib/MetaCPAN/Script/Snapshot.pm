@@ -82,8 +82,10 @@ has snap_name => (
 has host => (
     is      => 'ro',
     isa     => Str,
-    default =>
-        sub { MetaCPAN::Server::Config::config()->{elasticsearch_servers} },
+    default => sub {
+        my $self = shift;
+        return $self->es->transport->cxn_pool->cxns->[0]->uri;
+    },
     documentation => 'ES host, defaults to: http://localhost:9200',
 );
 

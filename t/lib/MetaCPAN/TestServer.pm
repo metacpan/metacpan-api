@@ -18,12 +18,14 @@ use MetaCPAN::Server                 ();
 use MetaCPAN::Server::Config         ();
 use MetaCPAN::TestHelpers            qw( fakecpan_dir );
 use MetaCPAN::Types::TypeTiny        qw( HashRef Path );
+use MooseX::Types::ElasticSearch     qw( ES );
 use Search::Elasticsearch            ();
 use Test::More;
 
 has es_client => (
     is      => 'ro',
-    does    => 'Search::Elasticsearch::Role::Client',
+    isa     => ES,
+    coerce  => 1,
     lazy    => 1,
     builder => '_build_es_client',
 );
@@ -64,14 +66,13 @@ sub _build_config {
 sub _build_es_client {
     my $self = shift;
 
-    my $es = Search::Elasticsearch->new(
-        nodes => MetaCPAN::Server::Config::config()->{elasticsearch_servers},
-        ( $ENV{ES_TRACE} ? ( trace_to => [ 'File', 'es.log' ] ) : () )
-    );
+    my $es = ES->coerce(
+        MetaCPAN::Server::Config::config()->{elasticsearch_servers}, );
 
-    ok( $es, 'got ElasticSearch object' );
+    ok( $es, 'got Search::Elasticsearch object' );
 
     note( Test::More::explain( { 'Elasticsearch info' => $es->info } ) );
+
     return $es;
 }
 
