@@ -4,7 +4,9 @@ level: warn
 port: 5000
 source_base: var/t/tmp/source
 
-elasticsearch_servers: http://elasticsearch_test:9200
+elasticsearch_servers:
+  client: '2_0::Direct'
+  nodes: http://elasticsearch_test:9200
 
 logger:
   class: Log::Log4perl::Appender::Screen

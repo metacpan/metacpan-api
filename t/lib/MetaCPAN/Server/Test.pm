@@ -40,8 +40,7 @@ sub app {
 
 sub model {
     my $c = MetaCPAN::Server::Config::config();
-    MetaCPAN::Model->new(
-        es => { nodes => [ $c->{elasticsearch_servers} ] } );
+    MetaCPAN::Model->new( es => $c->{elasticsearch_servers} );
 }
 
 1;
