@@ -1044,7 +1044,9 @@ sub find_download_url {
     my $module_filter = $type eq 'module';
 
     if ( !$explicit_version ) {
-        push @filters, { not => { term => { status => 'backpan' } } };
+        push @filters,
+            { bool => { must_not => [ { term => { status => 'backpan' } } ] }
+            };
         if ( !$dev ) {
             push @filters, { term => { maturity => 'released' } };
         }
