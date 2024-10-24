@@ -84,7 +84,8 @@ sub check_all_distributions {
         fields => ['distribution'],
         body   => {
             query => {
-                not => { term => { status => 'backpan' } }
+                bool =>
+                    { must_not => [ { term => { status => 'backpan' } } ] }
             }
         },
     );

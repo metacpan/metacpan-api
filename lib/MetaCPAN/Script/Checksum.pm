@@ -50,12 +50,16 @@ sub run {
         scroll => '10m',
         body   => {
             query => {
-                not => {
-                    exists => {
-                        field => "checksum_md5"
-                    }
-                }
-            }
+                bool => {
+                    must_not => [
+                        {
+                            exists => {
+                                field => "checksum_md5"
+                            }
+                        },
+                    ],
+                },
+            },
         },
         fields => [qw( id name download_url )],
     );
