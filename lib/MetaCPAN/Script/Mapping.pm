@@ -688,7 +688,24 @@ sub _compare_mapping {
                         }
                     }
                     else {    # Scalar Value
-                        if ( $deploy_value ne $model_value ) {
+                        if (
+                               $sfield eq 'type'
+                            && $model_value eq 'string'
+                            && (   $deploy_value eq 'text'
+                                || $deploy_value eq 'keyword' )
+                            )
+                        {
+                            # ES5 automatically converts string types to text
+                            # or keyword. once we upgrade to ES5 and update
+                            # our mappings, this special case can be removed.
+                        }
+                        elsif ($sfield eq 'index'
+                            && $model_value eq 'no'
+                            && $deploy_value eq 'false' )
+                        {
+                            # another ES5 string automatic conversion
+                        }
+                        elsif ( $deploy_value ne $model_value ) {
                             log_error {
                                 'Mismatch field: '
                                     . $sname . '.'
