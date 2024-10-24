@@ -222,7 +222,8 @@ sub _build_document {
         || $document->{abstract} eq 'null' );
 
     $document
-        = $self->index->type('release')->put( $document, { refresh => 1 } );
+        = $self->index->type('release')
+        ->put( $document, { refresh => true } );
 
     # create distribution if doesn't exist
     my $dist_count = $self->es->count(

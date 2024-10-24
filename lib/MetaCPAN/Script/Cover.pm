@@ -7,6 +7,7 @@ use Cpanel::JSON::XS          qw( decode_json );
 use Log::Contextual           qw( :log :dlog );
 use MetaCPAN::Types::TypeTiny qw( Bool Str Uri );
 use Path::Tiny                qw( path );
+use MetaCPAN::Util            qw( true false );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
@@ -92,7 +93,7 @@ sub index_cover_data {
                     release      => $release,
                     criteria     => \%doc_data,
                 },
-                doc_as_upsert => 1,
+                doc_as_upsert => true,
             } );
         }
     }

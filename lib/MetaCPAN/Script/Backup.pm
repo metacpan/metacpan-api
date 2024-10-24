@@ -9,6 +9,7 @@ use DateTime                  ();
 use IO::Zlib                  ();
 use Log::Contextual           qw( :log :dlog );
 use MetaCPAN::Types::TypeTiny qw( Bool Int Path Str CommaSepOption );
+use MetaCPAN::Util            qw( true false );
 use Moose;
 use Try::Tiny qw( catch try );
 
@@ -176,7 +177,7 @@ sub run_restore {
             $bulk->update( {
                 id            => $raw->{_id},
                 doc           => $raw->{_source},
-                doc_as_upsert => 1,
+                doc_as_upsert => true,
             } );
 
         }

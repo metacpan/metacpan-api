@@ -5,6 +5,7 @@ use warnings;
 
 use Cpanel::JSON::XS qw( decode_json encode_json );
 use Moose;
+use MetaCPAN::Util qw( true false );
 
 BEGIN { extends 'Catalyst::Controller' }
 
@@ -44,7 +45,7 @@ sub update_user {
         $user ||= $model->new_document;
         $user->add_identity( { name => $type, key => $id, extra => $data } );
         $user->clear_looks_human;    # rebuild
-        $user->put( { refresh => 1 } );
+        $user->put( { refresh => true } );
     }
     $c->authenticate( { user => $user } );
 

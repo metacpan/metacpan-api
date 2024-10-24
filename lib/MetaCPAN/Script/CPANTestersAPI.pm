@@ -7,6 +7,7 @@ use Cpanel::JSON::XS                       qw( decode_json );
 use ElasticSearchX::Model::Document::Types qw( ESBulk );
 use Log::Contextual                        qw( :log :dlog );
 use MetaCPAN::Types::TypeTiny              qw( Uri );
+use MetaCPAN::Util                         qw( true false );
 use Moose;
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt::Dashes';
@@ -127,7 +128,7 @@ sub index_reports {
         my %tests = map { $_ => $row->{$_} } qw(fail pass na unknown);
         $self->_bulk->update( {
             doc           => { tests => \%tests },
-            doc_as_upsert => 1,
+            doc_as_upsert => true,
             id            => $release_doc->{id},
         } );
     }
