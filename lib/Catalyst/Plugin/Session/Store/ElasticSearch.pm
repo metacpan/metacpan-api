@@ -7,6 +7,7 @@ extends 'Catalyst::Plugin::Session::Store';
 use MooseX::Types::ElasticSearch qw( ES );
 
 use MetaCPAN::Server::Config ();
+use MetaCPAN::Util           qw( true false );
 
 has _session_es => (
     is      => 'ro',
@@ -55,7 +56,7 @@ sub store_session_data {
             type    => $self->_session_es_type,
             id      => $sid,
             body    => $session,
-            refresh => 1,
+            refresh => true,
         );
     }
 }
@@ -68,7 +69,7 @@ sub delete_session_data {
                 index   => $self->_session_es_index,
                 type    => $self->_session_es_type,
                 id      => $sid,
-                refresh => 1,
+                refresh => true,
             );
         };
     }

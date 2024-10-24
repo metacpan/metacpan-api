@@ -5,6 +5,7 @@ use warnings;
 
 use DateTime ();
 use Moose;
+use MetaCPAN::Util qw( true false );
 
 BEGIN { extends 'Catalyst::Controller::REST' }
 
@@ -33,7 +34,7 @@ sub index_POST {
     if ( $result->{is_valid} ) {
         $user->_set_passed_captcha( DateTime->now );
         $user->clear_looks_human;    # rebuild
-        $user->put( { refresh => 1 } );
+        $user->put( { refresh => true } );
         $self->status_ok( $c, entity => $user->meta->get_data($user) );
     }
     else {

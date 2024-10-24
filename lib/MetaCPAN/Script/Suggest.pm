@@ -96,9 +96,8 @@ sub _update_slice {
             id  => $file->{fields}{id}[0],
             doc => {
                 suggest => {
-                    input   => [$documentation],
-                    payload => { doc_name => $documentation },
-                    weight  => $weight,
+                    input  => [$documentation],
+                    weight => $weight,
                 }
             },
         } );

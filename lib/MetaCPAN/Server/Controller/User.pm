@@ -3,7 +3,8 @@ package MetaCPAN::Server::Controller::User;
 use strict;
 use warnings;
 
-use DateTime ();
+use DateTime       ();
+use MetaCPAN::Util qw( true false );
 use Moose;
 use Log::Log4perl::MDC ();
 
@@ -57,7 +58,7 @@ sub identity_DELETE {
     my $user = $c->user;
     if ( $user->has_identity($identity) ) {
         my $id = $user->remove_identity($identity);
-        $user->put( { refresh => 1 } );
+        $user->put( { refresh => true } );
         $self->status_ok( $c, entity => $id );
     }
     else {
@@ -102,7 +103,7 @@ sub profile_PUT {
     }
     else {
         $profile
-            = $c->model('CPAN::Author')->put( $profile, { refresh => 1 } );
+            = $c->model('CPAN::Author')->put( $profile, { refresh => true } );
         $self->status_created(
             $c,
             location => $c->uri_for( '/author/' . $profile->{pauseid} ),

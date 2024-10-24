@@ -8,6 +8,7 @@ use File::stat                             qw( stat );
 use IO::Uncompress::Bunzip2                qw( bunzip2 );
 use Log::Contextual                        qw( :log :dlog );
 use MetaCPAN::Types::TypeTiny              qw( Bool Path Uri );
+use MetaCPAN::Util                         qw( true false );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt::Dashes';
 
@@ -157,7 +158,7 @@ sub index_reports {
         my %tests = map { $_ => $row_from_db->{$_} } qw(fail pass na unknown);
         $self->_bulk->update( {
             doc           => { tests => \%tests },
-            doc_as_upsert => 1,
+            doc_as_upsert => true,
             id            => $release_doc->{id},
         } );
     }

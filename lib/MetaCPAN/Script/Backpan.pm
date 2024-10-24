@@ -94,7 +94,8 @@ sub _get_release_query {
     unless ( $self->undo ) {
         return +{
             query => {
-                not => { term => { status => 'backpan' } }
+                bool =>
+                    { must_not => [ { term => { status => 'backpan' } } ] }
             }
         };
     }

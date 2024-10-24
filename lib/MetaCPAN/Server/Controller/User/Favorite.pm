@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Moose;
+use MetaCPAN::Util qw( true false );
 
 BEGIN { extends 'Catalyst::Controller::REST' }
 
@@ -33,7 +34,7 @@ sub index_POST {
             release      => $data->{release},
             distribution => $data->{distribution},
         },
-        { refresh => 1 }
+        { refresh => true }
     );
     $c->purge_author_key( $data->{author} )     if $data->{author};
     $c->purge_dist_key( $data->{distribution} ) if $data->{distribution};
@@ -50,7 +51,7 @@ sub index_DELETE {
     my $favorite = $c->model('CPAN::Favorite')
         ->get( { user => $c->user->id, distribution => $distribution } );
     if ($favorite) {
-        $favorite->delete( { refresh => 1 } );
+        $favorite->delete( { refresh => true } );
         $c->purge_author_key( $favorite->author )
             if $favorite->author;
         $c->purge_dist_key($distribution);

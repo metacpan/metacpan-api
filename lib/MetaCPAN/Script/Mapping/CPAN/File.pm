@@ -210,10 +210,7 @@ sub mapping {
             "fields" : {
               "analyzed" : {
                 "type" : "string",
-                "term_vector" : "with_positions_offsets",
-                "fielddata" : {
-                  "format" : "disabled"
-                },
+                "index" : "analyzed",
                 "analyzer" : "standard"
               }
             }
@@ -283,7 +280,6 @@ sub mapping {
           "suggest" : {
             "type" : "completion",
             "analyzer" : "simple",
-            "payloads" : true,
             "preserve_separators" : true,
             "preserve_position_increments" : true,
             "max_input_length" : 50

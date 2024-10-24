@@ -4,6 +4,7 @@ use Moose;
 
 use Log::Contextual           qw( :log );
 use MetaCPAN::Types::TypeTiny qw( Bool Int );
+use MetaCPAN::Util            qw( true false );
 
 use Digest::file qw( digest_file_hex );
 
@@ -49,12 +50,16 @@ sub run {
         scroll => '10m',
         body   => {
             query => {
-                not => {
-                    exists => {
-                        field => "checksum_md5"
-                    }
-                }
-            }
+                bool => {
+                    must_not => [
+                        {
+                            exists => {
+                                field => "checksum_md5"
+                            }
+                        },
+                    ],
+                },
+            },
         },
         fields => [qw( id name download_url )],
     );
@@ -90,7 +95,7 @@ sub run {
                         checksum_md5    => $checksum_md5,
                         checksum_sha256 => $checksum_sha256
                     },
-                    doc_as_upsert => 1,
+                    doc_as_upsert => true,
                 } );
             }
         }

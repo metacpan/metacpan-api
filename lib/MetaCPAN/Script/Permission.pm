@@ -4,6 +4,7 @@ use Moose;
 
 use Log::Contextual           qw( :log );
 use MetaCPAN::Types::TypeTiny qw( Bool );
+use MetaCPAN::Util            qw( true false );
 use PAUSE::Permissions        ();
 
 with 'MooseX::Getopt', 'MetaCPAN::Role::Script';
@@ -64,7 +65,7 @@ sub index_permissions {
         $bulk->update( {
             id            => $name,
             doc           => $doc,
-            doc_as_upsert => 1,
+            doc_as_upsert => true,
         } );
 
         $seen{$name} = 1;
