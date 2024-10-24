@@ -123,8 +123,8 @@ sub run {
                 must => [
                     {
                         nested => {
-                            path   => 'module',
-                            filter => { bool => { must => $filter } }
+                            path  => 'module',
+                            query => { bool => { must => $filter } }
                         }
                     },
                     { term => { 'maturity' => 'released' } },
