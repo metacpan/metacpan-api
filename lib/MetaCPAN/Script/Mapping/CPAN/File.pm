@@ -210,10 +210,7 @@ sub mapping {
             "fields" : {
               "analyzed" : {
                 "type" : "string",
-                "term_vector" : "with_positions_offsets",
-                "fielddata" : {
-                  "format" : "disabled"
-                },
+                "index" : "analyzed",
                 "analyzer" : "standard"
               }
             }
