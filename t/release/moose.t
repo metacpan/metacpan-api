@@ -3,6 +3,7 @@ use warnings;
 use lib 't/lib';
 
 use MetaCPAN::Server::Test qw( model );
+use MetaCPAN::Util         qw( true false );
 use Test::More;
 
 my $model = model();
@@ -84,7 +85,7 @@ $signature = $idx->type('file')->query( {
         must => [
             { term   => { name    => 'SIGNATURE' } },
             { exists => { field   => 'documentation' } },
-            { term   => { indexed => 1 } },
+            { term   => { indexed => true } },
         ],
     },
 } )->first;
