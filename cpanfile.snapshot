@@ -6480,6 +6480,38 @@ DISTRIBUTIONS
       namespace::clean 0
       strict 0
       warnings 0
+  Search-Elasticsearch-Client-5_0-6.81
+    pathname: E/EZ/EZIMUEL/Search-Elasticsearch-Client-5_0-6.81.tar.gz
+    provides:
+      Search::Elasticsearch::Client::5_0 6.81
+      Search::Elasticsearch::Client::5_0::Bulk 6.81
+      Search::Elasticsearch::Client::5_0::Direct 6.81
+      Search::Elasticsearch::Client::5_0::Direct::Cat 6.81
+      Search::Elasticsearch::Client::5_0::Direct::Cluster 6.81
+      Search::Elasticsearch::Client::5_0::Direct::Indices 6.81
+      Search::Elasticsearch::Client::5_0::Direct::Ingest 6.81
+      Search::Elasticsearch::Client::5_0::Direct::Nodes 6.81
+      Search::Elasticsearch::Client::5_0::Direct::Snapshot 6.81
+      Search::Elasticsearch::Client::5_0::Direct::Tasks 6.81
+      Search::Elasticsearch::Client::5_0::Role::API 6.81
+      Search::Elasticsearch::Client::5_0::Role::Bulk 6.81
+      Search::Elasticsearch::Client::5_0::Role::Scroll 6.81
+      Search::Elasticsearch::Client::5_0::Scroll 6.81
+      Search::Elasticsearch::Client::5_0::TestServer 6.81
+    requirements:
+      Devel::GlobalDestruction 0
+      ExtUtils::MakeMaker 0
+      Moo 0
+      Moo::Role 0
+      Search::Elasticsearch 6.00
+      Search::Elasticsearch::Role::API 0
+      Search::Elasticsearch::Role::Client::Direct 0
+      Search::Elasticsearch::Role::Is_Sync 0
+      Search::Elasticsearch::Util 0
+      Try::Tiny 0
+      namespace::clean 0
+      strict 0
+      warnings 0
   Sereal-Decoder-5.004
     pathname: Y/YV/YVES/Sereal-Decoder-5.004.tar.gz
     provides:
