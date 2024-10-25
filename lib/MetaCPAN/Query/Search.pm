@@ -157,8 +157,10 @@ sub _search_collapsed {
                 },
                 max_score => {
                     max => {
-                        lang   => "expression",
-                        script => "_score",
+                        script => {
+                            lang   => "expression",
+                            inline => "_score",
+                        },
                     },
                 },
             },
