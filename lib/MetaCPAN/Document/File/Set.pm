@@ -6,7 +6,7 @@ use List::Util                qw( max );
 use MetaCPAN::Query::Favorite ();
 use MetaCPAN::Query::File     ();
 use MetaCPAN::Query::Release  ();
-use MetaCPAN::Util qw( single_valued_arrayref_to_scalar true false );
+use MetaCPAN::Util            qw( true false );
 
 extends 'ElasticSearchX::Model::Document::Set';
 
@@ -75,7 +75,8 @@ my @ROGUE_DISTRIBUTIONS = qw(
 
 sub find {
     my ( $self, $module ) = @_;
-    my @candidates = $self->index->type('file')->query( {
+
+    my $query = {
         bool => {
             must => [
                 { term => { indexed    => true } },
@@ -119,22 +120,38 @@ sub find {
                 },
             ],
         },
-    } )->sort( [
-        '_score',
-        { 'version_numified' => { order => 'desc' } },
-        { 'date'             => { order => 'desc' } },
-        { 'mime'             => { order => 'asc' } },
-        { 'stat.mtime'       => { order => 'desc' } }
-    ] )->search_type('dfs_query_then_fetch')->size(100)->all;
+    };
+
+    my $res = $self->es->search(
+        index       => $self->index->name,
+        type        => 'file',
+        search_type => 'dfs_query_then_fetch',
+        body        => {
+            query => $query,
+            sort  => [
+                '_score',
+                { 'version_numified' => { order => 'desc' } },
+                { 'date'             => { order => 'desc' } },
+                { 'mime'             => { order => 'asc' } },
+                { 'stat.mtime'       => { order => 'desc' } }
+            ],
+            _source => [
+                qw( documentation module.indexed module.authoried module.name )
+            ],
+            size => 100,
+        },
+    );
+
+    my @candidates = @{ $res->{hits}{hits} };
 
     my ($file) = grep {
-        grep { $_->indexed && $_->authorized && $_->name eq $module }
-            @{ $_->module || [] }
-    } grep { !$_->documentation || $_->documentation eq $module }
+        grep { $_->{indexed} && $_->{authorized} && $_->{name} eq $module }
+            @{ $_->{module} || [] }
+    } grep { !$_->{documentation} || $_->{documentation} eq $module }
         @candidates;
 
     $file ||= shift @candidates;
-    return $file ? $self->get( $file->id ) : undef;
+    return $file ? $self->get( $file->{_id} ) : undef;
 }
 
 sub find_pod {
@@ -265,15 +282,13 @@ sub history {
 
 sub autocomplete {
     my ( $self, @terms ) = @_;
-    my $query = join( q{ }, @terms );
-    return $self unless $query;
 
-    my $data = $self->search_type('dfs_query_then_fetch')->query( {
+    my $query = {
         bool => {
             must => [
                 {
                     multi_match => {
-                        query    => $query,
+                        query    => join( q{ }, @terms ),
                         type     => 'most_fields',
                         fields   => [ 'documentation', 'documentation.*' ],
                         analyzer => 'camelcase',
@@ -288,15 +303,21 @@ sub autocomplete {
             must_not =>
                 [ { terms => { distribution => \@ROGUE_DISTRIBUTIONS } }, ],
         },
-    } )->sort( [ '_score', 'documentation' ] );
+    };
 
-    $data = $data->fields( [qw(documentation release author distribution)] )
-        unless $self->fields;
+    my $data = $self->es->search(
+        search_type => 'dfs_query_then_fetch',
+        index       => $self->index->name,
+        type        => 'file',
+        body        => {
+            query   => $query,
+            sort    => [ '_score', 'documentation' ],
+            _source => [qw( documentation release author distribution )],
+        },
+    );
 
-    $data = $data->source(0)->raw->all;
-
-    single_valued_arrayref_to_scalar( $_->{fields} )
-        for @{ $data->{hits}{hits} };
+    # this is backcompat. we don't use this end point.
+    $_->{fields} = delete $_->{_source} for @{ $data->{hits}{hits} };
 
     return $data;
 }
@@ -307,8 +328,7 @@ sub autocomplete_suggester {
 
     my $search_size = 100;
 
-    my $suggestions
-        = $self->search_type('dfs_query_then_fetch')->es->suggest( {
+    my $suggestions = $self->es->suggest( {
         index => $self->index->name,
         body  => {
             documentation => {
@@ -319,7 +339,7 @@ sub autocomplete_suggester {
                 }
             }
         },
-        } );
+    } );
 
     my %docs;
 
@@ -328,14 +348,6 @@ sub autocomplete_suggester {
             ( $docs{ $suggest->{text} }, $suggest->{score} );
     }
 
-    my @fields = qw(
-        author
-        date
-        deprecated
-        distribution
-        documentation
-        release
-    );
     my $data = $self->es->search( {
         index => $self->index->name,
         type  => 'file',
@@ -355,17 +367,22 @@ sub autocomplete_suggester {
                     ],
                 }
             },
+            _source => [ qw(
+                author
+                date
+                deprecated
+                distribution
+                documentation
+                release
+            ) ],
+            size => $search_size,
         },
-        fields => \@fields,
-        size   => $search_size,
     } );
 
     my %valid = map {
-        my $got = $_->{fields};
-        my %record;
-        @record{@fields} = map { $got->{$_}[0] } @fields;
-        $record{name} = delete $record{documentation};       # rename
-        ( $_->{fields}{documentation}[0] => \%record );
+        my %record = %{ $_->{_source} };
+        $record{name} = delete $record{documentation};    # rename
+        ( $record{name} => \%record );
     } @{ $data->{hits}{hits} };
 
     # remove any exact match, it will be added later
@@ -393,7 +410,7 @@ sub autocomplete_suggester {
 sub find_changes_files {
     my ( $self, $author, $release ) = @_;
     my $result = $self->files_by_category( $author, $release, ['changelog'],
-        { fields => true } );
+        { _source => true } );
     my ($file) = @{ $result->{categories}{changelog} || [] };
     return $file;
 }

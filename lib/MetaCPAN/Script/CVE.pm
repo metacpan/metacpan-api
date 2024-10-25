@@ -158,23 +158,23 @@ sub index_cve_data {
             }
 
             if (@filters) {
-                my $query = {
-                    query => {
-                        bool => {
-                            must => [
-                                { term => { distribution => $dist } },
-                                @filters,
-                            ]
-                        }
-                    },
-                };
+                my $query = {};
 
                 my $releases = $self->es->search(
-                    index  => 'cpan',
-                    type   => 'release',
-                    body   => $query,
-                    fields => [ "version", "name", "author", ],
-                    size   => 2000,
+                    index => 'cpan',
+                    type  => 'release',
+                    body  => {
+                        query => {
+                            bool => {
+                                must => [
+                                    { term => { distribution => $dist } },
+                                    @filters,
+                                ]
+                            }
+                        },
+                        _source => [ "version", "name", "author", ],
+                        size    => 2000,
+                    },
                 );
 
                 if ( $releases->{hits}{total} ) {
@@ -182,9 +182,10 @@ sub index_cve_data {
                     @matches = map { $_->[0] }
                         sort { $a->[1] <=> $b->[1] }
                         map {
-                        my %fields = %{ $_->{fields} };
-                        ref $_ and $_ = $_->[0] for values %fields;
-                        [ \%fields, numify_version( $fields{version} ) ];
+                        [
+                            $_->{_source},
+                            numify_version( $_->{_source}{version} )
+                        ];
                         } @{ $releases->{hits}{hits} };
                 }
                 else {

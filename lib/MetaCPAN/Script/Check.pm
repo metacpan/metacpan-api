@@ -87,10 +87,6 @@ sub check_modules {
                 my $results = $es->search(
                     index => $self->index->name,
                     type  => 'file',
-                    size  => 100,               # shouldn't get more than this
-                    fields => [
-                        qw(name release author distribution version authorized indexed maturity date)
-                    ],
                     query => {
                         bool => {
                             must => [
@@ -99,6 +95,18 @@ sub check_modules {
                                 { term => { 'maturity'    => 'released' } },
                             ],
                         },
+                        size    => 100,    # shouldn't get more than this
+                        _source => [ qw(
+                            name
+                            release
+                            author
+                            distribution
+                            version
+                            authorized
+                            indexed
+                            maturity
+                            date
+                        ) ],
                     },
                 );
                 my @files = @{ $results->{hits}->{hits} };
@@ -106,22 +114,23 @@ sub check_modules {
                 # now find the first latest releases for these files
                 foreach my $file (@files) {
                     my $release_results = $es->search(
-                        index  => $self->index->name,
-                        type   => 'release',
-                        size   => 1,
-                        fields =>
-                            [qw(name status authorized version id date)],
+                        index => $self->index->name,
+                        type  => 'release',
                         query => {
                             bool => {
                                 must => [
                                     {
                                         term => {
-                                            name => $file->{fields}->{release}
+                                            name =>
+                                                $file->{_source}->{release}
                                         }
                                     },
                                     { term => { status => 'latest' } },
                                 ],
                             },
+                            size    => 1,
+                            _source =>
+                                [qw(name status authorized version id date)],
                         },
                     );
 
@@ -136,22 +145,23 @@ sub check_modules {
                 if ( !@releases ) {
                     foreach my $file (@files) {
                         my $release_results = $es->search(
-                            index  => $self->index->name,
-                            type   => 'release',
-                            size   => 1,
-                            fields =>
-                                [qw(name status authorized version id date)],
+                            index => $self->index->name,
+                            type  => 'release',
                             query => {
                                 bool => {
                                     must => [
                                         {
                                             term => {
-                                                name =>
-                                                    $file->{fields}->{release}
+                                                name => $file->{_source}
+                                                    ->{release}
                                             }
                                         },
                                     ],
                                 },
+                                size    => 1,
+                                _source => [
+                                    qw(name status authorized version id date)
+                                ],
                             },
                         );
 
@@ -163,10 +173,10 @@ sub check_modules {
                 # if we found the releases tell them about it
                 if (@releases) {
                     if (   @releases == 1
-                        && $releases[0]->{fields}->{status} eq 'latest' )
+                        && $releases[0]->{_source}->{status} eq 'latest' )
                     {
                         log_info {
-                            "Found latest release $releases[0]->{fields}->{name} for $pkg";
+                            "Found latest release $releases[0]->{_source}->{name} for $pkg";
                         }
                         unless $self->errors_only;
                     }
@@ -174,16 +184,16 @@ sub check_modules {
                         log_error {"Could not find latest release for $pkg"};
                         foreach my $rel (@releases) {
                             log_warn {
-                                "  Found release $rel->{fields}->{name}";
+                                "  Found release $rel->{_source}->{name}";
                             };
                             log_warn {
-                                "    STATUS    : $rel->{fields}->{status}";
+                                "    STATUS    : $rel->{_source}->{status}";
                             };
                             log_warn {
-                                "    AUTORIZED : $rel->{fields}->{authorized}";
+                                "    AUTORIZED : $rel->{_source}->{authorized}";
                             };
                             log_warn {
-                                "    DATE      : $rel->{fields}->{date}";
+                                "    DATE      : $rel->{_source}->{date}";
                             };
                         }
                         $self->_set_error_count( $self->error_count + 1 );
@@ -194,17 +204,17 @@ sub check_modules {
                         "Module $pkg doesn't have any releases in ElasticSearch!";
                     };
                     foreach my $file (@files) {
-                        log_warn {"  Found file $file->{fields}->{name}"};
+                        log_warn {"  Found file $file->{_source}->{name}"};
                         log_warn {
-                            "    RELEASE    : $file->{fields}->{release}";
+                            "    RELEASE    : $file->{_source}->{release}";
                         };
                         log_warn {
-                            "    AUTHOR     : $file->{fields}->{author}";
+                            "    AUTHOR     : $file->{_source}->{author}";
                         };
                         log_warn {
-                            "    AUTHORIZED : $file->{fields}->{authorized}";
+                            "    AUTHORIZED : $file->{_source}->{authorized}";
                         };
-                        log_warn {"    DATE       : $file->{fields}->{date}"};
+                        log_warn {"    DATE       : $file->{_source}->{date}"};
                     }
                     $self->_set_error_count( $self->error_count + 1 );
                 }

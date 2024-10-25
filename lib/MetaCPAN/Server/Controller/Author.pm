@@ -4,7 +4,6 @@ use strict;
 use warnings;
 
 use Moose;
-use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
 
 BEGIN { extends 'MetaCPAN::Server::Controller' }
 

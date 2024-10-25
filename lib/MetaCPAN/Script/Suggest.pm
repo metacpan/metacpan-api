@@ -66,8 +66,6 @@ sub _update_slice {
         index  => $self->index->name,
         type   => 'file',
         scroll => '5m',
-        fields => [qw< id documentation >],
-        size   => 500,
         body   => {
             query => {
                 bool => {
@@ -76,7 +74,9 @@ sub _update_slice {
                     ],
                 },
             },
-            sort => '_doc',
+            _source => [qw< documentation >],
+            size    => 500,
+            sort    => '_doc',
         },
     );
 
@@ -88,12 +88,12 @@ sub _update_slice {
     );
 
     while ( my $file = $files->next ) {
-        my $documentation = $file->{fields}{documentation}[0];
+        my $documentation = $file->{_source}{documentation};
         my $weight        = 1000 - length($documentation);
         $weight = 0 if $weight < 0;
 
         $bulk->update( {
-            id  => $file->{fields}{id}[0],
+            id  => $file->{_id},
             doc => {
                 suggest => {
                     input  => [$documentation],

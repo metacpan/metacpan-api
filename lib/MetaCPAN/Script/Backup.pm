@@ -88,11 +88,11 @@ sub run {
         my $scroll = $es->scroll_helper(
             index => $index,
             $self->type ? ( type => $self->type ) : (),
-            size   => $self->size,
-            fields => [qw(_parent _source)],
             scroll => '1m',
             body   => {
-                sort => '_doc',
+                _source => true,
+                size    => $self->size,
+                sort    => '_doc',
             },
         );
 
@@ -144,7 +144,7 @@ sub run_restore {
         # Fetch relevant bulk helper
         my $bulk = $bulk_store{$bulk_key};
 
-        my $parent = $raw->{fields}->{_parent};
+        my $parent = $raw->{_parent};
 
         if ( $raw->{_type} eq 'author' ) {
 

@@ -77,23 +77,23 @@ sub check_all_distributions {
 
     # first: make sure all distributions have an entry
     my $scroll = $self->es->scroll_helper(
-        size   => 500,
         scroll => '5m',
         index  => $self->index->name,
         type   => 'release',
-        fields => ['distribution'],
         body   => {
             query => {
                 bool =>
                     { must_not => [ { term => { status => 'backpan' } } ] }
-            }
+            },
+            size    => 500,
+            _source => ['distribution'],
         },
     );
 
     my $dists = {};
 
     while ( my $release = $scroll->next ) {
-        my $distribution = $release->{'fields'}{'distribution'}[0];
+        my $distribution = $release->{_source}{'distribution'};
         $distribution or next;
         $dists->{$distribution} = { name => $distribution };
     }

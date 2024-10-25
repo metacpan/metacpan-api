@@ -361,7 +361,6 @@ sub by_author_and_name {
     );
 
     my $data = $ret->{hits}{hits}[0]{_source};
-    single_valued_arrayref_to_scalar($data);
 
     return {
         took    => $ret->{took},
@@ -408,7 +407,6 @@ sub by_author_and_names {
     my @releases;
     for my $hit ( @{ $ret->{hits}{hits} } ) {
         my $src = $hit->{_source};
-        single_valued_arrayref_to_scalar($src);
         push @releases, $src;
     }
 
@@ -449,7 +447,6 @@ sub by_author {
     );
 
     my $data = [ map { $_->{_source} } @{ $ret->{hits}{hits} } ];
-    single_valued_arrayref_to_scalar($data);
 
     return {
         releases => $data,
@@ -485,7 +482,6 @@ sub latest_by_distribution {
     );
 
     my $data = $ret->{hits}{hits}[0]{_source};
-    single_valued_arrayref_to_scalar($data);
 
     return {
         release => $data,
@@ -508,7 +504,7 @@ sub latest_by_author {
         },
         sort =>
             [ 'distribution', { 'version_numified' => { reverse => 1 } } ],
-        fields => [
+        _source => [
             qw(author distribution name status abstract date download_url version authorized maturity)
         ],
         size => 1000,
@@ -520,8 +516,7 @@ sub latest_by_author {
         body  => $body,
     );
 
-    my $data = [ map { $_->{fields} } @{ $ret->{hits}{hits} } ];
-    single_valued_arrayref_to_scalar($data);
+    my $data = [ map { $_->{_source} } @{ $ret->{hits}{hits} } ];
 
     return { took => $ret->{took}, releases => $data };
 }
@@ -532,9 +527,9 @@ sub all_by_author {
     $page //= 1;
 
     my $body = {
-        query  => { term => { author => uc($author) } },
-        sort   => [ { date => 'desc' } ],
-        fields => [
+        query   => { term => { author => uc($author) } },
+        sort    => [ { date => 'desc' } ],
+        _source => [
             qw(author distribution name status abstract date download_url version authorized maturity)
         ],
         size => $size,
@@ -546,8 +541,7 @@ sub all_by_author {
         body  => $body,
     );
 
-    my $data = [ map { $_->{fields} } @{ $ret->{hits}{hits} } ];
-    single_valued_arrayref_to_scalar($data);
+    my $data = [ map { $_->{_source} } @{ $ret->{hits}{hits} } ];
 
     return {
         took     => $ret->{took},
@@ -605,10 +599,10 @@ sub versions {
     }
 
     my $body = {
-        query  => $query,
-        size   => $size,
-        sort   => [ { date => 'desc' } ],
-        fields => [
+        query   => $query,
+        size    => $size,
+        sort    => [ { date => 'desc' } ],
+        _source => [
             qw( name date author version status maturity authorized download_url)
         ],
     };
@@ -619,8 +613,7 @@ sub versions {
         body  => $body,
     );
 
-    my $data = [ map { $_->{fields} } @{ $ret->{hits}{hits} } ];
-    single_valued_arrayref_to_scalar($data);
+    my $data = [ map { $_->{_source} } @{ $ret->{hits}{hits} } ];
 
     return {
         releases => $data,
@@ -710,12 +703,11 @@ sub _get_latest_release {
                     ]
                 },
             },
-            fields => [qw< name author >],
+            _source => [qw< name author >],
         },
     );
 
-    my ($release_info) = map { $_->{fields} } @{ $release->{hits}{hits} };
-    single_valued_arrayref_to_scalar($release_info);
+    my ($release_info) = map { $_->{_source} } @{ $release->{hits}{hits} };
 
     return $release_info->{name} && $release_info->{author}
         ? +{
@@ -870,10 +862,10 @@ sub recent {
     }
 
     my $body = {
-        size   => $page_size,
-        from   => $from,
-        query  => $query,
-        fields =>
+        size    => $page_size,
+        from    => $from,
+        query   => $query,
+        _source =>
             [qw(name author status abstract date distribution maturity)],
         sort => [ { 'date' => { order => 'desc' } } ]
     };
@@ -884,8 +876,7 @@ sub recent {
         body  => $body,
     );
 
-    my $data = [ map { $_->{fields} } @{ $ret->{hits}{hits} } ];
-    single_valued_arrayref_to_scalar($data);
+    my $data = [ map { $_->{_source} } @{ $ret->{hits}{hits} } ];
 
     return {
         releases => $data,
@@ -953,9 +944,9 @@ sub modules {
         # Sort by documentation name; if there isn't one, sort by path.
         sort => [ 'documentation', 'path' ],
 
-        _source => [ "module", "abstract" ],
-
-        fields => [ qw(
+        _source => [ qw(
+            module
+            abstract
             author
             authorized
             distribution
@@ -974,11 +965,7 @@ sub modules {
         body  => $body,
     );
 
-    my @files = map +{
-        %{ ( single_valued_arrayref_to_scalar( $_->{fields} ) )[0] },
-        %{ $_->{_source} }
-        },
-        @{ $ret->{hits}{hits} };
+    my @files = map $_->{_source}, @{ $ret->{hits}{hits} };
 
     return {
         files => \@files,

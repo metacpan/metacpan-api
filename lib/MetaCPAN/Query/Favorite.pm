@@ -2,8 +2,6 @@ package MetaCPAN::Query::Favorite;
 
 use MetaCPAN::Moose;
 
-use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
-
 with 'MetaCPAN::Query::Role::Common';
 
 sub agg_by_distributions {
@@ -72,18 +70,16 @@ sub by_user {
         index => $self->index_name,
         type  => 'favorite',
         body  => {
-            query  => { term => { user => $user } },
-            fields => [qw( author date distribution )],
-            sort   => ['distribution'],
-            size   => $size,
+            query   => { term => { user => $user } },
+            _source => [qw( author date distribution )],
+            sort    => ['distribution'],
+            size    => $size,
         }
     );
     return {} unless $favs->{hits}{total};
     my $took = $favs->{took};
 
-    my @favs = map { $_->{fields} } @{ $favs->{hits}{hits} };
-
-    single_valued_arrayref_to_scalar( \@favs );
+    my @favs = map { $_->{_source} } @{ $favs->{hits}{hits} };
 
     # filter out backpan only distributions
 
@@ -104,14 +100,14 @@ sub by_user {
                     ]
                 }
             },
-            fields => ['distribution'],
-            size   => scalar(@favs),
+            _source => ['distribution'],
+            size    => scalar(@favs),
         }
     );
     $took += $no_backpan->{took};
 
     if ( $no_backpan->{hits}{total} ) {
-        my %has_no_backpan = map { $_->{fields}{distribution}[0] => 1 }
+        my %has_no_backpan = map { $_->{_source}{distribution} => 1 }
             @{ $no_backpan->{hits}{hits} };
 
         @favs = grep { exists $has_no_backpan{ $_->{distribution} } } @favs;
@@ -194,8 +190,6 @@ sub users_by_distribution {
     return {} unless $favs->{hits}{total};
 
     my @plusser_users = map { $_->{_source}{user} } @{ $favs->{hits}{hits} };
-
-    single_valued_arrayref_to_scalar( \@plusser_users );
 
     return { users => \@plusser_users };
 }
