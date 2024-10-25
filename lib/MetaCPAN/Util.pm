@@ -29,6 +29,7 @@ use Sub::Exporter -setup => {
         fix_pod
         fix_version
         generate_sid
+        hit_total
         numify_version
         pod_lines
         strip_pod
@@ -95,6 +96,15 @@ sub author_dir {
         substr( $pauseid, 0, 1 ),
         substr( $pauseid, 0, 2 ), $pauseid );
     return $dir;
+}
+
+sub hit_total {
+    my $res   = shift;
+    my $total = $res && $res->{hits} && $res->{hits}{total};
+    if ( ref $total ) {
+        return $total->{value};
+    }
+    return $total;
 }
 
 # TODO: E<escape>

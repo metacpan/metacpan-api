@@ -2,7 +2,8 @@ package MetaCPAN::Query::Release;
 
 use MetaCPAN::Moose;
 
-use MetaCPAN::Util qw( single_valued_arrayref_to_scalar true false );
+use MetaCPAN::Util
+    qw( hit_total single_valued_arrayref_to_scalar true false );
 
 with 'MetaCPAN::Query::Role::Common';
 
@@ -184,7 +185,7 @@ sub get_contributors {
                     }
                 );
 
-                if ( $check_author->{hits}{total} ) {
+                if ( hit_total($check_author) ) {
                     $contrib->{pauseid}
                         = uc $check_author->{hits}{hits}[0]{_source}{pauseid};
                 }
@@ -365,7 +366,7 @@ sub by_author_and_name {
     return {
         took    => $ret->{took},
         release => $data,
-        total   => $ret->{hits}{total}
+        total   => hit_total($ret),
     };
 }
 
@@ -412,7 +413,7 @@ sub by_author_and_names {
 
     return {
         took     => $ret->{took},
-        total    => $ret->{hits}{total},
+        total    => hit_total($ret),
         releases => \@releases,
     };
 }
@@ -450,7 +451,7 @@ sub by_author {
 
     return {
         releases => $data,
-        total    => $ret->{hits}{total},
+        total    => hit_total($ret),
         took     => $ret->{took}
     };
 }
@@ -486,7 +487,7 @@ sub latest_by_distribution {
     return {
         release => $data,
         took    => $ret->{took},
-        total   => $ret->{hits}{total}
+        total   => hit_total($ret),
     };
 }
 
@@ -546,7 +547,7 @@ sub all_by_author {
     return {
         took     => $ret->{took},
         releases => $data,
-        total    => $ret->{hits}{total}
+        total    => hit_total($ret),
     };
 }
 
@@ -617,7 +618,7 @@ sub versions {
 
     return {
         releases => $data,
-        total    => $ret->{hits}{total},
+        total    => hit_total($ret),
         took     => $ret->{took}
     };
 }
@@ -812,7 +813,7 @@ sub _get_depended_releases {
 
     return +{
         data  => [ map { $_->{_source} } @{ $depended->{hits}{hits} } ],
-        total => $depended->{hits}{total},
+        total => hit_total($depended),
         took  => $depended->{took},
     };
 }
@@ -880,7 +881,7 @@ sub recent {
 
     return {
         releases => $data,
-        total    => $ret->{hits}{total},
+        total    => hit_total($ret),
         took     => $ret->{took}
     };
 }
@@ -969,7 +970,7 @@ sub modules {
 
     return {
         files => \@files,
-        total => $ret->{hits}{total},
+        total => hit_total($ret),
         took  => $ret->{took}
     };
 }
@@ -1153,7 +1154,7 @@ sub find_download_url {
         search_type => 'dfs_query_then_fetch',
     );
 
-    return unless $res->{hits}{total};
+    return unless hit_total($res);
 
     my @checksums;
 

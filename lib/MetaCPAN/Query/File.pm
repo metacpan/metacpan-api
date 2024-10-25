@@ -2,7 +2,7 @@ package MetaCPAN::Query::File;
 
 use MetaCPAN::Moose;
 
-use MetaCPAN::Util qw( true false );
+use MetaCPAN::Util qw( hit_total true false );
 
 with 'MetaCPAN::Query::Role::Common';
 
@@ -301,7 +301,7 @@ sub interesting_files {
     } );
 
     $return->{took}  = $data->{took};
-    $return->{total} = $data->{hits}{total};
+    $return->{total} = hit_total($data);
 
     return $return
         unless $return->{total};

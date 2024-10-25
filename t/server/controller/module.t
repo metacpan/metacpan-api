@@ -4,6 +4,7 @@ use lib 't/lib';
 
 use MetaCPAN::Server::Test qw( app GET test_psgi );
 use MetaCPAN::TestHelpers  qw( decode_json_ok test_cache_headers );
+use MetaCPAN::Util         qw( hit_total );
 use Test::More;
 
 my %tests = (
@@ -69,7 +70,7 @@ test_psgi app, sub {
 
         my $json = decode_json_ok($res);
         if ( $k eq '/module' ) {
-            ok( $json->{hits}->{total}, 'got total count' );
+            ok( hit_total($json), 'got total count' );
         }
         elsif ( $k =~ /fields/ ) {
             is_deeply(

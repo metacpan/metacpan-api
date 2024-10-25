@@ -6,7 +6,7 @@ use namespace::autoclean;
 use Cpanel::JSON::XS          qw( decode_json );
 use Log::Contextual           qw( :log :dlog );
 use MetaCPAN::Types::TypeTiny qw( Bool Str Uri );
-use MetaCPAN::Util            qw( numify_version true false );
+use MetaCPAN::Util            qw( hit_total numify_version true false );
 use Path::Tiny                qw( path );
 use Ref::Util                 qw( is_arrayref );
 
@@ -177,7 +177,7 @@ sub index_cve_data {
                     },
                 );
 
-                if ( $releases->{hits}{total} ) {
+                if ( hit_total($releases) ) {
                     ## no critic (ControlStructures::ProhibitMutatingListFunctions)
                     @matches = map { $_->[0] }
                         sort { $a->[1] <=> $b->[1] }

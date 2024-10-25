@@ -2,7 +2,8 @@ package MetaCPAN::Query::Author;
 
 use MetaCPAN::Moose;
 
-use Ref::Util qw( is_arrayref );
+use MetaCPAN::Util qw(hit_total);
+use Ref::Util      qw( is_arrayref );
 
 with 'MetaCPAN::Query::Role::Common';
 
@@ -27,7 +28,7 @@ sub by_ids {
     return {
         authors => \@authors,
         took    => $authors->{took},
-        total   => $authors->{hits}{total},
+        total   => hit_total($authors),
     };
 }
 
@@ -49,7 +50,7 @@ sub by_user {
     return {
         authors => \@authors,
         took    => $authors->{took},
-        total   => $authors->{hits}{total},
+        total   => hit_total($authors),
     };
 }
 
@@ -93,7 +94,7 @@ sub search {
     return +{
         authors => \@authors,
         took    => $ret->{took},
-        total   => $ret->{hits}{total},
+        total   => hit_total($ret),
     };
 }
 
@@ -124,7 +125,7 @@ sub prefix_search {
     return +{
         authors => \@authors,
         took    => $ret->{took},
-        total   => $ret->{hits}{total},
+        total   => hit_total($ret),
     };
 }
 

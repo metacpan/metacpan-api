@@ -2,6 +2,8 @@ package MetaCPAN::Query::Favorite;
 
 use MetaCPAN::Moose;
 
+use MetaCPAN::Util qw(hit_total);
+
 with 'MetaCPAN::Query::Role::Common';
 
 sub agg_by_distributions {
@@ -76,7 +78,7 @@ sub by_user {
             size    => $size,
         }
     );
-    return {} unless $favs->{hits}{total};
+    return {} unless hit_total($favs);
     my $took = $favs->{took};
 
     my @favs = map { $_->{_source} } @{ $favs->{hits}{hits} };
@@ -106,7 +108,7 @@ sub by_user {
     );
     $took += $no_backpan->{took};
 
-    if ( $no_backpan->{hits}{total} ) {
+    if ( hit_total($no_backpan) ) {
         my %has_no_backpan = map { $_->{_source}{distribution} => 1 }
             @{ $no_backpan->{hits}{hits} };
 
@@ -171,7 +173,7 @@ sub recent {
     return +{
         favorites => \@favs,
         took      => $favs->{took},
-        total     => $favs->{hits}{total}
+        total     => hit_total($favs),
     };
 }
 
@@ -187,7 +189,7 @@ sub users_by_distribution {
             size    => 1000,
         }
     );
-    return {} unless $favs->{hits}{total};
+    return {} unless hit_total($favs);
 
     my @plusser_users = map { $_->{_source}{user} } @{ $favs->{hits}{hits} };
 

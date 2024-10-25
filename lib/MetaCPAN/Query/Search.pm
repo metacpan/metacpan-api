@@ -7,7 +7,7 @@ use Hash::Merge               qw( merge );
 use List::Util                qw( min uniq );
 use Log::Contextual           qw( :log :dlog );
 use MetaCPAN::Types::TypeTiny qw( Object Str );
-use MetaCPAN::Util            qw( true false );
+use MetaCPAN::Util            qw( hit_total true false );
 use MooseX::StrictConstructor;
 
 with 'MetaCPAN::Query::Role::Common';
@@ -113,7 +113,7 @@ sub _search_expanded {
 
     my $return = {
         results   => $results,
-        total     => $es_results->{hits}->{total},
+        total     => hit_total($es_results),
         took      => $es_results->{took},
         collapsed => false,
     };

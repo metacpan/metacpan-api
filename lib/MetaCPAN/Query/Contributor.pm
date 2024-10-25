@@ -2,6 +2,8 @@ package MetaCPAN::Query::Contributor;
 
 use MetaCPAN::Moose;
 
+use MetaCPAN::Util qw(hit_total);
+
 with 'MetaCPAN::Query::Role::Common';
 
 sub find_release_contributors {
@@ -24,7 +26,7 @@ sub find_release_contributors {
             size  => 999,
         }
     );
-    $res->{hits}{total} or return {};
+    hit_total($res) or return {};
 
     return +{
         contributors => [ map { $_->{_source} } @{ $res->{hits}{hits} } ] };

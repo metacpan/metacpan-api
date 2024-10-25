@@ -3,7 +3,7 @@ use warnings;
 use lib 't/lib';
 
 use MetaCPAN::Server::Test qw( model );
-use MetaCPAN::Util         qw( true false );
+use MetaCPAN::Util         qw( true false hit_total );
 use Test::More;
 
 my $model = model();
@@ -98,10 +98,10 @@ ok( !$signature, 'SIGNATURE is not pod' );
 
     is_deeply( $module->{hits}, $file->{hits},
         'history of Moose and lib/Moose.pm match' );
-    is( $module->{hits}->{total}, 2, 'two hits' );
+    is( hit_total($module), 2, 'two hits' );
 
     my $pod = $files->history( documentation => 'Moose::FAQ' )->raw->all;
-    is( $pod->{hits}->{total}, 1, 'one hit' );
+    is( hit_total($pod), 1, 'one hit' );
 }
 
 done_testing;
