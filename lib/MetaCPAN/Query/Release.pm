@@ -63,14 +63,12 @@ sub get_contributors {
     my ( $self, $author_name, $release_name ) = @_;
 
     my $query = +{
-        query => {
-            bool => {
-                must => [
-                    { term => { name   => $release_name } },
-                    { term => { author => $author_name } },
-                ],
-            },
-        }
+        bool => {
+            must => [
+                { term => { name   => $release_name } },
+                { term => { author => $author_name } },
+            ],
+        },
     };
 
     my $res = $self->es->search(
@@ -195,11 +193,9 @@ sub get_contributors {
     }
 
     my $contrib_query = +{
-        query => {
-            terms => {
-                pauseid =>
-                    [ map { $_->{pauseid} ? $_->{pauseid} : () } @contribs ]
-            }
+        terms => {
+            pauseid =>
+                [ map { $_->{pauseid} ? $_->{pauseid} : () } @contribs ]
         }
     };
 
@@ -256,7 +252,7 @@ sub get_files {
 sub get_checksums {
     my ( $self, $release ) = @_;
 
-    my $query = +{ query => { term => { name => $release } } };
+    my $query = { term => { name => $release } };
 
     my $ret = $self->es->search(
         index => $self->index_name,
@@ -386,17 +382,15 @@ sub by_author_and_names {
                 should => [
                     map {
                         +{
-                            query => {
-                                bool => {
-                                    must => [
-                                        {
-                                            term => {
-                                                author => uc( $_->{author} )
-                                            }
-                                        },
-                                        { term => { 'name' => $_->{name} } },
-                                    ]
-                                }
+                            bool => {
+                                must => [
+                                    {
+                                        term => {
+                                            author => uc( $_->{author} )
+                                        }
+                                    },
+                                    { term => { 'name' => $_->{name} } },
+                                ]
                             }
                         }
                     } @$releases
