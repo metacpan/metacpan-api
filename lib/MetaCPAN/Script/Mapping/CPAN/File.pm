@@ -206,12 +206,15 @@ sub mapping {
           },
           "pod" : {
             "type" : "string",
-            "index" : "no",
+            "index" : "analyzed",
+            "analyzer" : "standard",
+            "doc_values" : false,
             "fields" : {
               "analyzed" : {
                 "type" : "string",
                 "index" : "analyzed",
-                "analyzer" : "standard"
+                "analyzer" : "standard",
+                "doc_values" : false
               }
             }
           },
