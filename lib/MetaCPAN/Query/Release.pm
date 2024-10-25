@@ -1120,13 +1120,13 @@ sub find_download_url {
     my $query;
 
     if ($dev) {
-        $query = { filtered => { filter => $filter } };
+        $query = $filter;
     }
     else {
         # if not dev, then prefer latest > cpan > backpan
         $query = {
             function_score => {
-                filter     => $filter,
+                query      => $filter,
                 score_mode => 'first',
                 boost_mode => 'replace',
                 functions  => [
