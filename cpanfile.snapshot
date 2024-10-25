@@ -5041,6 +5041,12 @@ DISTRIBUTIONS
       perl 5.006002
       strict 0
       warnings 0
+  Net-IP-1.26
+    pathname: M/MA/MANU/Net-IP-1.26.tar.gz
+    provides:
+      Net::IP 1.26
+    requirements:
+      ExtUtils::MakeMaker 0
   Net-OAuth-0.28
     pathname: K/KG/KGRENNAN/Net-OAuth-0.28.tar.gz
     provides:
@@ -6324,65 +6330,87 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Test::More 0
       perl 5.006001
-  Search-Elasticsearch-2.03
-    pathname: D/DR/DRTECH/Search-Elasticsearch-2.03.tar.gz
+  Search-Elasticsearch-8.12
+    pathname: E/EZ/EZIMUEL/Search-Elasticsearch-8.12.tar.gz
     provides:
-      Search::Elasticsearch 2.03
-      Search::Elasticsearch::Bulk 2.03
-      Search::Elasticsearch::Client::0_90::Direct 2.03
-      Search::Elasticsearch::Client::0_90::Direct::Cluster 2.03
-      Search::Elasticsearch::Client::0_90::Direct::Indices 2.03
-      Search::Elasticsearch::Client::1_0::Direct 2.03
-      Search::Elasticsearch::Client::1_0::Direct::Cat 2.03
-      Search::Elasticsearch::Client::1_0::Direct::Cluster 2.03
-      Search::Elasticsearch::Client::1_0::Direct::Indices 2.03
-      Search::Elasticsearch::Client::1_0::Direct::Nodes 2.03
-      Search::Elasticsearch::Client::1_0::Direct::Snapshot 2.03
-      Search::Elasticsearch::Client::2_0::Direct 2.03
-      Search::Elasticsearch::Client::2_0::Direct::Cat 2.03
-      Search::Elasticsearch::Client::2_0::Direct::Cluster 2.03
-      Search::Elasticsearch::Client::2_0::Direct::Indices 2.03
-      Search::Elasticsearch::Client::2_0::Direct::Nodes 2.03
-      Search::Elasticsearch::Client::2_0::Direct::Snapshot 2.03
-      Search::Elasticsearch::Client::2_0::Direct::Tasks 2.03
-      Search::Elasticsearch::Cxn::Factory 2.03
-      Search::Elasticsearch::Cxn::HTTPTiny 2.03
-      Search::Elasticsearch::Cxn::Hijk 2.03
-      Search::Elasticsearch::Cxn::LWP 2.03
-      Search::Elasticsearch::CxnPool::Sniff 2.03
-      Search::Elasticsearch::CxnPool::Static 2.03
-      Search::Elasticsearch::CxnPool::Static::NoPing 2.03
-      Search::Elasticsearch::Error 2.03
-      Search::Elasticsearch::Logger::LogAny 2.03
-      Search::Elasticsearch::Role::API::0_90 2.03
-      Search::Elasticsearch::Role::API::1_0 2.03
-      Search::Elasticsearch::Role::API::2_0 2.03
-      Search::Elasticsearch::Role::Bulk 2.03
-      Search::Elasticsearch::Role::Client 2.03
-      Search::Elasticsearch::Role::Client::Direct 2.03
-      Search::Elasticsearch::Role::Client::Direct::Main 2.03
-      Search::Elasticsearch::Role::Cxn 2.03
-      Search::Elasticsearch::Role::Cxn::HTTP 2.03
-      Search::Elasticsearch::Role::CxnPool 2.03
-      Search::Elasticsearch::Role::CxnPool::Sniff 2.03
-      Search::Elasticsearch::Role::CxnPool::Static 2.03
-      Search::Elasticsearch::Role::CxnPool::Static::NoPing 2.03
-      Search::Elasticsearch::Role::Is_Sync 2.03
-      Search::Elasticsearch::Role::Logger 2.03
-      Search::Elasticsearch::Role::Scroll 2.03
-      Search::Elasticsearch::Role::Serializer 2.03
-      Search::Elasticsearch::Role::Serializer::JSON 2.03
-      Search::Elasticsearch::Role::Transport 2.03
-      Search::Elasticsearch::Scroll 2.03
-      Search::Elasticsearch::Serializer::JSON 2.03
-      Search::Elasticsearch::Serializer::JSON::Cpanel 2.03
-      Search::Elasticsearch::Serializer::JSON::PP 2.03
-      Search::Elasticsearch::Serializer::JSON::XS 2.03
-      Search::Elasticsearch::TestServer 2.03
-      Search::Elasticsearch::Transport 2.03
-      Search::Elasticsearch::Util 2.03
-      Search::Elasticsearch::Util::API::Path 2.03
-      Search::Elasticsearch::Util::API::QS 2.03
+      Search::Elasticsearch 8.12
+      Search::Elasticsearch::Client::8_0 8.12
+      Search::Elasticsearch::Client::8_0::Bulk 8.12
+      Search::Elasticsearch::Client::8_0::Direct 8.12
+      Search::Elasticsearch::Client::8_0::Direct::Autoscaling 8.12
+      Search::Elasticsearch::Client::8_0::Direct::CCR 8.12
+      Search::Elasticsearch::Client::8_0::Direct::Cat 8.12
+      Search::Elasticsearch::Client::8_0::Direct::Cluster 8.12
+      Search::Elasticsearch::Client::8_0::Direct::Connector 8.12
+      Search::Elasticsearch::Client::8_0::Direct::ConnectorSyncJob 8.12
+      Search::Elasticsearch::Client::8_0::Direct::DanglingIndices 8.12
+      Search::Elasticsearch::Client::8_0::Direct::Enrich 8.12
+      Search::Elasticsearch::Client::8_0::Direct::Eql 8.12
+      Search::Elasticsearch::Client::8_0::Direct::Esql 8.12
+      Search::Elasticsearch::Client::8_0::Direct::Features 8.12
+      Search::Elasticsearch::Client::8_0::Direct::Fleet 8.12
+      Search::Elasticsearch::Client::8_0::Direct::Graph 8.12
+      Search::Elasticsearch::Client::8_0::Direct::ILM 8.12
+      Search::Elasticsearch::Client::8_0::Direct::Indices 8.12
+      Search::Elasticsearch::Client::8_0::Direct::Inference 8.12
+      Search::Elasticsearch::Client::8_0::Direct::Ingest 8.12
+      Search::Elasticsearch::Client::8_0::Direct::License 8.12
+      Search::Elasticsearch::Client::8_0::Direct::Logstash 8.12
+      Search::Elasticsearch::Client::8_0::Direct::ML 8.12
+      Search::Elasticsearch::Client::8_0::Direct::Migration 8.12
+      Search::Elasticsearch::Client::8_0::Direct::Monitoring 8.12
+      Search::Elasticsearch::Client::8_0::Direct::Nodes 8.12
+      Search::Elasticsearch::Client::8_0::Direct::Profiling 8.12
+      Search::Elasticsearch::Client::8_0::Direct::QueryRuleset 8.12
+      Search::Elasticsearch::Client::8_0::Direct::Rollup 8.12
+      Search::Elasticsearch::Client::8_0::Direct::SQL 8.12
+      Search::Elasticsearch::Client::8_0::Direct::SSL 8.12
+      Search::Elasticsearch::Client::8_0::Direct::SearchApplication 8.12
+      Search::Elasticsearch::Client::8_0::Direct::SearchableSnapshots 8.12
+      Search::Elasticsearch::Client::8_0::Direct::Security 8.12
+      Search::Elasticsearch::Client::8_0::Direct::Shutdown 8.12
+      Search::Elasticsearch::Client::8_0::Direct::Simulate 8.12
+      Search::Elasticsearch::Client::8_0::Direct::Slm 8.12
+      Search::Elasticsearch::Client::8_0::Direct::Snapshot 8.12
+      Search::Elasticsearch::Client::8_0::Direct::Synonyms 8.12
+      Search::Elasticsearch::Client::8_0::Direct::Tasks 8.12
+      Search::Elasticsearch::Client::8_0::Direct::TextStructure 8.12
+      Search::Elasticsearch::Client::8_0::Direct::Transform 8.12
+      Search::Elasticsearch::Client::8_0::Direct::Watcher 8.12
+      Search::Elasticsearch::Client::8_0::Direct::XPack 8.12
+      Search::Elasticsearch::Client::8_0::Role::API 8.12
+      Search::Elasticsearch::Client::8_0::Role::Bulk 8.12
+      Search::Elasticsearch::Client::8_0::Role::Scroll 8.12
+      Search::Elasticsearch::Client::8_0::Scroll 8.12
+      Search::Elasticsearch::Client::8_0::TestServer 8.12
+      Search::Elasticsearch::Cxn::Factory 8.12
+      Search::Elasticsearch::Cxn::HTTPTiny 8.12
+      Search::Elasticsearch::Cxn::LWP 8.12
+      Search::Elasticsearch::CxnPool::Sniff 8.12
+      Search::Elasticsearch::CxnPool::Static 8.12
+      Search::Elasticsearch::CxnPool::Static::NoPing 8.12
+      Search::Elasticsearch::Error 8.12
+      Search::Elasticsearch::Logger::LogAny 8.12
+      Search::Elasticsearch::Role::API 8.12
+      Search::Elasticsearch::Role::Client 8.12
+      Search::Elasticsearch::Role::Client::Direct 8.12
+      Search::Elasticsearch::Role::Cxn 8.12
+      Search::Elasticsearch::Role::CxnPool 8.12
+      Search::Elasticsearch::Role::CxnPool::Sniff 8.12
+      Search::Elasticsearch::Role::CxnPool::Static 8.12
+      Search::Elasticsearch::Role::CxnPool::Static::NoPing 8.12
+      Search::Elasticsearch::Role::Is_Sync 8.12
+      Search::Elasticsearch::Role::Logger 8.12
+      Search::Elasticsearch::Role::Serializer 8.12
+      Search::Elasticsearch::Role::Serializer::JSON 8.12
+      Search::Elasticsearch::Role::Transport 8.12
+      Search::Elasticsearch::Serializer::JSON 8.12
+      Search::Elasticsearch::Serializer::JSON::Cpanel 8.12
+      Search::Elasticsearch::Serializer::JSON::PP 8.12
+      Search::Elasticsearch::Serializer::JSON::XS 8.12
+      Search::Elasticsearch::TestServer 8.12
+      Search::Elasticsearch::Transport 8.12
+      Search::Elasticsearch::Util 8.12
     requirements:
       Any::URI::Escape 0
       Data::Dumper 0
@@ -6392,9 +6420,12 @@ DISTRIBUTIONS
       File::Temp 0
       HTTP::Headers 0
       HTTP::Request 0
-      HTTP::Tiny 0.043
+      HTTP::Tiny 0.076
+      IO::Compress::Deflate 0
+      IO::Compress::Gzip 0
       IO::Select 0
       IO::Socket 0
+      IO::Uncompress::Gunzip 0
       IO::Uncompress::Inflate 0
       JSON::MaybeXS 1.002002
       JSON::PP 0
@@ -6404,8 +6435,9 @@ DISTRIBUTIONS
       Log::Any::Adapter 0
       MIME::Base64 0
       Module::Runtime 0
-      Moo 1.003
+      Moo 2.001000
       Moo::Role 0
+      Net::IP 0
       POSIX 0
       Package::Stash 0.34
       Scalar::Util 0
@@ -6415,6 +6447,37 @@ DISTRIBUTIONS
       URI 0
       namespace::clean 0
       overload 0
+      strict 0
+      warnings 0
+  Search-Elasticsearch-Client-2_0-6.81
+    pathname: E/EZ/EZIMUEL/Search-Elasticsearch-Client-2_0-6.81.tar.gz
+    provides:
+      Search::Elasticsearch::Client::2_0 6.81
+      Search::Elasticsearch::Client::2_0::Bulk 6.81
+      Search::Elasticsearch::Client::2_0::Direct 6.81
+      Search::Elasticsearch::Client::2_0::Direct::Cat 6.81
+      Search::Elasticsearch::Client::2_0::Direct::Cluster 6.81
+      Search::Elasticsearch::Client::2_0::Direct::Indices 6.81
+      Search::Elasticsearch::Client::2_0::Direct::Nodes 6.81
+      Search::Elasticsearch::Client::2_0::Direct::Snapshot 6.81
+      Search::Elasticsearch::Client::2_0::Direct::Tasks 6.81
+      Search::Elasticsearch::Client::2_0::Role::API 6.81
+      Search::Elasticsearch::Client::2_0::Role::Bulk 6.81
+      Search::Elasticsearch::Client::2_0::Role::Scroll 6.81
+      Search::Elasticsearch::Client::2_0::Scroll 6.81
+      Search::Elasticsearch::Client::2_0::TestServer 6.81
+    requirements:
+      Devel::GlobalDestruction 0
+      ExtUtils::MakeMaker 0
+      Moo 0
+      Moo::Role 0
+      Search::Elasticsearch 6.00
+      Search::Elasticsearch::Role::API 0
+      Search::Elasticsearch::Role::Client::Direct 0
+      Search::Elasticsearch::Role::Is_Sync 0
+      Search::Elasticsearch::Util 0
+      Try::Tiny 0
+      namespace::clean 0
       strict 0
       warnings 0
   Sereal-Decoder-5.004

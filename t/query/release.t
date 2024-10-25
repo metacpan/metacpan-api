@@ -7,9 +7,10 @@ use MetaCPAN::Query::Release ();
 use MetaCPAN::Server::Test   ();
 use Test::More;
 
-my $query
-    = MetaCPAN::Query::Release->new(
-    es => MetaCPAN::Server::Test::model->es() );
+my $query = MetaCPAN::Query::Release->new(
+    es         => MetaCPAN::Server::Test::model->es(),
+    index_name => 'cpan',
+);
 
 is( $query->_get_latest_release('DoesNotExist'),
     undef, '_get_latest_release returns undef when release does not exist' );
