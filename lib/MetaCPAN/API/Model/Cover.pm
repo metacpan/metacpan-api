@@ -2,6 +2,8 @@ package MetaCPAN::API::Model::Cover;
 
 use MetaCPAN::Moose;
 
+use MetaCPAN::Util qw(hit_total);
+
 with 'MetaCPAN::API::Model::Role::ES';
 
 sub find_release_coverage {
@@ -17,7 +19,7 @@ sub find_release_coverage {
             size  => 999,
         }
     );
-    $res->{hits}{total} or return {};
+    hit_total($res) or return {};
 
     return +{
         %{ $res->{hits}{hits}[0]{_source} },

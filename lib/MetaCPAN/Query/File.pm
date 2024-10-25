@@ -2,7 +2,7 @@ package MetaCPAN::Query::File;
 
 use MetaCPAN::Moose;
 
-use MetaCPAN::Util qw( single_valued_arrayref_to_scalar true false );
+use MetaCPAN::Util qw( hit_total true false );
 
 with 'MetaCPAN::Query::Role::Common';
 
@@ -24,8 +24,8 @@ sub dir {
                 ]
             },
         },
-        size   => 999,
-        fields => [
+        size    => 999,
+        _source => [
             qw(name stat.mtime path stat.size directory slop documentation mime)
         ],
     };
@@ -36,8 +36,7 @@ sub dir {
         body  => $body,
     } );
 
-    my $dir = [ map { $_->{fields} } @{ $data->{hits}{hits} } ];
-    single_valued_arrayref_to_scalar($dir);
+    my $dir = [ map { $_->{_source} } @{ $data->{hits}{hits} } ];
 
     return { dir => $dir };
 }
@@ -259,7 +258,7 @@ sub interesting_files {
     return $return
         unless @clauses;
 
-    my $source = $options->{fields} || [ qw(
+    $options->{_source} //= [ qw(
         author
         distribution
         documentation
@@ -269,6 +268,7 @@ sub interesting_files {
         release
         status
     ) ];
+    $options->{size} //= 250;
 
     my $body = {
         query => {
@@ -291,9 +291,7 @@ sub interesting_files {
                 ],
             },
         },
-        _source => $source,
-
-        size => $options->{size} || 250,
+        %$options,
     };
 
     my $data = $self->es->search( {
@@ -303,7 +301,7 @@ sub interesting_files {
     } );
 
     $return->{took}  = $data->{took};
-    $return->{total} = $data->{hits}{total};
+    $return->{total} = hit_total($data);
 
     return $return
         unless $return->{total};

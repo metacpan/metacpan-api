@@ -6,7 +6,7 @@ use namespace::autoclean;
 use Cpanel::JSON::XS          qw( decode_json );
 use Log::Contextual           qw( :log :dlog );
 use MetaCPAN::Types::TypeTiny qw( Bool Str Uri );
-use MetaCPAN::Util            qw( numify_version );
+use MetaCPAN::Util            qw( hit_total numify_version true false );
 use Path::Tiny                qw( path );
 use Ref::Util                 qw( is_arrayref );
 
@@ -158,33 +158,34 @@ sub index_cve_data {
             }
 
             if (@filters) {
-                my $query = {
-                    query => {
-                        bool => {
-                            must => [
-                                { term => { distribution => $dist } },
-                                @filters,
-                            ]
-                        }
-                    },
-                };
+                my $query = {};
 
                 my $releases = $self->es->search(
-                    index  => 'cpan',
-                    type   => 'release',
-                    body   => $query,
-                    fields => [ "version", "name", "author", ],
-                    size   => 2000,
+                    index => 'cpan',
+                    type  => 'release',
+                    body  => {
+                        query => {
+                            bool => {
+                                must => [
+                                    { term => { distribution => $dist } },
+                                    @filters,
+                                ]
+                            }
+                        },
+                        _source => [ "version", "name", "author", ],
+                        size    => 2000,
+                    },
                 );
 
-                if ( $releases->{hits}{total} ) {
+                if ( hit_total($releases) ) {
                     ## no critic (ControlStructures::ProhibitMutatingListFunctions)
                     @matches = map { $_->[0] }
                         sort { $a->[1] <=> $b->[1] }
                         map {
-                        my %fields = %{ $_->{fields} };
-                        ref $_ and $_ = $_->[0] for values %fields;
-                        [ \%fields, numify_version( $fields{version} ) ];
+                        [
+                            $_->{_source},
+                            numify_version( $_->{_source}{version} )
+                        ];
                         } @{ $releases->{hits}{hits} };
                 }
                 else {
@@ -215,7 +216,7 @@ sub index_cve_data {
             $bulk->update( {
                 id            => $cpansa->{cpansa_id},
                 doc           => $doc_data,
-                doc_as_upsert => 1,
+                doc_as_upsert => true,
             } );
         }
     }

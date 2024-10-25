@@ -8,13 +8,11 @@ sub get_modules {
     my ( $self, $dist, $ver ) = @_;
 
     my $query = +{
-        query => {
-            bool => {
-                must => [
-                    { term => { distribution => $dist } },
-                    { term => { dist_version => $ver } },
-                ],
-            }
+        bool => {
+            must => [
+                { term => { distribution => $dist } },
+                { term => { dist_version => $ver } },
+            ],
         }
     };
 

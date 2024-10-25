@@ -282,7 +282,7 @@ sub update_author {
     $bulk->update( {
         id            => $pauseid,
         doc           => $data,
-        doc_as_upsert => 1,
+        doc_as_upsert => true,
     } );
 
     $self->purge_author_key($pauseid);

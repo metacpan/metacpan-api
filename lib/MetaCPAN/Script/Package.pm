@@ -6,6 +6,7 @@ use CPAN::DistnameInfo        ();
 use IO::Uncompress::Gunzip    ();
 use Log::Contextual           qw( :log );
 use MetaCPAN::Types::TypeTiny qw( Bool );
+use MetaCPAN::Util            qw( true false );
 
 with 'MooseX::Getopt', 'MetaCPAN::Role::Script';
 
@@ -79,7 +80,7 @@ sub index_packages {
         $bulk->update( {
             id            => $name,
             doc           => $doc,
-            doc_as_upsert => 1,
+            doc_as_upsert => true,
         } );
 
         $seen{$name} = 1;

@@ -9,6 +9,7 @@ use DateTime                  ();
 use IO::Zlib                  ();
 use Log::Contextual           qw( :log :dlog );
 use MetaCPAN::Types::TypeTiny qw( Bool Int Path Str CommaSepOption );
+use MetaCPAN::Util            qw( true false );
 use Moose;
 use Try::Tiny qw( catch try );
 
@@ -87,11 +88,11 @@ sub run {
         my $scroll = $es->scroll_helper(
             index => $index,
             $self->type ? ( type => $self->type ) : (),
-            size   => $self->size,
-            fields => [qw(_parent _source)],
             scroll => '1m',
             body   => {
-                sort => '_doc',
+                _source => true,
+                size    => $self->size,
+                sort    => '_doc',
             },
         );
 
@@ -143,7 +144,7 @@ sub run_restore {
         # Fetch relevant bulk helper
         my $bulk = $bulk_store{$bulk_key};
 
-        my $parent = $raw->{fields}->{_parent};
+        my $parent = $raw->{_parent};
 
         if ( $raw->{_type} eq 'author' ) {
 
@@ -176,7 +177,7 @@ sub run_restore {
             $bulk->update( {
                 id            => $raw->{_id},
                 doc           => $raw->{_source},
-                doc_as_upsert => 1,
+                doc_as_upsert => true,
             } );
 
         }

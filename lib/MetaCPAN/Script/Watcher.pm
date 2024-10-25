@@ -8,7 +8,7 @@ use CPAN::DistnameInfo        ();
 use Cpanel::JSON::XS          qw( decode_json );
 use Log::Contextual           qw( :log );
 use MetaCPAN::Types::TypeTiny qw( Bool );
-use MetaCPAN::Util;
+use MetaCPAN::Util            qw( true false );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
@@ -95,23 +95,23 @@ sub changes {
 sub backpan_changes {
     my $self   = shift;
     my $scroll = $self->es->scroll_helper( {
-        size   => 1000,
         scroll => '1m',
         index  => $self->index->name,
         type   => 'release',
-        fields => [qw(author archive)],
         body   => {
             query => {
                 bool => {
                     must_not => [ { term => { status => 'backpan' } }, ],
                 },
             },
-            sort => '_doc',
+            size    => 1000,
+            _source => [qw(author archive)],
+            sort    => '_doc',
         }
     } );
     my @changes;
     while ( my $release = $scroll->next ) {
-        my $data = $release->{fields};
+        my $data = $release->{_source};
         my $path
             = $self->cpan->child( 'authors',
             MetaCPAN::Util::author_dir( $data->{author} ),
@@ -173,8 +173,6 @@ sub reindex_release {
         index  => $self->index->name,
         type   => 'file',
         scroll => '1m',
-        size   => 1000,
-        fields => [ '_parent', '_source' ],
         body   => {
             query => {
                 bool => {
@@ -192,7 +190,9 @@ sub reindex_release {
                     ],
                 },
             },
-            sort => '_doc',
+            size    => 1000,
+            _source => true,
+            sort    => '_doc',
         },
     } );
     return if ( $self->dry_run );
@@ -210,11 +210,7 @@ sub reindex_release {
         $bulk_helper{file}->index( {
             id     => $row->{_id},
             source => {
-                $row->{fields}->{_parent}
-                ? ( parent => $row->{fields}->{_parent} )
-                : (),
-                %$source,
-                status => 'backpan',
+                %$source, status => 'backpan',
             }
         } );
     }

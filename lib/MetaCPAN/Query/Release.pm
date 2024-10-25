@@ -2,7 +2,8 @@ package MetaCPAN::Query::Release;
 
 use MetaCPAN::Moose;
 
-use MetaCPAN::Util qw( single_valued_arrayref_to_scalar true false );
+use MetaCPAN::Util
+    qw( hit_total single_valued_arrayref_to_scalar true false );
 
 with 'MetaCPAN::Query::Role::Common';
 
@@ -63,14 +64,12 @@ sub get_contributors {
     my ( $self, $author_name, $release_name ) = @_;
 
     my $query = +{
-        query => {
-            bool => {
-                must => [
-                    { term => { name   => $release_name } },
-                    { term => { author => $author_name } },
-                ],
-            },
-        }
+        bool => {
+            must => [
+                { term => { name   => $release_name } },
+                { term => { author => $author_name } },
+            ],
+        },
     };
 
     my $res = $self->es->search(
@@ -186,7 +185,7 @@ sub get_contributors {
                     }
                 );
 
-                if ( $check_author->{hits}{total} ) {
+                if ( hit_total($check_author) ) {
                     $contrib->{pauseid}
                         = uc $check_author->{hits}{hits}[0]{_source}{pauseid};
                 }
@@ -195,11 +194,9 @@ sub get_contributors {
     }
 
     my $contrib_query = +{
-        query => {
-            terms => {
-                pauseid =>
-                    [ map { $_->{pauseid} ? $_->{pauseid} : () } @contribs ]
-            }
+        terms => {
+            pauseid =>
+                [ map { $_->{pauseid} ? $_->{pauseid} : () } @contribs ]
         }
     };
 
@@ -256,7 +253,7 @@ sub get_files {
 sub get_checksums {
     my ( $self, $release ) = @_;
 
-    my $query = +{ query => { term => { name => $release } } };
+    my $query = { term => { name => $release } };
 
     my $ret = $self->es->search(
         index => $self->index_name,
@@ -365,12 +362,11 @@ sub by_author_and_name {
     );
 
     my $data = $ret->{hits}{hits}[0]{_source};
-    single_valued_arrayref_to_scalar($data);
 
     return {
         took    => $ret->{took},
         release => $data,
-        total   => $ret->{hits}{total}
+        total   => hit_total($ret),
     };
 }
 
@@ -386,17 +382,15 @@ sub by_author_and_names {
                 should => [
                     map {
                         +{
-                            query => {
-                                bool => {
-                                    must => [
-                                        {
-                                            term => {
-                                                author => uc( $_->{author} )
-                                            }
-                                        },
-                                        { term => { 'name' => $_->{name} } },
-                                    ]
-                                }
+                            bool => {
+                                must => [
+                                    {
+                                        term => {
+                                            author => uc( $_->{author} )
+                                        }
+                                    },
+                                    { term => { 'name' => $_->{name} } },
+                                ]
                             }
                         }
                     } @$releases
@@ -414,13 +408,12 @@ sub by_author_and_names {
     my @releases;
     for my $hit ( @{ $ret->{hits}{hits} } ) {
         my $src = $hit->{_source};
-        single_valued_arrayref_to_scalar($src);
         push @releases, $src;
     }
 
     return {
         took     => $ret->{took},
-        total    => $ret->{hits}{total},
+        total    => hit_total($ret),
         releases => \@releases,
     };
 }
@@ -455,11 +448,10 @@ sub by_author {
     );
 
     my $data = [ map { $_->{_source} } @{ $ret->{hits}{hits} } ];
-    single_valued_arrayref_to_scalar($data);
 
     return {
         releases => $data,
-        total    => $ret->{hits}{total},
+        total    => hit_total($ret),
         took     => $ret->{took}
     };
 }
@@ -491,12 +483,11 @@ sub latest_by_distribution {
     );
 
     my $data = $ret->{hits}{hits}[0]{_source};
-    single_valued_arrayref_to_scalar($data);
 
     return {
         release => $data,
         took    => $ret->{took},
-        total   => $ret->{hits}{total}
+        total   => hit_total($ret),
     };
 }
 
@@ -514,7 +505,7 @@ sub latest_by_author {
         },
         sort =>
             [ 'distribution', { 'version_numified' => { reverse => 1 } } ],
-        fields => [
+        _source => [
             qw(author distribution name status abstract date download_url version authorized maturity)
         ],
         size => 1000,
@@ -526,8 +517,7 @@ sub latest_by_author {
         body  => $body,
     );
 
-    my $data = [ map { $_->{fields} } @{ $ret->{hits}{hits} } ];
-    single_valued_arrayref_to_scalar($data);
+    my $data = [ map { $_->{_source} } @{ $ret->{hits}{hits} } ];
 
     return { took => $ret->{took}, releases => $data };
 }
@@ -538,9 +528,9 @@ sub all_by_author {
     $page //= 1;
 
     my $body = {
-        query  => { term => { author => uc($author) } },
-        sort   => [ { date => 'desc' } ],
-        fields => [
+        query   => { term => { author => uc($author) } },
+        sort    => [ { date => 'desc' } ],
+        _source => [
             qw(author distribution name status abstract date download_url version authorized maturity)
         ],
         size => $size,
@@ -552,13 +542,12 @@ sub all_by_author {
         body  => $body,
     );
 
-    my $data = [ map { $_->{fields} } @{ $ret->{hits}{hits} } ];
-    single_valued_arrayref_to_scalar($data);
+    my $data = [ map { $_->{_source} } @{ $ret->{hits}{hits} } ];
 
     return {
         took     => $ret->{took},
         releases => $data,
-        total    => $ret->{hits}{total}
+        total    => hit_total($ret),
     };
 }
 
@@ -611,10 +600,10 @@ sub versions {
     }
 
     my $body = {
-        query  => $query,
-        size   => $size,
-        sort   => [ { date => 'desc' } ],
-        fields => [
+        query   => $query,
+        size    => $size,
+        sort    => [ { date => 'desc' } ],
+        _source => [
             qw( name date author version status maturity authorized download_url)
         ],
     };
@@ -625,12 +614,11 @@ sub versions {
         body  => $body,
     );
 
-    my $data = [ map { $_->{fields} } @{ $ret->{hits}{hits} } ];
-    single_valued_arrayref_to_scalar($data);
+    my $data = [ map { $_->{_source} } @{ $ret->{hits}{hits} } ];
 
     return {
         releases => $data,
-        total    => $ret->{hits}{total},
+        total    => hit_total($ret),
         took     => $ret->{took}
     };
 }
@@ -716,12 +704,11 @@ sub _get_latest_release {
                     ]
                 },
             },
-            fields => [qw< name author >],
+            _source => [qw< name author >],
         },
     );
 
-    my ($release_info) = map { $_->{fields} } @{ $release->{hits}{hits} };
-    single_valued_arrayref_to_scalar($release_info);
+    my ($release_info) = map { $_->{_source} } @{ $release->{hits}{hits} };
 
     return $release_info->{name} && $release_info->{author}
         ? +{
@@ -826,7 +813,7 @@ sub _get_depended_releases {
 
     return +{
         data  => [ map { $_->{_source} } @{ $depended->{hits}{hits} } ],
-        total => $depended->{hits}{total},
+        total => hit_total($depended),
         took  => $depended->{took},
     };
 }
@@ -876,10 +863,10 @@ sub recent {
     }
 
     my $body = {
-        size   => $page_size,
-        from   => $from,
-        query  => $query,
-        fields =>
+        size    => $page_size,
+        from    => $from,
+        query   => $query,
+        _source =>
             [qw(name author status abstract date distribution maturity)],
         sort => [ { 'date' => { order => 'desc' } } ]
     };
@@ -890,12 +877,11 @@ sub recent {
         body  => $body,
     );
 
-    my $data = [ map { $_->{fields} } @{ $ret->{hits}{hits} } ];
-    single_valued_arrayref_to_scalar($data);
+    my $data = [ map { $_->{_source} } @{ $ret->{hits}{hits} } ];
 
     return {
         releases => $data,
-        total    => $ret->{hits}{total},
+        total    => hit_total($ret),
         took     => $ret->{took}
     };
 }
@@ -959,9 +945,9 @@ sub modules {
         # Sort by documentation name; if there isn't one, sort by path.
         sort => [ 'documentation', 'path' ],
 
-        _source => [ "module", "abstract" ],
-
-        fields => [ qw(
+        _source => [ qw(
+            module
+            abstract
             author
             authorized
             distribution
@@ -980,15 +966,11 @@ sub modules {
         body  => $body,
     );
 
-    my @files = map +{
-        %{ ( single_valued_arrayref_to_scalar( $_->{fields} ) )[0] },
-        %{ $_->{_source} }
-        },
-        @{ $ret->{hits}{hits} };
+    my @files = map $_->{_source}, @{ $ret->{hits}{hits} };
 
     return {
         files => \@files,
-        total => $ret->{hits}{total},
+        total => hit_total($ret),
         took  => $ret->{took}
     };
 }
@@ -1044,7 +1026,9 @@ sub find_download_url {
     my $module_filter = $type eq 'module';
 
     if ( !$explicit_version ) {
-        push @filters, { not => { term => { status => 'backpan' } } };
+        push @filters,
+            { bool => { must_not => [ { term => { status => 'backpan' } } ] }
+            };
         if ( !$dev ) {
             push @filters, { term => { maturity => 'released' } };
         }
@@ -1086,9 +1070,8 @@ sub find_download_url {
         push @filters,
             {
             nested => {
-                path       => 'module',
-                inner_hits => { _source => 'version' },
-                filter     => $entity_filter,
+                path  => 'module',
+                query => $entity_filter,
             }
             };
     }
@@ -1124,13 +1107,13 @@ sub find_download_url {
     my $query;
 
     if ($dev) {
-        $query = { filtered => { filter => $filter } };
+        $query = $filter;
     }
     else {
         # if not dev, then prefer latest > cpan > backpan
         $query = {
             function_score => {
-                filter     => $filter,
+                query      => $filter,
                 score_mode => 'first',
                 boost_mode => 'replace',
                 functions  => [
@@ -1171,7 +1154,7 @@ sub find_download_url {
         search_type => 'dfs_query_then_fetch',
     );
 
-    return unless $res->{hits}{total};
+    return unless hit_total($res);
 
     my @checksums;
 

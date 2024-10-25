@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Moose;
-use ElasticSearchX::Model::Document::Types qw( Location );
+use MooseX::Types::ElasticSearch qw( Location );
 use ElasticSearchX::Model::Document;
 
 use MetaCPAN::Types::TypeTiny qw( Dict Str );

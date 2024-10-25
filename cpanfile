@@ -124,6 +124,7 @@ requires 'Safe', '2.35'; # bug fixes (used by Parse::PMFile)
 requires 'Scalar::Util', '1.62'; # Moose
 requires 'Search::Elasticsearch' => '8.12';
 requires 'Search::Elasticsearch::Client::2_0' => '6.81';
+requires 'Search::Elasticsearch::Client::5_0' => '6.81';
 requires 'Term::Choose', '1.754'; # Git::Helpers
 requires 'Throwable::Error';
 requires 'Term::Size::Any'; # for Catalyst

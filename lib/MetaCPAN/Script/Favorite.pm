@@ -5,6 +5,7 @@ use Moose;
 use Log::Contextual qw( :log );
 
 use MetaCPAN::Types::TypeTiny qw( Bool Int Str );
+use MetaCPAN::Util            qw( true false );
 
 with 'MooseX::Getopt', 'MetaCPAN::Role::Script';
 
@@ -94,19 +95,18 @@ sub index_favorites {
             index  => $self->index->name,
             type   => 'favorite',
             scroll => '5m',
-            fields => [qw< distribution >],
-            size   => 500,
             body   => {
-                query => $age_filter,
-                ( $self->limit ? ( size => $self->limit ) : () ),
-                sort => '_doc',
+                query   => $age_filter,
+                _source => [qw< distribution >],
+                size    => $self->limit || 500,
+                sort    => '_doc',
             }
         );
 
         my %recent_dists;
 
         while ( my $fav = $favs->next ) {
-            my $dist = $fav->{fields}{distribution}[0];
+            my $dist = $fav->{_source}{distribution};
             $recent_dists{$dist}++ if $dist;
         }
 
@@ -128,16 +128,16 @@ sub index_favorites {
             index  => $self->index->name,
             type   => 'favorite',
             scroll => '30s',
-            fields => [qw< distribution >],
-            size   => 500,
             body   => {
-                query => $query,
-                sort  => '_doc',
+                query   => $query,
+                _source => [qw< distribution >],
+                size    => 500,
+                sort    => '_doc',
             },
         );
 
         while ( my $fav = $favs->next ) {
-            my $dist = $fav->{fields}{distribution}[0];
+            my $dist = $fav->{_source}{distribution};
             $dist_fav_count{$dist}++ if $dist;
         }
 
@@ -157,8 +157,6 @@ sub index_favorites {
             index  => $self->index->name,
             type   => 'file',
             scroll => '15m',
-            fields => [qw< id distribution >],
-            size   => 500,
             body   => {
                 query => {
                     bool => {
@@ -168,12 +166,14 @@ sub index_favorites {
                         @age_filter,
                     }
                 },
-                sort => '_doc',
+                _source => [qw< distribution >],
+                size    => 500,
+                sort    => '_doc',
             },
         );
 
         while ( my $file = $files->next ) {
-            my $dist = $file->{fields}{distribution}[0];
+            my $dist = $file->{_source}{distribution};
             next unless $dist;
             next if exists $missing{$dist} or exists $dist_fav_count{$dist};
 
@@ -233,22 +233,22 @@ sub index_favorites {
                 index  => $self->index->name,
                 type   => 'file',
                 scroll => '15s',
-                fields => [qw< id >],
-                size   => 500,
                 body   => {
-                    query => { term => { distribution => $dist } },
-                    sort  => '_doc',
+                    query   => { term => { distribution => $dist } },
+                    _source => false,
+                    size    => 500,
+                    sort    => '_doc',
                 },
             );
 
             while ( my $file = $files->next ) {
-                my $id  = $file->{fields}{id}[0];
+                my $id  = $file->{_id};
                 my $cnt = $dist_fav_count{$dist};
 
                 log_debug {"Updating file id $id with fav_count $cnt"};
 
                 $bulk->update( {
-                    id  => $file->{fields}{id}[0],
+                    id  => $file->{_id},
                     doc => { dist_fav_count => $cnt },
                 } );
             }

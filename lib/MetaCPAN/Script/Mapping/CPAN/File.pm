@@ -206,15 +206,15 @@ sub mapping {
           },
           "pod" : {
             "type" : "string",
-            "index" : "no",
+            "index" : "analyzed",
+            "analyzer" : "standard",
+            "doc_values" : false,
             "fields" : {
               "analyzed" : {
                 "type" : "string",
-                "term_vector" : "with_positions_offsets",
-                "fielddata" : {
-                  "format" : "disabled"
-                },
-                "analyzer" : "standard"
+                "index" : "analyzed",
+                "analyzer" : "standard",
+                "doc_values" : false
               }
             }
           },
@@ -283,7 +283,6 @@ sub mapping {
           "suggest" : {
             "type" : "completion",
             "analyzer" : "simple",
-            "payloads" : true,
             "preserve_separators" : true,
             "preserve_position_increments" : true,
             "max_input_length" : 50

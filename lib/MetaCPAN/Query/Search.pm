@@ -7,7 +7,7 @@ use Hash::Merge               qw( merge );
 use List::Util                qw( min uniq );
 use Log::Contextual           qw( :log :dlog );
 use MetaCPAN::Types::TypeTiny qw( Object Str );
-use MetaCPAN::Util qw( single_valued_arrayref_to_scalar true false );
+use MetaCPAN::Util            qw( hit_total true false );
 use MooseX::StrictConstructor;
 
 with 'MetaCPAN::Query::Role::Common';
@@ -31,8 +31,7 @@ sub search_for_first_result {
     my $es_results = $self->run_query( file => $es_query );
 
     my $data = $es_results->{hits}{hits}[0];
-    single_valued_arrayref_to_scalar( $data->{fields} );
-    return $data->{fields};
+    return $data->{_source};
 }
 
 =head2 search_web
@@ -114,7 +113,7 @@ sub _search_expanded {
 
     my $return = {
         results   => $results,
-        total     => $es_results->{hits}->{total},
+        total     => hit_total($es_results),
         took      => $es_results->{took},
         collapsed => false,
     };
@@ -129,13 +128,12 @@ sub _search_collapsed {
     my $total_size = $from + $page_size;
 
     my $es_query_opts = {
-        size   => 0,
-        fields => [ qw(
+        size    => 0,
+        _source => [ qw(
         ) ],
     };
 
     my $es_query = $self->build_query( $search_term, $es_query_opts );
-    my $fields   = delete $es_query->{fields};
     my $source   = delete $es_query->{_source};
 
     $es_query->{aggregations} = {
@@ -150,15 +148,16 @@ sub _search_collapsed {
             aggregations => {
                 top_files => {
                     top_hits => {
-                        fields  => $fields,
                         _source => $source,
                         size    => $max_collapsed_hits,
                     },
                 },
                 max_score => {
                     max => {
-                        lang   => "expression",
-                        script => "_score",
+                        script => {
+                            lang   => "expression",
+                            inline => "_score",
+                        },
                     },
                 },
             },
@@ -328,9 +327,9 @@ sub build_query {
         $params,
         {
             query   => $query,
-            _source => [ "module", ],
-            fields  => [ qw(
-                abstract.analyzed
+            _source => [ qw(
+                module
+                abstract
                 author
                 authorized
                 date
@@ -350,7 +349,7 @@ sub build_query {
 
     # Ensure our requested fields are unique so that Elasticsearch doesn't
     # return us the same value multiple times in an unexpected arrayref.
-    $search->{fields} = [ uniq @{ $search->{fields} || [] } ];
+    $search->{_source} = [ uniq @{ $search->{_source} || [] } ];
 
     return $search;
 }
@@ -371,11 +370,8 @@ sub _extract_results {
     return [
         map {
             my $res = $_;
-            single_valued_arrayref_to_scalar( $res->{fields} );
             +{
-                abstract  => delete $res->{fields}->{'abstract.analyzed'},
-                favorites => delete $res->{fields}->{dist_fav_count},
-                %{ $res->{fields} },
+                favorites => delete $res->{_source}->{dist_fav_count},
                 %{ $res->{_source} },
                 score => $res->{_score},
             }

@@ -8,6 +8,7 @@ use Email::Simple         ();
 use Log::Contextual       qw( :log );
 
 use MetaCPAN::Types::TypeTiny qw( Str );
+use MetaCPAN::Util            qw( true false );
 
 with(
     'MetaCPAN::Role::Script',
@@ -103,7 +104,7 @@ sub update {
                     $external_source => $dist->{$d}
                 }
             },
-            doc_as_upsert => 1,
+            doc_as_upsert => true,
         } );
     }
 

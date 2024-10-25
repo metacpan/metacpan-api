@@ -1,6 +1,7 @@
 package MetaCPAN::Query::Mirror;
 
 use MetaCPAN::Moose;
+use MetaCPAN::Util qw( hit_total );
 
 with 'MetaCPAN::Query::Role::Common';
 
@@ -57,7 +58,7 @@ sub search {
 
     return {
         mirrors => $data,
-        total   => $ret->{hits}{total},
+        total   => hit_total($ret),
         took    => $ret->{took}
     };
 }

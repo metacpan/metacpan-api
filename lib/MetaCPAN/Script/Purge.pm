@@ -4,7 +4,7 @@ use Moose;
 
 use Log::Contextual           qw( :log );
 use MetaCPAN::Types::TypeTiny qw( Bool HashRef Str );
-use MetaCPAN::Util            qw( author_dir );
+use MetaCPAN::Util            qw( author_dir true false );
 
 with 'MooseX::Getopt', 'MetaCPAN::Role::Script';
 
@@ -55,47 +55,56 @@ sub _build_bulk {
 sub _get_scroller_release {
     my ( $self, $query ) = @_;
     return $self->es->scroll_helper(
-        size   => 500,
         scroll => '10m',
         index  => $self->index->name,
         type   => 'release',
-        body   => { query => $query },
-        fields => [qw( archive name )],
+        body   => {
+            query   => $query,
+            size    => 500,
+            _source => [qw( archive name )],
+        },
     );
 }
 
 sub _get_scroller_file {
     my ( $self, $query ) = @_;
     return $self->es->scroll_helper(
-        size   => 500,
         scroll => '10m',
         index  => $self->index->name,
         type   => 'file',
-        body   => { query => $query },
-        fields => [qw( name )],
+        body   => {
+            query   => $query,
+            size    => 500,
+            _source => [qw( name )],
+        },
     );
 }
 
 sub _get_scroller_favorite {
     my ( $self, $query ) = @_;
     return $self->es->scroll_helper(
-        size   => 500,
         scroll => '10m',
         index  => $self->index->name,
         type   => 'favorite',
-        body   => { query => $query },
+        body   => {
+            query   => $query,
+            size    => 500,
+            _source => false,
+        },
     );
 }
 
 sub _get_scroller_contributor {
     my ( $self, $query ) = @_;
     return $self->es->scroll_helper(
-        size   => 500,
         scroll => '10m',
         index  => 'contributor',
         type   => 'contributor',
-        body   => { query => $query },
-        fields => [qw( release_name )],
+        body   => {
+            query   => $query,
+            size    => 500,
+            _source => [qw( release_name )],
+        },
     );
 }
 
@@ -169,10 +178,10 @@ sub _purge_release {
     my @remove_release_archives;
 
     while ( my $r = $scroll->next ) {
-        log_debug { 'Removing release ' . $r->{fields}{name}[0] };
+        log_debug { 'Removing release ' . $r->{_source}{name} };
         push @remove_ids,              $r->{_id};
-        push @remove_release_files,    $r->{fields}{name}[0];
-        push @remove_release_archives, $r->{fields}{archive}[0];
+        push @remove_release_files,    $r->{_source}{name};
+        push @remove_release_archives, $r->{_source}{archive};
     }
 
     if (@remove_ids) {
@@ -215,10 +224,7 @@ sub _purge_files {
 
     while ( my $f = $scroll->next ) {
         log_debug {
-            'Removing file '
-                . $f->{fields}{name}[0]
-                . ' of release '
-                . $release
+            'Removing file ' . $f->{_source}{name} . ' of release ' . $release
         };
         push @remove, $f->{_id};
     }

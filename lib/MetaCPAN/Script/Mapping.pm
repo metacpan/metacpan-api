@@ -688,7 +688,24 @@ sub _compare_mapping {
                         }
                     }
                     else {    # Scalar Value
-                        if ( $deploy_value ne $model_value ) {
+                        if (
+                               $sfield eq 'type'
+                            && $model_value eq 'string'
+                            && (   $deploy_value eq 'text'
+                                || $deploy_value eq 'keyword' )
+                            )
+                        {
+                            # ES5 automatically converts string types to text
+                            # or keyword. once we upgrade to ES5 and update
+                            # our mappings, this special case can be removed.
+                        }
+                        elsif ($sfield eq 'index'
+                            && $model_value eq 'no'
+                            && $deploy_value eq 'false' )
+                        {
+                            # another ES5 string automatic conversion
+                        }
+                        elsif ( $deploy_value ne $model_value ) {
                             log_error {
                                 'Mismatch field: '
                                     . $sname . '.'
@@ -708,11 +725,24 @@ sub _compare_mapping {
                         $imatch = 0;
 
                     }
+
                     unless ( defined $rmodel->{$sfield} ) {
-                        log_error {
-                            'Missing definition: ' . $sname . '.' . $sfield
-                        };
-                        $imatch = 0;
+                        if (   $sfield eq 'payloads'
+                            && $rmodel->{type}
+                            && $rmodel->{type} eq 'completion'
+                            && !$rdeploy->{$sfield} )
+                        {
+                            # ES5 doesn't allow payloads option. we've removed
+                            # it from our mapping. but it gets a default
+                            # value. ignore the default.
+                        }
+                        else {
+                            log_error {
+                                'Missing definition: ' . $sname . '.'
+                                    . $sfield
+                            };
+                            $imatch = 0;
+                        }
                     }
                 }
             }

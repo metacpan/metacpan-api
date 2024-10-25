@@ -2,6 +2,8 @@ package MetaCPAN::Query::Distribution;
 
 use MetaCPAN::Moose;
 
+use MetaCPAN::Util qw(hit_total);
+
 with 'MetaCPAN::Query::Role::Common';
 
 sub get_river_data_by_dist {
@@ -21,7 +23,7 @@ sub get_river_data_by_dist {
             size  => 999,
         }
     );
-    $res->{hits}{total} or return {};
+    hit_total($res) or return {};
 
     return +{ river => +{ $dist => $res->{hits}{hits}[0]{_source}{river} } };
 }
@@ -43,7 +45,7 @@ sub get_river_data_by_dists {
             size  => 999,
         }
     );
-    $res->{hits}{total} or return {};
+    hit_total($res) or return {};
 
     return +{
         river => +{

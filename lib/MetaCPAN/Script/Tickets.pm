@@ -8,6 +8,7 @@ $ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0;
 
 use HTTP::Request::Common qw( GET );
 use Log::Contextual       qw( :log :dlog );
+use MetaCPAN::Util        qw( true false );
 use Net::GitHub::V4       ();
 use Ref::Util             qw( is_hashref is_ref );
 use Text::CSV_XS          ();
@@ -76,22 +77,23 @@ sub check_all_distributions {
 
     # first: make sure all distributions have an entry
     my $scroll = $self->es->scroll_helper(
-        size   => 500,
         scroll => '5m',
         index  => $self->index->name,
         type   => 'release',
-        fields => ['distribution'],
         body   => {
             query => {
-                not => { term => { status => 'backpan' } }
-            }
+                bool =>
+                    { must_not => [ { term => { status => 'backpan' } } ] }
+            },
+            size    => 500,
+            _source => ['distribution'],
         },
     );
 
     my $dists = {};
 
     while ( my $release = $scroll->next ) {
-        my $distribution = $release->{'fields'}{'distribution'}[0];
+        my $distribution = $release->{_source}{'distribution'};
         $distribution or next;
         $dists->{$distribution} = { name => $distribution };
     }
@@ -275,7 +277,7 @@ sub _bulk_update {
         $self->_bulk->update( {
             id            => $distribution,
             doc           => $summary->{$distribution},
-            doc_as_upsert => 1,
+            doc_as_upsert => true,
         } );
     }
 

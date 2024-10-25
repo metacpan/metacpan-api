@@ -2,7 +2,7 @@ package MetaCPAN::Query::Favorite;
 
 use MetaCPAN::Moose;
 
-use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
+use MetaCPAN::Util qw(hit_total);
 
 with 'MetaCPAN::Query::Role::Common';
 
@@ -72,18 +72,16 @@ sub by_user {
         index => $self->index_name,
         type  => 'favorite',
         body  => {
-            query  => { term => { user => $user } },
-            fields => [qw( author date distribution )],
-            sort   => ['distribution'],
-            size   => $size,
+            query   => { term => { user => $user } },
+            _source => [qw( author date distribution )],
+            sort    => ['distribution'],
+            size    => $size,
         }
     );
-    return {} unless $favs->{hits}{total};
+    return {} unless hit_total($favs);
     my $took = $favs->{took};
 
-    my @favs = map { $_->{fields} } @{ $favs->{hits}{hits} };
-
-    single_valued_arrayref_to_scalar( \@favs );
+    my @favs = map { $_->{_source} } @{ $favs->{hits}{hits} };
 
     # filter out backpan only distributions
 
@@ -104,14 +102,14 @@ sub by_user {
                     ]
                 }
             },
-            fields => ['distribution'],
-            size   => scalar(@favs),
+            _source => ['distribution'],
+            size    => scalar(@favs),
         }
     );
     $took += $no_backpan->{took};
 
-    if ( $no_backpan->{hits}{total} ) {
-        my %has_no_backpan = map { $_->{fields}{distribution}[0] => 1 }
+    if ( hit_total($no_backpan) ) {
+        my %has_no_backpan = map { $_->{_source}{distribution} => 1 }
             @{ $no_backpan->{hits}{hits} };
 
         @favs = grep { exists $has_no_backpan{ $_->{distribution} } } @favs;
@@ -175,7 +173,7 @@ sub recent {
     return +{
         favorites => \@favs,
         took      => $favs->{took},
-        total     => $favs->{hits}{total}
+        total     => hit_total($favs),
     };
 }
 
@@ -191,11 +189,9 @@ sub users_by_distribution {
             size    => 1000,
         }
     );
-    return {} unless $favs->{hits}{total};
+    return {} unless hit_total($favs);
 
     my @plusser_users = map { $_->{_source}{user} } @{ $favs->{hits}{hits} };
-
-    single_valued_arrayref_to_scalar( \@plusser_users );
 
     return { users => \@plusser_users };
 }

@@ -82,24 +82,26 @@ sub run {
     my $timeout = $self->all ? '720m' : '5m';
 
     my $scroll = $self->es->scroll_helper(
-        size   => 500,
         scroll => $timeout,
         index  => $self->index->name,
         type   => 'release',
-        body   => { query => $query },
-        fields => [qw( author distribution name )],
+        body   => {
+            query   => $query,
+            size    => 500,
+            _source => [qw( author distribution name )],
+        },
     );
 
     my @data;
 
     while ( my $r = $scroll->next ) {
         my $contrib_data = $self->get_cpan_author_contributors(
-            $r->{fields}{author}[0],
-            $r->{fields}{name}[0],
-            $r->{fields}{distribution}[0],
+            $r->{_source}{author},
+            $r->{_source}{name},
+            $r->{_source}{distribution},
         );
         next unless is_arrayref($contrib_data);
-        log_debug { 'adding release ' . $r->{fields}{name}[0] };
+        log_debug { 'adding release ' . $r->{_source}{name} };
         push @data => @{$contrib_data};
     }
 

@@ -62,18 +62,20 @@ sub build_release_status_map {
     log_info {"find_releases"};
 
     my $scroll = $self->es->scroll_helper(
-        size   => 500,
         scroll => '5m',
         index  => $self->index->name,
         type   => 'release',
-        fields => [ 'author', 'archive', 'name' ],
-        body   => $self->_get_release_query,
+        body   => {
+            %{ $self->_get_release_query },
+            size    => 500,
+            _source => [ 'author', 'archive', 'name' ],
+        },
     );
 
     while ( my $release = $scroll->next ) {
-        my $author  = $release->{fields}{author}[0];
-        my $archive = $release->{fields}{archive}[0];
-        my $name    = $release->{fields}{name}[0];
+        my $author  = $release->{_source}{author};
+        my $archive = $release->{_source}{archive};
+        my $name    = $release->{_source}{name};
         next unless $name;    # bypass some broken releases
 
         $self->_release_status->{$author}{$name} = [
@@ -94,7 +96,8 @@ sub _get_release_query {
     unless ( $self->undo ) {
         return +{
             query => {
-                not => { term => { status => 'backpan' } }
+                bool =>
+                    { must_not => [ { term => { status => 'backpan' } } ] }
             }
         };
     }
@@ -162,11 +165,9 @@ sub update_files_author {
     log_info { "update_files: " . $author };
 
     my $scroll = $self->es->scroll_helper(
-        size   => 500,
         scroll => '5m',
         index  => $self->index->name,
         type   => 'file',
-        fields => ['release'],
         body   => {
             query => {
                 bool => {
@@ -175,7 +176,9 @@ sub update_files_author {
                         { terms => { release => $author_releases } }
                     ]
                 }
-            }
+            },
+            size    => 500,
+            _source => ['release'],
         },
     );
 
@@ -188,7 +191,7 @@ sub update_files_author {
     my $bulk = $self->_bulk->{file};
 
     while ( my $file = $scroll->next ) {
-        my $release = $file->{fields}{release}[0];
+        my $release = $file->{_source}{release};
         $bulk->update( {
             id  => $file->{_id},
             doc => {

@@ -18,6 +18,7 @@ use MetaCPAN::Server                 ();
 use MetaCPAN::Server::Config         ();
 use MetaCPAN::TestHelpers            qw( fakecpan_dir );
 use MetaCPAN::Types::TypeTiny        qw( HashRef Path );
+use MetaCPAN::Util                   qw( true false );
 use MooseX::Types::ElasticSearch     qw( ES );
 use Search::Elasticsearch            ();
 use Test::More;
@@ -262,12 +263,12 @@ sub prepare_user_test_data {
     );
     ok( $user->add_identity( { name => 'pause', key => 'MO' } ),
         'add pause identity' );
-    ok( $user->put( { refresh => 1 } ), 'put user' );
+    ok( $user->put( { refresh => true } ), 'put user' );
 
     ok(
         MetaCPAN::Server->model('User::Account')->put(
             { access_token => [ { client => 'testing', token => 'bot' } ] },
-            { refresh      => 1 }
+            { refresh      => true }
         ),
         'put bot user'
     );
