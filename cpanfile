@@ -99,7 +99,7 @@ requires 'MooseX::Getopt::Dashes';
 requires 'MooseX::Getopt::OptionTypeMap';
 requires 'MooseX::StrictConstructor';
 requires 'MooseX::Types';
-requires 'MooseX::Types::ElasticSearch', '== 0.0.4';
+requires 'MooseX::Types::ElasticSearch', '0.0.4';
 requires 'MooseX::Types::Moose';
 requires 'Mozilla::CA', '20211001';
 requires 'namespace::autoclean';
@@ -122,7 +122,8 @@ requires 'Pod::Text', '4.14';
 requires 'Ref::Util';
 requires 'Safe', '2.35'; # bug fixes (used by Parse::PMFile)
 requires 'Scalar::Util', '1.62'; # Moose
-requires 'Search::Elasticsearch', '== 2.03';
+requires 'Search::Elasticsearch' => '8.12';
+requires 'Search::Elasticsearch::Client::2_0' => '6.81';
 requires 'Term::Choose', '1.754'; # Git::Helpers
 requires 'Throwable::Error';
 requires 'Term::Size::Any'; # for Catalyst
