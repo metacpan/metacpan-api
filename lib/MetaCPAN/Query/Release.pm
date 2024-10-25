@@ -1082,9 +1082,8 @@ sub find_download_url {
         push @filters,
             {
             nested => {
-                path       => 'module',
-                inner_hits => { _source => 'version' },
-                query      => $entity_filter,
+                path  => 'module',
+                query => $entity_filter,
             }
             };
     }
