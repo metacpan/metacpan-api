@@ -29,4 +29,19 @@ my $delete = \&delete;
     return $delete->(@_);
 };
 
+my $get = \&get;
+*get = sub {
+    my ( $self, $args, $qs ) = @_;
+    if ( $self->es->api_version eq '2_0' ) {
+        goto &$get;
+    }
+    my %qs = %{ $qs || {} };
+    if ( my $fields = $self->fields ) {
+        $qs{_source} = $fields;
+        local $self->{fields};
+        return $get->( $self, $args, \%qs );
+    }
+    goto &$get;
+};
+
 1;
