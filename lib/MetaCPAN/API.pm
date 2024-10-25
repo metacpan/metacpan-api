@@ -19,31 +19,24 @@ To run the api web server, run the following on one of the servers:
 
 use Mojo::Base 'Mojolicious';
 
-use Config::ZOMG             ();
-use File::Temp               ();
-use List::Util               qw( any );
-use MetaCPAN::Script::Runner ();
-use Search::Elasticsearch    ();
-use Try::Tiny                qw( catch try );
+use File::Temp                   ();
+use List::Util                   qw( any );
+use MetaCPAN::Script::Runner     ();
+use Search::Elasticsearch        ();
+use Try::Tiny                    qw( catch try );
+use MetaCPAN::Server::Config     ();
+use MooseX::Types::ElasticSearch qw(ES);
 
 has es => sub {
-    return Search::Elasticsearch->new(
-        client => '2_0::Direct',
-        ( $ENV{ES} ? ( nodes => [ $ENV{ES} ] ) : () ),
-    );
+    ES->assert_coerce(
+        MetaCPAN::Server::Config::config()->{elasticsearch_servers} );
 };
 
 sub startup {
     my $self = shift;
 
     unless ( $self->config->{config_override} ) {
-        $self->config(
-            Config::ZOMG->new(
-                local_suffix => $ENV{HARNESS_ACTIVE} ? 'testing' : 'local',
-                name         => 'metacpan_server',
-                path         => $self->home->to_string,
-            )->load
-        );
+        $self->config( MetaCPAN::Server::Config::config() );
     }
 
     die 'need secret' unless $self->config->{secret};
