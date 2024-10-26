@@ -91,14 +91,8 @@ sub wait_for_es {
 
 sub check_mappings {
     my $self    = $_[0];
-    my %indices = (
-        'cover'       => 'yellow',
-        'cpan_v1_01'  => 'yellow',
-        'contributor' => 'yellow',
-        'cve'         => 'yellow',
-        'user'        => 'yellow'
-    );
-    my %aliases = ( 'cpan' => 'cpan_v1_01' );
+    my %indices = ( map +( $_ => 'yellow' ), @{ es_config->all_indexes } );
+    my %aliases = %{ es_config->aliases };
 
     local @ARGV = qw(mapping --show_cluster_info);
 
@@ -127,6 +121,8 @@ sub check_mappings {
         }
     };
     subtest 'verify aliases' => sub {
+        ok "no aliases to verify"
+            if !%aliases;
         foreach ( keys %aliases ) {
             ok( defined $mapping->aliases_info->{$_},
                 "alias '$_' was created" );
