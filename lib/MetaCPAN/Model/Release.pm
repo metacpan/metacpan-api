@@ -226,12 +226,17 @@ sub _build_document {
         = $self->model->doc('release')->put( $document, { refresh => true } );
 
     # create distribution if doesn't exist
-    my $dist_count = $self->es->count( es_doc_path('distribution'),
-        body => { query => { term => { name => $self->distribution } } }, );
-    if ( !$dist_count->{count} ) {
-        $self->model->doc('distribution')
-            ->put( { name => $self->distribution }, { create => 1 } );
-    }
+    $self->es->update(
+        es_doc_path('distribution'),
+        id   => $self->distribution,
+        body => {
+            doc => {
+                name => $self->distribution,
+            },
+            doc_as_upsert => true,
+        },
+    );
+
     return $document;
 }
 
