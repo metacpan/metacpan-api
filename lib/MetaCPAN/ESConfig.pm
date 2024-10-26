@@ -4,15 +4,16 @@ use experimental qw(signatures postderef);
 
 package MetaCPAN::ESConfig;
 
-use Carp                     qw(croak);
-use Const::Fast              qw(const);
-use Exporter                 qw(import);
-use MetaCPAN::Util           qw(root_dir);
-use Module::Runtime          qw(require_module $module_name_rx);
-use Cpanel::JSON::XS         ();
-use Hash::Merge::Simple      qw(merge);
-use MetaCPAN::Server::Config ();
-use Const::Fast              qw(const);
+use Carp                      qw(croak);
+use Const::Fast               qw(const);
+use Exporter                  qw(import);
+use MetaCPAN::Util            qw(root_dir);
+use Module::Runtime           qw(require_module $module_name_rx);
+use Cpanel::JSON::XS          ();
+use Hash::Merge::Simple       qw(merge);
+use MetaCPAN::Server::Config  ();
+use MetaCPAN::Types::TypeTiny qw(HashRef Defined);
+use Const::Fast               qw(const);
 
 const my %config => merge(
     {
@@ -125,13 +126,28 @@ has indexes => (
     required => 1,
 );
 
+my $DefinedHash = ( HashRef [Defined] )->plus_coercions(
+    HashRef,
+    => sub ($hash) {
+        return {
+            map {
+                my $value = $hash->{$_};
+                defined $value ? ( $_ => $value ) : ();
+            } keys %$hash
+        };
+    },
+);
 has aliases => (
     is      => 'ro',
+    isa     => $DefinedHash,
+    coerce  => 1,
     default => sub { {} },
 );
 
 has documents => (
     is       => 'ro',
+    isa      => HashRef [$DefinedHash],
+    coerce   => 1,
     required => 1,
 );
 
