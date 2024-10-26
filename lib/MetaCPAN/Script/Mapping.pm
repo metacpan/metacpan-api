@@ -7,6 +7,7 @@ use DateTime                  ();
 use Log::Contextual           qw( :log );
 use MetaCPAN::ESConfig        qw( es_config );
 use MetaCPAN::Types::TypeTiny qw( Bool Str );
+use Time::HiRes               qw( sleep time );
 
 use constant {
     EXPECTED     => 1,
@@ -257,7 +258,19 @@ sub _delete_index {
     my ( $self, $name ) = @_;
 
     log_info {"Deleting index: $name"};
-    $self->es->indices->delete( index => $name );
+    my $idx = $self->es->indices;
+    $idx->delete( index => $name );
+
+    my $exists;
+    my $end = time + 2;
+    while ( time < $end ) {
+        $exists = $idx->exists( index => $name ) or last;
+        sleep 0.1;
+    }
+    if ($exists) {
+        log_error {"Failed to delete index: $name"};
+    }
+    return $exists;
 }
 
 sub update_index {
