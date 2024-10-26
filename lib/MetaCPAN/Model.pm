@@ -5,7 +5,7 @@ use Moose;
 
 use ElasticSearchX::Model;
 use MetaCPAN::ESConfig qw(es_config);
-use Module::Runtime    qw(require_module);
+use Module::Runtime    qw(require_module use_package_optimistically);
 
 my %indexes;
 my $docs = es_config->documents;
@@ -14,6 +14,7 @@ for my $name ( sort keys %$docs ) {
     my $model = $doc->{model}
         or next;
     require_module($model);
+    use_package_optimistically( $model . '::Set' );
     my $index = $doc->{index}
         or die "no index for $name documents!";
 
