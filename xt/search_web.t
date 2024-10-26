@@ -12,7 +12,7 @@ use Test::More;
 # Just use this to get an es object.
 my $server = MetaCPAN::TestServer->new;
 my $search = MetaCPAN::Query::Search->new(
-    es          => $server->es_client,
+    es         => $server->es_client,
     index_name => 'cpan',
 );
 
