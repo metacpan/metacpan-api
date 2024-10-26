@@ -10,6 +10,7 @@ use IO::Zlib                  ();
 use Log::Contextual           qw( :log :dlog );
 use MetaCPAN::Types::TypeTiny qw( Bool Int Path Str CommaSepOption );
 use MetaCPAN::Util            qw( true false );
+use MetaCPAN::ESConfig        qw( es_config );
 use Moose;
 use Try::Tiny qw( catch try );
 
@@ -28,8 +29,9 @@ has index => (
     is            => 'ro',
     isa           => CommaSepOption,
     coerce        => 1,
-    default       => 'cpan',
-    documentation => 'ES indexes to backup, defaults to "cpan"',
+    default       => sub { es_config->all_indexes },
+    documentation => 'ES indexes to backup, defaults to "'
+        . join( ', ', @{ es_config->all_indexes } ) . '"',
 );
 
 has type => (

@@ -126,6 +126,19 @@ has indexes => (
     required => 1,
 );
 
+has all_indexes => (
+    is      => 'lazy',
+    default => sub ($self) {
+        my %seen;
+        [
+            sort
+                grep !$seen{$_}++,
+            map $_->{index},
+            values $self->documents->%*
+        ];
+    },
+);
+
 my $DefinedHash = ( HashRef [Defined] )->plus_coercions(
     HashRef,
     => sub ($hash) {
