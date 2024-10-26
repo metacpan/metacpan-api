@@ -81,7 +81,7 @@ has snap_name => (
 
 has host => (
     is      => 'ro',
-    isa     => Str,
+    isa     => 'URI::http',
     default => sub {
         my $self = shift;
         return $self->es->transport->cxn_pool->cxns->[0]->uri;
