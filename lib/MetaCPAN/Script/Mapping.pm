@@ -240,7 +240,7 @@ sub delete_all {
         || $runtime_environment eq 'testing';
 
     if ($is_development) {
-        foreach my $name ( keys %{ $self->indices_info } ) {
+        foreach my $name ( grep !/\A\./, keys %{ $self->indices_info } ) {
             $self->_delete_index($name);
         }
     }
