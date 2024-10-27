@@ -137,6 +137,8 @@ sub _search_collapsed {
     my $es_query = $self->build_query( $search_term, $es_query_opts );
     my $source   = delete $es_query->{_source};
 
+    my $script_key = $self->es->api_version ge '5_0' ? 'source' : 'inline';
+
     $es_query->{aggregations} = {
         by_dist => {
             terms => {
@@ -156,8 +158,8 @@ sub _search_collapsed {
                 max_score => {
                     max => {
                         script => {
-                            lang   => "expression",
-                            inline => "_score",
+                            lang        => "expression",
+                            $script_key => "_score",
                         },
                     },
                 },
@@ -294,14 +296,16 @@ sub build_query {
         },
     };
 
+    my $script_key = $self->es->api_version ge '5_0' ? 'source' : 'inline';
+
     $query = {
         function_score => {
             script_score => {
 
                 # prefer shorter module names
                 script => {
-                    lang   => 'expression',
-                    inline =>
+                    lang        => 'expression',
+                    $script_key =>
                         "_score - (doc['documentation_length'].value == 0 ? 26 : doc['documentation_length'].value)/400",
                 },
             },
