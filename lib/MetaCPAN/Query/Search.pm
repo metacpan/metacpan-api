@@ -270,7 +270,6 @@ sub build_query {
                                                 default_operator => 'AND',
                                                 allow_leading_wildcard =>
                                                     false,
-                                                use_dis_max => true,
 
                                             }
                                         },
@@ -283,7 +282,6 @@ sub build_query {
                                                 default_operator => 'AND',
                                                 allow_leading_wildcard =>
                                                     false,
-                                                use_dis_max => true,
                                             },
                                         },
                                     ],
