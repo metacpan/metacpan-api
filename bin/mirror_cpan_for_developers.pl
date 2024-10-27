@@ -1,4 +1,7 @@
 #!/usr/bin/env perl
+use strict;
+use warnings;
+
 # This script is only needed if you are developing metacpan,
 # on the live servers we use File::Rsync::Mirror::Recent
 # https://github.com/metacpan/metacpan-puppet/tree/master/modules/rrrclient
