@@ -271,74 +271,33 @@ sub history {
     return $search->sort( [ { date => 'desc' } ] );
 }
 
-sub autocomplete {
-    my ( $self, @terms ) = @_;
-
-    my $query = {
-        bool => {
-            must => [
-                {
-                    multi_match => {
-                        query    => join( q{ }, @terms ),
-                        type     => 'most_fields',
-                        fields   => [ 'documentation', 'documentation.*' ],
-                        analyzer => 'camelcase',
-                        minimum_should_match => '80%'
-                    }
-                },
-                { exists => { field      => 'documentation' } },
-                { term   => { status     => 'latest' } },
-                { term   => { indexed    => true } },
-                { term   => { authorized => true } }
-            ],
-            must_not =>
-                [ { terms => { distribution => \@ROGUE_DISTRIBUTIONS } }, ],
-        },
-    };
-
-    my $data = $self->es->search(
-        search_type => 'dfs_query_then_fetch',
-        es_doc_path('file'),
-        body => {
-            query   => $query,
-            sort    => [ '_score', 'documentation' ],
-            _source => [qw( documentation release author distribution )],
-        },
-    );
-
-    # this is backcompat. we don't use this end point.
-    $_->{fields} = delete $_->{_source} for @{ $data->{hits}{hits} };
-
-    return $data;
-}
-
-sub autocomplete_suggester {
+sub _autocomplete {
     my ( $self, $query ) = @_;
-    return $self unless $query;
 
     my $search_size = 100;
 
-    my $suggestions = $self->es->suggest( {
+    my $sugg_res = $self->es->search(
         es_doc_path('file'),
         body => {
-            documentation => {
-                text       => $query,
-                completion => {
-                    field => "suggest",
-                    size  => $search_size,
-                }
+            suggest => {
+                documentation => {
+                    text       => $query,
+                    completion => {
+                        field => "suggest",
+                        size  => $search_size,
+                    },
+                },
             }
         },
-    } );
+    );
 
     my %docs;
-
-    for my $suggest ( @{ $suggestions->{documentation}[0]{options} } ) {
+    for my $suggest ( @{ $sugg_res->{suggest}{documentation}[0]{options} } ) {
         $docs{ $suggest->{text} } = max grep {defined}
             ( $docs{ $suggest->{text} }, $suggest->{score} );
     }
 
-    my $data = $self->es->search( {
+    my $res = $self->es->search(
         es_doc_path('file'),
         body => {
             query => {
@@ -366,34 +325,91 @@ sub autocomplete_suggester {
             ) ],
             size => $search_size,
         },
-    } );
+    );
+
+    my $hits = $res->{hits}{hits};
+
+    my $fav_res
+        = $self->agg_by_distributions(
+        [ map $_->{_source}{distribution}, @$hits ] );
+
+    my $favs = $fav_res->{favorites};
 
     my %valid = map {
-        my %record = %{ $_->{_source} };
-        $record{name} = delete $record{documentation};    # rename
-        ( $record{name} => \%record );
-    } @{ $data->{hits}{hits} };
+        my $source = $_->{_source};
+        (
+            $source->{documentation} => {
+                %$source, favorites => $favs->{ $source->{distribution} },
+            }
+        );
+    } @{ $res->{hits}{hits} };
 
     # remove any exact match, it will be added later
     my $exact = delete $valid{$query};
 
-    my $favorites
-        = $self->agg_by_distributions(
-        [ map { $_->{distribution} } values %valid ] )->{favorites};
-
     no warnings 'uninitialized';
     my @sorted = map { $valid{$_} }
         sort {
-               $valid{$a}->{deprecated} <=> $valid{$b}->{deprecated}
-            || $favorites->{ $valid{$b}->{distribution} }
-            <=> $favorites->{ $valid{$a}->{distribution} }
-            || $docs{$b}  <=> $docs{$a}
-            || length($a) <=> length($b)
+        my $a_data = $valid{$a};
+        my $b_data = $valid{$b};
+               $a_data->{deprecated} <=> $b_data->{deprecated}
+            || $b_data->{favorites}  <=> $a_data->{favorites}
+            || $docs{$b}             <=> $docs{$a}
+            || length($a)            <=> length($b)
             || $a cmp $b
         }
         keys %valid;
 
-    return +{ suggestions => [ grep {defined} ( $exact, @sorted ) ] };
+    return {
+        took        => $sugg_res->{took} + $res->{took} + $fav_res->{took},
+        suggestions => \@sorted,
+    };
+}
+
+sub autocomplete {
+    my ( $self, @terms ) = @_;
+    my $data = $self->_autocomplete( join ' ', @terms );
+
+    return {
+        took => $data->{took},
+        hits => {
+            hits => [
+                map {
+                    my $source = $_;
+                    +{
+                        fields => {
+                            map +( $_ => $source->{$_} ), qw(
+                                documentation
+                                release
+                                author
+                                distribution
+                            ),
+                        },
+                    };
+                } @{ $data->{suggestions} }
+            ],
+        },
+    };
+}
+
+sub autocomplete_suggester {
+    my ( $self, @terms ) = @_;
+    my $data = $self->_autocomplete( join ' ', @terms );
+
+    return {
+        took        => $data->{took},
+        suggestions => [
+            map +{
+                author       => $_->{author},
+                date         => $_->{date},
+                deprecated   => $_->{deprecated},
+                distribution => $_->{distribution},
+                name         => $_->{documentation},
+                release      => $_->{release},
+            },
+            @{ $data->{suggestions} }
+        ],
+    };
 }
 
 sub find_changes_files {
