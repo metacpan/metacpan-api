@@ -1,0 +1,58 @@
+{
+    "analysis" : {
+        "analyzer" : {
+            "camelcase" : {
+                "filter" : [
+                    "lowercase",
+                    "unique"
+                ],
+                "tokenizer" : "camelcase",
+                "type" : "custom"
+            },
+            "edge" : {
+                "filter" : [
+                    "lowercase",
+                    "edge"
+                ],
+                "tokenizer" : "standard",
+                "type" : "custom"
+            },
+            "edge_camelcase" : {
+                "filter" : [
+                    "lowercase",
+                    "edge"
+                ],
+                "tokenizer" : "camelcase",
+                "type" : "custom"
+            },
+            "fulltext" : {
+                "type" : "english"
+            },
+            "lowercase" : {
+                "filter" : "lowercase",
+                "tokenizer" : "keyword"
+            }
+        },
+        "filter" : {
+            "edge" : {
+                "max_gram" : 20,
+                "min_gram" : 1,
+                "type" : "edge_ngram"
+            }
+        },
+        "tokenizer" : {
+            "camelcase" : {
+                "pattern" : "([^\\p{L}\\d]+)|(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)|(?<=[\\p{L}&&[^\\p{Lu}]])(?=\\p{Lu})|(?<=\\p{Lu})(?=\\p{Lu}[\\p{L}&&[^\\p{Lu}]])",
+                "type" : "pattern"
+            }
+        }
+    },
+    "index" : {
+        "mapper" : {
+            "dynamic" : false
+        },
+        "number_of_replicas" : 1,
+        "number_of_shards" : 1,
+        "refresh_interval" : "1s"
+    }
+}

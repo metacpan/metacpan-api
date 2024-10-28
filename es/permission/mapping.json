@@ -1,0 +1,20 @@
+{
+    "dynamic" : false,
+    "properties" : {
+        "co_maintainers" : {
+            "ignore_above" : 2048,
+            "index" : "not_analyzed",
+            "type" : "string"
+        },
+        "module_name" : {
+            "ignore_above" : 2048,
+            "index" : "not_analyzed",
+            "type" : "string"
+        },
+        "owner" : {
+            "ignore_above" : 2048,
+            "index" : "not_analyzed",
+            "type" : "string"
+        }
+    }
+}

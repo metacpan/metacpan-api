@@ -11,7 +11,6 @@ use MetaCPAN::Script::Favorite       ();
 use MetaCPAN::Script::First          ();
 use MetaCPAN::Script::Latest         ();
 use MetaCPAN::Script::Mapping        ();
-use MetaCPAN::Script::Mapping::Cover ();
 use MetaCPAN::Script::Mirrors        ();
 use MetaCPAN::Script::Package        ();
 use MetaCPAN::Script::Permission     ();

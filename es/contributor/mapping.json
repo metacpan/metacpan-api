@@ -1,0 +1,25 @@
+{
+    "dynamic" : false,
+    "properties" : {
+        "distribution" : {
+            "ignore_above" : 2048,
+            "index" : "not_analyzed",
+            "type" : "string"
+        },
+        "pauseid" : {
+            "ignore_above" : 2048,
+            "index" : "not_analyzed",
+            "type" : "string"
+        },
+        "release_author" : {
+            "ignore_above" : 2048,
+            "index" : "not_analyzed",
+            "type" : "string"
+        },
+        "release_name" : {
+            "ignore_above" : 2048,
+            "index" : "not_analyzed",
+            "type" : "string"
+        }
+    }
+}
