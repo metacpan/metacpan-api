@@ -12,6 +12,7 @@ use Email::Valid               ();
 use Encode                     ();
 use Log::Contextual            qw( :log :dlog );
 use MetaCPAN::Document::Author ();
+use MetaCPAN::ESConfig         qw( es_doc_path );
 use MetaCPAN::Types::TypeTiny  qw( Str );
 use MetaCPAN::Util             qw(diff_struct true false);
 use URI                        ();
@@ -38,14 +39,8 @@ has pauseid => (
 sub run {
     my $self = shift;
 
-  # check we are using a dedicated index, prompts if not
-  # my $index = $self->index->name;
-  # $self->are_you_sure(
-  #     "Author script is run against a non-author specific index: $index !!!"
-  # ) unless $index =~ /author/;
-
     $self->index_authors;
-    $self->index->refresh;
+    $self->es->indices->refresh;
 }
 
 my @author_config_fields = qw(
@@ -128,17 +123,15 @@ sub index_authors {
     my @author_ids_to_purge;
 
     my $bulk = $self->es->bulk_helper(
-        index     => $self->index->name,
-        type      => 'author',
+        es_doc_path('author'),
         max_count => 250,
         timeout   => '25m',
     );
 
     my $scroll = $self->es->scroll_helper(
-        index => $self->index->name,
-        type  => 'author',
-        size  => 500,
-        body  => {
+        es_doc_path('author'),
+        size => 500,
+        body => {
             query => {
                 $self->pauseid
                 ? (
@@ -167,7 +160,7 @@ sub index_authors {
     }
 
     $bulk->flush;
-    $self->index->refresh;
+    $self->es->indices->refresh;
 
     $self->perform_purges;
 

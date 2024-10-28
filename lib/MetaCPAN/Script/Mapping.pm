@@ -2,25 +2,12 @@ package MetaCPAN::Script::Mapping;
 
 use Moose;
 
-use Cpanel::JSON::XS                              qw( decode_json );
-use DateTime                                      ();
-use Log::Contextual                               qw( :log );
-use MetaCPAN::Script::Mapping::Contributor        ();
-use MetaCPAN::Script::Mapping::Cover              ();
-use MetaCPAN::Script::Mapping::CPAN::Author       ();
-use MetaCPAN::Script::Mapping::CPAN::Distribution ();
-use MetaCPAN::Script::Mapping::CPAN::Favorite     ();
-use MetaCPAN::Script::Mapping::CPAN::File         ();
-use MetaCPAN::Script::Mapping::CPAN::Mirror       ();
-use MetaCPAN::Script::Mapping::CPAN::Package      ();
-use MetaCPAN::Script::Mapping::CPAN::Permission   ();
-use MetaCPAN::Script::Mapping::CPAN::Release      ();
-use MetaCPAN::Script::Mapping::CVE                ();
-use MetaCPAN::Script::Mapping::DeployStatement    ();
-use MetaCPAN::Script::Mapping::User::Account      ();
-use MetaCPAN::Script::Mapping::User::Identity     ();
-use MetaCPAN::Script::Mapping::User::Session      ();
-use MetaCPAN::Types::TypeTiny                     qw( Bool Str );
+use Cpanel::JSON::XS          qw( decode_json );
+use DateTime                  ();
+use Log::Contextual           qw( :log );
+use MetaCPAN::ESConfig        qw( es_config );
+use MetaCPAN::Types::TypeTiny qw( Bool Str );
+use Time::HiRes               qw( sleep time );
 
 use constant {
     EXPECTED     => 1,
@@ -28,13 +15,6 @@ use constant {
 };
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
-
-has cpan_index => (
-    is            => 'ro',
-    isa           => Str,
-    default       => 'cpan_v1_01',
-    documentation => 'real name for the cpan index',
-);
 
 has arg_deploy_mapping => (
     init_arg      => 'delete',
@@ -66,7 +46,7 @@ has arg_list_types => (
     is            => 'ro',
     isa           => Bool,
     default       => 0,
-    documentation => 'list available index type names',
+    documentation => 'list available document type names',
 );
 
 has arg_cluster_info => (
@@ -105,6 +85,12 @@ has skip_existing_mapping => (
     isa           => Bool,
     default       => 0,
     documentation => 'do NOT copy mappings other than patch_mapping',
+);
+
+has copy_from_index => (
+    is            => 'ro',
+    isa           => Str,
+    documentation => 'index to copy type from',
 );
 
 has copy_to_index => (
@@ -254,7 +240,7 @@ sub delete_all {
         || $runtime_environment eq 'testing';
 
     if ($is_development) {
-        foreach my $name ( keys %{ $self->indices_info } ) {
+        foreach my $name ( grep !/\A\./, keys %{ $self->indices_info } ) {
             $self->_delete_index($name);
         }
     }
@@ -272,7 +258,19 @@ sub _delete_index {
     my ( $self, $name ) = @_;
 
     log_info {"Deleting index: $name"};
-    $self->es->indices->delete( index => $name );
+    my $idx = $self->es->indices;
+    $idx->delete( index => $name );
+
+    my $exists;
+    my $end = time + 2;
+    while ( time < $end ) {
+        $exists = $idx->exists( index => $name ) or last;
+        sleep 0.1;
+    }
+    if ($exists) {
+        log_error {"Failed to delete index: $name"};
+    }
+    return $exists;
 }
 
 sub update_index {
@@ -285,11 +283,9 @@ sub update_index {
     die "update_index requires patch_mapping\n"
         unless $self->patch_mapping;
 
-    my $patch_mapping    = decode_json $self->patch_mapping;
-    my @patch_types      = sort keys %{$patch_mapping};
-    my $dep              = $self->index->deployment_statement;
-    my $existing_mapping = delete $dep->{mappings};
-    my $mapping = +{ map { $_ => $patch_mapping->{$_} } @patch_types };
+    my $patch_mapping = decode_json $self->patch_mapping;
+    my @patch_types   = sort keys %{$patch_mapping};
+    my $mapping       = +{ map { $_ => $patch_mapping->{$_} } @patch_types };
 
     log_info {"Updating mapping for index: $name"};
 
@@ -311,15 +307,14 @@ sub create_index {
     my $dst_idx = $self->arg_create_index;
     $self->_check_index_exists( $dst_idx, NOT_EXPECTED );
 
-    my $patch_mapping = decode_json $self->patch_mapping;
-    my @patch_types   = sort keys %{$patch_mapping};
-    my $dep           = $self->index->deployment_statement;
-    delete $dep->{mappings};
-    my $mapping = +{};
+    my $patch_mapping  = decode_json $self->patch_mapping;
+    my @patch_types    = sort keys %{$patch_mapping};
+    my $index_settings = es_config->index_settings($dst_idx);
+    my $mapping        = +{};
 
     # create the new index with the copied settings
     log_info {"Creating index: $dst_idx"};
-    $self->es->indices->create( index => $dst_idx, body => $dep );
+    $self->es->indices->create( index => $dst_idx, body => $index_settings );
 
     # override with new type mapping
     if ( $self->patch_mapping ) {
@@ -360,9 +355,13 @@ sub create_index {
 
 sub copy_type {
     my ( $self, $index, $type ) = @_;
-    $index //= $self->copy_to_index;
+    my $from_index = $self->copy_from_index
+        or die "can't copy without a source index";
+    $index //= $self->copy_to_index
+        or die "can't copy without a destination index";
 
-    $self->_check_index_exists( $index, EXPECTED );
+    $self->_check_index_exists( $from_index, EXPECTED );
+    $self->_check_index_exists( $index,      EXPECTED );
     $type //= $self->arg_copy_type;
     $type or die "can't copy without a type\n";
 
@@ -382,7 +381,7 @@ sub copy_type {
         };
     }
 
-    return $self->_copy_slice( $query, $index, $type ) if $query;
+    return $self->_copy_slice( $query, $from_index, $index, $type ) if $query;
 
     # else ... do copy by monthly slices
 
@@ -398,7 +397,7 @@ sub copy_type {
 
         log_info {"copying data for month: $gte"};
         eval {
-            $self->_copy_slice( $q, $index, $type );
+            $self->_copy_slice( $q, $from_index, $index, $type );
             1;
         } or do {
             my $err = $@ || 'zombie error';
@@ -408,12 +407,12 @@ sub copy_type {
 }
 
 sub _copy_slice {
-    my ( $self, $query, $index, $type ) = @_;
+    my ( $self, $query, $from_index, $index, $type ) = @_;
 
     my $scroll = $self->es->scroll_helper(
         size   => 250,
         scroll => '10m',
-        index  => $self->index->name,
+        index  => $from_index,
         type   => $type,
         body   => {
             query => $query,
@@ -442,18 +441,14 @@ sub empty_type {
     my $type = $self->delete_from_type;
     log_info {"Emptying type: $type"};
 
-    my $bulk = $self->es->bulk_helper(
-        index     => $self->index->name,
-        type      => $type,
-        max_count => 500,
-    );
+    my $bulk
+        = $self->es->bulk_helper( es_doc_path($type), max_count => 500, );
 
     my $scroll = $self->es->scroll_helper(
         size   => 250,
         scroll => '10m',
-        index  => $self->index->name,
-        type   => $type,
-        body   => {
+        es_doc_path($type),
+        body => {
             query => { match_all => {} },
             sort  => '_doc',
         },
@@ -475,7 +470,7 @@ sub empty_type {
 
 sub list_types {
     my $self = shift;
-    print "$_\n" for sort keys %{ $self->index->types };
+    print "$_\n" for sort keys %{ es_config->documents };
 }
 
 sub show_info {
@@ -489,51 +484,25 @@ sub show_info {
 }
 
 sub _build_mapping {
-    my $self = $_[0];
-    return {
-        $self->cpan_index => {
-            author =>
-                decode_json(MetaCPAN::Script::Mapping::CPAN::Author::mapping),
-            distribution => decode_json(
-                MetaCPAN::Script::Mapping::CPAN::Distribution::mapping),
-            favorite => decode_json(
-                MetaCPAN::Script::Mapping::CPAN::Favorite::mapping),
-            file =>
-                decode_json(MetaCPAN::Script::Mapping::CPAN::File::mapping),
-            mirror =>
-                decode_json(MetaCPAN::Script::Mapping::CPAN::Mirror::mapping),
-            permission => decode_json(
-                MetaCPAN::Script::Mapping::CPAN::Permission::mapping),
-            package => decode_json(
-                MetaCPAN::Script::Mapping::CPAN::Package::mapping),
-            release => decode_json(
-                MetaCPAN::Script::Mapping::CPAN::Release::mapping),
-        },
+    my $self     = $_[0];
+    my $docs     = es_config->documents;
+    my $mappings = {};
+    for my $name ( sort keys %$docs ) {
+        my $doc   = $docs->{$name};
+        my $index = $doc->{index}
+            or die "no index defined for $name documents";
+        my $type = $doc->{type}
+            or die "no type defined for $name documents";
+        my $mapping = es_config->mapping($name);
+        $mappings->{$index}{$type} = $mapping;
+    }
 
-        user => {
-            account => decode_json(
-                MetaCPAN::Script::Mapping::User::Account::mapping),
-            identity => decode_json(
-                MetaCPAN::Script::Mapping::User::Identity::mapping),
-            session => decode_json(
-                MetaCPAN::Script::Mapping::User::Session::mapping),
-        },
-        contributor => {
-            contributor =>
-                decode_json(MetaCPAN::Script::Mapping::Contributor::mapping),
-        },
-        cover => {
-            cover => decode_json(MetaCPAN::Script::Mapping::Cover::mapping),
-        },
-        cve => {
-            cve => decode_json(MetaCPAN::Script::Mapping::CVE::mapping),
-        },
-    };
+    return $mappings;
 }
 
 sub _build_aliases {
     my $self = $_[0];
-    return { 'cpan' => $self->cpan_index };
+    es_config->aliases;
 }
 
 sub deploy_mapping {
@@ -546,18 +515,16 @@ sub deploy_mapping {
     # Deserialize the Index Mapping Structure
     my $rmappings = $self->_build_mapping;
 
-    my $deploy_statement
-        = decode_json(MetaCPAN::Script::Mapping::DeployStatement::mapping);
-
     my $es = $self->es;
 
     # recreate the indices and apply the mapping
 
     for my $idx ( sort keys %$rmappings ) {
         $self->_delete_index($idx) if $es->indices->exists( index => $idx );
+        my $index_settings = es_config->index_settings($idx);
 
         log_info {"Creating index: $idx"};
-        $es->indices->create( index => $idx, body => $deploy_statement );
+        $es->indices->create( index => $idx, body => $index_settings );
 
         for my $type ( sort keys %{ $rmappings->{$idx} } ) {
             log_info {"Adding mapping: $idx/$type"};

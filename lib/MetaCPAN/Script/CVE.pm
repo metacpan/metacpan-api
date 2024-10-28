@@ -5,6 +5,7 @@ use namespace::autoclean;
 
 use Cpanel::JSON::XS          qw( decode_json );
 use Log::Contextual           qw( :log :dlog );
+use MetaCPAN::ESConfig        qw( es_doc_path );
 use MetaCPAN::Types::TypeTiny qw( Bool Str Uri );
 use MetaCPAN::Util            qw( hit_total numify_version true false );
 use Path::Tiny                qw( path );
@@ -66,10 +67,7 @@ sub run {
 sub index_cve_data {
     my ( $self, $data ) = @_;
 
-    my $bulk = $self->es->bulk_helper(
-        index => 'cve',
-        type  => 'cve',
-    );
+    my $bulk = $self->es->bulk_helper( es_doc_path('cve') );
 
     log_info {'Updating the cve index'};
 
@@ -161,9 +159,8 @@ sub index_cve_data {
                 my $query = {};
 
                 my $releases = $self->es->search(
-                    index => 'cpan',
-                    type  => 'release',
-                    body  => {
+                    es_doc_path('release'),
+                    body => {
                         query => {
                             bool => {
                                 must => [

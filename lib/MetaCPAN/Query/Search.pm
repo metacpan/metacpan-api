@@ -6,6 +6,7 @@ use Const::Fast               qw( const );
 use Hash::Merge               qw( merge );
 use List::Util                qw( min uniq );
 use Log::Contextual           qw( :log :dlog );
+use MetaCPAN::ESConfig        qw( es_doc_path );
 use MetaCPAN::Types::TypeTiny qw( Object Str );
 use MetaCPAN::Util            qw( hit_total true false );
 use MooseX::StrictConstructor;
@@ -136,6 +137,8 @@ sub _search_collapsed {
     my $es_query = $self->build_query( $search_term, $es_query_opts );
     my $source   = delete $es_query->{_source};
 
+    my $script_key = $self->es->api_version ge '5_0' ? 'source' : 'inline';
+
     $es_query->{aggregations} = {
         by_dist => {
             terms => {
@@ -155,8 +158,8 @@ sub _search_collapsed {
                 max_score => {
                     max => {
                         script => {
-                            lang   => "expression",
-                            inline => "_score",
+                            lang        => "expression",
+                            $script_key => "_score",
                         },
                     },
                 },
@@ -267,7 +270,6 @@ sub build_query {
                                                 default_operator => 'AND',
                                                 allow_leading_wildcard =>
                                                     false,
-                                                use_dis_max => true,
 
                                             }
                                         },
@@ -280,7 +282,6 @@ sub build_query {
                                                 default_operator => 'AND',
                                                 allow_leading_wildcard =>
                                                     false,
-                                                use_dis_max => true,
                                             },
                                         },
                                     ],
@@ -293,14 +294,16 @@ sub build_query {
         },
     };
 
+    my $script_key = $self->es->api_version ge '5_0' ? 'source' : 'inline';
+
     $query = {
         function_score => {
             script_score => {
 
                 # prefer shorter module names
                 script => {
-                    lang   => 'expression',
-                    inline =>
+                    lang        => 'expression',
+                    $script_key =>
                         "_score - (doc['documentation_length'].value == 0 ? 26 : doc['documentation_length'].value)/400",
                 },
             },
@@ -355,10 +358,9 @@ sub build_query {
 }
 
 sub run_query {
-    my ( $self, $type, $es_query ) = @_;
+    my ( $self, $doc, $es_query ) = @_;
     return $self->es->search(
-        index       => $self->index_name,
-        type        => $type,
+        es_doc_path($doc),
         body        => $es_query,
         search_type => 'dfs_query_then_fetch',
     );

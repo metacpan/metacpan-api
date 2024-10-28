@@ -6,9 +6,9 @@ use MetaCPAN::Server::Test qw( model );
 use Test::More;
 
 my $model = model();
-my $idx   = $model->index('cpan');
 
-ok( my $pod_pm = $idx->type('file')->find('Pod::Pm'), 'find Pod::Pm module' );
+ok( my $pod_pm = $model->doc('file')->find('Pod::Pm'),
+    'find Pod::Pm module' );
 
 is( $pod_pm->name, 'Pm.pm', 'defined in Pm.pm' );
 

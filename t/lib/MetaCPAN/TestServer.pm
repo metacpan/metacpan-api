@@ -2,6 +2,8 @@ package MetaCPAN::TestServer;
 
 use MetaCPAN::Moose;
 
+use Cpanel::JSON::XS                 qw( encode_json );
+use MetaCPAN::ESConfig               qw( es_config );
 use MetaCPAN::Script::Author         ();
 use MetaCPAN::Script::Cover          ();
 use MetaCPAN::Script::CPANTestersAPI ();
@@ -89,14 +91,8 @@ sub wait_for_es {
 
 sub check_mappings {
     my $self    = $_[0];
-    my %indices = (
-        'cover'       => 'yellow',
-        'cpan_v1_01'  => 'yellow',
-        'contributor' => 'yellow',
-        'cve'         => 'yellow',
-        'user'        => 'yellow'
-    );
-    my %aliases = ( 'cpan' => 'cpan_v1_01' );
+    my %indices = ( map +( $_ => 'yellow' ), @{ es_config->all_indexes } );
+    my %aliases = %{ es_config->aliases };
 
     local @ARGV = qw(mapping --show_cluster_info);
 
@@ -125,6 +121,8 @@ sub check_mappings {
         }
     };
     subtest 'verify aliases' => sub {
+        ok "no aliases to verify"
+            if !%aliases;
         foreach ( keys %aliases ) {
             ok( defined $mapping->aliases_info->{$_},
                 "alias '$_' was created" );
@@ -256,7 +254,7 @@ sub index_favorite {
 sub prepare_user_test_data {
     my $self = shift;
     ok(
-        my $user = MetaCPAN::Server->model('User::Account')->put( {
+        my $user = MetaCPAN::Server->model('ESModel')->doc('account')->put( {
             access_token => [ { client => 'testing', token => 'testing' } ]
         } ),
         'prepare user'
@@ -266,7 +264,7 @@ sub prepare_user_test_data {
     ok( $user->put( { refresh => true } ), 'put user' );
 
     ok(
-        MetaCPAN::Server->model('User::Account')->put(
+        MetaCPAN::Server->model('ESModel')->doc('account')->put(
             { access_token => [ { client => 'testing', token => 'bot' } ] },
             { refresh      => true }
         ),
@@ -285,7 +283,7 @@ sub test_index_missing {
     my $self = $_[0];
 
     subtest 'missing index' => sub {
-        my $scoverindexjson = MetaCPAN::Script::Mapping::Cover::mapping;
+        my $cover_mapping_json = encode_json( es_config->mapping('cover') );
 
         subtest 'delete cover index' => sub {
             local @ARGV = qw(mapping --delete_index cover);
@@ -300,7 +298,7 @@ sub test_index_missing {
             local @ARGV = (
                 'mapping', '--create_index',
                 'cover',   '--patch_mapping',
-                qq({ "cover": $scoverindexjson })
+                qq({ "cover": $cover_mapping_json })
             );
             my $mapping
                 = MetaCPAN::Script::Mapping->new_with_options(

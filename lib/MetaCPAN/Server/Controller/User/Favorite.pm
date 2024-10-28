@@ -27,7 +27,7 @@ sub index_POST {
     my ( $self, $c ) = @_;
     my $pause    = $c->stash->{pause};
     my $data     = $c->req->data;
-    my $favorite = $c->model('CPAN::Favorite')->put(
+    my $favorite = $c->model('ESModel')->doc('favorite')->put(
         {
             user         => $c->user->id,
             author       => $data->{author},
@@ -48,7 +48,7 @@ sub index_POST {
 
 sub index_DELETE {
     my ( $self, $c, $distribution ) = @_;
-    my $favorite = $c->model('CPAN::Favorite')
+    my $favorite = $c->model('ESModel')->doc('favorite')
         ->get( { user => $c->user->id, distribution => $distribution } );
     if ($favorite) {
         $favorite->delete( { refresh => true } );

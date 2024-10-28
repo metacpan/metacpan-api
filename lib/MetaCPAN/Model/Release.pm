@@ -10,6 +10,7 @@ use DateTime                  ();
 use File::Find                ();
 use File::Spec                ();
 use Log::Contextual           qw( :log :dlog );
+use MetaCPAN::ESConfig        qw( es_doc_path );
 use MetaCPAN::Model::Archive  ();
 use MetaCPAN::Types::TypeTiny qw( AbsPath ArrayRef Str );
 use MetaCPAN::Util            qw( fix_version true false );
@@ -84,7 +85,7 @@ has date => (
     },
 );
 
-has index => ( is => 'ro' );
+has model => ( is => 'ro' );
 
 has metadata => (
     is      => 'ro',
@@ -222,19 +223,20 @@ sub _build_document {
         || $document->{abstract} eq 'null' );
 
     $document
-        = $self->index->type('release')
-        ->put( $document, { refresh => true } );
+        = $self->model->doc('release')->put( $document, { refresh => true } );
 
     # create distribution if doesn't exist
-    my $dist_count = $self->es->count(
-        index => 'cpan',
-        type  => 'distribution',
-        body  => { query => { term => { name => $self->distribution } } },
+    $self->es->update(
+        es_doc_path('distribution'),
+        id   => $self->distribution,
+        body => {
+            doc => {
+                name => $self->distribution,
+            },
+            doc_as_upsert => true,
+        },
     );
-    if ( !$dist_count->{count} ) {
-        $self->index->type('distribution')
-            ->put( { name => $self->distribution }, { create => 1 } );
-    }
+
     return $document;
 }
 
@@ -333,7 +335,7 @@ sub _build_files {
 
     my @files;
     log_debug { 'Indexing ', scalar @{ $self->archive->files }, ' files' };
-    my $file_set = $self->index->type('file');
+    my $file_set = $self->model->doc('file');
 
     my $extract_dir = $self->extract;
     File::Find::find(

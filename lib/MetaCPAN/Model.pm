@@ -4,51 +4,44 @@ package MetaCPAN::Model;
 use Moose;
 
 use ElasticSearchX::Model;
+use MetaCPAN::ESConfig qw(es_config);
+use Module::Runtime    qw(require_module use_package_optimistically);
 
-analyzer lowercase => (
-    tokenizer => 'keyword',
-    filter    => 'lowercase',
-);
+my %indexes;
+my $docs = es_config->documents;
+for my $name ( sort keys %$docs ) {
+    my $doc   = $docs->{$name};
+    my $model = $doc->{model}
+        or next;
+    require_module($model);
+    use_package_optimistically( $model . '::Set' );
+    my $index = $doc->{index}
+        or die "no index for $name documents!";
 
-analyzer fulltext => ( type => 'english' );
+    $indexes{$index}{types}{$name} = $model->meta;
+}
 
-tokenizer camelcase => (
-    type    => 'pattern',
-    pattern =>
-        "([^\\p{L}\\d]+)|(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)|(?<=[\\p{L}&&[^\\p{Lu}]])(?=\\p{Lu})|(?<=\\p{Lu})(?=\\p{Lu}[\\p{L}&&[^\\p{Lu}]])"
-);
+my $aliases = es_config->aliases;
+for my $alias ( sort keys %$aliases ) {
+    my $index      = $aliases->{$alias};
+    my $index_data = $indexes{$index}
+        or die "unknown index $index";
+    if ( $index_data->{alias_for} ) {
+        die "duplicate alias for $index";
+    }
+    $index_data->{alias_for} = $index;
+    $indexes{$alias} = delete $indexes{$index};
+}
 
-filter edge => (
-    type     => 'edge_ngram',
-    min_gram => 1,
-    max_gram => 20
-);
+for my $index ( sort keys %indexes ) {
+    index $index => %{ $indexes{$index} };
+}
 
-analyzer camelcase => (
-    type      => 'custom',
-    tokenizer => 'camelcase',
-    filter    => [ 'lowercase', 'unique' ]
-);
-
-analyzer edge_camelcase => (
-    type      => 'custom',
-    tokenizer => 'camelcase',
-    filter    => [ 'lowercase', 'edge' ]
-);
-
-analyzer edge => (
-    type      => 'custom',
-    tokenizer => 'standard',
-    filter    => [ 'lowercase', 'edge' ]
-);
-
-index cpan => (
-    namespace => 'MetaCPAN::Document',
-    alias_for => 'cpan_v1_01',
-    shards    => 3
-);
-
-index user => ( namespace => 'MetaCPAN::Model::User' );
+sub doc {
+    my ( $self, $doc ) = @_;
+    my $doc_config = es_config->documents->{$doc};
+    return $self->index( $doc_config->{index} )->type( $doc_config->{type} );
+}
 
 __PACKAGE__->meta->make_immutable;
 1;

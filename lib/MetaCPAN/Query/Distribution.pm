@@ -2,7 +2,8 @@ package MetaCPAN::Query::Distribution;
 
 use MetaCPAN::Moose;
 
-use MetaCPAN::Util qw(hit_total);
+use MetaCPAN::ESConfig qw( es_doc_path );
+use MetaCPAN::Util     qw(hit_total);
 
 with 'MetaCPAN::Query::Role::Common';
 
@@ -16,9 +17,8 @@ sub get_river_data_by_dist {
     };
 
     my $res = $self->es->search(
-        index => $self->index_name,
-        type  => 'distribution',
-        body  => {
+        es_doc_path('distribution'),
+        body => {
             query => $query,
             size  => 999,
         }
@@ -38,9 +38,8 @@ sub get_river_data_by_dists {
     };
 
     my $res = $self->es->search(
-        index => $self->index_name,
-        type  => 'distribution',
-        body  => {
+        es_doc_path('distribution'),
+        body => {
             query => $query,
             size  => 999,
         }

@@ -7,8 +7,7 @@ use MetaCPAN::Util         qw(true false);
 use Test::More skip_all => 'Scripting is disabled';
 
 my $model   = model();
-my $idx     = $model->index('cpan');
-my $release = $idx->type('release')->get( {
+my $release = $model->doc('release')->get( {
     author => 'MO',
     name   => 'Scripts-0.01'
 } );
@@ -22,7 +21,7 @@ is( $release->version, '0.01', 'version ok' );
 is( $release->main_module, 'Scripts', 'main_module ok' );
 
 {
-    my @files = $idx->type('file')->query( {
+    my @files = $model->doc('file')->query( {
         bool => {
             must => [
                 { term => { mime         => 'text/x-script.perl' } },

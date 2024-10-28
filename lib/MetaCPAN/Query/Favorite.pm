@@ -2,7 +2,8 @@ package MetaCPAN::Query::Favorite;
 
 use MetaCPAN::Moose;
 
-use MetaCPAN::Util qw(hit_total);
+use MetaCPAN::ESConfig qw( es_doc_path );
+use MetaCPAN::Util     qw(hit_total);
 
 with 'MetaCPAN::Query::Role::Common';
 
@@ -42,11 +43,7 @@ sub agg_by_distributions {
         }
     };
 
-    my $ret = $self->es->search(
-        index => $self->index_name,
-        type  => 'favorite',
-        body  => $body,
-    );
+    my $ret = $self->es->search( es_doc_path('favorite'), body => $body, );
 
     my %favorites = map { $_->{key} => $_->{doc_count} }
         @{ $ret->{aggregations}{favorites}{buckets} };
@@ -69,9 +66,8 @@ sub by_user {
     $size ||= 250;
 
     my $favs = $self->es->search(
-        index => $self->index_name,
-        type  => 'favorite',
-        body  => {
+        es_doc_path('favorite'),
+        body => {
             query   => { term => { user => $user } },
             _source => [qw( author date distribution )],
             sort    => ['distribution'],
@@ -86,9 +82,8 @@ sub by_user {
     # filter out backpan only distributions
 
     my $no_backpan = $self->es->search(
-        index => $self->index_name,
-        type  => 'release',
-        body  => {
+        es_doc_path('release'),
+        body => {
             query => {
                 bool => {
                     must => [
@@ -139,11 +134,7 @@ sub leaderboard {
         },
     };
 
-    my $ret = $self->es->search(
-        index => $self->index_name,
-        type  => 'favorite',
-        body  => $body,
-    );
+    my $ret = $self->es->search( es_doc_path('favorite'), body => $body, );
 
     return {
         leaderboard => $ret->{aggregations}{leaderboard}{buckets},
@@ -158,9 +149,8 @@ sub recent {
     $size //= 100;
 
     my $favs = $self->es->search(
-        index => $self->index_name,
-        type  => 'favorite',
-        body  => {
+        es_doc_path('favorite'),
+        body => {
             size  => $size,
             from  => ( $page - 1 ) * $size,
             query => { match_all => {} },
@@ -181,9 +171,8 @@ sub users_by_distribution {
     my ( $self, $distribution ) = @_;
 
     my $favs = $self->es->search(
-        index => $self->index_name,
-        type  => 'favorite',
-        body  => {
+        es_doc_path('favorite'),
+        body => {
             query   => { term => { distribution => $distribution } },
             _source => ['user'],
             size    => 1000,

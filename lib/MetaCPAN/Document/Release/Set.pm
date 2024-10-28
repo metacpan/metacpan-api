@@ -35,10 +35,7 @@ has query_release => (
 
 sub _build_query_release {
     my $self = shift;
-    return MetaCPAN::Query::Release->new(
-        es         => $self->es,
-        index_name => $self->index->name,
-    );
+    return MetaCPAN::Query::Release->new( es => $self->es );
 }
 
 sub find_github_based {

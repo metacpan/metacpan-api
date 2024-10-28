@@ -16,10 +16,7 @@ has query_mirror => (
 
 sub _build_query_mirror {
     my $self = shift;
-    return MetaCPAN::Query::Mirror->new(
-        es         => $self->es,
-        index_name => $self->index->name,
-    );
+    return MetaCPAN::Query::Mirror->new( es => $self->es );
 }
 
 __PACKAGE__->meta->make_immutable;

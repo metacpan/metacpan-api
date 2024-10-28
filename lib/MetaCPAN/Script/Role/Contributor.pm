@@ -2,15 +2,16 @@ package MetaCPAN::Script::Role::Contributor;
 
 use Moose::Role;
 
-use MetaCPAN::Util qw( digest true false );
-use Ref::Util      qw( is_arrayref );
+use MetaCPAN::ESConfig qw( es_doc_path );
+use MetaCPAN::Util     qw( digest true false );
+use Ref::Util          qw( is_arrayref );
 
 sub get_cpan_author_contributors {
     my ( $self, $author, $release, $distribution ) = @_;
     my @ret;
     my $es = $self->es;
 
-    my $type = $self->index->type('release');
+    my $type = $self->model->doc('release');
     my $data;
     eval {
         $data = $type->get_contributors( $author, $release );
@@ -22,11 +23,7 @@ sub get_cpan_author_contributors {
 
         # skip existing records
         my $id     = digest( $d->{pauseid}, $release );
-        my $exists = $es->exists(
-            index => 'contributor',
-            type  => 'contributor',
-            id    => $id,
-        );
+        my $exists = $es->exists( es_doc_path('contributor'), id => $id, );
         next if $exists;
 
         $d->{release_author} = $author;
@@ -42,11 +39,8 @@ sub update_release_contirbutors {
     my ( $self, $data, $timeout ) = @_;
     return unless $data and is_arrayref($data);
 
-    my $bulk = $self->es->bulk_helper(
-        index   => 'contributor',
-        type    => 'contributor',
-        timeout => $timeout || '5m',
-    );
+    my $bulk = $self->es->bulk_helper( es_doc_path('contributor'),
+        timeout => $timeout || '5m', );
 
     for my $d ( @{$data} ) {
         my $id = digest( $d->{pauseid}, $d->{release_name} );

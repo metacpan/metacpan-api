@@ -19,13 +19,18 @@ use MooseX::Types -declare => [ qw(
 
 subtype Module, as ArrayRef [ Type ['MetaCPAN::Document::Module'] ];
 coerce Module, from ArrayRef, via {
+    require MetaCPAN::Document::Module;
     [ map { ref $_ eq 'HASH' ? MetaCPAN::Document::Module->new($_) : $_ }
             @$_ ];
 };
-coerce Module, from HashRef, via { [ MetaCPAN::Document::Module->new($_) ] };
+coerce Module, from HashRef, via {
+    require MetaCPAN::Document::Module;
+    [ MetaCPAN::Document::Module->new($_) ];
+};
 
 subtype Identity, as ArrayRef [ Type ['MetaCPAN::Model::User::Identity'] ];
 coerce Identity, from ArrayRef, via {
+    require MetaCPAN::Model::User::Identity;
     [
         map {
             ref $_ eq 'HASH'
@@ -34,11 +39,14 @@ coerce Identity, from ArrayRef, via {
         } @$_
     ];
 };
-coerce Identity, from HashRef,
-    via { [ MetaCPAN::Model::User::Identity->new($_) ] };
+coerce Identity, from HashRef, via {
+    require MetaCPAN::Model::User::Identity;
+    [ MetaCPAN::Model::User::Identity->new($_) ];
+};
 
 subtype Dependency, as ArrayRef [ Type ['MetaCPAN::Document::Dependency'] ];
 coerce Dependency, from ArrayRef, via {
+    require MetaCPAN::Document::Dependency;
     [
         map {
             ref $_ eq 'HASH'
@@ -47,11 +55,14 @@ coerce Dependency, from ArrayRef, via {
         } @$_
     ];
 };
-coerce Dependency, from HashRef,
-    via { [ MetaCPAN::Document::Dependency->new($_) ] };
+coerce Dependency, from HashRef, via {
+    require MetaCPAN::Document::Dependency;
+    [ MetaCPAN::Document::Dependency->new($_) ];
+};
 
 subtype Profile, as ArrayRef [ Type ['MetaCPAN::Document::Author::Profile'] ];
 coerce Profile, from ArrayRef, via {
+    require MetaCPAN::Document::Author::Profile;
     [
         map {
             ref $_ eq 'HASH'
@@ -60,8 +71,10 @@ coerce Profile, from ArrayRef, via {
         } @$_
     ];
 };
-coerce Profile, from HashRef,
-    via { [ MetaCPAN::Document::Author::Profile->new($_) ] };
+coerce Profile, from HashRef, via {
+    require MetaCPAN::Document::Author::Profile;
+    [ MetaCPAN::Document::Author::Profile->new($_) ];
+};
 
 MooseX::Getopt::OptionTypeMap->add_option_type_to_map(
     'MooseX::Types::ElasticSearch::ES' => '=s' );
@@ -72,7 +85,7 @@ coerce ESBool, from Bool, via {
 };
 
 $ElasticSearchX::Model::Document::Mapping::MAPPING{ESBool}
-    = $ElasticSearchX::Model::Document::Mapping::MAPPING{ESBool};
+    = $ElasticSearchX::Model::Document::Mapping::MAPPING{Bool};
 
 use MooseX::Attribute::Deflator;
 deflate 'ScalarRef', via {$$_};

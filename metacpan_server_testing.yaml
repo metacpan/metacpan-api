@@ -12,16 +12,6 @@ logger:
   class: Log::Log4perl::Appender::Screen
   name: testing
 
-model:
-  CPAN:
-    servers: __ENV(ES)__
-  User:
-    servers: __ENV(ES)__
-
-plugin:
-  Session:
-    servers: __ENV(ES)__
-
 controller:
   User::Turing:
     captcha_class: Captcha::Mock

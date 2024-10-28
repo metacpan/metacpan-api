@@ -3,6 +3,8 @@ package MetaCPAN::Query::Mirror;
 use MetaCPAN::Moose;
 use MetaCPAN::Util qw( hit_total );
 
+use MetaCPAN::ESConfig qw( es_doc_path );
+
 with 'MetaCPAN::Query::Role::Common';
 
 sub search {
@@ -39,9 +41,8 @@ sub search {
     }
 
     my $ret = $self->es->search(
-        index => $self->index_name,
-        type  => 'mirror',
-        body  => {
+        es_doc_path('mirror'),
+        body => {
             size  => 999,
             query => $query,
             @sort,

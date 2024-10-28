@@ -78,7 +78,7 @@ sub access_token : Local {
     $self->bad_request( $c,
         invalid_request => 'code query parameter is required' )
         unless ($code);
-    my $user = $c->model('User::Account')->find_code($code);
+    my $user = $c->model('ESModel')->doc('account')->find_code($code);
     $self->bad_request( $c, access_denied => 'the code is invalid' )
         unless ($user);
 

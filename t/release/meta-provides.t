@@ -21,7 +21,7 @@ test_release(
             my ($self) = @_;
             my $release = $self->data;
 
-            my @files = $self->index->type('file')->query( {
+            my @files = $self->model->doc('file')->query( {
                 bool => {
                     must => [
                         { term   => { 'author'    => $release->author } },

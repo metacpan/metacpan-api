@@ -2,7 +2,8 @@ package MetaCPAN::Query::Cover;
 
 use MetaCPAN::Moose;
 
-use MetaCPAN::Util qw(hit_total);
+use MetaCPAN::ESConfig qw( es_doc_path );
+use MetaCPAN::Util     qw(hit_total);
 
 with 'MetaCPAN::Query::Role::Common';
 
@@ -12,9 +13,8 @@ sub find_release_coverage {
     my $query = +{ term => { release => $release } };
 
     my $res = $self->es->search(
-        index => $self->index_name,
-        type  => 'cover',
-        body  => {
+        es_doc_path('cover'),
+        body => {
             query => $query,
             size  => 999,
         }

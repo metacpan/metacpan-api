@@ -7,6 +7,7 @@ use ElasticSearchX::Model::Document::Types qw( ESBulk );
 use File::stat                             qw( stat );
 use IO::Uncompress::Bunzip2                qw( bunzip2 );
 use Log::Contextual                        qw( :log :dlog );
+use MetaCPAN::ESConfig                     qw( es_doc_path );
 use MetaCPAN::Types::TypeTiny              qw( Bool Path Uri );
 use MetaCPAN::Util                         qw( true false );
 
@@ -47,10 +48,7 @@ has _bulk => (
     isa     => ESBulk,
     lazy    => 1,
     default => sub {
-        $_[0]->es->bulk_helper(
-            index => $_[0]->index->name,
-            type  => 'release'
-        );
+        $_[0]->es->bulk_helper( es_doc_path('release') );
     },
 );
 
@@ -65,7 +63,7 @@ sub _build_db {
 sub run {
     my $self = shift;
     $self->index_reports;
-    $self->index->refresh;
+    $self->es->indices->refresh;
 }
 
 sub index_reports {
@@ -86,10 +84,9 @@ sub index_reports {
     bunzip2 "$db.bz2" => "$db", AutoClose => 1 if -e "$db.bz2";
 
     my $scroll = $es->scroll_helper(
-        index => $self->index->name,
-        size  => '500',
-        type  => 'release',
-        body  => {
+        es_doc_path('release'),
+        size => '500',
+        body => {
             sort => '_doc',
         },
     );

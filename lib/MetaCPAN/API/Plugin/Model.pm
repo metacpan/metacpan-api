@@ -21,10 +21,7 @@ has download => sub {
 
 has search => sub {
     my $self = shift;
-    return MetaCPAN::Query::Search->new(
-        es         => $self->app->es,
-        index_name => 'cpan',
-    );
+    return MetaCPAN::Query::Search->new( es => $self->app->es, );
 };
 
 has user => sub {

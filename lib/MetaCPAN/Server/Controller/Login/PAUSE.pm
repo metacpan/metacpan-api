@@ -37,7 +37,7 @@ sub index : Path Args(0) {
     elsif ( ( $id = $c->req->parameters->{id} )
         && $c->req->parameters->{id} =~ /[a-zA-Z]+/ )
     {
-        my $author = $c->model('CPAN::Author')->get( uc($id) );
+        my $author = $c->model('ESModel')->doc('author')->get( uc($id) );
         $c->controller('OAuth2')->redirect( $c, error => "author_not_found" )
             unless ($author);
 

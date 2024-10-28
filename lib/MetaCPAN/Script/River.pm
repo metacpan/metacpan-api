@@ -5,6 +5,7 @@ use namespace::autoclean;
 
 use Cpanel::JSON::XS          qw( decode_json );
 use Log::Contextual           qw( :log :dlog );
+use MetaCPAN::ESConfig        qw( es_doc_path );
 use MetaCPAN::Types::TypeTiny qw( Uri );
 use MetaCPAN::Util            qw( true false );
 
@@ -29,10 +30,7 @@ sub run {
 sub index_river_summaries {
     my ( $self, $summaries ) = @_;
 
-    my $bulk = $self->es->bulk_helper(
-        index => $self->index->name,
-        type  => 'distribution',
-    );
+    my $bulk = $self->es->bulk_helper( es_doc_path('distribution') );
 
     for my $summary ( @{$summaries} ) {
         my $dist = delete $summary->{dist};

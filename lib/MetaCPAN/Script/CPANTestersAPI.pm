@@ -6,6 +6,7 @@ use warnings;
 use Cpanel::JSON::XS                       qw( decode_json );
 use ElasticSearchX::Model::Document::Types qw( ESBulk );
 use Log::Contextual                        qw( :log :dlog );
+use MetaCPAN::ESConfig                     qw( es_doc_path );
 use MetaCPAN::Types::TypeTiny              qw( Uri );
 use MetaCPAN::Util                         qw( true false );
 use Moose;
@@ -34,8 +35,7 @@ has _bulk => (
     lazy    => 1,
     default => sub {
         $_[0]->es->bulk_helper(
-            index     => $_[0]->index->name,
-            type      => 'release',
+            es_doc_path('release'),
             max_count => 250,
             timeout   => '30m',
         );
@@ -45,7 +45,7 @@ has _bulk => (
 sub run {
     my $self = shift;
     $self->index_reports;
-    $self->index->refresh;
+    $self->es->indices->refresh;
 }
 
 sub index_reports {
@@ -63,10 +63,9 @@ sub index_reports {
     my $data = decode_json $json;
 
     my $scroll = $es->scroll_helper(
-        index => $self->index->name,
-        size  => '500',
-        type  => 'release',
-        body  => {
+        es_doc_path('release'),
+        size => '500',
+        body => {
             sort => '_doc',
         },
     );

@@ -40,7 +40,7 @@ has river => (
 
 sub releases {
     my $self = shift;
-    return $self->index->type("release")
+    return $self->index->model->doc("release")
         ->query( { term => { "distribution" => $self->name } } );
 }
 

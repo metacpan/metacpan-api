@@ -3,8 +3,9 @@ package MetaCPAN::Document::Release;
 use Moose;
 
 use ElasticSearchX::Model::Document;
-use MetaCPAN::Types           qw( ESBool Dependency );
-use MetaCPAN::Types::TypeTiny qw(
+use MetaCPAN::Document::Dependency ();
+use MetaCPAN::Types                qw( ESBool Dependency );
+use MetaCPAN::Types::TypeTiny      qw(
     ArrayRef
     HashRefCPANMeta
     Num
@@ -277,7 +278,7 @@ sub _build_download_url {
 
 sub set_first {
     my $self     = shift;
-    my $is_first = $self->index->type('release')->query( {
+    my $is_first = $self->index->model->doc('release')->query( {
         bool => {
             must => [
                 { term => { distribution => $self->distribution } },
