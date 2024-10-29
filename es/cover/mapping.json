@@ -1,40 +1,40 @@
 {
-    "dynamic" : false,
-    "properties" : {
-        "criteria" : {
-            "dynamic" : true,
-            "properties" : {
-                "branch" : {
-                    "type" : "float"
+    "dynamic": false,
+    "properties": {
+        "criteria": {
+            "dynamic": true,
+            "properties": {
+                "branch": {
+                    "type": "float"
                 },
-                "condition" : {
-                    "type" : "float"
+                "condition": {
+                    "type": "float"
                 },
-                "statement" : {
-                    "type" : "float"
+                "statement": {
+                    "type": "float"
                 },
-                "subroutine" : {
-                    "type" : "float"
+                "subroutine": {
+                    "type": "float"
                 },
-                "total" : {
-                    "type" : "float"
+                "total": {
+                    "type": "float"
                 }
             }
         },
-        "distribution" : {
-            "ignore_above" : 2048,
-            "index" : "not_analyzed",
-            "type" : "string"
+        "distribution": {
+            "ignore_above": 2048,
+            "index": "not_analyzed",
+            "type": "string"
         },
-        "release" : {
-            "ignore_above" : 2048,
-            "index" : "not_analyzed",
-            "type" : "string"
+        "release": {
+            "ignore_above": 2048,
+            "index": "not_analyzed",
+            "type": "string"
         },
-        "version" : {
-            "ignore_above" : 2048,
-            "index" : "not_analyzed",
-            "type" : "string"
+        "version": {
+            "ignore_above": 2048,
+            "index": "not_analyzed",
+            "type": "string"
         }
     }
 }

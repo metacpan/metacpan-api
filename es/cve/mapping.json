@@ -1,41 +1,41 @@
 {
-    "dynamic" : false,
-    "properties" : {
-        "affected_versions" : {
-            "type" : "string"
+    "dynamic": false,
+    "properties": {
+        "affected_versions": {
+            "type": "string"
         },
-        "cpansa_id" : {
-            "ignore_above" : 2048,
-            "index" : "not_analyzed",
-            "type" : "string"
+        "cpansa_id": {
+            "ignore_above": 2048,
+            "index": "not_analyzed",
+            "type": "string"
         },
-        "cves" : {
-            "type" : "string"
+        "cves": {
+            "type": "string"
         },
-        "description" : {
-            "type" : "string"
+        "description": {
+            "type": "string"
         },
-        "distribution" : {
-            "index" : "not_analyzed",
-            "type" : "string"
+        "distribution": {
+            "index": "not_analyzed",
+            "type": "string"
         },
-        "references" : {
-            "type" : "string"
+        "references": {
+            "type": "string"
         },
-        "releases" : {
-            "index" : "not_analyzed",
-            "type" : "string"
+        "releases": {
+            "index": "not_analyzed",
+            "type": "string"
         },
-        "reported" : {
-            "format" : "strict_date_optional_time||epoch_millis",
-            "type" : "date"
+        "reported": {
+            "format": "strict_date_optional_time||epoch_millis",
+            "type": "date"
         },
-        "severity" : {
-            "type" : "string"
+        "severity": {
+            "type": "string"
         },
-        "versions" : {
-            "index" : "not_analyzed",
-            "type" : "string"
+        "versions": {
+            "index": "not_analyzed",
+            "type": "string"
         }
     }
 }

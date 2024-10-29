@@ -1,293 +1,293 @@
 {
-    "dynamic" : "false",
-    "properties" : {
-        "abstract" : {
-            "fields" : {
-                "analyzed" : {
-                    "analyzer" : "standard",
-                    "fielddata" : {
-                        "format" : "disabled"
+    "dynamic": false,
+    "properties": {
+        "abstract": {
+            "fields": {
+                "analyzed": {
+                    "analyzer": "standard",
+                    "fielddata": {
+                        "format": "disabled"
                     },
-                    "store" : true,
-                    "type" : "string"
+                    "store": true,
+                    "type": "string"
                 }
             },
-            "ignore_above" : 2048,
-            "index" : "not_analyzed",
-            "type" : "string"
+            "ignore_above": 2048,
+            "index": "not_analyzed",
+            "type": "string"
         },
-        "author" : {
-            "ignore_above" : 2048,
-            "index" : "not_analyzed",
-            "type" : "string"
+        "author": {
+            "ignore_above": 2048,
+            "index": "not_analyzed",
+            "type": "string"
         },
-        "authorized" : {
-            "type" : "boolean"
+        "authorized": {
+            "type": "boolean"
         },
-        "binary" : {
-            "type" : "boolean"
+        "binary": {
+            "type": "boolean"
         },
-        "date" : {
-            "format" : "strict_date_optional_time||epoch_millis",
-            "type" : "date"
+        "date": {
+            "format": "strict_date_optional_time||epoch_millis",
+            "type": "date"
         },
-        "deprecated" : {
-            "type" : "boolean"
+        "deprecated": {
+            "type": "boolean"
         },
-        "description" : {
-            "ignore_above" : 2048,
-            "index" : "not_analyzed",
-            "type" : "string"
+        "description": {
+            "ignore_above": 2048,
+            "index": "not_analyzed",
+            "type": "string"
         },
-        "dir" : {
-            "ignore_above" : 2048,
-            "index" : "not_analyzed",
-            "type" : "string"
+        "dir": {
+            "ignore_above": 2048,
+            "index": "not_analyzed",
+            "type": "string"
         },
-        "directory" : {
-            "type" : "boolean"
+        "directory": {
+            "type": "boolean"
         },
-        "dist_fav_count" : {
-            "type" : "integer"
+        "dist_fav_count": {
+            "type": "integer"
         },
-        "distribution" : {
-            "fields" : {
-                "analyzed" : {
-                    "analyzer" : "standard",
-                    "fielddata" : {
-                        "format" : "disabled"
+        "distribution": {
+            "fields": {
+                "analyzed": {
+                    "analyzer": "standard",
+                    "fielddata": {
+                        "format": "disabled"
                     },
-                    "store" : true,
-                    "type" : "string"
+                    "store": true,
+                    "type": "string"
                 },
-                "camelcase" : {
-                    "analyzer" : "camelcase",
-                    "store" : true,
-                    "type" : "string"
+                "camelcase": {
+                    "analyzer": "camelcase",
+                    "store": true,
+                    "type": "string"
                 },
-                "lowercase" : {
-                    "analyzer" : "lowercase",
-                    "store" : true,
-                    "type" : "string"
+                "lowercase": {
+                    "analyzer": "lowercase",
+                    "store": true,
+                    "type": "string"
                 }
             },
-            "ignore_above" : 2048,
-            "index" : "not_analyzed",
-            "type" : "string"
+            "ignore_above": 2048,
+            "index": "not_analyzed",
+            "type": "string"
         },
-        "documentation" : {
-            "fields" : {
-                "analyzed" : {
-                    "analyzer" : "standard",
-                    "fielddata" : {
-                        "format" : "disabled"
+        "documentation": {
+            "fields": {
+                "analyzed": {
+                    "analyzer": "standard",
+                    "fielddata": {
+                        "format": "disabled"
                     },
-                    "store" : true,
-                    "type" : "string"
+                    "store": true,
+                    "type": "string"
                 },
-                "camelcase" : {
-                    "analyzer" : "camelcase",
-                    "store" : true,
-                    "type" : "string"
+                "camelcase": {
+                    "analyzer": "camelcase",
+                    "store": true,
+                    "type": "string"
                 },
-                "edge" : {
-                    "analyzer" : "edge",
-                    "store" : true,
-                    "type" : "string"
+                "edge": {
+                    "analyzer": "edge",
+                    "store": true,
+                    "type": "string"
                 },
-                "edge_camelcase" : {
-                    "analyzer" : "edge_camelcase",
-                    "store" : true,
-                    "type" : "string"
+                "edge_camelcase": {
+                    "analyzer": "edge_camelcase",
+                    "store": true,
+                    "type": "string"
                 },
-                "lowercase" : {
-                    "analyzer" : "lowercase",
-                    "store" : true,
-                    "type" : "string"
+                "lowercase": {
+                    "analyzer": "lowercase",
+                    "store": true,
+                    "type": "string"
                 }
             },
-            "ignore_above" : 2048,
-            "index" : "not_analyzed",
-            "type" : "string"
+            "ignore_above": 2048,
+            "index": "not_analyzed",
+            "type": "string"
         },
-        "documentation_length" : {
-            "type" : "integer"
+        "documentation_length": {
+            "type": "integer"
         },
-        "download_url" : {
-            "ignore_above" : 2048,
-            "index" : "not_analyzed",
-            "type" : "string"
+        "download_url": {
+            "ignore_above": 2048,
+            "index": "not_analyzed",
+            "type": "string"
         },
-        "id" : {
-            "ignore_above" : 2048,
-            "index" : "not_analyzed",
-            "type" : "string"
+        "id": {
+            "ignore_above": 2048,
+            "index": "not_analyzed",
+            "type": "string"
         },
-        "indexed" : {
-            "type" : "boolean"
+        "indexed": {
+            "type": "boolean"
         },
-        "level" : {
-            "type" : "integer"
+        "level": {
+            "type": "integer"
         },
-        "maturity" : {
-            "ignore_above" : 2048,
-            "index" : "not_analyzed",
-            "type" : "string"
+        "maturity": {
+            "ignore_above": 2048,
+            "index": "not_analyzed",
+            "type": "string"
         },
-        "mime" : {
-            "ignore_above" : 2048,
-            "index" : "not_analyzed",
-            "type" : "string"
+        "mime": {
+            "ignore_above": 2048,
+            "index": "not_analyzed",
+            "type": "string"
         },
-        "module" : {
-            "dynamic" : "false",
-            "include_in_root" : true,
-            "properties" : {
-                "associated_pod" : {
-                    "type" : "string"
+        "module": {
+            "dynamic": false,
+            "include_in_root": true,
+            "properties": {
+                "associated_pod": {
+                    "type": "string"
                 },
-                "authorized" : {
-                    "type" : "boolean"
+                "authorized": {
+                    "type": "boolean"
                 },
-                "indexed" : {
-                    "type" : "boolean"
+                "indexed": {
+                    "type": "boolean"
                 },
-                "name" : {
-                    "fields" : {
-                        "analyzed" : {
-                            "analyzer" : "standard",
-                            "fielddata" : {
-                                "format" : "disabled"
+                "name": {
+                    "fields": {
+                        "analyzed": {
+                            "analyzer": "standard",
+                            "fielddata": {
+                                "format": "disabled"
                             },
-                            "store" : true,
-                            "type" : "string"
+                            "store": true,
+                            "type": "string"
                         },
-                        "camelcase" : {
-                            "analyzer" : "camelcase",
-                            "store" : true,
-                            "type" : "string"
+                        "camelcase": {
+                            "analyzer": "camelcase",
+                            "store": true,
+                            "type": "string"
                         },
-                        "lowercase" : {
-                            "analyzer" : "lowercase",
-                            "store" : true,
-                            "type" : "string"
+                        "lowercase": {
+                            "analyzer": "lowercase",
+                            "store": true,
+                            "type": "string"
                         }
                     },
-                    "ignore_above" : 2048,
-                    "index" : "not_analyzed",
-                    "type" : "string"
+                    "ignore_above": 2048,
+                    "index": "not_analyzed",
+                    "type": "string"
                 },
-                "version" : {
-                    "ignore_above" : 2048,
-                    "index" : "not_analyzed",
-                    "type" : "string"
+                "version": {
+                    "ignore_above": 2048,
+                    "index": "not_analyzed",
+                    "type": "string"
                 },
-                "version_numified" : {
-                    "type" : "float"
+                "version_numified": {
+                    "type": "float"
                 }
             },
-            "type" : "nested"
+            "type": "nested"
         },
-        "name" : {
-            "ignore_above" : 2048,
-            "index" : "not_analyzed",
-            "type" : "string"
+        "name": {
+            "ignore_above": 2048,
+            "index": "not_analyzed",
+            "type": "string"
         },
-        "path" : {
-            "ignore_above" : 2048,
-            "index" : "not_analyzed",
-            "type" : "string"
+        "path": {
+            "ignore_above": 2048,
+            "index": "not_analyzed",
+            "type": "string"
         },
-        "pod" : {
-            "analyzer" : "standard",
-            "doc_values" : false,
-            "fields" : {
-                "analyzed" : {
-                    "analyzer" : "standard",
-                    "doc_values" : false,
-                    "index" : "analyzed",
-                    "type" : "string"
+        "pod": {
+            "analyzer": "standard",
+            "doc_values": false,
+            "fields": {
+                "analyzed": {
+                    "analyzer": "standard",
+                    "doc_values": false,
+                    "index": "analyzed",
+                    "type": "string"
                 }
             },
-            "index" : "analyzed",
-            "type" : "string"
+            "index": "analyzed",
+            "type": "string"
         },
-        "pod_lines" : {
-            "doc_values" : true,
-            "ignore_above" : 2048,
-            "index" : "no",
-            "type" : "string"
+        "pod_lines": {
+            "doc_values": true,
+            "ignore_above": 2048,
+            "index": "no",
+            "type": "string"
         },
-        "release" : {
-            "fields" : {
-                "analyzed" : {
-                    "analyzer" : "standard",
-                    "fielddata" : {
-                        "format" : "disabled"
+        "release": {
+            "fields": {
+                "analyzed": {
+                    "analyzer": "standard",
+                    "fielddata": {
+                        "format": "disabled"
                     },
-                    "store" : true,
-                    "type" : "string"
+                    "store": true,
+                    "type": "string"
                 },
-                "camelcase" : {
-                    "analyzer" : "camelcase",
-                    "store" : true,
-                    "type" : "string"
+                "camelcase": {
+                    "analyzer": "camelcase",
+                    "store": true,
+                    "type": "string"
                 },
-                "lowercase" : {
-                    "analyzer" : "lowercase",
-                    "store" : true,
-                    "type" : "string"
+                "lowercase": {
+                    "analyzer": "lowercase",
+                    "store": true,
+                    "type": "string"
                 }
             },
-            "ignore_above" : 2048,
-            "index" : "not_analyzed",
-            "type" : "string"
+            "ignore_above": 2048,
+            "index": "not_analyzed",
+            "type": "string"
         },
-        "sloc" : {
-            "type" : "integer"
+        "sloc": {
+            "type": "integer"
         },
-        "slop" : {
-            "type" : "integer"
+        "slop": {
+            "type": "integer"
         },
-        "stat" : {
-            "dynamic" : "true",
-            "properties" : {
-                "gid" : {
-                    "type" : "long"
+        "stat": {
+            "dynamic": true,
+            "properties": {
+                "gid": {
+                    "type": "long"
                 },
-                "mode" : {
-                    "type" : "integer"
+                "mode": {
+                    "type": "integer"
                 },
-                "mtime" : {
-                    "type" : "integer"
+                "mtime": {
+                    "type": "integer"
                 },
-                "size" : {
-                    "type" : "integer"
+                "size": {
+                    "type": "integer"
                 },
-                "uid" : {
-                    "type" : "long"
+                "uid": {
+                    "type": "long"
                 }
             }
         },
-        "status" : {
-            "ignore_above" : 2048,
-            "index" : "not_analyzed",
-            "type" : "string"
+        "status": {
+            "ignore_above": 2048,
+            "index": "not_analyzed",
+            "type": "string"
         },
-        "suggest" : {
-            "analyzer" : "simple",
-            "max_input_length" : 50,
-            "preserve_position_increments" : true,
-            "preserve_separators" : true,
-            "type" : "completion"
+        "suggest": {
+            "analyzer": "simple",
+            "max_input_length": 50,
+            "preserve_position_increments": true,
+            "preserve_separators": true,
+            "type": "completion"
         },
-        "version" : {
-            "ignore_above" : 2048,
-            "index" : "not_analyzed",
-            "type" : "string"
+        "version": {
+            "ignore_above": 2048,
+            "index": "not_analyzed",
+            "type": "string"
         },
-        "version_numified" : {
-            "type" : "float"
+        "version_numified": {
+            "type": "float"
         }
     }
 }
