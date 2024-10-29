@@ -2,6 +2,7 @@ package MetaCPAN::Script::Purge;
 
 use Moose;
 
+use File::Path                ();
 use Log::Contextual           qw( :log );
 use MetaCPAN::ESConfig        qw( es_doc_path );
 use MetaCPAN::Types::TypeTiny qw( Bool HashRef Str );
@@ -47,6 +48,21 @@ sub _build_bulk {
             release
             )
     };
+}
+
+has quarantine => (
+    is      => 'ro',
+    isa     => Str,
+    lazy    => 1,
+    builder => '_build_quarantine',
+);
+
+sub _build_quarantine {
+    my $path = "$ENV{HOME}/QUARANTINE";
+    if ( !-d $path ) {
+        File::Path::mkpath($path);
+    }
+    return $path;
 }
 
 sub _get_scroller_release {
