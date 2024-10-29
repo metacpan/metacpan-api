@@ -54,7 +54,7 @@ has arg_cluster_info => (
     is            => 'ro',
     isa           => Bool,
     default       => 0,
-    documentation => 'show basic info about cluster, indices and aliases',
+    documentation => 'show basic info about cluster and indices',
 );
 
 has arg_create_index => (
@@ -163,13 +163,6 @@ has indices_info => (
     default => sub { {} },
 );
 
-has aliases_info => (
-    isa     => HashRef,
-    traits  => ['Hash'],
-    is      => 'rw',
-    default => sub { {} },
-);
-
 sub run {
     my $self = shift;
 
@@ -204,7 +197,7 @@ sub run {
         if ( $self->arg_verify_mapping ) {
             $self->check_health;
             unless ( $self->mappings_valid(
-                $self->_build_mapping, $self->_build_aliases
+                $self->_build_mapping
             ) )
             {
                 $self->print_error("Indices Verification has failed!");
@@ -510,7 +503,6 @@ sub show_info {
     my $info_rs = {
         'cluster_info' => \%{ $self->cluster_info },
         'indices_info' => \%{ $self->indices_info },
-        'aliases_info' => \%{ $self->aliases_info }
     };
     log_info { JSON->new->utf8->pretty->encode($info_rs) };
 }
@@ -532,14 +524,8 @@ sub _build_mapping {
     return $mappings;
 }
 
-sub _build_aliases {
-    my $self = $_[0];
-    es_config->aliases;
-}
-
 sub deploy_mapping {
     my $self          = shift;
-    my $is_mapping_ok = 0;
 
     $self->are_you_sure(
         'this will delete EVERYTHING and re-create the (empty) indexes');
@@ -568,65 +554,12 @@ sub deploy_mapping {
         }
     }
 
-    # create aliases
-
-    my $raliases = $self->_build_aliases;
-    for my $alias ( sort keys %$raliases ) {
-        log_info {
-            "Creating alias: '$alias' -> '" . $raliases->{$alias} . "'"
-        };
-        $es->indices->put_alias(
-            index => $raliases->{$alias},
-            name  => $alias,
-        );
-    }
-
     $self->check_health(1);
-    $is_mapping_ok = $self->mappings_valid( $rmappings, $raliases );
 
     # done
     log_info {"Done."};
 
-    return $is_mapping_ok;
-}
-
-sub aliases_valid {
-    my ( $self, $raliases ) = @_;
-    my $ivalid = 0;
-
-    if ( defined $raliases && ref $raliases eq 'HASH' ) {
-        my $ralias = undef;
-
-        $ivalid = 1;
-
-        for my $name ( sort keys %$raliases ) {
-            $ralias = $self->aliases_info->{$name};
-            if ( defined $ralias ) {
-                if ( $ralias->{'index'} eq $raliases->{$name} ) {
-                    log_info {
-                        "Correct alias: $name (index '"
-                            . $ralias->{'index'} . "')"
-                    };
-                }
-                else {
-                    log_error {
-                        "Broken alias: $name (index '"
-                            . $ralias->{'index'} . "')"
-                    };
-                    $ivalid = 0;
-                }
-            }
-            else {
-                log_error {"Missing alias: $name"};
-                $ivalid = 0;
-            }
-        }
-    }
-    else {
-        $ivalid = 0 if ( scalar( keys %{ $self->aliases_info } ) == 0 );
-    }
-
-    return $ivalid;
+    return $self->mappings_valid( $rmappings );
 }
 
 sub _compare_mapping {
@@ -849,7 +782,7 @@ sub _compare_mapping {
 }
 
 sub mappings_valid {
-    my ( $self, $rmappings, $raliases ) = @_;
+    my ( $self, $rmappings ) = @_;
     my $ivalid = 0;
 
     if ( defined $rmappings && ref $rmappings eq 'HASH' ) {
@@ -898,15 +831,6 @@ sub mappings_valid {
         log_info {"Verification indices: failed"};
     }
 
-    $ivalid = ( $ivalid && $self->aliases_valid($raliases) );
-
-    if ($ivalid) {
-        log_info {"Verification aliases: ok"};
-    }
-    else {
-        log_info {"Verification aliases: failed"};
-    }
-
     return $ivalid;
 }
 
@@ -926,21 +850,6 @@ sub _get_indices_info {
     }
 }
 
-sub _get_aliases_info {
-    my ( $self, $irefresh ) = @_;
-
-    if ( $irefresh || scalar( keys %{ $self->aliases_info } ) == 0 ) {
-        my $sinfo_rs = $self->es->cat->aliases( h => [ 'alias', 'index' ] );
-        my $saliases_parsing = qr/^([^[:space:]]+) +([^[:space:]]+)/m;
-
-        $self->aliases_info( {} );
-
-        while ( $sinfo_rs =~ /$saliases_parsing/g ) {
-            $self->aliases_info->{$1} = { 'alias_name' => $1, 'index' => $2 };
-        }
-    }
-}
-
 sub check_health {
     my ( $self, $irefresh ) = @_;
     my $ihealth = 0;
@@ -956,12 +865,6 @@ sub check_health {
             $ihealth = 0
                 if ( $self->indices_info->{$_}->{'health'} eq 'red' );
         }
-    }
-
-    if ($ihealth) {
-        $self->_get_aliases_info($irefresh);
-
-        $ihealth = 0 if ( scalar( keys %{ $self->aliases_info } ) == 0 );
     }
 
     return $ihealth;
@@ -1039,10 +942,10 @@ MetaCPAN::Script::Mapping - Script to set the index and mapping the types
 
 =head1 SYNOPSIS
 
- # bin/metacpan mapping --show_cluster_info   # show basic info about the cluster, indices and aliases
+ # bin/metacpan mapping --show_cluster_info   # show basic info about the cluster and indices
  # bin/metacpan mapping --delete
  # bin/metacpan mapping --delete --all        # deletes ALL indices in the cluster
- # bin/metacpan mapping --verify              # compare deployed indices and aliases with project definitions
+ # bin/metacpan mapping --verify              # compare deployed indices with project definitions
  # bin/metacpan mapping --list_types
  # bin/metacpan mapping --delete_index xxx
  # bin/metacpan mapping --create_index xxx --reindex
@@ -1068,7 +971,7 @@ This Script accepts the following options
 =item Option C<--show_cluster_info>
 
 This option makes the Script show basic information about the I<ElasticSearch> Cluster
-and its indices and aliases.
+and its indices.
 This information has to be collected with the C<MetaCPAN::Role::Script::check_health()> Method.
 On Script start-up it is empty.
 
@@ -1079,7 +982,7 @@ See L<Method C<MetaCPAN::Role::Script::check_health()>>
 =item Option C<--delete>
 
 This option makes the Script delete all indices configured in the project and re-create them emtpy.
-It verifies the index integrity of the indices and aliases calling the methods
+It verifies the index integrity of the indices calling the methods
 C<MetaCPAN::Role::Script::check_health()> and C<mappings_valid()>.
 If the C<mappings_valid()> Method fails it will report an error.
 
@@ -1131,12 +1034,12 @@ This Package provides the following methods
 
 =item C<deploy_mapping()>
 
-Deletes and re-creates the indices and aliases defined in the Project.
+Deletes and re-creates the indices defined in the Project.
 The user will be requested for manual confirmation on the command line before the elemination.
-The integrity of the indices and aliases will be checked with the C<mappings_valid()> Method.
+The integrity of the indices will be checked with the C<mappings_valid()> Method.
 On successful creation it returns C< 1 >, otherwise it returns C< 0 >.
 
-B<Returns:> It returns C< 1 > when the indices and aliases are created and verified as correct.
+B<Returns:> It returns C< 1 > when the indices are created and verified as correct.
 Otherwise it returns C< 0 >.
 
 B<Exceptions:> It can throw exceptions when the connection to I<ElasticSearch> fails
@@ -1148,12 +1051,11 @@ See L<Method C<mappings_valid()>>
 
 See L<Method C<MetaCPAN::Role::Script::check_health()>>
 
-=item C<mappings_valid( \%indices, \%aliases )>
+=item C<mappings_valid( \%indices )>
 
 This method uses the
 L<C<Search::Elasticsearch::Client::2_0::Direct::get_mapping()>|https://metacpan.org/pod/Search::Elasticsearch::Client::2_0::Direct#get_mapping()>
 method to request the complete index mappings structure from the I<ElasticSearch> Cluster.
-It also uses the alias information gathered by the C<MetaCPAN::Role::Script::check_health()> method.
 Then it performs an in-depth structure match against the Project Definitions.
 Missing indices or any structure mismatch will be count as error.
 Errors will be reported in the activity log.
@@ -1162,9 +1064,7 @@ B<Parameters:>
 
 C<\%indices> - Reference to a hash that defines the indices required for the Project.
 
-C<\%aliases> - Reference to a hash that defines the aliases required for the Project.
-
-B<Returns:> It returns C< 1 > when the indices and aliases are created and match the defined structure.
+B<Returns:> It returns C< 1 > when the indices are created and match the defined structure.
 Otherwise it returns C< 0 >.
 
 See L<Option C<--delete>>
@@ -1196,15 +1096,14 @@ See L<Method C<check_health()>>
 This method uses the
 L<C<Search::Elasticsearch::Client::2_0::Direct::cat()>|https://metacpan.org/pod/Search::Elasticsearch::Client::2_0::Direct#cat()>
 method to collect basic data about the cluster structure as the general information,
-the health state of the indices and the created aliases.
-This information is stored in C<cluster_info>, C<indices_info> and C<aliases_info> as C<HASH> structures.
-If the parameter C<refresh> is set to C< 1 > the structures C<indices_info> and C<aliases_info> will always
+the health state of the indices.
+This information is stored in C<cluster_info>, C<indices_info> as C<HASH> structures.
+If the parameter C<refresh> is set to C< 1 > the structure C<indices_info> will always
 be updated.
 If the C<cluster_info> structure is empty it calls first the C<await()> method.
 If the service is unavailable the C<await()> method will produce an exception and the structures will be empty
 The method returns C< 1 > when the C<cluster_info> is populated, none of the indices in C<indices_info> has
-the Health State I<red> and at least one alias is created in C<aliases_info>
-otherwise the method returns C< 0 >
+the Health State I<red> otherwise the method returns C< 0 >
 
 B<Parameters:>
 

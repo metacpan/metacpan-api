@@ -91,7 +91,6 @@ sub wait_for_es {
 sub check_mappings {
     my $self    = $_[0];
     my %indices = ( map +( $_ => 'yellow' ), @{ es_config->all_indexes } );
-    my %aliases = %{ es_config->aliases };
 
     local @ARGV = qw(mapping --show_cluster_info);
 
@@ -102,9 +101,6 @@ sub check_mappings {
 
     note( Test::More::explain(
         { 'indices_info' => \%{ $mapping->indices_info } }
-    ) );
-    note( Test::More::explain(
-        { 'aliases_info' => \%{ $mapping->aliases_info } }
     ) );
 
     subtest 'only configured indices' => sub {
@@ -117,17 +113,6 @@ sub check_mappings {
                 "index '$_' was created" );
             is( $mapping->indices_info->{$_}->{'health'},
                 $indices{$_}, "index '$_' correct state '$indices{$_}'" );
-        }
-    };
-    subtest 'verify aliases' => sub {
-        ok "no aliases to verify"
-            if !%aliases;
-        foreach ( keys %aliases ) {
-            ok( defined $mapping->aliases_info->{$_},
-                "alias '$_' was created" );
-            is( $mapping->aliases_info->{$_}->{'index'},
-                $aliases{$_},
-                "alias '$_' correctly assigned to '$aliases{$_}'" );
         }
     };
 }

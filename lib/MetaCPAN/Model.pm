@@ -21,18 +21,6 @@ for my $name ( sort keys %$docs ) {
     $indexes{$index}{types}{$name} = $model->meta;
 }
 
-my $aliases = es_config->aliases;
-for my $alias ( sort keys %$aliases ) {
-    my $index      = $aliases->{$alias};
-    my $index_data = $indexes{$index}
-        or die "unknown index $index";
-    if ( $index_data->{alias_for} ) {
-        die "duplicate alias for $index";
-    }
-    $index_data->{alias_for} = $index;
-    $indexes{$alias} = delete $indexes{$index};
-}
-
 for my $index ( sort keys %indexes ) {
     index $index => %{ $indexes{$index} };
 }

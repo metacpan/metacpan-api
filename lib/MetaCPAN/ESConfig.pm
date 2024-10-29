@@ -17,9 +17,6 @@ use Const::Fast               qw(const);
 
 const my %config => merge(
     {
-        aliases => {
-            'cpan' => 'cpan_v1_01',
-        },
         indexes => {
             _default => {
                 settings => 'es/settings.json',
@@ -148,12 +145,6 @@ my $DefinedHash = ( HashRef [Defined] )->plus_coercions(
             } keys %$hash
         };
     },
-);
-has aliases => (
-    is      => 'ro',
-    isa     => $DefinedHash,
-    coerce  => 1,
-    default => sub { {} },
 );
 
 has documents => (
