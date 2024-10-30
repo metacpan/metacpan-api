@@ -196,10 +196,7 @@ sub run {
 
         if ( $self->arg_verify_mapping ) {
             $self->check_health;
-            unless ( $self->mappings_valid(
-                $self->_build_mapping
-            ) )
-            {
+            unless ( $self->indices_valid( $self->_build_index_config ) ) {
                 $self->print_error("Indices Verification has failed!");
                 $self->exit_code(1);
             }
@@ -507,51 +504,51 @@ sub show_info {
     log_info { JSON->new->utf8->pretty->encode($info_rs) };
 }
 
-sub _build_mapping {
-    my $self     = $_[0];
-    my $docs     = es_config->documents;
-    my $mappings = {};
+sub _build_index_config {
+    my $self    = $_[0];
+    my $docs    = es_config->documents;
+    my $indices = {};
     for my $name ( sort keys %$docs ) {
         my $doc   = $docs->{$name};
         my $index = $doc->{index}
             or die "no index defined for $name documents";
         my $type = $doc->{type}
             or die "no type defined for $name documents";
-        my $mapping = es_config->mapping($name);
-        $mappings->{$index}{$type} = $mapping;
+        die "$index specified for multiple documents"
+            if $indices->{$index};
+        my $mapping  = es_config->mapping($name);
+        my $settings = es_config->index_settings($name);
+        $indices->{$index} = {
+            settings => $settings,
+            mappings => {
+                $type => $mapping,
+            },
+        };
     }
 
     return $mappings;
 }
 
 sub deploy_mapping {
-    my $self          = shift;
+    my $self = shift;
 
     $self->are_you_sure(
         'this will delete EVERYTHING and re-create the (empty) indexes');
 
     # Deserialize the Index Mapping Structure
-    my $rmappings = $self->_build_mapping;
+    my $rindices = $self->_build_index_config;
 
     my $es = $self->es;
 
     # recreate the indices and apply the mapping
 
-    for my $idx ( sort keys %$rmappings ) {
-        $self->_delete_index($idx) if $es->indices->exists( index => $idx );
-        my $index_settings = es_config->index_settings($idx);
+    for my $idx ( sort keys %$rindices ) {
+        $self->_delete_index($idx)
+            if $es->indices->exists( index => $idx );
 
         log_info {"Creating index: $idx"};
-        $es->indices->create( index => $idx, body => $index_settings );
 
-        for my $type ( sort keys %{ $rmappings->{$idx} } ) {
-            log_info {"Adding mapping: $idx/$type"};
-            $es->indices->put_mapping(
-                index => $idx,
-                type  => $type,
-                body  => { $type => $rmappings->{$idx}{$type} },
-            );
-        }
+        $es->indices->create( index => $idx, body => $rindices->{$idx} );
     }
 
     $self->check_health(1);
@@ -559,7 +556,7 @@ sub deploy_mapping {
     # done
     log_info {"Done."};
 
-    return $self->mappings_valid( $rmappings );
+    return $self->indices_valid($rindices);
 }
 
 sub _compare_mapping {
@@ -781,57 +778,54 @@ sub _compare_mapping {
     return $imatch;
 }
 
-sub mappings_valid {
-    my ( $self, $rmappings ) = @_;
-    my $ivalid = 0;
+sub indices_valid {
+    my ( $self, $config_indices ) = @_;
+    my $valid = 0;
 
-    if ( defined $rmappings && ref $rmappings eq 'HASH' ) {
-        my $rindices = $self->es->indices->get_mapping();
-        my $iindexok = 0;
+    if ( defined $config_indices && ref $config_indices eq 'HASH' ) {
+        my $deploy_indices = $self->es->indices->get_mapping;
+        $valid = 1;
 
-        $ivalid = 1;
+        for my $idx ( sort keys %$config_indices ) {
+            my $config_mappings = $config_indices->{$idx}
+                && $config_indices->{$idx}->{'mappings'};
+            my $deploy_mappings = $deploy_indices->{$idx}
+                && $deploy_indices->{$idx}->{'mappings'};
+            if ( !$deploy ) {
+                log_error {"Missing index: $idx"};
+                $valid = 0;
+                next;
+            }
 
-        for my $idx ( sort keys %$rmappings ) {
-            if (   defined $rindices->{$idx}
-                && defined $rindices->{$idx}->{'mappings'} )
+            log_info {
+                "Verifying index: $idx"
+            };
+
+            if ( $self->_compare_mapping(
+                $idx, $deploy_mappings, $config_mappings
+            ) )
             {
                 log_info {
-                    "Verifying index: $idx"
+                    "Correct index: $idx (mapping deployed)"
                 };
-
-                $iindexok
-                    = $self->_compare_mapping( $idx,
-                    $rindices->{$idx}->{'mappings'},
-                    $rmappings->{$idx} );
-
-                if ($iindexok) {
-                    log_info {
-                        "Correct index: $idx (mapping deployed)"
-                    };
-                }
-                else {
-                    log_error {
-                        "Broken index: $idx (mapping does not match definition)"
-                    };
-                    $ivalid = 0;
-                }
-
-                $ivalid = ( $ivalid && $iindexok );
             }
             else {
-                log_error {"Missing index: $idx"};
-                $ivalid = 0;
+                log_error {
+                    "Broken index: $idx (mapping does not match definition)"
+                };
+                $valid = 0;
             }
         }
     }
-    if ($ivalid) {
+
+    if ($valid) {
         log_info {"Verification indices: ok"};
     }
     else {
         log_info {"Verification indices: failed"};
     }
 
-    return $ivalid;
+    return $valid;
 }
 
 sub _get_indices_info {

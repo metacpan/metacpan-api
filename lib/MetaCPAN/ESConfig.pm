@@ -17,96 +17,105 @@ use Const::Fast               qw(const);
 
 const my %config => merge(
     {
-        indexes => {
-            _default => {
-                settings => 'es/settings.json',
-            },
-        },
         documents => {
             author => {
-                index   => 'author',
-                type    => 'author',
-                mapping => 'es/author/mapping.json',
-                model   => 'MetaCPAN::Document::Author',
+                index    => 'author',
+                type     => 'author',
+                mapping  => 'es/author/mapping.json',
+                settings => 'es/author/settings.json',
+                model    => 'MetaCPAN::Document::Author',
             },
             cve => {
-                index   => 'cve',
-                type    => 'cve',
-                mapping => 'es/cve/mapping.json',
-                model   => 'MetaCPAN::Document::CVE',
+                index    => 'cve',
+                type     => 'cve',
+                mapping  => 'es/cve/mapping.json',
+                settings => 'es/cve/settings.json',
+                model    => 'MetaCPAN::Document::CVE',
             },
             contributor => {
-                index   => 'contributor',
-                type    => 'contributor',
-                mapping => 'es/contributor/mapping.json',
-                model   => 'MetaCPAN::Document::Contributor',
+                index    => 'contributor',
+                type     => 'contributor',
+                mapping  => 'es/contributor/mapping.json',
+                settings => 'es/contributor/settings.json',
+                model    => 'MetaCPAN::Document::Contributor',
             },
             cover => {
-                index   => 'cover',
-                type    => 'cover',
-                mapping => 'es/cover/mapping.json',
-                model   => 'MetaCPAN::Document::Cover',
+                index    => 'cover',
+                type     => 'cover',
+                mapping  => 'es/cover/mapping.json',
+                settings => 'es/cover/settings.json',
+                model    => 'MetaCPAN::Document::Cover',
             },
             distribution => {
-                index   => 'distribution',
-                type    => 'distribution',
-                mapping => 'es/distribution/mapping.json',
-                model   => 'MetaCPAN::Document::Distribution',
+                index    => 'distribution',
+                type     => 'distribution',
+                mapping  => 'es/distribution/mapping.json',
+                settings => 'es/distribution/settings.json',
+                model    => 'MetaCPAN::Document::Distribution',
             },
             favorite => {
-                index   => 'favorite',
-                type    => 'favorite',
-                mapping => 'es/favorite/mapping.json',
-                model   => 'MetaCPAN::Document::Favorite',
+                index    => 'favorite',
+                type     => 'favorite',
+                mapping  => 'es/favorite/mapping.json',
+                settings => 'es/favorite/settings.json',
+                model    => 'MetaCPAN::Document::Favorite',
             },
             file => {
-                index   => 'file',
-                type    => 'file',
-                mapping => 'es/file/mapping.json',
-                model   => 'MetaCPAN::Document::File',
+                index    => 'file',
+                type     => 'file',
+                mapping  => 'es/file/mapping.json',
+                settings => 'es/file/settings.json',
+                model    => 'MetaCPAN::Document::File',
             },
             mirror => {
-                index   => 'mirror',
-                type    => 'mirror',
-                mapping => 'es/mirror/mapping.json',
-                model   => 'MetaCPAN::Document::Mirror',
+                index    => 'mirror',
+                type     => 'mirror',
+                mapping  => 'es/mirror/mapping.json',
+                settings => 'es/mirror/settings.json',
+                model    => 'MetaCPAN::Document::Mirror',
             },
             package => {
-                index   => 'package',
-                type    => 'package',
-                mapping => 'es/package/mapping.json',
-                model   => 'MetaCPAN::Document::Package',
+                index    => 'package',
+                type     => 'package',
+                mapping  => 'es/package/mapping.json',
+                settings => 'es/package/settings.json',
+                model    => 'MetaCPAN::Document::Package',
             },
             permission => {
-                index   => 'permission',
-                type    => 'permission',
-                mapping => 'es/permission/mapping.json',
-                model   => 'MetaCPAN::Document::Permission',
+                index    => 'permission',
+                type     => 'permission',
+                mapping  => 'es/permission/mapping.json',
+                settings => 'es/permission/settings.json',
+                model    => 'MetaCPAN::Document::Permission',
             },
             release => {
-                index   => 'release',
-                type    => 'release',
-                mapping => 'es/release/mapping.json',
-                model   => 'MetaCPAN::Document::Release',
+                index    => 'release',
+                type     => 'release',
+                mapping  => 'es/release/mapping.json',
+                settings => 'es/release/settings.json',
+                model    => 'MetaCPAN::Document::Release',
             },
 
             account => {
-                index   => 'account',
-                type    => 'account',
-                mapping => 'es/account/mapping.json',
-                model   => 'MetaCPAN::Model::User::Account',
+                index    => 'account',
+                type     => 'account',
+                mapping  => 'es/account/mapping.json',
+                settings => 'es/account/settings.json',
+                model    => 'MetaCPAN::Model::User::Account',
             },
             identity => {
-                index   => 'identity',
-                type    => 'identity',
-                mapping => 'es/identity/mapping.json',
-                model   => 'MetaCPAN::Model::User::Identity',
+                index    => 'identity',
+                type     => 'identity',
+                mapping  => 'es/identity/mapping.json',
+                settings => 'es/identity/settings.json',
+                model    => 'MetaCPAN::Model::User::Identity',
             },
             session => {
-                index   => 'session',
-                type    => 'session',
-                mapping => 'es/session/mapping.json',
-                model   => 'MetaCPAN::Model::User::Session',
+                index    => 'session',
+                type     => 'session',
+                mapping  => 'es/session/mapping.json',
+                settings => 'es/session/settings.json',
+                model    => 'MetaCPAN::Model::User::Session',
             },
         },
     },
@@ -154,7 +163,7 @@ has documents => (
     required => 1,
 );
 
-sub _load_es_data ( $location, $def_sub = 'mapping' ) {
+sub _load_es_data ( $location, $def_sub ) {
     my $data;
 
     if ( ref $location ) {
@@ -197,24 +206,13 @@ sub mapping ( $self, $doc ) {
     return _load_es_data( $doc_data->{mapping}, 'mapping' );
 }
 
-sub index_settings ( $self, $index ) {
-    my $indexes    = $self->indexes;
-    my $index_data = exists $indexes->{$index} && $indexes->{$index};
-    my $settings
-        = $index_data
-        && exists $index_data->{settings}
-        && $index_data->{settings};
-    if ( !$settings ) {
-        my $default_data
-            = exists $indexes->{_default} && $indexes->{_default};
-        $settings
-            = $default_data
-            && exists $default_data->{settings}
-            && $default_data->{settings};
-    }
-    return {}
-        if !$settings;
-    return _load_es_data($settings);
+sub index_settings ( $self, $doc ) {
+    my $documents = $self->documents;
+    my $doc_data  = exists $documents->{$doc} && $documents->{$doc}
+        or return {};
+    my $settings = exists $doc_data->{settings} && $doc_data->{settings}
+        or return {};
+    return _load_es_data( $settings, 'settings' );
 }
 
 sub doc_path ( $self, $doc ) {
