@@ -336,7 +336,12 @@ sub create_index {
 
     # create the new index with the copied settings
     log_info {"Creating index: $dst_idx"};
-    $self->es->indices->create( index => $dst_idx, body => $index_settings );
+    $self->es->indices->create(
+        index => $dst_idx,
+        body  => {
+            settings => $index_settings,
+        },
+    );
 
     # override with new type mapping
     if ( $self->patch_mapping ) {
@@ -526,7 +531,7 @@ sub _build_index_config {
         };
     }
 
-    return $mappings;
+    return $indices;
 }
 
 sub deploy_mapping {
@@ -791,7 +796,7 @@ sub indices_valid {
                 && $config_indices->{$idx}->{'mappings'};
             my $deploy_mappings = $deploy_indices->{$idx}
                 && $deploy_indices->{$idx}->{'mappings'};
-            if ( !$deploy ) {
+            if ( !$deploy_mappings ) {
                 log_error {"Missing index: $idx"};
                 $valid = 0;
                 next;

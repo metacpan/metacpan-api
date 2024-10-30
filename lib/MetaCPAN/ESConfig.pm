@@ -126,11 +126,6 @@ const my %config => merge(
     use Moo;
 }
 
-has indexes => (
-    is       => 'ro',
-    required => 1,
-);
-
 has all_indexes => (
     is      => 'lazy',
     default => sub ($self) {
