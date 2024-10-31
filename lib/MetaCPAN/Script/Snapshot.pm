@@ -7,7 +7,7 @@ use Cpanel::JSON::XS          qw( decode_json encode_json );
 use DateTime                  ();
 use DateTime::Format::ISO8601 ();
 use HTTP::Tiny                ();
-use Log::Contextual           qw( :log );
+use Log::Contextual           qw( :log :dlog );
 use MetaCPAN::Server::Config  ();
 use MetaCPAN::Types::TypeTiny qw( ArrayRef Bool Str );
 use Moose;
