@@ -1442,15 +1442,15 @@ DISTRIBUTIONS
       parent 0
       strict 0
       warnings 0
-  DateTime-Locale-1.43
-    pathname: D/DR/DROLSKY/DateTime-Locale-1.43.tar.gz
+  DateTime-Locale-1.44
+    pathname: D/DR/DROLSKY/DateTime-Locale-1.44.tar.gz
     provides:
-      DateTime::Locale 1.43
-      DateTime::Locale::Base 1.43
-      DateTime::Locale::Catalog 1.43
-      DateTime::Locale::Data 1.43
-      DateTime::Locale::FromData 1.43
-      DateTime::Locale::Util 1.43
+      DateTime::Locale 1.44
+      DateTime::Locale::Base 1.44
+      DateTime::Locale::Catalog 1.44
+      DateTime::Locale::Data 1.44
+      DateTime::Locale::FromData 1.44
+      DateTime::Locale::Util 1.44
     requirements:
       Carp 0
       Dist::CheckConflicts 0.02
@@ -6820,34 +6820,6 @@ DISTRIBUTIONS
       Scalar::Util 1.14
       perl 5.006
       strict 0
-  Term-Choose-1.765
-    pathname: K/KU/KUERBIS/Term-Choose-1.765.tar.gz
-    provides:
-      Term::Choose 1.765
-      Term::Choose::Constants 1.765
-      Term::Choose::LineFold 1.765
-      Term::Choose::LineFold::CharWidthAmbiguousWide 1.765
-      Term::Choose::LineFold::CharWidthDefault 1.765
-      Term::Choose::Linux 1.765
-      Term::Choose::Opt::Mouse 1.765
-      Term::Choose::Opt::Search 1.765
-      Term::Choose::Opt::SkipItems 1.765
-      Term::Choose::Screen 1.765
-      Term::Choose::ValidateOptions 1.765
-      Term::Choose::Win32 1.765
-    requirements:
-      Carp 0
-      Exporter 0
-      ExtUtils::MakeMaker 0
-      File::Spec::Functions 0
-      FindBin 0
-      Test::Fatal 0
-      Test::More 0
-      constant 0
-      lib 0
-      perl 5.010000
-      strict 0
-      warnings 0
   Term-Size-Any-0.002
     pathname: F/FE/FERREIRA/Term-Size-Any-0.002.tar.gz
     provides:
@@ -7412,7 +7384,7 @@ DISTRIBUTIONS
       Exporter 0
       ExtUtils::MakeMaker 0
       constant 0
-      perl 5.00503
+      perl 5.005030
   Text-SimpleTable-2.07
     pathname: M/MR/MRAMBERG/Text-SimpleTable-2.07.tar.gz
     provides:
