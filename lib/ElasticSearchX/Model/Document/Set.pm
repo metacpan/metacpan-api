@@ -54,7 +54,7 @@ my $get = \&get;
 my $inflate_result = \&inflate_result;
 *inflate_result = sub {
     my ( $self, $res ) = @_;
-    my $new_res = { %$res };
+    my $new_res = {%$res};
     delete $new_res->{_index};
     delete $new_res->{_type};
     $self->$inflate_result($new_res);
