@@ -1,0 +1,121 @@
+{
+    "dynamic": false,
+    "properties": {
+        "bugs": {
+            "dynamic": true,
+            "properties": {
+                "github": {
+                    "dynamic": true,
+                    "properties": {
+                        "active": {
+                            "type": "integer"
+                        },
+                        "closed": {
+                            "type": "integer"
+                        },
+                        "open": {
+                            "type": "integer"
+                        },
+                        "source": {
+                            "ignore_above": 2048,
+                            "index": "not_analyzed",
+                            "type": "string"
+                        }
+                    }
+                },
+                "rt": {
+                    "dynamic": true,
+                    "properties": {
+                        "active": {
+                            "type": "integer"
+                        },
+                        "closed": {
+                            "type": "integer"
+                        },
+                        "new": {
+                            "type": "integer"
+                        },
+                        "open": {
+                            "type": "integer"
+                        },
+                        "patched": {
+                            "type": "integer"
+                        },
+                        "rejected": {
+                            "type": "integer"
+                        },
+                        "resolved": {
+                            "type": "integer"
+                        },
+                        "source": {
+                            "ignore_above": 2048,
+                            "index": "not_analyzed",
+                            "type": "string"
+                        },
+                        "stalled": {
+                            "type": "integer"
+                        }
+                    }
+                }
+            }
+        },
+        "external_package": {
+            "dynamic": true,
+            "properties": {
+                "cygwin": {
+                    "ignore_above": 2048,
+                    "index": "not_analyzed",
+                    "type": "string"
+                },
+                "debian": {
+                    "ignore_above": 2048,
+                    "index": "not_analyzed",
+                    "type": "string"
+                },
+                "fedora": {
+                    "ignore_above": 2048,
+                    "index": "not_analyzed",
+                    "type": "string"
+                }
+            }
+        },
+        "name": {
+            "ignore_above": 2048,
+            "index": "not_analyzed",
+            "type": "string"
+        },
+        "repo": {
+            "dynamic": true,
+            "properties": {
+                "github": {
+                    "dynamic": true,
+                    "properties": {
+                        "stars": {
+                            "type": "integer"
+                        },
+                        "watchers": {
+                            "type": "integer"
+                        }
+                    }
+                }
+            }
+        },
+        "river": {
+            "dynamic": true,
+            "properties": {
+                "bucket": {
+                    "type": "integer"
+                },
+                "bus_factor": {
+                    "type": "integer"
+                },
+                "immediate": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        }
+    }
+}

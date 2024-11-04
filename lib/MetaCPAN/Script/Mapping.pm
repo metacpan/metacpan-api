@@ -6,7 +6,7 @@ use Cpanel::JSON::XS          qw( decode_json );
 use DateTime                  ();
 use Log::Contextual           qw( :log );
 use MetaCPAN::ESConfig        qw( es_config );
-use MetaCPAN::Types::TypeTiny qw( Bool Str );
+use MetaCPAN::Types::TypeTiny qw( Bool HashRef Int Str );
 use Time::HiRes               qw( sleep time );
 
 use constant {
@@ -54,7 +54,7 @@ has arg_cluster_info => (
     is            => 'ro',
     isa           => Bool,
     default       => 0,
-    documentation => 'show basic info about cluster, indices and aliases',
+    documentation => 'show basic info about cluster and indices',
 );
 
 has arg_create_index => (
@@ -131,11 +131,36 @@ has arg_delete_index => (
     documentation => 'delete an existing index',
 );
 
+has arg_await_timeout => (
+    init_arg      => 'await',
+    is            => 'ro',
+    isa           => Int,
+    default       => 15,
+    documentation =>
+        'seconds before connection is considered failed with timeout',
+);
+
 has delete_from_type => (
     is            => 'ro',
     isa           => Str,
     default       => "",
     documentation => 'delete data from an existing type',
+);
+
+has cluster_info => (
+    isa     => HashRef,
+    traits  => ['Hash'],
+    is      => 'rw',
+    lazy    => 1,
+    default => sub { {} },
+);
+
+has indices_info => (
+    isa     => HashRef,
+    traits  => ['Hash'],
+    is      => 'rw',
+    lazy    => 1,
+    default => sub { {} },
 );
 
 sub run {
@@ -171,10 +196,7 @@ sub run {
 
         if ( $self->arg_verify_mapping ) {
             $self->check_health;
-            unless ( $self->mappings_valid(
-                $self->_build_mapping, $self->_build_aliases
-            ) )
-            {
+            unless ( $self->indices_valid( $self->_build_index_config ) ) {
                 $self->print_error("Indices Verification has failed!");
                 $self->exit_code(1);
             }
@@ -314,7 +336,12 @@ sub create_index {
 
     # create the new index with the copied settings
     log_info {"Creating index: $dst_idx"};
-    $self->es->indices->create( index => $dst_idx, body => $index_settings );
+    $self->es->indices->create(
+        index => $dst_idx,
+        body  => {
+            settings => $index_settings,
+        },
+    );
 
     # override with new type mapping
     if ( $self->patch_mapping ) {
@@ -478,123 +505,63 @@ sub show_info {
     my $info_rs = {
         'cluster_info' => \%{ $self->cluster_info },
         'indices_info' => \%{ $self->indices_info },
-        'aliases_info' => \%{ $self->aliases_info }
     };
     log_info { JSON->new->utf8->pretty->encode($info_rs) };
 }
 
-sub _build_mapping {
-    my $self     = $_[0];
-    my $docs     = es_config->documents;
-    my $mappings = {};
+sub _build_index_config {
+    my $self    = $_[0];
+    my $docs    = es_config->documents;
+    my $indices = {};
     for my $name ( sort keys %$docs ) {
         my $doc   = $docs->{$name};
         my $index = $doc->{index}
             or die "no index defined for $name documents";
         my $type = $doc->{type}
             or die "no type defined for $name documents";
-        my $mapping = es_config->mapping($name);
-        $mappings->{$index}{$type} = $mapping;
+        die "$index specified for multiple documents"
+            if $indices->{$index};
+        my $mapping  = es_config->mapping($name);
+        my $settings = es_config->index_settings($name);
+        $indices->{$index} = {
+            settings => $settings,
+            mappings => {
+                $type => $mapping,
+            },
+        };
     }
 
-    return $mappings;
-}
-
-sub _build_aliases {
-    my $self = $_[0];
-    es_config->aliases;
+    return $indices;
 }
 
 sub deploy_mapping {
-    my $self          = shift;
-    my $is_mapping_ok = 0;
+    my $self = shift;
 
     $self->are_you_sure(
         'this will delete EVERYTHING and re-create the (empty) indexes');
 
     # Deserialize the Index Mapping Structure
-    my $rmappings = $self->_build_mapping;
+    my $rindices = $self->_build_index_config;
 
     my $es = $self->es;
 
     # recreate the indices and apply the mapping
 
-    for my $idx ( sort keys %$rmappings ) {
-        $self->_delete_index($idx) if $es->indices->exists( index => $idx );
-        my $index_settings = es_config->index_settings($idx);
+    for my $idx ( sort keys %$rindices ) {
+        $self->_delete_index($idx)
+            if $es->indices->exists( index => $idx );
 
         log_info {"Creating index: $idx"};
-        $es->indices->create( index => $idx, body => $index_settings );
 
-        for my $type ( sort keys %{ $rmappings->{$idx} } ) {
-            log_info {"Adding mapping: $idx/$type"};
-            $es->indices->put_mapping(
-                index => $idx,
-                type  => $type,
-                body  => { $type => $rmappings->{$idx}{$type} },
-            );
-        }
-    }
-
-    # create aliases
-
-    my $raliases = $self->_build_aliases;
-    for my $alias ( sort keys %$raliases ) {
-        log_info {
-            "Creating alias: '$alias' -> '" . $raliases->{$alias} . "'"
-        };
-        $es->indices->put_alias(
-            index => $raliases->{$alias},
-            name  => $alias,
-        );
+        $es->indices->create( index => $idx, body => $rindices->{$idx} );
     }
 
     $self->check_health(1);
-    $is_mapping_ok = $self->mappings_valid( $rmappings, $raliases );
 
     # done
     log_info {"Done."};
 
-    return $is_mapping_ok;
-}
-
-sub aliases_valid {
-    my ( $self, $raliases ) = @_;
-    my $ivalid = 0;
-
-    if ( defined $raliases && ref $raliases eq 'HASH' ) {
-        my $ralias = undef;
-
-        $ivalid = 1;
-
-        for my $name ( sort keys %$raliases ) {
-            $ralias = $self->aliases_info->{$name};
-            if ( defined $ralias ) {
-                if ( $ralias->{'index'} eq $raliases->{$name} ) {
-                    log_info {
-                        "Correct alias: $name (index '"
-                            . $ralias->{'index'} . "')"
-                    };
-                }
-                else {
-                    log_error {
-                        "Broken alias: $name (index '"
-                            . $ralias->{'index'} . "')"
-                    };
-                    $ivalid = 0;
-                }
-            }
-            else {
-                log_error {"Missing alias: $name"};
-                $ivalid = 0;
-            }
-        }
-    }
-    else {
-        $ivalid = 0 if ( scalar( keys %{ $self->aliases_info } ) == 0 );
-    }
-
-    return $ivalid;
+    return $self->indices_valid($rindices);
 }
 
 sub _compare_mapping {
@@ -816,66 +783,149 @@ sub _compare_mapping {
     return $imatch;
 }
 
-sub mappings_valid {
-    my ( $self, $rmappings, $raliases ) = @_;
-    my $ivalid = 0;
+sub indices_valid {
+    my ( $self, $config_indices ) = @_;
+    my $valid = 0;
 
-    if ( defined $rmappings && ref $rmappings eq 'HASH' ) {
-        my $rindices = $self->es->indices->get_mapping();
-        my $iindexok = 0;
+    if ( defined $config_indices && ref $config_indices eq 'HASH' ) {
+        my $deploy_indices = $self->es->indices->get_mapping;
+        $valid = 1;
 
-        $ivalid = 1;
+        for my $idx ( sort keys %$config_indices ) {
+            my $config_mappings = $config_indices->{$idx}
+                && $config_indices->{$idx}->{'mappings'};
+            my $deploy_mappings = $deploy_indices->{$idx}
+                && $deploy_indices->{$idx}->{'mappings'};
+            if ( !$deploy_mappings ) {
+                log_error {"Missing index: $idx"};
+                $valid = 0;
+                next;
+            }
 
-        for my $idx ( sort keys %$rmappings ) {
-            if (   defined $rindices->{$idx}
-                && defined $rindices->{$idx}->{'mappings'} )
+            log_info {
+                "Verifying index: $idx"
+            };
+
+            if ( $self->_compare_mapping(
+                $idx, $deploy_mappings, $config_mappings
+            ) )
             {
                 log_info {
-                    "Verifying index: $idx"
+                    "Correct index: $idx (mapping deployed)"
                 };
-
-                $iindexok
-                    = $self->_compare_mapping( $idx,
-                    $rindices->{$idx}->{'mappings'},
-                    $rmappings->{$idx} );
-
-                if ($iindexok) {
-                    log_info {
-                        "Correct index: $idx (mapping deployed)"
-                    };
-                }
-                else {
-                    log_error {
-                        "Broken index: $idx (mapping does not match definition)"
-                    };
-                    $ivalid = 0;
-                }
-
-                $ivalid = ( $ivalid && $iindexok );
             }
             else {
-                log_error {"Missing index: $idx"};
-                $ivalid = 0;
+                log_error {
+                    "Broken index: $idx (mapping does not match definition)"
+                };
+                $valid = 0;
             }
         }
     }
-    if ($ivalid) {
+
+    if ($valid) {
         log_info {"Verification indices: ok"};
     }
     else {
         log_info {"Verification indices: failed"};
     }
 
-    $ivalid = ( $ivalid && $self->aliases_valid($raliases) );
+    return $valid;
+}
 
-    if ($ivalid) {
-        log_info {"Verification aliases: ok"};
+sub _get_indices_info {
+    my ( $self, $irefresh ) = @_;
+
+    if ( $irefresh || scalar( keys %{ $self->indices_info } ) == 0 ) {
+        my $sinfo_rs = $self->es->cat->indices( h => [ 'index', 'health' ] );
+        my $sindices_parsing = qr/^([^[:space:]]+) +([^[:space:]]+)/m;
+
+        $self->indices_info( {} );
+
+        while ( $sinfo_rs =~ /$sindices_parsing/g ) {
+            $self->indices_info->{$1}
+                = { 'index_name' => $1, 'health' => $2 };
+        }
+    }
+}
+
+sub check_health {
+    my ( $self, $irefresh ) = @_;
+    my $ihealth = 0;
+
+    $irefresh = 0 unless ( defined $irefresh );
+
+    $ihealth = $self->await;
+
+    if ($ihealth) {
+        $self->_get_indices_info($irefresh);
+
+        foreach ( keys %{ $self->indices_info } ) {
+            $ihealth = 0
+                if ( $self->indices_info->{$_}->{'health'} eq 'red' );
+        }
+    }
+
+    return $ihealth;
+}
+
+sub await {
+    my $self   = $_[0];
+    my $iready = 0;
+
+    if ( scalar( keys %{ $self->cluster_info } ) == 0 ) {
+        my $es       = $self->es;
+        my $iseconds = 0;
+
+        log_info {"Awaiting Elasticsearch ..."};
+
+        do {
+            eval {
+                $iready = $es->ping;
+
+                if ($iready) {
+                    log_info {
+                        "Awaiting $iseconds / "
+                            . $self->arg_await_timeout
+                            . " : ready"
+                    };
+
+                    $self->cluster_info( \%{ $es->info } );
+                }
+            };
+
+            if ($@) {
+                if ( $iseconds < $self->arg_await_timeout ) {
+                    log_info {
+                        "Awaiting $iseconds / "
+                            . $self->arg_await_timeout
+                            . " : unavailable - sleeping ..."
+                    };
+
+                    sleep(1);
+
+                    $iseconds++;
+                }
+                else {
+                    log_error {
+                        "Awaiting $iseconds / "
+                            . $self->arg_await_timeout
+                            . " : unavailable - timeout!"
+                    };
+
+                    #Set System Error: 112 - EHOSTDOWN - Host is down
+                    $self->exit_code(112);
+                    $self->handle_error( $@, 1 );
+                }
+            }
+        } while ( !$iready && $iseconds <= $self->arg_await_timeout );
     }
     else {
-        log_info {"Verification aliases: failed"};
+        #ElasticSearch Service is available
+        $iready = 1;
     }
 
-    return $ivalid;
+    return $iready;
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -891,10 +941,10 @@ MetaCPAN::Script::Mapping - Script to set the index and mapping the types
 
 =head1 SYNOPSIS
 
- # bin/metacpan mapping --show_cluster_info   # show basic info about the cluster, indices and aliases
+ # bin/metacpan mapping --show_cluster_info   # show basic info about the cluster and indices
  # bin/metacpan mapping --delete
  # bin/metacpan mapping --delete --all        # deletes ALL indices in the cluster
- # bin/metacpan mapping --verify              # compare deployed indices and aliases with project definitions
+ # bin/metacpan mapping --verify              # compare deployed indices with project definitions
  # bin/metacpan mapping --list_types
  # bin/metacpan mapping --delete_index xxx
  # bin/metacpan mapping --create_index xxx --reindex
@@ -920,7 +970,7 @@ This Script accepts the following options
 =item Option C<--show_cluster_info>
 
 This option makes the Script show basic information about the I<ElasticSearch> Cluster
-and its indices and aliases.
+and its indices.
 This information has to be collected with the C<MetaCPAN::Role::Script::check_health()> Method.
 On Script start-up it is empty.
 
@@ -931,7 +981,7 @@ See L<Method C<MetaCPAN::Role::Script::check_health()>>
 =item Option C<--delete>
 
 This option makes the Script delete all indices configured in the project and re-create them emtpy.
-It verifies the index integrity of the indices and aliases calling the methods
+It verifies the index integrity of the indices calling the methods
 C<MetaCPAN::Role::Script::check_health()> and C<mappings_valid()>.
 If the C<mappings_valid()> Method fails it will report an error.
 
@@ -983,12 +1033,12 @@ This Package provides the following methods
 
 =item C<deploy_mapping()>
 
-Deletes and re-creates the indices and aliases defined in the Project.
+Deletes and re-creates the indices defined in the Project.
 The user will be requested for manual confirmation on the command line before the elemination.
-The integrity of the indices and aliases will be checked with the C<mappings_valid()> Method.
+The integrity of the indices will be checked with the C<mappings_valid()> Method.
 On successful creation it returns C< 1 >, otherwise it returns C< 0 >.
 
-B<Returns:> It returns C< 1 > when the indices and aliases are created and verified as correct.
+B<Returns:> It returns C< 1 > when the indices are created and verified as correct.
 Otherwise it returns C< 0 >.
 
 B<Exceptions:> It can throw exceptions when the connection to I<ElasticSearch> fails
@@ -1000,12 +1050,11 @@ See L<Method C<mappings_valid()>>
 
 See L<Method C<MetaCPAN::Role::Script::check_health()>>
 
-=item C<mappings_valid( \%indices, \%aliases )>
+=item C<mappings_valid( \%indices )>
 
 This method uses the
 L<C<Search::Elasticsearch::Client::2_0::Direct::get_mapping()>|https://metacpan.org/pod/Search::Elasticsearch::Client::2_0::Direct#get_mapping()>
 method to request the complete index mappings structure from the I<ElasticSearch> Cluster.
-It also uses the alias information gathered by the C<MetaCPAN::Role::Script::check_health()> method.
 Then it performs an in-depth structure match against the Project Definitions.
 Missing indices or any structure mismatch will be count as error.
 Errors will be reported in the activity log.
@@ -1014,9 +1063,7 @@ B<Parameters:>
 
 C<\%indices> - Reference to a hash that defines the indices required for the Project.
 
-C<\%aliases> - Reference to a hash that defines the aliases required for the Project.
-
-B<Returns:> It returns C< 1 > when the indices and aliases are created and match the defined structure.
+B<Returns:> It returns C< 1 > when the indices are created and match the defined structure.
 Otherwise it returns C< 0 >.
 
 See L<Option C<--delete>>
@@ -1024,6 +1071,45 @@ See L<Option C<--delete>>
 See L<Method C<mappings_valid()>>
 
 See L<Method C<MetaCPAN::Role::Script::check_health()>>
+
+=item C<await()>
+
+This method uses the
+L<C<Search::Elasticsearch::Client::2_0::Direct::ping()>|https://metacpan.org/pod/Search::Elasticsearch::Client::2_0::Direct#ping()>
+method to verify the service availabilty and wait for C<arg_await_timeout> seconds.
+When the service does not become available within C<arg_await_timeout> seconds it re-throws the
+Exception from the C<Search::Elasticsearch::Client> and sets B<Exit Code> to C< 112 >.
+The C<Search::Elasticsearch::Client> generates a C<"Search::Elasticsearch::Error::NoNodes"> Exception.
+When the service is available it will populate the C<cluster_info> C<HASH> structure with the basic information
+about the cluster.
+
+B<Exceptions:> It will throw an exceptions when the I<ElasticSearch> service does not become available
+within C<arg_await_timeout> seconds (as described above).
+
+See L<Option C<--await 15>>
+
+See L<Method C<check_health()>>
+
+=item C<check_health( [ refresh ] )>
+
+This method uses the
+L<C<Search::Elasticsearch::Client::2_0::Direct::cat()>|https://metacpan.org/pod/Search::Elasticsearch::Client::2_0::Direct#cat()>
+method to collect basic data about the cluster structure as the general information,
+the health state of the indices.
+This information is stored in C<cluster_info>, C<indices_info> as C<HASH> structures.
+If the parameter C<refresh> is set to C< 1 > the structure C<indices_info> will always
+be updated.
+If the C<cluster_info> structure is empty it calls first the C<await()> method.
+If the service is unavailable the C<await()> method will produce an exception and the structures will be empty
+The method returns C< 1 > when the C<cluster_info> is populated, none of the indices in C<indices_info> has
+the Health State I<red> otherwise the method returns C< 0 >
+
+B<Parameters:>
+
+C<refresh> - Integer evaluated as boolean when set to C< 1 > the cluster info structures
+will always be updated.
+
+See L<Method C<await()>>
 
 =back
 

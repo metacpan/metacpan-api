@@ -4,7 +4,6 @@ use Moose::Role;
 
 use Carp                         ();
 use MooseX::Types::ElasticSearch qw( ES );
-use File::Path                   ();
 use IO::Prompt::Tiny             qw( prompt );
 use Log::Contextual              qw( :log :dlog );
 use MetaCPAN::Model              ();
@@ -48,15 +47,6 @@ has exit_code => (
     documentation => 'Exit Code to be returned on termination',
 );
 
-has arg_await_timeout => (
-    init_arg      => 'await',
-    is            => 'ro',
-    isa           => Int,
-    default       => 15,
-    documentation =>
-        'seconds before connection is considered failed with timeout',
-);
-
 has ua => (
     is      => 'ro',
     lazy    => 1,
@@ -86,29 +76,6 @@ has model => (
     traits   => ['NoGetopt'],
 );
 
-has cluster_info => (
-    isa     => HashRef,
-    traits  => ['Hash'],
-    is      => 'rw',
-    lazy    => 1,
-    default => sub { {} },
-);
-
-has indices_info => (
-    isa     => HashRef,
-    traits  => ['Hash'],
-    is      => 'rw',
-    lazy    => 1,
-    default => sub { {} },
-);
-
-has aliases_info => (
-    isa     => HashRef,
-    traits  => ['Hash'],
-    is      => 'rw',
-    default => sub { {} },
-);
-
 has port => (
     isa           => Int,
     is            => 'ro',
@@ -124,13 +91,6 @@ has home => (
     lazy    => 1,
     coerce  => 1,
     default => sub { root_dir() },
-);
-
-has quarantine => (
-    is      => 'ro',
-    isa     => Str,
-    lazy    => 1,
-    builder => '_build_quarantine',
 );
 
 has _minion => (
@@ -223,139 +183,11 @@ sub _build_cpan_file_map {
     return $cpan;
 }
 
-sub _build_quarantine {
-    my $path = "$ENV{HOME}/QUARANTINE";
-    if ( !-d $path ) {
-        File::Path::mkpath($path);
-    }
-    return $path;
-}
-
-sub remote {
-    shift->es->nodes->info->[0];
-}
-
 sub run { }
 before run => sub {
     my $self = shift;
     $self->set_logger_once;
 };
-
-sub _get_indices_info {
-    my ( $self, $irefresh ) = @_;
-
-    if ( $irefresh || scalar( keys %{ $self->indices_info } ) == 0 ) {
-        my $sinfo_rs = $self->es->cat->indices( h => [ 'index', 'health' ] );
-        my $sindices_parsing = qr/^([^[:space:]]+) +([^[:space:]]+)/m;
-
-        $self->indices_info( {} );
-
-        while ( $sinfo_rs =~ /$sindices_parsing/g ) {
-            $self->indices_info->{$1}
-                = { 'index_name' => $1, 'health' => $2 };
-        }
-    }
-}
-
-sub _get_aliases_info {
-    my ( $self, $irefresh ) = @_;
-
-    if ( $irefresh || scalar( keys %{ $self->aliases_info } ) == 0 ) {
-        my $sinfo_rs = $self->es->cat->aliases( h => [ 'alias', 'index' ] );
-        my $saliases_parsing = qr/^([^[:space:]]+) +([^[:space:]]+)/m;
-
-        $self->aliases_info( {} );
-
-        while ( $sinfo_rs =~ /$saliases_parsing/g ) {
-            $self->aliases_info->{$1} = { 'alias_name' => $1, 'index' => $2 };
-        }
-    }
-}
-
-sub check_health {
-    my ( $self, $irefresh ) = @_;
-    my $ihealth = 0;
-
-    $irefresh = 0 unless ( defined $irefresh );
-
-    $ihealth = $self->await;
-
-    if ($ihealth) {
-        $self->_get_indices_info($irefresh);
-
-        foreach ( keys %{ $self->indices_info } ) {
-            $ihealth = 0
-                if ( $self->indices_info->{$_}->{'health'} eq 'red' );
-        }
-    }
-
-    if ($ihealth) {
-        $self->_get_aliases_info($irefresh);
-
-        $ihealth = 0 if ( scalar( keys %{ $self->aliases_info } ) == 0 );
-    }
-
-    return $ihealth;
-}
-
-sub await {
-    my $self   = $_[0];
-    my $iready = 0;
-
-    if ( scalar( keys %{ $self->cluster_info } ) == 0 ) {
-        my $es       = $self->es;
-        my $iseconds = 0;
-
-        log_info {"Awaiting Elasticsearch ..."};
-
-        do {
-            eval {
-                $iready = $es->ping;
-
-                if ($iready) {
-                    log_info {
-                        "Awaiting $iseconds / "
-                            . $self->arg_await_timeout
-                            . " : ready"
-                    };
-
-                    $self->cluster_info( \%{ $es->info } );
-                }
-            };
-
-            if ($@) {
-                if ( $iseconds < $self->arg_await_timeout ) {
-                    log_info {
-                        "Awaiting $iseconds / "
-                            . $self->arg_await_timeout
-                            . " : unavailable - sleeping ..."
-                    };
-
-                    sleep(1);
-
-                    $iseconds++;
-                }
-                else {
-                    log_error {
-                        "Awaiting $iseconds / "
-                            . $self->arg_await_timeout
-                            . " : unavailable - timeout!"
-                    };
-
-                    #Set System Error: 112 - EHOSTDOWN - Host is down
-                    $self->exit_code(112);
-                    $self->handle_error( $@, 1 );
-                }
-            }
-        } while ( !$iready && $iseconds <= $self->arg_await_timeout );
-    }
-    else {
-        #ElasticSearch Service is available
-        $iready = 1;
-    }
-
-    return $iready;
-}
 
 sub are_you_sure {
     my ( $self, $msg ) = @_;
@@ -436,46 +268,6 @@ See L<Method C<await()>>
 This Role provides the following methods
 
 =over 4
-
-=item C<await()>
-
-This method uses the
-L<C<Search::Elasticsearch::Client::2_0::Direct::ping()>|https://metacpan.org/pod/Search::Elasticsearch::Client::2_0::Direct#ping()>
-method to verify the service availabilty and wait for C<arg_await_timeout> seconds.
-When the service does not become available within C<arg_await_timeout> seconds it re-throws the
-Exception from the C<Search::Elasticsearch::Client> and sets B<Exit Code> to C< 112 >.
-The C<Search::Elasticsearch::Client> generates a C<"Search::Elasticsearch::Error::NoNodes"> Exception.
-When the service is available it will populate the C<cluster_info> C<HASH> structure with the basic information
-about the cluster.
-
-B<Exceptions:> It will throw an exceptions when the I<ElasticSearch> service does not become available
-within C<arg_await_timeout> seconds (as described above).
-
-See L<Option C<--await 15>>
-
-See L<Method C<check_health()>>
-
-=item C<check_health( [ refresh ] )>
-
-This method uses the
-L<C<Search::Elasticsearch::Client::2_0::Direct::cat()>|https://metacpan.org/pod/Search::Elasticsearch::Client::2_0::Direct#cat()>
-method to collect basic data about the cluster structure as the general information,
-the health state of the indices and the created aliases.
-This information is stored in C<cluster_info>, C<indices_info> and C<aliases_info> as C<HASH> structures.
-If the parameter C<refresh> is set to C< 1 > the structures C<indices_info> and C<aliases_info> will always
-be updated.
-If the C<cluster_info> structure is empty it calls first the C<await()> method.
-If the service is unavailable the C<await()> method will produce an exception and the structures will be empty
-The method returns C< 1 > when the C<cluster_info> is populated, none of the indices in C<indices_info> has
-the Health State I<red> and at least one alias is created in C<aliases_info>
-otherwise the method returns C< 0 >
-
-B<Parameters:>
-
-C<refresh> - Integer evaluated as boolean when set to C< 1 > the cluster info structures
-will always be updated.
-
-See L<Method C<await()>>
 
 =item C<are_you_sure()>
 
