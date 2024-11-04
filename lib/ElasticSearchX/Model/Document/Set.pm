@@ -10,7 +10,7 @@ our %query_override;
 my $_build_query = \&_build_query;
 *_build_query = sub {
     my $query = $_build_query->(@_);
-    %$query = ( %$query, %query_override, );
+    %$query = ( %$query, %query_override );
     return $query;
 };
 
@@ -18,10 +18,13 @@ our %qs_override;
 my $_build_qs = \&_build_qs;
 *_build_qs = sub {
     my $qs = $_build_qs->(@_);
-    %$qs = ( %$qs, %qs_override, );
+    %$qs = ( %$qs, %qs_override );
     return $qs;
 };
 
+# ESXM normally tries to use search_type => scan, which is deprecated or
+# removed in newer Elasticsearch versions. Sorting on _doc gives the same
+# optimization.
 my $delete = \&delete;
 *delete = sub {
     local %qs_override    = ( search_type => 'query_then_fetch' );
