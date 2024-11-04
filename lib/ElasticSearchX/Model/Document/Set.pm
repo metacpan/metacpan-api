@@ -44,4 +44,17 @@ my $get = \&get;
     goto &$get;
 };
 
+# ESXM will try to inflate based on the index/type stored in the result. We
+# are using aliases, and ESXM doesn't know about the actual index that the
+# docs are stored in. Instead, allow it to use the configured index/type for
+# this doc set.
+my $inflate_result = \&inflate_result;
+*inflate_result = sub {
+    my ( $self, $res ) = @_;
+    my $new_res = { %$res };
+    delete $new_res->{_index};
+    delete $new_res->{_type};
+    $self->$inflate_result($new_res);
+};
+
 1;
