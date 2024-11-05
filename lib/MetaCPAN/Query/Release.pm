@@ -571,9 +571,17 @@ sub versions {
         query   => $query,
         size    => $size,
         sort    => [ { date => 'desc' } ],
-        _source => [
-            qw( name date author version status maturity authorized download_url)
-        ],
+        _source => [ qw(
+            name
+            date
+            author
+            version
+            status
+            maturity
+            authorized
+            download_url
+            main_module
+        ) ],
     };
 
     my $ret = $self->es->search( es_doc_path('release'), body => $body, );
