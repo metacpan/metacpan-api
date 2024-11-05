@@ -285,7 +285,7 @@ sub _activity_filters {
     if ( $new_dists and $new_dists eq 'n' ) {
         push @filters,
             (
-            +{ term  => { first  => 1 } },
+            +{ term  => { first  => true } },
             +{ terms => { status => [qw( cpan latest )] } },
             );
     }
