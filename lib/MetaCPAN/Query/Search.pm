@@ -54,11 +54,11 @@ sub search_for_first_result {
 =cut
 
 sub search_web {
-    my ( $self, $search_term, $from, $page_size, $collapsed,
+    my ( $self, $search_term, $page, $page_size, $collapsed,
         $max_collapsed_hits )
         = @_;
     $page_size //= 20;
-    $from      //= 0;
+    $page      //= 1;
 
     $search_term =~ s{([+=><!&|\(\)\{\}[\]\^"~*?\\/])}{\\$1}g;
 
@@ -78,15 +78,15 @@ sub search_web {
 
     my $results
         = $collapsed // $search_term !~ /(distribution|module\.name\S*):/
-        ? $self->_search_collapsed( $search_term, $from, $page_size,
+        ? $self->_search_collapsed( $search_term, $page, $page_size,
         $max_collapsed_hits )
-        : $self->_search_expanded( $search_term, $from, $page_size );
+        : $self->_search_expanded( $search_term, $page, $page_size );
 
     return $results;
 }
 
 sub _search_expanded {
-    my ( $self, $search_term, $from, $page_size ) = @_;
+    my ( $self, $search_term, $page, $page_size ) = @_;
 
     # Used for distribution and module searches, the limit is included in
     # the query and ES does the right thing (because we are not collapsing
@@ -95,7 +95,7 @@ sub _search_expanded {
         $search_term,
         {
             size => $page_size,
-            from => $from
+            from => ( $page - 1 ) * $page_size,
         }
     );
 
@@ -122,11 +122,12 @@ sub _search_expanded {
 }
 
 sub _search_collapsed {
-    my ( $self, $search_term, $from, $page_size, $max_collapsed_hits ) = @_;
+    my ( $self, $search_term, $page, $page_size, $max_collapsed_hits ) = @_;
 
     $max_collapsed_hits ||= 5;
 
-    my $total_size = $from + $page_size;
+    my $from       = ( $page - 1 ) * $page_size;
+    my $total_size = $page * $page_size;
 
     my $es_query_opts = {
         size    => 0,

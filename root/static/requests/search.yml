@@ -18,14 +18,26 @@ search_web:
           See also `collapsed`
         type: string
         required: true
+      - name: page
+        in: query
+        description: The page of the results to return
+        type: integer
+      - name: page_size
+        in: query
+        description: Number of results per page
+        type: integer
       - name: from
         in: query
-        description: The offset to use in the result set
+        description: |
+          The offset to use in the result set. Deprecated. Only used if `page`
+          is not set.
         type: integer
         default: 0
       - name: size
         in: query
-        description: Number of results per page
+        description: |
+          Number of results per page. Deprecated. Only used if `page_size` is
+          not set.
         type: integer
         default: 20
       - name: collapsed
