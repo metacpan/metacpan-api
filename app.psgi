@@ -13,8 +13,10 @@ use File::Path            ();
 use File::Spec            ();
 use Log::Log4perl         ();
 use Path::Tiny            qw( path );
+use Plack::App::File      ();
 use Plack::App::Directory ();
 use Plack::App::URLMap    ();
+use Plack::Util           ();
 
 my $dev_mode;
 my $config;
@@ -55,11 +57,40 @@ if ( -e "/.dockerenv" and MetaCPAN::Server->log->isa('Catalyst::Log') ) {
     STDOUT->autoflush;
 }
 
+sub _add_headers {
+    my ( $app, $add_headers ) = @_;
+    sub {
+        Plack::Util::response_cb(
+            $app->(@_),
+            sub {
+                my $res = shift;
+                my ( $status, $headers ) = @$res;
+                if ( $status >= 200 && $status < 300 ) {
+                    push @$headers, @$add_headers;
+                }
+                return $res;
+            }
+        );
+    };
+}
+
 my $static
     = Plack::App::Directory->new(
     { root => path( $root_dir, 'root', 'static' ) } )->to_app;
 
 my $urlmap = Plack::App::URLMap->new;
+$urlmap->map(
+    '/favicon.ico' => _add_headers(
+        Plack::App::File->new(
+            file => path( $root_dir, 'root', 'static', 'favicon.ico' )
+        )->to_app,
+        [
+            'Cache-Control'     => 'public, max-age=' . ( 60 * 60 * 24 ),
+            'Surrogate-Control' => 'max-age=' . ( 60 * 60 * 24 * 365 ),
+            'Surrogate-Key'     => 'static',
+        ],
+    )
+);
 $urlmap->map( '/static' => $static );
 if ( $ENV{PLACK_ENV} && $ENV{PLACK_ENV} eq 'development' ) {
     $urlmap->map( '/v1' => MetaCPAN::Server->app );
