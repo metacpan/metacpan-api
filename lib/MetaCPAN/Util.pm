@@ -94,11 +94,7 @@ sub fix_version {
 
 sub author_dir {
     my $pauseid = shift;
-    my $dir     = 'id/'
-        . sprintf( "%s/%s/%s",
-        substr( $pauseid, 0, 1 ),
-        substr( $pauseid, 0, 2 ), $pauseid );
-    return $dir;
+    return sprintf( 'id/%1$.1s/%1$.2s/%1$s', $pauseid );
 }
 
 sub hit_total {
