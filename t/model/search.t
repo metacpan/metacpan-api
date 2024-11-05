@@ -35,12 +35,12 @@ ok( $search, 'search' );
 
     ok( $collapsed_search->{collapsed}, 'results are flagged as collapsed' );
 
-    my $from      = 0;
+    my $page      = 1;
     my $page_size = 20;
     my $collapsed = 0;
 
     my $expanded
-        = $search->search_web( 'Foo', $from, $page_size, $collapsed );
+        = $search->search_web( 'Foo', $page, $page_size, $collapsed );
 
     ok( !$expanded->{collapsed}, 'results are flagged as expanded' );
 

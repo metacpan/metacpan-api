@@ -30,8 +30,13 @@ sub web : Chained('/search/index') : PathPart('web') : Args(0) {
     my ( $self, $c ) = @_;
     my $args = $c->req->params;
 
+    my $query = $args->{q};
+    my $size  = $args->{page_size} // $args->{size} // 20;
+    my $page = $args->{page} // ( 1 + int( ( $args->{from} // 0 ) / $size ) );
+    my $collapsed = $args->{collapsed};
+
     my $model   = $c->model('Search');
-    my $results = $model->search_web( @{$args}{qw( q from size collapsed )} );
+    my $results = $model->search_web( $query, $page, $size, $collapsed );
 
     $c->stash($results);
 }

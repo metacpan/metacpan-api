@@ -4,7 +4,7 @@ use MetaCPAN::Moose;
 
 use MetaCPAN::ESConfig qw( es_doc_path );
 use MetaCPAN::Util
-    qw( hit_total single_valued_arrayref_to_scalar true false );
+    qw( MAX_RESULT_WINDOW hit_total single_valued_arrayref_to_scalar true false );
 
 with 'MetaCPAN::Query::Role::Common';
 
@@ -403,9 +403,17 @@ sub by_author_and_names {
 }
 
 sub by_author {
-    my ( $self, $pauseid, $size, $page ) = @_;
+    my ( $self, $pauseid, $page, $size ) = @_;
     $size //= 1000;
     $page //= 1;
+
+    if ( $page * $size >= MAX_RESULT_WINDOW ) {
+        return {
+            releases => [],
+            took     => 0,
+            total    => 0,
+        };
+    }
 
     my $body = {
         query => {
@@ -495,9 +503,17 @@ sub latest_by_author {
 }
 
 sub all_by_author {
-    my ( $self, $author, $size, $page ) = @_;
+    my ( $self, $author, $page, $size ) = @_;
     $size //= 100;
     $page //= 1;
+
+    if ( $page * $size >= MAX_RESULT_WINDOW ) {
+        return {
+            releases => [],
+            took     => 0,
+            total    => 0,
+        };
+    }
 
     my $body = {
         query   => { term => { author => uc($author) } },
@@ -639,11 +655,11 @@ sub top_uploaders {
 sub requires {
     my ( $self, $module, $page, $page_size, $sort ) = @_;
     return $self->_get_depended_releases( [$module], $page, $page_size,
-        $page_size, $sort );
+        $sort );
 }
 
 sub reverse_dependencies {
-    my ( $self, $distribution, $page, $page_size, $size, $sort ) = @_;
+    my ( $self, $distribution, $page, $page_size, $sort ) = @_;
 
     # get the latest release of given distribution
     my $release = $self->_get_latest_release($distribution) || return;
@@ -653,7 +669,7 @@ sub reverse_dependencies {
 
     # return releases depended on those modules
     return $self->_get_depended_releases( $modules, $page, $page_size,
-        $size, $sort );
+        $sort );
 }
 
 sub _get_latest_release {
@@ -725,9 +741,17 @@ sub _fix_sort_value {
 }
 
 sub _get_depended_releases {
-    my ( $self, $modules, $page, $page_size, $size, $sort ) = @_;
+    my ( $self, $modules, $page, $page_size, $sort ) = @_;
     $page      //= 1;
     $page_size //= 50;
+
+    if ( $page * $page_size >= MAX_RESULT_WINDOW ) {
+        return +{
+            data  => [],
+            took  => 0,
+            total => 0,
+        };
+    }
 
     $sort = _fix_sort_value($sort);
 
@@ -770,8 +794,8 @@ sub _get_depended_releases {
                     ],
                 },
             },
-            size => $size || $page_size,
-            from => $page * $page_size - $page_size,
+            size => $page_size,
+            from => ( $page - 1 ) * $page_size,
             sort => $sort,
         }
     );
@@ -784,22 +808,20 @@ sub _get_depended_releases {
 }
 
 sub recent {
-    my ( $self, $page, $page_size, $type ) = @_;
+    my ( $self, $type, $page, $page_size ) = @_;
     $page      //= 1;
     $page_size //= 10000;
     $type      //= '';
 
-    my $query;
-    my $from = ( $page - 1 ) * $page_size;
-
-    if ( $from + $page_size > 10000 ) {
-        return {
+    if ( $page * $page_size >= MAX_RESULT_WINDOW ) {
+        return +{
             releases => [],
-            total    => 0,
             took     => 0,
+            total    => 0,
         };
     }
 
+    my $query;
     if ( $type eq 'n' ) {
         $query = {
             constant_score => {
@@ -829,7 +851,7 @@ sub recent {
 
     my $body = {
         size    => $page_size,
-        from    => $from,
+        from    => ( $page - 1 ) * $page_size,
         query   => $query,
         _source =>
             [qw(name author status abstract date distribution maturity)],

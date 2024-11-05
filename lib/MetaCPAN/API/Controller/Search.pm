@@ -17,9 +17,13 @@ sub web {
     return unless $c->openapi->valid_input;
     my $args = $c->validation->output;
 
-    my @search = ( @{$args}{qw/q from size/} );
-    push @search, $args->{collapsed} if exists $args->{collapsed};
-    my $results = $c->model->search->search_web(@search);
+    my $query = $args->{q};
+    my $size  = $args->{page_size} // $args->{size} // 20;
+    my $page = $args->{page} // ( 1 + int( ( $args->{from} // 0 ) / $size ) );
+    my $collapsed = $args->{collapsed};
+
+    my $results
+        = $c->model->search->search_web( $query, $page, $size, $collapsed );
 
     return $c->render( json => $results );
 }

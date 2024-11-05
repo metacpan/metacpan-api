@@ -45,14 +45,20 @@ sub modules : Path('modules') : Args(2) {
 
 sub recent : Path('recent') : Args(0) {
     my ( $self, $c ) = @_;
-    my @params = @{ $c->req->params }{qw( page page_size type )};
-    $c->stash_or_detach( $self->model($c)->recent(@params) );
+    my $params = $c->req->params;
+    my $type   = $params->{type};
+    my $page   = $params->{page};
+    my $size   = $params->{page_size};
+    $c->stash_or_detach( $self->model($c)->recent( $type, $page, $size ) );
 }
 
 sub by_author : Path('by_author') : Args(1) {
     my ( $self, $c, $pauseid ) = @_;
-    $c->stash_or_detach( $self->model($c)
-            ->by_author( $pauseid, @{ $c->req->params }{qw( size page )} ) );
+    my $params = $c->req->params;
+    my $page   = $params->{page};
+    my $size   = $params->{page_size} // $params->{size};
+    $c->stash_or_detach(
+        $self->model($c)->by_author( $pauseid, $page, $size ) );
 }
 
 sub latest_by_distribution : Path('latest_by_distribution') : Args(1) {
@@ -69,9 +75,11 @@ sub latest_by_author : Path('latest_by_author') : Args(1) {
 
 sub all_by_author : Path('all_by_author') : Args(1) {
     my ( $self, $c, $pauseid ) = @_;
-    my @params = @{ $c->req->params }{qw( page_size page )};
+    my $params = $c->req->params;
+    my $page   = $params->{page};
+    my $size   = $params->{page_size};
     $c->stash_or_detach(
-        $self->model($c)->all_by_author( $pauseid, @params ) );
+        $self->model($c)->all_by_author( $pauseid, $page, $size ) );
 }
 
 sub versions : Path('versions') : Args(1) {

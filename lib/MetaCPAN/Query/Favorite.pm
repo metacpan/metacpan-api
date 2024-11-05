@@ -3,7 +3,7 @@ package MetaCPAN::Query::Favorite;
 use MetaCPAN::Moose;
 
 use MetaCPAN::ESConfig qw( es_doc_path );
-use MetaCPAN::Util     qw(hit_total);
+use MetaCPAN::Util     qw( MAX_RESULT_WINDOW hit_total );
 
 with 'MetaCPAN::Query::Role::Common';
 
@@ -147,6 +147,14 @@ sub recent {
     my ( $self, $page, $size ) = @_;
     $page //= 1;
     $size //= 100;
+
+    if ( $page * $size >= MAX_RESULT_WINDOW ) {
+        return +{
+            favorites => [],
+            took      => 0,
+            total     => 0,
+        };
+    }
 
     my $favs = $self->es->search(
         es_doc_path('favorite'),

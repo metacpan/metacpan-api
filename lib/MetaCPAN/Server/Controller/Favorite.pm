@@ -43,7 +43,7 @@ sub recent : Path('recent') : Args(0) {
     $c->stash_or_detach(
         $self->model($c)->recent(
             $c->req->param('page') || 1,
-            $c->req->param('size') || 100
+            $c->req->param('page_size') || $c->req->param('size') || 100,
         )
     );
 }
