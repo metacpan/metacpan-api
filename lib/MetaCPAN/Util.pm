@@ -37,8 +37,11 @@ use Sub::Exporter -setup => {
         true
         false
         is_bool
+        MAX_RESULT_WINDOW
     ) ]
 };
+
+use constant MAX_RESULT_WINDOW => 10000;
 
 *true    = \&Cpanel::JSON::XS::true;
 *false   = \&Cpanel::JSON::XS::false;

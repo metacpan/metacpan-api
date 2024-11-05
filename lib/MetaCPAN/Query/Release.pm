@@ -4,7 +4,7 @@ use MetaCPAN::Moose;
 
 use MetaCPAN::ESConfig qw( es_doc_path );
 use MetaCPAN::Util
-    qw( hit_total single_valued_arrayref_to_scalar true false );
+    qw( MAX_RESULT_WINDOW hit_total single_valued_arrayref_to_scalar true false );
 
 with 'MetaCPAN::Query::Role::Common';
 
@@ -399,6 +399,14 @@ sub by_author {
     $size //= 1000;
     $page //= 1;
 
+    if ( $page * $size >= MAX_RESULT_WINDOW ) {
+        return {
+            releases => [],
+            took     => 0,
+            total    => 0,
+        };
+    }
+
     my $body = {
         query => {
             bool => {
@@ -490,6 +498,14 @@ sub all_by_author {
     my ( $self, $author, $page, $size ) = @_;
     $size //= 100;
     $page //= 1;
+
+    if ( $page * $size >= MAX_RESULT_WINDOW ) {
+        return {
+            releases => [],
+            took     => 0,
+            total    => 0,
+        };
+    }
 
     my $body = {
         query   => { term => { author => uc($author) } },
@@ -713,6 +729,14 @@ sub _get_depended_releases {
     $page      //= 1;
     $page_size //= 50;
 
+    if ( $page * $page_size >= MAX_RESULT_WINDOW ) {
+        return +{
+            data  => [],
+            took  => 0,
+            total => 0,
+        };
+    }
+
     $sort = _fix_sort_value($sort);
 
     my $dependency_filter = {
@@ -773,17 +797,15 @@ sub recent {
     $page_size //= 10000;
     $type      //= '';
 
-    my $query;
-    my $from = ( $page - 1 ) * $page_size;
-
-    if ( $from + $page_size > 10000 ) {
-        return {
+    if ( $page * $page_size >= MAX_RESULT_WINDOW ) {
+        return +{
             releases => [],
-            total    => 0,
             took     => 0,
+            total    => 0,
         };
     }
 
+    my $query;
     if ( $type eq 'n' ) {
         $query = {
             constant_score => {

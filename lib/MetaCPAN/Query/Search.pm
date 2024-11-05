@@ -8,7 +8,7 @@ use List::Util                qw( min uniq );
 use Log::Contextual           qw( :log :dlog );
 use MetaCPAN::ESConfig        qw( es_doc_path );
 use MetaCPAN::Types::TypeTiny qw( Object Str );
-use MetaCPAN::Util            qw( hit_total true false );
+use MetaCPAN::Util            qw( MAX_RESULT_WINDOW hit_total true false );
 use MooseX::StrictConstructor;
 
 with 'MetaCPAN::Query::Role::Common';
@@ -59,6 +59,15 @@ sub search_web {
         = @_;
     $page_size //= 20;
     $page      //= 1;
+
+    if ( $page * $page_size >= MAX_RESULT_WINDOW ) {
+        return {
+            results  => [],
+            total    => 0,
+            tool     => 0,
+            colapsed => $collapsed ? true : false,
+        };
+    }
 
     $search_term =~ s{([+=><!&|\(\)\{\}[\]\^"~*?\\/])}{\\$1}g;
 
