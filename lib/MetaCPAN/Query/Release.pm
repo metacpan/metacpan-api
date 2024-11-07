@@ -285,7 +285,7 @@ sub _activity_filters {
     if ( $new_dists and $new_dists eq 'n' ) {
         push @filters,
             (
-            +{ term  => { first  => 1 } },
+            +{ term  => { first  => true } },
             +{ terms => { status => [qw( cpan latest )] } },
             );
     }
@@ -824,15 +824,11 @@ sub recent {
     my $query;
     if ( $type eq 'n' ) {
         $query = {
-            constant_score => {
-                filter => {
-                    bool => {
-                        must => [
-                            { term  => { first  => 1 } },
-                            { terms => { status => [qw< cpan latest >] } },
-                        ]
-                    }
-                }
+            bool => {
+                must => [
+                    { term  => { first  => true } },
+                    { terms => { status => [qw< cpan latest >] } },
+                ]
             }
         };
     }
@@ -840,13 +836,7 @@ sub recent {
         $query = { match_all => {} };
     }
     else {
-        $query = {
-            constant_score => {
-                filter => {
-                    terms => { status => [qw< cpan latest >] }
-                }
-            }
-        };
+        $query = { terms => { status => [qw< cpan latest >] } };
     }
 
     my $body = {

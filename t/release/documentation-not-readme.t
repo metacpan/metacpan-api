@@ -3,12 +3,13 @@ use warnings;
 use lib 't/lib';
 
 use MetaCPAN::TestHelpers qw( test_release );
+use MetaCPAN::Util        qw( true false );
 use Test::More;
 
 test_release(
     'RWSTAUNER/Documentation-Not-Readme-0.01',
     {
-        first       => 1,
+        first       => true,
         extra_tests => \&test_modules,
         main_module => 'Documentation::Not::Readme',
     }

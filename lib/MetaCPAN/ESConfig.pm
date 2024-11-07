@@ -1,19 +1,18 @@
 use v5.20;
 use warnings;
-use experimental qw(signatures postderef);
+use experimental qw( signatures postderef );
 
 package MetaCPAN::ESConfig;
 
-use Carp                      qw(croak);
-use Const::Fast               qw(const);
-use Exporter                  qw(import);
-use MetaCPAN::Util            qw(root_dir);
-use Module::Runtime           qw(require_module $module_name_rx);
+use Carp                      qw( croak );
+use Const::Fast               qw( const );
 use Cpanel::JSON::XS          ();
-use Hash::Merge::Simple       qw(merge);
+use Exporter                  qw( import );
+use Hash::Merge::Simple       qw( merge );
 use MetaCPAN::Server::Config  ();
-use MetaCPAN::Types::TypeTiny qw(HashRef Defined);
-use Const::Fast               qw(const);
+use MetaCPAN::Types::TypeTiny qw( Defined HashRef );
+use MetaCPAN::Util            qw( root_dir );
+use Module::Runtime           qw( $module_name_rx require_module );
 
 const my %config => merge(
     {

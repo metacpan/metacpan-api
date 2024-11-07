@@ -3,12 +3,13 @@ use warnings;
 use lib 't/lib';
 
 use MetaCPAN::TestHelpers qw( test_release );
+use MetaCPAN::Util        qw( true false );
 use Test::More;
 
 test_release(
     'RWSTAUNER/Pod-Examples-99',
     {
-        first        => 1,
+        first        => true,
         extra_tests  => \&test_pod_examples,
         main_module  => 'Pod::Examples',
         changes_file => 'Changes',
