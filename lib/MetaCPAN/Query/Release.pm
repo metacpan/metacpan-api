@@ -538,7 +538,7 @@ sub all_by_author {
 sub versions {
     my ( $self, $dist, $versions ) = @_;
 
-    my $size = $dist eq 'perl' ? 1000 : 250;
+    my $size = 1000;
 
     my $query;
 
