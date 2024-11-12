@@ -7,7 +7,7 @@ use IO::Uncompress::Gunzip    ();
 use Log::Contextual           qw( :log );
 use MetaCPAN::ESConfig        qw( es_doc_path );
 use MetaCPAN::Types::TypeTiny qw( Bool );
-use MetaCPAN::Util            qw( true false );
+use MetaCPAN::Util            qw( fix_version true false );
 
 with 'MooseX::Getopt', 'MetaCPAN::Role::Script';
 
@@ -72,7 +72,7 @@ sub index_packages {
             file         => $file,
             author       => $distinfo->cpanid,
             distribution => $distinfo->dist,
-            dist_version => $distinfo->version,
+            dist_version => fix_version( $distinfo->version ),
         };
 
         $bulk->update( {
