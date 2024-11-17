@@ -2792,10 +2792,10 @@ DISTRIBUTIONS
       Safe::Isa 0
       parent 0
       warnings 0
-  HTTP-Tiny-0.088
-    pathname: D/DA/DAGOLDEN/HTTP-Tiny-0.088.tar.gz
+  HTTP-Tiny-0.090
+    pathname: H/HA/HAARG/HTTP-Tiny-0.090.tar.gz
     provides:
-      HTTP::Tiny 0.088
+      HTTP::Tiny 0.090
     requirements:
       Carp 0
       ExtUtils::MakeMaker 6.17
@@ -7354,10 +7354,10 @@ DISTRIBUTIONS
       Test::Builder 0.13
       Test::Builder::Tester 1.02
       perl 5.006
-  Text-CSV_XS-1.56
-    pathname: H/HM/HMBRAND/Text-CSV_XS-1.56.tgz
+  Text-CSV_XS-1.57
+    pathname: H/HM/HMBRAND/Text-CSV_XS-1.57.tgz
     provides:
-      Text::CSV_XS 1.56
+      Text::CSV_XS 1.57
     requirements:
       Config 0
       ExtUtils::MakeMaker 0
@@ -7384,7 +7384,7 @@ DISTRIBUTIONS
       Exporter 0
       ExtUtils::MakeMaker 0
       constant 0
-      perl 5.00503
+      perl 5.005030
   Text-SimpleTable-2.07
     pathname: M/MR/MRAMBERG/Text-SimpleTable-2.07.tar.gz
     provides:
@@ -8023,7 +8023,7 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       LWP::UserAgent 0
-      perl 5.00405
+      perl 5.004050
   XML-XPath-1.48
     pathname: M/MA/MANWAR/XML-XPath-1.48.tar.gz
     provides:
