@@ -14,7 +14,7 @@ with 'MetaCPAN::Server::Role::JSONP';
 sub dist : Path('dist') : Args(1) {
     my ( $self, $c, $dist ) = @_;
     $c->stash_or_detach(
-        $c->model('ESModel')->doc('release')->reverse_dependencies(
+        $c->model('ESQuery')->release->reverse_dependencies(
             $dist, @{ $c->req->params }{qw< page page_size sort >}
         )
     );
@@ -23,7 +23,7 @@ sub dist : Path('dist') : Args(1) {
 sub module : Path('module') : Args(1) {
     my ( $self, $c, $module ) = @_;
     $c->stash_or_detach(
-        $c->model('ESModel')->doc('release')->requires(
+        $c->model('ESQuery')->release->requires(
             $module, @{ $c->req->params }{qw< page page_size sort >}
         )
     );

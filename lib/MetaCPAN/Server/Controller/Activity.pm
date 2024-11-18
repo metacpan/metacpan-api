@@ -13,7 +13,7 @@ sub get : Path('') : Args(0) {
     my ( $self, $c ) = @_;
 
     $c->stash_or_detach(
-        $c->model('ESModel')->doc('release')->activity( $c->req->params ) );
+        $c->model('ESQuery')->release->activity( $c->req->params ) );
 }
 
 __PACKAGE__->meta->make_immutable;

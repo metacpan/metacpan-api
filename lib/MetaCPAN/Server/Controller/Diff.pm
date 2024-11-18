@@ -33,8 +33,8 @@ sub release : Chained('index') : PathPart('release') : Args(1) {
 
     my ( $latest, $previous );
     try {
-        $latest   = $c->model('ESModel')->doc('release')->find($name);
-        $previous = $c->model('ESModel')->doc('release')->predecessor($name);
+        $latest   = $c->model('ESQuery')->release->find($name);
+        $previous = $c->model('ESQuery')->release->predecessor($name);
     }
     catch {
         $c->detach('/not_found');

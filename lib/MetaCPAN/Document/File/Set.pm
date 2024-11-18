@@ -11,24 +11,6 @@ use MetaCPAN::Util            qw( true false );
 
 extends 'ElasticSearchX::Model::Document::Set';
 
-has query_file => (
-    is      => 'ro',
-    isa     => 'MetaCPAN::Query::File',
-    lazy    => 1,
-    builder => '_build_query_file',
-    handles => [ qw(
-        dir
-        find_changes_files
-        interesting_files
-        files_by_category
-    ) ],
-);
-
-sub _build_query_file {
-    my $self = shift;
-    return MetaCPAN::Query::File->new( es => $self->es );
-}
-
 has query_favorite => (
     is      => 'ro',
     isa     => 'MetaCPAN::Query::Favorite',
@@ -40,19 +22,6 @@ has query_favorite => (
 sub _build_query_favorite {
     my $self = shift;
     return MetaCPAN::Query::Favorite->new( es => $self->es );
-}
-
-has query_release => (
-    is      => 'ro',
-    isa     => 'MetaCPAN::Query::Release',
-    lazy    => 1,
-    builder => '_build_query_release',
-    handles => [qw< find_download_url >],
-);
-
-sub _build_query_release {
-    my $self = shift;
-    return MetaCPAN::Query::Release->new( es => $self->es );
 }
 
 my @ROGUE_DISTRIBUTIONS = qw(

@@ -55,7 +55,7 @@ sub index : Path('/_search/scroll') : Args {
     }
 
     my $res = eval {
-        $c->model('ESModel')->es->scroll( {
+        $c->model('ES')->scroll( {
             scroll_id => $scroll_id,
             scroll    => $c->req->params->{scroll},
         } );
