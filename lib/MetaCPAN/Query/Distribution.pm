@@ -7,6 +7,20 @@ use MetaCPAN::Util     qw(hit_total);
 
 with 'MetaCPAN::Query::Role::Common';
 
+sub rogue_list {
+    return qw(
+        Acme-DependOnEverything
+        Bundle-Everything
+        kurila
+        perl-5.005_02+apache1.3.3+modperl
+        perlbench
+        perl_debug
+        perl_mlb
+        pod2texi
+        spodcxx
+    );
+}
+
 sub get_river_data_by_dist {
     my ( $self, $dist ) = @_;
 
