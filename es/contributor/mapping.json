@@ -11,6 +11,16 @@
             "index": "not_analyzed",
             "type": "string"
         },
+        "name": {
+            "ignore_above": 2048,
+            "index": "not_analyzed",
+            "type": "string"
+        },
+        "email": {
+            "ignore_above": 2048,
+            "index": "not_analyzed",
+            "type": "string"
+        },
         "release_author": {
             "ignore_above": 2048,
             "index": "not_analyzed",

@@ -13,8 +13,9 @@ sub find_release_contributors {
     my $query = +{
         bool => {
             must => [
-                { term => { release_author => $author } },
-                { term => { release_name   => $name } },
+                { term   => { release_author => $author } },
+                { term   => { release_name   => $name } },
+                { exists => { field          => 'pauseid' } },
             ]
         }
     };
@@ -22,8 +23,14 @@ sub find_release_contributors {
     my $res = $self->es->search(
         es_doc_path('contributor'),
         body => {
-            query => $query,
-            size  => 999,
+            query   => $query,
+            size    => 999,
+            _source => [ qw(
+                distribution
+                pauseid
+                release_author
+                release_name
+            ) ],
         }
     );
     hit_total($res) or return {};
@@ -40,11 +47,17 @@ sub find_author_contributions {
     my $res = $self->es->search(
         es_doc_path('contributor'),
         body => {
-            query => $query,
-            size  => 999,
+            query   => $query,
+            size    => 999,
+            _source => [ qw(
+                distribution
+                pauseid
+                release_author
+                release_name
+            ) ],
         }
     );
-    $res->{hits}{total} or return {};
+    hit_total($res) or return {};
 
     return +{
         contributors => [ map { $_->{_source} } @{ $res->{hits}{hits} } ] };
