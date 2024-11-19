@@ -383,9 +383,14 @@ sub import_archive {
         MetaCPAN::Script::Runner->run;
     }
 
-    my $contrib_data = $self->get_cpan_author_contributors( $document->author,
-        $document->name, $document->distribution );
-    $self->update_release_contirbutors($contrib_data);
+    $self->update_contributors( {
+        bool => {
+            must => [
+                { term => { author => $document->author } },
+                { term => { name   => $document->name } },
+            ],
+        },
+    } );
 }
 
 sub detect_status {

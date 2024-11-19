@@ -3,7 +3,7 @@ package MetaCPAN::Document::Contributor;
 use MetaCPAN::Moose;
 
 use ElasticSearchX::Model::Document;
-use MetaCPAN::Types::TypeTiny qw( Str );
+use MetaCPAN::Types::TypeTiny qw( ArrayRef Str );
 
 has distribution => (
     is       => 'ro',
@@ -24,9 +24,18 @@ has release_name => (
 );
 
 has pauseid => (
-    is       => 'ro',
-    isa      => Str,
-    required => 1,
+    is  => 'ro',
+    isa => Str,
+);
+
+has name => (
+    is  => 'ro',
+    isa => Str,
+);
+
+has email => (
+    is  => 'ro',
+    isa => ArrayRef [Str],
 );
 
 __PACKAGE__->meta->make_immutable;

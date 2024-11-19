@@ -80,32 +80,7 @@ sub run {
         ? { range => { date => { gte => sprintf( 'now-%dd', $self->age ) } } }
         : return;
 
-    my $timeout = $self->all ? '720m' : '5m';
-
-    my $scroll = $self->es->scroll_helper(
-        scroll => $timeout,
-        es_doc_path('release'),
-        body => {
-            query   => $query,
-            size    => 500,
-            _source => [qw( author distribution name )],
-        },
-    );
-
-    my @data;
-
-    while ( my $r = $scroll->next ) {
-        my $contrib_data = $self->get_cpan_author_contributors(
-            $r->{_source}{author},
-            $r->{_source}{name},
-            $r->{_source}{distribution},
-        );
-        next unless is_arrayref($contrib_data);
-        log_debug { 'adding release ' . $r->{_source}{name} };
-        push @data => @{$contrib_data};
-    }
-
-    $self->update_release_contirbutors( \@data, $timeout );
+    $self->update_contributors($query);
 }
 
 __PACKAGE__->meta->make_immutable;
