@@ -25,9 +25,28 @@ sub update_contributors {
         },
     );
 
-    my $bulk = $self->es->bulk_helper( es_doc_path('contributor') );
+    my $report = sub {
+        my ( $action, $result, $i ) = @_;
+        if ( $i == 0 ) {
+            log_info {'flushing contributor updates'};
+        }
+    };
+
+    my $bulk = $self->es->bulk_helper(
+        es_doc_path('contributor'),
+        on_success => $report,
+        on_error   => $report,
+    );
+
+    log_info { 'updating contributors for ' . $scroll->total . ' releases' };
 
     while ( my $release = $scroll->next ) {
+        my $source = $release->{_source};
+        my $name   = $source->{name};
+        if ( !( $name && $source->{author} && $source->{distribution} ) ) {
+            Dlog_warn {"found broken release: $_"} $release;
+            next;
+        }
         log_debug { 'updating contributors for ' . $release->{_source}{name} };
         my $actions = $self->release_contributor_update_actions(
             $release->{_source} );
