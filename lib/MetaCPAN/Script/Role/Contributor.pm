@@ -97,6 +97,11 @@ sub release_contributor_update_actions {
     return \@actions;
 }
 
+has email_mapping => (
+    is      => 'ro',
+    default => sub { {} },
+);
+
 sub get_contributors {
     my ( $self, $release ) = @_;
 
@@ -183,24 +188,34 @@ sub get_contributors {
     }
 
     if (%want_email) {
-        my $check_author = $self->es->search(
-            es_doc_path('author'),
-            body => {
-                query => { terms => { email => [ sort keys %want_email ] } },
-                _source => [ 'email', 'pauseid' ],
-                size    => 100,
-            },
-        );
+        my $email_mapping = $self->email_mapping;
 
-        for my $author ( @{ $check_author->{hits}{hits} } ) {
-            my $emails = $author->{_source}{email};
-            $emails = [$emails]
-                if !ref $emails;
-            my $pauseid = uc $author->{_source}{pauseid};
-            for my $email (@$emails) {
-                for my $contrib ( @{ $want_email{$email} } ) {
-                    $contrib->{pauseid} = $pauseid;
-                }
+        my @fetch_email = grep !exists $email_mapping->{$_},
+            sort keys %want_email;
+
+        if (@fetch_email) {
+            my $check_author = $self->es->search(
+                es_doc_path('author'),
+                body => {
+                    query   => { terms => { email => \@fetch_email } },
+                    _source => [ 'email', 'pauseid' ],
+                    size    => 100,
+                },
+            );
+
+            for my $author ( @{ $check_author->{hits}{hits} } ) {
+                my $pauseid = uc $author->{_source}{pauseid};
+                my $emails  = $author->{_source}{email};
+                $email_mapping->{$_} //= $pauseid
+                    for ref $emails ? @$emails : $emails;
+            }
+        }
+
+        for my $email ( keys %want_email ) {
+            my $pauseid = $email_mapping->{$email}
+                or next;
+            for my $contrib ( @{ $want_email{$email} } ) {
+                $contrib->{pauseid} = $pauseid;
             }
         }
     }
