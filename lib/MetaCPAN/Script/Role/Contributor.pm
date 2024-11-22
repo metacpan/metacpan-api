@@ -25,9 +25,28 @@ sub update_contributors {
         },
     );
 
-    my $bulk = $self->es->bulk_helper( es_doc_path('contributor') );
+    my $report = sub {
+        my ( $action, $result, $i ) = @_;
+        if ( $i == 0 ) {
+            log_info {'flushing contributor updates'};
+        }
+    };
+
+    my $bulk = $self->es->bulk_helper(
+        es_doc_path('contributor'),
+        on_success => $report,
+        on_error   => $report,
+    );
+
+    log_info { 'updating contributors for ' . $scroll->total . ' releases' };
 
     while ( my $release = $scroll->next ) {
+        my $source = $release->{_source};
+        my $name   = $source->{name};
+        if ( !( $name && $source->{author} && $source->{distribution} ) ) {
+            Dlog_warn {"found broken release: $_"} $release;
+            next;
+        }
         log_debug { 'updating contributors for ' . $release->{_source}{name} };
         my $actions = $self->release_contributor_update_actions(
             $release->{_source} );
@@ -77,6 +96,11 @@ sub release_contributor_update_actions {
     push @actions, map +{ create => { _source => $_ } }, @docs;
     return \@actions;
 }
+
+has email_mapping => (
+    is      => 'ro',
+    default => sub { {} },
+);
 
 sub get_contributors {
     my ( $self, $release ) = @_;
@@ -164,24 +188,34 @@ sub get_contributors {
     }
 
     if (%want_email) {
-        my $check_author = $self->es->search(
-            es_doc_path('author'),
-            body => {
-                query => { terms => { email => [ sort keys %want_email ] } },
-                _source => [ 'email', 'pauseid' ],
-                size    => 100,
-            },
-        );
+        my $email_mapping = $self->email_mapping;
 
-        for my $author ( @{ $check_author->{hits}{hits} } ) {
-            my $emails = $author->{_source}{email};
-            $emails = [$emails]
-                if !ref $emails;
-            my $pauseid = uc $author->{_source}{pauseid};
-            for my $email (@$emails) {
-                for my $contrib ( @{ $want_email{$email} } ) {
-                    $contrib->{pauseid} = $pauseid;
-                }
+        my @fetch_email = grep !exists $email_mapping->{$_},
+            sort keys %want_email;
+
+        if (@fetch_email) {
+            my $check_author = $self->es->search(
+                es_doc_path('author'),
+                body => {
+                    query   => { terms => { email => \@fetch_email } },
+                    _source => [ 'email', 'pauseid' ],
+                    size    => 100,
+                },
+            );
+
+            for my $author ( @{ $check_author->{hits}{hits} } ) {
+                my $pauseid = uc $author->{_source}{pauseid};
+                my $emails  = $author->{_source}{email};
+                $email_mapping->{$_} //= $pauseid
+                    for ref $emails ? @$emails : $emails;
+            }
+        }
+
+        for my $email ( keys %want_email ) {
+            my $pauseid = $email_mapping->{$email}
+                or next;
+            for my $contrib ( @{ $want_email{$email} } ) {
+                $contrib->{pauseid} = $pauseid;
             }
         }
     }
