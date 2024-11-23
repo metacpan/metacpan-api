@@ -104,6 +104,10 @@ has email_mapping => (
     is      => 'ro',
     default => sub { {} },
 );
+has author_mapping => (
+    is      => 'ro',
+    default => sub { {} },
+);
 
 sub get_contributors {
     my ( $self, $release ) = @_;
@@ -124,12 +128,12 @@ sub get_contributors {
     }
     $authors = [ grep { $_ ne 'unknown' } @$authors ];
 
-    my $author = eval {
-        $self->es->get_source( es_doc_path('author'), id => $author_name );
+    my $author_mapping = $self->author_mapping;
+    my $author_email   = $author_mapping->{$author_name} //= eval {
+        $self->es->get_source( es_doc_path('author'), id => $author_name )
+            ->{email};
     }
         or return [];
-
-    my $author_email = $author->{email};
 
     my $author_info = {
         email => [
