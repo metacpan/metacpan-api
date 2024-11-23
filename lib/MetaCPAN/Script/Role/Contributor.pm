@@ -2,7 +2,7 @@ package MetaCPAN::Script::Role::Contributor;
 
 use Moose::Role;
 
-use Log::Contextual    qw( :log );
+use Log::Contextual    qw( :log :dlog );
 use MetaCPAN::ESConfig qw( es_doc_path );
 use MetaCPAN::Util     qw( true false );
 use Ref::Util          qw( is_arrayref );
@@ -38,16 +38,19 @@ sub update_contributors {
         on_error   => $report,
     );
 
-    log_info { 'updating contributors for ' . $scroll->total . ' releases' };
+    my $total = $scroll->total;
+    log_info {"updating contributors for $total releases"};
 
+    my $i = 0;
     while ( my $release = $scroll->next ) {
+        $i++;
         my $source = $release->{_source};
         my $name   = $source->{name};
         if ( !( $name && $source->{author} && $source->{distribution} ) ) {
             Dlog_warn {"found broken release: $_"} $release;
             next;
         }
-        log_debug { 'updating contributors for ' . $release->{_source}{name} };
+        log_debug {"updating contributors for $name ($i/$total)"};
         my $actions = $self->release_contributor_update_actions(
             $release->{_source} );
         for my $action (@$actions) {
