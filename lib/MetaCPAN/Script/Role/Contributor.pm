@@ -212,6 +212,8 @@ sub get_contributors {
                 $email_mapping->{$_} //= $pauseid
                     for ref $emails ? @$emails : $emails;
             }
+
+            $email_mapping->{$_} //= undef for @fetch_email;
         }
 
         for my $email ( keys %want_email ) {
