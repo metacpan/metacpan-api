@@ -3413,38 +3413,38 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       perl 5.006
-  MailTools-2.21
-    pathname: M/MA/MARKOV/MailTools-2.21.tar.gz
+  MailTools-2.22
+    pathname: M/MA/MARKOV/MailTools-2.22.tar.gz
     provides:
-      Mail::Address 2.21
-      Mail::Cap 2.21
-      Mail::Field 2.21
-      Mail::Field::AddrList 2.21
-      Mail::Field::Date 2.21
-      Mail::Field::Generic 2.21
-      Mail::Filter 2.21
-      Mail::Header 2.21
-      Mail::Internet 2.21
-      Mail::Mailer 2.21
-      Mail::Mailer::qmail 2.21
-      Mail::Mailer::rfc822 2.21
-      Mail::Mailer::sendmail 2.21
-      Mail::Mailer::smtp 2.21
-      Mail::Mailer::smtp::pipe 2.21
-      Mail::Mailer::smtps 2.21
-      Mail::Mailer::smtps::pipe 2.21
-      Mail::Mailer::testfile 2.21
-      Mail::Mailer::testfile::pipe 2.21
-      Mail::Send 2.21
-      Mail::Util 2.21
-      MailTools 2.21
+      Mail::Address 2.22
+      Mail::Cap 2.22
+      Mail::Field 2.22
+      Mail::Field::AddrList 2.22
+      Mail::Field::Date 2.22
+      Mail::Field::Generic 2.22
+      Mail::Filter 2.22
+      Mail::Header 2.22
+      Mail::Internet 2.22
+      Mail::Mailer 2.22
+      Mail::Mailer::qmail 2.22
+      Mail::Mailer::rfc822 2.22
+      Mail::Mailer::sendmail 2.22
+      Mail::Mailer::smtp 2.22
+      Mail::Mailer::smtp::pipe 2.22
+      Mail::Mailer::smtps 2.22
+      Mail::Mailer::smtps::pipe 2.22
+      Mail::Mailer::testfile 2.22
+      Mail::Mailer::testfile::pipe 2.22
+      Mail::Send 2.22
+      Mail::Util 2.22
+      MailTools 2.22
     requirements:
       Date::Format 0
       Date::Parse 0
       ExtUtils::MakeMaker 0
       IO::Handle 0
       Net::Domain 1.05
-      Net::SMTP 1.03
+      Net::SMTP 1.28
       Test::More 0
   Math-BigInt-2.003003
     pathname: P/PJ/PJACKLAM/Math-BigInt-2.003003.tar.gz
@@ -3836,8 +3836,8 @@ DISTRIBUTIONS
       URI::db 0.15
       URI::file 4.21
       perl 5.010001
-  Mojolicious-9.38
-    pathname: S/SR/SRI/Mojolicious-9.38.tar.gz
+  Mojolicious-9.39
+    pathname: S/SR/SRI/Mojolicious-9.39.tar.gz
     provides:
       Mojo undef
       Mojo::Asset undef
@@ -3906,7 +3906,7 @@ DISTRIBUTIONS
       Mojo::UserAgent::Transactor undef
       Mojo::Util undef
       Mojo::WebSocket undef
-      Mojolicious 9.38
+      Mojolicious 9.39
       Mojolicious::Command undef
       Mojolicious::Command::Author::cpanify undef
       Mojolicious::Command::Author::generate undef
@@ -7384,7 +7384,7 @@ DISTRIBUTIONS
       Exporter 0
       ExtUtils::MakeMaker 0
       constant 0
-      perl 5.005030
+      perl 5.00503
   Text-SimpleTable-2.07
     pathname: M/MR/MRAMBERG/Text-SimpleTable-2.07.tar.gz
     provides:
@@ -8023,7 +8023,7 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       LWP::UserAgent 0
-      perl 5.004050
+      perl 5.00405
   XML-XPath-1.48
     pathname: M/MA/MANWAR/XML-XPath-1.48.tar.gz
     provides:
