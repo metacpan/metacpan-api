@@ -23,8 +23,6 @@ sub author_status {
         my ( $id_2, $id_1 ) = $id =~ /^((\w)\w)/;
         $status->{links} = {
             cpan_directory    => "http://cpan.org/authors/id/$id_1/$id_2/$id",
-            backpan_directory =>
-                "https://cpan.metacpan.org/authors/id/$id_1/$id_2/$id",
             cpants              => "http://cpants.cpanauthors.org/author/$id",
             cpantesters_reports =>
                 "http://cpantesters.org/author/$id_1/$id.html",
