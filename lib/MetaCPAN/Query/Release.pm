@@ -1,4 +1,5 @@
 package MetaCPAN::Query::Release;
+use v5.20;
 
 use MetaCPAN::Moose;
 
@@ -63,158 +64,25 @@ sub aggregate_status_by_author {
 sub get_contributors {
     my ( $self, $author_name, $release_name ) = @_;
 
-    my $query = +{
-        bool => {
-            must => [
-                { term => { name   => $release_name } },
-                { term => { author => $author_name } },
-            ],
-        },
-    };
-
     my $res = $self->es->search(
-        es_doc_path('release'),
+        es_doc_path('contributor'),
         body => {
-            query   => $query,
-            size    => 999,
-            _source => [qw< metadata.author metadata.x_contributors >],
-        }
-    );
-
-    my $release  = $res->{hits}{hits}[0]{_source};
-    my $contribs = $release->{metadata}{x_contributors} || [];
-    my $authors  = $release->{metadata}{author}         || [];
-
-    for ( \( $contribs, $authors ) ) {
-
-        # If a sole contributor is a string upgrade it to an array...
-        $$_ = [$$_]
-            if !ref $$_;
-
-        # but if it's any other kind of value don't die trying to parse it.
-        $$_ = []
-            unless Ref::Util::is_arrayref($$_);
-    }
-    $authors = [ grep { $_ ne 'unknown' } @$authors ];
-
-    # this check is against a failure in tests (because fake author)
-    return
-        unless $self->es->exists( es_doc_path('author'), id => $author_name,
-        );
-
-    my $author = $self->es->get( es_doc_path('author'), id => $author_name, );
-
-    my $author_email        = $author->{_source}{email};
-    my $author_gravatar_url = $author->{_source}{gravatar_url};
-
-    my $author_info = {
-        email => [
-            lc "$author_name\@cpan.org",
-            (
-                Ref::Util::is_arrayref($author_email) ? @{$author_email}
-                : $author_email
-            ),
-        ],
-        name => $author_name,
-        (
-            $author_gravatar_url ? ( gravatar_url => $author_gravatar_url )
-            : ()
-        ),
-    };
-    my %seen = map { $_ => $author_info }
-        ( @{ $author_info->{email} }, $author_info->{name}, );
-
-    my @contribs = map {
-        my $name = $_;
-        my $email;
-        if ( $name =~ s/\s*<([^<>]+@[^<>]+)>// ) {
-            $email = $1;
-        }
-        my $info;
-        my $dupe;
-        if ( $email and $info = $seen{$email} ) {
-            $dupe = 1;
-        }
-        elsif ( $info = $seen{$name} ) {
-            $dupe = 1;
-        }
-        else {
-            $info = {
-                name  => $name,
-                email => [],
-            };
-        }
-        $seen{$name} ||= $info;
-        if ($email) {
-            push @{ $info->{email} }, $email
-                unless grep { $_ eq $email } @{ $info->{email} };
-            $seen{$email} ||= $info;
-        }
-        $dupe ? () : $info;
-    } ( @$authors, @$contribs );
-
-    my %want_email;
-    for my $contrib (@contribs) {
-
-        # heuristic to autofill pause accounts
-        if ( !$contrib->{pauseid} ) {
-            my ($pauseid)
-                = map { /^(.*)\@cpan\.org$/ ? $1 : () }
-                @{ $contrib->{email} };
-            $contrib->{pauseid} = uc $pauseid
-                if $pauseid;
-
-        }
-
-        push @{ $want_email{$_} }, $contrib for @{ $contrib->{email} };
-    }
-
-    if (%want_email) {
-        my $check_author = $self->es->search(
-            es_doc_path('author'),
-            body => {
-                query => { terms => { email => [ sort keys %want_email ] } },
-                _source => [ 'email', 'pauseid' ],
-                size    => 100,
+            query => {
+                bool => {
+                    must => [
+                        { term => { release_name   => $release_name } },
+                        { term => { release_author => $author_name } },
+                    ],
+                },
             },
-        );
-
-        for my $author ( @{ $check_author->{hits}{hits} } ) {
-            my $emails = $author->{_source}{email};
-            $emails = [$emails]
-                if !ref $emails;
-            my $pauseid = uc $author->{_source}{pauseid};
-            for my $email (@$emails) {
-                for my $contrib ( @{ $want_email{$email} } ) {
-                    $contrib->{pauseid} = $pauseid;
-                }
-            }
-        }
-    }
-
-    my $contrib_query = +{
-        terms => {
-            pauseid =>
-                [ map { $_->{pauseid} ? $_->{pauseid} : () } @contribs ]
-        }
-    };
-
-    my $contrib_authors = $self->es->search(
-        es_doc_path('author'),
-        body => {
-            query   => $contrib_query,
             size    => 999,
-            _source => [qw< pauseid gravatar_url >],
+            _source => [qw< email name pauseid >],
         }
     );
 
-    my %id2url = map { $_->{_source}{pauseid} => $_->{_source}{gravatar_url} }
-        @{ $contrib_authors->{hits}{hits} };
-    for my $contrib (@contribs) {
-        next unless $contrib->{pauseid};
-        $contrib->{gravatar_url} = $id2url{ $contrib->{pauseid} }
-            if exists $id2url{ $contrib->{pauseid} };
-    }
+    my @contribs = map $_->{_source}, @{ $res->{hits}{hits} };
+
+    @contribs = sort { fc $a->{name} cmp fc $b->{name} } @contribs;
 
     return { contributors => \@contribs };
 }
