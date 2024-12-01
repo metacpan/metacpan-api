@@ -2934,10 +2934,10 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  IO-Socket-IP-0.42
-    pathname: P/PE/PEVANS/IO-Socket-IP-0.42.tar.gz
+  IO-Socket-IP-0.43
+    pathname: P/PE/PEVANS/IO-Socket-IP-0.43.tar.gz
     provides:
-      IO::Socket::IP 0.42
+      IO::Socket::IP 0.43
     requirements:
       IO::Socket 0
       Module::Build 0.4004
@@ -3460,29 +3460,29 @@ DISTRIBUTIONS
       Math::Complex 1.36
       Scalar::Util 0
       perl 5.006001
-  MetaCPAN-Client-2.032000
-    pathname: M/MI/MICKEY/MetaCPAN-Client-2.032000.tar.gz
+  MetaCPAN-Client-2.033000
+    pathname: M/MI/MICKEY/MetaCPAN-Client-2.033000.tar.gz
     provides:
-      MetaCPAN::Client 2.032000
-      MetaCPAN::Client::Author 2.032000
-      MetaCPAN::Client::Cover 2.032000
-      MetaCPAN::Client::Distribution 2.032000
-      MetaCPAN::Client::DownloadURL 2.032000
-      MetaCPAN::Client::Favorite 2.032000
-      MetaCPAN::Client::File 2.032000
-      MetaCPAN::Client::Mirror 2.032000
-      MetaCPAN::Client::Module 2.032000
-      MetaCPAN::Client::Package 2.032000
-      MetaCPAN::Client::Permission 2.032000
-      MetaCPAN::Client::Pod 2.032000
-      MetaCPAN::Client::Rating 2.032000
-      MetaCPAN::Client::Release 2.032000
-      MetaCPAN::Client::Request 2.032000
-      MetaCPAN::Client::ResultSet 2.032000
-      MetaCPAN::Client::Role::Entity 2.032000
-      MetaCPAN::Client::Role::HasUA 2.032000
-      MetaCPAN::Client::Scroll 2.032000
-      MetaCPAN::Client::Types 2.032000
+      MetaCPAN::Client 2.033000
+      MetaCPAN::Client::Author 2.033000
+      MetaCPAN::Client::Cover 2.033000
+      MetaCPAN::Client::Distribution 2.033000
+      MetaCPAN::Client::DownloadURL 2.033000
+      MetaCPAN::Client::Favorite 2.033000
+      MetaCPAN::Client::File 2.033000
+      MetaCPAN::Client::Mirror 2.033000
+      MetaCPAN::Client::Module 2.033000
+      MetaCPAN::Client::Package 2.033000
+      MetaCPAN::Client::Permission 2.033000
+      MetaCPAN::Client::Pod 2.033000
+      MetaCPAN::Client::Rating 2.033000
+      MetaCPAN::Client::Release 2.033000
+      MetaCPAN::Client::Request 2.033000
+      MetaCPAN::Client::ResultSet 2.033000
+      MetaCPAN::Client::Role::Entity 2.033000
+      MetaCPAN::Client::Role::HasUA 2.033000
+      MetaCPAN::Client::Scroll 2.033000
+      MetaCPAN::Client::Types 2.033000
     requirements:
       Carp 0
       ExtUtils::MakeMaker 7.1101
