@@ -1070,10 +1070,10 @@ DISTRIBUTIONS
       Module::Build::Tiny 0.035
       URI::Escape 0
       perl 5.008001
-  Cpanel-JSON-XS-4.38
-    pathname: R/RU/RURBAN/Cpanel-JSON-XS-4.38.tar.gz
+  Cpanel-JSON-XS-4.39
+    pathname: R/RU/RURBAN/Cpanel-JSON-XS-4.39.tar.gz
     provides:
-      Cpanel::JSON::XS 4.38
+      Cpanel::JSON::XS 4.39
       Cpanel::JSON::XS::Type undef
     requirements:
       Carp 0
@@ -2399,15 +2399,15 @@ DISTRIBUTIONS
       Module::CPANfile 0
       Test::More 0.88
       version 0.76
-  File-Find-Object-0.3.8
-    pathname: S/SH/SHLOMIF/File-Find-Object-0.3.8.tar.gz
+  File-Find-Object-0.3.9
+    pathname: S/SH/SHLOMIF/File-Find-Object-0.3.9.tar.gz
     provides:
-      File::Find::Object v0.3.8
-      File::Find::Object::Base v0.3.8
-      File::Find::Object::DeepPath v0.3.8
-      File::Find::Object::PathComp v0.3.8
-      File::Find::Object::Result v0.3.8
-      File::Find::Object::TopPath v0.3.8
+      File::Find::Object v0.3.9
+      File::Find::Object::Base v0.3.9
+      File::Find::Object::DeepPath v0.3.9
+      File::Find::Object::PathComp v0.3.9
+      File::Find::Object::Result v0.3.9
+      File::Find::Object::TopPath v0.3.9
     requirements:
       Carp 0
       Class::XSAccessor 0
@@ -7384,7 +7384,7 @@ DISTRIBUTIONS
       Exporter 0
       ExtUtils::MakeMaker 0
       constant 0
-      perl 5.005030
+      perl 5.00503
   Text-SimpleTable-2.07
     pathname: M/MR/MRAMBERG/Text-SimpleTable-2.07.tar.gz
     provides:
@@ -8023,7 +8023,7 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       LWP::UserAgent 0
-      perl 5.004050
+      perl 5.00405
   XML-XPath-1.48
     pathname: M/MA/MANWAR/XML-XPath-1.48.tar.gz
     provides:
