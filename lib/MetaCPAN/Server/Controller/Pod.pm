@@ -36,9 +36,10 @@ sub find : Path('') {
 
 sub get : Path('') : Args(1) {
     my ( $self, $c, $module ) = @_;
-    $module = $c->model('ESModel')->doc('file')->find_pod($module)
+    $module = $c->model('ESQuery')->file->find_pod($module)
         or $c->detach( '/not_found', [] );
-    $c->forward( 'find', [ map { $module->$_ } qw(author release path) ] );
+    $c->forward( 'find',
+        [ map { $module->{_source}{$_} } qw(author release path) ] );
 }
 
 sub find_dist_links {

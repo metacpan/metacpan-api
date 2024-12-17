@@ -63,9 +63,12 @@ sub module : Chained('index') : PathPart('') : Args(1) {
 
     $c->cdn_never_cache(1);
 
-    $module = $c->model('ESModel')->doc('file')->find($module)
+    my $file
+        = $c->model('ESQuery')
+        ->file->find_module( $module, [qw(author release path)] )
         or $c->detach( '/not_found', [] );
-    $c->forward( 'get', [ map { $module->$_ } qw(author release path) ] );
+
+    $c->forward( 'get', [ map { $file->{$_} } qw(author release path) ] );
 }
 
 1;

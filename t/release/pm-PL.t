@@ -2,40 +2,46 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use MetaCPAN::Server::Test qw( app GET model test_psgi );
+use MetaCPAN::ESConfig     qw( es_doc_path );
+use MetaCPAN::Server::Test qw( app GET query es test_psgi );
 use Test::More;
 
-my $model = model();
+my $query = query();
 
 # Module::Faker will generate a regular pm for the main module.
-is( $model->doc('file')->find('uncommon::sense')->path,
+is( $query->file->find_module('uncommon::sense')->{path},
     'lib/uncommon/sense.pm', 'find main module' );
 
 # This should be the .pm.PL file we specified.
-ok( my $pm = $model->doc('file')->find('less::sense'),
+ok( my $pm = $query->file->find_module('less::sense'),
     'find sense.pm.PL module' );
 
-is( $pm->name, 'sense.pm.PL', 'name is correct' );
+is( $pm->{name}, 'sense.pm.PL', 'name is correct' );
 
 is(
-    $pm->module->[0]->associated_pod,
+    $pm->{module}->[0]->{associated_pod},
     'MO/uncommon-sense-0.01/sense.pod',
     'has associated pod file'
 );
 
 # Ensure that $VERSION really came from file and not dist.
-is( $pm->module->[0]->version,
+is( $pm->{module}->[0]->{version},
     '4.56', 'pm.PL module version is (correctly) different than main dist' )
 
     # TRAVIS 5.16
-    or diag( Test::More::explain( $pm->meta->get_data($pm) ) );
+    or diag($pm);
 
 {
     # Verify all the files we expect to be contained in the release.
-    my $files
-        = $model->doc('file')
-        ->query( { term => { release => 'uncommon-sense-0.01' } } )
-        ->raw->size(20)->all->{hits}->{hits};
+    my $files = es->search(
+        es_doc_path('file'),
+        body => {
+            query => {
+                term => { release => 'uncommon-sense-0.01' },
+            },
+            size => 20,
+        },
+    )->{hits}->{hits};
     $files = [ map { $_->{_source} } @$files ];
 
     is_deeply(

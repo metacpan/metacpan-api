@@ -559,5 +559,123 @@ sub documented_modules {
     };
 }
 
+sub find_module {
+    my ( $self, $module, $fields ) = @_;
+
+    my $query = {
+        bool => {
+            must => [
+                { term => { indexed    => true } },
+                { term => { authorized => true } },
+                { term => { status     => 'latest' } },
+                {
+                    bool => {
+                        should => [
+                            { term => { documentation => $module } },
+                            {
+                                nested => {
+                                    path  => "module",
+                                    query => {
+                                        bool => {
+                                            must => [
+                                                {
+                                                    term => { "module.name" =>
+                                                            $module }
+                                                },
+                                                {
+                                                    bool => { should =>
+                                                            [
+                                                            { term =>
+                                                                    { "module.authorized"
+                                                                        => true
+                                                                    } },
+                                                            { exists =>
+                                                                    { field =>
+                                                                        'module.associated_pod'
+                                                                    } },
+                                                            ],
+                                                    }
+                                                },
+                                            ],
+                                        },
+                                    },
+                                }
+                            },
+                        ]
+                    }
+                },
+            ],
+        },
+    };
+
+    my $res = $self->es->search(
+        es_doc_path('file'),
+        search_type => 'dfs_query_then_fetch',
+        body        => {
+            query => $query,
+            sort  => [
+                '_score',
+                { 'version_numified' => { order => 'desc' } },
+                { 'date'             => { order => 'desc' } },
+                { 'mime'             => { order => 'asc' } },
+                { 'stat.mtime'       => { order => 'desc' } }
+            ],
+            _source => [
+                qw( documentation module.indexed module.authoried module.name )
+            ],
+            size => 100,
+        },
+    );
+
+    my @candidates = @{ $res->{hits}{hits} };
+
+    my ($file) = grep {
+        grep { $_->{indexed} && $_->{authorized} && $_->{name} eq $module }
+            @{ $_->{module} || [] }
+    } grep { !$_->{documentation} || $_->{documentation} eq $module }
+        @candidates;
+
+    $file ||= shift @candidates;
+    return undef
+        if !$file;
+    return $self->es->get_source(
+        es_doc_path('file'),
+        id => $file->{_id},
+        ( $fields ? ( _source => $fields ) : () ),
+    );
+}
+
+sub find_pod {
+    my ( $self, $name ) = @_;
+    my $file = $self->find_module($name);
+    return $file
+        unless $file;
+    my ($module)
+        = grep { $_->{indexed} && $_->{authorized} && $_->{name} eq $name }
+        @{ $file->{module} || [] };
+    if ( $module && ( my $pod = $module->{associated_pod} ) ) {
+        my ( $author, $release, @path ) = split( /\//, $pod );
+        my $query = {
+            bool => {
+                must => [
+                    { term => { author  => $author } },
+                    { term => { release => $release } },
+                    { term => { path    => join( '/', @path ) } },
+                ],
+            },
+        };
+        my $pod_file = $self->es->search(
+            es_doc_path('file'),
+            body => {
+                query => $query,
+            },
+        );
+        return $pod_file->{hits}{hits}[0];
+    }
+    else {
+        return $file;
+    }
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
