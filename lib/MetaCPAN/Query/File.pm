@@ -502,5 +502,62 @@ sub autocomplete_suggester {
     };
 }
 
+sub documented_modules {
+    my ( $self, $author, $release ) = @_;
+    my $query = {
+        bool => {
+            must => [
+                { term   => { author  => $author } },
+                { term   => { release => $release } },
+                { exists => { field   => "documentation" } },
+                {
+                    bool => {
+                        should => [
+                            {
+                                bool => {
+                                    must => [
+                                        {
+                                            exists =>
+                                                { field => 'module.name' }
+                                        },
+                                        {
+                                            term =>
+                                                { 'module.indexed' => true }
+                                        },
+                                    ],
+                                }
+                            },
+                            {
+                                bool => {
+                                    must => [
+                                        {
+                                            exists =>
+                                                { field => 'pod.analyzed' }
+                                        },
+                                        { term => { indexed => true } },
+                                    ],
+                                }
+                            },
+                        ],
+                    }
+                },
+            ],
+        },
+    };
+    my $res = $self->es->search(
+        es_doc_path('file'),
+        body => {
+            query   => $query,
+            size    => 999,
+            _source => [qw(name module path documentation distribution)],
+        },
+    );
+
+    return {
+        took  => $res->{took},
+        files => [ map $_->{_source}, @{ $res->{hits}{hits} } ],
+    };
+}
+
 __PACKAGE__->meta->make_immutable;
 1;

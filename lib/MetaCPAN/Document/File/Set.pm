@@ -107,51 +107,6 @@ sub find_pod {
     }
 }
 
-sub documented_modules {
-    my ( $self, $release ) = @_;
-    return $self->query( {
-        bool => {
-            must => [
-                { term   => { release => $release->{name} } },
-                { term   => { author  => $release->{author} } },
-                { exists => { field   => "documentation" } },
-                {
-                    bool => {
-                        should => [
-                            {
-                                bool => {
-                                    must => [
-                                        {
-                                            exists =>
-                                                { field => 'module.name' }
-                                        },
-                                        {
-                                            term =>
-                                                { 'module.indexed' => true }
-                                        },
-                                    ],
-                                }
-                            },
-                            {
-                                bool => {
-                                    must => [
-                                        {
-                                            exists =>
-                                                { field => 'pod.analyzed' }
-                                        },
-                                        { term => { indexed => true } },
-                                    ],
-                                }
-                            },
-                        ],
-                    }
-                },
-            ],
-        },
-    } )->size(999)
-        ->source( [qw(name module path documentation distribution)] )->all;
-}
-
 =head2 history
 
 Find the history of a given module/documentation.
