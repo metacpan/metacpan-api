@@ -15,10 +15,6 @@ logger:
   filename: ../var/log/metacpan.log
   syswrite: 1
 
-controller:
-  User::Turing:
-    private_key: 59125ffc09413eed3f2a2c07a37c7a44b95633e2
-
 smtp:
   host: smtp.fastmail.com
   port: 465

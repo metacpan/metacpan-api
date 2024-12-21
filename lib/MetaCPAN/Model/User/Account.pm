@@ -70,57 +70,18 @@ has access_token => (
     handles  => { add_access_token => 'push' },
 );
 
-=head2 passed_captcha
-
-L<DateTime> when the user passed the captcha.
-
-=cut
-
-has passed_captcha => (
-    is     => 'ro',
-    isa    => 'DateTime',
-    writer => '_set_passed_captcha',
-);
-
-=head2 looks_human
-
-Certain features are disabled unless a user C<looks_human>. This attribute
-is true if the user is connected to a PAUSE account or he L</passed_captcha>.
-
-=cut
-
-has looks_human => (
-    required => 1,
-    is       => 'ro',
-    isa      => ESBool,
-    lazy     => 1,
-    builder  => '_build_looks_human',
-    clearer  => 'clear_looks_human',
-);
-
-sub _build_looks_human {
-    my $self = shift;
-    return (
-        ( $self->has_identity('pause') || $self->passed_captcha )
-        ? true
-        : false
-    );
-}
-
 =head1 METHODS
 
 =head2 add_identity
 
 Adds an identity to L</identity>. If the identity is a PAUSE account,
-the user ID is added to the corresponding L<MetaCPAN::Document::Author> document
-and L</looks_human> is updated.
+the user ID is added to the corresponding L<MetaCPAN::Document::Author> document.
 
 =cut
 
 after add_identity => sub {
     my ( $self, $identity ) = @_;
     if ( $identity->{name} eq 'pause' ) {
-        $self->clear_looks_human;
         my $profile
             = $self->index->model->doc('author')->get( $identity->{key} );
 
