@@ -40,13 +40,6 @@
                     "type": "string"
                 }
             }
-        },
-        "looks_human": {
-            "type": "boolean"
-        },
-        "passed_captcha": {
-            "format": "strict_date_optional_time||epoch_millis",
-            "type": "date"
         }
     }
 }

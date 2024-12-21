@@ -12,11 +12,6 @@ logger:
   class: Log::Log4perl::Appender::Screen
   name: testing
 
-controller:
-  User::Turing:
-    captcha_class: Captcha::Mock
-    private_key: testing
-
 github_key: foo
 github_secret: bar
 

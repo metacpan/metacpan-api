@@ -59,22 +59,6 @@ test_psgi app, sub {
 
     ok( $user = $cb->( GET '/user?access_token=bot' ), 'get bot' );
     is( $user->code, 200, 'code 200' );
-
-    $user = decode_json_ok($user);
-    ok( !$user->{looks_human}, 'user looks like a bot' );
-    ok(
-        $res = $cb->(
-            POST '/user/favorite?access_token=bot',
-            Content => encode_json( {
-                distribution => 'Moose',
-                release      => 'Moose-1.10',
-                author       => 'DOY'
-            } )
-        ),
-        'POST favorite'
-    );
-    decode_json_ok($res);
-    is( $res->code, 403, 'forbidden' );
 };
 
 done_testing;
