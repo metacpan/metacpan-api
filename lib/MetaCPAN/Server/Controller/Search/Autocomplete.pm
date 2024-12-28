@@ -14,13 +14,13 @@ has '+type' => ( default => 'file' );
 sub get : Local : Path('') : Args(0) {
     my ( $self, $c ) = @_;
     $c->stash_or_detach(
-        $self->model($c)->autocomplete( $c->req->param("q") ) );
+        $c->model('ESQuery')->file->autocomplete( $c->req->param("q") ) );
 }
 
 sub suggest : Local : Path('/suggest') : Args(0) {
     my ( $self, $c ) = @_;
-    $c->stash_or_detach(
-        $self->model($c)->autocomplete_suggester( $c->req->param("q") ) );
+    $c->stash_or_detach( $c->model('ESQuery')
+            ->file->autocomplete_suggester( $c->req->param("q") ) );
 }
 
 1;

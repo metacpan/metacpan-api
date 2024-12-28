@@ -2,6 +2,7 @@ package MetaCPAN::Query::File;
 
 use MetaCPAN::Moose;
 
+use List::Util         qw( max );
 use MetaCPAN::ESConfig qw( es_doc_path );
 use MetaCPAN::Util     qw( hit_total true false );
 
@@ -354,6 +355,151 @@ sub find_changes_files {
         { _source => true } );
     my ($file) = @{ $result->{categories}{changelog} || [] };
     return $file;
+}
+
+sub _autocomplete {
+    my ( $self, $query ) = @_;
+
+    my $search_size = 100;
+
+    my $sugg_res = $self->es->search(
+        es_doc_path('file'),
+        body => {
+            suggest => {
+                documentation => {
+                    text       => $query,
+                    completion => {
+                        field => "suggest",
+                        size  => $search_size,
+                    },
+                },
+            }
+        },
+    );
+
+    my %docs;
+    for my $suggest ( @{ $sugg_res->{suggest}{documentation}[0]{options} } ) {
+        $docs{ $suggest->{text} } = max grep {defined}
+            ( $docs{ $suggest->{text} }, $suggest->{score} );
+    }
+
+    my $res = $self->es->search(
+        es_doc_path('file'),
+        body => {
+            query => {
+                bool => {
+                    must => [
+                        { term  => { indexed       => true } },
+                        { term  => { authorized    => true } },
+                        { term  => { status        => 'latest' } },
+                        { terms => { documentation => [ keys %docs ] } },
+                    ],
+                    must_not => [
+                        {
+                            terms => {
+                                distribution => [
+                                    $self->query->distribution->rogue_list
+                                ]
+                            },
+                        },
+                    ],
+                }
+            },
+            _source => [ qw(
+                author
+                date
+                deprecated
+                distribution
+                documentation
+                release
+            ) ],
+            size => $search_size,
+        },
+    );
+
+    my $hits = $res->{hits}{hits};
+
+    my $fav_res
+        = $self->query->favorite->agg_by_distributions(
+        [ map $_->{_source}{distribution}, @$hits ] );
+
+    my $favs = $fav_res->{favorites};
+
+    my %valid = map {
+        my $source = $_->{_source};
+        (
+            $source->{documentation} => {
+                %$source, favorites => $favs->{ $source->{distribution} },
+            }
+        );
+    } @{ $res->{hits}{hits} };
+
+    # remove any exact match, it will be added later
+    my $exact = delete $valid{$query};
+
+    no warnings 'uninitialized';
+    my @sorted = map { $valid{$_} }
+        sort {
+        my $a_data = $valid{$a};
+        my $b_data = $valid{$b};
+               $a_data->{deprecated} <=> $b_data->{deprecated}
+            || $b_data->{favorites}  <=> $a_data->{favorites}
+            || $docs{$b}             <=> $docs{$a}
+            || length($a)            <=> length($b)
+            || $a cmp $b
+        }
+        keys %valid;
+
+    return {
+        took        => $sugg_res->{took} + $res->{took} + $fav_res->{took},
+        suggestions => \@sorted,
+    };
+}
+
+sub autocomplete {
+    my ( $self, @terms ) = @_;
+    my $data = $self->_autocomplete( join ' ', @terms );
+
+    return {
+        took => $data->{took},
+        hits => {
+            hits => [
+                map {
+                    my $source = $_;
+                    +{
+                        fields => {
+                            map +( $_ => $source->{$_} ), qw(
+                                documentation
+                                release
+                                author
+                                distribution
+                            ),
+                        },
+                    };
+                } @{ $data->{suggestions} }
+            ],
+        },
+    };
+}
+
+sub autocomplete_suggester {
+    my ( $self, @terms ) = @_;
+    my $data = $self->_autocomplete( join ' ', @terms );
+
+    return {
+        took        => $data->{took},
+        suggestions => [
+            map +{
+                author       => $_->{author},
+                date         => $_->{date},
+                deprecated   => $_->{deprecated},
+                distribution => $_->{distribution},
+                name         => $_->{documentation},
+                release      => $_->{release},
+            },
+            @{ $data->{suggestions} }
+        ],
+    };
 }
 
 __PACKAGE__->meta->make_immutable;

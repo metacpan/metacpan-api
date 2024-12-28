@@ -240,8 +240,11 @@ sub build_query {
                     }
                 },
             ],
-            must_not =>
-                [ { terms => { distribution => \@ROGUE_DISTRIBUTIONS } }, ],
+            must_not => [ {
+                terms => {
+                    distribution => [ $self->query->distribution->rogue_list ]
+                }
+            } ],
             must => [
                 {
                     bool => {
