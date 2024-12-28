@@ -348,5 +348,13 @@ sub files_by_category {
     return $return;
 }
 
+sub find_changes_files {
+    my ( $self, $author, $release ) = @_;
+    my $result = $self->files_by_category( $author, $release, ['changelog'],
+        { _source => true } );
+    my ($file) = @{ $result->{categories}{changelog} || [] };
+    return $file;
+}
+
 __PACKAGE__->meta->make_immutable;
 1;

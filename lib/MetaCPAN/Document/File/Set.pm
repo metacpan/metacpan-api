@@ -18,6 +18,7 @@ has query_file => (
     builder => '_build_query_file',
     handles => [ qw(
         dir
+        find_changes_files
         interesting_files
         files_by_category
     ) ],
@@ -410,14 +411,6 @@ sub autocomplete_suggester {
             @{ $data->{suggestions} }
         ],
     };
-}
-
-sub find_changes_files {
-    my ( $self, $author, $release ) = @_;
-    my $result = $self->files_by_category( $author, $release, ['changelog'],
-        { _source => true } );
-    my ($file) = @{ $result->{categories}{changelog} || [] };
-    return $file;
 }
 
 __PACKAGE__->meta->make_immutable;
