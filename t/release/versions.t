@@ -2,10 +2,10 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use MetaCPAN::Server::Test qw( model );
+use MetaCPAN::Server::Test qw( query );
 use Test::More;
 
-my $model = model();
+my $query = query();
 
 my %modules = (
     'Versions::Our'                 => '1.45',
@@ -16,14 +16,15 @@ my %modules = (
 
 while ( my ( $module, $version ) = each %modules ) {
 
-    ok( my $file = $model->doc('file')->find($module), "find $module" )
+    ok( my $file = $query->file->find_module($module), "find $module" )
         or next;
 
     ( my $path = "lib/$module.pm" ) =~ s/::/\//;
-    is( $file->path, $path, 'expected path' );
+    is( $file->{path}, $path, 'expected path' );
 
     # Check module version (different than dist version).
-    is( $file->module->[0]->version, $version, 'version parsed from file' );
+    is( $file->{module}->[0]->{version},
+        $version, 'version parsed from file' );
 
 }
 
