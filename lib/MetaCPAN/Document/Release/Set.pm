@@ -38,33 +38,5 @@ sub _build_query_release {
     return MetaCPAN::Query::Release->new( es => $self->es );
 }
 
-sub find_github_based {
-    shift->query( {
-        bool => {
-            must => [
-                { term => { status => 'latest' } },
-                {
-                    bool => {
-                        should => [
-                            {
-                                prefix => {
-                                    "resources.bugtracker.web" =>
-                                        'http://github.com/'
-                                }
-                            },
-                            {
-                                prefix => {
-                                    "resources.bugtracker.web" =>
-                                        'https://github.com/'
-                                }
-                            },
-                        ],
-                    }
-                },
-            ],
-        },
-    } );
-}
-
 __PACKAGE__->meta->make_immutable;
 1;
