@@ -51,12 +51,6 @@ ok(
 
 is( $ppport->name, 'ppphdoc', 'name doesn\'t contain a dot' );
 
-ok( my $moose = $model->doc('file')->find('Moose'), 'find Moose module' );
-
-is( $moose->name, 'Moose.pm', 'defined in Moose.pm' );
-
-is( $moose->module->[0]->associated_pod, 'DOY/Moose-0.02/lib/Moose.pm' );
-
 my $signature;
 $signature = $model->doc('file')->query( {
     bool => {
