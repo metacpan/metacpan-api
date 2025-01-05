@@ -1077,6 +1077,18 @@ DISTRIBUTIONS
       overload 0
       strict 0
       warnings 0
+  Crypt-URandom-0.46
+    pathname: D/DD/DDICK/Crypt-URandom-0.46.tar.gz
+    provides:
+      Crypt::URandom 0.46
+    requirements:
+      Carp 1.26
+      English 0
+      Exporter 0
+      ExtUtils::MakeMaker 0
+      FileHandle 0
+      constant 0
+      perl 5.006
   DBD-Pg-3.18.0
     pathname: T/TU/TURNSTEP/DBD-Pg-3.18.0.tar.gz
     provides:
@@ -1397,10 +1409,10 @@ DISTRIBUTIONS
       parent 0
       strict 0
       warnings 0
-  DateTime-Format-RFC3339-v1.8.0
-    pathname: I/IK/IKEGAMI/DateTime-Format-RFC3339-v1.8.0.tar.gz
+  DateTime-Format-RFC3339-v1.10.0
+    pathname: I/IK/IKEGAMI/DateTime-Format-RFC3339-v1.10.0.tar.gz
     provides:
-      DateTime::Format::RFC3339 1.008000
+      DateTime::Format::RFC3339 1.010000
     requirements:
       DateTime 0
       ExtUtils::MakeMaker 0
@@ -1919,14 +1931,6 @@ DISTRIBUTIONS
       strict 0
       vars 0
       warnings 0
-  Digest-SHA1-2.13
-    pathname: G/GA/GAAS/Digest-SHA1-2.13.tar.gz
-    provides:
-      Digest::SHA1 2.13
-    requirements:
-      Digest::base 1.00
-      ExtUtils::MakeMaker 0
-      perl 5.004
   Dist-CheckConflicts-0.11
     pathname: D/DO/DOY/Dist-CheckConflicts-0.11.tar.gz
     provides:
@@ -2573,12 +2577,12 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       Pod::Usage 1.14
-  Getopt-Long-Descriptive-0.115
-    pathname: R/RJ/RJBS/Getopt-Long-Descriptive-0.115.tar.gz
+  Getopt-Long-Descriptive-0.116
+    pathname: R/RJ/RJBS/Getopt-Long-Descriptive-0.116.tar.gz
     provides:
-      Getopt::Long::Descriptive 0.115
-      Getopt::Long::Descriptive::Opts 0.115
-      Getopt::Long::Descriptive::Usage 0.115
+      Getopt::Long::Descriptive 0.116
+      Getopt::Long::Descriptive::Opts 0.116
+      Getopt::Long::Descriptive::Usage 0.116
     requirements:
       Carp 0
       ExtUtils::MakeMaker 6.78
@@ -3305,42 +3309,43 @@ DISTRIBUTIONS
       perl 5.010
       strict 0
       warnings 0
-  MCE-1.900
-    pathname: M/MA/MARIOROY/MCE-1.900.tar.gz
+  MCE-1.901
+    pathname: M/MA/MARIOROY/MCE-1.901.tar.gz
     provides:
-      MCE 1.900
-      MCE::Candy 1.900
-      MCE::Channel 1.900
-      MCE::Channel::Mutex 1.900
-      MCE::Channel::MutexFast 1.900
-      MCE::Channel::Simple 1.900
-      MCE::Channel::SimpleFast 1.900
-      MCE::Channel::Threads 1.900
-      MCE::Channel::ThreadsFast 1.900
-      MCE::Child 1.900
-      MCE::Core::Input::Generator 1.900
-      MCE::Core::Input::Handle 1.900
-      MCE::Core::Input::Iterator 1.900
-      MCE::Core::Input::Request 1.900
-      MCE::Core::Input::Sequence 1.900
-      MCE::Core::Manager 1.900
-      MCE::Core::Validation 1.900
-      MCE::Core::Worker 1.900
-      MCE::Flow 1.900
-      MCE::Grep 1.900
-      MCE::Loop 1.900
-      MCE::Map 1.900
-      MCE::Mutex 1.900
-      MCE::Mutex::Channel 1.900
-      MCE::Mutex::Channel2 1.900
-      MCE::Mutex::Flock 1.900
-      MCE::Queue 1.900
-      MCE::Relay 1.900
-      MCE::Signal 1.900
-      MCE::Step 1.900
-      MCE::Stream 1.900
-      MCE::Subs 1.900
-      MCE::Util 1.900
+      MCE 1.901
+      MCE::Candy 1.901
+      MCE::Channel 1.901
+      MCE::Channel::Mutex 1.901
+      MCE::Channel::MutexFast 1.901
+      MCE::Channel::Simple 1.901
+      MCE::Channel::SimpleFast 1.901
+      MCE::Channel::Threads 1.901
+      MCE::Channel::ThreadsFast 1.901
+      MCE::Child 1.901
+      MCE::Core 1.901
+      MCE::Core::Input::Generator 1.901
+      MCE::Core::Input::Handle 1.901
+      MCE::Core::Input::Iterator 1.901
+      MCE::Core::Input::Request 1.901
+      MCE::Core::Input::Sequence 1.901
+      MCE::Core::Manager 1.901
+      MCE::Core::Validation 1.901
+      MCE::Core::Worker 1.901
+      MCE::Flow 1.901
+      MCE::Grep 1.901
+      MCE::Loop 1.901
+      MCE::Map 1.901
+      MCE::Mutex 1.901
+      MCE::Mutex::Channel 1.901
+      MCE::Mutex::Channel2 1.901
+      MCE::Mutex::Flock 1.901
+      MCE::Queue 1.901
+      MCE::Relay 1.901
+      MCE::Signal 1.901
+      MCE::Step 1.901
+      MCE::Stream 1.901
+      MCE::Subs 1.901
+      MCE::Util 1.901
     requirements:
       Carp 0
       Errno 0
@@ -4624,23 +4629,22 @@ DISTRIBUTIONS
       HTTP::Tiny 0
       Moose::Role 0
       Net::Fastly 1.08
-  MooseX-Getopt-0.76
-    pathname: E/ET/ETHER/MooseX-Getopt-0.76.tar.gz
+  MooseX-Getopt-0.78
+    pathname: E/ET/ETHER/MooseX-Getopt-0.78.tar.gz
     provides:
-      MooseX::Getopt 0.76
-      MooseX::Getopt::Basic 0.76
-      MooseX::Getopt::Dashes 0.76
-      MooseX::Getopt::GLD 0.76
-      MooseX::Getopt::Meta::Attribute 0.76
-      MooseX::Getopt::Meta::Attribute::NoGetopt 0.76
-      MooseX::Getopt::Meta::Attribute::Trait 0.76
-      MooseX::Getopt::Meta::Attribute::Trait::NoGetopt 0.76
-      MooseX::Getopt::OptionTypeMap 0.76
-      MooseX::Getopt::ProcessedArgv 0.76
-      MooseX::Getopt::Strict 0.76
+      MooseX::Getopt 0.78
+      MooseX::Getopt::Basic 0.78
+      MooseX::Getopt::Dashes 0.78
+      MooseX::Getopt::GLD 0.78
+      MooseX::Getopt::Meta::Attribute 0.78
+      MooseX::Getopt::Meta::Attribute::NoGetopt 0.78
+      MooseX::Getopt::Meta::Attribute::Trait 0.78
+      MooseX::Getopt::Meta::Attribute::Trait::NoGetopt 0.78
+      MooseX::Getopt::OptionTypeMap 0.78
+      MooseX::Getopt::ProcessedArgv 0.78
+      MooseX::Getopt::Strict 0.78
     requirements:
       Carp 0
-      ExtUtils::MakeMaker 0
       Getopt::Long 2.37
       Getopt::Long::Descriptive 0.088
       Module::Build::Tiny 0.034
@@ -5021,18 +5025,18 @@ DISTRIBUTIONS
       Net::IP 1.26
     requirements:
       ExtUtils::MakeMaker 0
-  Net-OAuth-0.28
-    pathname: K/KG/KGRENNAN/Net-OAuth-0.28.tar.gz
+  Net-OAuth-0.30
+    pathname: R/RR/RRWO/Net-OAuth-0.30.tar.gz
     provides:
-      Net::OAuth 0.28
+      Net::OAuth 0.30
       Net::OAuth::AccessToken undef
       Net::OAuth::AccessTokenRequest undef
       Net::OAuth::AccessTokenResponse undef
-      Net::OAuth::Client undef
+      Net::OAuth::Client 0.30
       Net::OAuth::ConsumerRequest undef
       Net::OAuth::Message undef
       Net::OAuth::ProtectedResourceRequest undef
-      Net::OAuth::Request 0.28
+      Net::OAuth::Request 0.30
       Net::OAuth::RequestTokenRequest undef
       Net::OAuth::RequestTokenResponse undef
       Net::OAuth::Response undef
@@ -5051,14 +5055,16 @@ DISTRIBUTIONS
     requirements:
       Class::Accessor 0.31
       Class::Data::Inheritable 0.06
+      Crypt::URandom 0.37
       Digest::HMAC_SHA1 1.01
       Digest::SHA 5.47
-      Digest::SHA1 2.12
       Encode 2.35
       LWP::UserAgent 1
+      Module::Build 0.4234
+      Module::Build::Compat 0.4234
       Test::More 0.66
       Test::Warn 0.21
-      URI::Escape 3.28
+      URI 5.15
   Net-SSLeay-1.94
     pathname: C/CH/CHRISN/Net-SSLeay-1.94.tar.gz
     provides:
@@ -7345,10 +7351,10 @@ DISTRIBUTIONS
       Test::Builder 0.13
       Test::Builder::Tester 1.02
       perl 5.006
-  Text-CSV_XS-1.57
-    pathname: H/HM/HMBRAND/Text-CSV_XS-1.57.tgz
+  Text-CSV_XS-1.59
+    pathname: H/HM/HMBRAND/Text-CSV_XS-1.59.tgz
     provides:
-      Text::CSV_XS 1.57
+      Text::CSV_XS 1.59
     requirements:
       Config 0
       ExtUtils::MakeMaker 0
@@ -7375,7 +7381,7 @@ DISTRIBUTIONS
       Exporter 0
       ExtUtils::MakeMaker 0
       constant 0
-      perl 5.00503
+      perl 5.005030
   Text-SimpleTable-2.07
     pathname: M/MR/MRAMBERG/Text-SimpleTable-2.07.tar.gz
     provides:
