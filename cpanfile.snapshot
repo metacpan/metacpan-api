@@ -990,10 +990,10 @@ DISTRIBUTIONS
       Config::Any::YAML undef
     requirements:
       Module::Pluggable::Object 3.6
-  Config-General-2.65
-    pathname: T/TL/TLINDEN/Config-General-2.65.tar.gz
+  Config-General-2.67
+    pathname: T/TL/TLINDEN/Config-General-2.67.tar.gz
     provides:
-      Config::General 2.65
+      Config::General 2.67
       Config::General::Extended 2.07
       Config::General::Interpolated 2.16
     requirements:
@@ -1077,10 +1077,10 @@ DISTRIBUTIONS
       overload 0
       strict 0
       warnings 0
-  Crypt-URandom-0.46
-    pathname: D/DD/DDICK/Crypt-URandom-0.46.tar.gz
+  Crypt-URandom-0.50
+    pathname: D/DD/DDICK/Crypt-URandom-0.50.tar.gz
     provides:
-      Crypt::URandom 0.46
+      Crypt::URandom 0.50
     requirements:
       Carp 1.26
       English 0
@@ -1120,8 +1120,8 @@ DISTRIBUTIONS
       Test::More 0.88
       Tie::Hash 0
       perl 5.006
-  DBI-1.645
-    pathname: H/HM/HMBRAND/DBI-1.645.tgz
+  DBI-1.646
+    pathname: H/HM/HMBRAND/DBI-1.646.tar.gz
     provides:
       Bundle::DBI 12.008696
       DBD::DBM 0.08
@@ -1177,7 +1177,7 @@ DISTRIBUTIONS
       DBD::Sponge::dr 12.010003
       DBD::Sponge::st 12.010003
       DBDI 12.015129
-      DBI 1.645
+      DBI 1.646
       DBI::Const::GetInfo::ANSI 2.008697
       DBI::Const::GetInfo::ODBC 2.011374
       DBI::Const::GetInfoReturn 2.008697
@@ -1217,7 +1217,7 @@ DISTRIBUTIONS
       DBI::SQL::Nano::Table_ 1.015544
       DBI::Util::CacheMemory 0.010315
       DBI::Util::_accessor 0.009479
-      DBI::common 1.645
+      DBI::common 1.646
     requirements:
       ExtUtils::MakeMaker 6.48
       Test::Simple 0.90
@@ -3750,11 +3750,11 @@ DISTRIBUTIONS
       strict 0
       version 0.87
       warnings 0
-  Module-Pluggable-6.2
-    pathname: S/SI/SIMONW/Module-Pluggable-6.2.tar.gz
+  Module-Pluggable-6.3
+    pathname: S/SI/SIMONW/Module-Pluggable-6.3.tar.gz
     provides:
       Devel::InnerPackage 0.4
-      Module::Pluggable 6.2
+      Module::Pluggable 6.3
       Module::Pluggable::Object 5.2
     requirements:
       Exporter 5.57
@@ -7846,54 +7846,55 @@ DISTRIBUTIONS
       Test::More 0.88
       URI 1.40
       perl 5.008001
-  URI-db-0.22
-    pathname: D/DW/DWHEELER/URI-db-0.22.tar.gz
+  URI-db-0.23
+    pathname: D/DW/DWHEELER/URI-db-0.23.tar.gz
     provides:
-      URI::cassandra 0.22
-      URI::cockroach 0.22
-      URI::cockroachdb 0.22
-      URI::couch 0.22
-      URI::couchdb 0.22
-      URI::cubrid 0.22
-      URI::db 0.22
-      URI::db2 0.22
-      URI::derby 0.22
-      URI::exasol 0.22
-      URI::firebird 0.22
-      URI::hive 0.22
-      URI::impala 0.22
-      URI::informix 0.22
-      URI::ingres 0.22
-      URI::interbase 0.22
-      URI::ldapdb 0.22
-      URI::maria 0.22
-      URI::mariadb 0.22
-      URI::max 0.22
-      URI::maxdb 0.22
-      URI::monet 0.22
-      URI::monetdb 0.22
-      URI::mongo 0.22
-      URI::mongodb 0.22
-      URI::mssql 0.22
-      URI::mysql 0.22
-      URI::oracle 0.22
-      URI::pg 0.22
-      URI::pgsql 0.22
-      URI::pgxc 0.22
-      URI::postgres 0.22
-      URI::postgresql 0.22
-      URI::postgresxc 0.22
-      URI::redshift 0.22
-      URI::snowflake 0.22
-      URI::sqlite 0.22
-      URI::sqlite3 0.22
-      URI::sqlserver 0.22
-      URI::sybase 0.22
-      URI::teradata 0.22
-      URI::unify 0.22
-      URI::vertica 0.22
-      URI::yugabyte 0.22
-      URI::yugabytedb 0.22
+      URI::cassandra 0.23
+      URI::clickhouse 0.20
+      URI::cockroach 0.23
+      URI::cockroachdb 0.23
+      URI::couch 0.23
+      URI::couchdb 0.23
+      URI::cubrid 0.23
+      URI::db 0.23
+      URI::db2 0.23
+      URI::derby 0.23
+      URI::exasol 0.23
+      URI::firebird 0.23
+      URI::hive 0.23
+      URI::impala 0.23
+      URI::informix 0.23
+      URI::ingres 0.23
+      URI::interbase 0.23
+      URI::ldapdb 0.23
+      URI::maria 0.23
+      URI::mariadb 0.23
+      URI::max 0.23
+      URI::maxdb 0.23
+      URI::monet 0.23
+      URI::monetdb 0.23
+      URI::mongo 0.23
+      URI::mongodb 0.23
+      URI::mssql 0.23
+      URI::mysql 0.23
+      URI::oracle 0.23
+      URI::pg 0.23
+      URI::pgsql 0.23
+      URI::pgxc 0.23
+      URI::postgres 0.23
+      URI::postgresql 0.23
+      URI::postgresxc 0.23
+      URI::redshift 0.23
+      URI::snowflake 0.23
+      URI::sqlite 0.23
+      URI::sqlite3 0.23
+      URI::sqlserver 0.23
+      URI::sybase 0.23
+      URI::teradata 0.23
+      URI::unify 0.23
+      URI::vertica 0.23
+      URI::yugabyte 0.23
+      URI::yugabytedb 0.23
     requirements:
       Module::Build 0.30
       Test::More 0.88
@@ -7973,18 +7974,19 @@ DISTRIBUTIONS
       Exporter 0
       Module::Build 0.4005
       perl 5.008001
-  WWW-OAuth-1.000
-    pathname: D/DB/DBOOK/WWW-OAuth-1.000.tar.gz
+  WWW-OAuth-1.001
+    pathname: D/DB/DBOOK/WWW-OAuth-1.001.tar.gz
     provides:
-      WWW::OAuth 1.000
-      WWW::OAuth::Request 1.000
-      WWW::OAuth::Request::Basic 1.000
-      WWW::OAuth::Request::HTTP_Request 1.000
-      WWW::OAuth::Request::Mojo 1.000
-      WWW::OAuth::Util 1.000
+      WWW::OAuth 1.001
+      WWW::OAuth::Request 1.001
+      WWW::OAuth::Request::Basic 1.001
+      WWW::OAuth::Request::HTTP_Request 1.001
+      WWW::OAuth::Request::Mojo 1.001
+      WWW::OAuth::Util 1.001
     requirements:
       Carp 0
       Class::Tiny::Chained 0
+      Crypt::URandom 0.37
       Digest::SHA 0
       ExtUtils::MakeMaker 0
       List::Util 1.33
