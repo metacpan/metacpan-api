@@ -28,20 +28,21 @@ sub find : Path('') : Args(2) {
 
 sub by_user : Path('by_user') : Args(1) {
     my ( $self, $c, $user ) = @_;
-    $c->stash_or_detach(
-        $self->model($c)->by_user( $user, $c->req->param('size') || 250 ) );
+    $c->stash_or_detach( $c->model('ESQuery')
+            ->favorite->by_user( $user, $c->req->param('size') || 250 ) );
 }
 
 sub users_by_distribution : Path('users_by_distribution') : Args(1) {
     my ( $self, $c, $distribution ) = @_;
     $c->stash_or_detach(
-        $self->model($c)->users_by_distribution($distribution) );
+        $c->model('ESQuery')->favorite->users_by_distribution($distribution)
+    );
 }
 
 sub recent : Path('recent') : Args(0) {
     my ( $self, $c ) = @_;
     $c->stash_or_detach(
-        $self->model($c)->recent(
+        $c->model('ESQuery')->favorite->recent(
             $c->req->param('page') || 1,
             $c->req->param('page_size') || $c->req->param('size') || 100,
         )
@@ -50,13 +51,13 @@ sub recent : Path('recent') : Args(0) {
 
 sub leaderboard : Path('leaderboard') : Args(0) {
     my ( $self, $c ) = @_;
-    $c->stash_or_detach( $self->model($c)->leaderboard() );
+    $c->stash_or_detach( $c->model('ESQuery')->favorite->leaderboard() );
 }
 
 sub agg_by_distributions : Path('agg_by_distributions') : Args(0) {
     my ( $self, $c ) = @_;
     $c->stash_or_detach(
-        $self->model($c)->agg_by_distributions(
+        $c->model('ESQuery')->favorite->agg_by_distributions(
             $c->read_param('distribution'),
             $c->req->param('user')    # optional
         )

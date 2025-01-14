@@ -31,7 +31,7 @@ sub find : Path('') {
 
 sub dir : Path('dir') {
     my ( $self, $c, @path ) = @_;
-    $c->stash_or_detach( $self->model($c)->dir(@path) );
+    $c->stash_or_detach( $c->model('ESQuery')->file->dir(@path) );
 }
 
 1;

@@ -36,28 +36,29 @@ sub find : Path('') {
 
 sub get : Path('') : Args(1) {
     my ( $self, $c, $module ) = @_;
-    $module = $c->model('ESModel')->doc('file')->find_pod($module)
+    $module = $c->model('ESQuery')->file->find_pod($module)
         or $c->detach( '/not_found', [] );
-    $c->forward( 'find', [ map { $module->$_ } qw(author release path) ] );
+    $c->forward( 'find',
+        [ map { $module->{_source}{$_} } qw(author release path) ] );
 }
 
 sub find_dist_links {
     my ( $self, $c, $author, $release, $permalinks ) = @_;
-    my @modules = $c->model('ESModel')->doc('file')
-        ->documented_modules( { name => $release, author => $author } );
+    my $modules
+        = $c->model('ESQuery')->file->documented_modules( $author, $release );
+    my $files = $modules->{files};
 
     my $links = {};
 
-    for my $file (@modules) {
-        next
-            unless $file->has_documentation;
-        my $name = $file->documentation;
+    for my $file (@$files) {
+        my $name = $file->{documentation}
+            or next;
         my ($module)
-            = grep { $_->name eq $name } @{ $file->module };
-        if ( $module && $module->authorized && $module->indexed ) {
+            = grep { $_->{name} eq $name } @{ $file->{module} };
+        if ( $module && $module->{authorized} && $module->{indexed} ) {
             if ($permalinks) {
                 $links->{$name} = join '/',
-                    'release', $author, $release, $file->path;
+                    'release', $author, $release, $file->{path};
             }
             else {
                 $links->{$name} = $name;
@@ -67,11 +68,11 @@ sub find_dist_links {
             if exists $links->{$name};
         if ($permalinks) {
             $links->{$name} = join '/',
-                'release', $author, $release, $file->path;
+                'release', $author, $release, $file->{path};
         }
         else {
             $links->{$name} = join '/',
-                'distribution', $file->distribution, $file->path;
+                'distribution', $file->{distribution}, $file->{path};
         }
     }
     return $links;

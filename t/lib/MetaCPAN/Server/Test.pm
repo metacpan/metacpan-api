@@ -2,18 +2,22 @@ package MetaCPAN::Server::Test;
 
 use strict;
 use warnings;
+use feature qw(state);
 
-use HTTP::Request::Common    qw( DELETE GET POST );    ## no perlimports
-use MetaCPAN::Model          ();
-use MetaCPAN::Server         ();
-use MetaCPAN::Server::Config ();
-use Plack::Test;                                       ## no perlimports
+use HTTP::Request::Common        qw( DELETE GET POST );    ## no perlimports
+use MetaCPAN::Model              ();
+use MetaCPAN::Server             ();
+use MetaCPAN::Server::Config     ();
+use MooseX::Types::ElasticSearch qw( ES );
+use Plack::Test;                                           ## no perlimports
 
 use base 'Exporter';
 our @EXPORT_OK = qw(
     POST GET DELETE
+    es
     model
     test_psgi app
+    query
 );
 
 # Begin the load-order dance.
@@ -38,9 +42,19 @@ sub app {
     return $app;
 }
 
+sub es {
+    state $es = do {
+        my $c = MetaCPAN::Server::Config::config();
+        ES->assert_coerce( $c->{elasticsearch_servers} );
+    };
+}
+
 sub model {
-    my $c = MetaCPAN::Server::Config::config();
-    MetaCPAN::Model->new( es => $c->{elasticsearch_servers} );
+    state $model = MetaCPAN::Model->new( es => es() );
+}
+
+sub query {
+    state $query = MetaCPAN::Query->new( es => es() );
 }
 
 1;

@@ -14,4 +14,10 @@ around [qw(content_type header)] => sub {
         : $header;
 };
 
+sub fields {
+    my $self   = shift;
+    my @fields = map { split /,/ } $self->param('fields');
+    return @fields ? \@fields : undef;
+}
+
 1;
