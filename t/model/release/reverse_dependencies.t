@@ -13,8 +13,8 @@ subtest 'distribution reverse_dependencies' => sub {
         sort { $a->[1] cmp $b->[1] }
             map +[ @{$_}{qw(author name)} ],
         @{
-            $c->model('ESModel')->doc('release')
-                ->raw->reverse_dependencies('Multiple-Modules')->{data}
+            $c->model('ESQuery')
+                ->release->reverse_dependencies('Multiple-Modules')->{data}
         }
     ];
 
@@ -32,8 +32,8 @@ subtest 'module reverse_dependencies' => sub {
     my $data = [
         map +[ @{$_}{qw(author name)} ],
         @{
-            $c->model('ESModel')->doc('release')
-                ->raw->requires('Multiple::Modules')->{data}
+            $c->model('ESQuery')->release->requires('Multiple::Modules')
+                ->{data}
         }
     ];
 
@@ -46,8 +46,7 @@ subtest 'module reverse_dependencies' => sub {
 
 subtest 'no reverse_dependencies' => sub {
     my $data
-        = $c->model('ESModel')->doc('release')->raw->requires('DoesNotExist')
-        ->{data};
+        = $c->model('ESQuery')->release->requires('DoesNotExist')->{data};
 
     is_deeply( $data, [], 'Found no reverse dependencies for module.' );
 };

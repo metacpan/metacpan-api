@@ -104,14 +104,45 @@ sub index_github_bugs {
 
     log_debug {'Fetching GitHub issues'};
 
-    my $scroll
-        = $self->model->doc('release')->find_github_based->scroll('5m');
+    my $scroll = $self->es->scroll_helper(
+        scroll => '5m',
+        es_doc_path('release'),
+        body => {
+            query => {
+                bool => {
+                    must => [
+                        { term => { status => 'latest' } },
+                        {
+                            bool => {
+                                should => [
+                                    {
+                                        prefix => {
+                                            "resources.bugtracker.web" =>
+                                                'http://github.com/'
+                                        }
+                                    },
+                                    {
+                                        prefix => {
+                                            "resources.bugtracker.web" =>
+                                                'https://github.com/'
+                                        }
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+            },
+            sort => ['_doc'],
+        },
+    );
+
     log_debug { sprintf( "Found %s repos", $scroll->total ) };
 
     my %summary;
 
 RELEASE: while ( my $release = $scroll->next ) {
-        my $resources = $release->resources;
+        my $resources = $release->{resources};
         my ( $user, $repo, $source )
             = $self->github_user_repo_from_resources($resources);
         next unless $user;
