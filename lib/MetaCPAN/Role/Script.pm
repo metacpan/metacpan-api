@@ -7,10 +7,15 @@ use MooseX::Types::ElasticSearch qw( ES );
 use IO::Prompt::Tiny             qw( prompt );
 use Log::Contextual              qw( :log :dlog );
 use MetaCPAN::Model              ();
-use MetaCPAN::Types::TypeTiny    qw( Bool HashRef Int Path Str );
+use MetaCPAN::Types::TypeTiny    qw( AbsPath Bool HashRef Int Path Str );
 use MetaCPAN::Util               qw( root_dir );
 use Mojo::Server                 ();
 use Term::ANSIColor              qw( colored );
+
+use MooseX::Getopt::OptionTypeMap ();
+for my $type ( Path, AbsPath ) {
+    MooseX::Getopt::OptionTypeMap->add_option_type_to_map( $type, '=s' );
+}
 
 with( 'MetaCPAN::Role::HasConfig', 'MetaCPAN::Role::Fastly',
     'MetaCPAN::Role::Logger' );

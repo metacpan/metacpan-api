@@ -121,13 +121,6 @@ coerce HashRefCPANMeta, from InstanceOf ['CPAN::Meta'], via {
     return $struct ? $struct : $_->as_struct;
 };
 
-# optionally add Getopt option type (adapted from MooseX::Types:Path::Class)
-if ( eval { require MooseX::Getopt; 1 } ) {
-    for my $type ( Path, AbsPath ) {
-        MooseX::Getopt::OptionTypeMap->add_option_type_to_map( $type, '=s' );
-    }
-}
-
 declare CommaSepOption, as ArrayRef [ StrMatch [qr{^[^, ]+$}] ];
 coerce CommaSepOption, from ArrayRef [Str], via {
     return [ map split(/\s*,\s*/), @$_ ];
