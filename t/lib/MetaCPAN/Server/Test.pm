@@ -4,12 +4,12 @@ use strict;
 use warnings;
 use feature qw(state);
 
-use HTTP::Request::Common        qw( DELETE GET POST );    ## no perlimports
-use MetaCPAN::Model              ();
-use MetaCPAN::Server             ();
-use MetaCPAN::Server::Config     ();
-use MooseX::Types::ElasticSearch qw( ES );
-use Plack::Test;                                           ## no perlimports
+use HTTP::Request::Common     qw( DELETE GET POST );    ## no perlimports
+use MetaCPAN::Model           ();
+use MetaCPAN::Server          ();
+use MetaCPAN::Server::Config  ();
+use MetaCPAN::Types::TypeTiny qw( ES );
+use Plack::Test;                                        ## no perlimports
 
 use base 'Exporter';
 our @EXPORT_OK = qw(

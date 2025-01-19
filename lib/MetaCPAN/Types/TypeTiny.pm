@@ -20,6 +20,8 @@ use Type::Library -base, -declare => ( qw(
     HashRefCPANMeta
 
     CommaSepOption
+
+    ES
 ) );
 use Type::Utils qw( as coerce declare extends from via );
 
@@ -127,6 +129,32 @@ coerce CommaSepOption, from ArrayRef [Str], via {
 };
 coerce CommaSepOption, from Str, via {
     return [ map split(/\s*,\s*/), $_ ];
+};
+
+declare ES, as Object;
+coerce ES, from Str, via {
+    my $server = $_;
+    $server = "127.0.0.1$server" if ( $server =~ /^:/ );
+    return Search::Elasticsearch->new(
+        nodes => $server,
+        cxn   => 'HTTPTiny',
+    );
+};
+
+coerce ES, from HashRef, via {
+    return Search::Elasticsearch->new( {
+        cxn => 'HTTPTiny',
+        %$_,
+    } );
+};
+
+coerce ES, from ArrayRef, via {
+    my @servers = @$_;
+    @servers = map { /^:/ ? "127.0.0.1$_" : $_ } @servers;
+    return Search::Elasticsearch->new(
+        nodes => \@servers,
+        cxn   => 'HTTPTiny',
+    );
 };
 
 1;

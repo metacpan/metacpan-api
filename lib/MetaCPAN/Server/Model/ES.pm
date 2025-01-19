@@ -2,8 +2,8 @@ package MetaCPAN::Server::Model::ES;
 
 use Moose;
 
-use MetaCPAN::Server::Config     ();
-use MooseX::Types::ElasticSearch qw( ES );
+use MetaCPAN::Server::Config  ();
+use MetaCPAN::Types::TypeTiny qw( ES );
 
 extends 'Catalyst::Model';
 
