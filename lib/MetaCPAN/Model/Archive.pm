@@ -3,7 +3,7 @@ package MetaCPAN::Model::Archive;
 use v5.10;
 use Moose;
 use MooseX::StrictConstructor;
-use MetaCPAN::Types::TypeTiny qw( AbsPath ArrayRef Bool Str );
+use MetaCPAN::Types::TypeTiny qw( AbsPath ArrayRef Bool InstanceOf Str );
 
 use Archive::Any ();
 use Carp         qw( croak );
@@ -52,7 +52,7 @@ has file => (
 
 has _extractor => (
     is      => 'ro',
-    isa     => 'Archive::Any',
+    isa     => InstanceOf ['Archive::Any'],
     handles => [ qw(
         is_impolite
         is_naughty

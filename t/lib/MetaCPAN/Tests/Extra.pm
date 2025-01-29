@@ -1,10 +1,11 @@
 package MetaCPAN::Tests::Extra;
 use Test::More;
 use Test::Routine;
+use MetaCPAN::Types::TypeTiny qw( CodeRef );
 
 has _extra_tests => (
     is        => 'ro',
-    isa       => 'CodeRef',
+    isa       => CodeRef,
     init_arg  => 'extra_tests',
     predicate => 'has_extra_tests',
 );
