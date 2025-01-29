@@ -20,8 +20,6 @@ use Parse::PMFile ();
 use Path::Tiny    qw( path );
 use Try::Tiny     qw( catch try );
 
-with 'MetaCPAN::Role::Logger';
-
 has archive => (
     is      => 'ro',
     isa     => 'MetaCPAN::Model::Archive',

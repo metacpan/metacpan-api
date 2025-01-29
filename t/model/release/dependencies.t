@@ -14,12 +14,7 @@ subtest 'basic dependencies' => sub {
         = fakecpan_dir->child(
         '/authors/id/M/MS/MSCHWERN/Prereqs-Basic-0.01.tar.gz');
 
-    my $release = MetaCPAN::Model::Release->new(
-        logger => $config->{logger},
-        level  => $config->{level},
-        file   => $file,
-    );
-    $release->set_logger_once;
+    my $release = MetaCPAN::Model::Release->new( file => $file );
 
     my $dependencies = $release->dependencies;
 
