@@ -3,7 +3,7 @@ package MetaCPAN::Query::Author;
 use MetaCPAN::Moose;
 
 use MetaCPAN::ESConfig qw( es_doc_path );
-use MetaCPAN::Util     qw(hit_total);
+use MetaCPAN::Util     qw( MAX_RESULT_WINDOW hit_total );
 use Ref::Util          qw( is_arrayref );
 
 with 'MetaCPAN::Query::Role::Common';
@@ -53,6 +53,17 @@ sub by_user {
 sub search {
     my ( $self, $query, $from ) = @_;
 
+    $from //= 0;
+    my $size = 10;
+
+    if ( $from * $size >= MAX_RESULT_WINDOW ) {
+        return +{
+            authors => [],
+            took    => 0,
+            total   => 0,
+        };
+    }
+
     my $body = {
         query => {
             bool => {
@@ -74,7 +85,7 @@ sub search {
                 ],
             }
         },
-        size => 10,
+        size => $size,
         from => $from || 0,
     };
 
