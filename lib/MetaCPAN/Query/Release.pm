@@ -980,6 +980,7 @@ sub find_download_url {
             checksum_md5
             checksum_sha256
             date
+            distribution
             download_url
             release
             status
