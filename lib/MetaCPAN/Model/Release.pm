@@ -545,9 +545,15 @@ sub _modules_from_files {
 
           # Ignore packages that people cannot claim.
           # https://github.com/andk/pause/blob/master/lib/PAUSE/pmfile.pm#L236
-                for my $pkg ( grep { $_ ne 'main' && $_ ne 'DB' }
-                    $info->packages_inside )
-                {
+          #
+          # Parse::PMFile and PAUSE translate apostrophes to double colons,
+          # but Module::Metadata does not.
+                my @packages
+                    = map s{'}{::}gr,
+                    grep { $_ ne 'main' && $_ ne 'DB' }
+                    $info->packages_inside;
+
+                for my $pkg (@packages) {
                     my $version = $info->version($pkg);
                     $file->add_module( {
                         name => $pkg,
