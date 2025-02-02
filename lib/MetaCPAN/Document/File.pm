@@ -932,16 +932,22 @@ sub set_indexed {
         );
     }
 
-    $self->_set_indexed(
-        (
+    if ( my $doc_name = $self->documentation ) {
 
-            # .pm file with no package declaration but pod should be indexed
-            !@{ $self->module } ||
+        # normalize the documentation name for comparison the same way module
+        # names are normalized
+        my $normalized_doc_name = $doc_name =~ s{'}{::}gr;
+        $self->_set_indexed(
+            (
+              # .pm file with no package declaration but pod should be indexed
+                !@{ $self->module } ||
 
            # don't index if the documentation doesn't match any of its modules
-                !!grep { $self->documentation eq $_->name } @{ $self->module }
-        ) ? true : false
-    ) if ( $self->documentation );
+                    grep { $normalized_doc_name eq $_->name }
+                    @{ $self->module }
+            ) ? true : false
+        );
+    }
 }
 
 =head2 set_authorized
