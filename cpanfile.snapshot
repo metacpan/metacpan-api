@@ -7352,10 +7352,10 @@ DISTRIBUTIONS
       Test::Builder 0.13
       Test::Builder::Tester 1.02
       perl 5.006
-  Text-CSV_XS-1.59
-    pathname: H/HM/HMBRAND/Text-CSV_XS-1.59.tgz
+  Text-CSV_XS-1.60
+    pathname: H/HM/HMBRAND/Text-CSV_XS-1.60.tgz
     provides:
-      Text::CSV_XS 1.59
+      Text::CSV_XS 1.60
     requirements:
       Config 0
       ExtUtils::MakeMaker 0
@@ -7382,7 +7382,7 @@ DISTRIBUTIONS
       Exporter 0
       ExtUtils::MakeMaker 0
       constant 0
-      perl 5.005030
+      perl 5.00503
   Text-SimpleTable-2.07
     pathname: M/MR/MRAMBERG/Text-SimpleTable-2.07.tar.gz
     provides:
@@ -8023,7 +8023,7 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       LWP::UserAgent 0
-      perl 5.00405
+      perl 5.004050
   XML-XPath-1.48
     pathname: M/MA/MANWAR/XML-XPath-1.48.tar.gz
     provides:
