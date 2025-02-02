@@ -115,8 +115,6 @@ requires 'Plack::Middleware::ReverseProxy';
 requires 'Plack::Middleware::Session';
 requires 'Plack::Session::Store';
 requires 'Pod::Markdown', '3.300';
-requires 'Pod::Simple', '3.43';
-requires 'Pod::Simple::XHTML', '3.24';
 requires 'Pod::Text', '4.14';
 requires 'Ref::Util';
 requires 'Safe', '2.35'; # bug fixes (used by Parse::PMFile)
