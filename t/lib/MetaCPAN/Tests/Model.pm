@@ -3,7 +3,7 @@ package MetaCPAN::Tests::Model;
 use Test::Routine;
 
 use MetaCPAN::Server::Test    ();
-use MetaCPAN::Types::TypeTiny qw( ArrayRef HashRef Str );
+use MetaCPAN::Types::TypeTiny qw( ArrayRef HashRef InstanceOf Str );
 use Test::More;
 use Try::Tiny qw( try );
 
@@ -42,7 +42,7 @@ has _type => (
 
 has model => (
     is      => 'ro',
-    isa     => 'MetaCPAN::Model',
+    isa     => InstanceOf ['MetaCPAN::Model'],
     lazy    => 1,
     default => sub { MetaCPAN::Server::Test::model() },
 );

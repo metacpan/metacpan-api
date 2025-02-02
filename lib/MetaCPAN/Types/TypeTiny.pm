@@ -20,6 +20,8 @@ use Type::Library -base, -declare => ( qw(
     HashRefCPANMeta
 
     CommaSepOption
+
+    ES
 ) );
 use Type::Utils qw( as coerce declare extends from via );
 
@@ -121,19 +123,38 @@ coerce HashRefCPANMeta, from InstanceOf ['CPAN::Meta'], via {
     return $struct ? $struct : $_->as_struct;
 };
 
-# optionally add Getopt option type (adapted from MooseX::Types:Path::Class)
-if ( eval { require MooseX::Getopt; 1 } ) {
-    for my $type ( Path, AbsPath ) {
-        MooseX::Getopt::OptionTypeMap->add_option_type_to_map( $type, '=s' );
-    }
-}
-
 declare CommaSepOption, as ArrayRef [ StrMatch [qr{^[^, ]+$}] ];
 coerce CommaSepOption, from ArrayRef [Str], via {
     return [ map split(/\s*,\s*/), @$_ ];
 };
 coerce CommaSepOption, from Str, via {
     return [ map split(/\s*,\s*/), $_ ];
+};
+
+declare ES, as Object;
+coerce ES, from Str, via {
+    my $server = $_;
+    $server = "127.0.0.1$server" if ( $server =~ /^:/ );
+    return Search::Elasticsearch->new(
+        nodes => $server,
+        cxn   => 'HTTPTiny',
+    );
+};
+
+coerce ES, from HashRef, via {
+    return Search::Elasticsearch->new( {
+        cxn => 'HTTPTiny',
+        %$_,
+    } );
+};
+
+coerce ES, from ArrayRef, via {
+    my @servers = @$_;
+    @servers = map { /^:/ ? "127.0.0.1$_" : $_ } @servers;
+    return Search::Elasticsearch->new(
+        nodes => \@servers,
+        cxn   => 'HTTPTiny',
+    );
 };
 
 1;

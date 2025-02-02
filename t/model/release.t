@@ -17,12 +17,8 @@ my $archive_file = File::Temp->new;
 getstore $url, $archive_file->filename;
 ok -s $archive_file->filename;
 
-my $release = MetaCPAN::Model::Release->new(
-    logger => $config->{logger},
-    level  => $config->{level},
-    file   => $archive_file->filename,
-);
-$release->set_logger_once;
+my $release
+    = MetaCPAN::Model::Release->new( file => $archive_file->filename );
 
 is $release->file, $archive_file->filename;
 

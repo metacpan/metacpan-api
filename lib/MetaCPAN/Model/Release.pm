@@ -4,27 +4,25 @@ use Moose;
 
 use v5.10;
 
-use CPAN::DistnameInfo        ();
-use CPAN::Meta                ();
-use DateTime                  ();
-use File::Find                ();
-use File::Spec                ();
-use Log::Contextual           qw( :log :dlog );
-use MetaCPAN::ESConfig        qw( es_doc_path );
-use MetaCPAN::Model::Archive  ();
-use MetaCPAN::Types::TypeTiny qw( AbsPath ArrayRef Str );
-use MetaCPAN::Util            qw( fix_version true false );
-use Module::Metadata 1.000012 ();    # Improved package detection.
+use CPAN::DistnameInfo             ();
+use CPAN::Meta                     ();
+use DateTime                       ();
+use File::Find                     ();
+use File::Spec                     ();
+use Log::Contextual::Easy::Default qw( :log :dlog );
+use MetaCPAN::ESConfig             qw( es_doc_path );
+use MetaCPAN::Model::Archive       ();
+use MetaCPAN::Types::TypeTiny      qw( AbsPath ArrayRef InstanceOf Str );
+use MetaCPAN::Util                 qw( fix_version true false );
+use Module::Metadata 1.000012      ();    # Improved package detection.
 use MooseX::StrictConstructor;
 use Parse::PMFile ();
 use Path::Tiny    qw( path );
 use Try::Tiny     qw( catch try );
 
-with 'MetaCPAN::Role::Logger';
-
 has archive => (
     is      => 'ro',
-    isa     => 'MetaCPAN::Model::Archive',
+    isa     => InstanceOf ['MetaCPAN::Model::Archive'],
     lazy    => 1,
     builder => '_build_archive',
 );
@@ -38,7 +36,7 @@ has dependencies => (
 
 has distinfo => (
     is      => 'ro',
-    isa     => 'CPAN::DistnameInfo',
+    isa     => InstanceOf ['CPAN::DistnameInfo'],
     handles => {
         maturity     => 'maturity',
         author       => 'cpanid',
@@ -55,7 +53,7 @@ has distinfo => (
 
 has document => (
     is      => 'ro',
-    isa     => 'MetaCPAN::Document::Release',
+    isa     => InstanceOf ['MetaCPAN::Document::Release'],
     lazy    => 1,
     builder => '_build_document',
 );
@@ -77,7 +75,7 @@ has files => (
 
 has date => (
     is      => 'ro',
-    isa     => 'DateTime',
+    isa     => InstanceOf ['DateTime'],
     lazy    => 1,
     default => sub {
         my $self = shift;
@@ -89,7 +87,7 @@ has model => ( is => 'ro' );
 
 has metadata => (
     is      => 'ro',
-    isa     => 'CPAN::Meta',
+    isa     => InstanceOf ['CPAN::Meta'],
     lazy    => 1,
     builder => '_build_metadata',
 );

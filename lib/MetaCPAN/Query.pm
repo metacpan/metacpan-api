@@ -1,9 +1,9 @@
 package MetaCPAN::Query;
 use Moose;
 
-use Module::Runtime              qw( require_module );
-use Module::Pluggable::Object    ();
-use MooseX::Types::ElasticSearch qw( ES );
+use Module::Runtime           qw( require_module );
+use Module::Pluggable::Object ();
+use MetaCPAN::Types::TypeTiny qw( ES );
 
 has es => (
     is       => 'ro',

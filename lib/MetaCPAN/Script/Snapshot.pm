@@ -9,7 +9,7 @@ use DateTime::Format::ISO8601 ();
 use HTTP::Tiny                ();
 use Log::Contextual           qw( :log :dlog );
 use MetaCPAN::Server::Config  ();
-use MetaCPAN::Types::TypeTiny qw( ArrayRef Bool Str );
+use MetaCPAN::Types::TypeTiny qw( ArrayRef Bool Str Uri );
 use Moose;
 use Sys::Hostname qw( hostname );
 
@@ -81,7 +81,8 @@ has snap_name => (
 
 has host => (
     is      => 'ro',
-    isa     => 'URI::http',
+    isa     => Uri,
+    coerce  => 1,
     default => sub {
         my $self = shift;
         return $self->es->transport->cxn_pool->cxns->[0]->uri;

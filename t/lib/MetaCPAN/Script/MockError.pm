@@ -2,13 +2,14 @@ package MetaCPAN::Script::MockError;
 
 use Moose;
 use Exception::Class ('MockException');
+use MetaCPAN::Types::TypeTiny qw( Bool Int Str );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
 has arg_error_message => (
     init_arg      => 'message',
     is            => 'ro',
-    isa           => 'Str',
+    isa           => Str,
     default       => "",
     documentation => 'mock an Error Message',
 );
@@ -16,7 +17,7 @@ has arg_error_message => (
 has arg_error_code => (
     init_arg      => 'error',
     is            => 'ro',
-    isa           => 'Int',
+    isa           => Int,
     default       => -1,
     documentation => 'mock an Exit Code',
 );
@@ -24,7 +25,7 @@ has arg_error_code => (
 has arg_die => (
     init_arg      => 'die',
     is            => 'ro',
-    isa           => 'Bool',
+    isa           => Bool,
     default       => 0,
     documentation => 'mock an Exception',
 );
@@ -32,7 +33,7 @@ has arg_die => (
 has arg_handle_error => (
     init_arg      => 'handle_error',
     is            => 'ro',
-    isa           => 'Bool',
+    isa           => Bool,
     default       => 0,
     documentation => 'mock a handled error',
 );
@@ -40,7 +41,7 @@ has arg_handle_error => (
 has arg_exception => (
     init_arg      => 'exception',
     is            => 'ro',
-    isa           => 'Bool',
+    isa           => Bool,
     default       => 0,
     documentation => 'mock an Exception Class',
 );

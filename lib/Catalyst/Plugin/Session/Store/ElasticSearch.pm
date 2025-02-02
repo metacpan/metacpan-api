@@ -4,7 +4,7 @@ package Catalyst::Plugin::Session::Store::ElasticSearch;
 
 use Moose;
 extends 'Catalyst::Plugin::Session::Store';
-use MooseX::Types::ElasticSearch qw( ES );
+use MetaCPAN::Types::TypeTiny qw( ES );
 
 use MetaCPAN::ESConfig       qw( es_doc_path );
 use MetaCPAN::Server::Config ();

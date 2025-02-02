@@ -23,13 +23,8 @@ foreach my $test (
     die 'You need to build your fakepan (with t/fakepan.t) first'
         unless -e $path;
 
-    my $release = MetaCPAN::Model::Release->new(
-        logger => $config->{logger},
-        level  => $config->{level},
-        file   => $path
-    );
-    $release->set_logger_once;
-    my $meta = $release->metadata;
+    my $release = MetaCPAN::Model::Release->new( file => $path );
+    my $meta    = $release->metadata;
 
     # some way to identify which file the meta came from
     like eval { $meta->generated_by }, qr/^$genby/,
