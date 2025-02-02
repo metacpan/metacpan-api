@@ -4,17 +4,17 @@ use Moose;
 
 use v5.10;
 
-use CPAN::DistnameInfo        ();
-use CPAN::Meta                ();
-use DateTime                  ();
-use File::Find                ();
-use File::Spec                ();
-use Log::Contextual           qw( :log :dlog );
-use MetaCPAN::ESConfig        qw( es_doc_path );
-use MetaCPAN::Model::Archive  ();
-use MetaCPAN::Types::TypeTiny qw( AbsPath ArrayRef Str );
-use MetaCPAN::Util            qw( fix_version true false );
-use Module::Metadata 1.000012 ();    # Improved package detection.
+use CPAN::DistnameInfo             ();
+use CPAN::Meta                     ();
+use DateTime                       ();
+use File::Find                     ();
+use File::Spec                     ();
+use Log::Contextual::Easy::Default qw( :log :dlog );
+use MetaCPAN::ESConfig             qw( es_doc_path );
+use MetaCPAN::Model::Archive       ();
+use MetaCPAN::Types::TypeTiny      qw( AbsPath ArrayRef Str );
+use MetaCPAN::Util                 qw( fix_version true false );
+use Module::Metadata 1.000012      ();    # Improved package detection.
 use MooseX::StrictConstructor;
 use Parse::PMFile ();
 use Path::Tiny    qw( path );
