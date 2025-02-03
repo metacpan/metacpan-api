@@ -2,8 +2,8 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use MetaCPAN::Server::Test qw( model );
-use MetaCPAN::Util         qw( true false hit_total );
+use MetaCPAN::Server::Test qw( model query );
+use MetaCPAN::Util         qw( true false );
 use Test::More;
 
 my $model = model();
@@ -85,16 +85,16 @@ $signature = $model->doc('file')->query( {
 ok( !$signature, 'SIGNATURE is not pod' );
 
 {
-    my $files  = $model->doc('file');
-    my $module = $files->history( module => 'Moose' )->raw->all;
-    my $file   = $files->history( file => 'Moose', 'lib/Moose.pm' )->raw->all;
+    my $files  = query()->file;
+    my $module = $files->history( module => 'Moose' );
+    my $file   = $files->history( file   => 'Moose', 'lib/Moose.pm' );
 
     is_deeply( $module->{hits}, $file->{hits},
         'history of Moose and lib/Moose.pm match' );
-    is( hit_total($module), 2, 'two hits' );
+    is( $module->{total}, 2, 'two hits' );
 
-    my $pod = $files->history( documentation => 'Moose::FAQ' )->raw->all;
-    is( hit_total($pod), 1, 'one hit' );
+    my $pod = $files->history( documentation => 'Moose::FAQ' );
+    is( $pod->{total}, 1, 'one hit' );
 }
 
 done_testing;

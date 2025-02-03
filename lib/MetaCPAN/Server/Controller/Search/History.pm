@@ -12,9 +12,11 @@ with 'MetaCPAN::Server::Role::JSONP';
 has '+type' => ( default => 'file' );
 
 sub get : Local : Path('') : Args {
-    my ( $self, $c, @args ) = @_;
-    my $data = $self->model($c)->history(@args)->raw;
-    $c->stash( $data->all );
+    my ( $self, $c, $type, $name, @path ) = @_;
+    my $fields = $c->res->fields;
+    my $data   = $c->model('ESQuery')
+        ->file->history( $type, $name, \@path, { fields => $fields } );
+    $c->stash($data);
 }
 
 1;
