@@ -4,14 +4,13 @@ use Test::Routine;
 use version;
 use MetaCPAN::Types::TypeTiny qw( Str );
 
-with qw(
-    MetaCPAN::Tests::Model
-);
+with qw( MetaCPAN::Tests::Query );
 
 sub _build_type {'distribution'}
 
 sub _build_search {
-    return [ get => $_[0]->name ];
+    my $self = shift;
+    return { term => { name => $self->name } };
 }
 
 my @attrs = qw(
@@ -27,7 +26,7 @@ test 'distribution attributes' => sub {
     my ($self) = @_;
 
     foreach my $attr (@attrs) {
-        is $self->data->$attr, $self->$attr, $attr;
+        is $self->data->{$attr}, $self->$attr, $attr;
     }
 };
 

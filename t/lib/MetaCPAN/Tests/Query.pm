@@ -1,38 +1,26 @@
-package MetaCPAN::Tests::Model;
+package MetaCPAN::Tests::Query;
 
 use Test::Routine;
 
+use MetaCPAN::ESConfig        qw( es_doc_path );
 use MetaCPAN::Server::Test    ();
-use MetaCPAN::Types::TypeTiny qw( ArrayRef HashRef InstanceOf Str );
+use MetaCPAN::Types::TypeTiny qw( ES ArrayRef HashRef InstanceOf Str );
 use Test::More;
 use Try::Tiny qw( try );
+
+around BUILDARGS => sub {
+    my ( $orig, $class, @args ) = @_;
+    my $attr = $class->$orig(@args);
+
+    my $expect = {%$attr};
+
+    return { _expect => $expect, %$attr };
+};
 
 with qw(
     MetaCPAN::Tests::Extra
     MetaCPAN::Tests::PSGI
 );
-
-around BUILDARGS => sub {
-    my ( $orig, $class, @args ) = @_;
-    my $attr   = $class->$orig(@args);
-    my $expect = {};
-
-    # Get a list of defined attributes.
-    my %known = map { ( $_ => 1 ) }
-        map { $_->init_arg() } $class->meta->get_all_attributes();
-
-    # We could extract any keys that don't have defined attributes
-    # and only test those, but it shouldn't hurt to test the others
-    # (the ones that do have attributes defined).  This way we won't *not*
-    # test something by accident if we define an attribute for it
-    # and really anything we specify shouldn't be different on the result.
-    while ( my ( $k, $v ) = each %$attr ) {
-        $expect->{$k} = $attr->{$k};
-        delete $attr->{$k} if !$known{$k};
-    }
-
-    return { _expect => $expect, %$attr };
-};
 
 has _type => (
     is      => 'ro',
@@ -40,24 +28,32 @@ has _type => (
     builder => '_build_type',
 );
 
-has model => (
+has es => (
     is      => 'ro',
-    isa     => InstanceOf ['MetaCPAN::Model'],
+    isa     => ES,
     lazy    => 1,
-    default => sub { MetaCPAN::Server::Test::model() },
+    default => sub { MetaCPAN::Server::Test::es() },
 );
 
 has search => (
     is      => 'ro',
-    isa     => ArrayRef,
+    isa     => HashRef,
     lazy    => 1,
     builder => '_build_search',
 );
 
 sub _do_search {
     my ($self) = @_;
-    my ( $method, @params ) = @{ $self->search };
-    return $self->model->doc( $self->_type )->$method(@params);
+    my $query  = $self->search;
+    my $res    = $self->es->search(
+        es_doc_path( $self->_type ),
+        body => {
+            query => $query,
+            size  => 1,
+        },
+    );
+    my $hit = $res->{hits}{hits}[0];
+    return $hit ? $hit->{_source} : undef;
 }
 
 has data => (
@@ -73,7 +69,7 @@ has _expectations => (
     init_arg => '_expect',
 );
 
-test 'expected model attributes' => sub {
+test 'expected attributes' => sub {
     my ($self) = @_;
     my $exp    = $self->_expectations;
     my $data   = $self->data;
@@ -81,10 +77,10 @@ test 'expected model attributes' => sub {
     foreach my $key ( sort keys %$exp ) {
 
       # Skip attributes of the test class that aren't attributes of the model.
-        next unless $data->can($key);
+      #next unless exists $data->{$key};
 
-        is_deeply $data->$key, $exp->{$key}, $key
-            or diag Test::More::explain $data->$key;
+        is_deeply $data->{$key}, $exp->{$key}, $key
+            or diag Test::More::explain $data->{$key};
     }
 };
 

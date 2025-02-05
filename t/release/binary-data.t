@@ -45,22 +45,22 @@ sub test_binary_data {
     {
         my $file = $self->file_by_path('lib/Binary/Data.pm');
 
-        is $file->sloc, 4, 'sloc';
-        is $file->slop, 0, 'slop';
+        is $file->{sloc}, 4, 'sloc';
+        is $file->{slop}, 0, 'slop';
 
         is_deeply $file->{pod_lines}, [], 'no pod_lines';
 
         my $binary = $self->file_content($file);
         like $binary, qr/^=[a-zA-Z]/m, 'matches loose pod pattern';
 
-        is ${ $file->pod }, q[], 'no pod text';
+        is $file->{pod}, q[], 'no pod text';
     }
 
     {
         my $file = $self->file_by_path('lib/Binary/Data/WithPod.pm');
 
-        is $file->sloc, 4, 'sloc';
-        is $file->slop, 7, 'slop';
+        is $file->{sloc}, 4, 'sloc';
+        is $file->{slop}, 7, 'slop';
 
         is_deeply $file->{pod_lines}, [ [ 5, 5 ], [ 22, 6 ], ], 'pod_lines';
 
@@ -69,7 +69,7 @@ sub test_binary_data {
         like $binary, qr/^=buzz9\xF0\x9F\x98\x8E/m,
             'matches more complex unwanted pod pattern';
 
-        is ${ $file->pod },
+        is $file->{pod},
             q[NAME Binary::Data::WithPod - that's it DESCRIPTION razzberry pudding],
             'pod text';
     }

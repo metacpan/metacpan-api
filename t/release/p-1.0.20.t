@@ -24,7 +24,7 @@ test_release( {
 
     extra_tests => sub {
         my ($self) = @_;
-        my $tests = $self->data->tests;
+        my $tests = $self->data->{tests};
 
         # Don't test the actual numbers since we copy this out of the real
         # database as a live test case.

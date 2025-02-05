@@ -35,8 +35,8 @@ sub test_assoc_pod {
 
     my $mod = $self->module_files->[0];
 
-    is $mod->sloc, 3, 'sloc';
-    is $mod->slop, 5, 'slop';
+    is $mod->{sloc}, 3, 'sloc';
+    is $mod->{slop}, 5, 'slop';
 
     is_deeply $mod->{pod_lines},
         [ [ 5, 9 ], ],
@@ -53,7 +53,7 @@ sub test_assoc_pod {
     unlike $pod_file, $gen_text, 'pod does not have generator comment';
     like $generator,  $gen_text, 'generator has comment';
 
-    is ${ $mod->pod },
+    is $mod->{pod},
         q[NAME Pod::With::Generator - this pod is generated Truth but this is the real one!],
         'pod text';
 

@@ -28,7 +28,7 @@ sub test_pod_examples {
     is( @spacial, 1, 'parsed =head1\x20\x20NAME' );
 
     is(
-        ${ $spacial[0]->pod },
+        $spacial[0]->{pod},
         q[NAME Pod::Examples::Spacial DESCRIPTION An extra space between 'head1' and 'NAME'],
         'pod text'
     );

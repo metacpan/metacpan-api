@@ -20,7 +20,7 @@ test_release( {
 
     extra_tests => sub {
         my ($self) = @_;
-        my $tests = $self->data->tests;
+        my $tests = $self->data->{tests};
 
         my $content = $self->file_content('lib/WWW/Tumblr.pm');
         like $content, qr/\$VERSION = ('?)0\1;/, 'version is zero';

@@ -22,14 +22,15 @@ sub test_modules {
     is( @files, 1, 'includes one file with modules' );
 
     my $file = shift @files;
-    is( @{ $file->module }, 1, 'file contains one module' );
+    is( @{ $file->{module} }, 1, 'file contains one module' );
 
-    my ($indexed) = grep { $_->{indexed} } @{ $file->module };
+    my ($indexed) = grep { $_->{indexed} } @{ $file->{module} };
 
-    is( $indexed->name,       'Documentation::Not::Readme', 'module name' );
-    is( $file->documentation, 'Documentation::Not::Readme', 'documentation' );
+    is( $indexed->{name}, 'Documentation::Not::Readme', 'module name' );
+    is( $file->{documentation},
+        'Documentation::Not::Readme', 'documentation' );
 
-    is( $indexed->associated_pod,
+    is( $indexed->{associated_pod},
         'RWSTAUNER/Documentation-Not-Readme-0.01/lib/Documentation/Not/Readme.pm'
     );
 }

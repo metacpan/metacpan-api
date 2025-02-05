@@ -6,21 +6,24 @@ use version;
 
 use HTTP::Request::Common     qw( GET );
 use List::Util                ();
+use MetaCPAN::ESConfig        qw( es_doc_path );
 use MetaCPAN::Types::TypeTiny qw( ArrayRef HashRef Str );
 use Test::More;
 
-with('MetaCPAN::Tests::Model');
+with qw( MetaCPAN::Tests::Query );
 
 sub _build_type {'release'}
 
 sub _build_search {
     my ($self) = @_;
-    return [
-        get => {
-            author => $self->author,
-            name   => $self->name,
-        }
-    ];
+    return {
+        bool => {
+            must => [
+                { term => { author => $self->author } },
+                { term => { name   => $self->name } },
+            ]
+        },
+    };
 }
 
 around BUILDARGS => sub {
@@ -35,8 +38,9 @@ around BUILDARGS => sub {
         @$attr{qw( distribution version )} = ( $1, $2 );
     }
 
-    # We handle this one specially.
+    # We handle these specially.
     delete $attr->{_expect}{tests};
+    delete $attr->{_expect}{modules};
 
     return $attr;
 };
@@ -92,7 +96,7 @@ sub file_content {
 
 sub file_by_path {
     my ( $self, $path ) = @_;
-    my $file = List::Util::first { $_->path eq $path } @{ $self->files };
+    my $file = List::Util::first { $_->{path} eq $path } @{ $self->files };
     ok $file, "found file '$path'";
     return $file;
 }
@@ -117,17 +121,22 @@ sub filter_files {
         if $add_filters && ref($add_filters) ne 'ARRAY';
 
     my $release = $self->data;
-    return [
-        $self->model->doc('file')->query( {
-            bool => {
-                must => [
-                    { term => { 'author'  => $release->author } },
-                    { term => { 'release' => $release->name } },
-                    @{ $add_filters || [] },
-                ],
-            }
-        } )->size(100)->all
-    ];
+    my $res     = $self->es->search(
+        es_doc_path('file'),
+        body => {
+            query => {
+                bool => {
+                    must => [
+                        { term => { 'author'  => $release->{author} } },
+                        { term => { 'release' => $release->{name} } },
+                        @{ $add_filters || [] },
+                    ],
+                },
+            },
+            size => 100,
+        },
+    );
+    return [ map $_->{_source}, @{ $res->{hits}{hits} } ];
 }
 
 has modules => (
@@ -177,7 +186,7 @@ has tests => (
 
 sub has_tests_ok {
     my ($self) = @_;
-    my $tests = $self->data->tests;
+    my $tests = $self->data->{tests};
 
     # Don't test the actual numbers since we copy this out of the real
     # database as a live test case.
@@ -198,7 +207,7 @@ test 'release attributes' => sub {
     my ($self) = @_;
 
     foreach my $attr (@attrs) {
-        is $self->data->$attr, $self->$attr, "release $attr";
+        is $self->data->{$attr}, $self->$attr, "release $attr";
     }
 
     if ( $self->expects_tests ) {
@@ -206,7 +215,7 @@ test 'release attributes' => sub {
             $self->has_tests_ok;
         }
         else {
-            is_deeply $self->data->tests, $self->tests, 'test results';
+            is_deeply $self->data->{tests}, $self->tests, 'test results';
         }
     }
 };
@@ -218,11 +227,13 @@ test 'modules in Packages-1.103' => sub {
         unless scalar keys %{ $self->modules };
 
     my %module_files
-        = map { ( $_->path => $_->module ) } @{ $self->module_files };
+        = map { ( $_->{path} => $_->{module} ) } @{ $self->module_files };
 
     foreach my $path ( sort keys %{ $self->modules } ) {
         my $desc = "File '$path' has expected modules";
         if ( my $got = delete $module_files{$path} ) {
+            my $got = [ map +{%$_}, @$got ];
+            $_->{associated_pod} //= undef for @$got;
 
      # We may need to sort modules by name, I'm not sure if order is reliable.
             is_deeply $got, $self->modules->{$path}, $desc
