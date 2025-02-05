@@ -114,7 +114,8 @@ my $bom
 sub hide_from_pause {
     my ( $self, $content, $file_name ) = @_;
     return 0 if defined($file_name) && $file_name =~ m{\.pm\.PL\z};
-    my $pkg = $self->name;
+    my $pkg       = $self->name;
+    my $pkg_match = join q[(?:::|')], map quotemeta, split m{::}, $pkg;
 
 # This regexp is *almost* the same as $PKG_REGEXP in Module::Metadata.
 # [b] We need to allow/ignore a possible BOM since we read in binary mode.
@@ -128,7 +129,7 @@ sub hide_from_pause {
        [\h\{;]*             # intro chars on a line [s]
       package               # the word 'package'
       \h+                   # whitespace [s]
-      (\Q$pkg\E)            # a package name [p]
+      ($pkg_match)          # the package name [p]
       (\h+ v?[0-9._]+)?     # optional version number (preceded by whitespace) [v]
       \h*                   # optional whitesapce [s]
       [;\{]                 # semicolon line terminator or block start
