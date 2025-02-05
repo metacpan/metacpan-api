@@ -7,7 +7,6 @@ use feature qw(state);
 use Carp                      qw( croak );
 use HTTP::Request::Common     qw( DELETE GET POST );    ## no perlimports
 use MetaCPAN::ESConfig        qw( es_doc_path );
-use MetaCPAN::Model           ();
 use MetaCPAN::Server          ();
 use MetaCPAN::Server::Config  ();
 use MetaCPAN::Types::TypeTiny qw( ES );
@@ -19,7 +18,6 @@ our @EXPORT_OK = qw(
     POST GET DELETE
     es
     es_result
-    model
     test_psgi app
     query
 );
@@ -51,10 +49,6 @@ sub es {
         my $c = MetaCPAN::Server::Config::config();
         ES->assert_coerce( $c->{elasticsearch_servers} );
     };
-}
-
-sub model {
-    state $model = MetaCPAN::Model->new( es => es() );
 }
 
 sub query {
