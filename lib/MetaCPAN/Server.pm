@@ -4,10 +4,11 @@ use Moose;
 
 ## no critic (Modules::RequireEndWithOne)
 use Catalyst qw( +MetaCPAN::Role::Fastly::Catalyst ), '-Log=warn,error,fatal';
-use Digest::SHA             ();
-use Log::Log4perl::Catalyst ();
-use Plack::Builder          qw( builder enable );
-use Ref::Util               qw( is_arrayref is_hashref );
+use Digest::SHA              ();
+use Log::Log4perl::Catalyst  ();
+use Plack::Builder           qw( builder enable );
+use Ref::Util                qw( is_arrayref is_hashref );
+use MetaCPAN::Server::Config ();
 
 extends 'Catalyst';
 
@@ -72,9 +73,9 @@ __PACKAGE__->config(
 
 __PACKAGE__->log( Log::Log4perl::Catalyst->new( undef, autoflush => 1 ) );
 
+__PACKAGE__->config( MetaCPAN::Server::Config::config() );
 __PACKAGE__->setup( qw(
     Static::Simple
-    ConfigLoader
     Session
     Session::Store::ElasticSearch
     Session::State::Cookie
