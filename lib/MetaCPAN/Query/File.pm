@@ -677,5 +677,74 @@ sub find_pod {
     }
 }
 
+sub history {
+    my ( $self, $type, $name, $path, $opts ) = @_;
+
+    $opts ||= {};
+    if ( ref $path ) {
+        $path = join '/', @$path;
+    }
+
+    my $source = $opts->{fields};
+
+    my $query
+        = $type eq "module"
+        ? {
+        nested => {
+            path  => 'module',
+            query => {
+                constant_score => {
+                    filter => {
+                        bool => {
+                            must => [
+                                { term => { "module.authorized" => true } },
+                                { term => { "module.indexed"    => true } },
+                                { term => { "module.name"       => $name } },
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+        }
+        : $type eq "file" ? {
+        bool => {
+            must => [
+                { term => { path         => $path } },
+                { term => { distribution => $name } },
+            ]
+        }
+        }
+
+        # XXX: to fix: no filtering on 'release' so this query
+        # will produce modules matching duplications. -- Mickey
+        : $type eq "documentation" ? {
+        bool => {
+            must => [
+                { match_phrase => { documentation => $name } },
+                { term         => { indexed       => true } },
+                { term         => { authorized    => true } },
+            ]
+        }
+        }
+        : return undef;
+
+    my $res = $self->es->search(
+        es_doc_path('file'),
+        body => {
+            query => $query,
+            size  => 500,
+            sort  => [ { date => 'desc' } ],
+            ( $source ? ( _source => $source ) : () ),
+        },
+    );
+
+    return {
+        took  => $res->{took},
+        total => hit_total($res),
+        files => [ map $_->{_source}, @{ $res->{hits}{hits} } ],
+    };
+}
+
 __PACKAGE__->meta->make_immutable;
 1;

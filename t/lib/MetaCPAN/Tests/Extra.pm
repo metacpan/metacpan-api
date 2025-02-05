@@ -3,6 +3,15 @@ use Test::More;
 use Test::Routine;
 use MetaCPAN::Types::TypeTiny qw( CodeRef );
 
+around BUILDARGS => sub {
+    my ( $orig, $class, @args ) = @_;
+    my $attr = $class->$orig(@args);
+
+    delete $attr->{_expect}{extra_tests};
+
+    return $attr;
+};
+
 has _extra_tests => (
     is        => 'ro',
     isa       => CodeRef,

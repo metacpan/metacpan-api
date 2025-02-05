@@ -32,14 +32,14 @@ test_release( {
         {
             my $file = $self->file_by_path('lib/local/lib.pm');
 
-            ok $file->indexed,    'local::lib should be indexed';
-            ok $file->authorized, 'local::lib should be authorized';
-            is $file->sloc, 3, 'sloc';
-            is $file->slop, 2, 'slop';
+            ok $file->{indexed},    'local::lib should be indexed';
+            ok $file->{authorized}, 'local::lib should be authorized';
+            is $file->{sloc}, 3, 'sloc';
+            is $file->{slop}, 2, 'slop';
 
             is_deeply $file->{pod_lines}, [ [ 4, 3 ] ], 'pod_lines';
 
-            is $file->abstract, q[Legitimate module], 'abstract';
+            is $file->{abstract}, q[Legitimate module], 'abstract';
         }
 
     },

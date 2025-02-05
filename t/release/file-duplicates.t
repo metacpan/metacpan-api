@@ -65,7 +65,7 @@ test_release(
             );
 
             while ( my ( $path, $count ) = each %dup ) {
-                is( scalar( grep { $_->path =~ m{\Q$path\E$} } @$files ),
+                is( scalar( grep { $_->{path} =~ m{\Q$path\E$} } @$files ),
                     $count, "multiple files match $path" );
             }
         },

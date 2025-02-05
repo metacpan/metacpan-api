@@ -36,7 +36,7 @@ test_release(
         extra_tests => sub {
             my ($self) = @_;
 
-            ok $self->data->authorized, 'dist is authorized';
+            ok $self->data->{authorized}, 'dist is authorized';
 
             my $content = $self->file_content('lib/Packages/Unclaimable.pm');
 

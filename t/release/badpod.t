@@ -33,12 +33,12 @@ sub test_bad_pod {
 
     my $file = $self->file_by_path('lib/BadPod.pm');
 
-    is $file->sloc, 3, 'sloc';
-    is $file->slop, 4, 'slop';
+    is $file->{sloc}, 3, 'sloc';
+    is $file->{slop}, 4, 'slop';
 
-    is_deeply $file->pod_lines, [ [ 5, 7 ], ], 'no pod_lines';
+    is_deeply $file->{pod_lines}, [ [ 5, 7 ], ], 'no pod_lines';
 
-    is ${ $file->pod },
+    is $file->{pod},
 
         # The unknown "=head" directive will get dropped
         # but the paragraph following it is valid.

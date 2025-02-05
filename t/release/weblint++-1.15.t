@@ -28,7 +28,7 @@ test_release( {
         my ($self) = @_;
 
         {
-            is $self->data->distribution, 'weblint',
+            is $self->data->{distribution}, 'weblint',
                 'distribution matches META name, but strips out ++';
         }
     },

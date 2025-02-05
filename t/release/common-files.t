@@ -31,15 +31,15 @@ test_release( {
         {
             my $file = $self->file_by_path('Makefile.PL');
 
-            ok !$file->indexed, 'Makefile.PL not indexed';
-            ok $file->authorized,
+            ok !$file->{indexed}, 'Makefile.PL not indexed';
+            ok $file->{authorized},
                 'Makefile.PL authorized, i suppose (not *un*authorized)';
-            is $file->sloc, 1, 'sloc';
-            is $file->slop, 3, 'slop';
+            is $file->{sloc}, 1, 'sloc';
+            is $file->{slop}, 3, 'slop';
 
-            is scalar( @{ $file->pod_lines } ), 1, 'one pod section';
+            is scalar( @{ $file->{pod_lines} } ), 1, 'one pod section';
 
-            is $file->abstract, undef, 'no abstract';
+            is $file->{abstract}, undef, 'no abstract';
         }
 
     },
