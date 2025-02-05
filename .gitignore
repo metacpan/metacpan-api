@@ -6,6 +6,7 @@
 /local/
 /log4perl_local.conf
 /metacpan_server_local.*
+/metacpan_server_testing_local.*
 /perltidy.LOG
 /pm_to_blib
 /var
