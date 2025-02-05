@@ -102,13 +102,6 @@ const my %config => merge(
                 settings => 'es/account/settings.json',
                 model    => 'MetaCPAN::Model::User::Account',
             },
-            identity => {
-                index    => 'identity',
-                type     => 'identity',
-                mapping  => 'es/identity/mapping.json',
-                settings => 'es/identity/settings.json',
-                model    => 'MetaCPAN::Model::User::Identity',
-            },
             session => {
                 index    => 'session',
                 type     => 'session',
