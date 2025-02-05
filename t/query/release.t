@@ -3,12 +3,10 @@ use warnings;
 
 use lib 't/lib';
 
-use MetaCPAN::Query::Release ();
-use MetaCPAN::Server::Test   ();
+use MetaCPAN::Server::Test qw(query);
 use Test::More;
 
-my $query = MetaCPAN::Query::Release->new(
-    es => MetaCPAN::Server::Test::model->es(), );
+my $query = query()->release;
 
 is( $query->_get_latest_release('DoesNotExist'),
     undef, '_get_latest_release returns undef when release does not exist' );

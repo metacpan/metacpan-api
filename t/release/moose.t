@@ -2,86 +2,94 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use MetaCPAN::Server::Test qw( model query );
+use MetaCPAN::Server::Test qw( query es_result );
 use MetaCPAN::Util         qw( true false );
 use Test::More;
 
-my $model = model();
-my @moose
-    = $model->doc('release')
-    ->query( { term => { distribution => 'Moose' } } )->all;
+my @moose = es_result( 'release', { term => { distribution => 'Moose' } } );
 
 my $first = 0;
-map { $first++ } grep { $_->first } @moose;
+map { $first++ } grep { $_->{first} } @moose;
 
 is( $first, 1, 'only one moose is first' );
 
-is( $moose[0]->main_module, 'Moose', 'main_module ok' );
+is( $moose[0]->{main_module}, 'Moose', 'main_module ok' );
 
-is( $moose[1]->main_module, 'Moose', 'main_module ok' );
+is( $moose[1]->{main_module}, 'Moose', 'main_module ok' );
 
-ok(
-    my $faq
-        = $model->doc('file')
-        ->query( { match_phrase => { documentation => 'Moose::FAQ' } } )
-        ->first,
-    'get Moose::FAQ'
+my $faq = es_result( 'file',
+    { match_phrase => { documentation => 'Moose::FAQ' } } );
+
+ok( $faq, 'get Moose::FAQ' );
+
+is( $faq->{status}, 'latest', 'is latest' );
+
+ok( $faq->{indexed}, 'is indexed' );
+
+ok( !$faq->{binary}, 'is not binary' );
+
+my $binary = es_result(
+    'file',
+    {
+        bool => {
+            must => [
+                { term => { release => 'Moose-0.01' } },
+                { term => { name    => 't' } },
+            ],
+        },
+    }
 );
 
-is( $faq->status, 'latest', 'is latest' );
+ok( $binary, 'get a t/ directory' );
 
-ok( $faq->indexed, 'is indexed' );
+ok( $binary->{binary}, 'is binary' );
 
-ok( !$faq->binary, 'is not binary' );
+my $ppport = es_result( 'file',
+    { match_phrase => { documentation => 'ppport.h' } } );
+ok( $ppport, 'get ppport.h' );
 
-ok(
-    my $binary
-        = $model->doc('file')->query( { term => { name => 't' } } )->first,
-    'get a t/ directory'
-);
-
-ok( $binary->binary, 'is binary' );
-
-ok(
-    my $ppport
-        = $model->doc('file')
-        ->query( { match_phrase => { documentation => 'ppport.h' } } )->first,
-    'get ppport.h'
-);
-
-is( $ppport->name, 'ppphdoc', 'name doesn\'t contain a dot' );
+is( $ppport->{name}, 'ppphdoc', 'name doesn\'t contain a dot' );
 
 my $signature;
-$signature = $model->doc('file')->query( {
-    bool => {
-        must => [
-            { term => { mime => 'text/x-script.perl' } },
-            { term => { name => 'SIGNATURE' } },
-        ],
-    },
-} )->first;
+($signature) = es_result(
+    'file',
+    {
+        bool => {
+            must => [
+                { term => { mime => 'text/x-script.perl' } },
+                { term => { name => 'SIGNATURE' } },
+            ],
+        },
+    }
+);
 ok( !$signature, 'SIGNATURE is not perl code' );
 
-$signature = $model->doc('file')->query( {
-    bool => {
-        must => [
-            { term => { documentation => 'SIGNATURE' } },
-            { term => { mime          => 'text/x-script.perl' } },
-            { term => { name          => 'SIGNATURE' } },
-        ],
-    },
-} )->first;
+($signature) = es_result(
+    'file',
+    {
+        bool => {
+            must => [
+                { term => { documentation => 'SIGNATURE' } },
+                { term => { mime          => 'text/x-script.perl' } },
+                { term => { name          => 'SIGNATURE' } },
+            ],
+        },
+    }
+);
 ok( !$signature, 'SIGNATURE is not documentation' );
 
-$signature = $model->doc('file')->query( {
-    bool => {
-        must => [
-            { term   => { name    => 'SIGNATURE' } },
-            { exists => { field   => 'documentation' } },
-            { term   => { indexed => true } },
-        ],
-    },
-} )->first;
+($signature) = es_result(
+    'file',
+    {
+        bool => {
+            must => [
+                { term   => { name    => 'SIGNATURE' } },
+                { exists => { field   => 'documentation' } },
+                { term   => { indexed => true } },
+            ],
+        },
+    }
+);
 ok( !$signature, 'SIGNATURE is not pod' );
 
 {
@@ -89,7 +97,7 @@ ok( !$signature, 'SIGNATURE is not pod' );
     my $module = $files->history( module => 'Moose' );
     my $file   = $files->history( file   => 'Moose', 'lib/Moose.pm' );
 
-    is_deeply( $module->{hits}, $file->{hits},
+    is_deeply( $module->{files}, $file->{files},
         'history of Moose and lib/Moose.pm match' );
     is( $module->{total}, 2, 'two hits' );
 

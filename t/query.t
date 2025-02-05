@@ -8,7 +8,7 @@ use MetaCPAN::Server::Test ();
 use Test::More;
 use Scalar::Util qw(weaken refaddr);
 
-my $es = MetaCPAN::Server::Test::model->es;
+my $es = MetaCPAN::Server::Test::es();
 
 {
     my $query   = MetaCPAN::Query->new( es => $es );
