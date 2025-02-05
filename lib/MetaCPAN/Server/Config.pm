@@ -21,9 +21,9 @@ sub _zomg {
     my $path = shift;
 
     my $config = Config::ZOMG->new(
-        local_suffix => $ENV{HARNESS_ACTIVE} ? 'testing' : 'local',
-        name         => 'metacpan_server',
-        path         => $path,
+        name => 'metacpan_server'
+            . ( $ENV{HARNESS_ACTIVE} ? '_testing' : '' ),
+        path => $path,
     );
 
     my $c = $config->open;

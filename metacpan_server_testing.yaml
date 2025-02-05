@@ -1,3 +1,4 @@
+git: /usr/bin/git
 cpan: var/t/tmp/fakecpan
 die_on_error: 1
 level: warn
@@ -8,12 +9,11 @@ elasticsearch_servers:
   client: '2_0::Direct'
   nodes: http://elasticsearch_test:9200
 
+minion_dsn: "postgresql://metacpan:t00lchain@pghost:5432/minion_queue"
+
 logger:
   class: Log::Log4perl::Appender::Screen
   name: testing
-
-github_key: foo
-github_secret: bar
 
 secret: weak
 
@@ -22,3 +22,16 @@ smtp:
   port: 465
   username: foo@metacpan.org
   password: seekrit
+
+oauth:
+  github:
+    key: seekrit
+    secret: seekrit
+  google:
+    key: seekrit
+    secret: seekrit
+  twitter:
+    key: seekrit
+    secret: seekrit
+
+front_end_url: http://0.0.0.0:5001
