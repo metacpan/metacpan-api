@@ -1077,10 +1077,10 @@ DISTRIBUTIONS
       overload 0
       strict 0
       warnings 0
-  Crypt-URandom-0.52
-    pathname: D/DD/DDICK/Crypt-URandom-0.52.tar.gz
+  Crypt-URandom-0.53
+    pathname: D/DD/DDICK/Crypt-URandom-0.53.tar.gz
     provides:
-      Crypt::URandom 0.52
+      Crypt::URandom 0.53
     requirements:
       Carp 1.26
       English 0
@@ -3384,12 +3384,12 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 6.42
       Test::More 0
       perl 5.005
-  MIME-Types-2.26
-    pathname: M/MA/MARKOV/MIME-Types-2.26.tar.gz
+  MIME-Types-2.27
+    pathname: M/MA/MARKOV/MIME-Types-2.27.tar.gz
     provides:
-      MIME::Type 2.26
-      MIME::Types 2.26
-      MojoX::MIME::Types 2.26
+      MIME::Type 2.27
+      MIME::Types 2.27
+      MojoX::MIME::Types 2.27
     requirements:
       ExtUtils::MakeMaker 0
       File::Basename 0
@@ -4787,10 +4787,10 @@ DISTRIBUTIONS
       namespace::clean 0.19
       overload 0
       perl 5.008
-  Mozilla-CA-20240924
-    pathname: L/LW/LWP/Mozilla-CA-20240924.tar.gz
+  Mozilla-CA-20250202
+    pathname: L/LW/LWP/Mozilla-CA-20250202.tar.gz
     provides:
-      Mozilla::CA 20240924
+      Mozilla::CA 20250202
     requirements:
       ExtUtils::MakeMaker 0
   Net-DNS-1.49
@@ -7382,7 +7382,7 @@ DISTRIBUTIONS
       Exporter 0
       ExtUtils::MakeMaker 0
       constant 0
-      perl 5.00503
+      perl 5.005030
   Text-SimpleTable-2.07
     pathname: M/MR/MRAMBERG/Text-SimpleTable-2.07.tar.gz
     provides:
@@ -8099,11 +8099,11 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       perl 5.008001
-  YAML-LibYAML-v0.902.0
-    pathname: T/TI/TINITA/YAML-LibYAML-v0.902.0.tar.gz
+  YAML-LibYAML-v0.903.0
+    pathname: T/TI/TINITA/YAML-LibYAML-v0.903.0.tar.gz
     provides:
-      YAML::LibYAML v0.902.0
-      YAML::XS v0.902.0
+      YAML::LibYAML v0.903.0
+      YAML::XS v0.903.0
     requirements:
       B::Deparse 0
       Exporter 0
