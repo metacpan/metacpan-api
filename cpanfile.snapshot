@@ -1308,19 +1308,19 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  DateTime-1.65
-    pathname: D/DR/DROLSKY/DateTime-1.65.tar.gz
+  DateTime-1.66
+    pathname: D/DR/DROLSKY/DateTime-1.66.tar.gz
     provides:
-      DateTime 1.65
-      DateTime::Duration 1.65
-      DateTime::Helpers 1.65
-      DateTime::Infinite 1.65
-      DateTime::Infinite::Future 1.65
-      DateTime::Infinite::Past 1.65
-      DateTime::LeapSecond 1.65
-      DateTime::PP 1.65
-      DateTime::PPExtra 1.65
-      DateTime::Types 1.65
+      DateTime 1.66
+      DateTime::Duration 1.66
+      DateTime::Helpers 1.66
+      DateTime::Infinite 1.66
+      DateTime::Infinite::Future 1.66
+      DateTime::Infinite::Past 1.66
+      DateTime::LeapSecond 1.66
+      DateTime::PP 1.66
+      DateTime::PPExtra 1.66
+      DateTime::Types 1.66
     requirements:
       Carp 0
       DateTime::Locale 1.06
@@ -1330,7 +1330,7 @@ DISTRIBUTIONS
       POSIX 0
       Params::ValidationCompiler 0.26
       Scalar::Util 0
-      Specio 0.18
+      Specio 0.50
       Specio::Declare 0
       Specio::Exporter 0
       Specio::Library::Builtins 0
@@ -1390,11 +1390,11 @@ DISTRIBUTIONS
       Test::More 0
       perl 5.00503
       warnings 0
-  DateTime-Format-ISO8601-0.16
-    pathname: D/DR/DROLSKY/DateTime-Format-ISO8601-0.16.tar.gz
+  DateTime-Format-ISO8601-0.17
+    pathname: D/DR/DROLSKY/DateTime-Format-ISO8601-0.17.tar.gz
     provides:
-      DateTime::Format::ISO8601 0.16
-      DateTime::Format::ISO8601::Types 0.16
+      DateTime::Format::ISO8601 0.17
+      DateTime::Format::ISO8601::Types 0.17
     requirements:
       Carp 0
       DateTime 1.45
@@ -3701,10 +3701,10 @@ DISTRIBUTIONS
       Text::Template 0
       strict 0
       warnings 0
-  Module-Find-0.16
-    pathname: C/CR/CRENZ/Module-Find-0.16.tar.gz
+  Module-Find-0.17
+    pathname: C/CR/CRENZ/Module-Find-0.17.tar.gz
     provides:
-      Module::Find 0.16
+      Module::Find 0.17
     requirements:
       ExtUtils::MakeMaker 0
       File::Find 0
@@ -4793,116 +4793,117 @@ DISTRIBUTIONS
       Mozilla::CA 20250202
     requirements:
       ExtUtils::MakeMaker 0
-  Net-DNS-1.49
-    pathname: N/NL/NLNETLABS/Net-DNS-1.49.tar.gz
+  Net-DNS-1.50
+    pathname: N/NL/NLNETLABS/Net-DNS-1.50.tar.gz
     provides:
-      Net::DNS 1.49
-      Net::DNS::Domain 1990
-      Net::DNS::DomainName 1990
-      Net::DNS::DomainName1035 1990
-      Net::DNS::DomainName2535 1990
-      Net::DNS::Header 1982
-      Net::DNS::Mailbox 1990
-      Net::DNS::Mailbox1035 1990
-      Net::DNS::Mailbox2535 1990
-      Net::DNS::Nameserver 1996
-      Net::DNS::Packet 1982
-      Net::DNS::Parameters 1996
-      Net::DNS::Question 1990
-      Net::DNS::RR 1990
-      Net::DNS::RR::A 1972
-      Net::DNS::RR::AAAA 1896
-      Net::DNS::RR::AFSDB 1972
-      Net::DNS::RR::AMTRELAY 1896
-      Net::DNS::RR::APL 1896
-      Net::DNS::RR::APL::Item 1896
-      Net::DNS::RR::CAA 1910
-      Net::DNS::RR::CDNSKEY 1909
-      Net::DNS::RR::CDS 1909
-      Net::DNS::RR::CERT 1972
-      Net::DNS::RR::CNAME 1972
-      Net::DNS::RR::CSYNC 1910
-      Net::DNS::RR::DELEG 1965
-      Net::DNS::RR::DHCID 1896
-      Net::DNS::RR::DNAME 1896
-      Net::DNS::RR::DNSKEY 1972
-      Net::DNS::RR::DS 1972
-      Net::DNS::RR::DSYNC 1996
-      Net::DNS::RR::EUI48 1896
-      Net::DNS::RR::EUI64 1896
-      Net::DNS::RR::GPOS 1910
-      Net::DNS::RR::HINFO 1896
-      Net::DNS::RR::HIP 1896
-      Net::DNS::RR::HTTPS 1972
-      Net::DNS::RR::IPSECKEY 1957
-      Net::DNS::RR::ISDN 1972
-      Net::DNS::RR::KEY 1972
-      Net::DNS::RR::KX 1945
-      Net::DNS::RR::L32 1896
-      Net::DNS::RR::L64 1896
-      Net::DNS::RR::LOC 1896
-      Net::DNS::RR::LP 1896
-      Net::DNS::RR::MB 1972
-      Net::DNS::RR::MG 1972
-      Net::DNS::RR::MINFO 1972
-      Net::DNS::RR::MR 1972
-      Net::DNS::RR::MX 1972
-      Net::DNS::RR::NAPTR 1898
-      Net::DNS::RR::NID 1896
-      Net::DNS::RR::NS 1972
-      Net::DNS::RR::NSEC 1972
-      Net::DNS::RR::NSEC3 1972
-      Net::DNS::RR::NSEC3PARAM 1972
-      Net::DNS::RR::NULL 1972
-      Net::DNS::RR::OPENPGPKEY 1896
-      Net::DNS::RR::OPT 1998
-      Net::DNS::RR::OPT::CHAIN 1998
-      Net::DNS::RR::OPT::CLIENT_SUBNET 1998
-      Net::DNS::RR::OPT::COOKIE 1998
-      Net::DNS::RR::OPT::DAU 1998
-      Net::DNS::RR::OPT::DHU 1998
-      Net::DNS::RR::OPT::EXPIRE 1998
-      Net::DNS::RR::OPT::EXTENDED_ERROR 1998
-      Net::DNS::RR::OPT::KEY_TAG 1998
-      Net::DNS::RR::OPT::N3U 1998
-      Net::DNS::RR::OPT::NSID 1998
-      Net::DNS::RR::OPT::PADDING 1998
-      Net::DNS::RR::OPT::REPORT_CHANNEL 1998
-      Net::DNS::RR::OPT::TCP_KEEPALIVE 1998
-      Net::DNS::RR::OPT::ZONEVERSION 1998
-      Net::DNS::RR::PTR 1972
-      Net::DNS::RR::PX 1945
-      Net::DNS::RR::RP 1972
-      Net::DNS::RR::RRSIG 1990
-      Net::DNS::RR::RT 1972
-      Net::DNS::RR::SIG 1990
-      Net::DNS::RR::SMIMEA 1896
-      Net::DNS::RR::SOA 1972
-      Net::DNS::RR::SPF 1896
-      Net::DNS::RR::SRV 1945
-      Net::DNS::RR::SSHFP 1896
-      Net::DNS::RR::SVCB 1996
-      Net::DNS::RR::TKEY 1908
-      Net::DNS::RR::TLSA 1896
-      Net::DNS::RR::TSIG 1980
-      Net::DNS::RR::TXT 1972
-      Net::DNS::RR::URI 1896
-      Net::DNS::RR::X25 1972
-      Net::DNS::RR::ZONEMD 1896
-      Net::DNS::Resolver 1981
-      Net::DNS::Resolver::Base 1996
-      Net::DNS::Resolver::MSWin32 1981
-      Net::DNS::Resolver::Recurse 1981
-      Net::DNS::Resolver::UNIX 1981
-      Net::DNS::Resolver::android 1981
-      Net::DNS::Resolver::cygwin 1981
-      Net::DNS::Resolver::os2 1981
-      Net::DNS::Resolver::os390 1981
-      Net::DNS::Text 1990
-      Net::DNS::Update 1990
-      Net::DNS::ZoneFile 1990
-      Net::DNS::ZoneFile::Generator 1990
-      Net::DNS::ZoneFile::Text 1990
+      Net::DNS 1.50
+      Net::DNS::Domain 2002
+      Net::DNS::DomainName 2005
+      Net::DNS::DomainName1035 2005
+      Net::DNS::DomainName2535 2005
+      Net::DNS::Header 2002
+      Net::DNS::Mailbox 2002
+      Net::DNS::Mailbox1035 2002
+      Net::DNS::Mailbox2535 2002
+      Net::DNS::Nameserver 2002
+      Net::DNS::Packet 2003
+      Net::DNS::Parameters 2002
+      Net::DNS::Question 2002
+      Net::DNS::RR 2003
+      Net::DNS::RR::A 2003
+      Net::DNS::RR::AAAA 2003
+      Net::DNS::RR::AFSDB 2002
+      Net::DNS::RR::AMTRELAY 2003
+      Net::DNS::RR::APL 2003
+      Net::DNS::RR::APL::Item 2003
+      Net::DNS::RR::CAA 2003
+      Net::DNS::RR::CDNSKEY 2003
+      Net::DNS::RR::CDS 2003
+      Net::DNS::RR::CERT 2002
+      Net::DNS::RR::CNAME 2003
+      Net::DNS::RR::CSYNC 2003
+      Net::DNS::RR::DELEG 2003
+      Net::DNS::RR::DHCID 2003
+      Net::DNS::RR::DNAME 2003
+      Net::DNS::RR::DNSKEY 2003
+      Net::DNS::RR::DS 2003
+      Net::DNS::RR::DSYNC 2003
+      Net::DNS::RR::EUI48 2003
+      Net::DNS::RR::EUI64 2003
+      Net::DNS::RR::GPOS 2003
+      Net::DNS::RR::HINFO 2003
+      Net::DNS::RR::HIP 2003
+      Net::DNS::RR::HTTPS 2002
+      Net::DNS::RR::IPSECKEY 2003
+      Net::DNS::RR::ISDN 2002
+      Net::DNS::RR::KEY 2002
+      Net::DNS::RR::KX 2003
+      Net::DNS::RR::L32 2003
+      Net::DNS::RR::L64 2003
+      Net::DNS::RR::LOC 2003
+      Net::DNS::RR::LP 2003
+      Net::DNS::RR::MB 2002
+      Net::DNS::RR::MG 2002
+      Net::DNS::RR::MINFO 2002
+      Net::DNS::RR::MR 2002
+      Net::DNS::RR::MX 2002
+      Net::DNS::RR::NAPTR 2003
+      Net::DNS::RR::NID 2003
+      Net::DNS::RR::NS 2003
+      Net::DNS::RR::NSEC 2002
+      Net::DNS::RR::NSEC3 2003
+      Net::DNS::RR::NSEC3PARAM 2003
+      Net::DNS::RR::NULL 2002
+      Net::DNS::RR::OPENPGPKEY 2003
+      Net::DNS::RR::OPT 2005
+      Net::DNS::RR::OPT::CHAIN 2005
+      Net::DNS::RR::OPT::CLIENT_SUBNET 2005
+      Net::DNS::RR::OPT::COOKIE 2005
+      Net::DNS::RR::OPT::DAU 2005
+      Net::DNS::RR::OPT::DHU 2005
+      Net::DNS::RR::OPT::EXPIRE 2005
+      Net::DNS::RR::OPT::EXTENDED_ERROR 2005
+      Net::DNS::RR::OPT::KEY_TAG 2005
+      Net::DNS::RR::OPT::N3U 2005
+      Net::DNS::RR::OPT::NSID 2005
+      Net::DNS::RR::OPT::PADDING 2005
+      Net::DNS::RR::OPT::REPORT_CHANNEL 2005
+      Net::DNS::RR::OPT::TCP_KEEPALIVE 2005
+      Net::DNS::RR::OPT::ZONEVERSION 2005
+      Net::DNS::RR::PTR 2002
+      Net::DNS::RR::PX 2003
+      Net::DNS::RR::RESINFO 2003
+      Net::DNS::RR::RP 2002
+      Net::DNS::RR::RRSIG 2003
+      Net::DNS::RR::RT 2003
+      Net::DNS::RR::SIG 2003
+      Net::DNS::RR::SMIMEA 2003
+      Net::DNS::RR::SOA 2002
+      Net::DNS::RR::SPF 2003
+      Net::DNS::RR::SRV 2003
+      Net::DNS::RR::SSHFP 2003
+      Net::DNS::RR::SVCB 2003
+      Net::DNS::RR::TKEY 2003
+      Net::DNS::RR::TLSA 2003
+      Net::DNS::RR::TSIG 2003
+      Net::DNS::RR::TXT 2003
+      Net::DNS::RR::URI 2003
+      Net::DNS::RR::X25 2002
+      Net::DNS::RR::ZONEMD 2003
+      Net::DNS::Resolver 2009
+      Net::DNS::Resolver::Base 2011
+      Net::DNS::Resolver::MSWin32 2002
+      Net::DNS::Resolver::Recurse 2002
+      Net::DNS::Resolver::UNIX 2007
+      Net::DNS::Resolver::android 2007
+      Net::DNS::Resolver::cygwin 2002
+      Net::DNS::Resolver::os2 2007
+      Net::DNS::Resolver::os390 2007
+      Net::DNS::Text 2002
+      Net::DNS::Update 2003
+      Net::DNS::ZoneFile 2002
+      Net::DNS::ZoneFile::Generator 2002
+      Net::DNS::ZoneFile::Text 2002
     requirements:
       Carp 1.1
       Config 0
@@ -6551,49 +6552,49 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  Specio-0.49
-    pathname: D/DR/DROLSKY/Specio-0.49.tar.gz
+  Specio-0.50
+    pathname: D/DR/DROLSKY/Specio-0.50.tar.gz
     provides:
-      Specio 0.49
-      Specio::Coercion 0.49
-      Specio::Constraint::AnyCan 0.49
-      Specio::Constraint::AnyDoes 0.49
-      Specio::Constraint::AnyIsa 0.49
-      Specio::Constraint::Enum 0.49
-      Specio::Constraint::Intersection 0.49
-      Specio::Constraint::ObjectCan 0.49
-      Specio::Constraint::ObjectDoes 0.49
-      Specio::Constraint::ObjectIsa 0.49
-      Specio::Constraint::Parameterizable 0.49
-      Specio::Constraint::Parameterized 0.49
-      Specio::Constraint::Role::CanType 0.49
-      Specio::Constraint::Role::DoesType 0.49
-      Specio::Constraint::Role::Interface 0.49
-      Specio::Constraint::Role::IsaType 0.49
-      Specio::Constraint::Simple 0.49
-      Specio::Constraint::Structurable 0.49
-      Specio::Constraint::Structured 0.49
-      Specio::Constraint::Union 0.49
-      Specio::Declare 0.49
-      Specio::DeclaredAt 0.49
-      Specio::Exception 0.49
-      Specio::Exporter 0.49
-      Specio::Helpers 0.49
-      Specio::Library::Builtins 0.49
-      Specio::Library::Numeric 0.49
-      Specio::Library::Perl 0.49
-      Specio::Library::String 0.49
-      Specio::Library::Structured 0.49
-      Specio::Library::Structured::Dict 0.49
-      Specio::Library::Structured::Map 0.49
-      Specio::Library::Structured::Tuple 0.49
-      Specio::OO 0.49
-      Specio::PartialDump 0.49
-      Specio::Registry 0.49
-      Specio::Role::Inlinable 0.49
-      Specio::Subs 0.49
-      Specio::TypeChecks 0.49
-      Test::Specio 0.49
+      Specio 0.50
+      Specio::Coercion 0.50
+      Specio::Constraint::AnyCan 0.50
+      Specio::Constraint::AnyDoes 0.50
+      Specio::Constraint::AnyIsa 0.50
+      Specio::Constraint::Enum 0.50
+      Specio::Constraint::Intersection 0.50
+      Specio::Constraint::ObjectCan 0.50
+      Specio::Constraint::ObjectDoes 0.50
+      Specio::Constraint::ObjectIsa 0.50
+      Specio::Constraint::Parameterizable 0.50
+      Specio::Constraint::Parameterized 0.50
+      Specio::Constraint::Role::CanType 0.50
+      Specio::Constraint::Role::DoesType 0.50
+      Specio::Constraint::Role::Interface 0.50
+      Specio::Constraint::Role::IsaType 0.50
+      Specio::Constraint::Simple 0.50
+      Specio::Constraint::Structurable 0.50
+      Specio::Constraint::Structured 0.50
+      Specio::Constraint::Union 0.50
+      Specio::Declare 0.50
+      Specio::DeclaredAt 0.50
+      Specio::Exception 0.50
+      Specio::Exporter 0.50
+      Specio::Helpers 0.50
+      Specio::Library::Builtins 0.50
+      Specio::Library::Numeric 0.50
+      Specio::Library::Perl 0.50
+      Specio::Library::String 0.50
+      Specio::Library::Structured 0.50
+      Specio::Library::Structured::Dict 0.50
+      Specio::Library::Structured::Map 0.50
+      Specio::Library::Structured::Tuple 0.50
+      Specio::OO 0.50
+      Specio::PartialDump 0.50
+      Specio::Registry 0.50
+      Specio::Role::Inlinable 0.50
+      Specio::Subs 0.50
+      Specio::TypeChecks 0.50
+      Test::Specio 0.50
     requirements:
       B 0
       Carp 0
@@ -7382,7 +7383,7 @@ DISTRIBUTIONS
       Exporter 0
       ExtUtils::MakeMaker 0
       constant 0
-      perl 5.00503
+      perl 5.005030
   Text-SimpleTable-2.07
     pathname: M/MR/MRAMBERG/Text-SimpleTable-2.07.tar.gz
     provides:
@@ -8252,32 +8253,32 @@ DISTRIBUTIONS
       utf8 0
       vars 0
       warnings 0
-  libwww-perl-6.77
-    pathname: O/OA/OALDERS/libwww-perl-6.77.tar.gz
+  libwww-perl-6.78
+    pathname: O/OA/OALDERS/libwww-perl-6.78.tar.gz
     provides:
-      LWP 6.77
-      LWP::Authen::Basic 6.77
-      LWP::Authen::Digest 6.77
-      LWP::Authen::Ntlm 6.77
-      LWP::ConnCache 6.77
-      LWP::Debug 6.77
-      LWP::Debug::TraceHTTP 6.77
-      LWP::DebugFile 6.77
-      LWP::MemberMixin 6.77
-      LWP::Protocol 6.77
-      LWP::Protocol::cpan 6.77
-      LWP::Protocol::data 6.77
-      LWP::Protocol::file 6.77
-      LWP::Protocol::ftp 6.77
-      LWP::Protocol::gopher 6.77
-      LWP::Protocol::http 6.77
-      LWP::Protocol::loopback 6.77
-      LWP::Protocol::mailto 6.77
-      LWP::Protocol::nntp 6.77
-      LWP::Protocol::nogo 6.77
-      LWP::RobotUA 6.77
-      LWP::Simple 6.77
-      LWP::UserAgent 6.77
+      LWP 6.78
+      LWP::Authen::Basic 6.78
+      LWP::Authen::Digest 6.78
+      LWP::Authen::Ntlm 6.78
+      LWP::ConnCache 6.78
+      LWP::Debug 6.78
+      LWP::Debug::TraceHTTP 6.78
+      LWP::DebugFile 6.78
+      LWP::MemberMixin 6.78
+      LWP::Protocol 6.78
+      LWP::Protocol::cpan 6.78
+      LWP::Protocol::data 6.78
+      LWP::Protocol::file 6.78
+      LWP::Protocol::ftp 6.78
+      LWP::Protocol::gopher 6.78
+      LWP::Protocol::http 6.78
+      LWP::Protocol::loopback 6.78
+      LWP::Protocol::mailto 6.78
+      LWP::Protocol::nntp 6.78
+      LWP::Protocol::nogo 6.78
+      LWP::RobotUA 6.78
+      LWP::Simple 6.78
+      LWP::UserAgent 6.78
     requirements:
       Digest::MD5 0
       Encode 2.12
