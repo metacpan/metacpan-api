@@ -126,12 +126,12 @@ DISTRIBUTIONS
       Params::Check 0.07
       Test::More 0
       if 0
-  Archive-Tar-3.02
-    pathname: B/BI/BINGOS/Archive-Tar-3.02.tar.gz
+  Archive-Tar-3.04
+    pathname: B/BI/BINGOS/Archive-Tar-3.04.tar.gz
     provides:
-      Archive::Tar 3.02
-      Archive::Tar::Constant 3.02
-      Archive::Tar::File 3.02
+      Archive::Tar 3.04
+      Archive::Tar::Constant 3.04
+      Archive::Tar::File 3.04
     requirements:
       Compress::Zlib 2.015
       ExtUtils::MakeMaker 0
@@ -3436,14 +3436,14 @@ DISTRIBUTIONS
       Net::Domain 1.05
       Net::SMTP 1.28
       Test::More 0
-  Math-BigInt-2.003004
-    pathname: P/PJ/PJACKLAM/Math-BigInt-2.003004.tar.gz
+  Math-BigInt-2.004001
+    pathname: P/PJ/PJACKLAM/Math-BigInt-2.004001.tar.gz
     provides:
-      Math::BigFloat 2.003004
-      Math::BigInt 2.003004
-      Math::BigInt::Calc 2.003004
-      Math::BigInt::Lib 2.003004
-      Math::BigRat 2.003004
+      Math::BigFloat 2.004001
+      Math::BigInt 2.004001
+      Math::BigInt::Calc 2.004001
+      Math::BigInt::Lib 2.004001
+      Math::BigRat 2.004001
     requirements:
       Carp 1.22
       ExtUtils::MakeMaker 6.58
@@ -7383,7 +7383,7 @@ DISTRIBUTIONS
       Exporter 0
       ExtUtils::MakeMaker 0
       constant 0
-      perl 5.005030
+      perl 5.00503
   Text-SimpleTable-2.07
     pathname: M/MR/MRAMBERG/Text-SimpleTable-2.07.tar.gz
     provides:
