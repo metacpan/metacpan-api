@@ -18,7 +18,6 @@ use Ref::Util      qw(
     is_plain_hashref
     is_ref
 );
-use Cpanel::JSON::XS ();
 use Sub::Exporter -setup => {
     exports => [ qw(
         root_dir

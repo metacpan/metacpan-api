@@ -5,7 +5,7 @@ use Moose;
 
 use ElasticSearchX::Model;
 use MetaCPAN::ESConfig qw(es_config);
-use Module::Runtime    qw(require_module use_package_optimistically);
+use Module::Runtime    qw( require_module use_package_optimistically );
 
 my %indexes;
 my $docs = es_config->documents;
