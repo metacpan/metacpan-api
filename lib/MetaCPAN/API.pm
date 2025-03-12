@@ -22,7 +22,6 @@ use Mojo::Base 'Mojolicious';
 use File::Temp                ();
 use List::Util                qw( any );
 use MetaCPAN::Script::Runner  ();
-use Search::Elasticsearch     ();
 use Try::Tiny                 qw( catch try );
 use MetaCPAN::Server::Config  ();
 use MetaCPAN::Types::TypeTiny qw( ES );

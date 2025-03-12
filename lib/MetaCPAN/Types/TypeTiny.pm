@@ -3,6 +3,7 @@ package MetaCPAN::Types::TypeTiny;
 use strict;
 use warnings;
 
+use Search::Elasticsearch ();
 use Type::Library -base, -declare => ( qw(
     ArrayRefPromote
 

@@ -2,13 +2,12 @@ package MetaCPAN::Query::Search;
 
 use MetaCPAN::Moose;
 
-use Const::Fast               qw( const );
-use Hash::Merge               qw( merge );
-use List::Util                qw( min uniq );
-use Log::Contextual           qw( :log :dlog );
-use MetaCPAN::ESConfig        qw( es_doc_path );
-use MetaCPAN::Types::TypeTiny qw( Object Str );
-use MetaCPAN::Util            qw( MAX_RESULT_WINDOW hit_total true false );
+use Const::Fast        qw( const );
+use Hash::Merge        qw( merge );
+use List::Util         qw( min uniq );
+use Log::Contextual    qw( :log :dlog );
+use MetaCPAN::ESConfig qw( es_doc_path );
+use MetaCPAN::Util     qw( MAX_RESULT_WINDOW hit_total true false );
 use MooseX::StrictConstructor;
 
 with 'MetaCPAN::Query::Role::Common';
