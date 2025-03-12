@@ -21,7 +21,6 @@ use MetaCPAN::TestHelpers            qw( fakecpan_dir );
 use MetaCPAN::Types::TypeTiny        qw( HashRef Path );
 use MetaCPAN::Util                   qw( true false );
 use MooseX::Types::ElasticSearch     qw( ES );
-use Search::Elasticsearch            ();
 use Test::More;
 
 has es_client => (

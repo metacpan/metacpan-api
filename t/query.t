@@ -3,10 +3,10 @@ use warnings;
 
 use lib 't/lib';
 
-use MetaCPAN::Query;
+use MetaCPAN::Query        ();
 use MetaCPAN::Server::Test ();
 use Test::More;
-use Scalar::Util qw(weaken refaddr);
+use Scalar::Util qw( refaddr weaken );
 
 my $es = MetaCPAN::Server::Test::es();
 
