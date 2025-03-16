@@ -1077,10 +1077,10 @@ DISTRIBUTIONS
       overload 0
       strict 0
       warnings 0
-  Crypt-URandom-0.53
-    pathname: D/DD/DDICK/Crypt-URandom-0.53.tar.gz
+  Crypt-URandom-0.54
+    pathname: D/DD/DDICK/Crypt-URandom-0.54.tar.gz
     provides:
-      Crypt::URandom 0.53
+      Crypt::URandom 0.54
     requirements:
       Carp 1.26
       English 0
@@ -2336,45 +2336,45 @@ DISTRIBUTIONS
       perl 5.008
       strict 0
       warnings 0
-  ExtUtils-MakeMaker-7.70
-    pathname: B/BI/BINGOS/ExtUtils-MakeMaker-7.70.tar.gz
+  ExtUtils-MakeMaker-7.72
+    pathname: B/BI/BINGOS/ExtUtils-MakeMaker-7.72.tar.gz
     provides:
-      ExtUtils::Command 7.70
-      ExtUtils::Command::MM 7.70
-      ExtUtils::Liblist 7.70
-      ExtUtils::Liblist::Kid 7.70
-      ExtUtils::MM 7.70
-      ExtUtils::MM_AIX 7.70
-      ExtUtils::MM_Any 7.70
-      ExtUtils::MM_BeOS 7.70
-      ExtUtils::MM_Cygwin 7.70
-      ExtUtils::MM_DOS 7.70
-      ExtUtils::MM_Darwin 7.70
-      ExtUtils::MM_MacOS 7.70
-      ExtUtils::MM_NW5 7.70
-      ExtUtils::MM_OS2 7.70
-      ExtUtils::MM_OS390 7.70
-      ExtUtils::MM_QNX 7.70
-      ExtUtils::MM_UWIN 7.70
-      ExtUtils::MM_Unix 7.70
-      ExtUtils::MM_VMS 7.70
-      ExtUtils::MM_VOS 7.70
-      ExtUtils::MM_Win32 7.70
-      ExtUtils::MM_Win95 7.70
-      ExtUtils::MY 7.70
-      ExtUtils::MakeMaker 7.70
-      ExtUtils::MakeMaker::Config 7.70
-      ExtUtils::MakeMaker::Locale 7.70
-      ExtUtils::MakeMaker::_version 7.70
-      ExtUtils::MakeMaker::charstar 7.70
-      ExtUtils::MakeMaker::version 7.70
-      ExtUtils::MakeMaker::version::regex 7.70
-      ExtUtils::MakeMaker::version::vpp 7.70
-      ExtUtils::Mkbootstrap 7.70
-      ExtUtils::Mksymlists 7.70
-      ExtUtils::testlib 7.70
-      MM 7.70
-      MY 7.70
+      ExtUtils::Command 7.72
+      ExtUtils::Command::MM 7.72
+      ExtUtils::Liblist 7.72
+      ExtUtils::Liblist::Kid 7.72
+      ExtUtils::MM 7.72
+      ExtUtils::MM_AIX 7.72
+      ExtUtils::MM_Any 7.72
+      ExtUtils::MM_BeOS 7.72
+      ExtUtils::MM_Cygwin 7.72
+      ExtUtils::MM_DOS 7.72
+      ExtUtils::MM_Darwin 7.72
+      ExtUtils::MM_MacOS 7.72
+      ExtUtils::MM_NW5 7.72
+      ExtUtils::MM_OS2 7.72
+      ExtUtils::MM_OS390 7.72
+      ExtUtils::MM_QNX 7.72
+      ExtUtils::MM_UWIN 7.72
+      ExtUtils::MM_Unix 7.72
+      ExtUtils::MM_VMS 7.72
+      ExtUtils::MM_VOS 7.72
+      ExtUtils::MM_Win32 7.72
+      ExtUtils::MM_Win95 7.72
+      ExtUtils::MY 7.72
+      ExtUtils::MakeMaker 7.72
+      ExtUtils::MakeMaker::Config 7.72
+      ExtUtils::MakeMaker::Locale 7.72
+      ExtUtils::MakeMaker::_version 7.72
+      ExtUtils::MakeMaker::charstar 7.72
+      ExtUtils::MakeMaker::version 7.72
+      ExtUtils::MakeMaker::version::regex 7.72
+      ExtUtils::MakeMaker::version::vpp 7.72
+      ExtUtils::Mkbootstrap 7.72
+      ExtUtils::Mksymlists 7.72
+      ExtUtils::testlib 7.72
+      MM 7.72
+      MY 7.72
     requirements:
       Data::Dumper 0
       Encode 0
@@ -3002,10 +3002,10 @@ DISTRIBUTIONS
       JSON::PP 2.27300
       Scalar::Util 0
       perl 5.006
-  JSON-Validator-5.14
-    pathname: J/JH/JHTHORSEN/JSON-Validator-5.14.tar.gz
+  JSON-Validator-5.15
+    pathname: J/JH/JHTHORSEN/JSON-Validator-5.15.tar.gz
     provides:
-      JSON::Validator 5.14
+      JSON::Validator 5.15
       JSON::Validator::Error undef
       JSON::Validator::Formats undef
       JSON::Validator::Joi undef
@@ -7383,7 +7383,7 @@ DISTRIBUTIONS
       Exporter 0
       ExtUtils::MakeMaker 0
       constant 0
-      perl 5.00503
+      perl 5.005030
   Text-SimpleTable-2.07
     pathname: M/MR/MRAMBERG/Text-SimpleTable-2.07.tar.gz
     provides:
