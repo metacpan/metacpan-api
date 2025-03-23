@@ -3,7 +3,7 @@ use warnings;
 use lib 't/lib';
 
 use MetaCPAN::ESConfig     qw( es_doc_path );
-use MetaCPAN::Server::Test qw( app GET query es test_psgi );
+use MetaCPAN::Server::Test qw( app es GET query test_psgi );
 use Test::More;
 
 my $query = query();
