@@ -2297,10 +2297,10 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  ExtUtils-Depends-0.8001
-    pathname: X/XA/XAOC/ExtUtils-Depends-0.8001.tar.gz
+  ExtUtils-Depends-0.8002
+    pathname: E/ET/ETJ/ExtUtils-Depends-0.8002.tar.gz
     provides:
-      ExtUtils::Depends 0.8001
+      ExtUtils::Depends 0.8002
     requirements:
       Data::Dumper 0
       ExtUtils::MakeMaker 7.44
@@ -3954,10 +3954,10 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Mojolicious 7.70
       Plack 0
-  Mojolicious-Plugin-OpenAPI-5.09
-    pathname: J/JH/JHTHORSEN/Mojolicious-Plugin-OpenAPI-5.09.tar.gz
+  Mojolicious-Plugin-OpenAPI-5.11
+    pathname: J/JH/JHTHORSEN/Mojolicious-Plugin-OpenAPI-5.11.tar.gz
     provides:
-      Mojolicious::Plugin::OpenAPI 5.09
+      Mojolicious::Plugin::OpenAPI 5.11
       Mojolicious::Plugin::OpenAPI::Cors undef
       Mojolicious::Plugin::OpenAPI::Parameters undef
       Mojolicious::Plugin::OpenAPI::Security undef
@@ -5632,11 +5632,11 @@ DISTRIBUTIONS
       strict 0
       warnings 0
       warnings::register 0
-  Path-Tiny-0.146
-    pathname: D/DA/DAGOLDEN/Path-Tiny-0.146.tar.gz
+  Path-Tiny-0.148
+    pathname: D/DA/DAGOLDEN/Path-Tiny-0.148.tar.gz
     provides:
-      Path::Tiny 0.146
-      Path::Tiny::Error 0.146
+      Path::Tiny 0.148
+      Path::Tiny::Error 0.148
     requirements:
       Carp 0
       Cwd 0
@@ -8024,7 +8024,7 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       LWP::UserAgent 0
-      perl 5.004050
+      perl 5.00405
   XML-XPath-1.48
     pathname: M/MA/MANWAR/XML-XPath-1.48.tar.gz
     provides:
