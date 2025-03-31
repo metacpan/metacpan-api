@@ -452,7 +452,7 @@ sub _autocomplete {
 
     return {
         took        => $sugg_res->{took} + $res->{took} + $fav_res->{took},
-        suggestions => \@sorted,
+        suggestions => [ ( $exact ? $exact : () ), @sorted ],
     };
 }
 
