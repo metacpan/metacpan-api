@@ -96,6 +96,15 @@ my %special_files = (
         dist.ini
         minil.toml
     ) ],
+    security => [
+        _doc_files( qw(
+            Security
+            security
+        ) ),
+        qw(
+            security.txt
+        ),
+    ],
     other => [
         _doc_files( qw(
             Authors
