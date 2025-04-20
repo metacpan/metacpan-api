@@ -3385,12 +3385,12 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 6.42
       Test::More 0
       perl 5.005
-  MIME-Types-2.27
-    pathname: M/MA/MARKOV/MIME-Types-2.27.tar.gz
+  MIME-Types-2.28
+    pathname: M/MA/MARKOV/MIME-Types-2.28.tar.gz
     provides:
-      MIME::Type 2.27
-      MIME::Types 2.27
-      MojoX::MIME::Types 2.27
+      MIME::Type 2.28
+      MIME::Types 2.28
+      MojoX::MIME::Types 2.28
     requirements:
       ExtUtils::MakeMaker 0
       File::Basename 0
@@ -3437,14 +3437,14 @@ DISTRIBUTIONS
       Net::Domain 1.05
       Net::SMTP 1.28
       Test::More 0
-  Math-BigInt-2.005002
-    pathname: P/PJ/PJACKLAM/Math-BigInt-2.005002.tar.gz
+  Math-BigInt-2.005003
+    pathname: P/PJ/PJACKLAM/Math-BigInt-2.005003.tar.gz
     provides:
-      Math::BigFloat 2.005002
-      Math::BigInt 2.005002
-      Math::BigInt::Calc 2.005002
-      Math::BigInt::Lib 2.005002
-      Math::BigRat 2.005002
+      Math::BigFloat 2.005003
+      Math::BigInt 2.005003
+      Math::BigInt::Calc 2.005003
+      Math::BigInt::Lib 2.005003
+      Math::BigRat 2.005003
     requirements:
       Carp 1.22
       ExtUtils::MakeMaker 6.58
@@ -4723,18 +4723,18 @@ DISTRIBUTIONS
       namespace::autoclean 0
       strict 0
       warnings 0
-  MooseX-Types-0.50
-    pathname: E/ET/ETHER/MooseX-Types-0.50.tar.gz
+  MooseX-Types-0.51
+    pathname: E/ET/ETHER/MooseX-Types-0.51.tar.gz
     provides:
-      MooseX::Types 0.50
-      MooseX::Types::Base 0.50
-      MooseX::Types::CheckedUtilExports 0.50
-      MooseX::Types::Combine 0.50
-      MooseX::Types::Moose 0.50
-      MooseX::Types::TypeDecorator 0.50
-      MooseX::Types::UndefinedType 0.50
-      MooseX::Types::Util 0.50
-      MooseX::Types::Wrapper 0.50
+      MooseX::Types 0.51
+      MooseX::Types::Base 0.51
+      MooseX::Types::CheckedUtilExports 0.51
+      MooseX::Types::Combine 0.51
+      MooseX::Types::Moose 0.51
+      MooseX::Types::TypeDecorator 0.51
+      MooseX::Types::UndefinedType 0.51
+      MooseX::Types::Util 0.51
+      MooseX::Types::Wrapper 0.51
     requirements:
       Carp 0
       Carp::Clan 6.00
@@ -4749,10 +4749,11 @@ DISTRIBUTIONS
       Sub::Exporter 0
       Sub::Exporter::ForMethods 0.100052
       Sub::Install 0
-      Sub::Name 0
+      Sub::Util 0
       base 0
       namespace::autoclean 0.16
       overload 0
+      parent 0
       perl 5.008
       strict 0
       warnings 0
@@ -6748,17 +6749,6 @@ DISTRIBUTIONS
       perl 5.008000
       strict 0
       warnings 0
-  Sub-Name-0.28
-    pathname: E/ET/ETHER/Sub-Name-0.28.tar.gz
-    provides:
-      Sub::Name 0.28
-    requirements:
-      Exporter 0
-      ExtUtils::MakeMaker 0
-      XSLoader 0
-      perl 5.006
-      strict 0
-      warnings 0
   Sub-Quote-2.006008
     pathname: H/HA/HAARG/Sub-Quote-2.006008.tar.gz
     provides:
@@ -7379,7 +7369,7 @@ DISTRIBUTIONS
       Exporter 0
       ExtUtils::MakeMaker 0
       constant 0
-      perl 5.00503
+      perl 5.005030
   Text-SimpleTable-2.07
     pathname: M/MR/MRAMBERG/Text-SimpleTable-2.07.tar.gz
     provides:
@@ -7614,60 +7604,60 @@ DISTRIBUTIONS
       WWW::OAuth 0.006
       namespace::clean 0
       perl v5.14.1
-  Type-Tiny-2.008000
-    pathname: T/TO/TOBYINK/Type-Tiny-2.008000.tar.gz
+  Type-Tiny-2.008001
+    pathname: T/TO/TOBYINK/Type-Tiny-2.008001.tar.gz
     provides:
-      Devel::TypeTiny::Perl58Compat 2.008000
-      Error::TypeTiny 2.008000
-      Error::TypeTiny::Assertion 2.008000
-      Error::TypeTiny::Compilation 2.008000
-      Error::TypeTiny::WrongNumberOfParameters 2.008000
-      Eval::TypeTiny 2.008000
-      Eval::TypeTiny::CodeAccumulator 2.008000
-      Reply::Plugin::TypeTiny 2.008000
-      Test::TypeTiny 2.008000
-      Type::Coercion 2.008000
-      Type::Coercion::FromMoose 2.008000
-      Type::Coercion::Union 2.008000
-      Type::Library 2.008000
-      Type::Params 2.008000
-      Type::Params::Alternatives 2.008000
-      Type::Params::Parameter 2.008000
-      Type::Params::Signature 2.008000
-      Type::Parser 2.008000
-      Type::Parser::AstBuilder 2.008000
-      Type::Parser::Token 2.008000
-      Type::Parser::TokenStream 2.008000
-      Type::Registry 2.008000
-      Type::Tie 2.008000
-      Type::Tie::ARRAY 2.008000
-      Type::Tie::BASE 2.008000
-      Type::Tie::HASH 2.008000
-      Type::Tie::SCALAR 2.008000
-      Type::Tiny 2.008000
-      Type::Tiny::Bitfield 2.008000
-      Type::Tiny::Class 2.008000
-      Type::Tiny::ConstrainedObject 2.008000
-      Type::Tiny::Duck 2.008000
-      Type::Tiny::Enum 2.008000
-      Type::Tiny::Intersection 2.008000
-      Type::Tiny::Role 2.008000
-      Type::Tiny::Union 2.008000
-      Type::Utils 2.008000
-      Types::Common 2.008000
-      Types::Common::Numeric 2.008000
-      Types::Common::String 2.008000
-      Types::Standard 2.008000
-      Types::Standard::ArrayRef 2.008000
-      Types::Standard::CycleTuple 2.008000
-      Types::Standard::Dict 2.008000
-      Types::Standard::HashRef 2.008000
-      Types::Standard::Map 2.008000
-      Types::Standard::ScalarRef 2.008000
-      Types::Standard::StrMatch 2.008000
-      Types::Standard::Tied 2.008000
-      Types::Standard::Tuple 2.008000
-      Types::TypeTiny 2.008000
+      Devel::TypeTiny::Perl58Compat 2.008001
+      Error::TypeTiny 2.008001
+      Error::TypeTiny::Assertion 2.008001
+      Error::TypeTiny::Compilation 2.008001
+      Error::TypeTiny::WrongNumberOfParameters 2.008001
+      Eval::TypeTiny 2.008001
+      Eval::TypeTiny::CodeAccumulator 2.008001
+      Reply::Plugin::TypeTiny 2.008001
+      Test::TypeTiny 2.008001
+      Type::Coercion 2.008001
+      Type::Coercion::FromMoose 2.008001
+      Type::Coercion::Union 2.008001
+      Type::Library 2.008001
+      Type::Params 2.008001
+      Type::Params::Alternatives 2.008001
+      Type::Params::Parameter 2.008001
+      Type::Params::Signature 2.008001
+      Type::Parser 2.008001
+      Type::Parser::AstBuilder 2.008001
+      Type::Parser::Token 2.008001
+      Type::Parser::TokenStream 2.008001
+      Type::Registry 2.008001
+      Type::Tie 2.008001
+      Type::Tie::ARRAY 2.008001
+      Type::Tie::BASE 2.008001
+      Type::Tie::HASH 2.008001
+      Type::Tie::SCALAR 2.008001
+      Type::Tiny 2.008001
+      Type::Tiny::Bitfield 2.008001
+      Type::Tiny::Class 2.008001
+      Type::Tiny::ConstrainedObject 2.008001
+      Type::Tiny::Duck 2.008001
+      Type::Tiny::Enum 2.008001
+      Type::Tiny::Intersection 2.008001
+      Type::Tiny::Role 2.008001
+      Type::Tiny::Union 2.008001
+      Type::Utils 2.008001
+      Types::Common 2.008001
+      Types::Common::Numeric 2.008001
+      Types::Common::String 2.008001
+      Types::Standard 2.008001
+      Types::Standard::ArrayRef 2.008001
+      Types::Standard::CycleTuple 2.008001
+      Types::Standard::Dict 2.008001
+      Types::Standard::HashRef 2.008001
+      Types::Standard::Map 2.008001
+      Types::Standard::ScalarRef 2.008001
+      Types::Standard::StrMatch 2.008001
+      Types::Standard::Tied 2.008001
+      Types::Standard::Tuple 2.008001
+      Types::TypeTiny 2.008001
     requirements:
       Exporter::Tiny 1.006000
       ExtUtils::MakeMaker 6.17
@@ -8020,7 +8010,7 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       LWP::UserAgent 0
-      perl 5.00405
+      perl 5.004050
   XML-XPath-1.48
     pathname: M/MA/MANWAR/XML-XPath-1.48.tar.gz
     provides:
