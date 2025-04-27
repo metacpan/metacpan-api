@@ -173,25 +173,27 @@ DISTRIBUTIONS
       IO::Seekable 0
       Time::Local 0
       perl 5.006
-  Authen-SASL-2.1700
-    pathname: E/EH/EHUELS/Authen-SASL-2.1700.tar.gz
+  Authen-SASL-2.1800
+    pathname: E/EH/EHUELS/Authen-SASL-2.1800.tar.gz
     provides:
-      Authen::SASL 2.1700
-      Authen::SASL::CRAM_MD5 2.1700
-      Authen::SASL::EXTERNAL 2.1700
-      Authen::SASL::Perl 2.1700
-      Authen::SASL::Perl::ANONYMOUS 2.1700
-      Authen::SASL::Perl::CRAM_MD5 2.1700
-      Authen::SASL::Perl::DIGEST_MD5 2.1700
-      Authen::SASL::Perl::EXTERNAL 2.1700
-      Authen::SASL::Perl::GSSAPI 2.1700
-      Authen::SASL::Perl::LOGIN 2.1700
-      Authen::SASL::Perl::PLAIN 2.1700
+      Authen::SASL 2.1800
+      Authen::SASL::CRAM_MD5 2.1800
+      Authen::SASL::EXTERNAL 2.1800
+      Authen::SASL::Perl 2.1800
+      Authen::SASL::Perl::ANONYMOUS 2.1800
+      Authen::SASL::Perl::CRAM_MD5 2.1800
+      Authen::SASL::Perl::DIGEST_MD5 2.1800
+      Authen::SASL::Perl::EXTERNAL 2.1800
+      Authen::SASL::Perl::GSSAPI 2.1800
+      Authen::SASL::Perl::LOGIN 2.1800
+      Authen::SASL::Perl::OAUTHBEARER 2.1800
+      Authen::SASL::Perl::PLAIN 2.1800
+      Authen::SASL::Perl::XOAUTH2 2.1800
     requirements:
       Digest::HMAC_MD5 0
       Digest::MD5 0
       ExtUtils::MakeMaker 0
-      perl 5.006000
+      perl 5.014000
   B-Hooks-EndOfScope-0.28
     pathname: E/ET/ETHER/B-Hooks-EndOfScope-0.28.tar.gz
     provides:
@@ -1075,6 +1077,17 @@ DISTRIBUTIONS
       Pod::Text 2.08
       XSLoader 0
       overload 0
+      strict 0
+      warnings 0
+  Crypt-SysRandom-0.007
+    pathname: L/LE/LEONT/Crypt-SysRandom-0.007.tar.gz
+    provides:
+      Crypt::SysRandom 0.007
+    requirements:
+      Carp 0
+      Exporter 0
+      ExtUtils::MakeMaker 0
+      perl 5.006
       strict 0
       warnings 0
   Crypt-URandom-0.54
@@ -3768,10 +3781,10 @@ DISTRIBUTIONS
       if 0
       perl 5.006
       strict 0
-  Module-Runtime-0.017
-    pathname: H/HA/HAARG/Module-Runtime-0.017.tar.gz
+  Module-Runtime-0.018
+    pathname: H/HA/HAARG/Module-Runtime-0.018.tar.gz
     provides:
-      Module::Runtime 0.017
+      Module::Runtime 0.018
     requirements:
       ExtUtils::MakeMaker 0
       perl 5.006000
@@ -7369,7 +7382,7 @@ DISTRIBUTIONS
       Exporter 0
       ExtUtils::MakeMaker 0
       constant 0
-      perl 5.005030
+      perl 5.00503
   Text-SimpleTable-2.07
     pathname: M/MR/MRAMBERG/Text-SimpleTable-2.07.tar.gz
     provides:
@@ -7962,19 +7975,19 @@ DISTRIBUTIONS
       Exporter 0
       Module::Build 0.4005
       perl 5.008001
-  WWW-OAuth-1.002
-    pathname: D/DB/DBOOK/WWW-OAuth-1.002.tar.gz
+  WWW-OAuth-1.003
+    pathname: D/DB/DBOOK/WWW-OAuth-1.003.tar.gz
     provides:
-      WWW::OAuth 1.002
-      WWW::OAuth::Request 1.002
-      WWW::OAuth::Request::Basic 1.002
-      WWW::OAuth::Request::HTTP_Request 1.002
-      WWW::OAuth::Request::Mojo 1.002
-      WWW::OAuth::Util 1.002
+      WWW::OAuth 1.003
+      WWW::OAuth::Request 1.003
+      WWW::OAuth::Request::Basic 1.003
+      WWW::OAuth::Request::HTTP_Request 1.003
+      WWW::OAuth::Request::Mojo 1.003
+      WWW::OAuth::Util 1.003
     requirements:
       Carp 0
       Class::Tiny::Chained 0
-      Crypt::URandom 0.37
+      Crypt::SysRandom 0
       Digest::SHA 0
       ExtUtils::MakeMaker 0
       List::Util 1.33
@@ -8010,7 +8023,7 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       LWP::UserAgent 0
-      perl 5.004050
+      perl 5.00405
   XML-XPath-1.48
     pathname: M/MA/MANWAR/XML-XPath-1.48.tar.gz
     provides:
