@@ -89,7 +89,7 @@ test_psgi app, sub {
     is_deeply(
         [ sort keys %{$links} ],
         [
-            qw< cpan_directory cpantesters_matrix cpantesters_reports cpants metacpan_explorer repology>
+            qw< backpan_directory cpan_directory cpantesters_matrix cpantesters_reports cpants metacpan_explorer repology>
         ],
         'links has the correct keys'
     );

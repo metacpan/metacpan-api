@@ -24,6 +24,8 @@ sub author_status {
         $status->{links} = {
             cpan_directory =>
                 "https://www.cpan.org/authors/id/$id_1/$id_2/$id",
+            backpan_directory =>
+                "https://cpan.metacpan.org/authors/id/$id_1/$id_2/$id",
             cpants => "https://cpants.cpanauthors.org/author/$id",
             cpantesters_reports =>
                 "https://www.cpantesters.org/author/$id_1/$id.html",
