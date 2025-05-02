@@ -2,47 +2,33 @@
     "dynamic": false,
     "properties": {
         "A_or_CNAME": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "aka_name": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "ccode": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "city": {
             "fields": {
                 "analyzed": {
                     "analyzer": "standard",
-                    "fielddata": {
-                        "format": "disabled"
-                    },
+                    "fielddata": false,
                     "store": true,
-                    "type": "string"
+                    "type": "text"
                 }
             },
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "contact": {
             "dynamic": false,
             "properties": {
                 "contact_site": {
-                    "ignore_above": 2048,
-                    "index": "not_analyzed",
-                    "type": "string"
+                    "type": "keyword"
                 },
                 "contact_user": {
-                    "ignore_above": 2048,
-                    "index": "not_analyzed",
-                    "type": "string"
+                    "type": "keyword"
                 }
             }
         },
@@ -50,51 +36,35 @@
             "fields": {
                 "analyzed": {
                     "analyzer": "standard",
-                    "fielddata": {
-                        "format": "disabled"
-                    },
+                    "fielddata": false,
                     "store": true,
-                    "type": "string"
+                    "type": "text"
                 }
             },
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "country": {
             "fields": {
                 "analyzed": {
                     "analyzer": "standard",
-                    "fielddata": {
-                        "format": "disabled"
-                    },
+                    "fielddata": false,
                     "store": true,
-                    "type": "string"
+                    "type": "text"
                 }
             },
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "dnsrr": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "freq": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "ftp": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "http": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "inceptdate": {
             "format": "strict_date_optional_time||epoch_millis",
@@ -104,63 +74,45 @@
             "type": "geo_point"
         },
         "name": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "note": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "org": {
             "fields": {
                 "analyzed": {
                     "analyzer": "standard",
-                    "fielddata": {
-                        "format": "disabled"
-                    },
+                    "fielddata": false,
                     "store": true,
-                    "type": "string"
+                    "type": "text"
                 }
             },
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "region": {
             "fields": {
                 "analyzed": {
                     "analyzer": "standard",
-                    "fielddata": {
-                        "format": "disabled"
-                    },
+                    "fielddata": false,
                     "store": true,
-                    "type": "string"
+                    "type": "text"
                 }
             },
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "reitredate": {
             "format": "strict_date_optional_time||epoch_millis",
             "type": "date"
         },
         "rsync": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "src": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "tz": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         }
     }
 }

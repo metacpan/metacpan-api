@@ -11,7 +11,7 @@ use Exporter                  qw( import );
 use Hash::Merge::Simple       qw( merge );
 use MetaCPAN::Server::Config  ();
 use MetaCPAN::Types::TypeTiny qw( Defined HashRef );
-use MetaCPAN::Util            qw( root_dir );
+use MetaCPAN::Util            qw( root_dir true false );
 use Module::Runtime           qw( $module_name_rx require_module );
 
 const my %config => merge(
@@ -187,19 +187,57 @@ sub _load_es_data ( $location, $def_sub ) {
     return Cpanel::JSON::XS::decode_json($data);
 }
 
-sub mapping ( $self, $doc ) {
-    my $doc_data = $self->documents->{$doc}
-        or croak "unknown document $doc";
-    return _load_es_data( $doc_data->{mapping}, 'mapping' );
+sub _walk : prototype(&$);
+
+sub _walk : prototype(&$) {
+    my ( $cb, $data ) = @_;
+    if ( ref $data eq 'HASH' ) {
+        $cb->($data);
+        _walk( \&$cb, $data->{$_} ) for keys %$data;
+    }
+    elsif ( ref $data eq 'ARRAY' ) {
+        $cb->($data);
+        _walk( \&$cb, $_ ) for @$data;
+    }
 }
 
-sub index_settings ( $self, $doc ) {
+sub mapping ( $self, $doc, $version ) {
+    my $doc_data = $self->documents->{$doc}
+        or croak "unknown document $doc";
+    my $data = _load_es_data( $doc_data->{mapping}, 'mapping' );
+    if ( $version && $version eq '2_0' ) {
+        _walk(
+            sub {
+                my ($d) = @_;
+                if ( my $type = $d->{type} ) {
+                    if ( $type eq 'keyword' ) {
+                        $d->{type}         = 'string';
+                        $d->{index}        = 'not_analyzed';
+                        $d->{ignore_above} = 2048;
+                    }
+                    elsif ( $type eq 'text' ) {
+                        $d->{type} = 'string';
+                        if ( exists $d->{fielddata} && !$d->{fielddata} ) {
+                            $d->{fielddata} = { format => false };
+                        }
+                    }
+                }
+
+            },
+            $data
+        );
+    }
+    return $data;
+}
+
+sub index_settings ( $self, $doc, $version = undef ) {
     my $documents = $self->documents;
     my $doc_data  = exists $documents->{$doc} && $documents->{$doc}
         or return {};
     my $settings = exists $doc_data->{settings} && $doc_data->{settings}
         or return {};
-    return _load_es_data( $settings, 'settings' );
+    my $data = _load_es_data( $settings, 'settings' );
+    return $data;
 }
 
 sub doc_path ( $self, $doc ) {

@@ -5,44 +5,30 @@
             "fields": {
                 "analyzed": {
                     "analyzer": "standard",
-                    "fielddata": {
-                        "format": "disabled"
-                    },
+                    "fielddata": false,
                     "store": true,
-                    "type": "string"
+                    "type": "text"
                 }
             },
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "archive": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "author": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "authorized": {
             "type": "boolean"
         },
         "changes_file": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "checksum_md5": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "checksum_sha256": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "date": {
             "format": "strict_date_optional_time||epoch_millis",
@@ -53,24 +39,16 @@
             "include_in_root": true,
             "properties": {
                 "module": {
-                    "ignore_above": 2048,
-                    "index": "not_analyzed",
-                    "type": "string"
+                    "type": "keyword"
                 },
                 "phase": {
-                    "ignore_above": 2048,
-                    "index": "not_analyzed",
-                    "type": "string"
+                    "type": "keyword"
                 },
                 "relationship": {
-                    "ignore_above": 2048,
-                    "index": "not_analyzed",
-                    "type": "string"
+                    "type": "keyword"
                 },
                 "version": {
-                    "ignore_above": 2048,
-                    "index": "not_analyzed",
-                    "type": "string"
+                    "type": "keyword"
                 }
             },
             "type": "nested"
@@ -82,84 +60,64 @@
             "fields": {
                 "analyzed": {
                     "analyzer": "standard",
-                    "fielddata": {
-                        "format": "disabled"
-                    },
+                    "fielddata": false,
                     "store": true,
-                    "type": "string"
+                    "type": "text"
                 },
                 "camelcase": {
                     "analyzer": "camelcase",
                     "store": true,
-                    "type": "string"
+                    "type": "text"
                 },
                 "lowercase": {
                     "analyzer": "lowercase",
                     "store": true,
-                    "type": "string"
+                    "type": "text"
                 }
             },
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "download_url": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "first": {
             "type": "boolean"
         },
         "id": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "license": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "main_module": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "maturity": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "name": {
             "fields": {
                 "analyzed": {
                     "analyzer": "standard",
-                    "fielddata": {
-                        "format": "disabled"
-                    },
+                    "fielddata": false,
                     "store": true,
-                    "type": "string"
+                    "type": "text"
                 },
                 "camelcase": {
                     "analyzer": "camelcase",
                     "store": true,
-                    "type": "string"
+                    "type": "text"
                 },
                 "lowercase": {
                     "analyzer": "lowercase",
                     "store": true,
-                    "type": "string"
+                    "type": "text"
                 }
             },
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "provides": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "resources": {
             "dynamic": true,
@@ -170,46 +128,32 @@
                     "include_in_root": true,
                     "properties": {
                         "mailto": {
-                            "ignore_above": 2048,
-                            "index": "not_analyzed",
-                            "type": "string"
+                            "type": "keyword"
                         },
                         "web": {
-                            "ignore_above": 2048,
-                            "index": "not_analyzed",
-                            "type": "string"
+                            "type": "keyword"
                         }
                     },
                     "type": "nested"
                 },
                 "homepage": {
-                    "ignore_above": 2048,
-                    "index": "not_analyzed",
-                    "type": "string"
+                    "type": "keyword"
                 },
                 "license": {
-                    "ignore_above": 2048,
-                    "index": "not_analyzed",
-                    "type": "string"
+                    "type": "keyword"
                 },
                 "repository": {
                     "dynamic": true,
                     "include_in_root": true,
                     "properties": {
                         "type": {
-                            "ignore_above": 2048,
-                            "index": "not_analyzed",
-                            "type": "string"
+                            "type": "keyword"
                         },
                         "url": {
-                            "ignore_above": 2048,
-                            "index": "not_analyzed",
-                            "type": "string"
+                            "type": "keyword"
                         },
                         "web": {
-                            "ignore_above": 2048,
-                            "index": "not_analyzed",
-                            "type": "string"
+                            "type": "keyword"
                         }
                     },
                     "type": "nested"
@@ -238,9 +182,7 @@
             }
         },
         "status": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "tests": {
             "dynamic": true,
@@ -260,9 +202,7 @@
             }
         },
         "version": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "version_numified": {
             "type": "float"

@@ -166,9 +166,10 @@ sub show_info {
 }
 
 sub _build_index_config {
-    my $self    = $_[0];
-    my $docs    = es_config->documents;
-    my $indices = {};
+    my $self        = $_[0];
+    my $docs        = es_config->documents;
+    my $indices     = {};
+    my $api_version = $self->es->api_version;
     for my $name ( sort keys %$docs ) {
         my $doc   = $docs->{$name};
         my $index = $doc->{index}
@@ -177,8 +178,8 @@ sub _build_index_config {
             or die "no type defined for $name documents";
         die "$index specified for multiple documents"
             if $indices->{$index};
-        my $mapping  = es_config->mapping($name);
-        my $settings = es_config->index_settings($name);
+        my $mapping  = es_config->mapping( $name, $api_version );
+        my $settings = es_config->index_settings( $name, $api_version );
         $indices->{$index} = {
             settings => $settings,
             mappings => {
