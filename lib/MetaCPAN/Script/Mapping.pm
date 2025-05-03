@@ -41,94 +41,12 @@ has arg_verify_mapping => (
     documentation => 'verify deployed index structure against definition',
 );
 
-has arg_list_types => (
-    init_arg      => 'list_types',
-    is            => 'ro',
-    isa           => Bool,
-    default       => 0,
-    documentation => 'list available document type names',
-);
-
 has arg_cluster_info => (
     init_arg      => 'show_cluster_info',
     is            => 'ro',
     isa           => Bool,
     default       => 0,
     documentation => 'show basic info about cluster and indices',
-);
-
-has arg_create_index => (
-    init_arg      => 'create_index',
-    is            => 'ro',
-    isa           => Str,
-    default       => "",
-    documentation => 'create a new empty index (copy mappings)',
-);
-
-has arg_update_index => (
-    init_arg      => 'update_index',
-    is            => 'ro',
-    isa           => Str,
-    default       => "",
-    documentation => 'update existing index (add mappings)',
-);
-
-has patch_mapping => (
-    is            => 'ro',
-    isa           => Str,
-    default       => "{}",
-    documentation => 'type mapping patches',
-);
-
-has skip_existing_mapping => (
-    is            => 'ro',
-    isa           => Bool,
-    default       => 0,
-    documentation => 'do NOT copy mappings other than patch_mapping',
-);
-
-has copy_from_index => (
-    is            => 'ro',
-    isa           => Str,
-    documentation => 'index to copy type from',
-);
-
-has copy_to_index => (
-    is            => 'ro',
-    isa           => Str,
-    default       => "",
-    documentation => 'index to copy type to',
-);
-
-has arg_copy_type => (
-    init_arg      => 'copy_type',
-    is            => 'ro',
-    isa           => Str,
-    default       => "",
-    documentation => 'type to copy',
-);
-
-has copy_query => (
-    is            => 'ro',
-    isa           => Str,
-    default       => "",
-    documentation => 'match query (default: monthly time slices, '
-        . ' if provided must be a valid json query OR "match_all")',
-);
-
-has reindex => (
-    is            => 'ro',
-    isa           => Bool,
-    default       => 0,
-    documentation => 'reindex data from source index for exact mapping types',
-);
-
-has arg_delete_index => (
-    init_arg      => 'delete_index',
-    is            => 'ro',
-    isa           => Str,
-    default       => "",
-    documentation => 'delete an existing index',
 );
 
 has arg_await_timeout => (
@@ -138,13 +56,6 @@ has arg_await_timeout => (
     default       => 15,
     documentation =>
         'seconds before connection is considered failed with timeout',
-);
-
-has delete_from_type => (
-    is            => 'ro',
-    isa           => Str,
-    default       => "",
-    documentation => 'delete data from an existing type',
 );
 
 has cluster_info => (
@@ -168,22 +79,7 @@ sub run {
 
     # Wait for the ElasticSearch Engine to become ready
     if ( $self->await ) {
-        if ( $self->arg_delete_index ) {
-            $self->delete_index;
-        }
-        elsif ( $self->arg_create_index ) {
-            $self->create_index;
-        }
-        elsif ( $self->arg_update_index ) {
-            $self->update_index;
-        }
-        elsif ( $self->copy_to_index ) {
-            $self->copy_type;
-        }
-        elsif ( $self->delete_from_type ) {
-            $self->empty_type;
-        }
-        elsif ( $self->arg_deploy_mapping ) {
+        if ( $self->arg_deploy_mapping ) {
             if ( $self->arg_delete_all ) {
                 $self->check_health;
                 $self->delete_all;
@@ -202,10 +98,6 @@ sub run {
             }
         }
 
-        if ( $self->arg_list_types ) {
-            $self->list_types;
-        }
-
         if ( $self->arg_cluster_info ) {
             $self->check_health;
             $self->show_info;
@@ -214,37 +106,6 @@ sub run {
 
 # The run() method is expected to communicate Success to the superior execution level
     return ( $self->exit_code == 0 ? 1 : 0 );
-}
-
-sub _check_index_exists {
-    my ( $self, $name, $expected ) = @_;
-    my $exists = $self->es->indices->exists( index => $name );
-
-    if ( $exists and !$expected ) {
-        log_error {"Index already exists: $name"};
-
-        #Set System Error: 1 - EPERM - Operation not permitted
-        $self->exit_code(1);
-        $self->handle_error( "Conflicting index: $name", 1 );
-    }
-
-    if ( !$exists and $expected ) {
-        log_error {"Index doesn't exists: $name"};
-
-        #Set System Error: 1 - EPERM - Operation not permitted
-        $self->exit_code(1);
-        $self->handle_error( "Missing index: $name", 1 );
-    }
-}
-
-sub delete_index {
-    my $self = shift;
-    my $name = $self->arg_delete_index;
-
-    $self->_check_index_exists( $name, EXPECTED );
-    $self->are_you_sure("Index $name will be deleted !!!");
-
-    $self->_delete_index($name);
 }
 
 sub delete_all {
@@ -293,211 +154,6 @@ sub _delete_index {
         log_error {"Failed to delete index: $name"};
     }
     return $exists;
-}
-
-sub update_index {
-    my $self = shift;
-    my $name = $self->arg_update_index;
-
-    $self->_check_index_exists( $name, EXPECTED );
-    $self->are_you_sure("Index $name will be updated !!!");
-
-    die "update_index requires patch_mapping\n"
-        unless $self->patch_mapping;
-
-    my $patch_mapping = decode_json $self->patch_mapping;
-    my @patch_types   = sort keys %{$patch_mapping};
-    my $mapping       = +{ map { $_ => $patch_mapping->{$_} } @patch_types };
-
-    log_info {"Updating mapping for index: $name"};
-
-    for my $type ( sort keys %{$mapping} ) {
-        log_info {"Adding mapping to index: $type"};
-        $self->es->indices->put_mapping(
-            index => $name,
-            type  => $type,
-            body  => { $type => $mapping->{$type} },
-        );
-    }
-
-    log_info {"Done."};
-}
-
-sub create_index {
-    my $self = shift;
-
-    my $dst_idx = $self->arg_create_index;
-    $self->_check_index_exists( $dst_idx, NOT_EXPECTED );
-
-    my $patch_mapping  = decode_json $self->patch_mapping;
-    my @patch_types    = sort keys %{$patch_mapping};
-    my $index_settings = es_config->index_settings($dst_idx);
-    my $mapping        = +{};
-
-    # create the new index with the copied settings
-    log_info {"Creating index: $dst_idx"};
-    $self->es->indices->create(
-        index => $dst_idx,
-        body  => {
-            settings => $index_settings,
-        },
-    );
-
-    # override with new type mapping
-    if ( $self->patch_mapping ) {
-        for my $type (@patch_types) {
-            log_info {"Patching mapping for type: $type"};
-            $mapping->{$type} = $patch_mapping->{$type};
-        }
-    }
-
-    # add the mappings to the index
-    for my $type ( sort keys %{$mapping} ) {
-        log_info {"Adding mapping to index: $type"};
-        $self->es->indices->put_mapping(
-            index => $dst_idx,
-            type  => $type,
-            body  => { $type => $mapping->{$type} },
-        );
-    }
-
-    # copy the data to the non-altered types
-    if ( $self->reindex ) {
-        for my $type (
-            grep { !exists $patch_mapping->{$_} }
-            sort keys %{$mapping}
-            )
-        {
-            log_info {"Re-indexing data to index $dst_idx from type: $type"};
-            $self->copy_type( $dst_idx, $type );
-        }
-    }
-
-    log_info {
-        "Done. you can now fill the data for the altered types: ("
-            . join( ',', @patch_types ) . ")"
-    }
-    if @patch_types;
-}
-
-sub copy_type {
-    my ( $self, $index, $type ) = @_;
-    my $from_index = $self->copy_from_index
-        or die "can't copy without a source index";
-    $index //= $self->copy_to_index
-        or die "can't copy without a destination index";
-
-    $self->_check_index_exists( $from_index, EXPECTED );
-    $self->_check_index_exists( $index,      EXPECTED );
-    $type //= $self->arg_copy_type;
-    $type or die "can't copy without a type\n";
-
-    my $arg_query = $self->copy_query;
-    my $query
-        = $arg_query eq 'match_all'
-        ? +{ match_all => {} }
-        : undef;
-
-    if ( $arg_query and !$query ) {
-        eval {
-            $query = decode_json $arg_query;
-            1;
-        } or do {
-            my $err = $@ || 'zombie error';
-            die $err;
-        };
-    }
-
-    return $self->_copy_slice( $query, $from_index, $index, $type ) if $query;
-
-    # else ... do copy by monthly slices
-
-    my $dt       = DateTime->new( year => 1994, month => 1 );
-    my $end_time = DateTime->now()->add( months => 1 );
-
-    while ( $dt < $end_time ) {
-        my $gte = $dt->strftime("%Y-%m");
-        $dt->add( months => 1 );
-        my $lt = $dt->strftime("%Y-%m");
-
-        my $q = +{ range => { date => { gte => $gte, lt => $lt } } };
-
-        log_info {"copying data for month: $gte"};
-        eval {
-            $self->_copy_slice( $q, $from_index, $index, $type );
-            1;
-        } or do {
-            my $err = $@ || 'zombie error';
-            warn $err;
-        };
-    }
-}
-
-sub _copy_slice {
-    my ( $self, $query, $from_index, $index, $type ) = @_;
-
-    my $scroll = $self->es->scroll_helper(
-        size   => 250,
-        scroll => '10m',
-        index  => $from_index,
-        type   => $type,
-        body   => {
-            query => $query,
-            sort  => '_doc',
-        },
-    );
-
-    my $bulk = $self->es->bulk_helper(
-        index     => $index,
-        type      => $type,
-        max_count => 500,
-    );
-
-    while ( my $search = $scroll->next ) {
-        $bulk->create( {
-            id     => $search->{_id},
-            source => $search->{_source}
-        } );
-    }
-
-    $bulk->flush;
-}
-
-sub empty_type {
-    my $self = shift;
-    my $type = $self->delete_from_type;
-    log_info {"Emptying type: $type"};
-
-    my $bulk
-        = $self->es->bulk_helper( es_doc_path($type), max_count => 500, );
-
-    my $scroll = $self->es->scroll_helper(
-        size   => 250,
-        scroll => '10m',
-        es_doc_path($type),
-        body => {
-            query => { match_all => {} },
-            sort  => '_doc',
-        },
-    );
-
-    my @ids;
-    while ( my $search = $scroll->next ) {
-        push @ids => $search->{_id};
-        log_debug { "deleting id=" . $search->{_id} };
-        if ( @ids == 500 ) {
-            $bulk->delete_ids(@ids);
-            @ids = ();
-        }
-    }
-    $bulk->delete_ids(@ids);
-
-    $bulk->flush;
-}
-
-sub list_types {
-    my $self = shift;
-    print "$_\n" for sort keys %{ es_config->documents };
 }
 
 sub show_info {
@@ -945,15 +601,6 @@ MetaCPAN::Script::Mapping - Script to set the index and mapping the types
  # bin/metacpan mapping --delete
  # bin/metacpan mapping --delete --all        # deletes ALL indices in the cluster
  # bin/metacpan mapping --verify              # compare deployed indices with project definitions
- # bin/metacpan mapping --list_types
- # bin/metacpan mapping --delete_index xxx
- # bin/metacpan mapping --create_index xxx --reindex
- # bin/metacpan mapping --create_index xxx --reindex --patch_mapping '{"distribution":{"dynamic":"false","properties":{"name":{"index":"not_analyzed","ignore_above":2048,"type":"string"},"river":{"properties":{"total":{"type":"integer"},"immediate":{"type":"integer"},"bucket":{"type":"integer"}},"dynamic":"true"},"bugs":{"properties":{"rt":{"dynamic":"true","properties":{"rejected":{"type":"integer"},"closed":{"type":"integer"},"open":{"type":"integer"},"active":{"type":"integer"},"patched":{"type":"integer"},"source":{"type":"string","ignore_above":2048,"index":"not_analyzed"},"resolved":{"type":"integer"},"stalled":{"type":"integer"},"new":{"type":"integer"}}},"github":{"dynamic":"true","properties":{"active":{"type":"integer"},"open":{"type":"integer"},"closed":{"type":"integer"},"source":{"type":"string","index":"not_analyzed","ignore_above":2048}}}},"dynamic":"true"}}}}'
- # bin/metacpan mapping --create_index xxx --patch_mapping '{...mapping...}' --skip_existing_mapping
- # bin/metacpan mapping --update_index xxx --patch_mapping '{...mapping...}'
- # bin/metacpan mapping --copy_to_index xxx --copy_type release
- # bin/metacpan mapping --copy_to_index xxx --copy_type release --copy_query '{"range":{"date":{"gte":"2016-01","lt":"2017-01"}}}'
- # bin/metacpan mapping --delete_from_type xxx   # empty the type
 
 =head1 DESCRIPTION
 
