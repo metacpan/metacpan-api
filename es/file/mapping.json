@@ -5,21 +5,15 @@
             "fields": {
                 "analyzed": {
                     "analyzer": "standard",
-                    "fielddata": {
-                        "format": "disabled"
-                    },
+                    "fielddata": false,
                     "store": true,
-                    "type": "string"
+                    "type": "text"
                 }
             },
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "author": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "authorized": {
             "type": "boolean"
@@ -35,14 +29,10 @@
             "type": "boolean"
         },
         "description": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "text"
         },
         "dir": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "directory": {
             "type": "boolean"
@@ -54,74 +44,62 @@
             "fields": {
                 "analyzed": {
                     "analyzer": "standard",
-                    "fielddata": {
-                        "format": "disabled"
-                    },
+                    "fielddata": false,
                     "store": true,
-                    "type": "string"
+                    "type": "text"
                 },
                 "camelcase": {
                     "analyzer": "camelcase",
                     "store": true,
-                    "type": "string"
+                    "type": "text"
                 },
                 "lowercase": {
                     "analyzer": "lowercase",
                     "store": true,
-                    "type": "string"
+                    "type": "text"
                 }
             },
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "documentation": {
             "fields": {
                 "analyzed": {
                     "analyzer": "standard",
-                    "fielddata": {
-                        "format": "disabled"
-                    },
+                    "fielddata": false,
                     "store": true,
-                    "type": "string"
+                    "type": "text"
                 },
                 "camelcase": {
                     "analyzer": "camelcase",
                     "store": true,
-                    "type": "string"
+                    "type": "text"
                 },
                 "edge": {
                     "analyzer": "edge",
                     "store": true,
-                    "type": "string"
+                    "type": "text"
                 },
                 "edge_camelcase": {
                     "analyzer": "edge_camelcase",
                     "store": true,
-                    "type": "string"
+                    "type": "text"
                 },
                 "lowercase": {
                     "analyzer": "lowercase",
                     "store": true,
-                    "type": "string"
+                    "type": "text"
                 }
             },
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "documentation_length": {
             "type": "integer"
         },
         "download_url": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "id": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "indexed": {
             "type": "boolean"
@@ -130,21 +108,17 @@
             "type": "integer"
         },
         "maturity": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "mime": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "module": {
             "dynamic": false,
             "include_in_root": true,
             "properties": {
                 "associated_pod": {
-                    "type": "string"
+                    "type": "text"
                 },
                 "authorized": {
                     "type": "boolean"
@@ -156,31 +130,25 @@
                     "fields": {
                         "analyzed": {
                             "analyzer": "standard",
-                            "fielddata": {
-                                "format": "disabled"
-                            },
+                            "fielddata": false,
                             "store": true,
-                            "type": "string"
+                            "type": "text"
                         },
                         "camelcase": {
                             "analyzer": "camelcase",
                             "store": true,
-                            "type": "string"
+                            "type": "text"
                         },
                         "lowercase": {
                             "analyzer": "lowercase",
                             "store": true,
-                            "type": "string"
+                            "type": "text"
                         }
                     },
-                    "ignore_above": 2048,
-                    "index": "not_analyzed",
-                    "type": "string"
+                    "type": "keyword"
                 },
                 "version": {
-                    "ignore_above": 2048,
-                    "index": "not_analyzed",
-                    "type": "string"
+                    "type": "keyword"
                 },
                 "version_numified": {
                     "type": "float"
@@ -189,59 +157,44 @@
             "type": "nested"
         },
         "name": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "path": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "pod": {
             "analyzer": "standard",
-            "doc_values": false,
             "fields": {
                 "analyzed": {
                     "analyzer": "standard",
-                    "doc_values": false,
-                    "index": "analyzed",
-                    "type": "string"
+                    "type": "text"
                 }
             },
-            "index": "analyzed",
-            "type": "string"
+            "type": "text"
         },
         "pod_lines": {
-            "doc_values": true,
-            "ignore_above": 2048,
-            "index": "no",
-            "type": "string"
+            "type": "keyword"
         },
         "release": {
             "fields": {
                 "analyzed": {
                     "analyzer": "standard",
-                    "fielddata": {
-                        "format": "disabled"
-                    },
+                    "fielddata": false,
                     "store": true,
-                    "type": "string"
+                    "type": "text"
                 },
                 "camelcase": {
                     "analyzer": "camelcase",
                     "store": true,
-                    "type": "string"
+                    "type": "text"
                 },
                 "lowercase": {
                     "analyzer": "lowercase",
                     "store": true,
-                    "type": "string"
+                    "type": "text"
                 }
             },
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "sloc": {
             "type": "integer"
@@ -270,9 +223,7 @@
             }
         },
         "status": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "suggest": {
             "analyzer": "simple",
@@ -282,9 +233,7 @@
             "type": "completion"
         },
         "version": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "version_numified": {
             "type": "float"

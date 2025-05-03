@@ -28,7 +28,8 @@ for my $index ( sort keys %indexes ) {
 sub doc {
     my ( $self, $doc ) = @_;
     my $doc_config = es_config->documents->{$doc};
-    return $self->index( $doc_config->{index} )->type( $doc_config->{type} );
+    return $self->index( $doc_config->{index} )
+        ->type( $doc_config->{type} // $doc_config->{index} );
 }
 
 __PACKAGE__->meta->make_immutable;

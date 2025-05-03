@@ -898,7 +898,7 @@ sub find_download_url {
             ],
             (
                 exists $version_filters->{must_not}
-                ? ( must_not => [ $version_filters->{must_not} ] )
+                ? ( must_not => [ @{ $version_filters->{must_not} } ] )
                 : ()
             )
         }

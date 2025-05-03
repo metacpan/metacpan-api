@@ -2,14 +2,15 @@ package MetaCPAN::Role::Script;
 
 use Moose::Role;
 
-use Carp                      ();
-use IO::Prompt::Tiny          qw( prompt );
-use Log::Contextual           qw( :log :dlog );
-use MetaCPAN::Model           ();
-use MetaCPAN::Types::TypeTiny qw( AbsPath Bool ES HashRef Int Path Str );
-use MetaCPAN::Util            qw( root_dir );
-use Mojo::Server              ();
-use Term::ANSIColor           qw( colored );
+use Carp                       ();
+use IO::Prompt::Tiny           qw( prompt );
+use Log::Contextual            qw( :log :dlog );
+use MetaCPAN::Model            ();
+use MetaCPAN::Types::TypeTiny  qw( AbsPath Bool ES HashRef Int Path Str );
+use MetaCPAN::Util             qw( root_dir );
+use Mojo::Server               ();
+use Term::ANSIColor            qw( colored );
+use MetaCPAN::Model::ESWrapper ();
 
 use MooseX::Getopt::OptionTypeMap ();
 for my $type ( Path, AbsPath, ES ) {
@@ -136,7 +137,9 @@ sub _build_model {
     my $self = shift;
 
     # es provided by ElasticSearchX::Model::Role
-    return MetaCPAN::Model->new( es => $self->es );
+
+    my $es = MetaCPAN::Model::ESWrapper->new( $self->es );
+    return MetaCPAN::Model->new( es => $es );
 }
 
 sub _build_ua {

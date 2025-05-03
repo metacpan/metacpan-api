@@ -5,66 +5,46 @@
             "fields": {
                 "analyzed": {
                     "analyzer": "standard",
-                    "fielddata": {
-                        "format": "disabled"
-                    },
+                    "fielddata": false,
                     "store": true,
-                    "type": "string"
+                    "type": "text"
                 }
             },
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "blog": {
             "dynamic": true,
             "properties": {
                 "feed": {
-                    "ignore_above": 2048,
-                    "index": "not_analyzed",
-                    "type": "string"
+                    "type": "keyword"
                 },
                 "url": {
-                    "ignore_above": 2048,
-                    "index": "not_analyzed",
-                    "type": "string"
+                    "type": "keyword"
                 }
             }
         },
         "city": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "country": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "donation": {
             "dynamic": true,
             "properties": {
                 "id": {
-                    "ignore_above": 2048,
-                    "index": "not_analyzed",
-                    "type": "string"
+                    "type": "keyword"
                 },
                 "name": {
-                    "ignore_above": 2048,
-                    "index": "not_analyzed",
-                    "type": "string"
+                    "type": "keyword"
                 }
             }
         },
         "email": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "gravatar_url": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "is_pause_custodial_account": {
             "type": "boolean"
@@ -76,34 +56,24 @@
             "fields": {
                 "analyzed": {
                     "analyzer": "standard",
-                    "fielddata": {
-                        "format": "disabled"
-                    },
+                    "fielddata": false,
                     "store": true,
-                    "type": "string"
+                    "type": "text"
                 }
             },
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "pauseid": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "perlmongers": {
             "dynamic": true,
             "properties": {
                 "name": {
-                    "ignore_above": 2048,
-                    "index": "not_analyzed",
-                    "type": "string"
+                    "type": "keyword"
                 },
                 "url": {
-                    "ignore_above": 2048,
-                    "index": "not_analyzed",
-                    "type": "string"
+                    "type": "keyword"
                 }
             }
         },
@@ -115,43 +85,31 @@
                     "fields": {
                         "analyzed": {
                             "analyzer": "simple",
-                            "fielddata": {
-                                "format": "disabled"
-                            },
+                            "fielddata": false,
                             "store": true,
-                            "type": "string"
+                            "type": "text"
                         }
                     },
-                    "ignore_above": 2048,
-                    "index": "not_analyzed",
-                    "type": "string"
+                    "type": "keyword"
                 },
                 "name": {
-                    "ignore_above": 2048,
-                    "index": "not_analyzed",
-                    "type": "string"
+                    "type": "keyword"
                 }
             },
             "type": "nested"
         },
         "region": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "updated": {
             "format": "strict_date_optional_time||epoch_millis",
             "type": "date"
         },
         "user": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "website": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         }
     }
 }

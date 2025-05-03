@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use MetaCPAN::Server::Test qw( app GET POST test_psgi );
+use MetaCPAN::Server::Test qw( app GET POST test_psgi es );
 use MetaCPAN::TestHelpers  qw( decode_json_ok test_cache_headers );
 use Test::More;
 
@@ -56,7 +56,12 @@ test_psgi app, sub {
 
         if ( $k eq '/author/_mapping' ) {
             my ($index) = keys %{$json};
-            ok( ref $json->{$index}{mappings}{author} eq 'HASH', '_mapping' );
+            my $check_mappings = $json->{$index}{mappings};
+            if ( es->api_version le '5_0' ) {
+                $check_mappings = $check_mappings->{author};
+            }
+
+            ok( $check_mappings->{properties}{name}, '_mapping' );
         }
     }
 

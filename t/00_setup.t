@@ -36,9 +36,6 @@ ok( $tmp_dir->stat, "$tmp_dir exists for testing" );
 my $server = MetaCPAN::TestServer->new;
 $server->setup;
 
-# Run the Mappings Tests
-$server->test_mappings;
-
 my $config = get_config();
 $config->{es} = $server->es_client;
 

@@ -2,34 +2,22 @@
     "dynamic": false,
     "properties": {
         "author": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "dist_version": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "distribution": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "file": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "module_name": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "version": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         }
     }
 }

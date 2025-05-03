@@ -2,40 +2,35 @@
     "dynamic": false,
     "properties": {
         "affected_versions": {
-            "type": "string"
+            "type": "text"
         },
         "cpansa_id": {
-            "ignore_above": 2048,
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "cves": {
-            "type": "string"
+            "type": "text"
         },
         "description": {
-            "type": "string"
+            "type": "text"
         },
         "distribution": {
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "references": {
-            "type": "string"
+            "type": "text"
         },
         "releases": {
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         },
         "reported": {
             "format": "strict_date_optional_time||epoch_millis",
             "type": "date"
         },
         "severity": {
-            "type": "string"
+            "type": "text"
         },
         "versions": {
-            "index": "not_analyzed",
-            "type": "string"
+            "type": "keyword"
         }
     }
 }
