@@ -2,7 +2,8 @@ package MetaCPAN::Server::Model::ESModel;
 
 use Moose;
 
-use MetaCPAN::Model ();
+use MetaCPAN::Model            ();
+use MetaCPAN::Model::ESWrapper ();
 
 extends 'Catalyst::Model';
 
@@ -16,7 +17,8 @@ has _esx_model => (
     lazy    => 1,
     default => sub {
         my $self = shift;
-        MetaCPAN::Model->new( es => $self->es );
+        my $es   = MetaCPAN::Model::ESWrapper->new( $self->es );
+        MetaCPAN::Model->new( es => $es );
     },
 );
 
