@@ -166,7 +166,7 @@
             "include_in_root": true,
             "properties": {
                 "bugtracker": {
-                    "dynamic": "true",
+                    "dynamic": true,
                     "include_in_root": true,
                     "properties": {
                         "mailto": {
@@ -193,7 +193,7 @@
                     "type": "string"
                 },
                 "repository": {
-                    "dynamic": "true",
+                    "dynamic": true,
                     "include_in_root": true,
                     "properties": {
                         "type": {
