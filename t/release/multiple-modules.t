@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use MetaCPAN::Server::Test qw( query es_result );
+use MetaCPAN::Server::Test qw( es_result );
 use MetaCPAN::Util         qw(true false);
 use Test::More;
 

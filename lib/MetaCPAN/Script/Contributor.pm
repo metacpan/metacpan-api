@@ -5,9 +5,7 @@ use warnings;
 
 use Moose;
 
-use MetaCPAN::ESConfig qw( es_doc_path );
-use Log::Contextual    qw( :log );
-use Ref::Util          qw( is_arrayref );
+use Log::Contextual qw( :log );
 
 use MetaCPAN::Types::TypeTiny qw( Bool HashRef Int Str );
 
