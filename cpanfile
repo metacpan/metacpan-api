@@ -119,10 +119,10 @@ requires 'Pod::Text', '4.14';
 requires 'Ref::Util';
 requires 'Safe', '2.35'; # bug fixes (used by Parse::PMFile)
 requires 'Scalar::Util', '1.62'; # Moose
-requires 'Search::Elasticsearch' => '8.12';
+requires 'Search::Elasticsearch', '== 8.00'; # https://github.com/elastic/elasticsearch-perl/issues/240
 requires 'Search::Elasticsearch::Client::2_0' => '6.81';
 requires 'Search::Elasticsearch::Client::5_0' => '6.81';
-requires 'Search::Elasticsearch::Client::7_0' => '8.12';
+requires 'Search::Elasticsearch::Client::7_0', '== 8.00';
 requires 'Throwable::Error';
 requires 'Term::Size::Any'; # for Catalyst
 requires 'Text::CSV_XS';
