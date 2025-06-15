@@ -78,7 +78,7 @@ requires 'LWP::Protocol::https';
 requires 'LWP::UserAgent', '6.66';
 requires 'MetaCPAN::Moose';
 requires 'MetaCPAN::Pod::HTML' => '0.004000';
-requires 'MetaCPAN::Role', '0.06';
+requires 'MetaCPAN::Role', '1.00';
 requires 'MIME::Base64', '3.15';
 requires 'Minion', '9.03';
 requires 'Minion::Backend::SQLite';
@@ -119,10 +119,10 @@ requires 'Pod::Text', '4.14';
 requires 'Ref::Util';
 requires 'Safe', '2.35'; # bug fixes (used by Parse::PMFile)
 requires 'Scalar::Util', '1.62'; # Moose
-requires 'Search::Elasticsearch' => '8.12';
+requires 'Search::Elasticsearch', '== 8.00'; # https://github.com/elastic/elasticsearch-perl/issues/240
 requires 'Search::Elasticsearch::Client::2_0' => '6.81';
 requires 'Search::Elasticsearch::Client::5_0' => '6.81';
-requires 'Search::Elasticsearch::Client::7_0' => '8.12';
+requires 'Search::Elasticsearch::Client::7_0', '== 8.00';
 requires 'Throwable::Error';
 requires 'Term::Size::Any'; # for Catalyst
 requires 'Text::CSV_XS';
