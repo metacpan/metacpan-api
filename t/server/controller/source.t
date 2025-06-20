@@ -20,35 +20,40 @@ my %tests = (
         cache_control => undef,
         surrogate_key =>
             'author=DOY content_type=text/html content_type=text',
-        surrogate_control => 'max-age=31556952, stale-if-error=2592000'
+        surrogate_control =>
+            'max-age=31556952, stale-while-revalidate=86400, stale-if-error=2592000'
     },
     '/source/DOY/Moose-0.01/Changes' => {
         code          => 200,
         cache_control => undef,
         surrogate_key =>
             'author=DOY content_type=text/plain content_type=text',
-        surrogate_control => 'max-age=31556952, stale-if-error=2592000',
+        surrogate_control =>
+            'max-age=31556952, stale-while-revalidate=86400, stale-if-error=2592000',
     },
     '/source/DOY/Moose-0.01/Changes?callback=foo' => {
         code          => 200,
         cache_control => undef,
         surrogate_key =>
             'author=DOY content_type=text/javascript content_type=text',
-        surrogate_control => 'max-age=31556952, stale-if-error=2592000',
+        surrogate_control =>
+            'max-age=31556952, stale-while-revalidate=86400, stale-if-error=2592000',
     },
     '/source/DOY/Moose-0.01/MANIFEST' => {
         code          => 200,
         cache_control => undef,
         surrogate_key =>
             'author=DOY content_type=text/plain content_type=text',
-        surrogate_control => 'max-age=31556952, stale-if-error=2592000',
+        surrogate_control =>
+            'max-age=31556952, stale-while-revalidate=86400, stale-if-error=2592000',
     },
     '/source/DOY/Moose-0.01/MANIFEST?callback=foo' => {
         code          => 200,
         cache_control => undef,
         surrogate_key =>
             'author=DOY content_type=text/javascript content_type=text',
-        surrogate_control => 'max-age=31556952, stale-if-error=2592000',
+        surrogate_control =>
+            'max-age=31556952, stale-while-revalidate=86400, stale-if-error=2592000',
     },
     '/source/Moose' => {
         code          => 200,

@@ -72,7 +72,8 @@ test_psgi app, sub {
             cache_control => undef,
             surrogate_key =>
                 'author=DOY content_type=application/json content_type=application',
-            surrogate_control => 'max-age=31556952, stale-if-error=2592000',
+            surrogate_control =>
+                'max-age=31556952, stale-while-revalidate=86400, stale-if-error=2592000',
         }
     );
 
@@ -95,7 +96,8 @@ test_psgi app, sub {
             cache_control => undef,
             surrogate_key =>
                 'content_type=application/json content_type=application',
-            surrogate_control => 'max-age=31556952, stale-if-error=2592000',
+            surrogate_control =>
+                'max-age=31556952, stale-while-revalidate=86400, stale-if-error=2592000',
         }
     );
 
