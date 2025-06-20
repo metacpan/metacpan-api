@@ -10,14 +10,16 @@ my $LOCAL_default_headers = {
     cache_control => undef,
     surrogate_key =>
         'author=LOCAL content_type=application/json content_type=application',
-    surrogate_control => 'max-age=31556952, stale-if-error=2592000',
+    surrogate_control =>
+        'max-age=31556952, stale-while-revalidate=86400, stale-if-error=2592000',
 };
 
 my $RWSTAUNER_default_headers = {
     cache_control => undef,
     surrogate_key =>
         'author=RWSTAUNER content_type=application/json content_type=application',
-    surrogate_control => 'max-age=31556952, stale-if-error=2592000',
+    surrogate_control =>
+        'max-age=31556952, stale-while-revalidate=86400, stale-if-error=2592000',
 };
 
 my @tests = (
@@ -53,7 +55,8 @@ my @tests = (
             cache_control => undef,
             surrogate_key =>
                 'author=NOEXISTY content_type=application/json content_type=application',
-            surrogate_control => 'max-age=31556952, stale-if-error=2592000',
+            surrogate_control =>
+                'max-age=31556952, stale-while-revalidate=86400, stale-if-error=2592000',
         }
     ],
     [
@@ -63,7 +66,8 @@ my @tests = (
             cache_control => undef,
             surrogate_key =>
                 'author=NOAUTOR content_type=application/json content_type=application',
-            surrogate_control => 'max-age=31556952, stale-if-error=2592000',
+            surrogate_control =>
+                'max-age=31556952, stale-while-revalidate=86400, stale-if-error=2592000',
         }
     ],
 
