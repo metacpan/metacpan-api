@@ -41,7 +41,8 @@ use Sub::Exporter -setup => {
     ) ]
 };
 
-use constant MAX_RESULT_WINDOW => 10000;
+# Limit the maximum result window to 1000, really should be enough!
+use constant MAX_RESULT_WINDOW => 1000;
 
 *true    = \&Cpanel::JSON::XS::true;
 *false   = \&Cpanel::JSON::XS::false;
