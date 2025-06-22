@@ -21,13 +21,11 @@ sub get : Chained('index') : PathPart('') : Args {
     $c->add_author_key($author);
     $c->cdn_max_age('1y');
 
-    my $path = join( '/', @path );
-    my $file = $c->model('Source')->path( $author, $release, $path )
+    my $file = $c->model('Source')->path( $author, $release, @path )
         or $c->detach( '/not_found', [] );
     if ( $file->is_dir ) {
-        $path = "/source/$author/$release/$path";
-        $path =~ s/\/$//;
-        my $env = $c->req->env;
+        my $path = '/source/' . join( '/', $author, $release, @path );
+        my $env  = $c->req->env;
         local $env->{PATH_INFO}   = '/';
         local $env->{SCRIPT_NAME} = $path;
         my $res = Plack::App::Directory->new( { root => $file->stringify } )

@@ -1,5 +1,6 @@
 git: /usr/bin/git
 cpan: var/t/tmp/fakecpan
+remote_cpan: file://__HOME__/var/t/tmp/fakecpan
 die_on_error: 1
 level: warn
 port: 5000

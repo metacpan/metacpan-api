@@ -2,6 +2,7 @@
 git: /usr/bin/git
 
 cpan: /CPAN
+remote_cpan: https://cpan.metacpan.org/
 secret: "the stone roses"
 level: info
 elasticsearch_servers:
