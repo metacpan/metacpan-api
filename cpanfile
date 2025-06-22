@@ -28,6 +28,7 @@ requires 'CPAN::Meta::YAML', '0.018';
 requires 'CPAN::Repository::Perms';
 requires 'Cwd';
 requires 'Data::Dumper';
+requires 'Data::Visitor::Callback';
 requires 'DateTime', '1.54';
 requires 'DateTime::Format::ISO8601';
 requires 'DBD::SQLite', '1.66';
