@@ -4,7 +4,7 @@ use Test::Routine;
 
 use MetaCPAN::ESConfig        qw( es_doc_path );
 use MetaCPAN::Server::Test    ();
-use MetaCPAN::Types::TypeTiny qw( ES ArrayRef HashRef InstanceOf Str );
+use MetaCPAN::Types::TypeTiny qw( ES HashRef Str );
 use Test::More;
 use Try::Tiny qw( try );
 

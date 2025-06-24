@@ -5,7 +5,7 @@ use Moose::Role;
 use Log::Contextual    qw( :log :dlog );
 use MetaCPAN::ESConfig qw( es_doc_path );
 use MetaCPAN::Util     qw( true false );
-use Ref::Util          qw( is_arrayref );
+use Ref::Util          ();
 
 sub update_contributors {
     my ( $self, $query ) = @_;

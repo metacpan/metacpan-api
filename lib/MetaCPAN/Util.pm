@@ -6,19 +6,19 @@ use strict;
 use warnings;
 use version;
 
-use Cwd            ();
-use Digest::SHA    qw( sha1_base64 sha1_hex );
-use Encode         qw( decode_utf8 );
-use File::Basename ();
-use File::Spec     ();
-use Ref::Util      qw(
+use Cpanel::JSON::XS ();                           ## no perlimports
+use Cwd              ();
+use Digest::SHA      qw( sha1_base64 sha1_hex );
+use Encode           qw( decode_utf8 );
+use File::Basename   ();
+use File::Spec       ();
+use Ref::Util        qw(
     is_arrayref
     is_hashref
     is_plain_arrayref
     is_plain_hashref
     is_ref
 );
-use Cpanel::JSON::XS ();
 use Sub::Exporter -setup => {
     exports => [ qw(
         root_dir

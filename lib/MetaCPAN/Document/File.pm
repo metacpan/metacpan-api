@@ -10,19 +10,11 @@ use ElasticSearchX::Model::Document;
 use List::Util                 qw( any );
 use MetaCPAN::Document::Module ();
 use MetaCPAN::Types            qw( ESBool Module );
-use MetaCPAN::Types::TypeTiny  qw(
-    ArrayRef
-    Int
-    Maybe
-    Num
-    ScalarRef
-    Stat
-    Str
-);
-use MetaCPAN::Util qw(numify_version true false);
-use Plack::MIME    ();
-use Pod::Text      ();
-use Try::Tiny      qw( catch try );
+use MetaCPAN::Types::TypeTiny qw( ArrayRef Int Maybe Num ScalarRef Stat Str );
+use MetaCPAN::Util            qw(numify_version true false);
+use Plack::MIME               ();
+use Pod::Text                 ();
+use Try::Tiny                 qw( catch try );
 
 Plack::MIME->add_type( '.t'   => 'text/x-script.perl' );
 Plack::MIME->add_type( '.pod' => 'text/x-pod' );
