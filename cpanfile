@@ -136,8 +136,6 @@ requires 'YAML::XS', '0.83'; # Mojolicious::Plugin::OpenAPI YAML loading
 
 # test requirements
 on test => sub {
-    requires 'Code::TidyAll', '0.82';
-    requires 'Code::TidyAll::Plugin::UniqueLines';
     requires 'CPAN::Faker', '0.011';
     requires 'Devel::Confess';
     requires 'HTTP::Cookies', '6.10';
@@ -157,8 +155,6 @@ on test => sub {
 # author requirements
 on develop => sub {
     requires 'App::perlimports';
-    requires 'Code::TidyAll::Plugin::UniqueLines';
-    requires 'Code::TidyAll', '0.82';
     requires 'Perl::Critic', '0.140';
     requires 'Perl::Tidy' => '== 20240511';
     requires 'PPI', '1.274'; # Perl::Critic

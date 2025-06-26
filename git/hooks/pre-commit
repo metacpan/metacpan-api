@@ -1,13 +1,15 @@
-#!/usr/bin/env perl
+#!/bin/bash
 
-use strict;
-use warnings;
-use Config;
-# Hack to use carton's local::lib.
-use lib 'local/lib/perl5';
-$ENV{PATH} .= $Config{path_sep}.'local/bin';
-$ENV{PERL5LIB} = join $Config{path_sep},
-  grep defined, $ENV{PERL5LIB}, 'local/lib/perl5';
+declare -i status
+status=0
 
-use Code::TidyAll::Git::Precommit;
-Code::TidyAll::Git::Precommit->check( no_stash => 1 );
+PRECIOUS=$(which precious)
+if [[ -z $PRECIOUS ]]; then
+    PRECIOUS=./bin/precious
+fi
+
+if ! "$PRECIOUS" lint -s; then
+    status+=1
+fi
+
+exit $status
