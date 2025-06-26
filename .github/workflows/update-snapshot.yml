@@ -9,58 +9,24 @@ jobs:
     container:
       image: perl:5.22-buster
     steps:
-      - name: install jq
-        run: |
-          apt-get update && apt-get install -y jq
       - name: Generate Auth Token
-        id: auth-token
-        uses: jamestrousdale/github-app-jwt-token@0.1.4
+        uses: actions/create-github-app-token@v2
+        id: app-token
         with:
           app-id: ${{ secrets.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
-      - id: git-user
-        name: Set up git user
-        uses: haarg/setup-git-user@v1
-        with:
-          jwt: ${{ steps.auth-token.outputs.jwt }}
       - uses: actions/checkout@v4
         with:
-          token: ${{ steps.auth-token.outputs.access-token }}
-      - name: Set up installation local::lib
-        run: |
-          mkdir -p $RUNNER_TEMP/perl5/bin
-          mkdir -p $RUNNER_TEMP/perl5/lib/perl5
-          echo "$RUNNER_TEMP/perl5/bin" >> "$GITHUB_PATH"
-          echo "PERL5LIB=$RUNNER_TEMP/perl5/lib/perl5" >> "$GITHUB_ENV"
-      - name: Get cpm
-        run: |
-          curl -sL -o $RUNNER_TEMP/perl5/bin/cpm https://raw.githubusercontent.com/skaji/cpm/main/cpm
-          chmod +x $RUNNER_TEMP/perl5/bin/cpm
-      - name: Install Carton and Carton::Snapshot
-        run: >
-          cpm install
-          Carton
-          Carton::Snapshot
-          --without-test
-          --show-build-log-on-failure
-          --local-lib-contained=$RUNNER_TEMP/perl5
-      - name: Install deps
-        run: >
-          cpm install
-          --cpanfile cpanfile
-          --resolver metacpan
-          --show-build-log-on-failure
-          --local-lib-contained=local
-      - name: Maybe update cpanfile.snapshot
-        run: carton
+          token: ${{ steps.app-token.outputs.token }}
+      - name: Update cpanfile.snapshot
+        uses: metacpan/metacpan-actions/update-snapshot@master
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
         with:
-          token: ${{ steps.auth-token.outputs.access-token }}
+          token: ${{ steps.app-token.outputs.token }}
           commit-message: Update cpanfile.snapshot
           title: Update cpanfile.snapshot
-          author: ${{ steps.git-user.outputs.user-full }}
-          committer: ${{ steps.git-user.outputs.user-full }}
+          sign-commits: true
           body: |
             [GitHub Action Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
           branch: update-cpanfile-snapshot
