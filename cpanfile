@@ -135,30 +135,34 @@ requires 'XML::XPath';
 requires 'YAML::XS', '0.83'; # Mojolicious::Plugin::OpenAPI YAML loading
 
 # test requirements
-requires 'Code::TidyAll', '0.82';
-requires 'Code::TidyAll::Plugin::UniqueLines';
-requires 'CPAN::Faker', '0.011';
-requires 'Devel::Confess';
-requires 'HTTP::Cookies', '6.10';
-requires 'MetaCPAN::Client', '2.029000';
-requires 'Module::Faker', '== 0.017';
-requires 'Module::Faker::Dist', '== 0.017';
-requires 'OrePAN2', '0.48';
-requires 'Parallel::ForkManager' => '2.02';
-requires 'Perl::Critic', '0.140';
-requires 'Perl::Tidy' => '== 20240511';
-requires 'PPI', '1.274'; # Perl::Critic
-requires 'PPIx::QuoteLike', '0.022'; # Perl::Critic
-requires 'PPIx::Regexp', '0.085'; # Perl::Critic
-requires 'String::Format', '1.18'; # Perl::Critic
-requires 'Test::Deep';
-requires 'Test::Fatal';
-requires 'Test::Harness', '3.44'; # Contains App::Prove
-requires 'Test::More', '1.302190';
-requires 'Test::Perl::Critic', '1.04';
-requires 'Test::RequiresInternet';
-requires 'Test::Routine', '0.012';
-requires 'Test::Vars', '0.015';
+on test => sub {
+    requires 'Code::TidyAll', '0.82';
+    requires 'Code::TidyAll::Plugin::UniqueLines';
+    requires 'CPAN::Faker', '0.011';
+    requires 'Devel::Confess';
+    requires 'HTTP::Cookies', '6.10';
+    requires 'MetaCPAN::Client', '2.029000';
+    requires 'Module::Faker', '== 0.017';
+    requires 'Module::Faker::Dist', '== 0.017';
+    requires 'OrePAN2', '0.48';
+    requires 'Test::Deep';
+    requires 'Test::Fatal';
+    requires 'Test::Harness', '3.44'; # Contains App::Prove
+    requires 'Test::More', '1.302190';
+    requires 'Test::RequiresInternet';
+    requires 'Test::Routine', '0.012';
+    requires 'Test::Vars', '0.015';
+};
 
 # author requirements
-requires 'App::perlimports';
+on develop => sub {
+    requires 'App::perlimports';
+    requires 'Code::TidyAll::Plugin::UniqueLines';
+    requires 'Code::TidyAll', '0.82';
+    requires 'Perl::Critic', '0.140';
+    requires 'Perl::Tidy' => '== 20240511';
+    requires 'PPI', '1.274'; # Perl::Critic
+    requires 'PPIx::QuoteLike', '0.022'; # Perl::Critic
+    requires 'PPIx::Regexp', '0.085'; # Perl::Critic
+    requires 'String::Format', '1.18'; # Perl::Critic
+};
