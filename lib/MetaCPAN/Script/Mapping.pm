@@ -2,11 +2,10 @@ package MetaCPAN::Script::Mapping;
 
 use Moose;
 
-use Cpanel::JSON::XS          qw( decode_json );
-use DateTime                  ();
+use Cpanel::JSON::XS          ();
 use Log::Contextual           qw( :log );
 use MetaCPAN::ESConfig        qw( es_config );
-use MetaCPAN::Types::TypeTiny qw( Bool HashRef Int Str );
+use MetaCPAN::Types::TypeTiny qw( Bool HashRef Int );
 use Time::HiRes               qw( sleep time );
 
 use constant {

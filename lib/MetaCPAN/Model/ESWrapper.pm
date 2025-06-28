@@ -2,7 +2,7 @@ package MetaCPAN::Model::ESWrapper;
 use strict;
 use warnings;
 
-use MetaCPAN::Types::TypeTiny qw(ES);
+use MetaCPAN::Types::TypeTiny qw( ES );
 
 sub new {
     my ( $class, $es ) = @_;

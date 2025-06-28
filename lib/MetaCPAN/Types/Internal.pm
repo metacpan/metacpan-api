@@ -7,7 +7,7 @@ use ElasticSearchX::Model::Document::Mapping ();
 use ElasticSearchX::Model::Document::Types   qw( Type );
 use MetaCPAN::Util                           qw( is_bool true false );
 use MooseX::Getopt::OptionTypeMap            ();
-use MooseX::Types::Moose qw( Item Any Bool ArrayRef HashRef );
+use MooseX::Types::Moose                     qw( ArrayRef Bool HashRef Item );
 
 use MooseX::Types -declare => [ qw(
     ESBool
@@ -24,7 +24,7 @@ coerce Module, from ArrayRef, via {
             @$_ ];
 };
 coerce Module, from HashRef, via {
-    require MetaCPAN::Document::Module;
+    require MetaCPAN::Document::Module;    ## no perlimports
     [ MetaCPAN::Document::Module->new($_) ];
 };
 
@@ -40,7 +40,7 @@ coerce Identity, from ArrayRef, via {
     ];
 };
 coerce Identity, from HashRef, via {
-    require MetaCPAN::Model::User::Identity;
+    require MetaCPAN::Model::User::Identity;    ## no perlimports
     [ MetaCPAN::Model::User::Identity->new($_) ];
 };
 
@@ -56,7 +56,7 @@ coerce Dependency, from ArrayRef, via {
     ];
 };
 coerce Dependency, from HashRef, via {
-    require MetaCPAN::Document::Dependency;
+    require MetaCPAN::Document::Dependency;    ## no perlimports
     [ MetaCPAN::Document::Dependency->new($_) ];
 };
 
@@ -72,7 +72,9 @@ coerce Profile, from ArrayRef, via {
     ];
 };
 coerce Profile, from HashRef, via {
+    ## no perlimports
     require MetaCPAN::Document::Author::Profile;
+    ## use perlimports
     [ MetaCPAN::Document::Author::Profile->new($_) ];
 };
 

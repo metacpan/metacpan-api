@@ -6,7 +6,7 @@ use Moose::Role;
 use Log::Contextual qw( set_logger );
 use Log::Log4perl ':easy';
 use MetaCPAN::Types::TypeTiny qw( Logger Str );
-use MooseX::Getopt            ();
+use MooseX::Getopt            ();                 ## no perlimports
 use Path::Tiny                qw( path );
 
 has level => (
