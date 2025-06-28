@@ -2,10 +2,10 @@ use strict;
 use warnings;
 use lib 't/lib';
 
+use Test::More skip_all => 'disabling Minion tests to avoid needing postgres';
 use MetaCPAN::DarkPAN ();
 use Path::Tiny        qw( path );
 use Test::Mojo;
-use Test::More;
 
 my $t   = Test::Mojo->new('MetaCPAN::API');
 my $app = $t->app;
