@@ -1,8 +1,0 @@
-<ul>
-  <li>
-    <a href="<%= url_for('identity-search-form') %>">search for an identity</a>
-  </li>
-  <li>
-    <a href="<%= url_for('index-release') %>">add release to indexing queue</a>
-  </li>
-</ul>
