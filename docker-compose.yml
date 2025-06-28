@@ -1,0 +1,17 @@
+services:
+  api-server:
+    build:
+      context: .
+      target: develop
+    volumes:
+      - './:/app/'
+      - '/app/local'
+    ports:
+      - '8001:8000'
+    environment:
+      # default is 120, shorten to work with compose label
+      COLUMNS: 96
+    develop:
+      watch:
+        - path: ./cpanfile
+          action: rebuild
