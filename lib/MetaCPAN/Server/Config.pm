@@ -36,7 +36,28 @@ sub _zomg {
     my $v    = Data::Visitor::Callback->new(
         plain_value => sub {
             return unless defined $_;
-            s{__HOME__}{$root}ge;
+            s{
+                (__HOME__)
+                |
+                (\$\{([^\}]+)\})
+            }{
+                defined $1 ? $root
+                : defined $2 ? do {
+                    my $var = $3;
+                    if ($var =~ s{:-(.*)}{}) {
+                        my $sub = $1;
+                        $ENV{$var} // $1;
+                    }
+                    elsif ($var =~ s{:\+(.*)}{}) {
+                        my $sub = $1;
+                        $ENV{$var} ? $sub : '';
+                    }
+                    else {
+                        $ENV{$var} // '';
+                    }
+                }
+                : ''
+            }gex;
         }
     );
     $v->visit($c);

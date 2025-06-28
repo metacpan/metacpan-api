@@ -10,6 +10,9 @@
 /perltidy.LOG
 /pm_to_blib
 /var
+/bin/omegasort
+/bin/precious
+/bin/ubi
 /etc/metacpan_local.pl
 /t/var/darkpan/
 /t/var/log/

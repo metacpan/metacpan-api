@@ -6,7 +6,7 @@ excludes = [
 
 [commands.perlimports]
 type = "both"
-include = [ "**/*.{pl,pm,t,psgi}" ]
+include = [ "**/*.{pl,pm,t,psgi}", "bin/metacpan" ]
 cmd = [ "perlimports" ]
 lint-flags = ["--lint" ]
 tidy-flags = ["-i" ]
@@ -15,14 +15,14 @@ expect-stderr = true
 
 [commands.perlcritic]
 type = "lint"
-include = [ "**/*.{pl,pm,t,psgi}" ]
+include = [ "**/*.{pl,pm,t,psgi}", "bin/metacpan" ]
 cmd = [ "perlcritic", "--profile=$PRECIOUS_ROOT/.perlcriticrc" ]
 ok-exit-codes = 0
 lint-failure-exit-codes = 2
 
 [commands.perltidy]
 type = "both"
-include = [ "**/*.{pl,pm,t,psgi}" ]
+include = [ "**/*.{pl,pm,t,psgi}", "bin/metacpan" ]
 cmd = [ "perltidy", "--profile=$PRECIOUS_ROOT/.perltidyrc" ]
 lint-flags = [ "--assert-tidy", "--no-standard-output", "--outfile=/dev/null" ]
 tidy-flags = [ "--backup-and-modify-in-place", "--backup-file-extension=/" ]

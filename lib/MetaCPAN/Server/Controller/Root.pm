@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Moose;
+use MetaCPAN::Util qw( true );
 
 BEGIN { extends 'MetaCPAN::Server::Controller' }
 
@@ -68,6 +69,12 @@ sub robots : Path("robots.txt") Args(0) {
     $c->res->body("User-agent: *\nDisallow: /\n");
 }
 
+sub healthcheck : Local Args(0) {
+    my ( $self, $c ) = @_;
+    $c->stash( { success => true } );
+    $c->forward( $c->view('JSON') );
+}
+
 sub end : ActionClass('RenderView') {
     my ( $self, $c ) = @_;
     if (   $c->controller->does('MetaCPAN::Server::Role::JSONP')
@@ -99,7 +106,6 @@ sub end : ActionClass('RenderView') {
         # cdn cache time
         $c->cdn_never_cache(1);
     }
-
 }
 
 1;

@@ -2,34 +2,20 @@ package MetaCPAN::API;
 
 =head1 DESCRIPTION
 
-This is the API web server interface.
-
-    # On vagrant VM
-    ./bin/run morbo bin/api.pl
+This is the API Minion server.
 
     # Display information on jobs in queue
     ./bin/run bin/api.pl minion job -s
-
-To run the api web server, run the following on one of the servers:
-
-    # Run the daemon on a local port (tunnel to display on your browser)
-    ./bin/run bin/api.pl daemon
 
 =cut
 
 use Mojo::Base 'Mojolicious';
 
-use File::Temp                ();
-use List::Util                qw( any );
-use MetaCPAN::Script::Runner  ();
-use Try::Tiny                 qw( catch try );
-use MetaCPAN::Server::Config  ();
-use MetaCPAN::Types::TypeTiny qw( ES );
-
-has es => sub {
-    ES->assert_coerce(
-        MetaCPAN::Server::Config::config()->{elasticsearch_servers} );
-};
+use File::Temp               ();
+use List::Util               qw( any );
+use MetaCPAN::Script::Runner ();
+use Try::Tiny                qw( catch try );
+use MetaCPAN::Server::Config ();
 
 sub startup {
     my $self = shift;
@@ -55,7 +41,6 @@ sub startup {
     $self->minion->add_task(
         index_favorite => $self->_gen_index_task_sub('favorite') );
 
-    $self->plugin('MetaCPAN::API::Plugin::Model');
     $self->_set_up_routes;
 }
 
@@ -116,36 +101,7 @@ sub _set_up_routes {
     );
 
     $self->_set_up_oauth_routes;
-
-    $admin->get('home')->to('admin#home')->name('admin-home');
-    $admin->post('enqueue')->to('queue#enqueue')->name('enqueue');
-    $admin->post('search-identities')->to('admin#search_identities')
-        ->name('search-identities');
-    $admin->get('index-release')->to('queue#index_release')
-        ->name('index-release');
-    $admin->get('identity-search-form')->to('admin#identity_search_form')
-        ->name('identity_search_form');
-
     $self->plugin( 'Minion::Admin' => { route => $admin->any('/minion') } );
-    $self->plugin(
-        'OpenAPI' => { url => $self->home->rel_file('root/static/v1.yml') } );
-
-# This route is for when nginx gets updated to no longer strip the `/v1` path.
-# By retaining the `/v1` path the OpenAPI spec is picked up and passed
-# through Mojolicous.  The `rewrite` parameter is stripping the `/v1` before
-# it is passed to Catalyst allowing the previous logic to be followed.
-    $self->plugin(
-        MountPSGI => {
-            '/v1'   => $self->home->child('app.psgi')->to_string,
-            rewrite => 1
-        }
-    );
-
-# XXX Catch cases when `v1` has been stripped by nginx until migration is complete
-# XXX then this path can be removed.
-    $self->plugin(
-        MountPSGI => { '/' => $self->home->child('app.psgi')->to_string } );
-
 }
 
 sub _is_admin {
@@ -205,40 +161,9 @@ sub _set_up_oauth_routes {
             $c->session( is_logged_in    => 1 );
             $c->session( github_username => $username );
             if ( $self->_is_admin($username) ) {
-                $c->session( github_username => $username );
                 $c->redirect_to('/admin');
                 return;
             }
-            $c->redirect_to( $self->config->{front_end_url} );
-        },
-    );
-
-    $self->plugin(
-        'Web::Auth',
-        module      => 'Google',
-        key         => $oauth->{google}->{key},
-        secret      => $oauth->{google}->{secret},
-        user_info   => 1,
-        on_finished => sub {
-            my ( $c, $access_token, $account_info ) = @_;
-            my $username = $account_info->{login};
-            $c->session( is_logged_in    => 1 );
-            $c->session( google_username => $username );
-            $c->redirect_to( $self->config->{front_end_url} );
-        },
-    );
-
-    $self->plugin(
-        'Web::Auth',
-        module      => 'Twitter',
-        key         => $oauth->{twitter}->{key},
-        secret      => $oauth->{twitter}->{secret},
-        user_info   => 1,
-        on_finished => sub {
-            my ( $c, $access_token, $access_secret, $account_info ) = @_;
-            my $username = $account_info->{screen_name};
-            $c->session( is_logged_in     => 1 );
-            $c->session( twitter_username => $username );
             $c->redirect_to( $self->config->{front_end_url} );
         },
     );

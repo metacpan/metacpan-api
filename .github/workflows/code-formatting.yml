@@ -1,0 +1,52 @@
+---
+name: Code Formatting
+on:
+  push:
+    branches:
+      - 'master'
+  merge_group:
+  pull_request:
+    branches:
+      - '*'
+  workflow_dispatch:
+
+jobs:
+  code-formatting:
+    runs-on: ubuntu-24.04
+    name: Code Formatting
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Fetch base ref
+        if: ${{ github.event.pull_request }}
+        run: git fetch origin ${{ github.base_ref }}:upstream
+      - name: Install Carton
+        uses: perl-actions/install-with-cpm@v1
+        with:
+          install: Carton
+      - name: Install CPAN deps
+        uses: perl-actions/install-with-cpm@v1
+        with:
+          cpanfile: 'cpanfile'
+          args: >
+            --resolver=snapshot
+            --without-runtime
+            --without-test
+            --without-build
+            --with-develop
+      - name: Install precious
+        run: ./bin/install-precious /usr/local/bin
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - run: perltidy --version
+      - name: Select files
+        id: select-files
+        run: |
+          if [[ -n "${{ github.event.pull_request.number }}" ]]; then
+            echo 'precious-args=--git-diff-from upstream' >> "$GITHUB_OUTPUT"
+          else
+            echo 'precious-args=--all' >> "$GITHUB_OUTPUT"
+          fi
+      - name: Lint files
+        run: precious lint ${{ steps.select-files.outputs.precious-args }}

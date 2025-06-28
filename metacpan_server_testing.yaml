@@ -8,7 +8,7 @@ source_base: var/t/tmp/source
 
 elasticsearch_servers:
   client: '2_0::Direct'
-  nodes: http://elasticsearch_test:9200
+  nodes: ${ES:-http://elasticsearch_test:9200}
 
 minion_dsn: "postgresql://metacpan:t00lchain@pghost:5432/minion_queue"
 

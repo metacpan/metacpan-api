@@ -2,7 +2,6 @@ package MetaCPAN::TestServer;
 
 use MetaCPAN::Moose;
 
-use Cpanel::JSON::XS                 qw( encode_json );
 use MetaCPAN::ESConfig               qw( es_config );
 use MetaCPAN::Script::Author         ();
 use MetaCPAN::Script::Cover          ();
