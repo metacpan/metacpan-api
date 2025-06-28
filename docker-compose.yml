@@ -15,3 +15,50 @@ services:
       watch:
         - path: ./cpanfile
           action: rebuild
+
+  api-test:
+    profiles:
+      - test
+    depends_on:
+      elasticsearch-test:
+        condition: service_healthy
+    build:
+      context: .
+      target: test
+    environment:
+      NET_ASYNC_HTTP_MAXCONNS: 1
+      COLUMNS: 80
+      ES: http://elasticsearch-test:9200
+      HARNESS_ACTIVE: 1
+      # Instantiate Catalyst models using metacpan_server_testing.conf
+      METACPAN_SERVER_CONFIG_LOCAL_SUFFIX: testing
+      MINICPAN: /CPAN
+      DEVEL_COVER_OPTIONS: +ignore,^t/|^test-data/|^etc/|^local/
+    networks:
+      - elasticsearch
+    volumes:
+      - type: volume
+        source: elasticsearch-test
+        target: /usr/share/elasticsearch/data
+
+  elasticsearch-test:
+    profiles:
+      - test
+    platform: linux/amd64
+    image: elasticsearch:2.4
+    environment:
+      - discovery.type=single-node
+    healthcheck:
+      timeout: 5s
+      start_period: 60s
+      test: ["CMD", "curl", "--fail", "http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=5s"]
+    ports:
+      - "9200"
+    networks:
+      - elasticsearch
+
+networks:
+  elasticsearch:
+
+volumes:
+  elasticsearch-test:
