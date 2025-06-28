@@ -1,0 +1,46 @@
+name: Build container
+on:
+  push:
+    branches:
+      - master
+      - staging
+      - prod
+  pull_request:
+    types: [opened, synchronize, labeled]
+    branches:
+      - master
+  workflow_dispatch:
+jobs:
+  docker-build:
+    if: github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'build-container')
+    runs-on: ubuntu-22.04
+    name: Docker Build and Push
+    steps:
+      - name: Generate Auth Token
+        uses: actions/create-github-app-token@v2
+        id: app-token
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          owner: metacpan
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+      - uses: metacpan/metacpan-actions/docker-build-push@master
+        id: build-push
+        with:
+          docker_hub_username: ${{ secrets.DOCKER_HUB_USER }}
+          docker_hub_password: ${{ secrets.DOCKER_HUB_TOKEN }}
+          ghcr_username: ${{ github.repository_owner }}
+          ghcr_password: ${{ secrets.GITHUB_TOKEN }}
+          test-target: test
+#      - name: Update deployed image
+#        if: steps.find-tag-names.outputs.latest
+#        uses: metacpan/metacpan-actions/update-deployed-tag:master
+#        with:
+#          token: ${{ steps.app-token.outputs.token }}
+#          app: api
+#          environment: prod
+#          base-tag: ${{ steps.find-tag-names.outputs.latest }}
+#          tag: ${{ steps.find-tag-names.outputs.sha }}
+
