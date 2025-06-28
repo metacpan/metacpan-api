@@ -165,4 +165,5 @@ on develop => sub {
     requires 'PPIx::QuoteLike', '0.022'; # Perl::Critic
     requires 'PPIx::Regexp', '0.085'; # Perl::Critic
     requires 'String::Format', '1.18'; # Perl::Critic
+    requires 'Devel::Cover';
 };
