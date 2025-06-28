@@ -1,0 +1,12 @@
+# transitive deps
+# Not used directly, but they need to be explicitly listed to ensure they are
+# in our cpanfile.snapshot at appropriate versions. Either for older perl
+# versions, or unpredictable dynamic deps. These will be installed using a
+# different process to ensure they are present in the snapshot, even if they
+# would be satisfied by core.
+requires 'CPAN::Meta', '2.141520';
+requires 'Devel::PPPort', '3.62';   # for older perls
+requires 'ExtUtils::MakeMaker', '7.76';
+requires 'version', '0.9929';       # for older perls
+requires 'Module::Signature', '0.90';
+requires 'Pod::Parser', '1.67';     # for newer perls
