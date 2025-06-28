@@ -162,7 +162,7 @@ sub show_info {
         'cluster_info' => \%{ $self->cluster_info },
         'indices_info' => \%{ $self->indices_info },
     };
-    log_info { JSON->new->utf8->pretty->encode($info_rs) };
+    log_info { Cpanel::JSON::XS->new->utf8->pretty->encode($info_rs) };
 }
 
 sub _build_index_config {
