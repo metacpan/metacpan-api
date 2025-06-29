@@ -33,7 +33,6 @@ jobs:
           docker_hub_password: ${{ secrets.DOCKER_HUB_TOKEN }}
           ghcr_username: ${{ github.repository_owner }}
           ghcr_password: ${{ secrets.GITHUB_TOKEN }}
-          test-target: test
       - name: Update deployed image
         if: steps.find-tag-names.outputs.latest
         uses: metacpan/metacpan-actions/update-deployed-tag@master
