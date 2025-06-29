@@ -42,7 +42,7 @@ BEGIN {
         $root_dir );
     Log::Log4perl::init($log4perl_config);
 
-    package MetaCPAN::Server::WarnHandler;
+    package MetaCPAN::Server::WarnHandler;    ## no critic (Modules::RequireFilenameMatchesPackage)
     Log::Log4perl->wrapper_register(__PACKAGE__);
     my $logger = Log::Log4perl->get_logger;
     $SIG{__WARN__} = sub { $logger->warn(@_) };
