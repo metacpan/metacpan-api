@@ -40,5 +40,5 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
           app: api
           environment: prod
-          base-tag: ${{ steps.find-tag-names.outputs.latest }}
-          tag: ${{ steps.find-tag-names.outputs.sha }}
+          base-tag: ${{ fromJSON(steps.build-push.outputs.tag-fq).latest }}
+          tag: ${{ fromJSON(steps.build-push.outputs.tag-fq).sha }}
