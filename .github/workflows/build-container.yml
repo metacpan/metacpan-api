@@ -36,7 +36,7 @@ jobs:
           test-target: test
       - name: Update deployed image
         if: steps.find-tag-names.outputs.latest
-        uses: metacpan/metacpan-actions/update-deployed-tag:master
+        uses: metacpan/metacpan-actions/update-deployed-tag@master
         with:
           token: ${{ steps.app-token.outputs.token }}
           app: api
