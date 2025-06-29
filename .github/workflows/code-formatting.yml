@@ -31,9 +31,6 @@ jobs:
           cpanfile: 'cpanfile'
           args: >
             --resolver=snapshot
-            --without-runtime
-            --without-test
-            --without-build
             --with-develop
       - name: Install precious
         run: ./bin/install-precious /usr/local/bin
