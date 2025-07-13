@@ -37,6 +37,7 @@ use Sub::Exporter -setup => {
         true
         false
         is_bool
+        to_bool
         MAX_RESULT_WINDOW
     ) ]
 };
@@ -44,9 +45,13 @@ use Sub::Exporter -setup => {
 # Limit the maximum result window to 1000, really should be enough!
 use constant MAX_RESULT_WINDOW => 1000;
 
-*true    = \&Cpanel::JSON::XS::true;
-*false   = \&Cpanel::JSON::XS::false;
+sub true ();
+*true = \&Cpanel::JSON::XS::true;
+sub false ();
+*false = \&Cpanel::JSON::XS::false;
+sub is_bool ($);
 *is_bool = \&Cpanel::JSON::XS::is_bool;
+sub to_bool ($) { $_[0] ? true : false }
 
 sub root_dir {
     Cwd::abs_path( File::Spec->catdir(
