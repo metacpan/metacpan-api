@@ -230,18 +230,14 @@ test 'modules in Packages-1.103' => sub {
         = map { ( $_->{path} => $_->{module} ) } @{ $self->module_files };
 
     foreach my $path ( sort keys %{ $self->modules } ) {
-        my $desc = "File '$path' has expected modules";
-        if ( my $got = delete $module_files{$path} ) {
-            my $got = [ map +{%$_}, @$got ];
-            $_->{associated_pod} //= undef for @$got;
+        my $desc        = "File '$path' has expected modules";
+        my $got_modules = delete $module_files{$path} || [];
+        my $got         = [ map +{%$_}, @$got_modules ];
+        $_->{associated_pod} //= undef for @$got;
 
      # We may need to sort modules by name, I'm not sure if order is reliable.
-            is_deeply $got, $self->modules->{$path}, $desc
-                or diag Test::More::explain($got);
-        }
-        else {
-            ok( 0, $desc );
-        }
+        is_deeply $got, $self->modules->{$path}, $desc
+            or diag Test::More::explain($got);
     }
 
     is( scalar keys %module_files, 0, 'all module files tested' )
