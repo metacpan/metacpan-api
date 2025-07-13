@@ -30,9 +30,9 @@ jobs:
       - run:
           name: run tests with coverage
           command: |
-            docker compose --profile test run --env HARNESS_PERL_SWITCHES=-MDevel::Cover -v ./cover_db:/app/cover_db/ api-test bash -c 'prove -lr -j4 t && cover -report json'
+            docker compose --profile test run --env HARNESS_PERL_SWITCHES=-MDevel::Cover -v ./cover_db:/app/cover_db/ api-test bash -c 'prove -lr -j4 t && cover -report codecovbash'
       # We are relying on environment variables from the host to be available when
       # we publish the report, so we publish from the host rather than trying
       # to propagate env variables to the container.
       - codecov/upload:
-          file: cover_db/cover.json
+          file: cover_db/codecov.json

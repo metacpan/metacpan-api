@@ -162,4 +162,5 @@ on develop => sub {
     requires 'PPIx::Regexp', '0.085'; # Perl::Critic
     requires 'String::Format', '1.18'; # Perl::Critic
     requires 'Devel::Cover';
+    requires 'Devel::Cover::Report::Codecovbash';
 };
