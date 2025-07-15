@@ -227,11 +227,6 @@ END
     is( $file->abstract,
         'An object containing information about how to get access to teh Moby databases, resources, etc. from the mobycentral.config file'
     );
-    is(
-        $file->module->[0]
-            ->hide_from_pause( ${ $file->content }, $file->name ),
-        0, 'indexed'
-    );
     is( $file->documentation, 'MOBY::Config' );
     is( $file->level,         2 );
     test_attributes $file, {
@@ -302,13 +297,9 @@ AS-specific methods for Number::Phone
 
 1;
 END
-    my $file = new_file_doc(
-        module  => [ { name => 'Number::Phone::NANP::ASS', version => 1.1 } ],
-        content => \$content,
-    );
-    is( $file->sloc,                                   8, '8 lines of code' );
-    is( $file->slop,                                   4, '4 lines of pod' );
-    is( $file->module->[0]->hide_from_pause($content), 1, 'not indexed' );
+    my $file = new_file_doc( content => \$content, );
+    is( $file->sloc, 8, '8 lines of code' );
+    is( $file->slop, 4, '4 lines of pod' );
     is(
         $file->abstract,
         'AS-specific methods for Number::Phone',
@@ -322,8 +313,6 @@ END
     is( $file->documentation, 'Number::Phone::NANP::AS', 'document text' );
 
     is_deeply( $file->pod_lines, [ [ 18, 7 ] ], 'correct pod_lines' );
-    is( $file->module->[0]->version_numified,
-        1.1, 'numified version has been calculated' );
 
     is(
         ${ $file->pod },

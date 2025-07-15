@@ -917,11 +917,7 @@ sub set_indexed {
             next;
         }
 
-        $mod->_set_indexed(
-            $mod->hide_from_pause( ${ $self->content }, $self->name )
-            ? false
-            : true
-        );
+        $mod->_set_indexed(true);
     }
 
     if ( my $doc_name = $self->documentation ) {

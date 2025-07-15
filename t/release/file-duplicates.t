@@ -28,14 +28,7 @@ test_release(
                 indexed          => true,
                 associated_pod   => undef,
             } ],
-            'lib/Dupe.pm' => [ {
-                name             => 'Dupe',
-                version          => '0.993',
-                version_numified => '0.993',
-                authorized       => true,
-                indexed          => false,
-                associated_pod   => undef,
-            } ],
+            'lib/Dupe.pm'   => [],
             'DupeX/Dupe.pm' => [
                 {
                     name             => 'DupeX::Dupe',

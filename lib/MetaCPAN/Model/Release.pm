@@ -481,15 +481,16 @@ sub _modules_from_meta {
 
     my $provides = $self->metadata->provides;
     my $files    = $self->files;
+    my %files    = map +( $_->path => $_ ), @$files;
     foreach my $module ( sort keys %$provides ) {
         my $data = $provides->{$module};
         my $path = File::Spec->canonpath( $data->{file} );
 
-        # Obey no_index and take the shortest path if multiple files match.
-        my ($file) = sort { length( $a->path ) <=> length( $b->path ) }
-            grep { $_->indexed && $_->path =~ /\Q$path\E$/ } @$files;
+        my $file = $files{$path}
+            or next;
 
-        next unless $file;
+        next unless $file->indexed;
+
         $file->add_module( {
             name    => $module,
             version => $data->{version},
