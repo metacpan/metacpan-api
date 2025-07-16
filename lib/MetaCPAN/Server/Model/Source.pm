@@ -88,7 +88,7 @@ sub path {
     return $source
         if -e $source;
     return undef
-        if -e $source_base;    # previously extracted, but file does not exist
+        if -e $source_base->child($distvname);    # previously extracted, but file does not exist
 
     my $release_data
         = $self->es_query->release->by_author_and_name( $pauseid, $distvname )
