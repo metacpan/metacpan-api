@@ -87,8 +87,11 @@ sub path {
     my $source      = $source_base->child( $distvname, @file );
     return $source
         if -e $source;
+
+    # if the directory exists, we already extracted the archive, so if the
+    # file didn't exist, we can stop here
     return undef
-        if -e $source_base->child($distvname);    # previously extracted, but file does not exist
+        if -e $source_base->child($distvname);
 
     my $release_data
         = $self->es_query->release->by_author_and_name( $pauseid, $distvname )
