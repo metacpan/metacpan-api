@@ -679,7 +679,7 @@ sub find_pod {
                 query => $query,
             },
         );
-        return $pod_file->{hits}{hits}[0];
+        return $pod_file->{hits}{hits}[0]->{_source};
     }
     else {
         return $file;
