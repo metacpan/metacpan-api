@@ -172,6 +172,11 @@ sub activity {
 
     my $filters = $self->_activity_filters( $params, $start );
 
+    my $interval_type
+        = $self->es->api_version ge '7_0'
+        ? 'fixed_interval'
+        : 'interval';
+
     my $body = {
         query        => { match_all => {} },
         aggregations => {
@@ -179,11 +184,13 @@ sub activity {
                 filter       => $filters,
                 aggregations => {
                     entries => {
-                        date_histogram =>
-                            { field => 'date', interval => $res },
-                    }
-                }
-            }
+                        date_histogram => {
+                            field          => 'date',
+                            $interval_type => $res,
+                        },
+                    },
+                },
+            },
         },
         size => 0,
     };
