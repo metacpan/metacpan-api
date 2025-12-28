@@ -141,7 +141,7 @@ sub _activity_filters {
         = @{$params}{qw( author distribution module new_dists )};
 
     my @filters
-        = ( { range => { date => { from => $start->epoch . '000' } } } );
+        = ( { range => { date => { gte => $start->epoch . '000' } } } );
 
     push @filters, +{ term => { author => uc($author) } }
         if $author;
