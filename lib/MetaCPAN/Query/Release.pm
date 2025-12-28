@@ -174,7 +174,7 @@ sub activity {
 
     my $interval_type
         = $self->es->api_version ge '7_0'
-        ? 'fixed_interval'
+        ? 'calendar_interval'
         : 'interval';
 
     my $body = {
