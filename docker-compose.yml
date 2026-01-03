@@ -44,10 +44,11 @@ services:
   elasticsearch-test:
     profiles:
       - test
-    platform: linux/amd64
-    image: elasticsearch:2.4
+    image: elasticsearch:8.19.9
     environment:
       - discovery.type=single-node
+      - xpack.security.enabled=false
+      - xpack.security.http.ssl.enabled=false
     healthcheck:
       timeout: 5s
       start_period: 60s
