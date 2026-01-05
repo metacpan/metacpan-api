@@ -316,7 +316,7 @@ sub build_query {
                 script => {
                     lang        => 'expression',
                     $script_key =>
-                        "_score - (doc['documentation_length'].value == 0 ? 26 : doc['documentation_length'].value)/400",
+                        "max(0, _score - (doc['documentation_length'].value == 0 ? 26 : doc['documentation_length'].value)/400)",
                 },
             },
             query => {
