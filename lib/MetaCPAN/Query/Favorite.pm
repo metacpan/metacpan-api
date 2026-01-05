@@ -14,7 +14,7 @@ sub agg_by_distributions {
         myfavorites => {},
         took        => 0,
         }
-        unless $distributions;
+        unless $distributions && @$distributions;
 
     my $body = {
         size  => 0,
