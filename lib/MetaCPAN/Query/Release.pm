@@ -302,7 +302,7 @@ sub by_author {
             }
         },
         sort =>
-            [ 'distribution', { 'version_numified' => { reverse => 1 } } ],
+            [ 'distribution', { 'version_numified' => 'desc' } ],
         _source => [
             qw( abstract author authorized date distribution license metadata.version resources.repository status tests )
         ],
@@ -365,7 +365,7 @@ sub latest_by_author {
             }
         },
         sort =>
-            [ 'distribution', { 'version_numified' => { reverse => 1 } } ],
+            [ 'distribution', { 'version_numified' => 'desc' } ],
         _source => [
             qw(author distribution name status abstract date download_url version authorized maturity)
         ],
