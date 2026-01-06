@@ -119,7 +119,7 @@ sub hit_total {
 sub simplify_total {
     my $res = shift;
     if ( ref $res && ref $res->{hits} ) {
-        my $total = ref $res->{hits}{total};
+        my $total = $res->{hits}{total};
         if ( ref $total ) {
             $res->{hits}{total} = $total->{value};
         }
