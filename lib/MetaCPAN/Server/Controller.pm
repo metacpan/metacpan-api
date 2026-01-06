@@ -4,7 +4,7 @@ use Moose;
 use namespace::autoclean;
 
 use MetaCPAN::ESConfig qw( es_doc_path );
-use MetaCPAN::Util     qw( single_valued_arrayref_to_scalar );
+use MetaCPAN::Util     qw( single_valued_arrayref_to_scalar simplify_total );
 
 BEGIN { extends 'Catalyst::Controller'; }
 
@@ -107,6 +107,7 @@ sub search : Path('_search') : ActionClass('~Deserialize') {
         } );
         single_valued_arrayref_to_scalar( $_->{fields} )
             for @{ $res->{hits}{hits} };
+        simplify_total($res);
         $c->stash($res);
         1;
     } or do { $self->internal_error( $c, $@ ) };

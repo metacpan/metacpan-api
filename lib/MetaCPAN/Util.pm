@@ -30,6 +30,7 @@ use Sub::Exporter -setup => {
         fix_version
         generate_sid
         hit_total
+        simplify_total
         numify_version
         pod_lines
         strip_pod
@@ -110,6 +111,20 @@ sub hit_total {
         return $total->{value};
     }
     return $total;
+}
+
+# Backward compatibility with older clients, especially MetaCPAN::Client.
+# The simple numeric total can be valid in modern ES, so it seems acceptable
+# to use it as a default.
+sub simplify_total {
+    my $res = shift;
+    if ( ref $res && ref $res->{hits} ) {
+        my $total = ref $res->{hits}{total};
+        if ( ref $total ) {
+            $res->{hits}{total} = $total->{value};
+        }
+    }
+    return;
 }
 
 # TODO: E<escape>
