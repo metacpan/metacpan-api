@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use namespace::autoclean;
 
-use MetaCPAN::Util qw(true false);
+use MetaCPAN::Util qw(true false simplify_total);
 use Moose;
 use Try::Tiny qw( catch try );
 
@@ -60,6 +60,8 @@ sub index : Path('/_search/scroll') : Args {
             scroll    => $c->req->params->{scroll},
         } );
     } or do { $self->internal_error( $c, $@ ); };
+
+    simplify_total($res);
 
     $c->stash($res);
 }
