@@ -2,7 +2,6 @@ package MetaCPAN::Query::File;
 
 use MetaCPAN::Moose;
 
-use List::Util         qw( max );
 use MetaCPAN::ESConfig qw( es_doc_path );
 use MetaCPAN::Util     qw( hit_total true false );
 
@@ -378,18 +377,18 @@ sub _autocomplete {
                 documentation => {
                     text       => $query,
                     completion => {
-                        field => "suggest",
-                        size  => $search_size,
+                        field           => 'suggest',
+                        size            => $search_size,
+                        skip_duplicates => true,
                     },
                 },
             }
         },
     );
 
-    my %docs;
+    my @docs;
     for my $suggest ( @{ $sugg_res->{suggest}{documentation}[0]{options} } ) {
-        $docs{ $suggest->{text} } = max grep {defined}
-            ( $docs{ $suggest->{text} }, $suggest->{score} );
+        push @docs, $suggest->{text};
     }
 
     my $res = $self->es->search(
@@ -401,7 +400,7 @@ sub _autocomplete {
                         { term  => { indexed       => true } },
                         { term  => { authorized    => true } },
                         { term  => { status        => 'latest' } },
-                        { terms => { documentation => [ keys %docs ] } },
+                        { terms => { documentation => \@docs } },
                     ],
                     must_not => [
                         {
@@ -453,7 +452,6 @@ sub _autocomplete {
         my $b_data = $valid{$b};
                $a_data->{deprecated} <=> $b_data->{deprecated}
             || $b_data->{favorites}  <=> $a_data->{favorites}
-            || $docs{$b}             <=> $docs{$a}
             || length($a)            <=> length($b)
             || $a cmp $b
         }
