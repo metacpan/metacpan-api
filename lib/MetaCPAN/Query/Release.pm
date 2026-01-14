@@ -172,11 +172,6 @@ sub activity {
 
     my $filters = $self->_activity_filters( $params, $start );
 
-    my $interval_type
-        = $self->es->api_version ge '7_0'
-        ? 'calendar_interval'
-        : 'interval';
-
     my $body = {
         query        => { match_all => {} },
         aggregations => {
@@ -185,8 +180,8 @@ sub activity {
                 aggregations => {
                     entries => {
                         date_histogram => {
-                            field          => 'date',
-                            $interval_type => $res,
+                            field             => 'date',
+                            calendar_interval => $res,
                         },
                     },
                 },
@@ -932,21 +927,12 @@ sub find_download_url {
         = $module_filter
         ? {
         'module.version_numified' => {
-            mode  => 'max',
-            order => 'desc',
-            (
-                $self->es->api_version ge '6_0'
-                ? (
-                    nested => {
-                        path   => 'module',
-                        filter => $entity_filter,
-                    },
-                    )
-                : (
-                    nested_path   => 'module',
-                    nested_filter => $entity_filter,
-                )
-            ),
+            mode   => 'max',
+            order  => 'desc',
+            nested => {
+                path   => 'module',
+                filter => $entity_filter,
+            },
         }
         }
         : { version_numified => { order => 'desc' } };

@@ -177,11 +177,6 @@ sub _build_index_config {
             if $indices->{$index};
         my $mapping  = es_config->mapping( $name, $api_version );
         my $settings = es_config->index_settings( $name, $api_version );
-        if ( $api_version le '6_0' ) {
-            my $type = $doc->{type}
-                or die "no type defined for $name documents";
-            $mapping = { $type => $mapping };
-        }
         $indices->{$index} = {
             settings => $settings,
             mappings => $mapping,

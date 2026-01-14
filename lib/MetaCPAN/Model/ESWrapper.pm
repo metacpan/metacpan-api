@@ -6,9 +6,6 @@ use MetaCPAN::Types::TypeTiny qw( ES );
 
 sub new {
     my ( $class, $es ) = @_;
-    if ( $es->api_version le '6_0' ) {
-        return $es;
-    }
     return bless { es => ES->assert_coerce($es) }, $class;
 }
 
