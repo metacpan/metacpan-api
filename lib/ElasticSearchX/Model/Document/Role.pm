@@ -13,10 +13,6 @@ my $_put = \&_put;
 
     my %return = &$_put;
 
-    if ( $es->api_version le '6_0' ) {
-        return %return;
-    }
-
     delete $return{type};
     return %return;
 };

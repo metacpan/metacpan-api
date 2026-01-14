@@ -19,77 +19,66 @@ const my %config => merge(
         documents => {
             author => {
                 index    => 'author',
-                type     => 'author',
                 mapping  => 'es/author/mapping.json',
                 settings => 'es/author/settings.json',
                 model    => 'MetaCPAN::Document::Author',
             },
             cve => {
                 index    => 'cve',
-                type     => 'cve',
                 mapping  => 'es/cve/mapping.json',
                 settings => 'es/cve/settings.json',
                 model    => 'MetaCPAN::Document::CVE',
             },
             contributor => {
                 index    => 'contributor',
-                type     => 'contributor',
                 mapping  => 'es/contributor/mapping.json',
                 settings => 'es/contributor/settings.json',
                 model    => 'MetaCPAN::Document::Contributor',
             },
             cover => {
                 index    => 'cover',
-                type     => 'cover',
                 mapping  => 'es/cover/mapping.json',
                 settings => 'es/cover/settings.json',
                 model    => 'MetaCPAN::Document::Cover',
             },
             distribution => {
                 index    => 'distribution',
-                type     => 'distribution',
                 mapping  => 'es/distribution/mapping.json',
                 settings => 'es/distribution/settings.json',
                 model    => 'MetaCPAN::Document::Distribution',
             },
             favorite => {
                 index    => 'favorite',
-                type     => 'favorite',
                 mapping  => 'es/favorite/mapping.json',
                 settings => 'es/favorite/settings.json',
                 model    => 'MetaCPAN::Document::Favorite',
             },
             file => {
                 index    => 'file',
-                type     => 'file',
                 mapping  => 'es/file/mapping.json',
                 settings => 'es/file/settings.json',
                 model    => 'MetaCPAN::Document::File',
             },
             mirror => {
                 index    => 'mirror',
-                type     => 'mirror',
                 mapping  => 'es/mirror/mapping.json',
                 settings => 'es/mirror/settings.json',
                 model    => 'MetaCPAN::Document::Mirror',
             },
             package => {
                 index    => 'package',
-                type     => 'package',
                 mapping  => 'es/package/mapping.json',
                 settings => 'es/package/settings.json',
                 model    => 'MetaCPAN::Document::Package',
             },
             permission => {
                 index    => 'permission',
-                type     => 'permission',
                 mapping  => 'es/permission/mapping.json',
                 settings => 'es/permission/settings.json',
                 model    => 'MetaCPAN::Document::Permission',
             },
             release => {
                 index    => 'release',
-                type     => 'release',
                 mapping  => 'es/release/mapping.json',
                 settings => 'es/release/settings.json',
                 model    => 'MetaCPAN::Document::Release',
@@ -97,14 +86,12 @@ const my %config => merge(
 
             account => {
                 index    => 'account',
-                type     => 'account',
                 mapping  => 'es/account/mapping.json',
                 settings => 'es/account/settings.json',
                 model    => 'MetaCPAN::Model::User::Account',
             },
             session => {
                 index    => 'session',
-                type     => 'session',
                 mapping  => 'es/session/mapping.json',
                 settings => 'es/session/settings.json',
                 model    => 'MetaCPAN::Model::User::Session',
@@ -201,32 +188,10 @@ sub _walk : prototype(&$) {
     }
 }
 
-sub mapping ( $self, $doc, $version ) {
+sub mapping ( $self, $doc, $version = undef ) {
     my $doc_data = $self->documents->{$doc}
         or croak "unknown document $doc";
     my $data = _load_es_data( $doc_data->{mapping}, 'mapping' );
-    if ( $version && $version eq '2_0' ) {
-        _walk(
-            sub {
-                my ($d) = @_;
-                if ( my $type = $d->{type} ) {
-                    if ( $type eq 'keyword' ) {
-                        $d->{type}         = 'string';
-                        $d->{index}        = 'not_analyzed';
-                        $d->{ignore_above} = 2048;
-                    }
-                    elsif ( $type eq 'text' ) {
-                        $d->{type} = 'string';
-                        if ( exists $d->{fielddata} && !$d->{fielddata} ) {
-                            $d->{fielddata} = { format => false };
-                        }
-                    }
-                }
-
-            },
-            $data
-        );
-    }
     return $data;
 }
 
