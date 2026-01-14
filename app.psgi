@@ -46,6 +46,13 @@ BEGIN {
     Log::Log4perl->wrapper_register(__PACKAGE__);
     my $logger = Log::Log4perl->get_logger;
     $SIG{__WARN__} = sub { $logger->warn(@_) };
+
+    $ENV{LOG_ANY_DEFAULT_ADAPTER} = 'Log4perl';
+    if ( $INC{'Log/Any.pm'} ) {
+        require Log::Any::Adapter;
+        require Log::Any::Adapter::Log4perl;
+        Log::Any::Adapter->set('Log4perl');
+    }
 }
 
 use MetaCPAN::Server ();
