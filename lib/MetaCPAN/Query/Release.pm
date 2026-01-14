@@ -491,7 +491,7 @@ sub top_uploaders {
     my $range_filter = {
         range => {
             date => {
-                from => $range eq 'all' ? 0 : DateTime->now->subtract(
+                gte => $range eq 'all' ? 0 : DateTime->now->subtract(
                       $range eq 'weekly'  ? 'weeks'
                     : $range eq 'monthly' ? 'months'
                     : $range eq 'yearly'  ? 'years'
