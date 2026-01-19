@@ -10,35 +10,6 @@ elasticsearch_servers:
   client: '8_0::Direct'
   nodes: ${ES:-http://elasticsearch_test:9200}
 
-elasticsearch:
-  documents:
-    account:
-      type: ~
-    author:
-      type: ~
-    contributor:
-      type: ~
-    cover:
-      type: ~
-    cve:
-      type: ~
-    distribution:
-      type: ~
-    favorite:
-      type: ~
-    file:
-      type: ~
-    mirror:
-      type: ~
-    package:
-      type: ~
-    permission:
-      type: ~
-    release:
-      type: ~
-    session:
-      type: ~
-
 minion_dsn: "postgresql://metacpan:t00lchain@pghost:5432/minion_queue"
 
 logger:

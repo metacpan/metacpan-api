@@ -209,8 +209,7 @@ sub doc_path ( $self, $doc ) {
     my $doc_data = $self->documents->{$doc}
         or croak "unknown document $doc";
     return (
-        ( $doc_data->{index} ? ( index => $doc_data->{index} ) : () ),
-        ( $doc_data->{type}  ? ( type  => $doc_data->{type} )  : () ),
+        ( exists $doc_data->{index} ? ( index => $doc_data->{index} ) : () ),
     );
 }
 
