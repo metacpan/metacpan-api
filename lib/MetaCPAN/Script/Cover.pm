@@ -108,7 +108,7 @@ sub retrieve_cover_data {
     log_info { 'Fetching data from ', $url };
     my $resp = $self->ua->get($url);
 
-    $self->handle_error( $resp->status_line ) unless $resp->is_success;
+    $self->handle_error( $resp->status_line, 1 ) unless $resp->is_success;
 
     # clean up headers if .json.gz is served as gzip type
     # rather than json encoded with gzip

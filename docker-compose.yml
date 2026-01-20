@@ -36,10 +36,6 @@ services:
       DEVEL_COVER_OPTIONS: +ignore,^t/|^test-data/|^etc/|^local/
     networks:
       - elasticsearch
-    volumes:
-      - type: volume
-        source: elasticsearch-test
-        target: /usr/share/elasticsearch/data
 
   elasticsearch-test:
     profiles:
@@ -55,6 +51,10 @@ services:
       test: ["CMD", "curl", "--fail", "http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=5s"]
     ports:
       - "9200"
+    volumes:
+      - type: volume
+        source: elasticsearch-test
+        target: /usr/share/elasticsearch/data
     networks:
       - elasticsearch
 
