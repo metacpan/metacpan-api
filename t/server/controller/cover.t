@@ -42,7 +42,7 @@ for my $release ( keys %expect ) {
     subtest "Check $release" => sub {
         my $url = "/cover/$release";
         my $res = $test->request( GET $url );
-        diag "GET $url";
+        note "GET $url";
 
         # TRAVIS 5.18
         is( $res->code, 200, "code 200" );
