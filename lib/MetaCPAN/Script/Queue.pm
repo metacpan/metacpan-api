@@ -28,6 +28,7 @@ sub run {
 
     if ( $self->_has_dir ) {
         my $rule = Path::Iterator::Rule->new;
+        $rule->file;
         $rule->name(qr{\.(tgz|tbz|tar[\._-]gz|tar\.bz2|tar\.Z|zip|7z)\z});
 
         my $next = $rule->iter( $self->dir );

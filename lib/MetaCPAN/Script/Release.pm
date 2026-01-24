@@ -4,7 +4,6 @@ use strict;
 use warnings;
 
 use CPAN::DistnameInfo        ();
-use File::Find::Rule          ();
 use File::stat                ();
 use List::Util                qw( uniq );
 use Log::Contextual           qw( :log :dlog );
@@ -15,7 +14,8 @@ use MetaCPAN::Types::TypeTiny qw( Bool HashRef Int Str );
 use MetaCPAN::Util            qw(true false);
 use Moose;
 use PerlIO::gzip;
-use Try::Tiny qw( catch try );
+use Path::Iterator::Rule ();
+use Try::Tiny            qw( catch try );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt',
     'MetaCPAN::Script::Role::Contributor';
@@ -131,15 +131,18 @@ sub run {
     for (@args) {
         if ( -d $_ ) {
             log_info {"Looking for archives in $_"};
-            my $find = File::Find::Rule->new->file->name(
-                qr/\.(tgz|tbz|tar[\._-]gz|tar\.bz2|tar\.Z|zip|7z)$/);
-            $find = $find->mtime( ">" . ( time - $self->age * 3600 ) )
+
+            my $rule = Path::Iterator::Rule->new;
+            $rule->file;
+            $rule->name(qr{\.(tgz|tbz|tar[\._-]gz|tar\.bz2|tar\.Z|zip|7z)\z});
+            $rule->mtime( '>' . ( time - $self->age * 3600 ) )
                 if ( $self->age );
+
             push(
                 @files,
                 map { $_->{file} } sort { $a->{mtime} <=> $b->{mtime} } map {
                     +{ file => $_, mtime => File::stat::stat($_)->mtime }
-                } $find->in($_)
+                } $rule->all($_)
             );
         }
         elsif ( -f $_ ) {

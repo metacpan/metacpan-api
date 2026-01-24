@@ -46,8 +46,6 @@ requires 'Exporter', '5.74';
 requires 'File::Basename';
 requires 'File::Copy';
 requires 'File::Find';
-requires 'File::Find::Rule';
-requires 'File::Find::Rule::Perl';
 requires 'File::Spec';
 requires 'File::Spec::Functions';
 requires 'File::pushd';
