@@ -7,7 +7,7 @@ use LWP::Simple              qw( getstore );
 use MetaCPAN::Model::Release ();
 use MetaCPAN::TestHelpers    qw( get_config );
 use Test::More;
-use Test::RequiresInternet( 'metacpan.org' => 'https' );
+use Test::RequiresInternet ( 'cpan.metacpan.org' => 'https' );
 
 my $config = get_config();
 my $url

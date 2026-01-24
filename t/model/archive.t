@@ -44,7 +44,8 @@ subtest 'archive extraction' => sub {
     ok !$archive->is_impolite;
     ok !$archive->is_naughty;
 
-    cmp_bag $archive->files, [ keys %want ];
+    my @files = grep !m{/$}, @{ $archive->files };
+    cmp_bag [@files], [ keys %want ];
 
     my $dir = $archive->extract;
     for my $file ( keys %want ) {

@@ -1,0 +1,4 @@
+MANIFEST
+lib/WWW/Tumblr.pm
+Makefile.PL
+t/00-nop.t

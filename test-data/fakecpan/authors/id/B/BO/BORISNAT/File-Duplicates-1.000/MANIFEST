@@ -1,0 +1,6 @@
+MANIFEST
+lib/File/lib/File/Duplicates.pm
+lib/File/Duplicates.pm
+Makefile.PL
+t/00-nop.t
+META.yml

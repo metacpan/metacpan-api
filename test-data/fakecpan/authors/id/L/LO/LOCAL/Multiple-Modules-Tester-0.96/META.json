@@ -1,0 +1,26 @@
+{
+   "abstract" : "A dist that Multiple::Modules::* can use for testing",
+   "author" : [
+      "LOCAL <LOCAL@cpan.local>"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "CPAN::Meta::Converter version 2.150010",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : 2
+   },
+   "name" : "Multiple-Modules-Tester",
+   "prereqs" : {},
+   "provides" : {
+      "Multiple::Modules::Tester" : {
+         "file" : "lib/Multiple/Modules/Tester.pm",
+         "version" : "0.96"
+      }
+   },
+   "release_status" : "stable",
+   "version" : 0.96,
+   "x_serialization_backend" : "JSON::PP version 4.16"
+}

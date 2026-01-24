@@ -1,0 +1,18 @@
+---
+abstract: 'A dist with multiple licenses'
+author:
+  - 'RWSTAUNER <RWSTAUNER@cpan.local>'
+build_requires: {}
+dynamic_config: 0
+generated_by: 'CPAN::Meta::Converter version 2.150010'
+license: open_source
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: '1.4'
+name: Meta-License-Dual
+provides:
+  Meta::License::Dual:
+    file: lib/Meta/License/Dual.pm
+    version: '1.0'
+version: '1.0'
+x_serialization_backend: 'CPAN::Meta::YAML version 0.020'

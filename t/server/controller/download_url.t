@@ -3,9 +3,10 @@ use warnings;
 use lib 't/lib';
 
 use Cpanel::JSON::XS      ();
+use Digest::file          qw( digest_file_hex );
 use HTTP::Request::Common qw( GET );
 use MetaCPAN::Server      ();
-use MetaCPAN::TestHelpers qw( test_cache_headers );
+use MetaCPAN::TestHelpers qw( fakecpan_dir test_cache_headers );
 use Plack::Test           ();
 use Ref::Util             qw( is_hashref );
 use Test::More;
@@ -42,26 +43,33 @@ my @tests = (
     [ 'version >=', '/download_url/Moose?version=>=0.01', 'latest', '0.02' ],
     [
         'range >, <',
-        '/download_url/Try::Tiny?version=>0.21,<0.27',
-        'cpan',
-        '0.24',
-        '1a12a51cfeb7e2c301e4ae093c7ecdfb',
-        '9b7a1af24c0256973d175369ebbdc25ec01e2452a97f2d3ab61481c826f38d81',
+        '/download_url/Multiple::Releases?version=>1.1,<1.7',
+        'cpan', '1.4',
+        digest_file_hex(
+            fakecpan_dir()
+                ->child('authors/id/H/HA/HAARG/Multiple-Releases-1.4.tar.gz'),
+            'MD5'
+        ),
+        digest_file_hex(
+            fakecpan_dir()
+                ->child('authors/id/H/HA/HAARG/Multiple-Releases-1.4.tar.gz'),
+            'SHA-256'
+        ),
     ],
     [
         'range >, <, !',
-        '/download_url/Try::Tiny?version=>0.21,<0.27,!=0.24',
-        'cpan', '0.23'
+        '/download_url/Multiple::Releases?version=>1.1,<1.7,!=1.4',
+        'cpan', '1.3'
     ],
     [
         'range >, <; dev',
-        '/download_url/Try::Tiny?version=>0.21,<0.27&dev=1',
-        'cpan', '0.26'
+        '/download_url/Multiple::Releases?version=>1.1,<1.7&dev=1',
+        'cpan', '1.6'
     ],
     [
         'range >, <, !; dev',
-        '/download_url/Try::Tiny?version=>0.21,<0.27,!=0.26&dev=1',
-        'cpan', '0.25'
+        '/download_url/Multiple::Releases?version=>1.1,<1.7,!=1.6&dev=1',
+        'cpan', '1.5'
     ],
 );
 

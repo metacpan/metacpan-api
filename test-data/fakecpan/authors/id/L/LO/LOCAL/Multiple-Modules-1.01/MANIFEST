@@ -1,0 +1,5 @@
+MANIFEST
+lib/Multiple/Modules.pm
+Makefile.PL
+t/00-nop.t
+META.yml

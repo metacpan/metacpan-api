@@ -1,0 +1,20 @@
+---
+abstract: 'A dist that depends on Multiple::Modules::Deprecated'
+author:
+  - 'LOCAL <LOCAL@cpan.local>'
+build_requires: {}
+dynamic_config: 0
+generated_by: 'CPAN::Meta::Converter version 2.150010'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: '1.4'
+name: Multiple-Modules-RDeps-Deprecated
+provides:
+  Multiple::Modules::RDeps::Deprecated:
+    file: lib/Multiple/Modules/RDeps/Deprecated.pm
+    version: '0.01'
+requires:
+  Multiple::Modules::Deprecated: '0'
+version: 0.01
+x_serialization_backend: 'CPAN::Meta::YAML version 0.020'

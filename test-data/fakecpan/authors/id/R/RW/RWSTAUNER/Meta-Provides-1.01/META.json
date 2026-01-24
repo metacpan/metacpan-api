@@ -1,0 +1,26 @@
+{
+   "abstract" : "unknown",
+   "author" : [
+      "RWSTAUNER <RWSTAUNER@cpan.local>"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "CPAN::Meta::Converter version 2.150010",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : 2
+   },
+   "name" : "Meta-Provides",
+   "prereqs" : {},
+   "provides" : {
+      "Meta::Provides" : {
+         "file" : "lib/Meta/Provides.pm",
+         "version" : "0.321"
+      }
+   },
+   "release_status" : "stable",
+   "version" : 1.01,
+   "x_serialization_backend" : "JSON::PP version 4.16"
+}

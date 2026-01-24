@@ -1,0 +1,58 @@
+File:         02packages.details.txt
+URL:          file:///cpan/modules/02packages.details.txt.gz
+Description:  Package names found in directory $CPAN/authors/id/
+Columns:      package name, version, path
+Intended-For: Automated fetch routines, namespace documentation.
+Written-By:   MetaCPAN Test Data
+Line-Count:   49
+Last-Updated: Tue, Jan 25 2026 00:00:00 GMT
+
+BadPod                              0.01  M/MO/MO/BadPod-0.01.tar.gz
+Binary::Data                        0.01  B/BO/BORISNAT/Binary-Data-0.01.tar.gz
+Binary::Data::WithPod               0.02  B/BO/BORISNAT/Binary-Data-0.01.tar.gz
+CPAN::Test::Dummy::Perl5::VersionBump  0.02  M/MI/MIYAGAWA/CPAN-Test-Dummy-Perl5-VersionBump-0.02.tar.gz
+CPAN::Test::Dummy::Perl5::VersionBump::Decrease 0.02  M/MI/MIYAGAWA/CPAN-Test-Dummy-Perl5-VersionBump-0.01.tar.gz
+CPAN::Test::Dummy::Perl5::VersionBump::Stay 0.01  M/MI/MIYAGAWA/CPAN-Test-Dummy-Perl5-VersionBump-0.02.tar.gz
+CPAN::Test::Dummy::Perl5::VersionBump::Undef undef  M/MI/MIYAGAWA/CPAN-Test-Dummy-Perl5-VersionBump-0.02.tar.gz
+Common::Files                        1.1  B/BO/BORISNAT/Common-Files-1.1.tar.gz
+Devel::GoFaster                    0.000  L/LO/LOCAL/Devel-GoFaster-0.000.tar.gz
+Documentation::Hide                 0.01  M/MO/MO/Documentation-Hide-0.01.tar.gz
+Documentation::Not::Readme          0.01  R/RW/RWSTAUNER/Documentation-Not-Readme-0.01.tar.gz
+Encoding                             1.2  R/RW/RWSTAUNER/Encoding-1.2.tar.gz
+File::Changes                        2.0  L/LO/LOCAL/File-Changes-2.0.tar.gz
+File::Changes::Latin1                1.0  R/RW/RWSTAUNER/File-Changes-Latin1-1.0.tar.gz
+File::Changes::News                11.22  L/LO/LOCAL/File-Changes-News-11.22.tar.gz
+File::Changes::UTF8                  1.0  R/RW/RWSTAUNER/File-Changes-UTF8-1.0.tar.gz
+File::Duplicates                   0.991  B/BO/BORISNAT/File-Duplicates-1.000.tar.gz
+File::lib::File::Duplicates        0.992  B/BO/BORISNAT/File-Duplicates-1.000.tar.gz
+IPsonar                            undef  L/LO/LOCAL/IPsonar-0.29.tar.gz
+Meta::License::Dual                  1.0  R/RW/RWSTAUNER/Meta-License-Dual-1.0.tar.gz
+Meta::License::Single                1.0  R/RW/RWSTAUNER/Meta-License-Single-1.0.tar.gz
+Meta::Provides                     0.321  R/RW/RWSTAUNER/Meta-Provides-1.01.tar.gz
+MetaFile::Both                       1.1  L/LO/LOCAL/MetaFile-Both-1.1.tar.gz
+MetaFile::JSON                       1.1  L/LO/LOCAL/MetaFile-JSON-1.1.tar.gz
+MetaFile::YAML                       1.1  L/LO/LOCAL/MetaFile-YAML-1.1.tar.gz
+Moose                               0.02  D/DO/DOY/Moose-0.02.tar.gz
+Multiple::Modules                   1.01  L/LO/LOCAL/Multiple-Modules-1.01.tar.gz
+Multiple::Modules::RDeps            2.03  L/LO/LOCAL/Multiple-Modules-RDeps-2.03.tar.gz
+Multiple::Modules::RDeps::A         2.03  L/LO/LOCAL/Multiple-Modules-RDeps-A-2.03.tar.gz
+Multiple::Modules::RDeps::Deprecated  0.01  L/LO/LOCAL/Multiple-Modules-RDeps-Deprecated-0.01.tar.gz
+Multiple::Modules::Tester           0.96  L/LO/LOCAL/Multiple-Modules-Tester-0.96.tar.gz
+Multiple::Releases                   1.7  H/HA/HAARG/Multiple-Releases-1.7.tar.gz
+Oops::LocalLib                      0.01  B/BO/BORISNAT/Oops-LocalLib-0.01.tar.gz
+P                                  v1.0.20  L/LO/LOCAL/P-1.0.20.tar.gz
+Packages                           1.103  R/RW/RWSTAUNER/Packages-1.103.tar.gz
+Packages::Unclaimable                  2  R/RW/RWSTAUNER/Packages-Unclaimable-2.tar.gz
+Pod::Examples                         99  R/RW/RWSTAUNER/Pod-Examples-99.tar.gz
+Pod::Pm                             0.01  M/MO/MO/Pod-Pm-0.01.tar.gz
+Pod::With::Data::Token              0.01  B/BO/BORISNAT/Pod-With-Data-Token-0.01.tar.gz
+Pod::With::Generator                   1  B/BO/BORISNAT/Pod-With-Generator-1.tar.gz
+Prefer::Meta::JSON                   1.1  L/LO/LOCAL/Prefer-Meta-JSON-1.1.tar.gz
+Prereqs::Basic                      0.01  M/MS/MSCHWERN/Prereqs-Basic-0.01.tar.gz
+Scripts                             0.01  M/MO/MO/Scripts-0.01.tar.gz
+Some                               1.00-TRIAL  L/LO/LOCAL/Some-1.00-TRIAL.tar.gz
+Versions                               1  R/RW/RWSTAUNER/Versions-1.01.tar.gz
+WWW::Tumblr                            0  L/LO/LOCAL/WWW-Tumblr-0.tar.gz
+local::lib                          0.01  B/BO/BORISNAT/local-lib-0.01.tar.gz
+perl                                   1  R/RW/RWSTAUNER/perl-1.tar.gz
+uncommon::sense                     0.01  M/MO/MO/uncommon-sense-0.01.tar.gz

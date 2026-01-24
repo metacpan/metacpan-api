@@ -1,7 +1,0 @@
-name: Text-Tabs+Wrap
-version: 2013.0523
-provides: {}
-
-X_Module_Faker:
-    omitted_files:
-        - META.json

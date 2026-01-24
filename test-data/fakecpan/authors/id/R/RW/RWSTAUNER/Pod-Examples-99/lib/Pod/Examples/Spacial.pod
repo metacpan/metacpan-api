@@ -1,0 +1,7 @@
+=head1  NAME
+
+Pod::Examples::Spacial
+
+=head1 DESCRIPTION
+
+An extra space between 'head1' and 'NAME'

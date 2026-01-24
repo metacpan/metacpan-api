@@ -2,17 +2,10 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use CPAN::Faker 0.010 ();
 use Devel::Confess;
 use MetaCPAN::Script::Tickets ();
-use MetaCPAN::TestHelpers     qw(
-    fakecpan_configs_dir
-    fakecpan_dir
-    get_config
-    tmp_dir
-    write_find_ls
-);
-use MetaCPAN::TestServer ();
+use MetaCPAN::TestHelpers qw( fakecpan_dir get_config testdata_dir tmp_dir );
+use MetaCPAN::TestServer  ();
 use Test::More 0.96;
 use URI::FromHash qw( uri );
 
@@ -39,80 +32,37 @@ $server->setup;
 my $config = get_config();
 $config->{es} = $server->es_client;
 
-my $mod_faker = 'Module::Faker::Dist::WithPerl';
-eval "require $mod_faker" or die $@;    ## no critic (StringyEval)
-
 my $fakecpan_dir = fakecpan_dir();
 $fakecpan_dir->remove_tree;
-$fakecpan_dir = fakecpan_dir();         # recreate dir
+$fakecpan_dir = fakecpan_dir();    # recreate dir
 
-my $fakecpan_configs = fakecpan_configs_dir();
+my $testdata_dir = testdata_dir();
 
-my $cpan = CPAN::Faker->new( {
-    source     => $fakecpan_configs->child('configs')->stringify,
-    dest       => $fakecpan_dir->stringify,
-    dist_class => $mod_faker,
-} );
-
-ok( $cpan->make_cpan, 'make fake cpan' );
-$fakecpan_dir->child('authors')->mkpath;
-$fakecpan_dir->child('indices')->mkpath;
-
-# make some changes to 06perms.txt
-{
-    my $perms_file = $fakecpan_dir->child('modules')->child('06perms.txt');
-    my $perms      = $perms_file->slurp;
-    $perms =~ s/^Some,LOCAL,f$/Some,MO,f/m;
-    my $fh = $perms_file->openw;
-    print $fh $perms;
-
-    # Temporary hack.  Remove after DarkPAN 06perms generation is fixed.
-    print $fh 'CPAN::Test::Dummy::Perl5::VersionBump,MIYAGAWA,f', "\n";
-    print $fh 'CPAN::Test::Dummy::Perl5::VersionBump,OALDERS,c',  "\n";
-
-    close $fh;
-}
+system( $^X, "$testdata_dir/mk-cpan.pl", $fakecpan_dir ) == 0
+    or BAIL_OUT "failed to build fake CPAN!\n";
 
 # Help debug inconsistent parsing failures.
 use Parse::PMFile ();
 local $Parse::PMFile::VERBOSE = $ENV{TEST_VERBOSE} ? 9 : 0;
 
-my $src_dir = $fakecpan_configs;
-
-$src_dir->child('00whois.xml')
-    ->copy( $fakecpan_dir->child(qw(authors 00whois.xml)) );
-
-$src_dir->child('author-1.0.json')
-    ->copy( $fakecpan_dir->child(qw(authors id M MO MO author-1.0.json)) );
-
-$src_dir->child('bugs.tsv')->copy( $fakecpan_dir->child('bugs.tsv') );
-
-$src_dir->child('mirrors.json')
-    ->copy( $fakecpan_dir->child(qw(indices mirrors.json)) );
-
-$src_dir->child('08pumpkings.txt.gz')
-    ->copy( $fakecpan_dir->child(qw(authors 08pumpkings.txt.gz)) );
-
-write_find_ls($fakecpan_dir);
-
+$server->index_authors;
+$server->index_mirrors;
 $server->index_permissions;
 $server->index_packages;
 $server->index_releases;
 $server->set_latest;
 $server->set_first;
-$server->index_authors;
-$server->prepare_user_test_data;
 $server->index_cpantesters;
-$server->index_mirrors;
 $server->index_favorite;
 $server->index_cover;
+$server->prepare_user_test_data;
 
 ok(
     MetaCPAN::Script::Tickets->new_with_options( {
         %{$config},
         rt_summary_url => uri(
             scheme => 'file',
-            path   => $fakecpan_dir->child('bugs.tsv')->absolute->stringify,
+            path   => $testdata_dir->child('bugs.tsv')->absolute->stringify,
         ),
     } )->run,
     'tickets'

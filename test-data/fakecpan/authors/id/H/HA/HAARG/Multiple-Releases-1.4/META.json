@@ -1,0 +1,25 @@
+{
+   "abstract" : "module with multiple releases across authors",
+   "author" : [
+      "LOCAL <LOCAL@cpan.local>"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "hand",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "Multiple-Releases",
+   "prereqs" : {},
+   "provides" : {
+      "Multiple::Releases" : {
+         "file" : "lib/Multiple/Releases.pm",
+         "version" : "1.4"
+      }
+   },
+   "release_status" : "stable",
+   "version" : "1.4"
+}

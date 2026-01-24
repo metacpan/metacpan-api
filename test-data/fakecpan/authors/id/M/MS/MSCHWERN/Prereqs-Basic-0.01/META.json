@@ -1,0 +1,46 @@
+{
+   "abstract" : "A perl module with prereqs",
+   "author" : [
+      "MSCHWERN <MSCHWERN@cpan.local>"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "CPAN::Meta::Converter version 2.150010",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : 2
+   },
+   "name" : "Prereqs-Basic",
+   "prereqs" : {
+      "build" : {
+         "requires" : {
+            "For::Build::Requires1" : "2.45"
+         }
+      },
+      "configure" : {
+         "requires" : {
+            "For::Configure::Requires1" : "72"
+         }
+      },
+      "runtime" : {
+         "recommends" : {
+            "For::Runtime::Recommends1" : "0"
+         },
+         "requires" : {
+            "For::Runtime::Requires1" : "0",
+            "For::Runtime::Requires2" : "1.23"
+         }
+      }
+   },
+   "provides" : {
+      "Prereqs::Basic" : {
+         "file" : "lib/Prereqs/Basic.pm",
+         "version" : "0.01"
+      }
+   },
+   "release_status" : "stable",
+   "version" : 0.01,
+   "x_serialization_backend" : "JSON::PP version 4.16"
+}

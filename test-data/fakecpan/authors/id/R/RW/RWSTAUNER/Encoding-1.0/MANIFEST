@@ -1,0 +1,4 @@
+MANIFEST
+lib/Encoding.pm
+Makefile.PL
+t/00-nop.t

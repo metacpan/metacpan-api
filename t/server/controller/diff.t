@@ -218,8 +218,8 @@ sub diffed_file_name_eq {
     my ( $str, $dir, $file ) = @_;
     my ( $root, $dist ) = split /\//, $dir;
 
-    # $dist x 2: once for the extraction dir,
-    # once b/c Module::Faker makes good tars that have a root dir
+    # $dist x 2: once for the extraction dir, once for the top level dir
+    # inside the tarball
     return $str eq qq{$root/$dist/$dist/$file};
 }
 

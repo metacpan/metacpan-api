@@ -1,0 +1,26 @@
+{
+   "abstract" : "Pod file with generator in dist",
+   "author" : [
+      "BORISNAT <BORISNAT@cpan.local>"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "CPAN::Meta::Converter version 2.150010",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : 2
+   },
+   "name" : "Pod-With-Generator",
+   "prereqs" : {},
+   "provides" : {
+      "Pod::With::Generator" : {
+         "file" : "lib/Pod/With/Generator.pm",
+         "version" : "1"
+      }
+   },
+   "release_status" : "stable",
+   "version" : "1",
+   "x_serialization_backend" : "JSON::PP version 4.16"
+}

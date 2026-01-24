@@ -8,7 +8,6 @@ use Test::More;
 
 my $query = query();
 
-# Module::Faker will generate a regular pm for the main module.
 is( $query->file->find_module('uncommon::sense')->{path},
     'lib/uncommon/sense.pm', 'find main module' );
 

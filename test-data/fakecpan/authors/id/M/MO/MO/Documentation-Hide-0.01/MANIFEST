@@ -1,0 +1,4 @@
+MANIFEST
+lib/Documentation/Hide.pm
+Makefile.PL
+t/00-nop.t

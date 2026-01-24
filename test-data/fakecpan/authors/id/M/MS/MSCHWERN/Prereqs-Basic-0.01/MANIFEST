@@ -1,0 +1,6 @@
+MANIFEST
+lib/Prereqs/Basic.pm
+Makefile.PL
+t/00-nop.t
+META.json
+META.yml

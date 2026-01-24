@@ -1,0 +1,20 @@
+---
+abstract: 'A dist that depends on Multiple::Modules'
+author:
+  - 'LOCAL <LOCAL@cpan.local>'
+build_requires: {}
+dynamic_config: 0
+generated_by: 'CPAN::Meta::Converter version 2.150010'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: '1.4'
+name: Multiple-Modules-RDeps
+provides:
+  Multiple::Modules::RDeps:
+    file: lib/Multiple/Modules/RDeps.pm
+    version: '2.03'
+requires:
+  Multiple::Modules: '0'
+version: 2.03
+x_serialization_backend: 'CPAN::Meta::YAML version 0.020'

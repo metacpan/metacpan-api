@@ -1,0 +1,4 @@
+MANIFEST
+lib/Packages.pm
+Makefile.PL
+t/00-nop.t

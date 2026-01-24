@@ -1,0 +1,32 @@
+{
+   "abstract" : "A dist that depends on Multiple::Modules::A",
+   "author" : [
+      "LOCAL <LOCAL@cpan.local>"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "CPAN::Meta::Converter version 2.150010",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : 2
+   },
+   "name" : "Multiple-Modules-RDeps-A",
+   "prereqs" : {
+      "runtime" : {
+         "requires" : {
+            "Multiple::Modules::A" : "0"
+         }
+      }
+   },
+   "provides" : {
+      "Multiple::Modules::RDeps::A" : {
+         "file" : "lib/Multiple/Modules/RDeps/A.pm",
+         "version" : "2.03"
+      }
+   },
+   "release_status" : "stable",
+   "version" : 2.03,
+   "x_serialization_backend" : "JSON::PP version 4.16"
+}

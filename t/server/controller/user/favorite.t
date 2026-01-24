@@ -2,8 +2,9 @@ use strict;
 use warnings;
 use lib 't/lib';
 
+use Cpanel::JSON::XS       qw( encode_json );
 use MetaCPAN::Server::Test qw( app DELETE GET POST test_psgi );
-use MetaCPAN::TestHelpers  qw( decode_json_ok encode_json );
+use MetaCPAN::TestHelpers  qw( decode_json_ok );
 use Test::More;
 
 test_psgi app, sub {

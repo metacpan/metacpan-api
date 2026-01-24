@@ -1,0 +1,12 @@
+---
+abstract: 'Test distribution that contains increasing and decreasing versions'
+author:
+  - 'MIYAGAWA <MIYAGAWA@cpan.local>'
+dynamic_config: 0
+generated_by: 'hand'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: '1.4'
+name: CPAN-Test-Dummy-Perl5-VersionBump
+version: '0.01'

@@ -24,10 +24,10 @@ is(
 
 is_deeply(
     $query->_get_provided_modules(
-        { author => 'DOY', name => 'Try-Tiny-0.21', }
+        { author => 'LOCAL', name => 'File-Changes-1.0' }
     ),
-    ['Try::Tiny'],
-    '_get_provided_modules returns undef when modules cannot be found'
+    ['File::Changes'],
+    '_get_provided_modules returns provided modules',
 );
 
 done_testing();
