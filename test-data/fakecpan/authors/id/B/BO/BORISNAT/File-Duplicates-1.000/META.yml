@@ -1,0 +1,21 @@
+---
+abstract: 'A dist with duplicate file names in different directories'
+author:
+  - 'BORISNAT <BORISNAT@cpan.local>'
+build_requires: {}
+dynamic_config: 0
+generated_by: 'CPAN::Meta::Converter version 2.150010'
+license: unknown
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: '1.4'
+name: File-Duplicates
+provides:
+  File::Duplicates:
+    file: lib/File/Duplicates.pm
+    version: '0.991'
+  File::lib::File::Duplicates:
+    file: lib/File/lib/File/Duplicates.pm
+    version: '0.992'
+version: '1.000'
+x_serialization_backend: 'CPAN::Meta::YAML version 0.020'

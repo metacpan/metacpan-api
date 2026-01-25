@@ -12,6 +12,6 @@ my $queue = MetaCPAN::Script::Queue->new_with_options($config);
 $queue->run;
 
 is( $queue->stats->{inactive_jobs},
-    54, '54 files added to queue for indexing' );
+    62, '62 files added to queue for indexing' );
 
 done_testing();

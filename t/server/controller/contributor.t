@@ -13,7 +13,7 @@ test_psgi app, sub {
     my $cb = shift;
 
     {
-        my $release_name = 'DOY/Try-Tiny-0.22';
+        my $release_name = 'LOCAL/HasContributors-1.0';
         ok( my $res = $cb->( GET "/contributor/$release_name" ),
             "GET contributors for $release_name" );
         is( $res->code, 200, '200 OK' );
@@ -23,36 +23,24 @@ test_psgi app, sub {
             {
                 contributors => [
                     {
-                        "release_name"   => "Try-Tiny-0.22",
-                        "pauseid"        => "CEBJYRE",
-                        "distribution"   => "Try-Tiny",
-                        "release_author" => "DOY"
+                        "distribution"   => "HasContributors",
+                        "pauseid"        => "REAL",
+                        "release_author" => "LOCAL",
+                        "release_name"   => "HasContributors-1.0",
                     },
                     {
-                        "distribution"   => "Try-Tiny",
-                        "release_author" => "DOY",
-                        "pauseid"        => "JAWNSY",
-                        "release_name"   => "Try-Tiny-0.22"
+                        "distribution"   => "HasContributors",
+                        "pauseid"        => "CONTRIBUTOR",
+                        "release_author" => "LOCAL",
+                        "release_name"   => "HasContributors-1.0",
                     },
                     {
-                        "release_name"   => "Try-Tiny-0.22",
-                        "pauseid"        => "ETHER",
-                        "distribution"   => "Try-Tiny",
-                        "release_author" => "DOY"
+                        "distribution"   => "HasContributors",
+                        "pauseid"        => "AUTHOR",
+                        "release_author" => "LOCAL",
+                        "release_name"   => "HasContributors-1.0",
                     },
-                    {
-                        "release_author" => "DOY",
-                        "distribution"   => "Try-Tiny",
-                        "pauseid"        => "RIBASUSHI",
-                        "release_name"   => "Try-Tiny-0.22"
-                    },
-                    {
-                        "pauseid"        => "RJBS",
-                        "release_author" => "DOY",
-                        "distribution"   => "Try-Tiny",
-                        "release_name"   => "Try-Tiny-0.22"
-                    }
-                ]
+                ],
             },
             'Has the correct contributors info'
         );

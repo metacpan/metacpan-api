@@ -17,15 +17,14 @@ requires 'Catalyst::Plugin::Static::Simple';
 requires 'Catalyst::View::JSON', '0.37';
 requires 'CatalystX::Fastly::Role::Response', '0.06';
 requires 'CHI', '0.61';
-requires 'Config::General', '2.63';
 requires 'Config::ZOMG', '1.000000';
 requires 'Const::Fast';
+requires 'CPAN::Checksums', '2.14';
 requires 'CPAN::DistnameInfo', '0.12';
 requires 'Cpanel::JSON::XS', '4.32';
 requires 'CPAN::Meta', '2.150005'; # Avoid issues with List::Util dep under carton install.
 requires 'CPAN::Meta::Requirements', '2.140';
 requires 'CPAN::Meta::YAML', '0.018';
-requires 'CPAN::Repository::Perms';
 requires 'Cwd';
 requires 'Data::Dumper';
 requires 'Data::Visitor::Callback';
@@ -47,11 +46,8 @@ requires 'Exporter', '5.74';
 requires 'File::Basename';
 requires 'File::Copy';
 requires 'File::Find';
-requires 'File::Find::Rule';
-requires 'File::Find::Rule::Perl';
 requires 'File::Spec';
 requires 'File::Spec::Functions';
-requires 'File::pushd';
 requires 'File::stat';
 requires 'File::Temp';
 requires 'FindBin';
@@ -82,7 +78,6 @@ requires 'MetaCPAN::Role', '1.00';
 requires 'MIME::Base64', '3.15';
 requires 'Minion', '9.03';
 requires 'Minion::Backend::SQLite';
-requires 'Module::Load';
 requires 'Module::Metadata', '1.000038';
 requires 'Module::Pluggable';
 requires 'Module::Runtime';
@@ -135,13 +130,8 @@ requires 'YAML::XS', '0.83'; # Mojolicious::Plugin::OpenAPI YAML loading
 
 # test requirements
 on test => sub {
-    requires 'CPAN::Faker', '0.011';
     requires 'Devel::Confess';
     requires 'HTTP::Cookies', '6.10';
-    requires 'MetaCPAN::Client', '2.029000';
-    requires 'Module::Faker', '== 0.017';
-    requires 'Module::Faker::Dist', '== 0.017';
-    requires 'OrePAN2', '0.48';
     requires 'Test::Deep';
     requires 'Test::Fatal';
     requires 'Test::Harness', '3.44'; # Contains App::Prove

@@ -1,0 +1,5 @@
+MANIFEST
+lib/Prefer/Meta/JSON.pm
+Makefile.PL
+t/00-nop.t
+META.yml

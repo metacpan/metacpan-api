@@ -1,0 +1,26 @@
+{
+   "abstract" : "A dist with a UTF-8 Changes file",
+   "author" : [
+      "RWSTAUNER <RWSTAUNER@cpan.local>"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "CPAN::Meta::Converter version 2.150010",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : 2
+   },
+   "name" : "File-Changes-UTF8",
+   "prereqs" : {},
+   "provides" : {
+      "File::Changes::UTF8" : {
+         "file" : "lib/File/Changes/UTF8.pm",
+         "version" : "1.0"
+      }
+   },
+   "release_status" : "stable",
+   "version" : "1.0",
+   "x_serialization_backend" : "JSON::PP version 4.16"
+}

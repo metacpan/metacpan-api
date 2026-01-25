@@ -1,0 +1,26 @@
+---
+abstract: 'A perl module with prereqs'
+author:
+  - 'MSCHWERN <MSCHWERN@cpan.local>'
+build_requires:
+  For::Build::Requires1: '2.45'
+configure_requires:
+  For::Configure::Requires1: '72'
+dynamic_config: 0
+generated_by: 'CPAN::Meta::Converter version 2.150010'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: '1.4'
+name: Prereqs-Basic
+provides:
+  Prereqs::Basic:
+    file: lib/Prereqs/Basic.pm
+    version: '0.01'
+recommends:
+  For::Runtime::Recommends1: '0'
+requires:
+  For::Runtime::Requires1: '0'
+  For::Runtime::Requires2: '1.23'
+version: 0.01
+x_serialization_backend: 'CPAN::Meta::YAML version 0.020'

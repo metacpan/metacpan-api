@@ -1,0 +1,4 @@
+MANIFEST
+lib/MetaFile/YAML.pm
+Makefile.PL
+t/00-nop.t

@@ -1,9 +1,0 @@
-{
-  "name": "Meta-License-Dual",
-  "abstract": "A dist with multiple licenses",
-  "version": "1.0",
-  "license": [ "perl_5", "bsd" ],
-  "X_Module_Faker": {
-    "cpan_author": "RWSTAUNER"
-  }
-}

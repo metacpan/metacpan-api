@@ -1,0 +1,7 @@
+MANIFEST
+META.json
+META.yml
+lib/CPAN/Test/Dummy/Perl5/VersionBump.pm
+lib/CPAN/Test/Dummy/Perl5/VersionBump/Decrease.pm
+lib/CPAN/Test/Dummy/Perl5/VersionBump/Stay.pm
+lib/CPAN/Test/Dummy/Perl5/VersionBump/Undef.pm

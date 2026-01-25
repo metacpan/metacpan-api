@@ -1,0 +1,1 @@
+shortest indexed path though metadata is probably wrong

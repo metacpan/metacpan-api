@@ -1,0 +1,12 @@
+File:        03modlist.data
+Description: This was once the "registered module list" but has been retired.
+        No replacement is planned.
+Modcount:    0
+Written-By:  PAUSE version 1.005
+Date:        Thu, 03 Apr 2014 04:17:11 GMT
+
+package CPAN::Modulelist;
+sub data {
+return {};
+}
+1;

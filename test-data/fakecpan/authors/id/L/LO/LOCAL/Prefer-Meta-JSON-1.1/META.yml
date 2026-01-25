@@ -1,0 +1,18 @@
+---
+abstract: 'A dist with META.yml and META.json'
+author:
+  - 'LOCAL <LOCAL@cpan.local>'
+build_requires: {}
+dynamic_config: 0
+generated_by: 'CPAN::Meta::Converter version 2.150010'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: '1.4'
+name: Prefer-Meta-JSON
+provides:
+  Prefer::Meta::JSON:
+    file: lib/Prefer/Meta/JSON.pm
+    version: '1.1'
+version: 1.1
+x_serialization_backend: 'CPAN::Meta::YAML version 0.020'

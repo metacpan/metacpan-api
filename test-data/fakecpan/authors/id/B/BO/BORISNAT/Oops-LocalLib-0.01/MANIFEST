@@ -1,0 +1,4 @@
+MANIFEST
+lib/Oops/LocalLib.pm
+Makefile.PL
+t/00-nop.t

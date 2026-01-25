@@ -1,0 +1,6 @@
+MANIFEST
+lib/Pod/Examples.pm
+Makefile.PL
+t/00-nop.t
+META.json
+META.yml

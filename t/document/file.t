@@ -573,6 +573,11 @@ POD
     local *Pod::Text::parse_string_document = sub {
         die "# [fake pod error]\n";
     };
+    local $SIG{__WARN__} = sub {
+        my $warn = shift;
+        warn $warn
+            unless $warn =~ /fake pod error/;
+    };
 
     my $file = new_file_doc(
         name    => 'Yo.pm',

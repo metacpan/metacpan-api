@@ -1,0 +1,26 @@
+{
+   "abstract" : "Various examples of pod usage",
+   "author" : [
+      "RWSTAUNER <RWSTAUNER@cpan.local>"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "CPAN::Meta::Converter version 2.150010",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : 2
+   },
+   "name" : "Pod-Examples",
+   "prereqs" : {},
+   "provides" : {
+      "Pod::Examples" : {
+         "file" : "lib/Pod/Examples.pm",
+         "version" : "99"
+      }
+   },
+   "release_status" : "stable",
+   "version" : "99",
+   "x_serialization_backend" : "JSON::PP version 4.16"
+}

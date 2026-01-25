@@ -4,7 +4,7 @@ use lib 't/lib';
 
 use MetaCPAN::Server::Test qw( es_result );
 use MetaCPAN::Util         qw(true false);
-use Test::More skip_all => 'Scripting is disabled';
+use Test::More;
 
 my $release = es_result(
     release => {
@@ -38,7 +38,7 @@ is( $release->{main_module}, 'Scripts', 'main_module ok' );
     );
     is( @files, 4, 'four scripts found' );
     @files = sort { $a->{name} cmp $b->{name} }
-        grep { $_->{has_documentation} } @files;
+        grep { exists $_->{documentation} } @files;
     is( @files, 2, 'two with documentation' );
     is_deeply(
         [

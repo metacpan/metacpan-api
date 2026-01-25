@@ -1,9 +1,0 @@
-name: P
-version: 'v1.0.20'
-
-X_Module_Faker:
-    # Live test case (https://github.com/metacpan/metacpan-web/issues/1046):
-    # The archive basename doesn't have the 'v' in the version
-    # but the META file does.
-    archive_basename: 'P-1.0.20'
-    cpan_author: 'LOCAL'

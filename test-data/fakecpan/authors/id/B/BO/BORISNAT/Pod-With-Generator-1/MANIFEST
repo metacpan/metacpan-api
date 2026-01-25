@@ -1,0 +1,6 @@
+MANIFEST
+lib/Pod/With/Generator.pm
+Makefile.PL
+t/00-nop.t
+META.json
+META.yml

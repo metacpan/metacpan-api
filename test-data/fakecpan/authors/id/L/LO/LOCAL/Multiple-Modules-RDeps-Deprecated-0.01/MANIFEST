@@ -1,0 +1,6 @@
+MANIFEST
+lib/Multiple/Modules/RDeps/Deprecated.pm
+Makefile.PL
+t/00-nop.t
+META.json
+META.yml

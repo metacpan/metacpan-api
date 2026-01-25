@@ -1,0 +1,60 @@
+File:         02packages.details.txt
+URL:          file:///cpan/modules/02packages.details.txt.gz
+Description:  Package names found in directory $CPAN/authors/id/
+Columns:      package name, version, path
+Intended-For: Automated fetch routines, namespace documentation.
+Written-By:   MetaCPAN Test Data
+Line-Count:   51
+Last-Updated: Tue, Jan 25 2026 00:00:00 GMT
+
+BadPod,MO,f
+Binary::Data,BORISNAT,f
+Binary::Data::WithPod,BORISNAT,f
+CPAN::Test::Dummy::Perl5::VersionBump,MIYAGAWA,f
+CPAN::Test::Dummy::Perl5::VersionBump,OALDERS,c
+CPAN::Test::Dummy::Perl5::VersionBump::Decrease,MIYAGAWA,f
+CPAN::Test::Dummy::Perl5::VersionBump::Stay,MIYAGAWA,f
+CPAN::Test::Dummy::Perl5::VersionBump::Undef,MIYAGAWA,f
+Common::Files,BORISNAT,f
+Devel::GoFaster,LOCAL,f
+Documentation::Hide,MO,f
+Documentation::Not::Readme,RWSTAUNER,f
+Encoding,RWSTAUNER,f
+File::Changes,LOCAL,f
+File::Changes::Latin1,RWSTAUNER,f
+File::Changes::News,LOCAL,f
+File::Changes::UTF8,RWSTAUNER,f
+File::Duplicates,BORISNAT,f
+File::lib::File::Duplicates,BORISNAT,f
+IPsonar,LOCAL,f
+Meta::License::Dual,RWSTAUNER,f
+Meta::License::Single,RWSTAUNER,f
+Meta::Provides,RWSTAUNER,f
+MetaFile::Both,LOCAL,f
+MetaFile::JSON,LOCAL,f
+MetaFile::YAML,LOCAL,f
+Moose,DOY,f
+Multiple::Modules,LOCAL,f
+Multiple::Modules::RDeps,LOCAL,f
+Multiple::Modules::RDeps::A,LOCAL,f
+Multiple::Modules::RDeps::Deprecated,LOCAL,f
+Multiple::Modules::Tester,LOCAL,f
+Multiple::Releases,LOCAL,f
+Multiple::Releases,HAARG,c
+Oops::LocalLib,BORISNAT,f
+P,LOCAL,f
+Packages,RWSTAUNER,f
+Packages::Unclaimable,RWSTAUNER,f
+Pod::Examples,RWSTAUNER,f
+Pod::Pm,MO,f
+Pod::With::Data::Token,BORISNAT,f
+Pod::With::Generator,BORISNAT,f
+Prefer::Meta::JSON,LOCAL,f
+Prereqs::Basic,MSCHWERN,f
+Scripts,MO,f
+Some,MO,f
+Versions,RWSTAUNER,f
+WWW::Tumblr,LOCAL,f
+local::lib,BORISNAT,f
+perl,RWSTAUNER,f
+uncommon::sense,MO,f

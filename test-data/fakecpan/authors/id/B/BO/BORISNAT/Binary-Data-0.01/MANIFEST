@@ -1,0 +1,7 @@
+MANIFEST
+lib/Binary/Data.pm
+lib/Binary/Data/WithPod.pm
+Makefile.PL
+t/00-nop.t
+META.json
+META.yml

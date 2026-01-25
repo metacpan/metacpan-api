@@ -1,0 +1,28 @@
+{
+   "abstract" : "module with contributors",
+   "author" : [
+      "LOCAL <LOCAL@cpan.local>"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "hand",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "HasContributors",
+   "prereqs" : {},
+   "release_status" : "stable",
+   "version" : "1.0",
+   "x_contributors" : [
+      "User <not.a.real@email.(address)>",
+      "Someone <someone@fish.local>",
+      "Real CPAN User <real@cpan.org>",
+      "Another Contributor <email@email.email>",
+      "CPAN Contributor <CONTRIBUTOR@cpan.org>",
+      "Etc <another@one.local>",
+      "A. U. Thor <author@cpan.org>"
+   ]
+}

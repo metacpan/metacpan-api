@@ -1,0 +1,27 @@
+{
+   "abstract" : "A dist with multiple licenses",
+   "author" : [
+      "RWSTAUNER <RWSTAUNER@cpan.local>"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "CPAN::Meta::Converter version 2.150010",
+   "license" : [
+      "perl_5",
+      "bsd"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : 2
+   },
+   "name" : "Meta-License-Dual",
+   "prereqs" : {},
+   "provides" : {
+      "Meta::License::Dual" : {
+         "file" : "lib/Meta/License/Dual.pm",
+         "version" : "1.0"
+      }
+   },
+   "release_status" : "stable",
+   "version" : "1.0",
+   "x_serialization_backend" : "JSON::PP version 4.16"
+}

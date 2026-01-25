@@ -1,0 +1,26 @@
+{
+   "abstract" : "Include a __DATA__ token inside a pod block",
+   "author" : [
+      "BORISNAT <BORISNAT@cpan.local>"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "CPAN::Meta::Converter version 2.150010",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : 2
+   },
+   "name" : "Pod-With-Data-Token",
+   "prereqs" : {},
+   "provides" : {
+      "Pod::With::Data::Token" : {
+         "file" : "lib/Pod/With/Data/Token.pm",
+         "version" : "0.01"
+      }
+   },
+   "release_status" : "stable",
+   "version" : "0.01",
+   "x_serialization_backend" : "JSON::PP version 4.16"
+}

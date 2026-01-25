@@ -1,0 +1,4 @@
+MANIFEST
+lib/IPsonar
+Makefile.PL
+t/00-nop.t

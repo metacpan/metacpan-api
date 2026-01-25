@@ -1,0 +1,3 @@
+=head1 NAME
+
+Documentation::Hide::Doc - abstract

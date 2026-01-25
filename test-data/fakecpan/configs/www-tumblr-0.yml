@@ -1,9 +1,0 @@
-name: WWW-Tumblr
-version: 0
-
-X_Module_Faker:
-    # For CPANTesters: A dist with version of '0'.
-    omitted_files:
-        - META.yml
-        - META.json
-

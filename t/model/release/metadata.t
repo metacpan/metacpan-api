@@ -12,9 +12,9 @@ my $config = get_config();
 
 my $ext = 'tar.gz';
 foreach my $test (
-    [ 'MetaFile-YAML-1.1', 'Module::Faker', ['META.yml'] ],
-    [ 'MetaFile-JSON-1.1', 'hand',          ['META.json'] ],
-    [ 'MetaFile-Both-1.1', 'hand',          [ 'META.json', 'META.yml' ] ],
+    [ 'MetaFile-YAML-1.1', 'hand', ['META.yml'] ],
+    [ 'MetaFile-JSON-1.1', 'hand', ['META.json'] ],
+    [ 'MetaFile-Both-1.1', 'hand', [ 'META.json', 'META.yml' ] ],
     )
 {
     my ( $name, $genby, $files ) = @$test;

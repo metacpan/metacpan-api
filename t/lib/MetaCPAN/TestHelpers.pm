@@ -6,24 +6,19 @@ use warnings;
 package    # no_index
     MetaCPAN::TestHelpers;
 
-use Cpanel::JSON::XS         qw( decode_json encode_json );
-use File::Copy               qw( copy );
-use File::pushd              qw( pushd );
+use Cpanel::JSON::XS         qw( decode_json );
 use MetaCPAN::Server::Config ();
 use MetaCPAN::Util           qw( root_dir );
 use Path::Tiny               qw( path );
 use Test::More;
 use Test::Routine::Util qw( run_tests );
-use Try::Tiny           qw( catch finally try );
+use Try::Tiny           qw( try );
 
-use base 'Exporter';
+use Exporter qw( import );
 our @EXPORT = qw(
-    catch
     decode_json_ok
-    encode_json
-    fakecpan_configs_dir
+    testdata_dir
     fakecpan_dir
-    finally
     get_config
     hex_escape
     multiline_diag
@@ -32,8 +27,6 @@ our @EXPORT = qw(
     test_distribution
     test_release
     tmp_dir
-    try
-    write_find_ls
 );
 
 =head1 EXPORTS
@@ -115,9 +108,8 @@ sub fakecpan_dir {
     return $fakecpan;
 }
 
-sub fakecpan_configs_dir {
-    my $source = path( root_dir(), 'test-data', 'fakecpan' );
-    $source->mkpath;
+sub testdata_dir {
+    my $source = path( root_dir(), 'test-data' );
     return $source;
 }
 
@@ -141,27 +133,6 @@ sub test_cache_headers {
         $conf->{surrogate_control},
         "Cache Header: Surrogate-Control ok"
     ) if exists $conf->{surrogate_control};
-}
-
-sub write_find_ls {
-    my $cpan_dir = shift;
-
-    my $indices = $cpan_dir->child('indices');
-    $indices->mkpath;
-
-    my $find_ls = $indices->child('find-ls.gz')->openw(':gzip');
-
-    my $chdir = pushd($cpan_dir);
-
-    open my $fh, '-|', 'find', 'authors', '-ls'
-        or die "can't run find: $!";
-
-    copy $fh, $find_ls;
-
-    close $fh;
-    close $find_ls;
-
-    return;
 }
 
 1;
