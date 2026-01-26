@@ -16,7 +16,7 @@ use MetaCPAN::Script::Permission     ();
 use MetaCPAN::Script::Release        ();
 use MetaCPAN::Server                 ();
 use MetaCPAN::Server::Config         ();
-use MetaCPAN::TestHelpers            qw( fakecpan_dir );
+use MetaCPAN::TestHelpers            qw( fakecpan_dir testdata_dir );
 use MetaCPAN::Types::TypeTiny        qw( HashRef Path );
 use MetaCPAN::Util                   qw( true false );
 use MooseX::Types::ElasticSearch     qw( ES );
@@ -189,7 +189,11 @@ sub index_mirrors {
 sub index_cover {
     my $self = shift;
 
-    local @ARGV = ( 'cover', '--json_file', 't/var/cover.json' );
+    local @ARGV = (
+        'cover', '--json_file',
+        testdata_dir()->child('cover.json')->stringify
+    );
+
     ok( MetaCPAN::Script::Cover->new_with_options( $self->_config )->run,
         'index cover' );
 }
