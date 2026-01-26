@@ -10,7 +10,7 @@ use Path::Tiny ();
 
 extends 'Catalyst::Model';
 
-has base_dir => (
+has source_dir => (
     is      => 'ro',
     isa     => Path,
     coerce  => 1,
@@ -57,8 +57,8 @@ sub COMPONENT {
         {
             ( $app_config->{cpan} ? ( cpan => $app_config->{cpan} ) : () ),
             (
-                $app_config->{base_dir}
-                ? ( base_dir => $app_config->{base_dir} )
+                $app_config->{source_dir}
+                ? ( source_dir => $app_config->{source_dir} )
                 : ()
             ),
             (
@@ -82,7 +82,7 @@ sub ACCEPT_CONTEXT {
 
 sub path {
     my ( $self, $pauseid, $distvname, @file ) = @_;
-    my $base        = $self->base_dir;
+    my $base        = $self->source_dir;
     my $source_base = Path::Tiny::path( $base, $pauseid, $distvname );
     my $source      = $source_base->child( $distvname, @file );
     return $source

@@ -204,9 +204,6 @@ sub index_permissions {
     ok(
         MetaCPAN::Script::Permission->new_with_options(
             %{ $self->_config },
-
-            # Eventually maybe move this to use the DarkPAN 06perms
-            #cpan => MetaCPAN::DarkPAN->new->base_dir,
         )->run,
         'index permissions'
     );
@@ -216,12 +213,8 @@ sub index_packages {
     my $self = shift;
 
     ok(
-        MetaCPAN::Script::Package->new_with_options(
-            %{ $self->_config },
-
-            # Eventually maybe move this to use the DarkPAN 06perms
-            #cpan => MetaCPAN::DarkPAN->new->base_dir,
-        )->run,
+        MetaCPAN::Script::Package->new_with_options( %{ $self->_config } )
+            ->run,
         'index packages'
     );
 }
@@ -230,12 +223,8 @@ sub index_favorite {
     my $self = shift;
 
     ok(
-        MetaCPAN::Script::Favorite->new_with_options(
-            %{ $self->_config },
-
-            # Eventually maybe move this to use the DarkPAN 06perms
-            #cpan => MetaCPAN::DarkPAN->new->base_dir,
-        )->run,
+        MetaCPAN::Script::Favorite->new_with_options( %{ $self->_config } )
+            ->run,
         'index favorite'
     );
 }

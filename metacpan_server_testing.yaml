@@ -4,7 +4,7 @@ remote_cpan: file://__HOME__/var/t/tmp/fakecpan
 die_on_error: 1
 level: warn
 port: 5000
-source_base: var/t/tmp/source
+source_dir: var/t/tmp/source
 
 elasticsearch_servers:
   client: '8_0::Direct'
