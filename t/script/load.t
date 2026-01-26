@@ -12,7 +12,6 @@ use MetaCPAN::Script::Check          ();
 use MetaCPAN::Script::Checksum       ();
 use MetaCPAN::Script::Contributor    ();
 use MetaCPAN::Script::Cover          ();
-use MetaCPAN::Script::CPANTesters    ();
 use MetaCPAN::Script::CPANTestersAPI ();
 use MetaCPAN::Script::External       ();
 use MetaCPAN::Script::Favorite       ();
