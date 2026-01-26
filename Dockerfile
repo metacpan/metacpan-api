@@ -92,7 +92,7 @@ COPY .perlcriticrc .perltidyrc perlimports.toml precious.toml .editorconfig meta
 COPY t t
 COPY test-data test-data
 
-RUN chown metacpan t/var
+RUN mkdir -p var/t && chown metacpan var/t
 
 USER metacpan
 CMD [ "prove", "-l", "-r", "-j", "2", "t" ]
