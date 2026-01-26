@@ -6,17 +6,9 @@ use Cpanel::JSON::XS      ();
 use HTTP::Request::Common qw( GET );
 use MetaCPAN::Server      ();
 use MetaCPAN::TestHelpers qw( test_cache_headers );
-use Path::Tiny            qw( path );
 use Plack::Test           ();
 use Test::More;
 use Try::Tiny qw( try );
-
-my $dir = path( MetaCPAN::Server->model('Source')->base_dir,
-    'DOY/Moose-0.02/Moose-0.02' );
-$dir->mkpath;
-
-my $file = $dir->child('binary.bin');
-$file->openw->print( "\x00" x 10 );
 
 my @tests = (
     {
