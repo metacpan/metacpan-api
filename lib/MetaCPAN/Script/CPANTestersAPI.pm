@@ -18,16 +18,8 @@ has url => (
     isa     => Uri,
     coerce  => 1,
     lazy    => 1,
-    builder => '_build_url',
+    default => 'http://api-3.cpantesters.org/v3/release',
 );
-
-sub _build_url {
-    my ($self) = @_;
-    $ENV{HARNESS_ACTIVE}
-        ? 'file:'
-        . $self->home->child('t/var/cpantesters-release-api-fake.json')
-        : 'http://api-3.cpantesters.org/v3/release';
-}
 
 has _bulk => (
     is      => 'ro',

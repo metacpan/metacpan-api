@@ -167,7 +167,10 @@ sub index_authors {
 sub index_cpantesters {
     my $self = shift;
 
-    local @ARGV = ('cpantestersapi');
+    my $url = URI->new( 'file://'
+            . testdata_dir()->child('cpantesters-release-api-fake.json') );
+    local @ARGV = ( 'cpantestersapi', '--url', $url->as_string );
+
     ok(
         MetaCPAN::Script::CPANTestersAPI->new_with_options( $self->_config )
             ->run,
