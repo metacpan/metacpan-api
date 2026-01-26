@@ -10,18 +10,14 @@ use MetaCPAN::TestHelpers  qw(
 );
 use Test::More;
 
-{
-    no warnings 'redefine';
+sub get_ok {
+    my ( $cb, $url, $desc, $headers ) = @_;
+    ok( my $res = $cb->( GET $url ), $desc || "GET $url" );
+    is( $res->code, 200, 'code 200' );
 
-    sub get_ok {
-        my ( $cb, $url, $desc, $headers ) = @_;
-        ok( my $res = $cb->( GET $url ), $desc || "GET $url" );
-        is( $res->code, 200, 'code 200' );
+    test_cache_headers( $res, $headers );
 
-        test_cache_headers( $res, $headers );
-
-        return $res;
-    }
+    return $res;
 }
 
 sub get_json_ok {
