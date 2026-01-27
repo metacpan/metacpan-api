@@ -6,14 +6,14 @@ use Carp                       ();
 use IO::Prompt::Tiny           qw( prompt );
 use Log::Contextual            qw( :log :dlog );
 use MetaCPAN::Model            ();
-use MetaCPAN::Types::TypeTiny  qw( AbsPath Bool ES HashRef Int Path Str );
+use MetaCPAN::Types::TypeTiny  qw( AbsPath Bool ES HashRef Int Path Str Uri );
 use MetaCPAN::Util             qw( root_dir );
 use Mojo::Server               ();
 use Term::ANSIColor            qw( colored );
 use MetaCPAN::Model::ESWrapper ();
 
 use MooseX::Getopt::OptionTypeMap ();
-for my $type ( Path, AbsPath, ES ) {
+for my $type ( Path, AbsPath, ES, Uri ) {
     MooseX::Getopt::OptionTypeMap->add_option_type_to_map( $type, '=s' );
 }
 

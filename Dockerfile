@@ -33,6 +33,8 @@ COPY bin bin
 COPY lib lib
 COPY root root
 
+RUN mkdir -p var && chown metacpan var
+
 COPY --from=build-cpan-prereqs /app/local local
 
 ENV PERL5LIB="/app/local/lib/perl5"
@@ -90,7 +92,7 @@ COPY .perlcriticrc .perltidyrc perlimports.toml precious.toml .editorconfig meta
 COPY t t
 COPY test-data test-data
 
-RUN chown metacpan t/var
+RUN mkdir -p var/t && chown metacpan var/t
 
 USER metacpan
 CMD [ "prove", "-l", "-r", "-j", "2", "t" ]

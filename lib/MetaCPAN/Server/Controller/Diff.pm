@@ -70,7 +70,7 @@ sub _do_diff {
         target => scalar $c->model('Source')->path(@$target),
 
         # use same dir prefix as source and target
-        relative => scalar $c->model('Source')->base_dir,
+        relative => scalar $c->model('Source')->source_dir,
         git      => $c->config->{git}
     );
 
