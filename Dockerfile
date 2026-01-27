@@ -33,6 +33,8 @@ COPY bin bin
 COPY lib lib
 COPY root root
 
+RUN mkdir -p var && chown metacpan var
+
 COPY --from=build-cpan-prereqs /app/local local
 
 ENV PERL5LIB="/app/local/lib/perl5"
