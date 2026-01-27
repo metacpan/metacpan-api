@@ -18,7 +18,7 @@ has url => (
     isa     => Uri,
     coerce  => 1,
     lazy    => 1,
-    default => 'http://api-3.cpantesters.org/v3/release',
+    default => 'http://api.cpantesters.org/v3/release',
 );
 
 has _bulk => (
