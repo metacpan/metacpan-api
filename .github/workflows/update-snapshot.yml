@@ -7,7 +7,7 @@ jobs:
   update-dep:
     runs-on: "ubuntu-22.04"
     container:
-      image: perl:5.22
+      image: perl:5.22-buster
     steps:
       - name: Generate Auth Token
         uses: actions/create-github-app-token@v2
