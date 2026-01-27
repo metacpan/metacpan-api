@@ -9,7 +9,7 @@ jobs:
     container:
       image: perl:5.22
     steps:
-      - run: sudo apt-get install -y -f --no-install-recommends jq
+      - run: apt-get install -y -f --no-install-recommends jq
       - name: Generate Auth Token
         uses: actions/create-github-app-token@v2
         id: app-token
