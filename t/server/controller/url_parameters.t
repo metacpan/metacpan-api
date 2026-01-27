@@ -1,6 +1,7 @@
 use strict;
 use warnings;
 
+use lib 't/lib';
 use Cpanel::JSON::XS      ();
 use HTTP::Request::Common qw( GET );
 use MetaCPAN::Server      ();
@@ -26,7 +27,7 @@ subtest "parem 'source'" => sub {
     };
 
     # test different types, as the parameter is generic to all
-    for ( [ release => 2 ], [ file => 27 ] ) {
+    for ( [ release => 2 ], [ file => 28 ] ) {
         my ( $type, $count ) = @$_;
 
         my $url = "/$type/_search?source=$source";
