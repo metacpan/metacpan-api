@@ -9,14 +9,13 @@ jobs:
     container:
       image: perl:5.22
     steps:
-      - run: apt-get install -y -f --no-install-recommends jq
       - name: Generate Auth Token
         uses: actions/create-github-app-token@v2
         id: app-token
         with:
           app-id: ${{ secrets.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
-      - uses: haarg/setup-git-user@v1
+      - uses: haarg/setup-git-user@v2
         with:
           app: ${{ steps.app-token.outputs.app-slug }}
       - uses: actions/checkout@v6
