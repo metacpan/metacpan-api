@@ -756,6 +756,17 @@ DISTRIBUTIONS
       Class::Tiny 1.003
       ExtUtils::MakeMaker 0
       perl 5.006
+  Class-XSAccessor-1.19
+    pathname: S/SM/SMUELLER/Class-XSAccessor-1.19.tar.gz
+    provides:
+      Class::XSAccessor 1.19
+      Class::XSAccessor::Array 1.19
+    requirements:
+      ExtUtils::MakeMaker 0
+      Test::More 0
+      Time::HiRes 0
+      XSLoader 0
+      perl 5.008
   Clone-0.47
     pathname: A/AT/ATOOMIC/Clone-0.47.tar.gz
     provides:

@@ -17,6 +17,7 @@ requires 'Catalyst::Plugin::Static::Simple';
 requires 'Catalyst::View::JSON', '0.37';
 requires 'CatalystX::Fastly::Role::Response', '0.06';
 requires 'CHI', '0.61';
+requires 'Class::XSAccessor';   # Accelerate Moo
 requires 'Config::ZOMG', '1.000000';
 requires 'Const::Fast';
 requires 'CPAN::Checksums', '2.14';
