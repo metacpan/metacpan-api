@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use MetaCPAN::Server::Diff ();
+use MetaCPAN::ESConfig     qw(es_doc_path);
 use Moose;
 use namespace::autoclean;
 use Try::Tiny qw( catch try );
@@ -51,13 +52,21 @@ sub file : Chained('index') : PathPart('file') : Args(2) {
 
     $c->cdn_max_age('1y');
 
-    my ( $source_args, $target_args )
-        = map { [ @$_{qw(author release path)} ] }
-        map {
-        my $file = $_;
-        try { $c->model('ESModel')->doc('file')->raw->get($file)->{_source}; }
-            or $c->detach('/not_found');
-        } ( $source, $target );
+    my ( $source_args, $target_args ) = map {
+        my $id = $_;
+        my $file;
+        try {
+            $file = $c->model('ES')->get(
+                es_doc_path('file'),
+                id      => $id,
+                _source => [qw( author release path )],
+            )->{_source};
+        }
+        catch {
+            $c->detach('/not_found');
+        };
+        [ @$file{qw(author release path)} ];
+    } ( $source, $target );
 
     $self->_do_diff( $c, $source_args, $target_args, 1 );
 }
