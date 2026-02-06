@@ -2,21 +2,21 @@ package MetaCPAN::Document::Author;
 
 use MetaCPAN::Moose;
 
-# load order important for next 2 modules
-use ElasticSearchX::Model::Document::Types qw( Location );
 use ElasticSearchX::Model::Document;
 
 # load order not important
-use Gravatar::URL             ();
-use MetaCPAN::Types           qw( ESBool Profile );
-use MetaCPAN::Types::TypeTiny qw(
+use Gravatar::URL   ();
+use MetaCPAN::Types qw(
     ArrayRef
-    ArrayRefPromote
-    Blog
-    Dict
+    ArrayRefFromItem
+    Blogs
+    Donations
+    ESBool
     HashRef
+    Location
     NonEmptySimpleStr
     PerlMongers
+    Profiles
     Str
 );
 use MetaCPAN::Util qw(true false);
@@ -36,8 +36,12 @@ has asciiname => (
     default  => q{},
 );
 
-has [qw(website email)] =>
-    ( is => 'ro', required => 1, isa => ArrayRefPromote, coerce => 1 );
+has [qw(website email)] => (
+    is       => 'ro',
+    required => 1,
+    isa      => ( ( ArrayRef [Str] )->plus_coercions(ArrayRefFromItem) ),
+    coerce   => 1,
+);
 
 has pauseid => (
     is       => 'ro',
@@ -60,7 +64,7 @@ has gravatar_url => (
 
 has profile => (
     is              => 'ro',
-    isa             => Profile,
+    isa             => Profiles,
     coerce          => 1,
     type            => 'nested',
     include_in_root => 1,
@@ -68,7 +72,7 @@ has profile => (
 
 has blog => (
     is      => 'ro',
-    isa     => Blog,
+    isa     => Blogs,
     coerce  => 1,
     dynamic => 1,
 );
@@ -82,7 +86,7 @@ has perlmongers => (
 
 has donation => (
     is      => 'ro',
-    isa     => ArrayRef [ Dict [ name => NonEmptySimpleStr, id => Str ] ],
+    isa     => Donations,
     dynamic => 1,
 );
 

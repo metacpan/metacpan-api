@@ -4,14 +4,14 @@ use strict;
 use warnings;
 use feature qw(state);
 
-use Carp                      qw( croak );
-use HTTP::Request::Common     qw( DELETE GET POST );    ## no perlimports
-use MetaCPAN::ESConfig        qw( es_doc_path );
-use MetaCPAN::Server          ();
-use MetaCPAN::Server::Config  ();
-use MetaCPAN::Types::TypeTiny qw( ES );
-use MetaCPAN::Util            qw( hit_total );
-use Plack::Test;                                        ## no perlimports
+use Carp                     qw( croak );
+use HTTP::Request::Common    qw( DELETE GET POST );    ## no perlimports
+use MetaCPAN::ESConfig       qw( es_doc_path );
+use MetaCPAN::Server         ();
+use MetaCPAN::Server::Config ();
+use MetaCPAN::Types          qw( ES );
+use MetaCPAN::Util           qw( hit_total );
+use Plack::Test;                                       ## no perlimports
 
 use base 'Exporter';
 our @EXPORT_OK = qw(

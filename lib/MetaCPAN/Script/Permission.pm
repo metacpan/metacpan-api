@@ -2,11 +2,11 @@ package MetaCPAN::Script::Permission;
 
 use Moose;
 
-use Log::Contextual           qw( :log );
-use MetaCPAN::ESConfig        qw( es_doc_path );
-use MetaCPAN::Types::TypeTiny qw( Bool );
-use MetaCPAN::Util            qw( true false );
-use PAUSE::Permissions        ();
+use Log::Contextual    qw( :log );
+use MetaCPAN::ESConfig qw( es_doc_path );
+use MetaCPAN::Types    qw( Bool );
+use MetaCPAN::Util     qw( true false );
+use PAUSE::Permissions ();
 
 with 'MooseX::Getopt', 'MetaCPAN::Role::Script';
 

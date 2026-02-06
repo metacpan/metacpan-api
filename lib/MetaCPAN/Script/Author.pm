@@ -13,7 +13,7 @@ use Encode                     ();
 use Log::Contextual            qw( :log :dlog );
 use MetaCPAN::Document::Author ();
 use MetaCPAN::ESConfig         qw( es_doc_path );
-use MetaCPAN::Types::TypeTiny  qw( Str );
+use MetaCPAN::Types            qw( Str );
 use MetaCPAN::Util             qw(diff_struct true false);
 use URI                        ();
 use XML::XPath                 ();

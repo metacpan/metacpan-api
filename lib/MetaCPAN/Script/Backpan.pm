@@ -5,9 +5,9 @@ use warnings;
 
 use Moose;
 
-use Log::Contextual           qw( :log :dlog );
-use MetaCPAN::ESConfig        qw( es_doc_path );
-use MetaCPAN::Types::TypeTiny qw( Bool HashRef Str );
+use Log::Contextual    qw( :log :dlog );
+use MetaCPAN::ESConfig qw( es_doc_path );
+use MetaCPAN::Types    qw( Bool HashRef Str );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt::Dashes';
 

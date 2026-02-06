@@ -8,9 +8,8 @@ use ElasticSearchX::Model::Document;
 
 with 'ElasticSearchX::Model::Document::EmbeddedRole';
 
-use MetaCPAN::Types           qw( ESBool );
-use MetaCPAN::Types::TypeTiny qw( Maybe Num Str );
-use MetaCPAN::Util            qw(true false);
+use MetaCPAN::Types qw( ESBool Maybe Num Str );
+use MetaCPAN::Util  qw(true false);
 
 =head1 SYNOPSIS
 
