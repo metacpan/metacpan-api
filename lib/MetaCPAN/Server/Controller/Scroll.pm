@@ -55,10 +55,12 @@ sub index : Path('/_search/scroll') : Args {
     }
 
     my $res = eval {
-        $c->model('ES')->scroll( {
-            scroll_id => $scroll_id,
-            scroll    => $c->req->params->{scroll},
-        } );
+        $c->model('ES')->scroll(
+            scroll => $c->req->params->{scroll},
+            body   => {
+                scroll_id => $scroll_id,
+            },
+        );
     } or do { $self->internal_error( $c, $@ ); };
 
     simplify_total($res);
