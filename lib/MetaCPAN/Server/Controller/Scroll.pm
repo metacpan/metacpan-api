@@ -4,7 +4,8 @@ use strict;
 use warnings;
 use namespace::autoclean;
 
-use MetaCPAN::Util qw(true false simplify_total);
+use Cpanel::JSON::XS qw( decode_json );
+use MetaCPAN::Util   qw(true false simplify_total);
 use Moose;
 use Try::Tiny qw( catch try );
 
@@ -21,13 +22,13 @@ sub index : Path('/_search/scroll') : Args {
             if ( my $qs_id = $req->param('scroll_id') ) {
                 $scroll_id = $qs_id;
             }
-            else {
-                # Is this the best way to get the body content?
-                my $body = $req->body;
-                $scroll_id = do { local $/; $body->getline }
-                    if ref $body;
+            elsif ( ref( my $body = $req->body ) ) {
+                my $content = do { local $/; $body->getline };
+                eval { $content = decode_json($content); };
+                $scroll_id = ref $content ? $content->{scroll_id} : $content;
             }
-            die "Scroll Id required\n" unless defined($scroll_id);
+            die "Scroll Id required\n"
+                unless defined $scroll_id && !ref $scroll_id;
         }
         catch {
             chomp( my $e = $_[0] );
