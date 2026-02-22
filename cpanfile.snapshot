@@ -286,18 +286,18 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       Test::More 0
-  CPAN-Meta-2.150012
-    pathname: R/RJ/RJBS/CPAN-Meta-2.150012.tar.gz
+  CPAN-Meta-2.150013
+    pathname: R/RJ/RJBS/CPAN-Meta-2.150013.tar.gz
     provides:
-      CPAN::Meta 2.150012
-      CPAN::Meta::Converter 2.150012
-      CPAN::Meta::Feature 2.150012
-      CPAN::Meta::History 2.150012
-      CPAN::Meta::Merge 2.150012
-      CPAN::Meta::Prereqs 2.150012
-      CPAN::Meta::Spec 2.150012
-      CPAN::Meta::Validator 2.150012
-      Parse::CPAN::Meta 2.150012
+      CPAN::Meta 2.150013
+      CPAN::Meta::Converter 2.150013
+      CPAN::Meta::Feature 2.150013
+      CPAN::Meta::History 2.150013
+      CPAN::Meta::Merge 2.150013
+      CPAN::Meta::Prereqs 2.150013
+      CPAN::Meta::Spec 2.150013
+      CPAN::Meta::Validator 2.150013
+      Parse::CPAN::Meta 2.150013
     requirements:
       CPAN::Meta::Requirements 2.121
       CPAN::Meta::YAML 0.011
@@ -904,10 +904,10 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  Crypt-URandom-0.54
-    pathname: D/DD/DDICK/Crypt-URandom-0.54.tar.gz
+  Crypt-URandom-0.55
+    pathname: D/DD/DDICK/Crypt-URandom-0.55.tar.gz
     provides:
-      Crypt::URandom 0.54
+      Crypt::URandom 0.55
     requirements:
       Carp 1.26
       English 0
@@ -2346,12 +2346,12 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       Pod::Usage 1.14
-  Getopt-Long-Descriptive-0.116
-    pathname: R/RJ/RJBS/Getopt-Long-Descriptive-0.116.tar.gz
+  Getopt-Long-Descriptive-0.117
+    pathname: R/RJ/RJBS/Getopt-Long-Descriptive-0.117.tar.gz
     provides:
-      Getopt::Long::Descriptive 0.116
-      Getopt::Long::Descriptive::Opts 0.116
-      Getopt::Long::Descriptive::Usage 0.116
+      Getopt::Long::Descriptive 0.117
+      Getopt::Long::Descriptive::Opts 0.117
+      Getopt::Long::Descriptive::Usage 0.117
     requirements:
       Carp 0
       ExtUtils::MakeMaker 6.78
