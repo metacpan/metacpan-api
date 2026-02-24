@@ -204,9 +204,10 @@ sub _purge_release {
 
     # remove the release archive
     for my $archive (@remove_release_archives) {
+	log_info { "Path::Tiny $Path::Tiny::VERSION" }
         log_info { "Moving archive $archive to " . $self->quarantine };
-        $self->cpan->file( 'authors', author_dir( $self->author ), $archive )
-            ->move_to( $self->quarantine );
+        $self->cpan->child( 'authors', author_dir( $self->author ), $archive )
+            ->move( $self->quarantine );
     }
 }
 
