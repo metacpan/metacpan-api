@@ -204,7 +204,6 @@ sub _purge_release {
 
     # remove the release archive
     for my $archive (@remove_release_archives) {
-	log_info { "Path::Tiny $Path::Tiny::VERSION" }
         log_info { "Moving archive $archive to " . $self->quarantine };
         $self->cpan->child( 'authors', author_dir( $self->author ), $archive )
             ->move( $self->quarantine );
@@ -343,6 +342,6 @@ __PACKAGE__->meta->make_immutable;
 Purge releases from the index, by author or name
 
   $ bin/metacpan purge --author X
-  $ bin/metacpan purge --release Y
+  $ bin/metacpan purge --author X --release Y
 
 =cut
