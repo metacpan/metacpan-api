@@ -1,4 +1,4 @@
-package MetaCPAN::Script::River;
+package MetaCPAN::Script::BusFactor;
 
 use Moose;
 use namespace::autoclean;
@@ -11,38 +11,37 @@ use MetaCPAN::Util            qw( true false );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
-has river_url => (
+has bus_factor_url => (
     is       => 'ro',
     isa      => Uri,
     coerce   => 1,
     required => 1,
-    default  => 'https://neilb.org/river-of-cpan.json.gz',
+    default  =>
+        'https://metacpan.github.io/metacpan-bus-factor/bus_factor.json.gz',
 );
 
 sub run {
-    my $self      = shift;
-    my $summaries = $self->retrieve_river_summaries;
-    $self->index_river_summaries($summaries);
+    my $self = shift;
+    my $data = $self->retrieve_bus_factor_data;
+    $self->index_bus_factor_data($data);
 
     return 1;
 }
 
-sub index_river_summaries {
-    my ( $self, $summaries ) = @_;
+sub index_bus_factor_data {
+    my ( $self, $data ) = @_;
 
     my $bulk = $self->es->bulk_helper( es_doc_path('distribution') );
 
-    for my $summary ( @{$summaries} ) {
-        my $dist = delete $summary->{dist};
-
-        # bus_factor is now handled by MetaCPAN::Script::BusFactor
-        delete $summary->{bus_factor};
+    for my $dist ( sort keys %{$data} ) {
+        my $entry      = $data->{$dist};
+        my $bus_factor = scalar @{ $entry->{active_maintainers} || [] };
 
         $bulk->update( {
             id  => $dist,
             doc => {
                 name  => $dist,
-                river => $summary,
+                river => { bus_factor => $bus_factor },
             },
             doc_as_upsert => true,
         } );
@@ -50,20 +49,12 @@ sub index_river_summaries {
     $bulk->flush;
 }
 
-sub retrieve_river_summaries {
+sub retrieve_bus_factor_data {
     my $self = shift;
 
-    my $resp = $self->ua->get( $self->river_url );
+    my $resp = $self->ua->get( $self->bus_factor_url );
 
     $self->handle_error( $resp->status_line ) unless $resp->is_success;
-
-    # cleanup headers if .json.gz is served as gzip type
-    # rather than json encoded with gzip
-    if ( $resp->header('Content-Type') eq 'application/x-gzip' ) {
-        $resp->header( 'Content-Type'     => 'application/json' );
-        $resp->header( 'Content-Encoding' => 'gzip' );
-    }
-
     return decode_json $resp->decoded_content;
 }
 
@@ -75,12 +66,14 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 SYNOPSIS
 
- # bin/metacpan river
+ # bin/metacpan bus_factor
 
 =head1 DESCRIPTION
 
-Retrieves the CPAN river data from its source and
+Retrieves the CPAN bus factor data from its source and
 updates our ES information.
+
+The bus factor for a distribution is the number of active maintainers.
 
 This can then be accessed here:
 
@@ -88,4 +81,3 @@ http://fastapi.metacpan.org/v1/distribution/Moose
 http://fastapi.metacpan.org/v1/distribution/HTTP-BrowserDetect
 
 =cut
-

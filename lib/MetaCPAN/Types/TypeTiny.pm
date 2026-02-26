@@ -75,7 +75,8 @@ declare BugSummary,
     ];
 
 declare RiverSummary,
-    as Dict [ ( map { $_ => Optional [Int] } qw(total immediate bucket) ), ];
+    as Dict [
+    ( map { $_ => Optional [Int] } qw(total immediate bucket bus_factor) ), ];
 
 declare Resources,
     as Dict [
