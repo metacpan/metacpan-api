@@ -18,6 +18,8 @@ $config->{'river_url'} = "$file";
 my $river = MetaCPAN::Script::River->new_with_options($config);
 ok $river->run, 'runs and returns true';
 
+# bus_factor is included here because the bus_factor test runs before this
+# one, so that data will already be present in Elasticsearch.
 my %expect = (
     'System-Command' => {
         total      => 92,
