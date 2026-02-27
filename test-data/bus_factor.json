@@ -1,0 +1,21 @@
+{
+   "System-Command": {
+      "active_maintainers": [
+         "BOOK",
+         "DOLMEN"
+      ],
+      "inactive_maintainers": [],
+      "is_dual_life": false,
+      "owner": "BOOK"
+   },
+   "Text-Markdown": {
+      "active_maintainers": [
+         "BOBTFISH"
+      ],
+      "inactive_maintainers": [
+         "CHAD"
+      ],
+      "is_dual_life": false,
+      "owner": "BOBTFISH"
+   }
+}

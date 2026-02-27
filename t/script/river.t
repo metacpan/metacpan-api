@@ -20,14 +20,16 @@ ok $river->run, 'runs and returns true';
 
 my %expect = (
     'System-Command' => {
-        total     => 92,
-        immediate => 4,
-        bucket    => 2,
+        total      => 92,
+        immediate  => 4,
+        bucket     => 2,
+        bus_factor => 2,
     },
     'Text-Markdown' => {
-        total     => 92,
-        immediate => 56,
-        bucket    => 2,
+        total      => 92,
+        immediate  => 56,
+        bucket     => 2,
+        bus_factor => 1,
     }
 );
 
