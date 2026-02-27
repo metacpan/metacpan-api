@@ -3,12 +3,11 @@ package MetaCPAN::Script::CPANTestersAPI;
 use strict;
 use warnings;
 
-use Cpanel::JSON::XS                       qw( decode_json );
-use ElasticSearchX::Model::Document::Types qw( ESBulk );
-use Log::Contextual                        qw( :log :dlog );
-use MetaCPAN::ESConfig                     qw( es_doc_path );
-use MetaCPAN::Types::TypeTiny              qw( Uri );
-use MetaCPAN::Util                         qw( true false );
+use Cpanel::JSON::XS   qw( decode_json );
+use Log::Contextual    qw( :log :dlog );
+use MetaCPAN::ESConfig qw( es_doc_path );
+use MetaCPAN::Types    qw( Uri );
+use MetaCPAN::Util     qw( true false );
 use Moose;
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt::Dashes';
@@ -23,7 +22,6 @@ has url => (
 
 has _bulk => (
     is      => 'ro',
-    isa     => ESBulk,
     lazy    => 1,
     default => sub {
         $_[0]->es->bulk_helper(

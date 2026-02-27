@@ -3,10 +3,10 @@ package MetaCPAN::Pod::Renderer;
 use MetaCPAN::Moose;
 
 use MetaCPAN::Pod::HTML;
-use MetaCPAN::Types::TypeTiny qw( Uri );
-use Pod::Markdown             ();
-use Pod::Simple::JustPod      ();
-use Pod::Text                 ();
+use MetaCPAN::Types      qw( Uri );
+use Pod::Markdown        ();
+use Pod::Simple::JustPod ();
+use Pod::Text            ();
 
 has perldoc_url_prefix => (
     is      => 'ro',

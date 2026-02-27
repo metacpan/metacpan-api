@@ -2,12 +2,12 @@ package MetaCPAN::Script::Package;
 
 use Moose;
 
-use CPAN::DistnameInfo        ();
-use IO::Uncompress::Gunzip    ();
-use Log::Contextual           qw( :log );
-use MetaCPAN::ESConfig        qw( es_doc_path );
-use MetaCPAN::Types::TypeTiny qw( Bool );
-use MetaCPAN::Util            qw( fix_version true false );
+use CPAN::DistnameInfo     ();
+use IO::Uncompress::Gunzip ();
+use Log::Contextual        qw( :log );
+use MetaCPAN::ESConfig     qw( es_doc_path );
+use MetaCPAN::Types        qw( Bool );
+use MetaCPAN::Util         qw( fix_version true false );
 
 with 'MooseX::Getopt', 'MetaCPAN::Role::Script';
 

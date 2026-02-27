@@ -2,9 +2,9 @@ package MetaCPAN::Tests::Query;
 
 use Test::Routine;
 
-use MetaCPAN::ESConfig        qw( es_doc_path );
-use MetaCPAN::Server::Test    ();
-use MetaCPAN::Types::TypeTiny qw( ES HashRef Str );
+use MetaCPAN::ESConfig     qw( es_doc_path );
+use MetaCPAN::Server::Test ();
+use MetaCPAN::Types        qw( ES HashRef Str );
 use Test::More;
 use Try::Tiny qw( try );
 

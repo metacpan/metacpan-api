@@ -6,9 +6,8 @@ use warnings;
 use Moose;
 use ElasticSearchX::Model::Document;
 
-use MetaCPAN::Types           qw( Identity );
-use MetaCPAN::Types::TypeTiny qw( ArrayRef Dict Str );
-use MetaCPAN::Util            qw(true false);
+use MetaCPAN::Types qw( AccessTokens Identities );
+use MetaCPAN::Util  qw(true false);
 
 =head1 PROPERTIES
 
@@ -33,7 +32,7 @@ authentication provider such as Twitter or GitHub.
 has identity => (
     is       => 'ro',
     required => 1,
-    isa      => Identity,
+    isa      => Identities,
     coerce   => 1,
     traits   => ['Array'],
     handles  => { add_identity => 'push' },
@@ -62,7 +61,7 @@ as the user.
 has access_token => (
     is       => 'ro',
     required => 1,
-    isa      => ArrayRef [ Dict [ token => Str, client => Str ] ],
+    isa      => AccessTokens,
     default  => sub { [] },
     dynamic  => 1,
     traits   => ['Array'],

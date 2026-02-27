@@ -17,9 +17,8 @@ use MetaCPAN::Script::Release        ();
 use MetaCPAN::Server                 ();
 use MetaCPAN::Server::Config         ();
 use MetaCPAN::TestHelpers            qw( fakecpan_dir testdata_dir );
-use MetaCPAN::Types::TypeTiny        qw( HashRef Path );
+use MetaCPAN::Types                  qw( ES HashRef Path );
 use MetaCPAN::Util                   qw( true false );
-use MooseX::Types::ElasticSearch     qw( ES );
 use Test::More;
 
 has es_client => (

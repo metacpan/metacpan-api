@@ -2,8 +2,8 @@ package MetaCPAN::Role::HasConfig;
 
 use Moose::Role;
 
-use MetaCPAN::Server::Config  ();
-use MetaCPAN::Types::TypeTiny qw( HashRef );
+use MetaCPAN::Server::Config ();
+use MetaCPAN::Types          qw( HashRef );
 
 # Done like this so can be required by a role
 sub config {

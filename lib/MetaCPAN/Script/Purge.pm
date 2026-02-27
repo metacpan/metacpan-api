@@ -2,11 +2,11 @@ package MetaCPAN::Script::Purge;
 
 use Moose;
 
-use File::Path                ();
-use Log::Contextual           qw( :log );
-use MetaCPAN::ESConfig        qw( es_doc_path );
-use MetaCPAN::Types::TypeTiny qw( Bool HashRef Str );
-use MetaCPAN::Util            qw( author_dir true false );
+use File::Path         ();
+use Log::Contextual    qw( :log );
+use MetaCPAN::ESConfig qw( es_doc_path );
+use MetaCPAN::Types    qw( Bool HashRef Str );
+use MetaCPAN::Util     qw( author_dir true false );
 
 with 'MooseX::Getopt', 'MetaCPAN::Role::Script';
 

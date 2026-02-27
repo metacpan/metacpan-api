@@ -8,8 +8,8 @@ use Email::Simple         ();
 use Log::Contextual       qw( :log );
 use MetaCPAN::ESConfig    qw( es_doc_path );
 
-use MetaCPAN::Types::TypeTiny qw( Str );
-use MetaCPAN::Util            qw( true false );
+use MetaCPAN::Types qw( Str );
+use MetaCPAN::Util  qw( true false );
 
 with(
     'MetaCPAN::Role::Script',

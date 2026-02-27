@@ -3,7 +3,7 @@ package MetaCPAN::Model::Archive;
 use v5.10;
 use Moose;
 use MooseX::StrictConstructor;
-use MetaCPAN::Types::TypeTiny qw( AbsPath ArrayRef Bool InstanceOf Str );
+use MetaCPAN::Types qw( AbsPath ArrayRef Bool InstanceOf Str );
 
 use Archive::Any ();
 use Carp         qw( croak );

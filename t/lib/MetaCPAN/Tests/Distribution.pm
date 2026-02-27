@@ -2,7 +2,7 @@ package MetaCPAN::Tests::Distribution;
 use Test::More;
 use Test::Routine;
 use version;
-use MetaCPAN::Types::TypeTiny qw( Str );
+use MetaCPAN::Types qw( Str );
 
 with qw( MetaCPAN::Tests::Query );
 

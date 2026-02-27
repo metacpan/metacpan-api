@@ -4,10 +4,10 @@ use Test::Routine;
 
 use version;
 
-use HTTP::Request::Common     qw( GET );
-use List::Util                ();
-use MetaCPAN::ESConfig        qw( es_doc_path );
-use MetaCPAN::Types::TypeTiny qw( ArrayRef HashRef Str );
+use HTTP::Request::Common qw( GET );
+use List::Util            ();
+use MetaCPAN::ESConfig    qw( es_doc_path );
+use MetaCPAN::Types       qw( ArrayRef HashRef Str );
 use Test::More;
 
 with qw( MetaCPAN::Tests::Query );

@@ -3,7 +3,7 @@ package MetaCPAN::Script::Queue;
 use strict;
 use warnings;
 
-use MetaCPAN::Types::TypeTiny qw( Path );
+use MetaCPAN::Types qw( Path );
 use Moose;
 use Path::Iterator::Rule ();
 

@@ -8,7 +8,7 @@ use Moose;
 use CPAN::DistnameInfo          ();
 use DateTime::Format::ISO8601   ();
 use MetaCPAN::ESConfig          qw( es_doc_path );
-use MetaCPAN::Types::TypeTiny   qw( Bool Str );
+use MetaCPAN::Types             qw( Bool Str );
 use MetaCPAN::Util              qw( true false );
 use Parse::CPAN::Packages::Fast ();
 

@@ -4,15 +4,15 @@ use experimental qw( signatures postderef );
 
 package MetaCPAN::ESConfig;
 
-use Carp                      qw( croak );
-use Const::Fast               qw( const );
-use Cpanel::JSON::XS          ();
-use Exporter                  qw( import );
-use Hash::Merge::Simple       qw( merge );
-use MetaCPAN::Server::Config  ();
-use MetaCPAN::Types::TypeTiny qw( Defined HashRef );
-use MetaCPAN::Util            qw( root_dir true false );
-use Module::Runtime           qw( $module_name_rx require_module );
+use Carp                     qw( croak );
+use Const::Fast              qw( const );
+use Cpanel::JSON::XS         ();
+use Exporter                 qw( import );
+use Hash::Merge::Simple      qw( merge );
+use MetaCPAN::Server::Config ();
+use MetaCPAN::Types          qw( Defined HashRef );
+use MetaCPAN::Util           qw( root_dir true false );
+use Module::Runtime          qw( $module_name_rx require_module );
 
 const my %config => merge(
     {

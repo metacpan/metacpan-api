@@ -2,10 +2,10 @@ package MetaCPAN::Script::Checksum;
 
 use Moose;
 
-use Log::Contextual           qw( :log );
-use MetaCPAN::ESConfig        qw( es_doc_path );
-use MetaCPAN::Types::TypeTiny qw( Bool Int );
-use MetaCPAN::Util            qw( true false );
+use Log::Contextual    qw( :log );
+use MetaCPAN::ESConfig qw( es_doc_path );
+use MetaCPAN::Types    qw( Bool Int );
+use MetaCPAN::Util     qw( true false );
 
 use Digest::file qw( digest_file_hex );
 

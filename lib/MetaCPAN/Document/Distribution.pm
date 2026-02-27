@@ -7,8 +7,8 @@ use namespace::autoclean;
 use Moose;
 use ElasticSearchX::Model::Document;
 
-use MetaCPAN::Types::TypeTiny qw( BugSummary RiverSummary );
-use MetaCPAN::Util            qw(true false);
+use MetaCPAN::Types qw( BugSummary RiverSummary );
+use MetaCPAN::Util  qw(true false);
 
 has name => (
     is       => 'ro',

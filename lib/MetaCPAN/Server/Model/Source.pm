@@ -2,9 +2,9 @@ package MetaCPAN::Server::Model::Source;
 use strict;
 use warnings;
 
-use Archive::Any              ();
-use MetaCPAN::Types::TypeTiny qw( Path Uri );
-use MetaCPAN::Util            ();
+use Archive::Any    ();
+use MetaCPAN::Types qw( Path Uri );
+use MetaCPAN::Util  ();
 use Moose;
 use Path::Tiny ();
 
