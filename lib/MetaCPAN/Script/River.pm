@@ -16,7 +16,7 @@ has river_url => (
     isa      => Uri,
     coerce   => 1,
     required => 1,
-    default  => 'https://neilb.org/river-of-cpan.json.gz',
+    default  => 'https://metacpan.github.io/metacpan-river/river.json.gz',
 );
 
 sub run {
@@ -32,11 +32,8 @@ sub index_river_summaries {
 
     my $bulk = $self->es->bulk_helper( es_doc_path('distribution') );
 
-    for my $summary ( @{$summaries} ) {
-        my $dist = delete $summary->{dist};
-
-        # bus_factor is now handled by MetaCPAN::Script::BusFactor
-        delete $summary->{bus_factor};
+    for my $dist ( sort keys %{$summaries} ) {
+        my $summary = $summaries->{$dist};
 
         $bulk->update( {
             id  => $dist,
@@ -56,14 +53,6 @@ sub retrieve_river_summaries {
     my $resp = $self->ua->get( $self->river_url );
 
     $self->handle_error( $resp->status_line ) unless $resp->is_success;
-
-    # cleanup headers if .json.gz is served as gzip type
-    # rather than json encoded with gzip
-    if ( $resp->header('Content-Type') eq 'application/x-gzip' ) {
-        $resp->header( 'Content-Type'     => 'application/json' );
-        $resp->header( 'Content-Encoding' => 'gzip' );
-    }
-
     return decode_json $resp->decoded_content;
 }
 
