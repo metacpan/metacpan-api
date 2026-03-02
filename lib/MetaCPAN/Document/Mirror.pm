@@ -4,10 +4,9 @@ use strict;
 use warnings;
 
 use Moose;
-use MooseX::Types::ElasticSearch qw( Location );
 use ElasticSearchX::Model::Document;
 
-use MetaCPAN::Types::TypeTiny qw( Dict Str );
+use MetaCPAN::Types qw( Dict Location Str );
 
 has name => (
     is       => 'ro',

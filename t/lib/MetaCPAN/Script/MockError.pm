@@ -2,7 +2,7 @@ package MetaCPAN::Script::MockError;
 
 use Moose;
 use Exception::Class ('MockException');
-use MetaCPAN::Types::TypeTiny qw( Bool Int Str );
+use MetaCPAN::Types qw( Bool Int Str );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 

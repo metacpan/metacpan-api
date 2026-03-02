@@ -3,12 +3,12 @@ package MetaCPAN::Script::Cover;
 use Moose;
 use namespace::autoclean;
 
-use Cpanel::JSON::XS          qw( decode_json );
-use Log::Contextual           qw( :log :dlog );
-use MetaCPAN::ESConfig        qw( es_doc_path );
-use MetaCPAN::Types::TypeTiny qw( Bool Str Uri );
-use Path::Tiny                qw( path );
-use MetaCPAN::Util            qw( hit_total true false );
+use Cpanel::JSON::XS   qw( decode_json );
+use Log::Contextual    qw( :log :dlog );
+use MetaCPAN::ESConfig qw( es_doc_path );
+use MetaCPAN::Types    qw( Bool Str Uri );
+use Path::Tiny         qw( path );
+use MetaCPAN::Util     qw( hit_total true false );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 

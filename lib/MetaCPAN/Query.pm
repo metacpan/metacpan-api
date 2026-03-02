@@ -3,7 +3,7 @@ use Moose;
 
 use Module::Runtime           qw( require_module );
 use Module::Pluggable::Object ();
-use MetaCPAN::Types::TypeTiny qw( ES );
+use MetaCPAN::Types           qw( ES );
 
 has es => (
     is       => 'ro',

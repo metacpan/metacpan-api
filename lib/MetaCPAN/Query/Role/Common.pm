@@ -1,7 +1,7 @@
 package MetaCPAN::Query::Role::Common;
 use Moose::Role;
 
-use MetaCPAN::Types::TypeTiny qw( ES );
+use MetaCPAN::Types qw( ES );
 
 has es => (
     is       => 'ro',

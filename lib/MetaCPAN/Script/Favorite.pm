@@ -4,9 +4,9 @@ use Moose;
 
 use Log::Contextual qw( :log );
 
-use MetaCPAN::ESConfig        qw( es_doc_path );
-use MetaCPAN::Types::TypeTiny qw( Bool Int Str );
-use MetaCPAN::Util            qw( true false );
+use MetaCPAN::ESConfig qw( es_doc_path );
+use MetaCPAN::Types    qw( Bool Int Str );
+use MetaCPAN::Util     qw( true false );
 
 with 'MooseX::Getopt', 'MetaCPAN::Role::Script';
 

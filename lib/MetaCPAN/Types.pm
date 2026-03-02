@@ -1,12 +1,21 @@
 package MetaCPAN::Types;
-
 use strict;
 use warnings;
 
-use parent 'MooseX::Types::Combine';
+use Type::Library -base;
+use Type::Utils qw( extends );
 
-__PACKAGE__->provide_types_from( qw(
+extends qw(
+    MetaCPAN::Types::Author
+    MetaCPAN::Types::Distribution
+    MetaCPAN::Types::File
     MetaCPAN::Types::Internal
-) );
+    MetaCPAN::Types::Release
+    MetaCPAN::Types::User
+    Types::Standard
+    Types::Path::Tiny
+    Types::URI
+    Types::Common::String
+);
 
 1;

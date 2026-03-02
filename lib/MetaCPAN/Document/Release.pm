@@ -3,9 +3,10 @@ package MetaCPAN::Document::Release;
 use Moose;
 
 use ElasticSearchX::Model::Document;
-use MetaCPAN::Types           qw( Dependency ESBool );
-use MetaCPAN::Types::TypeTiny qw(
+use MetaCPAN::Types qw(
     ArrayRef
+    Dependencies
+    ESBool
     HashRefCPANMeta
     Num
     Resources
@@ -74,7 +75,6 @@ See L<CPAN::DistnameInfo>.
 =head2 dependency
 
 Array of dependencies as derived from the META file.
-See L<MetaCPAN::Document::Dependency>.
 
 =head2 resources
 
@@ -189,7 +189,7 @@ has abstract => (
 
 has dependency => (
     is              => 'ro',
-    isa             => Dependency,
+    isa             => Dependencies,
     coerce          => 1,
     type            => 'nested',
     include_in_root => 1,

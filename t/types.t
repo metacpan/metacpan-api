@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use MetaCPAN::Types::TypeTiny qw( Resources );
+use MetaCPAN::Types qw( Resources );
 use Test::More;
 
 is_deeply(

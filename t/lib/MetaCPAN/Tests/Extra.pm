@@ -1,7 +1,7 @@
 package MetaCPAN::Tests::Extra;
 use Test::More;
 use Test::Routine;
-use MetaCPAN::Types::TypeTiny qw( CodeRef );
+use MetaCPAN::Types qw( CodeRef );
 
 around BUILDARGS => sub {
     my ( $orig, $class, @args ) = @_;

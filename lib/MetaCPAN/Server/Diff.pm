@@ -4,10 +4,10 @@ use strict;
 use warnings;
 use Moose;
 
-use Encoding::FixLatin        ();
-use File::Spec                ();
-use IPC::Run3                 qw( run3 );
-use MetaCPAN::Types::TypeTiny qw( ArrayRef );
+use Encoding::FixLatin ();
+use File::Spec         ();
+use IPC::Run3          qw( run3 );
+use MetaCPAN::Types    qw( ArrayRef );
 
 has git => (
     is       => 'ro',

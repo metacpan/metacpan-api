@@ -12,7 +12,7 @@ use File::Spec                     ();
 use Log::Contextual::Easy::Default qw( :log :dlog );
 use MetaCPAN::ESConfig             qw( es_doc_path );
 use MetaCPAN::Model::Archive       ();
-use MetaCPAN::Types::TypeTiny      qw( AbsPath ArrayRef InstanceOf Str );
+use MetaCPAN::Types                qw( AbsPath ArrayRef InstanceOf Str );
 use MetaCPAN::Util                 qw( fix_version true false );
 use Module::Metadata 1.000012      ();    # Improved package detection.
 use MooseX::StrictConstructor;

@@ -4,13 +4,13 @@ use strict;
 use warnings;
 use feature qw( state );
 
-use Cpanel::JSON::XS          qw( decode_json encode_json );
-use DateTime                  ();
-use IO::Zlib                  ();
-use Log::Contextual           qw( :log :dlog );
-use MetaCPAN::Types::TypeTiny qw( Bool CommaSepOption Int Path Str );
-use MetaCPAN::Util            qw( true false );
-use MetaCPAN::ESConfig        qw( es_config );
+use Cpanel::JSON::XS   qw( decode_json encode_json );
+use DateTime           ();
+use IO::Zlib           ();
+use Log::Contextual    qw( :log :dlog );
+use MetaCPAN::Types    qw( Bool CommaSepOption Int Path Str );
+use MetaCPAN::Util     qw( true false );
+use MetaCPAN::ESConfig qw( es_config );
 use Moose;
 use Try::Tiny qw( catch try );
 

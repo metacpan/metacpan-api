@@ -9,12 +9,21 @@ use ElasticSearchX::Model::Document;
 
 use List::Util                 qw( any );
 use MetaCPAN::Document::Module ();
-use MetaCPAN::Types            qw( ESBool Module );
-use MetaCPAN::Types::TypeTiny qw( ArrayRef Int Maybe Num ScalarRef Stat Str );
-use MetaCPAN::Util            qw(numify_version true false);
-use Plack::MIME               ();
-use Pod::Text                 ();
-use Try::Tiny                 qw( catch try );
+use MetaCPAN::Types            qw(
+    ArrayRef
+    ESBool
+    Int
+    Maybe
+    Modules
+    Num
+    ScalarRef
+    Stat
+    Str
+);
+use MetaCPAN::Util qw(numify_version true false);
+use Plack::MIME    ();
+use Pod::Text      ();
+use Try::Tiny      qw( catch try );
 
 Plack::MIME->add_type( '.t'   => 'text/x-script.perl' );
 Plack::MIME->add_type( '.pod' => 'text/x-pod' );
@@ -140,7 +149,7 @@ modules defined in that class (i.e. package declarations).
 
 has module => (
     is              => 'ro',
-    isa             => Module,
+    isa             => Modules,
     type            => 'nested',
     include_in_root => 1,
     coerce          => 1,
