@@ -55,7 +55,16 @@ sub retrieve_bus_factor_data {
     my $resp = $self->ua->get( $self->bus_factor_url );
 
     $self->handle_error( $resp->status_line ) unless $resp->is_success;
-    return decode_json $resp->decoded_content;
+
+    # Fix up headers so that HTTP::Message::decoded_content knows to
+    # decompress, since .json.gz is served as gzip type rather than
+    # json encoded with gzip
+    if ( $resp->header('Content-Type') =~ m{^application/(x-)?gzip$} ) {
+        $resp->header( 'Content-Type'     => 'application/json' );
+        $resp->header( 'Content-Encoding' => 'gzip' );
+    }
+
+    return decode_json( $resp->decoded_content );
 }
 
 __PACKAGE__->meta->make_immutable;
