@@ -36,7 +36,9 @@ sub index_POST {
 
 sub index_DELETE {
     my ( $self, $c, $distribution ) = @_;
-    my $favorite = $c->model('ESModel')->doc('favorite')
+    my $favorite
+        = $c->model('ESModel')
+        ->doc('favorite')
         ->get( { user => $c->user->id, distribution => $distribution } );
     if ($favorite) {
         $favorite->delete( { refresh => true } );

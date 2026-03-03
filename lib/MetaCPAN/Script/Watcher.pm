@@ -127,7 +127,8 @@ sub latest_release {
     my $self = shift;
     return undef if ( $self->backpan );
     return $self->model->doc('release')
-        ->sort( [ { 'date' => { order => "desc" } } ] )->first;
+        ->sort( [ { 'date' => { order => "desc" } } ] )
+        ->first;
 }
 
 sub index_release {
