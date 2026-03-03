@@ -26,11 +26,11 @@ jobs:
       - run:
           name: docker compose build
           command: |
-            docker compose --profile test build api-test
+            docker compose -f docker-compose.yml --profile test build api-test
       - run:
           name: run tests with coverage
           command: |
-            docker compose --profile test run --env HARNESS_PERL_SWITCHES=-MDevel::Cover -v ./cover_db:/app/cover_db/ api-test bash -c 'prove -lr -j4 t && cover -report codecovbash'
+            docker compose -f docker-compose.yml --profile test run --env HARNESS_PERL_SWITCHES=-MDevel::Cover -v ./cover_db:/app/cover_db/ api-test bash -c 'prove -lr -j4 t && cover -report codecovbash'
       # We are relying on environment variables from the host to be available when
       # we publish the report, so we publish from the host rather than trying
       # to propagate env variables to the container.
