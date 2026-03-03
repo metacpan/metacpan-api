@@ -146,7 +146,7 @@ on test => sub {
 on develop => sub {
     requires 'App::perlimports';
     requires 'Perl::Critic', '0.140';
-    requires 'Perl::Tidy' => '== 20240511';
+    requires 'Perl::Tidy' => '== 20260204';
     requires 'PPI', '1.274'; # Perl::Critic
     requires 'PPIx::QuoteLike', '0.022'; # Perl::Critic
     requires 'PPIx::Regexp', '0.085'; # Perl::Critic
