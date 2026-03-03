@@ -76,7 +76,7 @@ sub profile : Local : ActionClass('REST') {
         $c->detach;
     }
     my $profile
-        = $c->model('ESModel')->doc('author')->raw->get( $pause->key );
+        = $c->model('ESModel')->doc('author')->raw->get( $pause->{key} );
     $c->stash->{profile} = $profile->{_source};
 }
 

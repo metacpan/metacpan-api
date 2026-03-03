@@ -97,7 +97,7 @@ after add_identity => sub {
 
 sub has_identity {
     my ( $self, $identity ) = @_;
-    return scalar grep { $_->name eq $identity } @{ $self->identity };
+    return scalar grep { $_->{name} eq $identity } @{ $self->identity };
 }
 
 =head2 get_identities
@@ -106,7 +106,7 @@ sub has_identity {
 
 sub get_identities {
     my ( $self, $identity ) = @_;
-    return grep { $_->name eq $identity } @{ $self->identity };
+    return grep { $_->{name} eq $identity } @{ $self->identity };
 }
 
 sub remove_identity {
