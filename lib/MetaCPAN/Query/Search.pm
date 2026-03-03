@@ -207,7 +207,7 @@ sub _search_collapsed {
 sub build_query {
     my ( $self, $search_term, $params ) = @_;
     $params //= {};
-    ( my $clean = $search_term ) =~ s/::/ /g;
+    ( my $clean = $search_term ) =~ s/:{2,}/ /g;
 
     my $query = {
         bool => {
