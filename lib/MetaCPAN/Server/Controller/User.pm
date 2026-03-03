@@ -10,8 +10,6 @@ use Log::Log4perl::MDC ();
 
 BEGIN { extends 'Catalyst::Controller::REST' }
 
-with 'MetaCPAN::Role::Fastly';
-
 __PACKAGE__->config(
     json_options => { relaxed => 1, allow_nonref => 1 },
     default      => 'text/html',
@@ -98,7 +96,9 @@ sub profile_PUT {
         donation city region country
         location extra perlmongers);
     $profile->{updated} = DateTime->now->iso8601;
-    my @errors = $c->model('ESModel')->doc('author')
+    my @errors
+        = $c->model('ESModel')
+        ->doc('author')
         ->new_document->validate($profile);
 
     if (@errors) {
@@ -107,14 +107,15 @@ sub profile_PUT {
     }
     else {
         $profile
-            = $c->model('ESModel')->doc('author')
+            = $c->model('ESModel')
+            ->doc('author')
             ->put( $profile, { refresh => true } );
         $self->status_created(
             $c,
             location => $c->uri_for( '/author/' . $profile->{pauseid} ),
             entity   => $profile->meta->get_data($profile)
         );
-        $self->purge_author_key( $profile->{pauseid} );
+        $c->purge_author_key( $profile->{pauseid} );
     }
 
 }
