@@ -98,7 +98,9 @@ sub profile_PUT {
         donation city region country
         location extra perlmongers);
     $profile->{updated} = DateTime->now->iso8601;
-    my @errors = $c->model('ESModel')->doc('author')
+    my @errors
+        = $c->model('ESModel')
+        ->doc('author')
         ->new_document->validate($profile);
 
     if (@errors) {
@@ -107,7 +109,8 @@ sub profile_PUT {
     }
     else {
         $profile
-            = $c->model('ESModel')->doc('author')
+            = $c->model('ESModel')
+            ->doc('author')
             ->put( $profile, { refresh => true } );
         $self->status_created(
             $c,
