@@ -98,8 +98,11 @@ sub dist_for_debian {
         my $query
             = { term => { 'distribution.lowercase' => $alias{$1} // $1 } };
 
-        my $res = $self->model->doc('release')->query($query)
-            ->sort( [ { date => { order => "desc" } } ] )->raw->first;
+        my $res
+            = $self->model->doc('release')
+            ->query($query)
+            ->sort( [ { date => { order => "desc" } } ] )
+            ->raw->first;
 
         return $res->{_source}{distribution}
             if $res;
