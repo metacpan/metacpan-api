@@ -67,6 +67,11 @@ ok( $search, 'search' );
 }
 
 {
+    eval { $search->search_web('DBIx::Class:::ResultSet') };
+    is( $@, '', 'search term with ::: no exception' );
+}
+
+{
     my $long_form  = $search->search_web('distribution:Pod-Pm');
     my $short_form = $search->search_web('dist:Pod-Pm');
 
