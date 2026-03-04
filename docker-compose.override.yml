@@ -1,0 +1,9 @@
+---
+# Local development overrides (not used in CI).
+# Mounts the host source tree into the container so code changes are
+# reflected without rebuilding the image.
+services:
+  api-test:
+    volumes:
+      - './:/app/'
+      - '/app/local'
