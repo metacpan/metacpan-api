@@ -10,8 +10,6 @@ use Log::Log4perl::MDC ();
 
 BEGIN { extends 'Catalyst::Controller::REST' }
 
-with 'MetaCPAN::Role::Fastly';
-
 __PACKAGE__->config(
     json_options => { relaxed => 1, allow_nonref => 1 },
     default      => 'text/html',
@@ -117,7 +115,7 @@ sub profile_PUT {
             location => $c->uri_for( '/author/' . $profile->{pauseid} ),
             entity   => $profile->meta->get_data($profile)
         );
-        $self->purge_author_key( $profile->{pauseid} );
+        $c->purge_author_key( $profile->{pauseid} );
     }
 
 }
