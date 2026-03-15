@@ -916,14 +916,14 @@ DISTRIBUTIONS
       FileHandle 0
       constant 0
       perl 5.006
-  DBD-Pg-3.18.0
-    pathname: T/TU/TURNSTEP/DBD-Pg-3.18.0.tar.gz
+  DBD-Pg-3.19.0
+    pathname: T/TU/TURNSTEP/DBD-Pg-3.19.0.tar.gz
     provides:
-      Bundle::DBD::Pg v3.18.0
-      DBD::Pg v3.18.0
+      Bundle::DBD::Pg v3.19.0
+      DBD::Pg v3.19.0
     requirements:
       DBI 1.614
-      ExtUtils::MakeMaker 6.58
+      ExtUtils::MakeMaker 7.64
       File::Temp 0
       Test::More 0.88
       Time::HiRes 0
@@ -1205,11 +1205,11 @@ DISTRIBUTIONS
       Test::More 0
       perl 5.00503
       warnings 0
-  DateTime-Format-ISO8601-0.17
-    pathname: D/DR/DROLSKY/DateTime-Format-ISO8601-0.17.tar.gz
+  DateTime-Format-ISO8601-0.19
+    pathname: T/TI/TIMLEGGE/DateTime-Format-ISO8601-0.19.tar.gz
     provides:
-      DateTime::Format::ISO8601 0.17
-      DateTime::Format::ISO8601::Types 0.17
+      DateTime::Format::ISO8601 0.19
+      DateTime::Format::ISO8601::Types 0.19
     requirements:
       Carp 0
       DateTime 1.45
@@ -2598,43 +2598,43 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       perl 5.008001
-  IO-Compress-2.217
-    pathname: P/PM/PMQS/IO-Compress-2.217.tar.gz
+  IO-Compress-2.219
+    pathname: P/PM/PMQS/IO-Compress-2.219.tar.gz
     provides:
-      Compress::Zlib 2.217
+      Compress::Zlib 2.219
       File::GlobMapper 1.001
-      IO::Compress 2.217
-      IO::Compress::Adapter::Bzip2 2.217
-      IO::Compress::Adapter::Deflate 2.217
-      IO::Compress::Adapter::Identity 2.217
-      IO::Compress::Base 2.217
-      IO::Compress::Base::Common 2.217
-      IO::Compress::Bzip2 2.217
-      IO::Compress::Deflate 2.217
-      IO::Compress::Gzip 2.217
-      IO::Compress::Gzip::Constants 2.217
-      IO::Compress::RawDeflate 2.217
-      IO::Compress::Zip 2.217
-      IO::Compress::Zip::Constants 2.217
-      IO::Compress::Zlib::Constants 2.217
-      IO::Compress::Zlib::Extra 2.217
-      IO::Uncompress::Adapter::Bunzip2 2.217
-      IO::Uncompress::Adapter::Identity 2.217
-      IO::Uncompress::Adapter::Inflate 2.217
-      IO::Uncompress::AnyInflate 2.217
-      IO::Uncompress::AnyUncompress 2.217
-      IO::Uncompress::Base 2.217
-      IO::Uncompress::Bunzip2 2.217
-      IO::Uncompress::Gunzip 2.217
-      IO::Uncompress::Inflate 2.217
-      IO::Uncompress::RawInflate 2.217
-      IO::Uncompress::Unzip 2.217
-      U64 2.217
-      Zlib::OldDeflate 2.217
-      Zlib::OldInflate 2.217
+      IO::Compress 2.219
+      IO::Compress::Adapter::Bzip2 2.219
+      IO::Compress::Adapter::Deflate 2.219
+      IO::Compress::Adapter::Identity 2.219
+      IO::Compress::Base 2.219
+      IO::Compress::Base::Common 2.219
+      IO::Compress::Bzip2 2.219
+      IO::Compress::Deflate 2.219
+      IO::Compress::Gzip 2.219
+      IO::Compress::Gzip::Constants 2.219
+      IO::Compress::RawDeflate 2.219
+      IO::Compress::Zip 2.219
+      IO::Compress::Zip::Constants 2.219
+      IO::Compress::Zlib::Constants 2.219
+      IO::Compress::Zlib::Extra 2.219
+      IO::Uncompress::Adapter::Bunzip2 2.219
+      IO::Uncompress::Adapter::Identity 2.219
+      IO::Uncompress::Adapter::Inflate 2.219
+      IO::Uncompress::AnyInflate 2.219
+      IO::Uncompress::AnyUncompress 2.219
+      IO::Uncompress::Base 2.219
+      IO::Uncompress::Bunzip2 2.219
+      IO::Uncompress::Gunzip 2.219
+      IO::Uncompress::Inflate 2.219
+      IO::Uncompress::RawInflate 2.219
+      IO::Uncompress::Unzip 2.219
+      U64 2.219
+      Zlib::OldDeflate 2.219
+      Zlib::OldInflate 2.219
     requirements:
-      Compress::Raw::Bzip2 2.217
-      Compress::Raw::Zlib 2.217
+      Compress::Raw::Bzip2 2.218
+      Compress::Raw::Zlib 2.218
       Encode 0
       ExtUtils::MakeMaker 0
       Scalar::Util 0
@@ -6443,17 +6443,18 @@ DISTRIBUTIONS
       Socket 0
       strict 0
       warnings 0
-  Test-Routine-0.031
-    pathname: R/RJ/RJBS/Test-Routine-0.031.tar.gz
+  Test-Routine-0.032
+    pathname: R/RJ/RJBS/Test-Routine-0.032.tar.gz
     provides:
-      Test::Routine 0.031
-      Test::Routine::Common 0.031
-      Test::Routine::Compositor 0.031
-      Test::Routine::Manual::Demo 0.031
-      Test::Routine::Runner 0.031
-      Test::Routine::Test 0.031
-      Test::Routine::Test::Role 0.031
-      Test::Routine::Util 0.031
+      Test::Routine 0.032
+      Test::Routine::Common 0.032
+      Test::Routine::Compositor 0.032
+      Test::Routine::Manual::Demo 0.032
+      Test::Routine::Runner 0.032
+      Test::Routine::Runner::NoSubtest 0.032
+      Test::Routine::Test 0.032
+      Test::Routine::Test::Role 0.032
+      Test::Routine::Util 0.032
     requirements:
       Carp 0
       Class::Load 0
