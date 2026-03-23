@@ -4,6 +4,8 @@ use strict;
 use warnings;
 
 use File::Path               ();
+use File::Spec               ();
+use Log::Log4perl            ();
 use MetaCPAN::Server::Config ();
 use Module::Pluggable search_path => ['MetaCPAN::Script'];    # plugins()
 use Module::Runtime ();
@@ -21,6 +23,14 @@ sub run {
     Module::Runtime::require_module( $plugins{$class} );
 
     my $config = MetaCPAN::Server::Config::config();
+
+    if ( my $log4perl_file = $config->{log4perl_file} ) {
+        my $log4perl_path = File::Spec->rel2abs( $log4perl_file,
+            $ENV{METACPAN_SERVER_HOME} || '.' );
+        if ( -f $log4perl_path ) {
+            Log::Log4perl::init($log4perl_path);
+        }
+    }
 
     foreach my $logger ( @{ $config->{logger} || [] } ) {
         my $path = $logger->{filename} or next;
