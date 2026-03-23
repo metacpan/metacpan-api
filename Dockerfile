@@ -47,7 +47,7 @@ USER metacpan
 
 CMD [ \
     "/uwsgi.sh", \
-    "--http-socket", ":8000" \
+    "--http", ":8000" \
 ]
 
 EXPOSE 8000
