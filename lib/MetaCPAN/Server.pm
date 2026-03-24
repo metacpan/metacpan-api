@@ -104,6 +104,9 @@ sub app {
                 Log::Log4perl::MDC->put( "web_request_id",
                     $env->{HTTP_X_METACPAN_REQUEST_ID} )
                     if $env->{HTTP_X_METACPAN_REQUEST_ID};
+                Log::Log4perl::MDC->put( "envoy_request_id",
+                    $env->{HTTP_X_REQUEST_ID} )
+                    if $env->{HTTP_X_REQUEST_ID};
                 $app->($env);
             };
         };
