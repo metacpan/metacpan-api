@@ -203,6 +203,7 @@ sub run {
                     };
                 }
                 if (   defined( $dist->distvname )
+                    && defined( $file_data->{release} )
                     && $dist->distvname eq $file_data->{release}
                     && $dist->cpanid eq $file_data->{author} )
                 {
