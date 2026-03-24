@@ -14,6 +14,12 @@ with 'MetaCPAN::Server::Role::JSONP';
 sub index : Chained('/') : PathPart('source') : CaptureArgs(0) {
 }
 
+# /source/ with no args has no search endpoint
+sub all : Chained('index') : PathPart('') : Args(0) {
+    my ( $self, $c ) = @_;
+    $c->detach( '/not_found', [] );
+}
+
 # e.g. /source/DOY/Moose-0.01/MANIFEST or /source/DOY/Moose-0.01/
 sub get : Chained('index') : PathPart('') : Args {
     my ( $self, $c, $author, $release, @path ) = @_;

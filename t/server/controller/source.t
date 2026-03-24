@@ -8,6 +8,20 @@ use MetaCPAN::TestHelpers  qw( test_cache_headers );
 use Test::More;
 
 my %tests = (
+    '/source' => {
+        code          => 404,
+        cache_control => 'private',
+        surrogate_key =>
+            'content_type=application/json content_type=application',
+        surrogate_control => undef
+    },
+    '/source/' => {
+        code          => 404,
+        cache_control => 'private',
+        surrogate_key =>
+            'content_type=application/json content_type=application',
+        surrogate_control => undef
+    },
     '/source/DOESNEXIST' => {
         code          => 404,
         cache_control => 'private',
