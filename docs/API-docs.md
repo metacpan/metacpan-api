@@ -77,6 +77,14 @@ Obviously anyone can use this endpoint, but we'll only consider changes to this 
 * [`https://fastapi.metacpan.org/v1/download_url/Try::Tiny?version=>0.21,<0.27&dev=1`](https://fastapi.metacpan.org/v1/download_url/Try::Tiny?version=>0.21,<0.27&dev=1)
 * [`https://fastapi.metacpan.org/v1/download_url/Try::Tiny?version=>0.21,<0.27,!=0.26&dev=1`](https://fastapi.metacpan.org/v1/download_url/Try::Tiny?version=>0.21,<0.27,!=0.26&dev=1)
 
+### `/download_url/distribution/{distribution}`
+
+The `/download_url/distribution` endpoint is similar to `/download_url/{module}` but accepts a distribution name instead of a module name. This provides an author-independent way to look up download URLs by distribution. It accepts the same optional `version` and `dev` query parameters and returns the same JSON response.
+
+* [`https://fastapi.metacpan.org/v1/download_url/distribution/Moose`](https://fastapi.metacpan.org/v1/download_url/distribution/Moose)
+* [`https://fastapi.metacpan.org/v1/download_url/distribution/DBIx-Class`](https://fastapi.metacpan.org/v1/download_url/distribution/DBIx-Class)
+* [`https://fastapi.metacpan.org/v1/download_url/distribution/Try-Tiny?version=>0.21,<0.27`](https://fastapi.metacpan.org/v1/download_url/distribution/Try-Tiny?version=>0.21,<0.27)
+
 ### `/release/{distribution}`
 
 ### `/release/{author}/{release}`
