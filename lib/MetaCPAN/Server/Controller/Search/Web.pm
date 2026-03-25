@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Moose;
+use Try::Tiny qw( catch try );
 
 BEGIN { extends 'MetaCPAN::Server::Controller' }
 
@@ -19,7 +20,16 @@ sub first : Chained('/search/index') : PathPart('first') : Args(0) {
     my $args = $c->req->params;
 
     my $model   = $c->model('Search');
-    my $results = $model->search_for_first_result( $args->{q} );
+    my $results = try {
+        $model->search_for_first_result( $args->{q} );
+    }
+    catch {
+        die $_
+            unless ref $_
+            && $_->isa('Search::Elasticsearch::Error')
+            && $_->is('Request');
+        $c->detach( '/bad_request', ['Invalid search query'] );
+    };
 
     $c->stash_or_detach($results);
 }
@@ -36,7 +46,16 @@ sub web : Chained('/search/index') : PathPart('web') : Args(0) {
     my $collapsed = $args->{collapsed};
 
     my $model   = $c->model('Search');
-    my $results = $model->search_web( $query, $page, $size, $collapsed );
+    my $results = try {
+        $model->search_web( $query, $page, $size, $collapsed );
+    }
+    catch {
+        die $_
+            unless ref $_
+            && $_->isa('Search::Elasticsearch::Error')
+            && $_->is('Request');
+        $c->detach( '/bad_request', ['Invalid search query'] );
+    };
 
     $c->stash($results);
 }
