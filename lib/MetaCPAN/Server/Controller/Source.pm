@@ -14,6 +14,12 @@ with 'MetaCPAN::Server::Role::JSONP';
 sub index : Chained('/') : PathPart('source') : CaptureArgs(0) {
 }
 
+# /source/ with no args has no search endpoint
+sub all : Chained('index') : PathPart('') : Args(0) {
+    my ( $self, $c ) = @_;
+    $c->detach( '/not_found', [] );
+}
+
 # e.g. /source/DOY/Moose-0.01/MANIFEST or /source/DOY/Moose-0.01/
 sub get : Chained('index') : PathPart('') : Args {
     my ( $self, $c, $author, $release, @path ) = @_;
@@ -24,6 +30,11 @@ sub get : Chained('index') : PathPart('') : Args {
     my $file = $c->model('Source')->path( $author, $release, @path )
         or $c->detach( '/not_found', [] );
     if ( $file->is_dir ) {
+        my $req_path = $c->req->path;
+        if ( $req_path !~ m{/\z} ) {
+            $c->res->redirect( $c->req->uri . '/', 301 );
+            $c->detach;
+        }
         my $path = '/source/' . join( '/', $author, $release, @path );
         my $env  = $c->req->env;
         local $env->{PATH_INFO}   = '/';

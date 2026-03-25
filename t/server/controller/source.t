@@ -8,12 +8,34 @@ use MetaCPAN::TestHelpers  qw( test_cache_headers );
 use Test::More;
 
 my %tests = (
+    '/source' => {
+        code          => 404,
+        cache_control => 'private',
+        surrogate_key =>
+            'content_type=application/json content_type=application',
+        surrogate_control => undef
+    },
+    '/source/' => {
+        code          => 404,
+        cache_control => 'private',
+        surrogate_key =>
+            'content_type=application/json content_type=application',
+        surrogate_control => undef
+    },
     '/source/DOESNEXIST' => {
         code          => 404,
         cache_control => 'private',
         surrogate_key =>
             'content_type=application/json content_type=application',
         surrogate_control => undef
+    },
+    '/source/DOY/Moose-0.01' => {
+        code          => 301,
+        cache_control => undef,
+        surrogate_key =>
+            'author=DOY content_type=application/json content_type=application',
+        surrogate_control =>
+            'max-age=31556952, stale-while-revalidate=86400, stale-if-error=2592000'
     },
     '/source/DOY/Moose-0.01/' => {
         code          => 200,
@@ -72,7 +94,14 @@ test_psgi app, sub {
 
         test_cache_headers( $res, $v );
 
-        if ( $k eq '/source/Moose' ) {
+        if ( $k eq '/source/DOY/Moose-0.01' ) {
+            is(
+                $res->header('location'),
+                'http://localhost/source/DOY/Moose-0.01/',
+                'redirect adds trailing slash'
+            );
+        }
+        elsif ( $k eq '/source/Moose' ) {
             like( $res->content, qr/package Moose/, 'Moose source' );
             is( $res->header('content-type'), 'text/plain', 'Content-type' );
 
