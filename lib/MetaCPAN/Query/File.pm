@@ -113,6 +113,7 @@ my %special_files = (
             THANKS
             ToDo
             Todo
+            AI_POLICY
         ) ),
     ],
 );
