@@ -767,10 +767,10 @@ DISTRIBUTIONS
       Time::HiRes 0
       XSLoader 0
       perl 5.008
-  Clone-0.48
-    pathname: A/AT/ATOOMIC/Clone-0.48.tar.gz
+  Clone-0.50
+    pathname: A/AT/ATOOMIC/Clone-0.50.tar.gz
     provides:
-      Clone 0.48
+      Clone 0.50
     requirements:
       ExtUtils::MakeMaker 0
   Clone-Choose-0.010
@@ -2686,17 +2686,17 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Net::SSLeay 1.46
       Scalar::Util 0
-  IPC-Run-20250809.0
-    pathname: N/NJ/NJM/IPC-Run-20250809.0.tar.gz
+  IPC-Run-20260322.0
+    pathname: T/TO/TODDR/IPC-Run-20260322.0.tar.gz
     provides:
-      IPC::Run 20250809.0
-      IPC::Run::Debug 20250809.0
-      IPC::Run::IO 20250809.0
-      IPC::Run::Timer 20250809.0
-      IPC::Run::Win32Helper 20250809.0
-      IPC::Run::Win32IO 20250809.0
-      IPC::Run::Win32Process 20250809.0
-      IPC::Run::Win32Pump 20250809.0
+      IPC::Run 20260322.0
+      IPC::Run::Debug 20260322.0
+      IPC::Run::IO 20260322.0
+      IPC::Run::Timer 20260322.0
+      IPC::Run::Win32Helper 20260322.0
+      IPC::Run::Win32IO 20260322.0
+      IPC::Run::Win32Process 20260322.0
+      IPC::Run::Win32Pump 20260322.0
     requirements:
       ExtUtils::MakeMaker 0
       Test::More 0.47
@@ -3129,21 +3129,21 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  MetaCPAN-Pod-HTML-0.004000
-    pathname: H/HA/HAARG/MetaCPAN-Pod-HTML-0.004000.tar.gz
+  MetaCPAN-Pod-HTML-0.004001
+    pathname: H/HA/HAARG/MetaCPAN-Pod-HTML-0.004001.tar.gz
     provides:
-      MetaCPAN::Pod::HTML 0.004000
-      MetaCPAN::Pod::XHTML 0.004000
-      Pod::Simple::Role::StripVerbatimIndent 0.004000
-      Pod::Simple::Role::WithHighlightConfig 0.004000
-      Pod::Simple::Role::XHTML::HTML5 0.004000
-      Pod::Simple::Role::XHTML::RepairLinkEncoding 0.004000
-      Pod::Simple::Role::XHTML::WithAccurateTargets 0.004000
-      Pod::Simple::Role::XHTML::WithErrata 0.004000
-      Pod::Simple::Role::XHTML::WithExtraTargets 0.004000
-      Pod::Simple::Role::XHTML::WithHighlightConfig 0.004000
-      Pod::Simple::Role::XHTML::WithLinkMappings 0.004000
-      Pod::Simple::Role::XHTML::WithPostProcess 0.004000
+      MetaCPAN::Pod::HTML 0.004001
+      MetaCPAN::Pod::XHTML 0.004001
+      Pod::Simple::Role::StripVerbatimIndent 0.004001
+      Pod::Simple::Role::WithHighlightConfig 0.004001
+      Pod::Simple::Role::XHTML::HTML5 0.004001
+      Pod::Simple::Role::XHTML::RepairLinkEncoding 0.004001
+      Pod::Simple::Role::XHTML::WithAccurateTargets 0.004001
+      Pod::Simple::Role::XHTML::WithErrata 0.004001
+      Pod::Simple::Role::XHTML::WithExtraTargets 0.004001
+      Pod::Simple::Role::XHTML::WithHighlightConfig 0.004001
+      Pod::Simple::Role::XHTML::WithLinkMappings 0.004001
+      Pod::Simple::Role::XHTML::WithPostProcess 0.004001
     requirements:
       ExtUtils::MakeMaker 0
       HTML::Entities 3.69
@@ -3362,10 +3362,10 @@ DISTRIBUTIONS
       IO::Socket::INET 0
       IPC::Run 0
       Test::More 0
-  Mojo-Pg-4.28
-    pathname: S/SR/SRI/Mojo-Pg-4.28.tar.gz
+  Mojo-Pg-4.29
+    pathname: S/SR/SRI/Mojo-Pg-4.29.tar.gz
     provides:
-      Mojo::Pg 4.28
+      Mojo::Pg 4.29
       Mojo::Pg::Database undef
       Mojo::Pg::Migrations undef
       Mojo::Pg::PubSub undef
@@ -7374,11 +7374,11 @@ DISTRIBUTIONS
       Fcntl 0
       URI 1.10
       perl 5.008001
-  XML-Parser-2.51
-    pathname: T/TO/TODDR/XML-Parser-2.51.tar.gz
+  XML-Parser-2.54
+    pathname: T/TO/TODDR/XML-Parser-2.54.tar.gz
     provides:
-      XML::Parser 2.51
-      XML::Parser::Expat 2.51
+      XML::Parser 2.54
+      XML::Parser::Expat 2.54
       XML::Parser::Style::Debug undef
       XML::Parser::Style::Objects undef
       XML::Parser::Style::Stream undef
@@ -7388,33 +7388,33 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       File::ShareDir 0
       File::ShareDir::Install 0.06
-      perl 5.004050
-  XML-XPath-1.48
-    pathname: M/MA/MANWAR/XML-XPath-1.48.tar.gz
+      perl 5.008
+  XML-XPath-1.49
+    pathname: M/MA/MANWAR/XML-XPath-1.49.tar.gz
     provides:
-      XML::XPath 1.48
-      XML::XPath::Boolean 1.48
-      XML::XPath::Builder 1.48
-      XML::XPath::Expr 1.48
-      XML::XPath::Function 1.48
-      XML::XPath::Literal 1.48
-      XML::XPath::LocationPath 1.48
-      XML::XPath::Node 1.48
-      XML::XPath::Node::Attribute 1.48
-      XML::XPath::Node::AttributeImpl 1.48
-      XML::XPath::Node::Comment 1.48
-      XML::XPath::Node::Element 1.48
-      XML::XPath::Node::Namespace 1.48
-      XML::XPath::Node::PI 1.48
-      XML::XPath::Node::Text 1.48
-      XML::XPath::NodeSet 1.48
-      XML::XPath::Number 1.48
-      XML::XPath::Parser 1.48
-      XML::XPath::PerlSAX 1.48
-      XML::XPath::Root 1.48
-      XML::XPath::Step 1.48
-      XML::XPath::Variable 1.48
-      XML::XPath::XMLParser 1.48
+      XML::XPath 1.49
+      XML::XPath::Boolean 1.49
+      XML::XPath::Builder 1.49
+      XML::XPath::Expr 1.49
+      XML::XPath::Function 1.49
+      XML::XPath::Literal 1.49
+      XML::XPath::LocationPath 1.49
+      XML::XPath::Node 1.49
+      XML::XPath::Node::Attribute 1.49
+      XML::XPath::Node::AttributeImpl 1.49
+      XML::XPath::Node::Comment 1.49
+      XML::XPath::Node::Element 1.49
+      XML::XPath::Node::Namespace 1.49
+      XML::XPath::Node::PI 1.49
+      XML::XPath::Node::Text 1.49
+      XML::XPath::NodeSet 1.49
+      XML::XPath::Number 1.49
+      XML::XPath::Parser 1.49
+      XML::XPath::PerlSAX 1.49
+      XML::XPath::Root 1.49
+      XML::XPath::Step 1.49
+      XML::XPath::Variable 1.49
+      XML::XPath::XMLParser 1.49
     requirements:
       ExtUtils::MakeMaker 0
       Path::Tiny 0.076
