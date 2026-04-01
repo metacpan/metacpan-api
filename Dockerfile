@@ -97,6 +97,18 @@ RUN mkdir -p var/t && chown metacpan var/t
 USER metacpan
 CMD [ "prove", "-l", "-r", "-j", "2", "t" ]
 
+################### Dev Container (linting + tidying)
+FROM test AS dev
+SHELL [ "/bin/bash", "-euo", "pipefail", "-c" ]
+
+USER root
+
+COPY bin/install-precious /tmp/install-precious
+RUN /tmp/install-precious /usr/local/bin && rm /tmp/install-precious
+
+USER metacpan
+CMD [ "bash" ]
+
 ################### Production Server
 FROM server AS production
 
