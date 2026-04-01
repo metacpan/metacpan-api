@@ -3,8 +3,10 @@ package MetaCPAN::Server::Controller::User::Favorite;
 use strict;
 use warnings;
 
+use List::Util         qw( uniq );
+use MetaCPAN::ESConfig qw( es_doc_path );
+use MetaCPAN::Util     qw( true false hit_total );
 use Moose;
-use MetaCPAN::Util qw( true false );
 
 BEGIN { extends 'Catalyst::Controller::REST' }
 
@@ -36,17 +38,41 @@ sub index_POST {
 
 sub index_DELETE {
     my ( $self, $c, $distribution ) = @_;
-    my $favorite
-        = $c->model('ESModel')
-        ->doc('favorite')
-        ->get( { user => $c->user->id, distribution => $distribution } );
-    if ($favorite) {
-        $favorite->delete( { refresh => true } );
-        $c->purge_author_key( $favorite->author )
-            if $favorite->author;
+    my $user_id = $c->user->id;
+
+    my $query = {
+        bool => {
+            must => [
+                { term => { user         => $user_id } },
+                { term => { distribution => $distribution } },
+            ],
+        },
+    };
+
+    my $res = $c->model('ES')->search(
+        es_doc_path('favorite'),
+        body => {
+            query => $query,
+            size  => 100,
+        },
+    );
+
+    if ( hit_total($res) ) {
+        my @authors = uniq grep {defined}
+            map { $_->{_source}{author} } @{ $res->{hits}{hits} };
+
+        $c->model('ES')->delete_by_query(
+            es_doc_path('favorite'),
+            body    => { query => $query },
+            refresh => true,
+        );
+
+        for my $author (@authors) {
+            $c->purge_author_key($author);
+        }
         $c->purge_dist_key($distribution);
-        $self->status_ok( $c,
-            entity => $favorite->meta->get_data($favorite) );
+
+        $self->status_ok( $c, entity => $res->{hits}{hits}[0]{_source}, );
     }
     else {
         $self->status_not_found( $c, message => 'Entity could not be found' );
