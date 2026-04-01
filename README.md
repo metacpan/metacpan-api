@@ -138,6 +138,21 @@ For a full list of options:
 ./bin/run bin/metacpan release --help
 ```
 
+## Linting and Tidying
+
+Use the `api-dev` Docker service to run [precious](https://github.com/houseabsolute/precious) for linting and tidying. Use `bin/dc` instead of `docker compose` to ensure git worktrees are handled correctly.
+
+```sh
+# tidy all files
+bin/dc run --rm api-dev precious tidy --all
+
+# lint all files
+bin/dc run --rm api-dev precious lint --all
+
+# lint only files changed since a branch
+bin/dc run --rm api-dev precious lint --git-diff-from origin/master
+```
+
 ## Contributing
 
 If you'd like to get involved, find us at #metacpan on irc.perl.org or open an

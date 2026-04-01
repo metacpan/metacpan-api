@@ -37,6 +37,19 @@ services:
     networks:
       - elasticsearch
 
+  api-dev:
+    profiles:
+      - dev
+    build:
+      context: .
+      target: dev
+    volumes:
+      - './:/app/'
+      - '/app/local'
+      - '${GIT_COMMON_DIR:-/dev/null}:${GIT_COMMON_DIR:-/dev/null}:ro'
+    environment:
+      COLUMNS: 120
+
   elasticsearch-test:
     profiles:
       - test
