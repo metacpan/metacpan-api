@@ -7,6 +7,7 @@ use MetaCPAN::Util qw(
     extract_section
     generate_sid
     numify_version
+    paginate
     strip_pod
 );
 
@@ -111,6 +112,44 @@ EOF
 
     my $section = extract_section( $content, 'NAME' );
     is( $section, undef, 'NAMED did not match requested section NAME' );
+}
+
+# paginate tests
+
+{
+    # basic: page 1, size 10 => from 0
+    is_deeply( [ paginate( 1, 10 ) ], [ 1, 10, 0 ], 'page 1 size 10' );
+
+    # page 2, size 50 => from 50
+    is_deeply( [ paginate( 2, 50 ) ], [ 2, 50, 50 ], 'page 2 size 50' );
+
+    # defaults: undef page/size get clamped to 1
+    is_deeply( [ paginate( undef, 10 ) ], [ 1, 10, 0 ],   'undef page => 1' );
+    is_deeply( [ paginate( 1,     undef ) ], [ 1, 1, 0 ], 'undef size => 1' );
+
+    # negative values get clamped to 1
+    is_deeply( [ paginate( -5, 10 ) ], [ 1, 10, 0 ], 'negative page => 1' );
+    is_deeply( [ paginate( 1,  -3 ) ], [ 1, 1,  0 ], 'negative size => 1' );
+    is_deeply( [ paginate( 0,  10 ) ], [ 1, 10, 0 ], 'zero page => 1' );
+    is_deeply( [ paginate( 1,  0 ) ],  [ 1, 1,  0 ], 'zero size => 1' );
+
+    # boundary: page*size == MAX_RESULT_WINDOW (1000) is allowed
+    # ES allows from+size <= max_result_window, and from+size == page*size
+    is_deeply(
+        [ paginate( 4, 250 ) ],
+        [ 4, 250, 750 ],
+        'page*size == 1000 is allowed (not off-by-one)'
+    );
+    is_deeply(
+        [ paginate( 10, 100 ) ],
+        [ 10, 100, 900 ],
+        'page*size == 1000 with different values'
+    );
+
+    # beyond MAX_RESULT_WINDOW returns empty list
+    is_deeply( [ paginate( 5, 250 ) ], [], 'page*size > 1000 returns empty' );
+    is_deeply( [ paginate( 100, 250 ) ],
+        [], 'way beyond window returns empty' );
 }
 
 done_testing;

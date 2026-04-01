@@ -40,11 +40,23 @@ use Sub::Exporter -setup => {
         is_bool
         to_bool
         MAX_RESULT_WINDOW
+        paginate
     ) ]
 };
 
 # Limit the maximum result window to 1000, really should be enough!
 use constant MAX_RESULT_WINDOW => 1000;
+
+# Returns ($page, $size, $from) or empty list if the request exceeds
+# the ES result window.  Use strict ">" so that page*size == MAX_RESULT_WINDOW
+# (e.g. page 4 × 250 = 1000) is still valid — ES allows from+size ≤ window.
+sub paginate {
+    my ( $page, $size ) = @_;
+    $page = 1 if !defined $page || $page < 1;
+    $size = 1 if !defined $size || $size < 1;
+    return if $page * $size > MAX_RESULT_WINDOW;
+    return ( $page, $size, ( $page - 1 ) * $size );
+}
 
 sub true ();
 *true = \&Cpanel::JSON::XS::true;
