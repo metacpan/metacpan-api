@@ -2,7 +2,7 @@ package MetaCPAN::TestServer;
 
 use MetaCPAN::Moose;
 
-use MetaCPAN::ESConfig               qw( es_config );
+use MetaCPAN::ESConfig               qw( es_config es_doc_path );
 use MetaCPAN::Script::Author         ();
 use MetaCPAN::Script::BusFactor      ();
 use MetaCPAN::Script::Cover          ();
@@ -291,6 +291,32 @@ sub prepare_user_test_data {
     );
 
     $self->_create_test_favorites( $user->id );
+
+    # Favorite fixture with a duplicate (different ES doc ID) for delete tests.
+    my $user_id = $user->id;
+
+    MetaCPAN::Server->model('ESModel')->doc('favorite')->put(
+        {
+            user         => $user_id,
+            distribution => 'WWW-Mechanize',
+            release      => 'WWW-Mechanize-1.00',
+            author       => 'JESSE',
+        },
+        { refresh => true }
+    );
+
+    $self->es_client->index(
+        es_doc_path('favorite'),
+        id   => 'duplicate_favorite_doc',
+        body => {
+            user         => $user_id,
+            distribution => 'WWW-Mechanize',
+            release      => 'WWW-Mechanize-2.00',
+            author       => 'SIMBABQUE',
+            date         => '2024-01-01T00:00:00',
+        },
+        refresh => 'true',
+    );
 }
 
 sub _create_test_favorites {
