@@ -12,6 +12,8 @@ use Digest::SHA      qw( sha1_base64 sha1_hex );
 use Encode           qw( decode_utf8 );
 use File::Basename   ();
 use File::Spec       ();
+use List::Util       qw( max min );
+use Types::Standard  qw( Int );
 use Ref::Util        qw(
     is_arrayref
     is_hashref
@@ -40,20 +42,25 @@ use Sub::Exporter -setup => {
         is_bool
         to_bool
         MAX_RESULT_WINDOW
+        MAX_PAGE_SIZE
         paginate
     ) ]
 };
 
 # Limit the maximum result window to 1000, really should be enough!
 use constant MAX_RESULT_WINDOW => 1000;
+use constant MAX_PAGE_SIZE     => 250;
 
 # Returns ($page, $size, $from) or empty list if the request exceeds
 # the ES result window.  Use strict ">" so that page*size == MAX_RESULT_WINDOW
 # (e.g. page 4 × 250 = 1000) is still valid — ES allows from+size ≤ window.
 sub paginate {
     my ( $page, $size ) = @_;
-    $page = 1 if !defined $page || $page < 1;
-    $size = 1 if !defined $size || $size < 1;
+    $page = Int->check($page) ? max( 1, $page ) : 1;
+    $size
+        = Int->check($size) && $size >= 1
+        ? min( MAX_PAGE_SIZE, $size )
+        : MAX_PAGE_SIZE;
     return if $page * $size > MAX_RESULT_WINDOW;
     return ( $page, $size, ( $page - 1 ) * $size );
 }
