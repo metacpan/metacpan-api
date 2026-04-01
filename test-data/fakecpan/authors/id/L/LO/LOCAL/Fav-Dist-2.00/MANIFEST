@@ -1,0 +1,6 @@
+MANIFEST
+lib/Fav/Dist.pm
+Makefile.PL
+t/00-nop.t
+META.json
+META.yml

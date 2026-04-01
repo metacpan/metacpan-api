@@ -37,9 +37,9 @@ test_psgi app, sub {
             POST '/user/favorite?access_token=testing',
             Content_Type => 'application/json',
             Content      => encode_json( {
-                distribution => 'Moose',
-                release      => 'Moose-1.10',
-                author       => 'DOY'
+                distribution => 'Scripts',
+                release      => 'Scripts-0.01',
+                author       => 'MO'
             } )
         ),
         'POST favorite'
@@ -51,8 +51,10 @@ test_psgi app, sub {
 
     my $json = decode_json_ok($res);
     is( $json->{user}, $user->{id}, 'user is ' . $user->{id} );
-    ok( $res = $cb->( DELETE '/user/favorite/Moose?access_token=testing' ),
-        'DELETE /user/favorite/MO/Moose' );
+    ok(
+        $res = $cb->( DELETE '/user/favorite/Scripts?access_token=testing' ),
+        'DELETE /user/favorite/Scripts'
+    );
     is( $res->code, 200, 'status ok' );
     ok( $res = $cb->( GET "$location?access_token=testing" ),
         "GET $location" );

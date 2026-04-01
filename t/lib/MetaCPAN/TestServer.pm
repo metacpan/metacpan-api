@@ -247,6 +247,34 @@ sub prepare_user_test_data {
         ),
         'put bot user'
     );
+
+    $self->_create_test_favorites( $user->id );
+}
+
+sub _create_test_favorites {
+    my ( $self, $user_id ) = @_;
+
+    for my $fav (
+        {
+            distribution => 'Fav-Dist',
+            release      => 'Fav-Dist-2.00',
+            author       => 'LOCAL',
+        },
+        )
+    {
+        ok(
+            MetaCPAN::Server->model('ESModel')->doc('favorite')->put(
+                {
+                    user         => $user_id,
+                    author       => $fav->{author},
+                    release      => $fav->{release},
+                    distribution => $fav->{distribution},
+                },
+                { refresh => true }
+            ),
+            "create test favorite for $fav->{distribution}"
+        );
+    }
 }
 
 __PACKAGE__->meta->make_immutable;
