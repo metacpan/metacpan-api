@@ -159,6 +159,15 @@ subtest 'paginate' => sub {
         'max page accepted'
     );
     is_deeply( [ paginate( 1001, 1 ) ], [], 'page beyond window' );
+
+    # Custom max_result_window parameter.
+    is_deeply(
+        [ paginate( 20, 250, 5000 ) ],
+        [ 20, 250, 4750 ],
+        'custom window: page*size == 5000 is allowed'
+    );
+    is_deeply( [ paginate( 21, 250, 5000 ) ],
+        [], 'custom window: page*size > 5000 returns empty' );
     is_deeply( [ paginate( 1, 500 ) ],  [ 1, 250, 0 ], 'size > 250 capped' );
     is_deeply( [ paginate( 1, 1000 ) ], [ 1, 250, 0 ], 'size = 1000 capped' );
 

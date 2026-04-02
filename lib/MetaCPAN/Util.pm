@@ -42,26 +42,29 @@ use Sub::Exporter -setup => {
         is_bool
         to_bool
         MAX_RESULT_WINDOW
+        MAX_FAVORITE_RESULT_WINDOW
         MAX_PAGE_SIZE
         paginate
     ) ]
 };
 
-# Limit the maximum result window to 1000, really should be enough!
-use constant MAX_RESULT_WINDOW => 1000;
-use constant MAX_PAGE_SIZE     => 250;
+# Must not exceed the ES index.max_result_window setting (default 10,000).
+use constant MAX_RESULT_WINDOW          => 1000;
+use constant MAX_FAVORITE_RESULT_WINDOW => 5000;
+use constant MAX_PAGE_SIZE              => 250;
 
 # Returns ($page, $size, $from) or empty list if the request exceeds
-# the ES result window.  Use strict ">" so that page*size == MAX_RESULT_WINDOW
-# (e.g. page 4 × 250 = 1000) is still valid — ES allows from+size ≤ window.
+# the configured result window.  Use strict ">" so that page*size equal to
+# the window (e.g. page 4 × 250 = 1000) is still valid — ES allows from+size ≤ window.
 sub paginate {
-    my ( $page, $size ) = @_;
+    my ( $page, $size, $max_result_window ) = @_;
+    $max_result_window //= MAX_RESULT_WINDOW;
     $page = Int->check($page) ? max( 1, $page ) : 1;
     $size
         = Int->check($size) && $size >= 1
         ? min( MAX_PAGE_SIZE, $size )
         : MAX_PAGE_SIZE;
-    return if $page * $size > MAX_RESULT_WINDOW;
+    return if $page * $size > $max_result_window;
     return ( $page, $size, ( $page - 1 ) * $size );
 }
 

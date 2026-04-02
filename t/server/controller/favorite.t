@@ -37,12 +37,12 @@ test_psgi app, sub {
         );
     };
 
-    subtest 'page beyond MAX_RESULT_WINDOW returns empty' => sub {
+    subtest 'page beyond MAX_FAVORITE_RESULT_WINDOW returns empty' => sub {
         ok(
             my $res = $cb->(
-                GET '/favorite/by_user/DOESNOTEXIST?page=100&page_size=250'
+                GET '/favorite/by_user/DOESNOTEXIST?page=21&page_size=250'
             ),
-            'GET with page*size > MAX_RESULT_WINDOW'
+            'GET with page*size > MAX_FAVORITE_RESULT_WINDOW'
         );
         is( $res->code, 200, 'code 200' );
         my $json = decode_json_ok($res);
@@ -53,12 +53,12 @@ test_psgi app, sub {
         );
     };
 
-    subtest 'page at MAX_RESULT_WINDOW boundary is allowed' => sub {
+    subtest 'page at MAX_FAVORITE_RESULT_WINDOW boundary is allowed' => sub {
         ok(
             my $res = $cb->(
-                GET '/favorite/by_user/DOESNOTEXIST?page=4&page_size=250'
+                GET '/favorite/by_user/DOESNOTEXIST?page=20&page_size=250'
             ),
-            'GET with page*size == MAX_RESULT_WINDOW'
+            'GET with page*size == MAX_FAVORITE_RESULT_WINDOW'
         );
         is( $res->code, 200, 'code 200' );
         my $json = decode_json_ok($res);
