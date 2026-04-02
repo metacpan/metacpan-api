@@ -98,6 +98,50 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
+  Archive-Libarchive-0.09
+    pathname: P/PL/PLICEASE/Archive-Libarchive-0.09.tar.gz
+    provides:
+      Archive::Libarchive 0.09
+      Archive::Libarchive::API 0.09
+      Archive::Libarchive::Archive 0.09
+      Archive::Libarchive::ArchiveRead 0.09
+      Archive::Libarchive::ArchiveWrite 0.09
+      Archive::Libarchive::DiskRead 0.09
+      Archive::Libarchive::DiskWrite 0.09
+      Archive::Libarchive::Entry 0.09
+      Archive::Libarchive::EntryLinkResolver 0.09
+      Archive::Libarchive::Lib 0.09
+      Archive::Libarchive::Lib::Archive 0.09
+      Archive::Libarchive::Lib::ArchiveRead 0.09
+      Archive::Libarchive::Lib::ArchiveWrite 0.09
+      Archive::Libarchive::Lib::Constants 0.09
+      Archive::Libarchive::Lib::DiskRead 0.09
+      Archive::Libarchive::Lib::DiskWrite 0.09
+      Archive::Libarchive::Lib::Entry 0.09
+      Archive::Libarchive::Lib::EntryLinkResolver 0.09
+      Archive::Libarchive::Lib::Match 0.09
+      Archive::Libarchive::Lib::Unbound 0.09
+      Archive::Libarchive::Match 0.09
+    requirements:
+      ExtUtils::MakeMaker 0
+      FFI::C::Stat 0
+      FFI::CheckLib 0.30
+      FFI::Platypus 1.38
+      FFI::Platypus::Type::Enum 0.05
+      FFI::Platypus::Type::PtrObject 0
+      Ref::Util 0
+      perl 5.020
+  Archive-Libarchive-Extract-0.03
+    pathname: P/PL/PLICEASE/Archive-Libarchive-Extract-0.03.tar.gz
+    provides:
+      Archive::Libarchive::Extract 0.03
+    requirements:
+      Archive::Libarchive 0.04
+      ExtUtils::MakeMaker 0
+      File::chdir 0
+      Path::Tiny 0
+      Ref::Util 0
+      perl 5.020000
   Archive-Tar-3.04
     pathname: B/BI/BINGOS/Archive-Tar-3.04.tar.gz
     provides:
@@ -2231,6 +2275,110 @@ DISTRIBUTIONS
       Module::CPANfile 0
       Test::More 0.88
       version 0.76
+  FFI-C-Stat-0.03
+    pathname: P/PL/PLICEASE/FFI-C-Stat-0.03.tar.gz
+    provides:
+      FFI::C::Stat 0.03
+    requirements:
+      ExtUtils::MakeMaker 0
+      FFI::Build::MM 0.83
+      FFI::Platypus 1.00
+      Ref::Util 0
+      perl 5.008004
+  FFI-CheckLib-0.31
+    pathname: P/PL/PLICEASE/FFI-CheckLib-0.31.tar.gz
+    provides:
+      FFI::CheckLib 0.31
+    requirements:
+      ExtUtils::MakeMaker 0
+      File::Which 0
+      List::Util 1.33
+      perl 5.006
+  FFI-Platypus-2.11
+    pathname: P/PL/PLICEASE/FFI-Platypus-2.11.tar.gz
+    provides:
+      FFI::Build 2.11
+      FFI::Build::File::Base 2.11
+      FFI::Build::File::C 2.11
+      FFI::Build::File::CXX 2.11
+      FFI::Build::File::Library 2.11
+      FFI::Build::File::Object 2.11
+      FFI::Build::MM 2.11
+      FFI::Build::MM::FBX 2.11
+      FFI::Build::Platform 2.11
+      FFI::Build::Plugin 2.11
+      FFI::Build::Plugin::Foo1 undef
+      FFI::Build::Plugin::Foo2 undef
+      FFI::Build::PluginData 2.11
+      FFI::Platypus 2.11
+      FFI::Platypus::API 2.11
+      FFI::Platypus::Buffer 2.11
+      FFI::Platypus::Bundle 2.11
+      FFI::Platypus::Closure 2.11
+      FFI::Platypus::ClosureData 2.11
+      FFI::Platypus::Constant 2.11
+      FFI::Platypus::DL 2.11
+      FFI::Platypus::Function 2.11
+      FFI::Platypus::Function::Function 2.11
+      FFI::Platypus::Function::Wrapper 2.11
+      FFI::Platypus::Internal 2.11
+      FFI::Platypus::Lang 2.11
+      FFI::Platypus::Lang::ASM 2.11
+      FFI::Platypus::Lang::C 2.11
+      FFI::Platypus::Lang::Win32 2.11
+      FFI::Platypus::Legacy 2.11
+      FFI::Platypus::Memory 2.11
+      FFI::Platypus::Record 2.11
+      FFI::Platypus::Record::Meta 2.11
+      FFI::Platypus::Record::TieArray 2.11
+      FFI::Platypus::ShareConfig 2.11
+      FFI::Platypus::Type 2.11
+      FFI::Platypus::Type::PointerSizeBuffer 2.11
+      FFI::Platypus::Type::StringArray 2.11
+      FFI::Platypus::Type::StringPointer 2.11
+      FFI::Platypus::Type::WideString 2.11
+      FFI::Platypus::TypeParser 2.11
+      FFI::Platypus::TypeParser::Version0 2.11
+      FFI::Platypus::TypeParser::Version1 2.11
+      FFI::Platypus::TypeParser::Version2 2.11
+      FFI::Probe 2.11
+      FFI::Probe::Runner 2.11
+      FFI::Probe::Runner::Builder 2.11
+      FFI::Probe::Runner::Result 2.11
+      FFI::Temp 2.11
+    requirements:
+      Capture::Tiny 0
+      ExtUtils::CBuilder 0
+      ExtUtils::MakeMaker 7.12
+      ExtUtils::ParseXS 3.30
+      FFI::CheckLib 0.05
+      File::Spec::Functions 0
+      IPC::Cmd 0
+      JSON::PP 0
+      List::Util 1.45
+      autodie 0
+      constant 1.32
+      parent 0
+      perl 5.008004
+  FFI-Platypus-Type-Enum-0.06
+    pathname: P/PL/PLICEASE/FFI-Platypus-Type-Enum-0.06.tar.gz
+    provides:
+      FFI::Platypus::Type::Enum 0.06
+    requirements:
+      ExtUtils::MakeMaker 0
+      Ref::Util 0
+      constant 1.32
+      perl 5.008001
+  FFI-Platypus-Type-PtrObject-0.03
+    pathname: P/PL/PLICEASE/FFI-Platypus-Type-PtrObject-0.03.tar.gz
+    provides:
+      FFI::Platypus::Type::PtrObject 0.03
+    requirements:
+      ExtUtils::MakeMaker 0
+      FFI::Build::MM 0.83
+      FFI::Platypus 1.11
+      Ref::Util 0
+      perl 5.008001
   File-Find-Rule-0.35
     pathname: R/RC/RCLAMP/File-Find-Rule-0.35.tar.gz
     provides:

@@ -2,9 +2,16 @@ package MetaCPAN::Server::Model::Source;
 use strict;
 use warnings;
 
-use Archive::Any    ();
-use MetaCPAN::Types qw( Path Uri );
-use MetaCPAN::Util  ();
+use Archive::Libarchive 0.04 qw(
+    ARCHIVE_EXTRACT_SECURE_NOABSOLUTEPATHS
+    ARCHIVE_EXTRACT_SECURE_NODOTDOT
+    ARCHIVE_EXTRACT_SECURE_SYMLINKS
+    ARCHIVE_EXTRACT_TIME
+);
+use Archive::Libarchive::DiskWrite ();
+use Archive::Libarchive::Extract   ();
+use MetaCPAN::Types                qw( Path Uri );
+use MetaCPAN::Util                 ();
 use Moose;
 use Path::Tiny ();
 
@@ -129,48 +136,67 @@ sub path {
     return $source;
 }
 
+# Archive::Libarchive::Extract doesn't allow setting the options for writing
+# to disk, which includes very useful options like
+# ARCHIVE_EXTRACT_SECURE_NOABSOLUTEPATHS and ARCHIVE_EXTRACT_SECURE_NODOTDOT,
+# A PR has been filed to add this: https://github.com/uperl/Archive-Libarchive-Extract/pull/7
+our $OVERRIDE_DISK_SET_OPTIONS;
+{
+    my $disk_set_options = \&Archive::Libarchive::DiskWrite::disk_set_options;
+    no warnings 'redefine';
+    *Archive::Libarchive::DiskWrite::disk_set_options = sub {
+        my ( $dw, $flags ) = @_;
+        if ( defined $OVERRIDE_DISK_SET_OPTIONS ) {
+            $flags = $OVERRIDE_DISK_SET_OPTIONS;
+        }
+        $dw->$disk_set_options($flags);
+    };
+}
+
 sub extract_in {
     my ( $self, $archive_file, $base, $child_name ) = @_;
 
-    my $archive = Archive::Any->new($archive_file);
+    my $final_dir = $base->child($child_name);
 
-    return undef
-        if $archive->is_naughty;
+    $base->mkpath;
 
-    my $extract_root = $base;
-    my $extract_dir  = $base->child($child_name);
+    my $temp = Path::Tiny->tempdir(
+        TEMPLATE => 'cpan-extract-XXXXXXX',
+        TMPDIR   => 0,
+        DIR      => $base->stringify,
+        CLEANUP  => 0,
+    );
 
-    if ( $archive->is_impolite ) {
-        $extract_root = $extract_dir;
-    }
+    eval {
+        local $OVERRIDE_DISK_SET_OPTIONS
+            = ARCHIVE_EXTRACT_TIME | ARCHIVE_EXTRACT_SECURE_NOABSOLUTEPATHS
+            | ARCHIVE_EXTRACT_SECURE_NODOTDOT
+            | ARCHIVE_EXTRACT_SECURE_SYMLINKS;
+        my $archive
+            = Archive::Libarchive::Extract->new( filename => $archive_file );
+        $archive->extract( to => $temp );
+        1;
+    } or do {
+        warn "extracting $archive_file: $@";
+        return;
+    };
 
-    $extract_root->mkpath;
-    $archive->extract($extract_root);
+    my @children = $temp->children;
 
-    my @children = $extract_root->children;
+    my $extract_dir;
     if ( @children == 1 && -d $children[0] ) {
-
-        # one directory, but with wrong name
-        if ( $children[0]->basename ne $child_name ) {
-            $children[0]->move($extract_dir);
-        }
+        $extract_dir = $children[0];
     }
     else {
-        my $temp = Path::Tiny->tempdir(
-            TEMPLATE => 'cpan-extract-XXXXXXX',
-            TMPDIR   => 0,
-            DIR      => $extract_root,
-            CLEANUP  => 0,
-        );
-
-        for my $child (@children) {
-            $child->move($temp);
-        }
-
-        $temp->move($extract_dir);
+        $extract_dir = $temp;
     }
 
-    return $extract_dir;
+    rename $children[0], $final_dir or do {
+        warn "can't move $children[0] to $final_dir: $!";
+    };
+    $temp->remove_tree;
+
+    return $final_dir;
 }
 
 sub fetch_from_cpan {

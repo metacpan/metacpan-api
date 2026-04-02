@@ -4,6 +4,7 @@ use warnings;
 requires 'perl', '5.010';
 
 requires 'Archive::Any', '0.0946';
+requires 'Archive::Libarchive::Extract', '0.03';
 requires 'Archive::Tar', '2.40';
 requires 'Authen::SASL', '2.16'; # for Email::Sender::Transport::SMTP
 requires 'Catalyst', '5.90128';
