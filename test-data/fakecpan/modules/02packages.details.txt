@@ -4,7 +4,7 @@ Description:  Package names found in directory $CPAN/authors/id/
 Columns:      package name, version, path
 Intended-For: Automated fetch routines, namespace documentation.
 Written-By:   MetaCPAN Test Data
-Line-Count:   49
+Line-Count:   50
 Last-Updated: Tue, Jan 25 2026 00:00:00 GMT
 
 BadPod                              0.01  M/MO/MO/BadPod-0.01.tar.gz
@@ -19,6 +19,7 @@ Devel::GoFaster                    0.000  L/LO/LOCAL/Devel-GoFaster-0.000.tar.gz
 Documentation::Hide                 0.01  M/MO/MO/Documentation-Hide-0.01.tar.gz
 Documentation::Not::Readme          0.01  R/RW/RWSTAUNER/Documentation-Not-Readme-0.01.tar.gz
 Encoding                             1.2  R/RW/RWSTAUNER/Encoding-1.2.tar.gz
+Fav::Dist                           2.00  L/LO/LOCAL/Fav-Dist-2.00.tar.gz
 File::Changes                        2.0  L/LO/LOCAL/File-Changes-2.0.tar.gz
 File::Changes::Latin1                1.0  R/RW/RWSTAUNER/File-Changes-Latin1-1.0.tar.gz
 File::Changes::News                11.22  L/LO/LOCAL/File-Changes-News-11.22.tar.gz

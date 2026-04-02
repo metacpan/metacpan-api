@@ -2,6 +2,7 @@ package MetaCPAN::Query::Favorite;
 
 use MetaCPAN::Moose;
 
+use Log::Contextual    qw( :log );
 use MetaCPAN::ESConfig qw( es_doc_path );
 use MetaCPAN::Util     qw( hit_total paginate );
 
@@ -69,59 +70,106 @@ sub by_user {
     return +{ favorites => [], took => 0, total => 0 }
         unless defined $page;
 
-    my $favs = $self->es->search(
+    # Step 1: get ALL favorited distribution names for this user via agg
+    my $all_favs = $self->es->search(
         es_doc_path('favorite'),
         body => {
-            query   => { term => { user => $user } },
-            _source => [qw( author date distribution )],
-            sort    => ['distribution'],
-            size    => $size,
-            from    => $from,
+            size         => 0,
+            query        => { term => { user => $user } },
+            aggregations => {
+                dists => {
+                    terms => {
+                        field => 'distribution',
+
+                        # No single user has more than ~1500 favorites
+                        # in practice, so 5000 gives plenty of headroom.
+                        size => 5000,
+                    },
+                },
+            },
         }
     );
-
     return +{ favorites => [], took => 0, total => 0 }
-        unless hit_total($favs);
+        unless $all_favs->{aggregations}{dists}{buckets}
+        && @{ $all_favs->{aggregations}{dists}{buckets} };
 
-    my $took  = $favs->{took};
-    my $total = hit_total($favs);
+    if ( my $other = $all_favs->{aggregations}{dists}{sum_other_doc_count} ) {
+        log_warn {
+            "Favorite agg for user $user truncated: $other docs excluded"
+        };
+    }
 
-    my @favs = map { $_->{_source} } @{ $favs->{hits}{hits} };
+    my $took = $all_favs->{took};
 
-    # filter out backpan only distributions
+    my @all_dists
+        = map { $_->{key} } @{ $all_favs->{aggregations}{dists}{buckets} };
 
-    my $no_backpan = $self->es->search(
+    # Step 2: find which of those distributions are non-backpan
+    my $non_backpan = $self->es->search(
         es_doc_path('release'),
+        body => {
+            size  => 0,
+            query => {
+                bool => {
+                    must => [
+                        { terms => { status       => [qw( cpan latest )] } },
+                        { terms => { distribution => \@all_dists } },
+                    ]
+                }
+            },
+            aggregations => {
+                dists => {
+                    terms => {
+                        field => 'distribution',
+                        size  => scalar(@all_dists),
+                    },
+                },
+            },
+        }
+    );
+    $took += $non_backpan->{took};
+
+    my @valid_dists
+        = map { $_->{key} } @{ $non_backpan->{aggregations}{dists}{buckets} };
+
+    return +{ favorites => [], took => $took, total => 0 }
+        unless @valid_dists;
+
+    # Step 3: paginate over only valid (non-backpan) favorites,
+    # collapsing on distribution to deduplicate
+    my $favs = $self->es->search(
+        es_doc_path('favorite'),
         body => {
             query => {
                 bool => {
                     must => [
-                        { terms => { status => [qw( cpan latest )] } },
-                        {
-                            terms => {
-                                distribution =>
-                                    [ map { $_->{distribution} } @favs ]
-                            }
-                        },
+                        { term  => { user         => $user } },
+                        { terms => { distribution => \@valid_dists } },
                     ]
                 }
             },
-            _source => ['distribution'],
-            size    => scalar(@favs),
+            collapse => { field => 'distribution' },
+            _source  => [qw( author date distribution )],
+
+            # Sort by distribution name; within each collapsed group,
+            # keep the oldest favorite (earliest date wins).
+            sort => [ 'distribution', { date => 'asc' } ],
+
+            # With collapse, size is the number of unique distributions
+            # returned, not the number of raw favorite documents.
+            size => $size,
+            from => $from,
         }
     );
-    $took += $no_backpan->{took};
+    $took += $favs->{took};
 
-    if ( hit_total($no_backpan) ) {
-        my %has_no_backpan = map { $_->{_source}{distribution} => 1 }
-            @{ $no_backpan->{hits}{hits} };
+    my @favs = map { $_->{_source} } @{ $favs->{hits}{hits} };
 
-        @favs = grep { exists $has_no_backpan{ $_->{distribution} } } @favs;
-    }
-
-    # NOTE: total reflects the ES hit count before backpan filtering,
-    # so it may overcount when some favorites are backpan-only.
-    return { favorites => \@favs, took => $took, total => $total };
+    return {
+        favorites => \@favs,
+        took      => $took,
+        total     => hit_total($favs),
+    };
 }
 
 sub leaderboard {
