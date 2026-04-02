@@ -21,4 +21,13 @@ sub get : Local : Path('/download_url') : Args(1) {
     $c->stash($data);
 }
 
+sub get_dist : Local : Path('/download_url/distribution') : Args(1) {
+    my ( $self, $c, $dist ) = @_;
+    my $data
+        = $c->model('ESQuery')
+        ->release->find_download_url( 'dist', $dist, $c->req->params );
+    return $c->detach( '/not_found', [] ) unless $data;
+    $c->stash($data);
+}
+
 1;
