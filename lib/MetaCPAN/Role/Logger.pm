@@ -51,6 +51,11 @@ sub _build_logger {
     my ($config) = @_;
     my $log = Log::Log4perl->get_logger( $ARGV[0]
             || 'this_would_have_been_argv_0_but_there_is_no_such_thing' );
+
+    # If Log4perl was already initialized from a config file (e.g.
+    # log4perl_hz.conf), skip manual appender construction.
+    return $log if Log::Log4perl->initialized;
+
     foreach my $c (@$config) {
         my $layout = Log::Log4perl::Layout::PatternLayout->new( $c->{layout}
                 || qq{%d %p{1} %c: %m{chomp}%n} );

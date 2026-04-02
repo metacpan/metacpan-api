@@ -197,7 +197,13 @@ sub run {
                 # NOTE: CPAN::DistnameInfo doesn't parse some weird uploads
                 # (like /\.pm\.gz$/) so distvname might not be present.
                 # I assume cpanid always will be.
+                unless ( defined $file_data->{release} ) {
+                    log_warn {
+                        "file document missing release field: $file_data->{download_url}"
+                    };
+                }
                 if (   defined( $dist->distvname )
+                    && defined( $file_data->{release} )
                     && $dist->distvname eq $file_data->{release}
                     && $dist->cpanid eq $file_data->{author} )
                 {

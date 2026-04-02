@@ -14,6 +14,7 @@ use Mojo::Base 'Mojolicious';
 use File::Temp               ();
 use List::Util               qw( any );
 use MetaCPAN::Script::Runner ();
+use Mojo::JSON               qw( encode_json );
 use Try::Tiny                qw( catch try );
 use MetaCPAN::Server::Config ();
 
@@ -27,6 +28,17 @@ sub startup {
     die 'need secret' unless $self->config->{secret};
 
     $self->secrets( [ $self->config->{secret} ] );
+
+    $self->log->format( sub {
+        my ( $time, $level, @messages ) = @_;
+        encode_json( {
+            timestamp => Mojo::Date->new($time)->to_datetime,
+            level     => uc($level),
+            message   => join( "\n", @messages ),
+            pid       => $$,
+            service   => 'minion',
+        } ) . "\n";
+    } );
 
     $self->static->paths( [ $self->home->child('root') ] );
 
