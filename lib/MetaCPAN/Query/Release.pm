@@ -5,7 +5,7 @@ use MetaCPAN::Moose;
 
 use MetaCPAN::ESConfig qw( es_doc_path );
 use MetaCPAN::Util
-    qw( MAX_RESULT_WINDOW hit_total single_valued_arrayref_to_scalar true false );
+    qw( MAX_RESULT_WINDOW hit_total single_valued_arrayref_to_scalar true false fix_sort_value );
 
 with 'MetaCPAN::Query::Role::Common';
 
@@ -599,17 +599,6 @@ sub _get_provided_modules {
     return @modules ? \@modules : undef;
 }
 
-sub _fix_sort_value {
-    my $sort = shift;
-
-    if ( $sort && $sort =~ /^(\w+):(asc|desc)$/ ) {
-        return { $1 => $2 };
-    }
-    else {
-        return { date => 'desc' };
-    }
-}
-
 sub _get_depended_releases {
     my ( $self, $modules, $page, $page_size, $sort ) = @_;
     $page      //= 1;
@@ -623,7 +612,7 @@ sub _get_depended_releases {
         };
     }
 
-    $sort = _fix_sort_value($sort);
+    $sort = fix_sort_value($sort) // { date => 'desc' };
 
     my $dependency_filter = {
         nested => {

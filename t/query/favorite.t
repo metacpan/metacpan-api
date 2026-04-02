@@ -18,28 +18,139 @@ test_psgi app, sub {
         'get user' );
     my $user_id = decode_json_ok($user_res)->{id};
 
+    # Seeded favorites (dates set in TestServer::_create_test_favorites):
+    #   Fav-Dist   2024-01-01
+    #   Fav-DistC  2024-03-15
+    #   Fav-DistB  2024-06-01
+
+    my $fav_dist = {
+        author       => 'LOCAL',
+        distribution => 'Fav-Dist',
+        date         => re(qr/^2024-01-01/),
+    };
+    my $fav_distb = {
+        author       => 'LOCAL',
+        distribution => 'Fav-DistB',
+        date         => re(qr/^2024-06-01/),
+    };
+    my $fav_distc = {
+        author       => 'LOCAL',
+        distribution => 'Fav-DistC',
+        date         => re(qr/^2024-03-15/),
+    };
+
     subtest 'by_user returns seeded favorites' => sub {
         my $result = $favorite->by_user( $user_id, 1, 250 );
         cmp_deeply(
             $result,
             {
                 took      => ignore(),
-                total     => 1,
-                favorites => [
-                    {
-                        author       => 'LOCAL',
-                        distribution => 'Fav-Dist',
-                        date         => re(qr/^\d{4}-\d{2}-\d{2}/),
-                    },
-                ],
+                total     => 3,
+                favorites => [ $fav_dist, $fav_distb, $fav_distc ],
             },
-            'returns expected favorites'
+            'returns all favorites sorted by distribution asc'
         );
 
         cmp_deeply(
             $favorite->by_user('nonexistent_user_id'),
             { favorites => [], took => 0, total => 0 },
             'unknown user returns empty result'
+        );
+    };
+
+    subtest 'by_user sort param' => sub {
+        cmp_deeply(
+            $favorite->by_user( $user_id, 1, 250, 'distribution:desc' ),
+            {
+                took      => ignore(),
+                total     => 3,
+                favorites => [ $fav_distc, $fav_distb, $fav_dist ],
+            },
+            'distribution:desc reverses default order'
+        );
+        cmp_deeply(
+            $favorite->by_user( $user_id, 1, 250, 'date:asc' ),
+            {
+                took      => ignore(),
+                total     => 3,
+                favorites => [ $fav_dist, $fav_distc, $fav_distb ],
+            },
+            'date:asc sorts oldest first'
+        );
+        cmp_deeply(
+            $favorite->by_user( $user_id, 1, 250, 'date:desc' ),
+            {
+                took      => ignore(),
+                total     => 3,
+                favorites => [ $fav_distb, $fav_distc, $fav_dist ],
+            },
+            'date:desc sorts newest first'
+        );
+        cmp_deeply(
+            $favorite->by_user( $user_id, 1, 250, 'bogus' ),
+            {
+                took      => ignore(),
+                total     => 3,
+                favorites => [ $fav_dist, $fav_distb, $fav_distc ],
+            },
+            'invalid sort falls back to default'
+        );
+        cmp_deeply(
+            $favorite->by_user( $user_id, 1, 250, 'author:asc' ),
+            {
+                took      => ignore(),
+                total     => 3,
+                favorites => [ $fav_dist, $fav_distb, $fav_distc ],
+            },
+            'disallowed field falls back to default'
+        );
+    };
+
+    subtest 'recent sort param' => sub {
+        cmp_deeply(
+            $favorite->recent( 1, 100, 'date:asc' ),
+            {
+                took      => ignore(),
+                total     => 3,
+                favorites => [ $fav_dist, $fav_distc, $fav_distb ],
+            },
+            'date:asc'
+        );
+        cmp_deeply(
+            $favorite->recent( 1, 100, 'date:desc' ),
+            {
+                took      => ignore(),
+                total     => 3,
+                favorites => [ $fav_distb, $fav_distc, $fav_dist ],
+            },
+            'date:desc'
+        );
+        cmp_deeply(
+            $favorite->recent( 1, 100, 'distribution:asc' ),
+            {
+                took      => ignore(),
+                total     => 3,
+                favorites => [ $fav_dist, $fav_distb, $fav_distc ],
+            },
+            'distribution:asc'
+        );
+        cmp_deeply(
+            $favorite->recent( 1, 100, 'distribution:desc' ),
+            {
+                took      => ignore(),
+                total     => 3,
+                favorites => [ $fav_distc, $fav_distb, $fav_dist ],
+            },
+            'distribution:desc'
+        );
+        cmp_deeply(
+            $favorite->recent( 1, 100, 'bogus' ),
+            {
+                took      => ignore(),
+                total     => 3,
+                favorites => [ $fav_distb, $fav_distc, $fav_dist ],
+            },
+            'invalid sort falls back to date:desc'
         );
     };
 
@@ -58,7 +169,8 @@ test_psgi app, sub {
         my $result = $favorite->by_user( $user_id, 1, 250 );
         my %dists
             = map { $_->{distribution} => 1 } @{ $result->{favorites} };
-        is_deeply( \%dists, { 'Fav-Dist' => 1 } );
+        ok( $dists{'Fav-Dist'},
+            'Fav-Dist still present after partial backpan' );
     };
 
     subtest 'full backpan excludes distribution' => sub {
@@ -74,11 +186,12 @@ test_psgi app, sub {
         $es->indices->refresh;
 
         my $result = $favorite->by_user( $user_id, 1, 250 );
-        cmp_deeply(
-            $result,
-            { favorites => [], took => ignore(), total => 0 },
-            'no favorites when all are backpan'
-        );
+        my %dists
+            = map { $_->{distribution} => 1 } @{ $result->{favorites} };
+        ok( !$dists{'Fav-Dist'}, 'Fav-Dist excluded after full backpan' );
+
+        # Fav-DistB and Fav-DistC are unaffected by the backpan update
+        is( $result->{total}, 2, 'remaining favorites still returned' );
     };
 };
 

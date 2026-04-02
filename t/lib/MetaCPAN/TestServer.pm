@@ -259,6 +259,19 @@ sub _create_test_favorites {
             distribution => 'Fav-Dist',
             release      => 'Fav-Dist-2.00',
             author       => 'LOCAL',
+            date         => '2024-01-01T00:00:00',
+        },
+        {
+            distribution => 'Fav-DistB',
+            release      => 'Fav-DistB-1.00',
+            author       => 'LOCAL',
+            date         => '2024-06-01T00:00:00',
+        },
+        {
+            distribution => 'Fav-DistC',
+            release      => 'Fav-DistC-1.00',
+            author       => 'LOCAL',
+            date         => '2024-03-15T00:00:00',
         },
         )
     {
@@ -269,6 +282,7 @@ sub _create_test_favorites {
                     author       => $fav->{author},
                     release      => $fav->{release},
                     distribution => $fav->{distribution},
+                    date         => $fav->{date},
                 },
                 { refresh => true }
             ),

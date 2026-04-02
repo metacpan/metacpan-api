@@ -5,6 +5,7 @@ use lib 't/lib';
 use CPAN::Meta     ();
 use MetaCPAN::Util qw(
     extract_section
+    fix_sort_value
     generate_sid
     numify_version
     paginate
@@ -202,6 +203,47 @@ subtest 'paginate' => sub {
         [ 1, 10, 0 ],
         'partial numeric page => 1'
     );
+};
+
+subtest 'fix_sort_value' => sub {
+
+    subtest 'valid input' => sub {
+        is_deeply( fix_sort_value('date:asc'),  { date => 'asc' } );
+        is_deeply( fix_sort_value('date:desc'), { date => 'desc' } );
+        is_deeply( fix_sort_value('distribution:asc'),
+            { distribution => 'asc' } );
+        is_deeply( fix_sort_value('name:desc'), { name => 'desc' } );
+    };
+
+    subtest 'invalid or missing input' => sub {
+        is( fix_sort_value(undef),       undef, 'undef' );
+        is( fix_sort_value(''),          undef, 'empty string' );
+        is( fix_sort_value('date'),      undef, 'missing direction' );
+        is( fix_sort_value('date:up'),   undef, 'bad direction' );
+        is( fix_sort_value(':asc'),      undef, 'missing field' );
+        is( fix_sort_value('foo:bar'),   undef, 'invalid direction' );
+        is( fix_sort_value('a b:asc'),   undef, 'space in field' );
+        is( fix_sort_value('date:ASC'),  undef, 'uppercase direction' );
+        is( fix_sort_value('date:asc:'), undef, 'trailing colon' );
+    };
+
+    subtest 'valid_fields restriction' => sub {
+        my %allowed = ( date => 1, distribution => 1 );
+        is_deeply(
+            fix_sort_value( 'date:desc', \%allowed ),
+            { date => 'desc' },
+            'allowed field passes'
+        );
+        is_deeply(
+            fix_sort_value( 'distribution:asc', \%allowed ),
+            { distribution => 'asc' },
+            'another allowed field passes'
+        );
+        is( fix_sort_value( 'name:desc', \%allowed ),
+            undef, 'disallowed field returns undef' );
+        is( fix_sort_value( 'author:asc', \%allowed ),
+            undef, 'another disallowed field returns undef' );
+    };
 };
 
 done_testing;
