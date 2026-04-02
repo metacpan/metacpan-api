@@ -4,7 +4,8 @@ use MetaCPAN::Moose;
 
 use Log::Contextual    qw( :log );
 use MetaCPAN::ESConfig qw( es_doc_path );
-use MetaCPAN::Util     qw( hit_total paginate MAX_FAVORITE_RESULT_WINDOW );
+use MetaCPAN::Util
+    qw( hit_total paginate MAX_FAVORITE_RESULT_WINDOW MAX_FAVORITE_PAGE_SIZE );
 
 with 'MetaCPAN::Query::Role::Common';
 
@@ -66,7 +67,8 @@ sub by_user {
     my ( $self, $user, $page, $size ) = @_;
     my $from;
     ( $page, $size, $from )
-        = paginate( $page, $size, MAX_FAVORITE_RESULT_WINDOW );
+        = paginate( $page, $size, MAX_FAVORITE_RESULT_WINDOW,
+        MAX_FAVORITE_PAGE_SIZE );
 
     return +{ favorites => [], took => 0, total => 0 }
         unless defined $page;
