@@ -7,6 +7,7 @@ use MetaCPAN::Util qw(
     extract_section
     generate_sid
     numify_version
+    paginate
     strip_pod
 );
 
@@ -112,5 +113,74 @@ EOF
     my $section = extract_section( $content, 'NAME' );
     is( $section, undef, 'NAMED did not match requested section NAME' );
 }
+
+subtest 'paginate' => sub {
+    is_deeply( [ paginate( 1, 10 ) ], [ 1, 10, 0 ], 'page 1 size 10 from 0' );
+    is_deeply(
+        [ paginate( 2, 50 ) ],
+        [ 2, 50, 50 ],
+        'page 2 size 50 from 50'
+    );
+
+    is_deeply( [ paginate( undef, 10 ) ], [ 1, 10, 0 ],
+        'page defaults to 1' );
+    is_deeply(
+        [ paginate( 1, undef ) ],
+        [ 1, 250, 0 ],
+        'size defaults to 250'
+    );
+
+    is_deeply( [ paginate( -5, 10 ) ], [ 1, 10, 0 ], 'negative page => 1' );
+    is_deeply( [ paginate( 1, -3 ) ], [ 1, 250, 0 ], 'negative size => 250' );
+    is_deeply( [ paginate( 0, 10 ) ], [ 1, 10,  0 ], 'zero page => 1' );
+    is_deeply( [ paginate( 1, 0 ) ],  [ 1, 250, 0 ], 'zero size => 250' );
+
+    # page*size == from+size; ES allows from+size <= max_result_window,
+    # so page*size == 1000 is the last valid request.
+    is_deeply(
+        [ paginate( 4, 250 ) ],
+        [ 4, 250, 750 ],
+        'page*size == 1000 is allowed'
+    );
+    is_deeply(
+        [ paginate( 10, 100 ) ],
+        [ 10, 100, 900 ],
+        'page*size == 1000 with different values'
+    );
+
+    is_deeply( [ paginate( 5, 250 ) ], [], 'page*size > 1000 returns empty' );
+    is_deeply( [ paginate( 100, 250 ) ],
+        [], 'way beyond window returns empty' );
+
+    is_deeply( [ paginate( 1, 250 ) ], [ 1, 250, 0 ], 'max size accepted' );
+    is_deeply(
+        [ paginate( 1000, 1 ) ],
+        [ 1000, 1, 999 ],
+        'max page accepted'
+    );
+    is_deeply( [ paginate( 1001, 1 ) ], [], 'page beyond window' );
+    is_deeply( [ paginate( 1, 500 ) ],  [ 1, 250, 0 ], 'size > 250 capped' );
+    is_deeply( [ paginate( 1, 1000 ) ], [ 1, 250, 0 ], 'size = 1000 capped' );
+
+    is_deeply( [ paginate( 1.9, 10.7 ) ], [ 1, 250, 0 ], 'float page => 1' );
+    is_deeply( [ paginate( 2.5, 50 ) ],   [ 1, 50,  0 ], 'float page => 1' );
+    is_deeply( [ paginate( 1, 10.5 ) ], [ 1, 250, 0 ], 'float size => 250' );
+
+    is_deeply(
+        [ paginate( "abc", 10 ) ],
+        [ 1, 10, 0 ],
+        'non-numeric page => 1'
+    );
+    is_deeply(
+        [ paginate( 1, "xyz" ) ],
+        [ 1, 250, 0 ],
+        'non-numeric size => 250'
+    );
+    is_deeply(
+        [ paginate( "3abc", 10 ) ],
+        [ 1, 10, 0 ],
+        'partial numeric page => 1'
+    );
+};
 
 done_testing;

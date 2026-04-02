@@ -3,7 +3,7 @@ package MetaCPAN::Query::Favorite;
 use MetaCPAN::Moose;
 
 use MetaCPAN::ESConfig qw( es_doc_path );
-use MetaCPAN::Util     qw( MAX_RESULT_WINDOW hit_total );
+use MetaCPAN::Util     qw( hit_total paginate );
 
 with 'MetaCPAN::Query::Role::Common';
 
@@ -62,8 +62,12 @@ sub agg_by_distributions {
 }
 
 sub by_user {
-    my ( $self, $user, $size ) = @_;
-    $size ||= 250;
+    my ( $self, $user, $page, $size ) = @_;
+    my $from;
+    ( $page, $size, $from ) = paginate( $page, $size );
+
+    return +{ favorites => [], took => 0, total => 0 }
+        unless defined $page;
 
     my $favs = $self->es->search(
         es_doc_path('favorite'),
@@ -72,10 +76,15 @@ sub by_user {
             _source => [qw( author date distribution )],
             sort    => ['distribution'],
             size    => $size,
+            from    => $from,
         }
     );
-    return {} unless hit_total($favs);
-    my $took = $favs->{took};
+
+    return +{ favorites => [], took => 0, total => 0 }
+        unless hit_total($favs);
+
+    my $took  = $favs->{took};
+    my $total = hit_total($favs);
 
     my @favs = map { $_->{_source} } @{ $favs->{hits}{hits} };
 
@@ -110,7 +119,9 @@ sub by_user {
         @favs = grep { exists $has_no_backpan{ $_->{distribution} } } @favs;
     }
 
-    return { favorites => \@favs, took => $took };
+    # NOTE: total reflects the ES hit count before backpan filtering,
+    # so it may overcount when some favorites are backpan-only.
+    return { favorites => \@favs, took => $took, total => $total };
 }
 
 sub leaderboard {
@@ -145,22 +156,17 @@ sub leaderboard {
 
 sub recent {
     my ( $self, $page, $size ) = @_;
-    $page //= 1;
-    $size //= 100;
+    my $from;
+    ( $page, $size, $from ) = paginate( $page, $size );
 
-    if ( $page * $size >= MAX_RESULT_WINDOW ) {
-        return +{
-            favorites => [],
-            took      => 0,
-            total     => 0,
-        };
-    }
+    return +{ favorites => [], took => 0, total => 0 }
+        unless defined $page;
 
     my $favs = $self->es->search(
         es_doc_path('favorite'),
         body => {
             size  => $size,
-            from  => ( $page - 1 ) * $size,
+            from  => $from,
             query => { match_all => {} },
             sort  => [ { 'date' => { order => 'desc' } } ]
         }

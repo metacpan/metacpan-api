@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Moose;
-use MetaCPAN::Util qw( single_valued_arrayref_to_scalar );
+use MetaCPAN::Util qw( MAX_PAGE_SIZE single_valued_arrayref_to_scalar );
 
 BEGIN { extends 'MetaCPAN::Server::Controller' }
 
@@ -28,8 +28,13 @@ sub find : Path('') : Args(2) {
 
 sub by_user : Path('by_user') : Args(1) {
     my ( $self, $c, $user ) = @_;
-    $c->stash_or_detach( $c->model('ESQuery')
-            ->favorite->by_user( $user, $c->req->param('size') || 250 ) );
+    my $page = $c->req->param('page') || 1;
+    my $size
+        = $c->req->param('page_size')
+        || $c->req->param('size')
+        || MAX_PAGE_SIZE;
+    $c->stash_or_detach(
+        $c->model('ESQuery')->favorite->by_user( $user, $page, $size ) );
 }
 
 sub users_by_distribution : Path('users_by_distribution') : Args(1) {
