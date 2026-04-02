@@ -34,7 +34,10 @@ sub by_user : Path('by_user') : Args(1) {
         || $c->req->param('size')
         || MAX_PAGE_SIZE;
     $c->stash_or_detach(
-        $c->model('ESQuery')->favorite->by_user( $user, $page, $size ) );
+        $c->model('ESQuery')->favorite->by_user(
+            $user, $page, $size, $c->req->param('sort')
+        )
+    );
 }
 
 sub users_by_distribution : Path('users_by_distribution') : Args(1) {
@@ -50,6 +53,7 @@ sub recent : Path('recent') : Args(0) {
         $c->model('ESQuery')->favorite->recent(
             $c->req->param('page') || 1,
             $c->req->param('page_size') || $c->req->param('size') || 100,
+            $c->req->param('sort'),
         )
     );
 }

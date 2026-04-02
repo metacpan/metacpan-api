@@ -5,7 +5,7 @@ use MetaCPAN::Moose;
 use Log::Contextual    qw( :log );
 use MetaCPAN::ESConfig qw( es_doc_path );
 use MetaCPAN::Util
-    qw( hit_total paginate MAX_FAVORITE_RESULT_WINDOW MAX_FAVORITE_PAGE_SIZE );
+    qw( hit_total paginate fix_sort_value MAX_FAVORITE_RESULT_WINDOW MAX_FAVORITE_PAGE_SIZE );
 
 with 'MetaCPAN::Query::Role::Common';
 
@@ -63,8 +63,24 @@ sub agg_by_distributions {
     };
 }
 
+my %VALID_FAVORITE_SORT_FIELDS = map { $_ => 1 } qw( distribution date );
+
+my %SORT_TIEBREAKER = (
+    date         => 'distribution',
+    distribution => { date => 'asc' },
+);
+
+sub _favorite_sort {
+    my ( $sort, $default ) = @_;
+    my $fixed = fix_sort_value( $sort, \%VALID_FAVORITE_SORT_FIELDS )
+        // $default;
+
+    my ($primary) = keys %$fixed;
+    return [ $fixed, $SORT_TIEBREAKER{$primary} ];
+}
+
 sub by_user {
-    my ( $self, $user, $page, $size ) = @_;
+    my ( $self, $user, $page, $size, $sort ) = @_;
     my $from;
     ( $page, $size, $from )
         = paginate( $page, $size, MAX_FAVORITE_RESULT_WINDOW,
@@ -154,9 +170,7 @@ sub by_user {
             collapse => { field => 'distribution' },
             _source  => [qw( author date distribution )],
 
-            # Sort by distribution name; within each collapsed group,
-            # keep the oldest favorite (earliest date wins).
-            sort => [ 'distribution', { date => 'asc' } ],
+            sort => _favorite_sort( $sort, { distribution => 'asc' } ),
 
             # With collapse, size is the number of unique distributions
             # returned, not the number of raw favorite documents.
@@ -206,7 +220,7 @@ sub leaderboard {
 }
 
 sub recent {
-    my ( $self, $page, $size ) = @_;
+    my ( $self, $page, $size, $sort ) = @_;
     my $from;
     ( $page, $size, $from ) = paginate( $page, $size );
 
@@ -216,10 +230,11 @@ sub recent {
     my $favs = $self->es->search(
         es_doc_path('favorite'),
         body => {
-            size  => $size,
-            from  => $from,
-            query => { match_all => {} },
-            sort  => [ { 'date' => { order => 'desc' } } ]
+            size    => $size,
+            from    => $from,
+            query   => { match_all => {} },
+            _source => [qw( author date distribution )],
+            sort    => _favorite_sort( $sort, { date => 'desc' } ),
         }
     );
 
