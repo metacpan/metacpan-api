@@ -66,7 +66,7 @@ sub agg_by_distributions {
 my %VALID_FAVORITE_SORT_FIELDS = map { $_ => 1 } qw( distribution date );
 
 my %SORT_TIEBREAKER = (
-    date         => 'distribution',
+    date         => 'distribution.lowercase',
     distribution => { date => 'asc' },
 );
 
@@ -76,6 +76,12 @@ sub _favorite_sort {
         // $default;
 
     my ($primary) = keys %$fixed;
+
+    # Use the lowercase normalizer for case-insensitive distribution sort.
+    if ( $primary eq 'distribution' ) {
+        $fixed = { 'distribution.lowercase' => $fixed->{distribution} };
+    }
+
     return [ $fixed, $SORT_TIEBREAKER{$primary} ];
 }
 

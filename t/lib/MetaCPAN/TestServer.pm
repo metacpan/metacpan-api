@@ -273,6 +273,18 @@ sub _create_test_favorites {
             author       => 'LOCAL',
             date         => '2024-03-15T00:00:00',
         },
+        {
+            distribution => 'weblint',
+            release      => 'weblint++-1.15',
+            author       => 'LOCAL',
+            date         => '2024-09-01T00:00:00',
+        },
+        {
+            distribution => 'Multiple-Modules',
+            release      => 'Multiple-Modules-1.01',
+            author       => 'LOCAL',
+            date         => '2024-07-15T00:00:00',
+        },
         )
     {
         ok(
