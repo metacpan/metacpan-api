@@ -1,4 +1,12 @@
 {
+    "analysis": {
+        "normalizer": {
+            "lowercase": {
+                "type": "custom",
+                "filter": ["lowercase"]
+            }
+        }
+    },
     "number_of_replicas": 1,
     "number_of_shards": 1,
     "refresh_interval": "1s"

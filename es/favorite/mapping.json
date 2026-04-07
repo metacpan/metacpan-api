@@ -9,7 +9,13 @@
             "type": "date"
         },
         "distribution": {
-            "type": "keyword"
+            "type": "keyword",
+            "fields": {
+                "lowercase": {
+                    "type": "keyword",
+                    "normalizer": "lowercase"
+                }
+            }
         },
         "id": {
             "type": "keyword"
