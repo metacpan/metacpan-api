@@ -46,6 +46,7 @@ use Sub::Exporter -setup => {
         MAX_PAGE_SIZE
         MAX_FAVORITE_PAGE_SIZE
         paginate
+        fix_sort_value
     ) ]
 };
 
@@ -72,6 +73,18 @@ sub paginate {
         : $max_page_size;
     return if $page * $size > $max_result_window;
     return ( $page, $size, ( $page - 1 ) * $size );
+}
+
+sub fix_sort_value {
+    my ( $sort, $valid_fields ) = @_;
+
+    if ( $sort && $sort =~ /^(\w+):(asc|desc)$/ ) {
+        my ( $field, $dir ) = ( $1, $2 );
+        if ( !$valid_fields || $valid_fields->{$field} ) {
+            return { $field => $dir };
+        }
+    }
+    return;
 }
 
 sub true ();

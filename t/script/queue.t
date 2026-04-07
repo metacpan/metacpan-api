@@ -11,7 +11,6 @@ local @ARGV = ( '--dir', $config->{cpan} );
 my $queue = MetaCPAN::Script::Queue->new_with_options($config);
 $queue->run;
 
-is( $queue->stats->{inactive_jobs},
-    64, '64 files added to queue for indexing' );
+is( $queue->stats->{inactive_jobs}, 66, 'files added to queue for indexing' );
 
 done_testing();
