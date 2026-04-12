@@ -397,34 +397,34 @@ DISTRIBUTIONS
       overload 0
       perl 5.006
       strict 0
-  Catalyst-Action-REST-1.21
-    pathname: J/JJ/JJNAPIORK/Catalyst-Action-REST-1.21.tar.gz
+  Catalyst-Action-REST-1.22
+    pathname: E/ET/ETHER/Catalyst-Action-REST-1.22.tar.gz
     provides:
-      Catalyst::Action::Deserialize 1.21
-      Catalyst::Action::Deserialize::Callback 1.21
-      Catalyst::Action::Deserialize::JSON 1.21
-      Catalyst::Action::Deserialize::JSON::XS 1.21
-      Catalyst::Action::Deserialize::View 1.21
-      Catalyst::Action::Deserialize::XML::Simple 1.21
-      Catalyst::Action::Deserialize::YAML 1.21
-      Catalyst::Action::DeserializeMultiPart 1.21
-      Catalyst::Action::REST 1.21
-      Catalyst::Action::REST::ForBrowsers 1.21
-      Catalyst::Action::Serialize 1.21
-      Catalyst::Action::Serialize::Callback 1.21
-      Catalyst::Action::Serialize::JSON 1.21
-      Catalyst::Action::Serialize::JSON::XS 1.21
-      Catalyst::Action::Serialize::JSONP 1.21
-      Catalyst::Action::Serialize::View 1.21
-      Catalyst::Action::Serialize::XML::Simple 1.21
-      Catalyst::Action::Serialize::YAML 1.21
-      Catalyst::Action::Serialize::YAML::HTML 1.21
-      Catalyst::Action::SerializeBase 1.21
-      Catalyst::Controller::REST 1.21
-      Catalyst::Request::REST 1.21
-      Catalyst::Request::REST::ForBrowsers 1.21
-      Catalyst::TraitFor::Request::REST 1.21
-      Catalyst::TraitFor::Request::REST::ForBrowsers 1.21
+      Catalyst::Action::Deserialize 1.22
+      Catalyst::Action::Deserialize::Callback 1.22
+      Catalyst::Action::Deserialize::JSON 1.22
+      Catalyst::Action::Deserialize::JSON::XS 1.22
+      Catalyst::Action::Deserialize::View 1.22
+      Catalyst::Action::Deserialize::XML::Simple 1.22
+      Catalyst::Action::Deserialize::YAML 1.22
+      Catalyst::Action::DeserializeMultiPart 1.22
+      Catalyst::Action::REST 1.22
+      Catalyst::Action::REST::ForBrowsers 1.22
+      Catalyst::Action::Serialize 1.22
+      Catalyst::Action::Serialize::Callback 1.22
+      Catalyst::Action::Serialize::JSON 1.22
+      Catalyst::Action::Serialize::JSON::XS 1.22
+      Catalyst::Action::Serialize::JSONP 1.22
+      Catalyst::Action::Serialize::View 1.22
+      Catalyst::Action::Serialize::XML::Simple 1.22
+      Catalyst::Action::Serialize::YAML 1.22
+      Catalyst::Action::Serialize::YAML::HTML 1.22
+      Catalyst::Action::SerializeBase 1.22
+      Catalyst::Controller::REST 1.22
+      Catalyst::Request::REST 1.22
+      Catalyst::Request::REST::ForBrowsers 1.22
+      Catalyst::TraitFor::Request::REST 1.22
+      Catalyst::TraitFor::Request::REST::ForBrowsers 1.22
     requirements:
       Catalyst::Runtime 5.80030
       Class::Inspector 1.13
@@ -2106,11 +2106,11 @@ DISTRIBUTIONS
       perl 5.008001
       strict 0
       warnings 0
-  Exporter-5.78
-    pathname: T/TO/TODDR/Exporter-5.78.tar.gz
+  Exporter-5.79
+    pathname: T/TO/TODDR/Exporter-5.79.tar.gz
     provides:
-      Exporter 5.78
-      Exporter::Heavy 5.78
+      Exporter 5.79
+      Exporter::Heavy 5.79
     requirements:
       Carp 1.05
       ExtUtils::MakeMaker 0
@@ -2686,17 +2686,17 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Net::SSLeay 1.46
       Scalar::Util 0
-  IPC-Run-20260322.0
-    pathname: T/TO/TODDR/IPC-Run-20260322.0.tar.gz
+  IPC-Run-20260402.0
+    pathname: T/TO/TODDR/IPC-Run-20260402.0.tar.gz
     provides:
-      IPC::Run 20260322.0
-      IPC::Run::Debug 20260322.0
-      IPC::Run::IO 20260322.0
-      IPC::Run::Timer 20260322.0
-      IPC::Run::Win32Helper 20260322.0
-      IPC::Run::Win32IO 20260322.0
-      IPC::Run::Win32Process 20260322.0
-      IPC::Run::Win32Pump 20260322.0
+      IPC::Run 20260402.0
+      IPC::Run::Debug 20260402.0
+      IPC::Run::IO 20260402.0
+      IPC::Run::Timer 20260402.0
+      IPC::Run::Win32Helper 20260402.0
+      IPC::Run::Win32IO 20260402.0
+      IPC::Run::Win32Process 20260402.0
+      IPC::Run::Win32Pump 20260402.0
     requirements:
       ExtUtils::MakeMaker 0
       Test::More 0.47
@@ -3302,10 +3302,10 @@ DISTRIBUTIONS
       Try::Tiny 0
       strict 0
       warnings 0
-  Module-Metadata-1.000038
-    pathname: E/ET/ETHER/Module-Metadata-1.000038.tar.gz
+  Module-Metadata-1.000039
+    pathname: E/ET/ETHER/Module-Metadata-1.000039.tar.gz
     provides:
-      Module::Metadata 1.000038
+      Module::Metadata 1.000039
     requirements:
       Carp 0
       Encode 0
@@ -5652,38 +5652,38 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       File::Basename 0
       Test::More 0.6
-  Pod-Simple-3.47
-    pathname: K/KH/KHW/Pod-Simple-3.47.tar.gz
+  Pod-Simple-3.48
+    pathname: K/KH/KHW/Pod-Simple-3.48.tar.gz
     provides:
-      Pod::Simple 3.47
-      Pod::Simple::BlackBox 3.47
-      Pod::Simple::Checker 3.47
-      Pod::Simple::Debug 3.47
-      Pod::Simple::DumpAsText 3.47
-      Pod::Simple::DumpAsXML 3.47
-      Pod::Simple::HTML 3.47
-      Pod::Simple::HTMLBatch 3.47
+      Pod::Simple 3.48
+      Pod::Simple::BlackBox 3.48
+      Pod::Simple::Checker 3.48
+      Pod::Simple::Debug 3.48
+      Pod::Simple::DumpAsText 3.48
+      Pod::Simple::DumpAsXML 3.48
+      Pod::Simple::HTML 3.48
+      Pod::Simple::HTMLBatch 3.48
       Pod::Simple::HTMLLegacy 5.02
       Pod::Simple::JustPod undef
-      Pod::Simple::LinkSection 3.47
-      Pod::Simple::Methody 3.47
-      Pod::Simple::Progress 3.47
-      Pod::Simple::PullParser 3.47
-      Pod::Simple::PullParserEndToken 3.47
-      Pod::Simple::PullParserStartToken 3.47
-      Pod::Simple::PullParserTextToken 3.47
-      Pod::Simple::PullParserToken 3.47
-      Pod::Simple::RTF 3.47
-      Pod::Simple::Search 3.47
-      Pod::Simple::SimpleTree 3.47
-      Pod::Simple::Text 3.47
-      Pod::Simple::TextContent 3.47
-      Pod::Simple::TiedOutFH 3.47
-      Pod::Simple::Transcode 3.47
-      Pod::Simple::TranscodeDumb 3.47
-      Pod::Simple::TranscodeSmart 3.47
-      Pod::Simple::XHTML 3.47
-      Pod::Simple::XMLOutStream 3.47
+      Pod::Simple::LinkSection 3.48
+      Pod::Simple::Methody 3.48
+      Pod::Simple::Progress 3.48
+      Pod::Simple::PullParser 3.48
+      Pod::Simple::PullParserEndToken 3.48
+      Pod::Simple::PullParserStartToken 3.48
+      Pod::Simple::PullParserTextToken 3.48
+      Pod::Simple::PullParserToken 3.48
+      Pod::Simple::RTF 3.48
+      Pod::Simple::Search 3.48
+      Pod::Simple::SimpleTree 3.48
+      Pod::Simple::Text 3.48
+      Pod::Simple::TextContent 3.48
+      Pod::Simple::TiedOutFH 3.48
+      Pod::Simple::Transcode 3.48
+      Pod::Simple::TranscodeDumb 3.48
+      Pod::Simple::TranscodeSmart 3.48
+      Pod::Simple::XHTML 3.48
+      Pod::Simple::XMLOutStream 3.48
     requirements:
       Carp 0
       Config 0
@@ -7374,11 +7374,11 @@ DISTRIBUTIONS
       Fcntl 0
       URI 1.10
       perl 5.008001
-  XML-Parser-2.54
-    pathname: T/TO/TODDR/XML-Parser-2.54.tar.gz
+  XML-Parser-2.57
+    pathname: T/TO/TODDR/XML-Parser-2.57.tar.gz
     provides:
-      XML::Parser 2.54
-      XML::Parser::Expat 2.54
+      XML::Parser 2.57
+      XML::Parser::Expat 2.57
       XML::Parser::Style::Debug undef
       XML::Parser::Style::Objects undef
       XML::Parser::Style::Stream undef
@@ -7617,32 +7617,32 @@ DISTRIBUTIONS
       utf8 0
       vars 0
       warnings 0
-  libwww-perl-6.81
-    pathname: O/OA/OALDERS/libwww-perl-6.81.tar.gz
+  libwww-perl-6.82
+    pathname: O/OA/OALDERS/libwww-perl-6.82.tar.gz
     provides:
-      LWP 6.81
-      LWP::Authen::Basic 6.81
-      LWP::Authen::Digest 6.81
-      LWP::Authen::Ntlm 6.81
-      LWP::ConnCache 6.81
-      LWP::Debug 6.81
-      LWP::Debug::TraceHTTP 6.81
-      LWP::DebugFile 6.81
-      LWP::MemberMixin 6.81
-      LWP::Protocol 6.81
-      LWP::Protocol::cpan 6.81
-      LWP::Protocol::data 6.81
-      LWP::Protocol::file 6.81
-      LWP::Protocol::ftp 6.81
-      LWP::Protocol::gopher 6.81
-      LWP::Protocol::http 6.81
-      LWP::Protocol::loopback 6.81
-      LWP::Protocol::mailto 6.81
-      LWP::Protocol::nntp 6.81
-      LWP::Protocol::nogo 6.81
-      LWP::RobotUA 6.81
-      LWP::Simple 6.81
-      LWP::UserAgent 6.81
+      LWP 6.82
+      LWP::Authen::Basic 6.82
+      LWP::Authen::Digest 6.82
+      LWP::Authen::Ntlm 6.82
+      LWP::ConnCache 6.82
+      LWP::Debug 6.82
+      LWP::Debug::TraceHTTP 6.82
+      LWP::DebugFile 6.82
+      LWP::MemberMixin 6.82
+      LWP::Protocol 6.82
+      LWP::Protocol::cpan 6.82
+      LWP::Protocol::data 6.82
+      LWP::Protocol::file 6.82
+      LWP::Protocol::ftp 6.82
+      LWP::Protocol::gopher 6.82
+      LWP::Protocol::http 6.82
+      LWP::Protocol::loopback 6.82
+      LWP::Protocol::mailto 6.82
+      LWP::Protocol::nntp 6.82
+      LWP::Protocol::nogo 6.82
+      LWP::RobotUA 6.82
+      LWP::Simple 6.82
+      LWP::UserAgent 6.82
       libwww::perl undef
     requirements:
       Digest::MD5 0
