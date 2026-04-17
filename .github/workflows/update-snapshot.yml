@@ -10,7 +10,7 @@ jobs:
       image: perl:5.22-buster
     steps:
       - name: Generate Auth Token
-        uses: actions/create-github-app-token@v2
+        uses: actions/create-github-app-token@v3
         id: app-token
         with:
           app-id: ${{ secrets.APP_ID }}
