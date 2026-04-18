@@ -2,11 +2,9 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use MetaCPAN::Script::Tickets ();
 use MetaCPAN::TestHelpers qw( fakecpan_dir get_config testdata_dir tmp_dir );
 use MetaCPAN::TestServer  ();
 use Test::More 0.96;
-use URI::FromHash qw( uri );
 
 # Ensure we're starting fresh
 my $tmp_dir = tmp_dir();
@@ -46,19 +44,10 @@ $server->index_favorite;
 $server->index_cover;
 $server->index_river;
 $server->index_bus_factor;
+$server->index_tickets;
+
 $server->prepare_user_test_data;
 
-ok(
-    MetaCPAN::Script::Tickets->new_with_options( {
-        %{$config},
-        rt_summary_url => uri(
-            scheme => 'file',
-            path   => $testdata_dir->child('bugs.tsv')->absolute->stringify,
-        ),
-    } )->run,
-    'tickets'
-);
-
-$server->wait_for_es();
+$server->wait_for_es;
 
 done_testing;

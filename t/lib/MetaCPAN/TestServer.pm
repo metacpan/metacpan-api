@@ -16,6 +16,7 @@ use MetaCPAN::Script::Package        ();
 use MetaCPAN::Script::Permission     ();
 use MetaCPAN::Script::Release        ();
 use MetaCPAN::Script::River          ();
+use MetaCPAN::Script::Tickets        ();
 use MetaCPAN::Server                 ();
 use MetaCPAN::Server::Config         ();
 use MetaCPAN::TestHelpers            qw( fakecpan_dir testdata_dir );
@@ -197,6 +198,19 @@ sub index_cover {
 
     ok( MetaCPAN::Script::Cover->new_with_options( $self->_config )->run,
         'index cover' );
+}
+
+sub index_tickets {
+    my $self = shift;
+
+    local @ARGV = (
+        'tickets',
+        '--rt_summary_url',
+        URI->new( 'file://' . testdata_dir()->child('bugs.tsv') )->as_string,
+    );
+
+    ok( MetaCPAN::Script::Tickets->new_with_options( $self->_config )->run,
+        'index tickets' );
 }
 
 sub index_permissions {
