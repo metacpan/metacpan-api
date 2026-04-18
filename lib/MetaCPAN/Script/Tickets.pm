@@ -10,6 +10,7 @@ use HTTP::Request::Common qw( GET );
 use Log::Contextual       qw( :log :dlog );
 use MetaCPAN::ESConfig    qw( es_doc_path );
 use MetaCPAN::Util        qw( true false );
+use MetaCPAN::Types       qw( Uri );
 use Net::GitHub::V4       ();
 use Ref::Util             qw( is_hashref is_ref );
 use Text::CSV_XS          ();
@@ -19,6 +20,8 @@ with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
 has rt_summary_url => (
     is       => 'ro',
+    isa      => Uri,
+    coerce   => 1,
     required => 1,
     default  => 'https://rt.cpan.org/Public/bugs-per-dist.tsv',
 );
