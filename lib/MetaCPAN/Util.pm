@@ -103,7 +103,7 @@ sub root_dir {
 }
 
 sub digest {
-    my $digest = sha1_base64( join( "\0", grep {defined} @_ ) );
+    my $digest = sha1_base64( join( "\0", map +( $_ // '' ), @_ ) );
     $digest =~ tr{+/}{-_};
     return $digest;
 }
