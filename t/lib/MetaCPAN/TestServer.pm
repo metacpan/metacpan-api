@@ -4,6 +4,7 @@ use MetaCPAN::Moose;
 
 use MetaCPAN::ESConfig               qw( es_config );
 use MetaCPAN::Script::Author         ();
+use MetaCPAN::Script::BusFactor      ();
 use MetaCPAN::Script::Cover          ();
 use MetaCPAN::Script::CPANTestersAPI ();
 use MetaCPAN::Script::Favorite       ();
@@ -14,6 +15,7 @@ use MetaCPAN::Script::Mirrors        ();
 use MetaCPAN::Script::Package        ();
 use MetaCPAN::Script::Permission     ();
 use MetaCPAN::Script::Release        ();
+use MetaCPAN::Script::River          ();
 use MetaCPAN::Server                 ();
 use MetaCPAN::Server::Config         ();
 use MetaCPAN::TestHelpers            qw( fakecpan_dir testdata_dir );
@@ -225,6 +227,39 @@ sub index_favorite {
         MetaCPAN::Script::Favorite->new_with_options( %{ $self->_config } )
             ->run,
         'index favorite'
+    );
+}
+
+sub index_river {
+    my $self = shift;
+
+    local @ARGV = (
+        'river',
+        '--river_url',
+        URI->new( 'file://' . testdata_dir()->child('river.json') )
+            ->as_string,
+    );
+
+    ok(
+        MetaCPAN::Script::River->new_with_options( %{ $self->_config } )->run,
+        'index river',
+    );
+}
+
+sub index_bus_factor {
+    my $self = shift;
+
+    local @ARGV = (
+        'busfactor',
+        '--bus_factor_url',
+        URI->new( 'file://' . testdata_dir()->child('bus_factor.json') )
+            ->as_string,
+    );
+
+    ok(
+        MetaCPAN::Script::BusFactor->new_with_options( %{ $self->_config } )
+            ->run,
+        'index bus_factor',
     );
 }
 

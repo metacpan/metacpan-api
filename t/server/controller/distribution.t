@@ -33,6 +33,59 @@ my @tests = (
             surrogate_key =>
                 'content_type=application/json content_type=application',
             surrogate_control => undef,
+            content           => {
+                name   => 'Moose',
+                'bugs' => {
+                    'rt' => {
+                        'active'   => 39,
+                        'closed'   => 145,
+                        'new'      => 15,
+                        'open'     => 20,
+                        'patched'  => 0,
+                        'rejected' => 23,
+                        'resolved' => 122,
+                        'source'   =>
+                            'https://rt.cpan.org/Public/Dist/Display.html?Name=Moose',
+                        'stalled' => 4,
+                    },
+                },
+            },
+        }
+    ],
+    [
+        '/distribution/System-Command' => {
+            code          => 200,
+            cache_control => 'private',
+            surrogate_key =>
+                'content_type=application/json content_type=application',
+            surrogate_control => undef,
+            content           => {
+                name  => 'System-Command',
+                river => {
+                    total      => 92,
+                    immediate  => 4,
+                    bucket     => 2,
+                    bus_factor => 2,
+                },
+            },
+        }
+    ],
+    [
+        '/distribution/Text-Markdown' => {
+            code          => 200,
+            cache_control => 'private',
+            surrogate_key =>
+                'content_type=application/json content_type=application',
+            surrogate_control => undef,
+            content           => {
+                name    => 'Text-Markdown',
+                'river' => {
+                    total      => 92,
+                    immediate  => 56,
+                    bucket     => 2,
+                    bus_factor => 1,
+                },
+            },
         }
     ],
 );
@@ -56,10 +109,9 @@ test_psgi app, sub {
         if ( $k eq '/distribution' ) {
             ok( hit_total($json), 'got total count' );
         }
-        elsif ( $v eq 200 ) {
-
-            # TRAVIS 5.18
-            ok( $json->{name} eq 'Moose', 'Moose' );
+        elsif ( my $wanted = $v->{content} ) {
+            is_deeply $json, $wanted, 'has correct content'
+                or diag explain $json;
         }
     }
 };

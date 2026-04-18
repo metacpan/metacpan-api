@@ -44,6 +44,8 @@ $server->set_first;
 $server->index_cpantesters;
 $server->index_favorite;
 $server->index_cover;
+$server->index_river;
+$server->index_bus_factor;
 $server->prepare_user_test_data;
 
 ok(
