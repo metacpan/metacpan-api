@@ -88,8 +88,9 @@ sub release_contributor_update_actions {
 
     for my $contrib (@$contribs) {
         my $id = digest(
-            $release->{name}, $release->{author}, $contrib->{pauseid},
-            $contrib->{name}, $contrib->{email},
+            $release->{name},    $release->{author},
+            $contrib->{pauseid}, $contrib->{name},
+            @{ $contrib->{email} },
         );
 
         my $doc = {
@@ -192,6 +193,7 @@ sub get_contributors {
 
     my %want_email;
     for my $contrib (@contribs) {
+        @{ $contrib->{email} } = sort @{ $contrib->{email} };
 
         # heuristic to autofill pause accounts
         if ( !$contrib->{pauseid} ) {
