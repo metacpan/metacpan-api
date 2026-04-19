@@ -81,15 +81,6 @@ has model => (
     traits   => ['NoGetopt'],
 );
 
-has port => (
-    isa           => Int,
-    is            => 'ro',
-    required      => 0,
-    lazy          => 1,
-    default       => sub {5000},
-    documentation => 'Port for the proxy, defaults to 5000',
-);
-
 has home => (
     is      => 'ro',
     isa     => Path,
