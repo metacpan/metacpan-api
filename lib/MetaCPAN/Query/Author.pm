@@ -11,10 +11,10 @@ with 'MetaCPAN::Query::Role::Common';
 sub by_ids {
     my ( $self, $ids ) = @_;
 
-    map {uc} @{$ids};
+    my @ids = map {uc} @{$ids};
 
     my $body = {
-        query => { ids => { values => $ids } },
+        query => { ids => { values => \@ids } },
         size  => scalar @{$ids},
     };
 
