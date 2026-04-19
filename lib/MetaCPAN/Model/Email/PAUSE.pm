@@ -2,10 +2,12 @@ package MetaCPAN::Model::Email::PAUSE;
 
 use MetaCPAN::Moose;
 
+use warnings FATAL => 'utf8';
+
 use Email::Sender::Simple          qw( sendmail );
 use Email::Sender::Transport::SMTP ();
 use Email::Simple                  ();
-use Encode                         ();
+use Unicode::UTF8                  qw( encode_utf8 );
 use MetaCPAN::Types                qw( Uri );
 use Ref::Util                      qw( is_arrayref );
 use Try::Tiny                      qw( catch try );
@@ -79,13 +81,7 @@ Cheers,
 MetaCPAN
 EMAIL_BODY
 
-    try {
-        $body = Encode::encode( 'UTF-8', $body,
-            Encode::FB_CROAK | Encode::LEAVE_SRC );
-    }
-    catch {
-        warn $_[0];
-    };
+    $body = encode_utf8($body);
 
     return $body;
 }

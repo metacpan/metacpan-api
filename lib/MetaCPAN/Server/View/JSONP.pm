@@ -3,8 +3,10 @@ package MetaCPAN::Server::View::JSONP;
 use strict;
 use warnings;
 
+use warnings FATAL => 'utf8';
+
 use Cpanel::JSON::XS ();
-use Encode           qw( decode_utf8 );
+use Unicode::UTF8    qw( decode_utf8 );
 use Moose;
 
 extends 'Catalyst::View';

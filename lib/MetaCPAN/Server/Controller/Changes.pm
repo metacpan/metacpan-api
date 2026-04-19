@@ -4,9 +4,12 @@ use strict;
 use warnings;
 use namespace::autoclean;
 
-use Encode ();
 use Moose;
-use Try::Tiny qw( try );
+
+use warnings FATAL => 'utf8';
+
+use Unicode::UTF8 qw( decode_utf8 );
+use Try::Tiny     qw( try );
 
 BEGIN { extends 'MetaCPAN::Server::Controller' }
 
@@ -38,8 +41,7 @@ sub get : Chained('index') : PathPart('') : Args(2) {
         # Assume files are in UTF-8 (if not, do nothing)
         # (see comments in metacpan-web/lib/MetaCPAN/Web/Model/API.pm).
         try {
-            $content = Encode::decode( 'UTF-8', $content,
-                Encode::FB_CROAK | Encode::LEAVE_SRC );
+            $content = decode_utf8($content);
         };
 
         $content;
@@ -89,11 +91,7 @@ sub by_releases : Path('by_releases') : Args(0) {
             or next;
 
         my $content = try {
-            Encode::decode(
-                'UTF-8',
-                ( scalar $source->slurp ),
-                Encode::FB_CROAK | Encode::LEAVE_SRC
-            );
+            decode_utf8( scalar $source->slurp );
         } or next;
 
         push @changes,

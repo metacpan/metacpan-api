@@ -5,11 +5,12 @@ package MetaCPAN::Util;
 use strict;
 use warnings;
 use version;
+use warnings FATAL => 'utf8';
 
 use Cpanel::JSON::XS ();                           ## no perlimports
 use Cwd              ();
 use Digest::SHA      qw( sha1_base64 sha1_hex );
-use Encode           qw( decode_utf8 );
+use Unicode::UTF8    qw( decode_utf8 );
 use File::Basename   ();
 use File::Spec       ();
 use List::Util       qw( max min );
@@ -178,7 +179,7 @@ sub strip_pod {
 
 sub extract_section {
     my ( $pod, $section ) = @_;
-    eval { $pod = decode_utf8( $pod, Encode::FB_CROAK ) };
+    eval { $pod = decode_utf8($pod) };
     return undef
         unless ( $pod =~ /^=head1\s+$section\b(.*?)(^((\=head1)|(\=cut)))/msi
         || $pod =~ /^=head1\s+$section\b(.*)/msi );

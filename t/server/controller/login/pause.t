@@ -3,7 +3,9 @@ use warnings;
 use lib 't/lib';
 use utf8;
 
-use Encode                 qw( encode FB_CROAK is_utf8 LEAVE_SRC );
+use warnings FATAL => 'utf8';
+
+use Unicode::UTF8          qw( encode_utf8 );
 use MetaCPAN::Server::Test qw( app GET test_psgi );
 use MetaCPAN::TestHelpers  qw( decode_json_ok );
 use Test::More;
@@ -43,7 +45,7 @@ sub test_pause_auth {
         ok $email, 'sent email'
             or die explain $res;
 
-        ok !is_utf8( $email->get_body ),
+        ok !utf8::is_utf8( $email->get_body ),
             'body is octets (no wide characters)';
 
         # Thanks ANDK!
@@ -70,6 +72,5 @@ sub test_pause_auth {
 
 sub _u {
     my $s = $_[0];
-    ## no critic (Bitwise)
-    return is_utf8($s) ? encode( 'UTF-8', $s, FB_CROAK | LEAVE_SRC ) : $s;
+    return utf8::is_utf8($s) ? encode_utf8($s) : $s;
 }
