@@ -47,13 +47,6 @@ has _cpan_dir => (
     default  => sub { fakecpan_dir() },
 );
 
-sub setup {
-    my $self = shift;
-
-    $self->es_client;
-    $self->put_mappings;
-}
-
 sub _build_config {
     my $self = shift;
 
