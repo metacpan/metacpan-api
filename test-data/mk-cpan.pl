@@ -2,6 +2,7 @@
 use strict;
 use warnings;
 
+use Archive::Tar          qw( COMPRESS_GZIP );
 use File::Basename        qw( basename dirname );
 use File::Spec::Functions qw( abs2rel catdir rel2abs splitdir );
 use File::Path            qw( mkpath );
@@ -70,10 +71,12 @@ File::Find::find(
             if ( -d $file ) {
                 my @parts = splitdir($rel);
                 if ( $parts[0] eq 'authors' && @parts == 6 ) {
-                    my $dirname  = dirname($file);
-                    my $basename = basename($file);
-                    my $options  = {};
-                    my $extra    = "$file/x_metacpan.json";
+                    $File::Find::prune = 1;
+                    my $archive_root_dir = $file;
+                    my $dirname          = dirname($archive_root_dir);
+                    my $tar_root         = basename($archive_root_dir);
+                    my $options          = {};
+                    my $extra = "$archive_root_dir/x_metacpan.json";
                     if ( open my $fh, '<', $extra ) {
                         my $json = do { local $/; <$fh> };
                         close $fh;
@@ -81,24 +84,49 @@ File::Find::find(
                     }
 
                     if ( $options->{no_top_level} ) {
-                        $dirname  = $file;
-                        $basename = '.';
+                        $tar_root = '';
                     }
 
                     my $tarball = "$dest.tar.gz";
+
+                    # jan 1 2026
+                    my $mtime = $options->{mtime} // 1767225600;
+
                     print "creating $rel.tar.gz\n" if $v;
-                    system qw(tar -c -z),
-                        '--format'  => 'ustar',
-                        '--exclude' => 'x_metacpan.json',
-                        '-C'        => $dirname,
-                        '-f'        => $tarball,
-                        $basename;
 
-                    if ( my $mtime = $options->{mtime} ) {
-                        utime $mtime, $mtime, $tarball;
-                    }
+                    my $tar = Archive::Tar->new;
+                    File::Find::find(
+                        {
+                            no_chdir   => 1,
+                            preprocess => sub { sort @_ },
+                            wanted     => sub {
+                                my $name = $_;
+                                my $rel  = abs2rel( $_, $archive_root_dir )
+                                    =~ s{\A\.(?:/|\z)}{}r;
+                                return
+                                    if $rel eq 'x_metacpan.json';
 
-                    $File::Find::prune = 1;
+                                my $tar_path = join '/', grep length,
+                                    $tar_root, $rel;
+                                return
+                                    if !length $tar_path;
+
+                                my ($afile) = $tar->add_files($name);
+                                $afile->rename($tar_path);
+                                $afile->uid(0);
+                                $afile->gid(0);
+                                $afile->uname('root');
+                                $afile->gname('root');
+                                $afile->mode( oct( -x ? '0755' : '0644' ) );
+                                $afile->mtime($mtime);
+                            },
+                        },
+                        $archive_root_dir,
+                    );
+
+                    $tar->write( $tarball, COMPRESS_GZIP );
+
+                    utime $mtime, $mtime, $tarball;
                 }
                 elsif ( !-e $dest ) {
                     print "creating $rel/\n" if $v;

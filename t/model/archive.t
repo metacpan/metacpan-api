@@ -24,10 +24,13 @@ subtest 'file does not exist' => sub {
 
 subtest 'archive extraction' => sub {
     my %want = (
+        'Some-1.00-TRIAL'             => undef,
+        'Some-1.00-TRIAL/lib'         => undef,
         'Some-1.00-TRIAL/lib/Some.pm' =>
             '2f806b4c7413496966f52ef353984dde10b6477b',
         'Some-1.00-TRIAL/Makefile.PL' =>
             'bc7f47a8e0e9930f41c06e150c7d229cfd3feae7',
+        'Some-1.00-TRIAL/t'          => undef,
         'Some-1.00-TRIAL/t/00-nop.t' =>
             '2eba5fd5f9e08a9dcc1c5e2166b7d7d958caf377',
         'Some-1.00-TRIAL/META.json' => qr/"meta-spec"/,
@@ -44,18 +47,25 @@ subtest 'archive extraction' => sub {
     ok !$archive->is_impolite;
     ok !$archive->is_naughty;
 
-    my @files = grep !m{/$}, @{ $archive->files };
+    my @files = @{ $archive->files };
     cmp_bag [@files], [ keys %want ];
 
     my $dir = $archive->extract;
-    for my $file ( keys %want ) {
-        my $content = $dir->child($file)->slurp;
-        if ( ref $want{$file} ) {
-            like $content, $want{$file}, "content of $file";
+    for my $file ( sort keys %want ) {
+        my $full = $dir->child($file);
+        my $want = $want{$file};
+        if ( $full->is_dir ) {
+            ok !defined $want, "directory of $file";
         }
         else {
-            my $digest = sha1_hex($content);
-            is $digest, $want{$file}, "content of $file";
+            my $content = $full->slurp;
+            if ( ref $want ) {
+                like $content, $want, "content of $file";
+            }
+            else {
+                my $digest = sha1_hex($content);
+                is $digest, $want, "content of $file";
+            }
         }
     }
 };
