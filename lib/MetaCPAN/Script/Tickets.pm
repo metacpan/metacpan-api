@@ -3,9 +3,6 @@ package MetaCPAN::Script::Tickets;
 use Moose;
 use namespace::autoclean;
 
-# Some issue with rt.cpan.org's cert
-$ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0;
-
 use HTTP::Request::Common qw( GET );
 use Log::Contextual       qw( :log :dlog );
 use MetaCPAN::ESConfig    qw( es_doc_path );
