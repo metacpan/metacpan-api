@@ -6,6 +6,14 @@ ARG BASE_BUILD=${MAYBE_BASE_BUILD:-server-base}
 FROM metacpan/metacpan-base:main-20250531-090128 AS server-base
 FROM metacpan/metacpan-base:main-20250531-090129-slim AS server-base-slim
 
+RUN \
+    --mount=type=cache,target=/var/cache/apt,sharing=private \
+    --mount=type=cache,target=/var/lib/apt/lists,sharing=private \
+<<EOT
+    apt-get update
+    apt-get satisfy -y -f --no-install-recommends 'libarchive-dev (>= 3.6.0)'
+EOT
+
 ################### CPAN Prereqs
 FROM server-base AS build-cpan-prereqs
 SHELL [ "/bin/bash", "-euo", "pipefail", "-c" ]
