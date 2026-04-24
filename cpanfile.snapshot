@@ -1668,6 +1668,19 @@ DISTRIBUTIONS
       perl 5.008004
       strict 0
       warnings 0
+  Devel-CheckCompiler-0.07
+    pathname: S/SY/SYOHEX/Devel-CheckCompiler-0.07.tar.gz
+    provides:
+      Devel::AssertC99 undef
+      Devel::CheckCompiler 0.07
+    requirements:
+      Exporter 0
+      ExtUtils::CBuilder 0
+      File::Temp 0
+      Module::Build::Tiny 0.035
+      Test::More 0.98
+      parent 0
+      perl 5.008001
   Devel-CheckLib-1.16
     pathname: M/MA/MATTN/Devel-CheckLib-1.16.tar.gz
     provides:
@@ -7459,6 +7472,16 @@ DISTRIBUTIONS
       MIME::Charset v1.6.2
       Test::More 0.45
       perl 5.008
+  Unicode-UTF8-0.70
+    pathname: C/CH/CHANSEN/Unicode-UTF8-0.70.tar.gz
+    provides:
+      Unicode::UTF8 0.70
+    requirements:
+      Carp 0
+      Devel::AssertC99 0
+      Exporter 0
+      ExtUtils::MakeMaker 0
+      XSLoader 0
   Variable-Magic-0.64
     pathname: V/VP/VPIT/Variable-Magic-0.64.tar.gz
     provides:

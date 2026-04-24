@@ -2,18 +2,20 @@ package MetaCPAN::Model::Email::PAUSE;
 
 use MetaCPAN::Moose;
 
+use warnings FATAL => 'utf8';
+
 use Email::Sender::Simple          qw( sendmail );
 use Email::Sender::Transport::SMTP ();
 use Email::Simple                  ();
-use Encode                         ();
-use MetaCPAN::Types                qw( Object Uri );
+use Unicode::UTF8                  qw( encode_utf8 );
+use MetaCPAN::Types                qw( Uri );
+use Ref::Util                      qw( is_arrayref );
 use Try::Tiny                      qw( catch try );
 
 with('MetaCPAN::Role::HasConfig');
 
 has _author => (
     is       => 'ro',
-    isa      => Object,
     init_arg => 'author',
     required => 1,
 );
@@ -26,12 +28,15 @@ has _url => (
 );
 
 sub send {
-    my $self = shift;
+    my $self          = shift;
+    my $email_address = $self->_author->{email};
+    $email_address
+        = is_arrayref($email_address) ? $email_address->[0] : $email_address;
 
     my $email = Email::Simple->create(
         header => [
             'Content-Type' => 'text/plain; charset=utf-8',
-            To             => $self->_author->{email}->[0],
+            To             => $email_address,
             From           => 'notifications@metacpan.org',
             Subject        => 'Connect MetaCPAN with your PAUSE account',
             'MIME-Version' => '1.0',
@@ -62,7 +67,7 @@ sub send {
 
 sub _email_body {
     my $self = shift;
-    my $name = $self->_author->name;
+    my $name = $self->_author->{name};
     my $uri  = $self->_url;
 
     my $body = <<EMAIL_BODY;
@@ -76,13 +81,7 @@ Cheers,
 MetaCPAN
 EMAIL_BODY
 
-    try {
-        $body = Encode::encode( 'UTF-8', $body,
-            Encode::FB_CROAK | Encode::LEAVE_SRC );
-    }
-    catch {
-        warn $_[0];
-    };
+    $body = encode_utf8($body);
 
     return $body;
 }

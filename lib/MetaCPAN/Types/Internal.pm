@@ -54,6 +54,7 @@ coerce ES, from Str, via {
 };
 
 coerce ES, from HashRef, via {
+    require Search::Elasticsearch;    ## no perlimports
     return Search::Elasticsearch->new( {
         cxn => 'HTTPTiny',
         %$_,
@@ -61,6 +62,7 @@ coerce ES, from HashRef, via {
 };
 
 coerce ES, from ArrayRef, via {
+    require Search::Elasticsearch;    ## no perlimports
     my @servers = @$_;
     @servers = map { /^:/ ? "127.0.0.1$_" : $_ } @servers;
     return Search::Elasticsearch->new(

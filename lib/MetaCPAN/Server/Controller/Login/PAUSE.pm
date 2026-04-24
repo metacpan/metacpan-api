@@ -37,12 +37,14 @@ sub index : Path Args(0) {
     elsif ( ( $id = $c->req->parameters->{id} )
         && $c->req->parameters->{id} =~ /[a-zA-Z]+/ )
     {
-        my $author = $c->model('ESModel')->doc('author')->get( uc($id) );
+        my $author
+            = $c->model('ESQuery')->author->by_ids( [$id] )->{authors}->[0];
+
         $c->controller('OAuth2')->redirect( $c, error => "author_not_found" )
             unless ($author);
 
         my $code = generate_sid();
-        $self->cache->set( $code, $author->pauseid, 86400 );
+        $self->cache->set( $code, $author->{pauseid}, 86400 );
 
         my $url = $c->request->uri->clone;
         $url->query("code=$code");
@@ -55,7 +57,9 @@ sub index : Path Args(0) {
         my $sent = $email->send;
 
         if ( !$sent ) {
-            log_error { 'Could not send PAUSE email to ' . $author->pauseid };
+            log_error {
+                'Could not send PAUSE email to ' . $author->{pauseid}
+            };
         }
 
         $c->controller('OAuth2')->redirect( $c, success => 'mail_sent' );

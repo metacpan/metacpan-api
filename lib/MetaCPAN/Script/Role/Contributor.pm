@@ -4,7 +4,7 @@ use Moose::Role;
 
 use Log::Contextual    qw( :log :dlog );
 use MetaCPAN::ESConfig qw( es_doc_path );
-use MetaCPAN::Util     qw( true false );
+use MetaCPAN::Util     qw( true false digest );
 use Ref::Util          ();
 
 sub update_contributors {
@@ -85,18 +85,31 @@ sub release_contributor_update_actions {
     push @actions, map +{ delete => { id => $_ } }, @ids;
 
     my $contribs = $self->get_contributors($release);
-    my @docs     = map {
-        ;
-        my $contrib = $_;
-        {
+
+    for my $contrib (@$contribs) {
+        my $id = digest(
+            $release->{name},    $release->{author},
+            $contrib->{pauseid}, $contrib->{name},
+            @{ $contrib->{email} },
+        );
+
+        my $doc = {
             release_name   => $release->{name},
             release_author => $release->{author},
             distribution   => $release->{distribution},
             map +( defined $contrib->{$_} ? ( $_ => $contrib->{$_} ) : () ),
             qw(pauseid name email)
         };
-    } @$contribs;
-    push @actions, map +{ index => { source => $_ } }, @docs;
+
+        push @actions,
+            {
+            index => {
+                id     => $id,
+                source => $doc,
+            },
+            };
+    }
+
     return \@actions;
 }
 
@@ -180,6 +193,7 @@ sub get_contributors {
 
     my %want_email;
     for my $contrib (@contribs) {
+        @{ $contrib->{email} } = sort @{ $contrib->{email} };
 
         # heuristic to autofill pause accounts
         if ( !$contrib->{pauseid} ) {

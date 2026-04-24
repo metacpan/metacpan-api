@@ -6,10 +6,12 @@ use warnings;
 use Moose;
 with 'MooseX::Getopt', 'MetaCPAN::Role::Script';
 
+use warnings FATAL => 'utf8';
+
 use Cpanel::JSON::XS           qw( decode_json );
 use DateTime                   ();
 use Email::Valid               ();
-use Encode                     ();
+use Unicode::UTF8              qw( encode_utf8 );
 use Log::Contextual            qw( :log :dlog );
 use MetaCPAN::Document::Author ();
 use MetaCPAN::ESConfig         qw( es_doc_path );
@@ -241,7 +243,7 @@ sub update_author {
     my $data = $self->author_data_from_cpan( $pauseid, $whois_data );
 
     log_debug {
-        Encode::encode_utf8( sprintf(
+        encode_utf8( sprintf(
             "Indexing %s: %s <%s>",
             $pauseid, $data->{name}, $data->{email}
         ) );

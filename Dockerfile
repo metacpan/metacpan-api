@@ -54,62 +54,48 @@ EXPOSE 8000
 
 HEALTHCHECK --start-period=3s CMD [ "curl", "--fail", "http://localhost:8000/healthcheck" ]
 
-################### Development Server
-FROM server AS develop
+################### Dev Prereqs
+FROM build-cpan-prereqs AS build-dev-prereqs
 SHELL [ "/bin/bash", "-euo", "pipefail", "-c" ]
 
-ENV COLUMNS=120
+USER root
+
+RUN \
+    --mount=type=cache,target=/root/.perl-cpm \
+<<EOT
+    cpm install --show-build-log-on-failure --resolver=snapshot --with-develop --with-test
+EOT
+
+COPY bin/install-precious /tmp/install-precious
+RUN /tmp/install-precious /usr/local/bin
+
+################### Development Server
+FROM server AS server-dev
+
 ENV PLACK_ENV=development
 
-USER root
-
-COPY cpanfile cpanfile.snapshot ./
-
-RUN \
-    --mount=type=cache,target=/root/.perl-cpm \
-<<EOT
-    cpm install --show-build-log-on-failure --resolver=snapshot --with-develop
-    chown -R metacpan:users ./
-EOT
-
-USER metacpan
-
-################### Test Runner
-FROM develop AS test
-SHELL [ "/bin/bash", "-euo", "pipefail", "-c" ]
-
-ENV PLACK_ENV=
-
-USER root
-
-RUN \
-    --mount=type=cache,target=/root/.perl-cpm \
-<<EOT
-    cpm install --show-build-log-on-failure --resolver=snapshot --with-test
-EOT
+COPY --from=build-dev-prereqs /app/local local
+COPY --from=build-dev-prereqs /usr/local/bin/precious /usr/local/bin/omegasort /usr/local/bin/
 
 COPY .perlcriticrc .perltidyrc perlimports.toml precious.toml .editorconfig metacpan_server_testing.* ./
 COPY t t
 COPY test-data test-data
 
-RUN mkdir -p var/t && chown metacpan var/t
-
+USER root
+RUN mkdir -p var/t && chown -R metacpan var/t /app/local
 USER metacpan
+
+################### Test Runner
+FROM server-dev AS test
+
+ENV PLACK_ENV=
+
 CMD [ "prove", "-l", "-r", "-j", "2", "t" ]
 
-################### Dev Container (linting + tidying)
-FROM test AS dev
-SHELL [ "/bin/bash", "-euo", "pipefail", "-c" ]
+################### Development
+FROM server-dev AS dev
 
-USER root
-
-COPY bin/install-precious /tmp/install-precious
-RUN /tmp/install-precious /usr/local/bin && rm /tmp/install-precious
-
-USER metacpan
 CMD [ "bash" ]
 
 ################### Production Server
 FROM server AS production
-
-USER metacpan

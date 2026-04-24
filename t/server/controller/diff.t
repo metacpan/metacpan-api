@@ -2,6 +2,8 @@ use strict;
 use warnings;
 use lib 't/lib';
 
+use warnings FATAL => 'utf8';
+
 use MetaCPAN::Server::Test qw( app GET test_psgi );
 use MetaCPAN::TestHelpers  qw(
     decode_json_ok
@@ -9,6 +11,7 @@ use MetaCPAN::TestHelpers  qw(
     test_cache_headers
 );
 use Test::More;
+use Unicode::UTF8 qw( encode_utf8 );
 
 sub get_ok {
     my ( $cb, $url, $desc, $headers ) = @_;
@@ -188,7 +191,7 @@ sub diffed_file_like {
         my $diff = $stat->{diff};
 
         # do byte comparison for these tests
-        $diff = Encode::encode_utf8($diff)
+        $diff = encode_utf8($diff)
             if utf8::is_utf8($diff);
 
         if (   diffed_file_name_eq( $stat->{source}, $r1, $file )

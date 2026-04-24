@@ -9,7 +9,6 @@ elasticsearch_servers:
   client: '8_0::Direct'
   nodes: http://elasticsearch:9200
 minion_dsn: "postgresql://metacpan:t00lchain@pghost:5432/minion_queue"
-port: 5000
 
 logger:
   class: Log::Log4perl::Appender::File
