@@ -14,6 +14,11 @@ use Test::More;
 my $app  = MetaCPAN::Server->new->to_app();
 my $test = Plack::Test->create($app);
 
+my $multi_rel_archive = fakecpan_dir()
+    ->child('authors/id/H/HA/HAARG/Multiple-Releases-1.4.tar.gz');
+my $multi_rel_md5    = digest_file_hex( $multi_rel_archive, 'MD5' );
+my $multi_rel_sha256 = digest_file_hex( $multi_rel_archive, 'SHA-256' );
+
 my @tests = (
     [ 'no parameters', '/download_url/Moose', 'latest', '0.02', ],
     [
@@ -42,19 +47,8 @@ my @tests = (
     ],
     [ 'version >=', '/download_url/Moose?version=>=0.01', 'latest', '0.02' ],
     [
-        'range >, <',
-        '/download_url/Multiple::Releases?version=>1.1,<1.7',
-        'cpan', '1.4',
-        digest_file_hex(
-            fakecpan_dir()
-                ->child('authors/id/H/HA/HAARG/Multiple-Releases-1.4.tar.gz'),
-            'MD5'
-        ),
-        digest_file_hex(
-            fakecpan_dir()
-                ->child('authors/id/H/HA/HAARG/Multiple-Releases-1.4.tar.gz'),
-            'SHA-256'
-        ),
+        'range >, <', '/download_url/Multiple::Releases?version=>1.1,<1.7',
+        'cpan', '1.4', $multi_rel_md5, $multi_rel_sha256,
     ],
     [
         'range >, <, !',
@@ -70,6 +64,43 @@ my @tests = (
         'range >, <, !; dev',
         '/download_url/Multiple::Releases?version=>1.1,<1.7,!=1.6&dev=1',
         'cpan', '1.5'
+    ],
+
+    [
+        'dist: no parameters', '/download_url/distribution/Moose',
+        'latest',              '0.02',
+    ],
+    [
+        'dist: version ==',
+        '/download_url/distribution/Moose?version===0.01',
+        'cpan', '0.01'
+    ],
+    [
+        'dist: version <=',
+        '/download_url/distribution/Moose?version=<=0.01',
+        'cpan', '0.01'
+    ],
+    [
+        'dist: version >=',
+        '/download_url/distribution/Moose?version=>=0.01',
+        'latest', '0.02'
+    ],
+    [
+        'dist: range >, <',
+        '/download_url/distribution/Multiple-Releases?version=>1.1,<1.7',
+        'cpan', '1.4', $multi_rel_md5, $multi_rel_sha256,
+    ],
+    [
+        'dist: range >, <, !',
+        '/download_url/distribution/Multiple-Releases?version=>1.1,<1.7,!=1.4',
+        'cpan',
+        '1.3'
+    ],
+    [
+        'dist: range >, <; dev',
+        '/download_url/distribution/Multiple-Releases?version=>1.1,<1.7&dev=1',
+        'cpan',
+        '1.6'
     ],
 );
 
@@ -113,5 +144,11 @@ for (@tests) {
         }
     };
 }
+
+subtest 'dist: not found' => sub {
+    my $url = '/download_url/distribution/NotAThing';
+    my $res = $test->request( GET $url );
+    is( $res->code, 404, 'code 404' );
+};
 
 done_testing;
