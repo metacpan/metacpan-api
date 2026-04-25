@@ -3,7 +3,7 @@ exclude = [
     "/blib/**",
     "/root/assets/**",
     "/local/**",
-    "/test-data/**",
+    "/test-data/fakecpan/**",
 ]
 
 [commands.perlimports]
