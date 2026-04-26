@@ -11,6 +11,7 @@ services:
     environment:
       # default is 120, shorten to work with compose label
       COLUMNS: 96
+    init: true
     develop:
       watch:
         - path: ./cpanfile
@@ -34,6 +35,7 @@ services:
       METACPAN_SERVER_CONFIG_LOCAL_SUFFIX: testing
       MINICPAN: /CPAN
       DEVEL_COVER_OPTIONS: +ignore,^t/|^test-data/|^etc/|^local/
+    init: true
     networks:
       - elasticsearch
 
@@ -47,6 +49,7 @@ services:
       - './:/app/'
       - '/app/local'
       - '${GIT_COMMON_DIR:-/dev/null}:${GIT_COMMON_DIR:-/dev/null}:ro'
+    init: true
     environment:
       COLUMNS: 120
 
