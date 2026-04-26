@@ -4,6 +4,7 @@ use lib 't/lib';
 
 use MetaCPAN::Server::Test qw( app GET POST test_psgi );
 use MetaCPAN::TestHelpers  qw( decode_json_ok test_cache_headers );
+use Scalar::Util           qw( looks_like_number );
 use Test::More;
 
 my %tests = (
@@ -60,6 +61,11 @@ test_psgi app, sub {
             my ($index) = keys %{$json};
             my $check_mappings = $json->{$index}{mappings};
             ok( $check_mappings->{properties}{name}, '_mapping' );
+        }
+
+        if ( $k eq '/author/_count' ) {
+            my ($index) = keys %{$json};
+            ok( looks_like_number( $json->{count} ), '_count' );
         }
     }
 

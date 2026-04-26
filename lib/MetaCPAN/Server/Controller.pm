@@ -59,6 +59,12 @@ sub mapping : Path('_mapping') Args(0) {
             ->es->indices->get_mapping( es_doc_path( $self->type ) ) );
 }
 
+sub count : Path('_count') Args(0) {
+    my ( $self, $c ) = @_;
+    $c->stash(
+        $c->model('ESModel')->es->count( es_doc_path( $self->type ) ) );
+}
+
 sub get : Path('') : Args(1) {
     my ( $self, $c, $id ) = @_;
     my $model;
