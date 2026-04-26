@@ -6,6 +6,12 @@ ARG BASE_BUILD=${MAYBE_BASE_BUILD:-server-base}
 FROM metacpan/metacpan-base:main-20260424-113420 AS server-base
 FROM metacpan/metacpan-base:main-20260424-113420-slim AS server-base-slim
 
+################### CPAN Prereqs
+FROM server-base AS build-cpan-prereqs
+SHELL [ "/bin/bash", "-euo", "pipefail", "-c" ]
+
+WORKDIR /app/
+
 RUN \
     --mount=type=cache,target=/var/cache/apt,sharing=private \
     --mount=type=cache,target=/var/lib/apt/lists,sharing=private \
@@ -13,12 +19,6 @@ RUN \
     apt-get update
     apt-get satisfy -y -f --no-install-recommends 'libarchive-dev (>= 3.6.0)'
 EOT
-
-################### CPAN Prereqs
-FROM server-base AS build-cpan-prereqs
-SHELL [ "/bin/bash", "-euo", "pipefail", "-c" ]
-
-WORKDIR /app/
 
 COPY cpanfile cpanfile.snapshot ./
 RUN \
@@ -32,6 +32,14 @@ EOT
 # hadolint ignore=DL3006
 FROM ${BASE_BUILD} AS server
 SHELL [ "/bin/bash", "-euo", "pipefail", "-c" ]
+
+RUN \
+    --mount=type=cache,target=/var/cache/apt,sharing=private \
+    --mount=type=cache,target=/var/lib/apt/lists,sharing=private \
+<<EOT
+    apt-get update
+    apt-get satisfy -y -f --no-install-recommends 'libarchive13 (>= 3.6.0)'
+EOT
 
 WORKDIR /app/
 
