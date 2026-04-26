@@ -3,8 +3,8 @@ ARG MAYBE_BASE_BUILD=${SLIM_BUILD:+server-base-slim}
 ARG BASE_BUILD=${MAYBE_BASE_BUILD:-server-base}
 
 ################### Web Server Base
-FROM metacpan/metacpan-base:main-20250531-090128 AS server-base
-FROM metacpan/metacpan-base:main-20250531-090129-slim AS server-base-slim
+FROM metacpan/metacpan-base:main-20260424-113420 AS server-base
+FROM metacpan/metacpan-base:main-20260424-113420-slim AS server-base-slim
 
 RUN \
     --mount=type=cache,target=/var/cache/apt,sharing=private \
