@@ -6,6 +6,7 @@ services:
     volumes:
       - './:/app/'
       - '/app/local'
+      - '/app/var'
     ports:
       - '8001:8000'
     environment:
@@ -48,6 +49,7 @@ services:
     volumes:
       - './:/app/'
       - '/app/local'
+      - '/app/var'
       - '${GIT_COMMON_DIR:-/dev/null}:${GIT_COMMON_DIR:-/dev/null}:ro'
     init: true
     environment:
