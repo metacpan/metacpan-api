@@ -6,6 +6,20 @@ updates:
     schedule:
       # Check for updates to GitHub Actions every week
       interval: 'weekly'
+    groups:
+      major-updates:
+        patterns:
+          - '*'
+        update-types:
+          - 'major'
+      minor-and-patch:
+        patterns:
+          - '*'
+        update-types:
+          - 'minor'
+          - 'patch'
+    cooldown:
+      default-days: 7
   - package-ecosystem: 'docker-compose'
     directory: '/'
     schedule:
@@ -13,3 +27,12 @@ updates:
     ignore:
       - dependency-name: 'elasticsearch'
         update-types: 'version-update:semver-major'
+    groups:
+      minor-and-patch:
+        patterns:
+          - '*'
+        update-types:
+          - 'minor'
+          - 'patch'
+    cooldown:
+      default-days: 7
