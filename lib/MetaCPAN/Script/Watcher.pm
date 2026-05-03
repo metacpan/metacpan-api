@@ -13,51 +13,42 @@ use MetaCPAN::Util     qw( true false );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
-has backpan => (
-    is            => 'ro',
-    isa           => Bool,
-    documentation => 'update deleted archives only',
-);
-
 has dry_run => (
     is      => 'ro',
     isa     => Bool,
     default => 0,
 );
 
-my $fails  = 0;
-my $latest = 0;
+my $fails = 0;
 
 my @segments = qw(1h 6h 1d 1W 1M 1Q 1Y Z);
 
 sub run {
     my $self = shift;
     while (1) {
-        $latest = eval { $self->latest_release };
+        my $latest = eval { $self->latest_release };
         if ($@) {
             log_error {"getting latest release failed: $@"};
             sleep(15);
             next;
         }
-        my @changes
-            = $self->backpan ? $self->backpan_changes : $self->changes;
+        my @changes = $self->changes($latest);
         while ( my $release = pop(@changes) ) {
             $release->{type} eq 'delete'
                 ? $self->reindex_release($release)
                 : $self->index_release($release);
         }
-        last if ( $self->backpan );
         sleep(15);
     }
 }
 
 sub changes {
     my $self    = shift;
-    my $now     = DateTime->now->epoch;
+    my $latest  = shift;
     my $archive = $latest->archive;
     my %seen;
     my @changes;
-    for my $segment (@segments) {
+SEGMENTS: for my $segment (@segments) {
         log_debug {"Loading RECENT-$segment.json"};
         my $json
             = decode_json(
@@ -66,8 +57,7 @@ sub changes {
             grep {
                 $_->{path}
                     =~ /^authors\/id\/.*\.(tgz|tbz|tar[\._-]gz|tar\.bz2|tar\.Z|zip|7z)$/
-            } grep { $self->backpan ? $_->{type} eq "delete" : 1 }
-            @{ $json->{recent} }
+            } @{ $json->{recent} }
             )
         {
             my $info = CPAN::DistnameInfo->new( $_->{path} );
@@ -81,44 +71,15 @@ sub changes {
             if ( $_->{path} =~ /\/\Q$archive\E$/ ) {
                 last;
             }
+            elsif ( $_->{epoch} < $latest->date->epoch ) {
+                last SEGMENTS;
+            }
             push( @changes, $_ );
         }
-        if (  !$self->backpan
-            && $json->{meta}->{minmax}->{min} < $latest->date->epoch )
-        {
+        if ( $json->{meta}->{minmax}->{min} < $latest->date->epoch ) {
             log_debug {"Includes latest release"};
             last;
         }
-    }
-    return @changes;
-}
-
-sub backpan_changes {
-    my $self   = shift;
-    my $scroll = $self->es->scroll_helper( {
-        scroll => '1m',
-        es_doc_path('release'),
-        body => {
-            query => {
-                bool => {
-                    must_not => [ { term => { status => 'backpan' } }, ],
-                },
-            },
-            size    => 1000,
-            _source => [qw(author archive)],
-            sort    => '_doc',
-        }
-    } );
-    my @changes;
-    while ( my $release = $scroll->next ) {
-        my $data = $release->{_source};
-        my $path
-            = $self->cpan->child( 'authors',
-            MetaCPAN::Util::author_dir( $data->{author} ),
-            $data->{archive} );
-        next if ( -e $path );
-        log_debug {"$path not in the CPAN"};
-        push( @changes, { path => $path, type => 'delete' } );
     }
     return @changes;
 }
@@ -241,15 +202,5 @@ __PACKAGE__->meta->make_immutable;
 This script requires a local CPAN mirror. It watches the RECENT-*.json
 files for changes to the CPAN directory every 15 seconds. New uploads
 as well as deletions are processed sequentially.
-
-=head1 OPTIONS
-
-=head2 --backpan
-
-This will look for the most recent release that has been deleted.
-From that point on, it will look in the RECENT files for new deletions
-and process them.
-
-L<http://friendfeed.com/cpan>
 
 =cut
