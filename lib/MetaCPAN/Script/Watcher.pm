@@ -19,21 +19,20 @@ has dry_run => (
     default => 0,
 );
 
-my $fails  = 0;
-my $latest = 0;
+my $fails = 0;
 
 my @segments = qw(1h 6h 1d 1W 1M 1Q 1Y Z);
 
 sub run {
     my $self = shift;
     while (1) {
-        $latest = eval { $self->latest_release };
+        my $latest = eval { $self->latest_release };
         if ($@) {
             log_error {"getting latest release failed: $@"};
             sleep(15);
             next;
         }
-        my @changes = $self->changes;
+        my @changes = $self->changes($latest);
         while ( my $release = pop(@changes) ) {
             $release->{type} eq 'delete'
                 ? $self->reindex_release($release)
@@ -45,11 +44,11 @@ sub run {
 
 sub changes {
     my $self    = shift;
-    my $now     = DateTime->now->epoch;
+    my $latest  = shift;
     my $archive = $latest->archive;
     my %seen;
     my @changes;
-    for my $segment (@segments) {
+SEGMENTS: for my $segment (@segments) {
         log_debug {"Loading RECENT-$segment.json"};
         my $json
             = decode_json(
@@ -71,6 +70,9 @@ sub changes {
             $seen{$path} = $_;
             if ( $_->{path} =~ /\/\Q$archive\E$/ ) {
                 last;
+            }
+            elsif ( $_->{epoch} < $latest->date->epoch ) {
+                last SEGMENTS;
             }
             push( @changes, $_ );
         }
