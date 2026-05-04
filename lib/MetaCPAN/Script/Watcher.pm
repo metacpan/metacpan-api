@@ -86,7 +86,6 @@ SEGMENTS: for my $segment (@segments) {
 
 sub latest_release {
     my $self = shift;
-    return undef if ( $self->backpan );
     return $self->model->doc('release')
         ->sort( [ { 'date' => { order => "desc" } } ] )
         ->first;
