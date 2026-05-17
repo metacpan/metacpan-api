@@ -1,0 +1,21 @@
+{
+   "Multiple-Releases" : [
+      {
+         "affected_versions" : [
+            "<1.7"
+         ],
+         "cpansa_id" : "CPANSA-Multiple-Releases-2025-54321",
+         "cve" : {},
+         "cve_id" : "CVE-2025-54321",
+         "cves" : [ "CVE-2025-54321" ],
+         "description" : "CVEs have a description",
+         "distribution" : "Multiple-Releases",
+         "references" : [
+            "https://metacpan.org/"
+         ],
+         "reported" : "2525-01-01",
+         "title" : "CVEs have a title",
+         "severity" : "medium"
+      }
+   ]
+}

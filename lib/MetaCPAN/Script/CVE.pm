@@ -20,13 +20,6 @@ has cve_url => (
     default => 'https://butterfly.cpansec.org/feed/cpansa.json',
 );
 
-has cve_dev_url => (
-    is      => 'ro',
-    isa     => Uri,
-    coerce  => 1,
-    default => 'https://butterfly.cpansec.org/feed/cpansa.json',
-);
-
 has test => (
     is            => 'ro',
     isa           => Bool,
@@ -73,8 +66,10 @@ sub index_cve_data {
 
     for my $dist ( sort keys %{$data} ) {
         for my $cpansa ( @{ $data->{$dist} } ) {
-            if ( !$cpansa->{cpansa_id} ) {
-                log_warn { sprintf( "Dist '%s' missing cpansa_id", $dist ) };
+            if ( !$cpansa->{cpansa_id} && !$cpansa->{cve_id} ) {
+                log_warn {
+                    sprintf( "Dist '%s' missing cpansa_id and cve_id", $dist )
+                };
                 next;
             }
 
@@ -195,6 +190,7 @@ sub index_cve_data {
 
             my $doc_data = {
                 distribution      => $dist,
+                cve_id            => $cpansa->{cve_id},
                 cpansa_id         => $cpansa->{cpansa_id},
                 affected_versions => $cpansa->{affected_versions},
                 cves              => $cpansa->{cves},
@@ -210,8 +206,15 @@ sub index_cve_data {
                 delete $doc_data->{$k} unless exists $valid_keys{$k};
             }
 
+            if ( $cpansa->{cve_id} && $cpansa->{cpansa_id} ) {
+
+                # if both exist, ensure an older record using cpansa_id as the
+                # id is removed.
+                $bulk->delete( { id => $cpansa->{cpansa_id} } );
+            }
+
             $bulk->update( {
-                id            => $cpansa->{cpansa_id},
+                id            => $cpansa->{cve_id} // $cpansa->{cpansa_id},
                 doc           => $doc_data,
                 doc_as_upsert => true,
             } );
@@ -226,7 +229,7 @@ sub retrieve_cve_data {
 
     return decode_json( path( $self->json_file )->slurp ) if $self->json_file;
 
-    my $url = $self->test ? $self->cve_dev_url : $self->cve_url;
+    my $url = $self->cve_url;
 
     log_info { 'Fetching data from ', $url };
     my $resp = $self->ua->get($url);
