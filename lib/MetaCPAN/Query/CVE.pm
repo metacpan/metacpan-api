@@ -22,6 +22,45 @@ sub find_cves_by_cpansa {
     return +{ cve => [ map { $_->{_source} } @{ $res->{hits}{hits} } ] };
 }
 
+sub find_cves_by_cpansa_or_cve_id {
+    my ( $self, $id ) = @_;
+
+    my $query = +{
+        bool => {
+            must => [
+                { term => { cve_id    => $id } },
+                { term => { cpansa_id => $id } },
+            ],
+        },
+    };
+
+    my $res = $self->es->search(
+        es_doc_path('cve'),
+        body => {
+            query => $query,
+            size  => 999,
+        }
+    );
+
+    return +{ cve => [ map { $_->{_source} } @{ $res->{hits}{hits} } ] };
+}
+
+sub find_cves_by_cve_id {
+    my ( $self, $cve_id ) = @_;
+
+    my $query = +{ term => { cve_id => $cve_id } };
+
+    my $res = $self->es->search(
+        es_doc_path('cve'),
+        body => {
+            query => $query,
+            size  => 999,
+        }
+    );
+
+    return +{ cve => [ map { $_->{_source} } @{ $res->{hits}{hits} } ] };
+}
+
 sub find_cves_by_release {
     my ( $self, $author, $release ) = @_;
 
