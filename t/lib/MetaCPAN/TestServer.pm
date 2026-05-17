@@ -270,6 +270,19 @@ sub index_bus_factor {
     );
 }
 
+sub index_cves {
+    my $self = shift;
+
+    local @ARGV = (
+        'cve',
+        '--cve_url',
+        URI->new( 'file://' . testdata_dir()->child('cves.json') )->as_string,
+    );
+
+    ok( MetaCPAN::Script::CVE->new_with_options( %{ $self->_config } )->run,
+        'index cves', );
+}
+
 sub prepare_user_test_data {
     my $self = shift;
     ok(
