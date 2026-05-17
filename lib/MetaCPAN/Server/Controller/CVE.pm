@@ -12,7 +12,8 @@ with 'MetaCPAN::Server::Role::JSONP';
 sub get : Path('') : Args(1) {
     my ( $self, $c, $cpansa_id ) = @_;
     $c->stash_or_detach(
-        $c->model('ESQuery')->cve->find_cves_by_cpansa($cpansa_id) );
+        $c->model('ESQuery')->cve->find_cves_by_cpansa_or_cve_id($cpansa_id)
+    );
 }
 
 sub release : Path('release') : Args(2) {
