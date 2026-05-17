@@ -1,0 +1,57 @@
+{
+    "Multiple-Releases": [
+        {
+            "affected_versions": [
+                "<=1.1"
+            ],
+            "cpansa_id": "CPANSA-Multiple-Releases-2025-54321",
+            "cve": {},
+            "cves": [],
+            "description": "Description of 54321",
+            "distribution": "Multiple-Releases",
+            "references": [
+                "https://metacpan.org/"
+            ],
+            "reported": "2025-01-01",
+            "severity": "medium",
+            "title": "Title of 54321"
+        },
+        {
+            "affected_versions": [
+                ">=1.2,<=1.5"
+            ],
+            "cpansa_id": "CPANSA-Multiple-Releases-2025-54322",
+            "cve": {},
+            "cve_id": "CVE-2025-54322",
+            "cves": [
+                "CVE-2025-54322"
+            ],
+            "description": "Description of 54322",
+            "distribution": "Multiple-Releases",
+            "references": [
+                "https://metacpan.org/"
+            ],
+            "reported": "2025-01-02",
+            "severity": "medium",
+            "title": "Title of 54322"
+        },
+        {
+            "affected_versions": [
+                ">=1.7"
+            ],
+            "cve": {},
+            "cve_id": "CVE-2025-54323",
+            "cves": [
+                "CVE-2025-54323"
+            ],
+            "description": "Description of 54323",
+            "distribution": "Multiple-Releases",
+            "references": [
+                "https://metacpan.org/"
+            ],
+            "reported": "2025-01-03",
+            "severity": "medium",
+            "title": "Title of 54323"
+        }
+    ]
+}

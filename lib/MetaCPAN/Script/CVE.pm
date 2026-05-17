@@ -20,13 +20,6 @@ has cve_url => (
     default => 'https://butterfly.cpansec.org/feed/cpansa.json',
 );
 
-has cve_dev_url => (
-    is      => 'ro',
-    isa     => Uri,
-    coerce  => 1,
-    default => 'https://butterfly.cpansec.org/feed/cpansa.json',
-);
-
 has test => (
     is            => 'ro',
     isa           => Bool,
@@ -226,7 +219,7 @@ sub retrieve_cve_data {
 
     return decode_json( path( $self->json_file )->slurp ) if $self->json_file;
 
-    my $url = $self->test ? $self->cve_dev_url : $self->cve_url;
+    my $url = $self->cve_url;
 
     log_info { 'Fetching data from ', $url };
     my $resp = $self->ua->get($url);
