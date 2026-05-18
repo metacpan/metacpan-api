@@ -43,6 +43,7 @@ $server->index_cover;
 $server->index_river;
 $server->index_bus_factor;
 $server->index_tickets;
+$server->index_cves;
 
 $server->prepare_user_test_data;
 

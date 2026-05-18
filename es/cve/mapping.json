@@ -4,6 +4,9 @@
         "affected_versions": {
             "type": "text"
         },
+        "cve_id": {
+            "type": "keyword"
+        },
         "cpansa_id": {
             "type": "keyword"
         },
