@@ -37,19 +37,6 @@ has json_file => (
 
 my %range_ops = qw(< lt <= lte > gt >= gte);
 
-my %valid_keys = map { $_ => 1 } qw<
-    affected_versions
-    cpansa_id
-    cves
-    description
-    distribution
-    references
-    releases
-    reported
-    severity
-    versions
->;
-
 sub run {
     my $self = shift;
     my $data = $self->retrieve_cve_data;
@@ -188,6 +175,11 @@ sub index_cve_data {
                 }
             }
 
+            my $id
+                = $cpansa->{cve_id}
+                ? "$dist-$cpansa->{cve_id}"
+                : $cpansa->{cpansa_id};
+
             my $doc_data = {
                 distribution      => $dist,
                 cve_id            => $cpansa->{cve_id},
@@ -202,10 +194,6 @@ sub index_cve_data {
                 releases => [ map {"$_->{author}/$_->{name}"} @matches ],
             };
 
-            for my $k ( keys %{$doc_data} ) {
-                delete $doc_data->{$k} unless exists $valid_keys{$k};
-            }
-
             if ( $cpansa->{cve_id} && $cpansa->{cpansa_id} ) {
 
                 # if both exist, ensure an older record using cpansa_id as the
@@ -214,7 +202,7 @@ sub index_cve_data {
             }
 
             $bulk->update( {
-                id            => $cpansa->{cve_id} // $cpansa->{cpansa_id},
+                id            => $id,
                 doc           => $doc_data,
                 doc_as_upsert => true,
             } );
