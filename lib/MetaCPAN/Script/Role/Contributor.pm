@@ -5,6 +5,7 @@ use Moose::Role;
 use Log::Contextual    qw( :log :dlog );
 use MetaCPAN::ESConfig qw( es_doc_path );
 use MetaCPAN::Util     qw( true false digest );
+use Unicode::UTF8      qw( encode_utf8 );
 use Ref::Util          ();
 
 sub update_contributors {
@@ -88,9 +89,12 @@ sub release_contributor_update_actions {
 
     for my $contrib (@$contribs) {
         my $id = digest(
-            $release->{name},    $release->{author},
-            $contrib->{pauseid}, $contrib->{name},
-            @{ $contrib->{email} },
+            map encode_utf8( $_ // '' ),
+            (
+                $release->{name},    $release->{author},
+                $contrib->{pauseid}, $contrib->{name},
+                @{ $contrib->{email} },
+            )
         );
 
         my $doc = {
