@@ -12,6 +12,7 @@ use Net::GitHub::V4       ();
 use Ref::Util             qw( is_hashref is_ref );
 use Text::CSV_XS          ();
 use URI::Escape           qw( uri_escape );
+use URI::Split            qw( uri_split );
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
@@ -186,7 +187,18 @@ END_QUERY
         }
 
         my $repo_data = $data->{data}{repository};
-        my $github    = $self->_github_dist_summary( $resources, $repo_data );
+
+        # A successful response can still carry a null repository (e.g. a repo
+        # that became private without an explicit NOT_FOUND error). Skip it
+        # rather than dereferencing undef.
+        unless ($repo_data) {
+            log_info {
+                "[$release->{distribution}] no repository data returned"
+            };
+            next RELEASE;
+        }
+
+        my $github = $self->_github_dist_summary( $resources, $repo_data );
 
         $dist_summary->{'repo'}{'github'} = $github->{repo}{github};
         $dist_summary->{'bugs'}{'github'} = $github->{bugs}{github}
@@ -197,39 +209,50 @@ END_QUERY
     $self->_bulk_update( \%summary );
 }
 
-# Resource fields that may contain a GitHub URL. A dist that points at GitHub
-# in any of these is eligible for star/watcher counts.
-sub _github_resource_fields {
-    return qw(
-        resources.bugtracker.web
-        resources.repository.url
-        resources.repository.web
-    );
-}
-
-sub _github_url_prefixes {
-    return qw(
-        http://github.com/
-        https://github.com/
-        git://github.com/
+# Resource fields that may contain a GitHub URL, mapped to the URL schemes
+# worth matching for each. A dist that points at GitHub in any of these is
+# eligible for star/watcher counts. Bug trackers are always served over
+# http(s); repository URLs may additionally use git://.
+sub _github_resource_field_prefixes {
+    return (
+        'resources.bugtracker.web' =>
+            [qw( http://github.com/ https://github.com/ )],
+        'resources.repository.url' =>
+            [qw( http://github.com/ https://github.com/ git://github.com/ )],
+        'resources.repository.web' =>
+            [qw( http://github.com/ https://github.com/ git://github.com/ )],
     );
 }
 
 # Build the `should` clauses matching any release with a GitHub URL in one of
 # the relevant resource fields.
 sub _github_release_query_filter {
-    my $self = shift;
+    my $self     = shift;
+    my %prefixes = $self->_github_resource_field_prefixes;
     return [
         map {
             my $field = $_;
-            map +{ prefix => { $field => $_ } }, $self->_github_url_prefixes;
-        } $self->_github_resource_fields
+            map +{ prefix => { $field => $_ } }, @{ $prefixes{$field} };
+        } sort keys %prefixes
     ];
 }
 
+# True if $url is an absolute URL whose host is github.com. Parsing out the
+# host (rather than a prefix match) avoids misclassifying look-alike hosts such
+# as github.com.evil.com. uri_split handles git:// URLs, which URI->new treats
+# as foreign (host-less).
 sub _is_github_url {
     my ( $self, $url ) = @_;
-    return !is_ref($url) && $url && $url =~ m{^(?:https?|git)://github\.com/};
+    return 0 if is_ref($url) || !defined $url || $url eq '';
+
+    my ( $scheme, $authority ) = uri_split($url);
+    return 0 unless defined $scheme && defined $authority;
+
+    # Strip any userinfo@ prefix and :port suffix to get the bare host.
+    ( my $host = $authority ) =~ s/^[^@]*@//;
+    $host =~ s/:[0-9]+\z//;
+
+    return lc($host) eq 'github.com' ? 1 : 0;
 }
 
 # Given a release's resources and the GraphQL repository data, build the
