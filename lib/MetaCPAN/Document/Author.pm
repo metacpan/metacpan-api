@@ -137,7 +137,16 @@ sub validate {
     my ( $class, $data ) = @_;
     my @result;
     foreach my $attr ( $class->meta->get_all_attributes ) {
-        if ( $attr->is_required && !exists $data->{ $attr->name } ) {
+
+      # A required attribute with a default (or builder) is still satisfiable
+      # without input -- the default fills it in at construction time -- so an
+      # absent value must not be reported as missing. asciiname is the case
+      # this guards: required => 1 but default => q{}.
+        if (   $attr->is_required
+            && !exists $data->{ $attr->name }
+            && !$attr->has_default
+            && !$attr->has_builder )
+        {
             push(
                 @result,
                 {
