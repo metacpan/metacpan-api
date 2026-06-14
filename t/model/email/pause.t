@@ -42,7 +42,12 @@ my $email = MetaCPAN::Model::Email::PAUSE->new(
 );
 
 ok( $email->_email_body, 'email_body' );
-ok( $email->send,        'send email' );
+like(
+    $email->_email_body,
+    qr/expire in 24 hours/,
+    'email body mentions link expiry',
+);
+ok( $email->send, 'send email' );
 note $email->_email_body;
 
 my @messages = Email::Sender::Simple->default_transport->deliveries;
