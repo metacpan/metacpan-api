@@ -7790,6 +7790,15 @@ DISTRIBUTIONS
       URI 1.40
       URI::Nested 0.10
       perl 5.008001
+  URI-git-0.02
+    pathname: M/MI/MIYAGAWA/URI-git-0.02.tar.gz
+    provides:
+      URI::git 0.02
+    requirements:
+      ExtUtils::MakeMaker 0
+      Filter::Util::Call 0
+      URI 0
+      perl 5.008001
   URL-Encode-0.03
     pathname: C/CH/CHANSEN/URL-Encode-0.03.tar.gz
     provides:

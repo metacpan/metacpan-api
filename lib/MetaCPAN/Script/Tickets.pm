@@ -11,8 +11,9 @@ use MetaCPAN::Types       qw( Uri );
 use Net::GitHub::V4       ();
 use Ref::Util             qw( is_hashref is_ref );
 use Text::CSV_XS          ();
+use URI                   ();
 use URI::Escape           qw( uri_escape );
-use URI::Split            qw( uri_split );
+use URI::git ();    ## no perlimports (registers the git:// scheme with URI)
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
@@ -133,13 +134,15 @@ sub index_github_bugs {
     my %summary;
 
 RELEASE: while ( my $release = $scroll->next ) {
-        my $resources = $release->{resources};
+        my $source       = $release->{_source};
+        my $distribution = $source->{distribution};
+        my $resources    = $source->{resources};
         my ( $user, $repo )
             = $self->github_user_repo_from_resources($resources);
         next unless $user;
         log_debug {"Retrieving issues from $user/$repo"};
 
-        my $dist_summary = $summary{ $release->{'distribution'} } ||= {};
+        my $dist_summary = $summary{$distribution} ||= {};
 
         my $vars = {
             user => $user,
@@ -170,8 +173,7 @@ END_QUERY
 
         if ( my $error = $data->{errors} ) {
             for my $error (@$error) {
-                my $log_message
-                    = "[$release->{distribution}] $error->{message}";
+                my $log_message = "[$distribution] $error->{message}";
                 if ( $error->{type} eq 'NOT_FOUND' ) {
                     delete $dist_summary->{'bugs'}{'github'};
                     delete $dist_summary->{'repo'}{'github'};
@@ -192,9 +194,7 @@ END_QUERY
         # that became private without an explicit NOT_FOUND error). Skip it
         # rather than dereferencing undef.
         unless ($repo_data) {
-            log_info {
-                "[$release->{distribution}] no repository data returned"
-            };
+            log_info {"[$distribution] no repository data returned"};
             next RELEASE;
         }
 
@@ -237,22 +237,16 @@ sub _github_release_query_filter {
     ];
 }
 
-# True if $url is an absolute URL whose host is github.com. Parsing out the
+# True if $url is an absolute URL whose host is github.com. Checking the parsed
 # host (rather than a prefix match) avoids misclassifying look-alike hosts such
-# as github.com.evil.com. uri_split handles git:// URLs, which URI->new treats
-# as foreign (host-less).
+# as github.com.evil.com. URI::git is loaded so git:// URLs parse to a host
+# rather than a host-less foreign URI.
 sub _is_github_url {
     my ( $self, $url ) = @_;
     return 0 if is_ref($url) || !defined $url || $url eq '';
 
-    my ( $scheme, $authority ) = uri_split($url);
-    return 0 unless defined $scheme && defined $authority;
-
-    # Strip any userinfo@ prefix and :port suffix to get the bare host.
-    ( my $host = $authority ) =~ s/^[^@]*@//;
-    $host =~ s/:[0-9]+\z//;
-
-    return lc($host) eq 'github.com' ? 1 : 0;
+    my $host = eval { URI->new($url)->host };
+    return defined $host && lc($host) eq 'github.com' ? 1 : 0;
 }
 
 # Given a release's resources and the GraphQL repository data, build the

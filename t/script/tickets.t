@@ -56,7 +56,9 @@ subtest 'query filter covers repository as well as bugtracker' => sub {
     is $fields{'resources.bugtracker.web'}, 2,
         'bugtracker matched on http(s)';
     is $fields{'resources.repository.url'}, 3,
-        'repository also matched on git://';
+        'repository url also matched on git://';
+    is $fields{'resources.repository.web'}, 3,
+        'repository web also matched on git://';
 
     ok $prefixes{'https://github.com/'}, 'matches https github prefix';
     ok $prefixes{'git://github.com/'},   'matches git github prefix';
