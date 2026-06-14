@@ -125,7 +125,7 @@ requires 'Types::Path::Tiny';
 requires 'Types::URI';
 requires 'Twitter::API', '1.0006';
 requires 'URI', '5.10';
-requires 'URI::git';
+requires 'URI::git', '0.02';
 requires 'Unicode::UTF8', '0.70';
 requires 'version', '0.9929';
 requires 'XML::XPath';

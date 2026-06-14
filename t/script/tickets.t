@@ -34,6 +34,53 @@ subtest '_is_github_url' => sub {
     ok !$class->_is_github_url( { web => 'x' } ), 'ref is not a url';
 };
 
+subtest 'github_user_repo_from_resources prefers declared repository' => sub {
+    is_deeply [
+        $class->github_user_repo_from_resources( {
+            repository => { url => 'git://github.com/foo/bar.git' },
+            bugtracker => { web => 'https://github.com/evil/hijack' },
+        } )
+        ],
+        [ 'foo', 'bar' ],
+        'repository.url wins over a github bugtracker pointing elsewhere';
+
+    is_deeply [
+        $class->github_user_repo_from_resources(
+            { repository => { web => 'https://github.com/foo/bar' } }
+        )
+        ],
+        [ 'foo', 'bar' ],
+        'repository.web used when url is absent';
+
+    is_deeply [
+        $class->github_user_repo_from_resources(
+            { homepage => 'https://github.com/foo/bar' }
+        )
+        ],
+        [ 'foo', 'bar' ],
+        'falls back to scanning other resources when there is no repository';
+
+    is_deeply [
+        $class->github_user_repo_from_resources( {
+            repository => { url => 'https://gitlab.com/foo/bar' },
+            homepage   => 'https://github.com/foo/bar',
+        } )
+        ],
+        [ 'foo', 'bar' ],
+        'falls back to scanning when the repository is not on github';
+
+    is_deeply [
+        $class->github_user_repo_from_resources(
+            { homepage => 'https://example.com/' }
+        )
+        ],
+        [],
+        'no github url anywhere returns empty';
+
+    is_deeply [ $class->github_user_repo_from_resources(undef) ], [],
+        'undef resources returns empty';
+};
+
 subtest 'query filter covers repository as well as bugtracker' => sub {
     my $filter = $class->_github_release_query_filter;
 

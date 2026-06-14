@@ -136,7 +136,9 @@ sub index_github_bugs {
 RELEASE: while ( my $release = $scroll->next ) {
         my $source       = $release->{_source};
         my $distribution = $source->{distribution};
-        my $resources    = $source->{resources};
+        next unless $distribution;
+
+        my $resources = $source->{resources};
         my ( $user, $repo )
             = $self->github_user_repo_from_resources($resources);
         next unless $user;
@@ -190,9 +192,9 @@ END_QUERY
 
         my $repo_data = $data->{data}{repository};
 
-        # A successful response can still carry a null repository (e.g. a repo
-        # that became private without an explicit NOT_FOUND error). Skip it
-        # rather than dereferencing undef.
+       # A successful response can still carry a null repository in some cases
+       # (rather than an explicit NOT_FOUND error). Skip it rather than
+       # dereferencing undef.
         unless ($repo_data) {
             log_info {"[$distribution] no repository data returned"};
             next RELEASE;
@@ -289,27 +291,52 @@ sub _github_dist_summary {
     return \%summary;
 }
 
-# Try (recursively) to find a github url in the resources hash.
-# FIXME: This should check bugtracker web exclusively, or at least first.
+# Extract a ( $user, $repo ) pair from a single github URL, or () if $url is
+# not a github repository URL.
+sub _github_user_repo_from_url {
+    my ( $self, $url ) = @_;
+    return ()
+        if is_ref($url)
+        || !defined $url
+        || $url
+        !~ m{^(?:https?|git)://github\.com/([^/]+)/([^/]+?)(?:\.git)?/?$};
+    return ( $1, $2 );
+}
+
+# Find a ( $user, $repo ) pair in the resources hash. The dist's declared
+# repository is preferred so star/watcher counts are attributed to the repo the
+# author actually named, rather than to whatever github url happens to come
+# first in hash order (an unrelated resource could otherwise hijack the count).
+# Falls back to a recursive scan of any remaining resource fields.
 sub github_user_repo_from_resources {
     my ( $self, $resources ) = @_;
-    my ( $user, $repo, $source );
+    return () unless is_hashref($resources);
 
-    for my $k ( keys %{$resources} ) {
-        my $v = $resources->{$k};
-
-        if ( !is_ref($v)
-            && $v
-            =~ /^(https?|git):\/\/github\.com\/([^\/]+)\/([^\/]+?)(\.git)?\/?$/
-            )
-        {
-            return ( $2, $3, $v );
+    if ( is_hashref( $resources->{repository} ) ) {
+        for my $field (qw( url web )) {
+            my ( $user, $repo )
+                = $self->_github_user_repo_from_url(
+                $resources->{repository}{$field} );
+            return ( $user, $repo ) if $user;
         }
+    }
 
-        ( $user, $repo, $source ) = $self->github_user_repo_from_resources($v)
-            if is_hashref($v);
+    return $self->_github_search_resources($resources);
+}
 
-        return ( $user, $repo, $source ) if $user;
+# Recursively walk the resources hash for any github url.
+sub _github_search_resources {
+    my ( $self, $resources ) = @_;
+
+    for my $v ( values %{$resources} ) {
+        if ( is_hashref($v) ) {
+            my ( $user, $repo ) = $self->_github_search_resources($v);
+            return ( $user, $repo ) if $user;
+        }
+        elsif ( !is_ref($v) ) {
+            my ( $user, $repo ) = $self->_github_user_repo_from_url($v);
+            return ( $user, $repo ) if $user;
+        }
     }
 
     return ();
