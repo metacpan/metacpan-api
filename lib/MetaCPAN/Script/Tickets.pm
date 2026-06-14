@@ -98,7 +98,10 @@ sub check_all_distributions {
     $self->_bulk_update($dists);
 }
 
-# gh issues are counted for any dist with a github url in `resources.bugtracker.web`.
+# GitHub data is fetched for any dist that points at GitHub in its bugtracker
+# or repository resources. Issue counts are only recorded when GitHub issues
+# are the bug tracker, but star/watcher counts are recorded for any dist with a
+# GitHub repository (see _github_dist_summary).
 sub index_github_bugs {
     my $self = shift;
 
@@ -114,20 +117,7 @@ sub index_github_bugs {
                         { term => { status => 'latest' } },
                         {
                             bool => {
-                                should => [
-                                    {
-                                        prefix => {
-                                            "resources.bugtracker.web" =>
-                                                'http://github.com/'
-                                        }
-                                    },
-                                    {
-                                        prefix => {
-                                            "resources.bugtracker.web" =>
-                                                'https://github.com/'
-                                        }
-                                    },
-                                ],
+                                should => $self->_github_release_query_filter,
                             },
                         },
                     ],
@@ -143,7 +133,7 @@ sub index_github_bugs {
 
 RELEASE: while ( my $release = $scroll->next ) {
         my $resources = $release->{resources};
-        my ( $user, $repo, $source )
+        my ( $user, $repo )
             = $self->github_user_repo_from_resources($resources);
         next unless $user;
         log_debug {"Retrieving issues from $user/$repo"};
@@ -196,6 +186,74 @@ END_QUERY
         }
 
         my $repo_data = $data->{data}{repository};
+        my $github    = $self->_github_dist_summary( $resources, $repo_data );
+
+        $dist_summary->{'repo'}{'github'} = $github->{repo}{github};
+        $dist_summary->{'bugs'}{'github'} = $github->{bugs}{github}
+            if $github->{bugs};
+    }
+
+    log_info {"writing github data"};
+    $self->_bulk_update( \%summary );
+}
+
+# Resource fields that may contain a GitHub URL. A dist that points at GitHub
+# in any of these is eligible for star/watcher counts.
+sub _github_resource_fields {
+    return qw(
+        resources.bugtracker.web
+        resources.repository.url
+        resources.repository.web
+    );
+}
+
+sub _github_url_prefixes {
+    return qw(
+        http://github.com/
+        https://github.com/
+        git://github.com/
+    );
+}
+
+# Build the `should` clauses matching any release with a GitHub URL in one of
+# the relevant resource fields.
+sub _github_release_query_filter {
+    my $self = shift;
+    return [
+        map {
+            my $field = $_;
+            map +{ prefix => { $field => $_ } }, $self->_github_url_prefixes;
+        } $self->_github_resource_fields
+    ];
+}
+
+sub _is_github_url {
+    my ( $self, $url ) = @_;
+    return !is_ref($url) && $url && $url =~ m{^(?:https?|git)://github\.com/};
+}
+
+# Given a release's resources and the GraphQL repository data, build the
+# distribution summary fragment. Star/watcher counts are recorded for any dist
+# with a GitHub repository; issue counts are only recorded when GitHub issues
+# are the dist's bug tracker.
+sub _github_dist_summary {
+    my ( $self, $resources, $repo_data ) = @_;
+
+    my %summary = (
+        repo => {
+            github => {
+                stars    => $repo_data->{stargazerCount},
+                watchers => $repo_data->{watchers}{totalCount},
+            },
+        },
+    );
+
+    my $bugtracker
+        = is_hashref( $resources->{bugtracker} )
+        ? $resources->{bugtracker}{web}
+        : undef;
+
+    if ( $bugtracker && $self->_is_github_url($bugtracker) ) {
         my $open
             = $repo_data->{openIssues}{totalCount}
             + $repo_data->{openPullRequests}{totalCount};
@@ -203,21 +261,15 @@ END_QUERY
             = $repo_data->{closedIssues}{totalCount}
             + $repo_data->{closedPullRequests}{totalCount};
 
-        $dist_summary->{'bugs'}{'github'} = {
+        $summary{bugs}{github} = {
             active => $open,
             open   => $open,
             closed => $closed,
-            source => $source,
-        };
-
-        $dist_summary->{'repo'}{'github'} = {
-            stars    => $repo_data->{stargazerCount},
-            watchers => $repo_data->{watchers}{totalCount},
+            source => $bugtracker,
         };
     }
 
-    log_info {"writing github data"};
-    $self->_bulk_update( \%summary );
+    return \%summary;
 }
 
 # Try (recursively) to find a github url in the resources hash.
