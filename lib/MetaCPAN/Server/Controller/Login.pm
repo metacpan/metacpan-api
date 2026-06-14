@@ -17,10 +17,18 @@ sub auto : Private {
     # Store params in a temporary cookie so we can keep track of them.
     # This should include `client_id` (metacpan env) and `choice` (provider).
     if ( $c->req->params->{client_id} ) {
+
+       # The OAuth handshake can start on one *.metacpan.org host and finish
+       # on another (e.g. the provider callback host), so a host-only cookie
+       # would be lost in transit. `oauth_cookie_domain` (config) scopes it to
+       # the shared parent domain in production; an empty value keeps it
+       # host-only for local dev.
+        my $domain = $c->config->{oauth_cookie_domain};
         $c->res->cookies->{oauth_tmp} = {
             value   => encode_json( $c->req->parameters ),
             path    => '/',
-            expires => '+7d'
+            expires => '+7d',
+            ( $domain ? ( domain => $domain ) : () ),
         };
     }
 

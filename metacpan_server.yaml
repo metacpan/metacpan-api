@@ -33,3 +33,10 @@ oauth:
     secret: seekrit
 
 front_end_url: http://0.0.0.0:5001
+
+# Domain for the temporary OAuth cookie (oauth_tmp), scoped to the shared
+# parent domain so the login handshake can start and finish on different hosts
+# (e.g. api.metacpan.org and the provider callback host). For local development
+# override this in metacpan_server_local.yaml (an empty value keeps the cookie
+# host-only).
+oauth_cookie_domain: .metacpan.org

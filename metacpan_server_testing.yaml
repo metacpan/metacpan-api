@@ -35,3 +35,6 @@ oauth:
     secret: seekrit
 
 front_end_url: http://0.0.0.0:5001
+
+# See metacpan_server.yaml.
+oauth_cookie_domain: .metacpan.org
