@@ -77,6 +77,8 @@ please click on the following link to verify your PAUSE account:
 
 $uri
 
+This link will expire in 24 hours.
+
 Cheers,
 MetaCPAN
 EMAIL_BODY

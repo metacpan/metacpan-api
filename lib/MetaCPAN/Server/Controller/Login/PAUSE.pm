@@ -44,6 +44,9 @@ sub index : Path Args(0) {
             unless ($author);
 
         my $code = generate_sid();
+
+        # 24 hours -- keep in sync with the expiry mentioned in the email
+        # copy in MetaCPAN::Model::Email::PAUSE::_email_body.
         $self->cache->set( $code, $author->{pauseid}, 86400 );
 
         my $url = $c->request->uri->clone;
