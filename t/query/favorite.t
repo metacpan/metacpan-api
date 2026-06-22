@@ -51,6 +51,23 @@ test_psgi app, sub {
         date         => re(qr/^2024-09-01/),
     };
 
+    # Duplicate WWW-Mechanize favorites seeded by
+    # TestServer::prepare_user_test_data for the delete tests. They are not
+    # backed by a release, so by_user (which filters to non-backpan dists)
+    # never returns them, but recent() does a global match_all and includes
+    # them. The duplicate doc has an explicit date; the other defaults to
+    # DateTime->now, so it sorts as the most recent favorite.
+    my $fav_www_dup = {
+        author       => 'SIMBABQUE',
+        distribution => 'WWW-Mechanize',
+        date         => re(qr/^2024-01-01/),
+    };
+    my $fav_www = {
+        author       => 'JESSE',
+        distribution => 'WWW-Mechanize',
+        date         => ignore(),
+    };
+
     subtest 'by_user returns seeded favorites in case-insensitive order' =>
         sub {
         my $result = $favorite->by_user( $user_id, 1, 250 );
@@ -142,10 +159,11 @@ test_psgi app, sub {
             $favorite->recent( 1, 100, 'date:asc' ),
             {
                 took      => ignore(),
-                total     => 5,
+                total     => 7,
                 favorites => [
-                    $fav_dist,     $fav_distc, $fav_distb,
-                    $fav_multiple, $fav_weblint,
+                    $fav_dist,  $fav_www_dup,  $fav_distc,
+                    $fav_distb, $fav_multiple, $fav_weblint,
+                    $fav_www,
                 ],
             },
             'date:asc'
@@ -154,10 +172,11 @@ test_psgi app, sub {
             $favorite->recent( 1, 100, 'date:desc' ),
             {
                 took      => ignore(),
-                total     => 5,
+                total     => 7,
                 favorites => [
-                    $fav_weblint, $fav_multiple, $fav_distb,
-                    $fav_distc,   $fav_dist,
+                    $fav_www,   $fav_weblint, $fav_multiple,
+                    $fav_distb, $fav_distc,   $fav_dist,
+                    $fav_www_dup,
                 ],
             },
             'date:desc'
@@ -166,10 +185,11 @@ test_psgi app, sub {
             $favorite->recent( 1, 100, 'distribution:asc' ),
             {
                 took      => ignore(),
-                total     => 5,
+                total     => 7,
                 favorites => [
-                    $fav_dist,     $fav_distb, $fav_distc,
-                    $fav_multiple, $fav_weblint,
+                    $fav_dist,     $fav_distb,   $fav_distc,
+                    $fav_multiple, $fav_weblint, $fav_www_dup,
+                    $fav_www,
                 ],
             },
             'distribution:asc'
@@ -178,10 +198,11 @@ test_psgi app, sub {
             $favorite->recent( 1, 100, 'distribution:desc' ),
             {
                 took      => ignore(),
-                total     => 5,
+                total     => 7,
                 favorites => [
-                    $fav_weblint, $fav_multiple, $fav_distc,
-                    $fav_distb,   $fav_dist,
+                    $fav_www_dup,  $fav_www,   $fav_weblint,
+                    $fav_multiple, $fav_distc, $fav_distb,
+                    $fav_dist,
                 ],
             },
             'distribution:desc'
@@ -190,10 +211,11 @@ test_psgi app, sub {
             $favorite->recent( 1, 100, 'bogus' ),
             {
                 took      => ignore(),
-                total     => 5,
+                total     => 7,
                 favorites => [
-                    $fav_weblint, $fav_multiple, $fav_distb,
-                    $fav_distc,   $fav_dist,
+                    $fav_www,   $fav_weblint, $fav_multiple,
+                    $fav_distb, $fav_distc,   $fav_dist,
+                    $fav_www_dup,
                 ],
             },
             'invalid sort falls back to date:desc'
