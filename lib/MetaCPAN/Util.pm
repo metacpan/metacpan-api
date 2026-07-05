@@ -7,15 +7,16 @@ use warnings;
 use version;
 use warnings FATAL => 'utf8';
 
-use Cpanel::JSON::XS ();                           ## no perlimports
-use Cwd              ();
-use Digest::SHA      qw( sha1_base64 sha1_hex );
-use Unicode::UTF8    qw( decode_utf8 );
-use File::Basename   ();
-use File::Spec       ();
-use List::Util       qw( max min );
-use Types::Standard  qw( Int );
-use Ref::Util        qw(
+use Cpanel::JSON::XS         ();                           ## no perlimports
+use Cwd                      ();
+use Digest::SHA              qw( sha1_base64 sha1_hex );
+use Unicode::UTF8            qw( decode_utf8 );
+use File::Basename           ();
+use File::Spec               ();
+use List::Util               qw( max min );
+use Types::Standard          qw( Int );
+use Pod::Simple::TextContent ();
+use Ref::Util                qw(
     is_arrayref
     is_hashref
     is_plain_arrayref
@@ -169,12 +170,15 @@ sub simplify_total {
     return;
 }
 
-# TODO: E<escape>
 sub strip_pod {
     my $pod = shift;
-    $pod =~ s/L<([^\/]*?)\/([^\/]*?)>/$2 in $1/g;
-    $pod =~ s/\w<(.*?)(\|.*?)?>/$1/g;
-    return $pod;
+    my $output;
+    my $parser = Pod::Simple::TextContent->new;
+    $parser->output_string( \$output );
+    $parser->parse_string_document("=pod\n\n$pod");
+    $output =~ s/\A\n+//;
+    $output =~ s/\n+\z//;
+    return $output;
 }
 
 sub extract_section {
