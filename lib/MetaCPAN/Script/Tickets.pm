@@ -11,7 +11,9 @@ use MetaCPAN::Types       qw( Uri );
 use Net::GitHub::V4       ();
 use Ref::Util             qw( is_hashref is_ref );
 use Text::CSV_XS          ();
+use URI                   ();
 use URI::Escape           qw( uri_escape );
+use URI::git ();    ## no perlimports (registers the git:// scheme with URI)
 
 with 'MetaCPAN::Role::Script', 'MooseX::Getopt';
 
@@ -98,7 +100,10 @@ sub check_all_distributions {
     $self->_bulk_update($dists);
 }
 
-# gh issues are counted for any dist with a github url in `resources.bugtracker.web`.
+# GitHub data is fetched for any dist that points at GitHub in its bugtracker
+# or repository resources. Issue counts are only recorded when GitHub issues
+# are the bug tracker, but star/watcher counts are recorded for any dist with a
+# GitHub repository (see _github_dist_summary).
 sub index_github_bugs {
     my $self = shift;
 
@@ -114,20 +119,7 @@ sub index_github_bugs {
                         { term => { status => 'latest' } },
                         {
                             bool => {
-                                should => [
-                                    {
-                                        prefix => {
-                                            "resources.bugtracker.web" =>
-                                                'http://github.com/'
-                                        }
-                                    },
-                                    {
-                                        prefix => {
-                                            "resources.bugtracker.web" =>
-                                                'https://github.com/'
-                                        }
-                                    },
-                                ],
+                                should => $self->_github_release_query_filter,
                             },
                         },
                     ],
@@ -142,13 +134,17 @@ sub index_github_bugs {
     my %summary;
 
 RELEASE: while ( my $release = $scroll->next ) {
-        my $resources = $release->{resources};
-        my ( $user, $repo, $source )
+        my $source       = $release->{_source};
+        my $distribution = $source->{distribution};
+        next unless $distribution;
+
+        my $resources = $source->{resources};
+        my ( $user, $repo )
             = $self->github_user_repo_from_resources($resources);
         next unless $user;
         log_debug {"Retrieving issues from $user/$repo"};
 
-        my $dist_summary = $summary{ $release->{'distribution'} } ||= {};
+        my $dist_summary = $summary{$distribution} ||= {};
 
         my $vars = {
             user => $user,
@@ -179,8 +175,7 @@ END_QUERY
 
         if ( my $error = $data->{errors} ) {
             for my $error (@$error) {
-                my $log_message
-                    = "[$release->{distribution}] $error->{message}";
+                my $log_message = "[$distribution] $error->{message}";
                 if ( $error->{type} eq 'NOT_FOUND' ) {
                     delete $dist_summary->{'bugs'}{'github'};
                     delete $dist_summary->{'repo'}{'github'};
@@ -196,6 +191,88 @@ END_QUERY
         }
 
         my $repo_data = $data->{data}{repository};
+
+       # A successful response can still carry a null repository in some cases
+       # (rather than an explicit NOT_FOUND error). Skip it rather than
+       # dereferencing undef.
+        unless ($repo_data) {
+            log_info {"[$distribution] no repository data returned"};
+            next RELEASE;
+        }
+
+        my $github = $self->_github_dist_summary( $resources, $repo_data );
+
+        $dist_summary->{'repo'}{'github'} = $github->{repo}{github};
+        $dist_summary->{'bugs'}{'github'} = $github->{bugs}{github}
+            if $github->{bugs};
+    }
+
+    log_info {"writing github data"};
+    $self->_bulk_update( \%summary );
+}
+
+# Resource fields that may contain a GitHub URL, mapped to the URL schemes
+# worth matching for each. A dist that points at GitHub in any of these is
+# eligible for star/watcher counts. Bug trackers are always served over
+# http(s); repository URLs may additionally use git://.
+sub _github_resource_field_prefixes {
+    return (
+        'resources.bugtracker.web' =>
+            [qw( http://github.com/ https://github.com/ )],
+        'resources.repository.url' =>
+            [qw( http://github.com/ https://github.com/ git://github.com/ )],
+        'resources.repository.web' =>
+            [qw( http://github.com/ https://github.com/ git://github.com/ )],
+    );
+}
+
+# Build the `should` clauses matching any release with a GitHub URL in one of
+# the relevant resource fields.
+sub _github_release_query_filter {
+    my $self     = shift;
+    my %prefixes = $self->_github_resource_field_prefixes;
+    return [
+        map {
+            my $field = $_;
+            map +{ prefix => { $field => $_ } }, @{ $prefixes{$field} };
+        } sort keys %prefixes
+    ];
+}
+
+# True if $url is an absolute URL whose host is github.com. Checking the parsed
+# host (rather than a prefix match) avoids misclassifying look-alike hosts such
+# as github.com.evil.com. URI::git is loaded so git:// URLs parse to a host
+# rather than a host-less foreign URI.
+sub _is_github_url {
+    my ( $self, $url ) = @_;
+    return 0 if is_ref($url) || !defined $url || $url eq '';
+
+    my $host = eval { URI->new($url)->host };
+    return defined $host && lc($host) eq 'github.com' ? 1 : 0;
+}
+
+# Given a release's resources and the GraphQL repository data, build the
+# distribution summary fragment. Star/watcher counts are recorded for any dist
+# with a GitHub repository; issue counts are only recorded when GitHub issues
+# are the dist's bug tracker.
+sub _github_dist_summary {
+    my ( $self, $resources, $repo_data ) = @_;
+
+    my %summary = (
+        repo => {
+            github => {
+                stars    => $repo_data->{stargazerCount},
+                watchers => $repo_data->{watchers}{totalCount},
+            },
+        },
+    );
+
+    my $bugtracker
+        = is_hashref( $resources->{bugtracker} )
+        ? $resources->{bugtracker}{web}
+        : undef;
+
+    if ( $bugtracker && $self->_is_github_url($bugtracker) ) {
         my $open
             = $repo_data->{openIssues}{totalCount}
             + $repo_data->{openPullRequests}{totalCount};
@@ -203,44 +280,64 @@ END_QUERY
             = $repo_data->{closedIssues}{totalCount}
             + $repo_data->{closedPullRequests}{totalCount};
 
-        $dist_summary->{'bugs'}{'github'} = {
+        $summary{bugs}{github} = {
             active => $open,
             open   => $open,
             closed => $closed,
-            source => $source,
-        };
-
-        $dist_summary->{'repo'}{'github'} = {
-            stars    => $repo_data->{stargazerCount},
-            watchers => $repo_data->{watchers}{totalCount},
+            source => $bugtracker,
         };
     }
 
-    log_info {"writing github data"};
-    $self->_bulk_update( \%summary );
+    return \%summary;
 }
 
-# Try (recursively) to find a github url in the resources hash.
-# FIXME: This should check bugtracker web exclusively, or at least first.
+# Extract a ( $user, $repo ) pair from a single github URL, or () if $url is
+# not a github repository URL.
+sub _github_user_repo_from_url {
+    my ( $self, $url ) = @_;
+    return ()
+        if is_ref($url)
+        || !defined $url
+        || $url
+        !~ m{^(?:https?|git)://github\.com/([^/]+)/([^/]+?)(?:\.git)?/?$};
+    return ( $1, $2 );
+}
+
+# Find a ( $user, $repo ) pair in the resources hash. The dist's declared
+# repository is preferred so star/watcher counts are attributed to the repo the
+# author actually named, rather than to whatever github url happens to come
+# first in hash order (an unrelated resource could otherwise hijack the count).
+# Falls back to a recursive scan of any remaining resource fields.
 sub github_user_repo_from_resources {
     my ( $self, $resources ) = @_;
-    my ( $user, $repo, $source );
+    return () unless is_hashref($resources);
 
-    for my $k ( keys %{$resources} ) {
-        my $v = $resources->{$k};
-
-        if ( !is_ref($v)
-            && $v
-            =~ /^(https?|git):\/\/github\.com\/([^\/]+)\/([^\/]+?)(\.git)?\/?$/
-            )
-        {
-            return ( $2, $3, $v );
+    if ( is_hashref( $resources->{repository} ) ) {
+        for my $field (qw( url web )) {
+            my ( $user, $repo )
+                = $self->_github_user_repo_from_url(
+                $resources->{repository}{$field} );
+            return ( $user, $repo ) if $user;
         }
+    }
 
-        ( $user, $repo, $source ) = $self->github_user_repo_from_resources($v)
-            if is_hashref($v);
+    return $self->_github_search_resources($resources);
+}
 
-        return ( $user, $repo, $source ) if $user;
+# Recursively walk the resources hash for any github url.
+sub _github_search_resources {
+    my ( $self, $resources ) = @_;
+
+    for my $k ( sort keys %{$resources} ) {
+        my $v = $resources->{$k};
+        if ( is_hashref($v) ) {
+            my ( $user, $repo ) = $self->_github_search_resources($v);
+            return ( $user, $repo ) if $user;
+        }
+        elsif ( !is_ref($v) ) {
+            my ( $user, $repo ) = $self->_github_user_repo_from_url($v);
+            return ( $user, $repo ) if $user;
+        }
     }
 
     return ();
