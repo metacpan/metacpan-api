@@ -328,7 +328,8 @@ sub github_user_repo_from_resources {
 sub _github_search_resources {
     my ( $self, $resources ) = @_;
 
-    for my $v ( values %{$resources} ) {
+    for my $k ( sort keys %{$resources} ) {
+        my $v = $resources->{$k};
         if ( is_hashref($v) ) {
             my ( $user, $repo ) = $self->_github_search_resources($v);
             return ( $user, $repo ) if $user;
