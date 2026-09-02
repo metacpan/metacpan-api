@@ -454,7 +454,7 @@ sub _autocomplete {
                $a_data->{deprecated} <=> $b_data->{deprecated}
             || $b_data->{favorites}  <=> $a_data->{favorites}
             || length($a)            <=> length($b)
-            || $a cmp $b
+            || $a                    cmp $b
         }
         keys %valid;
 
