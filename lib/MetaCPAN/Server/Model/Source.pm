@@ -191,7 +191,7 @@ sub extract_in {
         $extract_dir = $temp;
     }
 
-    rename $children[0], $final_dir or do {
+    rename $extract_dir, $final_dir or do {
         warn "can't move $children[0] to $final_dir: $!";
     };
     $temp->remove_tree;
