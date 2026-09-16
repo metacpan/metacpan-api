@@ -60,7 +60,7 @@ is(
 );
 is(
     strip_pod('hello L<Module/section> foo'),
-    'hello section in Module foo',
+    'hello "section" in Module foo',
     'strip_pod strips internal links'
 );
 is(
@@ -72,6 +72,11 @@ is(
     strip_pod('without a leading C<$>.'),
     'without a leading $.',
     'strip_pod strips C<>'
+);
+is(
+    strip_pod('character E<gt> escape'),
+    'character > escape',
+    'strip_pod processes E<> escapes'
 );
 
 sub version {
