@@ -17,6 +17,7 @@ use MetaCPAN::Document::Author ();
 use MetaCPAN::ESConfig         qw( es_doc_path );
 use MetaCPAN::Types            qw( Str );
 use MetaCPAN::Util             qw(diff_struct true false);
+use Ref::Util                  qw( is_arrayref );
 use URI                        ();
 use XML::XPath                 ();
 
@@ -198,8 +199,13 @@ sub author_data_from_cpan {
     $data->{asciiname} = q{}
         if !defined $data->{asciiname};
 
-    $data->{email} = lc($pauseid) . '@cpan.org'
-        unless $data->{email} && Email::Valid->address( $data->{email} );
+    # email is an ArrayRef[Str] but may arrive as a scalar; keep every valid
+    # address and fall back to <pauseid>@cpan.org only when none validate.
+    my @valid_email = grep { Email::Valid->address($_) }
+        map { is_arrayref($_) ? @$_ : $_ } $data->{email};
+
+    $data->{email}
+        = @valid_email ? \@valid_email : [ lc($pauseid) . '@cpan.org' ];
 
     $data->{website} = [
 
