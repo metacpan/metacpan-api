@@ -416,8 +416,7 @@ sub _build_perms {
         while ( my $line = <$fh> ) {
             my ( $module, $author, $type ) = split( /,/, $line );
             next unless ($type);
-            $authors{$module} ||= [];
-            push( @{ $authors{$module} }, $author );
+            $authors{$module}{$author} = 1;
         }
         close $fh;
     }
@@ -431,8 +430,7 @@ sub _build_perms {
         open my $fh, "<:gzip", $packages;
         while ( my $line = <$fh> ) {
             if ( $line =~ /^(.+?)\s+.+?\s+\S\/\S+\/(\S+)\// ) {
-                $authors{$1} ||= [];
-                push( @{ $authors{$1} }, $2 );
+                $authors{$1}{$2} = 1;
             }
         }
         close $fh;
@@ -445,7 +443,7 @@ sub _build_perms {
         my $fh = $pumpking_file->openr(':gzip');
         while ( my $line = <$fh> ) {
             chomp $line;
-            push( @{ $authors{perl} ||= [] }, $line );
+            $authors{perl}{$line} = 1;
         }
         close $fh;
     }

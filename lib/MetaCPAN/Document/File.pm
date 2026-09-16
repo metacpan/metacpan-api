@@ -975,7 +975,7 @@ sub set_authorized {
     my ( $self, $perms ) = @_;
 
     if ( $self->distribution eq 'perl' ) {
-        my $allowed = grep $_ eq $self->author, @{ $perms->{perl} };
+        my $allowed = $perms->{perl}{ $self->author };
         foreach my $module ( @{ $self->module } ) {
             $module->_set_authorized( $allowed ? true : false );
         }
@@ -984,16 +984,14 @@ sub set_authorized {
     else {
         foreach my $module ( @{ $self->module } ) {
             $module->_set_authorized(false)
-                if ( $perms->{ $module->name }
-                && !grep { $_ eq $self->author }
-                @{ $perms->{ $module->name } } );
+                if $perms->{ $module->name }
+                && !$perms->{ $module->name }{ $self->author };
         }
         $self->_set_authorized(false)
-            if ( $self->authorized
+            if $self->authorized
             && $self->documentation
             && $perms->{ $self->documentation }
-            && !grep { $_ eq $self->author }
-            @{ $perms->{ $self->documentation } } );
+            && !$perms->{ $self->documentation }{ $self->author };
     }
     return grep { !$_->authorized && $_->indexed } @{ $self->module };
 }
