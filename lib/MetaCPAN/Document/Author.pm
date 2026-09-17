@@ -101,6 +101,15 @@ has extra => (
     dynamic     => 1,
 );
 
+# 'ui' when the author manages this profile through metacpan.org, in which case
+# the author import leaves the document alone. Absent means the import owns it
+# (author.json over whois).
+has canonical_source => (
+    is          => 'ro',
+    isa         => Str,
+    source_only => 1,
+);
+
 has updated => (
     is  => 'ro',
     isa => Str,

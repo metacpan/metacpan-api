@@ -144,7 +144,7 @@ sub index_authors {
                     )
                 : ( match_all => {} ),
             },
-            _source => [@compare_fields],
+            _source => [ @compare_fields, 'canonical_source' ],
             sort    => '_doc',
         },
     );
@@ -245,6 +245,12 @@ sub author_data_from_cpan {
 sub update_author {
     my $self = shift;
     my ( $bulk, $pauseid, $whois_data, $current_data ) = @_;
+
+    # The author manages this profile via metacpan.org: the UI is canonical,
+    # so leave it alone rather than overwriting from whois/author.json.
+    return
+        if $current_data
+        && ( $current_data->{canonical_source} // q{} ) eq 'ui';
 
     my $data = $self->author_data_from_cpan( $pauseid, $whois_data );
 

@@ -95,7 +95,12 @@ sub profile_PUT {
         gravatar_url profile blog
         donation city region country
         location extra perlmongers);
-    $profile->{updated} = DateTime->now->iso8601;
+
+    # The author now manages this profile through metacpan.org, so mark the UI
+    # as canonical: the hourly author import will no longer overwrite it from
+    # whois/author.json.
+    $profile->{canonical_source} = 'ui';
+    $profile->{updated}          = DateTime->now->iso8601;
     my @errors
         = $c->model('ESModel')
         ->doc('author')
