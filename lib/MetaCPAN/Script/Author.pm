@@ -175,6 +175,7 @@ sub author_data_from_cpan {
     my ( $pauseid, $whois_data ) = @_;
 
     my $author_config = $self->author_config($pauseid) || {};
+    my $is_custodial  = $self->_is_pause_custodial($whois_data);
 
     my $data = {
         pauseid   => $pauseid,
@@ -183,11 +184,13 @@ sub author_data_from_cpan {
         website   => $whois_data->{homepage},
         asciiname => $whois_data->{asciiname},
         %$author_config,
-        is_pause_custodial_account => (
-            ( $whois_data->{fullname} // '' )
-            =~ /\(PAUSE Custodial Account\)/ ? true : false
-        ),
+        is_pause_custodial_account => ( $is_custodial ? true : false ),
     };
+
+    # PAUSE renames a custodial account (e.g. "X (PAUSE Custodial Account)").
+    # That name is how people learn of the handoff, so it beats author.json.
+    $data->{name} = $whois_data->{fullname}
+        if $is_custodial;
 
     undef $data->{name}
         if ref $data->{name};
@@ -242,15 +245,36 @@ sub author_data_from_cpan {
     return $data;
 }
 
+sub _is_pause_custodial {
+    my ( $self, $whois_data ) = @_;
+    return ( $whois_data->{fullname} // q{} )
+        =~ /\(PAUSE Custodial Account\)/ ? 1 : 0;
+}
+
 sub update_author {
     my $self = shift;
     my ( $bulk, $pauseid, $whois_data, $current_data ) = @_;
 
-    # The author manages this profile via metacpan.org: the UI is canonical,
-    # so leave it alone rather than overwriting from whois/author.json.
-    return
-        if $current_data
-        && ( $current_data->{canonical_source} // q{} ) eq 'ui';
+    my $is_custodial = $self->_is_pause_custodial($whois_data);
+
+    # The author manages this profile via metacpan.org, so the UI is
+    # canonical and the import leaves it alone. The exception is a PAUSE
+    # custodial rename -- how people learn of the handoff -- which we apply
+    # on its own, touching nothing else.
+    if ( $current_data
+        && ( $current_data->{canonical_source} // q{} ) eq 'ui' )
+    {
+        if ( $is_custodial
+            && ( $current_data->{name} // q{} ) ne $whois_data->{fullname} )
+        {
+            $bulk->update( {
+                id  => $pauseid,
+                doc => { name => $whois_data->{fullname} },
+            } );
+            $self->purge_author_key($pauseid);
+        }
+        return;
+    }
 
     my $data = $self->author_data_from_cpan( $pauseid, $whois_data );
 
