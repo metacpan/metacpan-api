@@ -60,8 +60,6 @@ sub index_cve_data {
                 next;
             }
 
-            my @matches;
-
             if ( !is_arrayref( $cpansa->{affected_versions} ) ) {
                 log_debug {
                     sprintf( "Dist '%s' has non-array affected_versions %s",
@@ -76,7 +74,6 @@ sub index_cve_data {
                 # next;
             }
 
-            my @filters;
             my @afv_filters;
 
             for my $afv ( @{ $cpansa->{affected_versions} } ) {
@@ -129,17 +126,20 @@ sub index_cve_data {
                 }
             }
 
-            # multiple elements in affected_version -> OR
+            my @filters;
             if ( @afv_filters == 1 ) {
                 push @filters, @afv_filters;
             }
             elsif ( @afv_filters > 1 ) {
+
+                # multiple elements in affected_version -> OR
                 push @filters, { bool => { should => \@afv_filters } };
             }
 
-            if (@filters) {
-                my $query = {};
+            my @versions;
+            my @releases;
 
+            if (@filters) {
                 my $releases = $self->es->search(
                     es_doc_path('release'),
                     body => {
@@ -153,25 +153,24 @@ sub index_cve_data {
                         },
                         _source => [ "version", "name", "author", ],
                         size    => 2000,
+                        sort    => ['version_numified'],
                     },
                 );
 
-                if ( hit_total($releases) ) {
-                    ## no critic (ControlStructures::ProhibitMutatingListFunctions)
-                    @matches = map { $_->[0] }
-                        sort { $a->[1] <=> $b->[1] }
-                        map {
-                        [
-                            $_->{_source},
-                            numify_version( $_->{_source}{version} )
-                        ];
-                        } @{ $releases->{hits}{hits} };
+                my @matches = map $_->{_source}, @{ $releases->{hits}{hits} };
+
+                @versions = map $_->{version}, @matches;
+                @releases = map "$_->{author}/$_->{name}", @matches;
+
+                if (@versions) {
+                    log_debug {
+                        "Dist '$dist' @{ $cpansa->{affected_versions} } found releases [ @versions ]"
+                    };
                 }
                 else {
                     log_debug {
-                        sprintf( "Dist '%s' doesn't have matches.", $dist )
+                        "Dist '$dist' @{ $cpansa->{affected_versions} } found no releases"
                     };
-                    next;
                 }
             }
 
@@ -190,8 +189,8 @@ sub index_cve_data {
                 references        => $cpansa->{references},
                 reported          => $cpansa->{reported},
                 severity          => $cpansa->{severity},
-                versions          => [ map { $_->{version} } @matches ],
-                releases => [ map {"$_->{author}/$_->{name}"} @matches ],
+                versions          => \@versions,
+                releases          => \@releases,
             };
 
             if ( $cpansa->{cve_id} && $cpansa->{cpansa_id} ) {
