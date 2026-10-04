@@ -58,8 +58,7 @@ sub test_all_methods {
     foreach my $req (
         POST( '/author/_search', Content => $search ),
         GET( uri( '/author/_search', source => $search ) ),
-        )
-    {
+    ) {
         $sub->($req);
     }
 }

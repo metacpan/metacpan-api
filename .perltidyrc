@@ -15,3 +15,4 @@
 --vertical-tightness=0
 --vertical-tightness-closing=0
 --weld-nested-containers
+--cuddled-paren-brace

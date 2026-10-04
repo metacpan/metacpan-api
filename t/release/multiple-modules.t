@@ -78,8 +78,7 @@ ok( !$release->{first}, 'Release is not first' );
             'Multiple::Modules',
             [ { name => 'Multiple::Modules', indexed => true }, ]
         ],
-        )
-    {
+    ) {
         my ( $basename, $doc, $expmods ) = @$test;
 
         my $file = shift @files;

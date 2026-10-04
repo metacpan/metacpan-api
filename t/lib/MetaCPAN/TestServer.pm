@@ -367,8 +367,7 @@ sub _create_test_favorites {
             author       => 'LOCAL',
             date         => '2024-07-15T00:00:00',
         },
-        )
-    {
+    ) {
         ok(
             MetaCPAN::Server->model('ESModel')->doc('favorite')->put(
                 {

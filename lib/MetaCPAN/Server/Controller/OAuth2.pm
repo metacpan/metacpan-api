@@ -27,8 +27,7 @@ sub authorize : Local {
         && (  !$c->user_exists
             || $c->user_exists
             && !$c->user->has_identity( $params->{choice} ) )
-        )
-    {
+    ) {
         $c->res->redirect(
             $c->uri_for( "/login/$params->{choice}", $params ) );
         $c->detach;

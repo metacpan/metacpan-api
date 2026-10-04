@@ -58,8 +58,7 @@ SEGMENTS: for my $segment (@segments) {
                 $_->{path}
                     =~ /^authors\/id\/.*\.(tgz|tbz|tar[\._-]gz|tar\.bz2|tar\.Z|zip|7z)$/
             } @{ $json->{recent} }
-            )
-        {
+        ) {
             my $info = CPAN::DistnameInfo->new( $_->{path} );
             my $path = $info->cpanid . "/" . $info->filename;
             my $seen = $seen{$path};

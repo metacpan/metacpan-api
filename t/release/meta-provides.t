@@ -58,8 +58,7 @@ test_release(
                     'Provides.pm', 'Meta::Provides',
                     [ { name => 'Meta::Provides', indexed => true }, ]
                 ],
-                )
-            {
+            ) {
                 my ( $basename, $doc, $expmods ) = @$test;
 
                 my $file = shift @files;

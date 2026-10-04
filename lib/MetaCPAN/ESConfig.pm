@@ -145,8 +145,7 @@ sub _load_es_data ( $location, $def_sub ) {
     }
     elsif ( $location
         =~ /\A($module_name_rx)(?:::([0-9a-zA-Z_]+)\(\)|->($module_name_rx))?\z/
-        )
-    {
+    ) {
         my ( $module, $sub, $method ) = ( $1, $2, $3 );
         require_module $module;
         if ($method) {
