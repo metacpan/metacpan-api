@@ -279,8 +279,7 @@ sub _compare_mapping {
                             && $model_value eq 'string'
                             && (   $deploy_value eq 'text'
                                 || $deploy_value eq 'keyword' )
-                            )
-                        {
+                        ) {
                             # ES5 automatically converts string types to text
                             # or keyword. once we upgrade to ES5 and update
                             # our mappings, this special case can be removed.

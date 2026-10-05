@@ -15,8 +15,7 @@ foreach my $test (
     [ 'MetaFile-YAML-1.1', 'hand', ['META.yml'] ],
     [ 'MetaFile-JSON-1.1', 'hand', ['META.json'] ],
     [ 'MetaFile-Both-1.1', 'hand', [ 'META.json', 'META.yml' ] ],
-    )
-{
+) {
     my ( $name, $genby, $files ) = @$test;
 
     my $path = "$authordir/$name.$ext";

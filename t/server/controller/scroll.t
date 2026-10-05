@@ -19,8 +19,7 @@ sub test_missing_scroll_id {
         [ scroll_url_param(),    'url param' ],
         [ scroll_post_body(),    'post body' ],
         [ scroll_query_string(), 'query string' ],
-        )
-    {
+    ) {
         is_deeply(
             req_json( $cb, @$req, 500 ),
             { message => 'Scroll Id required' },
