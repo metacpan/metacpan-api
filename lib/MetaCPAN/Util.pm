@@ -51,6 +51,7 @@ use Sub::Exporter -setup => {
         fix_sort_value
     ) ]
 };
+use Log::Contextual::Easy::Default qw( :log );
 
 # Must not exceed the ES index.max_result_window setting (default 10,000).
 use constant MAX_RESULT_WINDOW => 1000;
@@ -175,9 +176,17 @@ sub strip_pod {
     my $output;
     my $parser = Pod::Simple::TextContent->new;
     $parser->output_string( \$output );
+    $parser->parse_characters(1);
+    $parser->no_errata_section(1);
     $parser->parse_string_document("=pod\n\n$pod");
     $output =~ s/\A\n+//;
     $output =~ s/\n+\z//;
+    my $errata = $parser->errata_seen;
+
+    if (%$errata) {
+        my @errors = map $errata->{$_}->@*, sort { $a <=> $b } keys %$errata;
+        log_error { join( "\n", "error stripping pod:", @errors ) };
+    }
     return $output;
 }
 
