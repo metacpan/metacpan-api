@@ -2,8 +2,10 @@ use strict;
 use warnings;
 use lib 't/lib';
 
-use CPAN::Meta     ();
-use MetaCPAN::Util qw(
+use CPAN::Meta                    ();
+use Log::Contextual               qw( with_logger );
+use Log::Contextual::SimpleLogger ();
+use MetaCPAN::Util                qw(
     extract_section
     fix_sort_value
     generate_sid
@@ -78,6 +80,38 @@ is(
     'character > escape',
     'strip_pod processes E<> escapes'
 );
+is(
+    strip_pod("character \x{00B7} >0x7F <=0xFF"),
+    "character \x{00B7} >0x7F <=0xFF",
+    'strip_pod allows non-ascii characters in latin-1 range correctly'
+);
+is(
+    strip_pod("character \x{2219} >0xFF"),
+    "character \x{2219} >0xFF",
+    'strip_pod allows characters outside latin-1 range correctly'
+);
+is(
+    strip_pod("character \x{2219} >0xFF"),
+    "character \x{2219} >0xFF",
+    'strip_pod allows characters outside latin-1 range correctly'
+);
+{
+    my @log_lines;
+    my $collect_logger = Log::Contextual::SimpleLogger->new( {
+        levels_upto => 'debug',
+        coderef     => sub { push @log_lines, @_ },
+    } );
+    with_logger $collect_logger, sub {
+        is(
+            strip_pod('pod with errors E<'),
+            'pod with errors E<>',
+            'strip_pod handles pod errors correctly'
+        );
+    };
+    is join( "\n", @log_lines ),
+        "[error] error stripping pod:\nUnterminated E<...> sequence\nAn empty E<>\n",
+        'correct error logs';
+}
 
 sub version {
     CPAN::Meta->new( {
