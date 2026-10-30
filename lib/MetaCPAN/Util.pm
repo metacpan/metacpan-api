@@ -5,6 +5,7 @@ package MetaCPAN::Util;
 use strict;
 use warnings;
 use version;
+use experimental 'postderef';
 use warnings FATAL => 'utf8';
 
 use Cpanel::JSON::XS         ();                           ## no perlimports
