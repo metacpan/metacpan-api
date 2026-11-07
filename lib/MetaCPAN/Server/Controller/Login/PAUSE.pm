@@ -4,7 +4,6 @@ use Moose;
 use namespace::autoclean;
 
 use CHI                           ();
-use Log::Contextual               qw( :log :dlog );
 use MetaCPAN::Model::Email::PAUSE ();
 use MetaCPAN::Util                qw( generate_sid );
 
@@ -59,11 +58,10 @@ sub index : Path Args(0) {
 
         my $sent = $email->send;
 
-        if ( !$sent ) {
-            log_error {
-                'Could not send PAUSE email to ' . $author->{pauseid}
-            };
-        }
+        # Not Log::Contextual: only the scripts call set_logger.
+        $c->log->error(
+            'Could not send PAUSE email to ' . $author->{pauseid} )
+            unless $sent;
 
         $c->controller('OAuth2')->redirect( $c, success => 'mail_sent' );
     }
