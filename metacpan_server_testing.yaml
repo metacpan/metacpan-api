@@ -38,3 +38,6 @@ front_end_url: http://0.0.0.0:5001
 
 # See metacpan_server.yaml.
 oauth_cookie_domain: .metacpan.org
+
+# See metacpan_server.yaml.
+pause_link_secret: "weak test-only secret for signing pause link tokens"
