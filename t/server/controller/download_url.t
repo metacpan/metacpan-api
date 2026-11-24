@@ -65,6 +65,12 @@ my @tests = (
         'cpan', '1.3'
     ],
     [
+        'range >=, !, < (cpanm-style, spaced)',
+        '/download_url/Multiple::Releases?version=%3E%3D%201.1,%20!%3D%201.4,%20%3C%201.7',
+        'cpan',
+        '1.3'
+    ],
+    [
         'range >, <; dev',
         '/download_url/Multiple::Releases?version=>1.1,<1.7&dev=1',
         'cpan', '1.6'
