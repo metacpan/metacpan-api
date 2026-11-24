@@ -52,7 +52,8 @@ sub get : Chained('index') : PathPart('') : Args {
         my $type = Plack::MIME->mime_type($file) || 'text/plain';
         $c->res->header( 'X-Content-Type' => $type );
 
-        # SVG is XML text and can carry script; serve it as plain text
+        # SVG is XML text and can carry script, so match it
+        # before the image/ branch
         if ( $type
             =~ m{^(?:text/.*|application/javascript|application/json|image/svg\+xml)$}
         ) {

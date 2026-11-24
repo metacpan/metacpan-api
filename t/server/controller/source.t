@@ -192,13 +192,13 @@ test_psgi app, sub {
                 'JSONP-wrapped change-log'
             );
         }
-        elsif ( $k =~ /logo\.svg$/ ) {
+        elsif ( $k eq '/source/RWSTAUNER/Versions-1.01/logo.svg' ) {
             is( $res->header('content-type'), 'text/plain', 'Content-type' );
             is( $res->header('X-Content-Type'),
                 'image/svg+xml', 'X-Content-Type' );
             like( $res->content, qr/<svg/, 'SVG source' );
         }
-        elsif ( $k =~ /logo\.png$/ ) {
+        elsif ( $k eq '/source/RWSTAUNER/Versions-1.01/logo.png' ) {
             is( $res->header('content-type'), 'image/png', 'Content-type' );
             is( $res->header('X-Content-Type'),
                 'image/png', 'X-Content-Type' );
