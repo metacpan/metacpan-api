@@ -11,6 +11,9 @@ use lib "$root_dir/lib";
 use Config::ZOMG          ();
 use File::Path            ();
 use File::Spec            ();
+use Log::Any              ();
+use Log::Any::Adapter     ();
+use Log::Contextual       qw( set_logger );
 use Log::Log4perl         ();
 use Path::Tiny            qw( path );
 use Plack::App::File      ();
@@ -42,17 +45,17 @@ BEGIN {
         $root_dir );
     Log::Log4perl::init($log4perl_config);
 
-    package MetaCPAN::Server::WarnHandler;    ## no critic (Modules::RequireFilenameMatchesPackage)
-    Log::Log4perl->wrapper_register(__PACKAGE__);
-    my $logger = Log::Log4perl->get_logger;
-    $SIG{__WARN__} = sub { $logger->warn(@_) };
+    {
 
-    $ENV{LOG_ANY_DEFAULT_ADAPTER} = 'Log4perl';
-    if ( $INC{'Log/Any.pm'} ) {
-        require Log::Any::Adapter;
-        require Log::Any::Adapter::Log4perl;
-        Log::Any::Adapter->set('Log4perl');
+        package MetaCPAN::Server::WarnHandler;    ## no critic (Modules::RequireFilenameMatchesPackage)
+        Log::Log4perl->wrapper_register(__PACKAGE__);
+        my $logger = Log::Log4perl->get_logger;
+        $SIG{__WARN__} = sub { $logger->warn(@_) };
     }
+
+    Log::Any::Adapter->set('Log4perl');
+
+    set_logger( Log::Log4perl->get_logger );
 }
 
 use MetaCPAN::Server ();
