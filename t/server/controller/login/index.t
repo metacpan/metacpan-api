@@ -11,6 +11,8 @@ test_psgi app, sub {
     is $res->code, 200, 'GET /login';
     like $res->content,   qr{/login/github},  'lists GitHub login';
     unlike $res->content, qr{/login/twitter}, 'does not list Twitter login';
+
+    is $cb->( GET '/login/twitter' )->code, 404, 'GET /login/twitter is 404';
 };
 
 done_testing;
