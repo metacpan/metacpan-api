@@ -160,14 +160,18 @@ subtest 'dist: not found' => sub {
     is( $res->code, 404, 'code 404' );
 };
 
-for my $version ( 'foo', '==0.01,<0.02', '>0.01,foo', 'foo%20bar' ) {
-    subtest "invalid version: $version" => sub {
-        my $res
-            = $test->request( GET "/download_url/Moose?version=$version" );
-        is( $res->code, 400, 'code 400' );
-        ok( Cpanel::JSON::XS::decode_json( $res->content )->{message},
-            'error message' );
-    };
+for my $url ( '/download_url/Moose', '/download_url/distribution/Moose' ) {
+    for my $version ( 'foo', '==0.01,<0.02', '>0.01,foo', 'foo%20bar' ) {
+        subtest "invalid version: $url?version=$version" => sub {
+            my $res = $test->request( GET "$url?version=$version" );
+            is( $res->code, 400, 'code 400' );
+            is(
+                Cpanel::JSON::XS::decode_json( $res->content )->{message},
+                'Invalid version parameter',
+                'error message'
+            );
+        };
+    }
 }
 
 done_testing;
