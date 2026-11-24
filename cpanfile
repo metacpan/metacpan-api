@@ -123,7 +123,6 @@ requires 'Try::Tiny', '0.30';
 requires 'Type::Tiny', '2.000001';
 requires 'Types::Path::Tiny';
 requires 'Types::URI';
-requires 'Twitter::API', '1.0006';
 requires 'URI', '5.10';
 requires 'URI::git', '0.02';
 requires 'Unicode::UTF8', '0.70';
