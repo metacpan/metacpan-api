@@ -51,13 +51,15 @@ sub get : Chained('index') : PathPart('') : Args {
         # Add X-Content-Type header, for fastly to rewrite on st.aticpan.org
         my $type = Plack::MIME->mime_type($file) || 'text/plain';
         $c->res->header( 'X-Content-Type' => $type );
-        if ( $type =~ m{^image/} ) {
-            $c->res->content_type($type);
-        }
-        elsif ( $type
-            =~ m{^(?:text/.*|application/javascript|application/json)$} )
-        {
+
+        # SVG is XML text and can carry script; serve it as plain text
+        if ( $type
+            =~ m{^(?:text/.*|application/javascript|application/json|image/svg\+xml)$}
+        ) {
             $c->res->content_type('text/plain');
+        }
+        elsif ( $type =~ m{^image/} ) {
+            $c->res->content_type($type);
         }
         else {
             $c->res->content_type('application/octet-stream');
