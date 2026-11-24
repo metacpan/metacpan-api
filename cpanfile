@@ -56,6 +56,7 @@ requires 'Getopt::Long::Descriptive', '0.103';
 requires 'Gravatar::URL';
 requires 'Hash::Merge::Simple';
 requires 'HTML::Entities';
+requires 'HTTP::Message', '7.04';
 requires 'HTTP::Request::Common', '6.36';
 requires 'IO::Prompt::Tiny';
 requires 'IO::Uncompress::Bunzip2', '2.106';

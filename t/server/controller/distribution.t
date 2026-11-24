@@ -53,6 +53,21 @@ my @tests = (
         }
     ],
     [
+        '/distribution/Scalar-List-Utils' => {
+            code          => 200,
+            cache_control => 'private',
+            surrogate_key =>
+                'content_type=application/json content_type=application',
+            surrogate_control => undef,
+            content           => {
+                name  => 'Scalar-List-Utils',
+                river => {
+                    bus_factor => 5,
+                },
+            },
+        }
+    ],
+    [
         '/distribution/System-Command' => {
             code          => 200,
             cache_control => 'private',

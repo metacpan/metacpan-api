@@ -1,9 +1,19 @@
 {
+   "Scalar-List-Utils": {
+      "active_maintainers": [
+         "PEVANS"
+      ],
+      "bus_factor": 5,
+      "inactive_maintainers": [],
+      "is_dual_life": true,
+      "owner": "PEVANS"
+   },
    "System-Command": {
       "active_maintainers": [
          "BOOK",
          "DOLMEN"
       ],
+      "bus_factor": 2,
       "inactive_maintainers": [],
       "is_dual_life": false,
       "owner": "BOOK"
@@ -12,6 +22,7 @@
       "active_maintainers": [
          "BOBTFISH"
       ],
+      "bus_factor": 1,
       "inactive_maintainers": [
          "CHAD"
       ],
