@@ -843,8 +843,11 @@ sub find_download_url {
     my ( $self, $type, $name, $args ) = @_;
     $args ||= {};
 
-    my $dev              = $args->{dev};
-    my $version          = $args->{version};
+    my $dev     = $args->{dev};
+    my $version = $args->{version};
+
+    # URL query parsing eats one '=' of "version==1.0"
+    $version =~ s/^=(?!=)/==/ if defined $version;
     my $explicit_version = $version && $version =~ /==/;
 
     my @filters;
@@ -1038,9 +1041,10 @@ sub _version_filters {
             if ( $r =~ s/^([<>]=?)\s*// ) {
                 $range{ $ops{$1} } = $self->_numify($r);
             }
-            elsif ( $r =~ s/\!=\s*// ) {
+            elsif ( $r =~ s/^!=\s*// ) {
                 push @exclusion, $self->_numify($r);
             }
+            else { die "Invalid version\n" }
         }
 
         if ( keys %range ) {
@@ -1066,12 +1070,13 @@ sub _version_filters {
             } ]
         };
     }
+    else { die "Invalid version\n" }
 }
 
 sub _numify {
     my ( $self, $ver ) = @_;
     $ver =~ s/_//g;
-    version->new($ver)->numify;
+    return eval { version->new($ver)->numify } // die "Invalid version\n";
 }
 
 sub predecessor {

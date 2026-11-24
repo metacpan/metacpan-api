@@ -47,8 +47,17 @@ my @tests = (
     ],
     [ 'version >=', '/download_url/Moose?version=>=0.01', 'latest', '0.02' ],
     [
+        'version = (single, as typed in a URL)',
+        '/download_url/Moose?version==0.01',
+        'cpan', '0.01'
+    ],
+    [
         'range >, <', '/download_url/Multiple::Releases?version=>1.1,<1.7',
         'cpan', '1.4', $multi_rel_md5, $multi_rel_sha256,
+    ],
+    [
+        'range >=0, <', '/download_url/Multiple::Releases?version=>=0,<1.7',
+        'cpan',         '1.4'
     ],
     [
         'range >, <, !',
@@ -150,5 +159,15 @@ subtest 'dist: not found' => sub {
     my $res = $test->request( GET $url );
     is( $res->code, 404, 'code 404' );
 };
+
+for my $version ( 'foo', '==0.01,<0.02', '>0.01,foo', 'foo%20bar' ) {
+    subtest "invalid version: $version" => sub {
+        my $res
+            = $test->request( GET "/download_url/Moose?version=$version" );
+        is( $res->code, 400, 'code 400' );
+        ok( Cpanel::JSON::XS::decode_json( $res->content )->{message},
+            'error message' );
+    };
+}
 
 done_testing;
