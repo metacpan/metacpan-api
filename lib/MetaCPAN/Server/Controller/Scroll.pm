@@ -5,7 +5,7 @@ use warnings;
 use namespace::autoclean;
 
 use Cpanel::JSON::XS qw( decode_json );
-use MetaCPAN::Util   qw(true false simplify_total);
+use MetaCPAN::Util   qw( simplify_total );
 use Moose;
 use Try::Tiny qw( catch try );
 
@@ -34,25 +34,6 @@ sub index : Path('/_search/scroll') : Args {
             chomp( my $e = $_[0] );
             $self->internal_error( $c, $e );
         };
-    }
-
-    if ( $scroll_id eq 'FAKE_SCROLL_ID' ) {
-        $c->stash( {
-            _scroll_id => $scroll_id,
-            _shards    => {
-                failed     => 0,
-                successful => 0,
-                total      => 0,
-            },
-            hits => {
-                hits      => [],
-                max_score => undef,
-                total     => 0,
-            },
-            timed_out => false,
-            took      => 0,
-        } );
-        return;
     }
 
     my $res = eval {
