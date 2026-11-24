@@ -1044,7 +1044,10 @@ sub _version_filters {
             elsif ( $r =~ s/^!=\s*// ) {
                 push @exclusion, $self->_numify($r);
             }
-            else { die "Invalid version\n" }
+            else {
+                MetaCPAN::Query::Release::InvalidVersion->throw(
+                    message => "Invalid version" );
+            }
         }
 
         if ( keys %range ) {
@@ -1070,13 +1073,19 @@ sub _version_filters {
             } ]
         };
     }
-    else { die "Invalid version\n" }
+    else {
+        MetaCPAN::Query::Release::InvalidVersion->throw(
+            message => "Invalid version" );
+    }
 }
 
 sub _numify {
     my ( $self, $ver ) = @_;
     $ver =~ s/_//g;
-    return eval { version->new($ver)->numify } // die "Invalid version\n";
+    return
+        eval { version->new($ver)->numify }
+        // MetaCPAN::Query::Release::InvalidVersion->throw(
+        message => "Invalid version" );
 }
 
 sub predecessor {
@@ -1124,4 +1133,13 @@ sub find {
 }
 
 __PACKAGE__->meta->make_immutable;
+
+{
+
+    package MetaCPAN::Query::Release::InvalidVersion;
+    use Moose;
+    extends 'Throwable::Error';
+    __PACKAGE__->meta->make_immutable;
+}
+
 1;
