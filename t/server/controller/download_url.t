@@ -161,7 +161,9 @@ subtest 'dist: not found' => sub {
 };
 
 for my $url ( '/download_url/Moose', '/download_url/distribution/Moose' ) {
-    for my $version ( 'foo', '==0.01,<0.02', '>0.01,foo', 'foo%20bar' ) {
+    for my $version ( 'foo', '==0.01,<0.02', '>0.01,foo', 'foo%20bar',
+        '>0.01,0.02!=1' )
+    {
         subtest "invalid version: $url?version=$version" => sub {
             my $res = $test->request( GET "$url?version=$version" );
             is( $res->code, 400, 'code 400' );
