@@ -1045,8 +1045,7 @@ sub _version_filters {
                 push @exclusion, $self->_numify($r);
             }
             else {
-                MetaCPAN::Query::Release::InvalidVersion->throw(
-                    message => "Invalid version" );
+                MetaCPAN::Query::Release::InvalidVersion->throw;
             }
         }
 
@@ -1074,8 +1073,7 @@ sub _version_filters {
         };
     }
     else {
-        MetaCPAN::Query::Release::InvalidVersion->throw(
-            message => "Invalid version" );
+        MetaCPAN::Query::Release::InvalidVersion->throw;
     }
 }
 
@@ -1084,8 +1082,7 @@ sub _numify {
     $ver =~ s/_//g;
     return
         eval { version->new($ver)->numify }
-        // MetaCPAN::Query::Release::InvalidVersion->throw(
-        message => "Invalid version" );
+        // MetaCPAN::Query::Release::InvalidVersion->throw;
 }
 
 sub predecessor {
@@ -1139,6 +1136,7 @@ __PACKAGE__->meta->make_immutable;
     package MetaCPAN::Query::Release::InvalidVersion;
     use Moose;
     extends 'Throwable::Error';
+    has '+message' => ( default => 'Invalid version' );
     __PACKAGE__->meta->make_immutable;
 }
 
