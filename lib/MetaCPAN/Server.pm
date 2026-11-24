@@ -51,10 +51,6 @@ __PACKAGE__->config(
         consumer_key    => 'bec8ecb39a9fc5935d0e',
         consumer_secret => 'ec32cb6699836554596306616e11568bb8b2101b',
     },
-    'Controller::Login::Twitter' => {
-        consumer_key    => 'NP647X3WewESJVg19Qelxg',
-        consumer_secret => 'MrLQXWHXJsGo9owGX49D6oLnyYoxCOvPoy9TZE5Q',
-    },
     'Controller::Login::Google' => {
         consumer_key =>
             '265904441292-5k4rhagfcddsv4g5jfdk93eh8tugrp13.apps.googleusercontent.com',

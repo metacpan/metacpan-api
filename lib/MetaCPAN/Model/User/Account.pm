@@ -25,7 +25,7 @@ has id => (
 =head2 identity
 
 Array of L<MetaCPAN::Model::User::Identity> objects. Each identity is a
-authentication provider such as Twitter or GitHub.
+authentication provider such as GitHub or Google.
 
 =cut
 
