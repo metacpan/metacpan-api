@@ -34,7 +34,9 @@ sub _find_download_url {
             ->release->find_download_url( $type, $name, $c->req->params );
     }
     catch {
-        die $_ unless $_ eq "Invalid version\n";
+        die $_
+            unless
+            try { $_->isa('MetaCPAN::Query::Release::InvalidVersion') };
         $c->detach( '/bad_request', ['Invalid version parameter'] );
     };
 }
