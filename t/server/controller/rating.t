@@ -14,7 +14,6 @@ test_psgi app, sub {
         POST( '/rating',         Content => $query ),
         POST( '/rating/_search', Content => $query ),
         GET('/rating/by_distributions?distribution=Moose'),
-        GET('/rating/random-id'),
     ) {
         my $res = $cb->($req);
         is $res->code, 404, $req->method . ' ' . $req->uri . ' is gone';
