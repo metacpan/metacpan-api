@@ -77,6 +77,22 @@ my %tests = (
         surrogate_control =>
             'max-age=31556952, stale-while-revalidate=86400, stale-if-error=2592000',
     },
+    '/source/RWSTAUNER/Versions-1.01/logo.svg' => {
+        code          => 200,
+        cache_control => undef,
+        surrogate_key =>
+            'author=RWSTAUNER content_type=text/plain content_type=text',
+        surrogate_control =>
+            'max-age=31556952, stale-while-revalidate=86400, stale-if-error=2592000',
+    },
+    '/source/RWSTAUNER/Versions-1.01/logo.png' => {
+        code          => 200,
+        cache_control => undef,
+        surrogate_key =>
+            'author=RWSTAUNER content_type=image/png content_type=image',
+        surrogate_control =>
+            'max-age=31556952, stale-while-revalidate=86400, stale-if-error=2592000',
+    },
     '/source/Moose' => {
         code          => 200,
         cache_control => 'private',
@@ -175,6 +191,17 @@ test_psgi app, sub {
                 qr/codename 'M\x{fc}nchen'/,
                 'JSONP-wrapped change-log'
             );
+        }
+        elsif ( $k =~ /logo\.svg$/ ) {
+            is( $res->header('content-type'), 'text/plain', 'Content-type' );
+            is( $res->header('X-Content-Type'),
+                'image/svg+xml', 'X-Content-Type' );
+            like( $res->content, qr/<svg/, 'SVG source' );
+        }
+        elsif ( $k =~ /logo\.png$/ ) {
+            is( $res->header('content-type'), 'image/png', 'Content-type' );
+            is( $res->header('X-Content-Type'),
+                'image/png', 'X-Content-Type' );
         }
         elsif ( $v->{code} eq 200 ) {
             like( $res->content, qr/Index of/, 'Index of' );
