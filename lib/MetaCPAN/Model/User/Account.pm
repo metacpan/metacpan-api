@@ -6,6 +6,7 @@ use warnings;
 use Moose;
 use ElasticSearchX::Model::Document;
 
+use List::Util      qw( first );
 use MetaCPAN::Types qw( AccessTokens Identities );
 use MetaCPAN::Util  qw(true false);
 
@@ -109,16 +110,32 @@ sub get_identities {
     return grep { $_->{name} eq $identity } @{ $self->identity };
 }
 
+=head2 remove_identity( $name, $key )
+
+Removes the identities called C<$name> and returns the first one removed.
+If C<$key> is given, it removes only the identity with that key, so an
+account that holds two PAUSE IDs keeps the other one.
+
+=cut
+
 sub remove_identity {
-    my ( $self, $identity ) = @_;
-    my $ids  = $self->identity;
-    my ($id) = grep { $_->{name} eq $identity } @$ids;
-    @$ids = grep { $_->{name} ne $identity } @$ids;
+    my ( $self, $identity, $key ) = @_;
+    my $ids     = $self->identity;
+    my $matches = sub {
+        $_[0]->{name} eq $identity
+            && ( !defined $key || $_[0]->{key} eq $key );
+    };
+    my $id = first { $matches->($_) } @$ids;
+    @$ids = grep { !$matches->($_) } @$ids;
+    return unless $id;
 
     if ( $identity eq 'pause' ) {
         my $profile = $self->index->model->doc('author')->get( $id->{key} );
 
-        if ( $profile && $profile->user eq $self->id ) {
+        if (   $profile
+            && defined $profile->user
+            && $profile->user eq $self->id )
+        {
             $profile->_clear_user;
             $profile->put;
         }

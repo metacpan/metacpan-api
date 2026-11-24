@@ -77,7 +77,14 @@ please click on the following link to verify your PAUSE account:
 
 $uri
 
+Open it in the browser where you are logged in to MetaCPAN. The link works
+only for the MetaCPAN account that asked for it.
+
 This link will expire in 24 hours.
+
+If you did not ask to connect your PAUSE account, ignore this email. Do not
+forward this link to anyone: whoever asked for it gets your PAUSE identity
+if they open it.
 
 Cheers,
 MetaCPAN

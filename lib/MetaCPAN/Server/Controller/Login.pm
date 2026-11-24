@@ -54,6 +54,12 @@ sub update_user {
         $user->add_identity( { name => $type, key => $id, extra => $data } );
         $user->put(          { refresh => true } );
     }
+    $self->finish_login( $c, $user );
+}
+
+# Log in as $user and send the browser back to where the OAuth flow started.
+sub finish_login {
+    my ( $self, $c, $user ) = @_;
     $c->authenticate( { user => $user } );
 
     # Find the cookie we set earlier.

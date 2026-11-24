@@ -40,3 +40,10 @@ front_end_url: http://0.0.0.0:5001
 # override this in metacpan_server_local.yaml (an empty value keeps the cookie
 # host-only).
 oauth_cookie_domain: .metacpan.org
+
+# HMAC key for the signed token in the PAUSE verification email
+# (MetaCPAN::Model::PAUSELinkToken). At least 32 characters. There is no
+# default on purpose: anyone who knows the key can link any PAUSE ID to any
+# account. Set it in metacpan_server_local.yaml. Changing it makes every link
+# that is already in a mailbox invalid.
+# pause_link_secret: ...
